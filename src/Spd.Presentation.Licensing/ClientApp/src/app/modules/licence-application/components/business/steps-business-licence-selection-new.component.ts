@@ -2,7 +2,6 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceTermComponent } from './step-business-licence-term.component';
@@ -12,7 +11,9 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-business-licence-category></app-step-business-licence-category>
+				<app-step-business-licence-category
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+				></app-step-business-licence-category>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
@@ -43,7 +44,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 			<mat-step>
 				<app-step-business-licence-term
-					[isSoleProprietorRelated]="isSoleProprietorRelated"
+					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 				></app-step-business-licence-term>
 
 				<div class="row wizard-button-row">
@@ -79,7 +80,7 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@Input() isSoleProprietorRelated!: boolean;
+	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;
@@ -103,10 +104,6 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 	// ngOnDestroy() {
 	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	// }
-
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathBusinessLicence()]);
-	}
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {

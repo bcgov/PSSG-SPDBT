@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -95,10 +94,6 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	}
-
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathPermitAnonymous()]);
 	}
 
 	override dirtyForm(step: number): boolean {

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
 @Component({
 	selector: 'app-business-profile',
@@ -30,7 +32,17 @@ import { BusinessApplicationService } from '../../services/business-application.
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-common-business-profile [branchesInBcFormGroup]="branchesInBcFormGroup"></app-common-business-profile>
+					<!-- <ng-container *ngIf="!isReadonly">
+	<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
+</ng-container> -->
+
+					<app-common-business-profile
+						[businessInformationFormGroup]="businessInformationFormGroup"
+						[businessAddressFormGroup]="businessAddressFormGroup"
+						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
+						[mailingAddressFormGroup]="mailingAddressFormGroup"
+						[branchesInBcFormGroup]="branchesInBcFormGroup"
+					></app-common-business-profile>
 
 					<div class="row mt-3">
 						<div class="col-12">
@@ -55,15 +67,42 @@ import { BusinessApplicationService } from '../../services/business-application.
 	styles: ``,
 })
 export class BusinessProfileComponent {
+	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
+	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
+	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
+	mailingAddressFormGroup = this.businessApplicationService.mailingAddressFormGroup;
 	branchesInBcFormGroup = this.businessApplicationService.branchesInBcFormGroup;
 
-	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {}
+	@ViewChild(CommonBusinessProfileComponent) businessProfileComponent!: CommonBusinessProfileComponent;
+
+	constructor(
+		private router: Router,
+		private utilService: UtilService,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 	}
 
 	onSave(): void {
+		const isValid = this.businessProfileComponent.isFormValid();
+
+		if (!isValid) {
+			this.utilService.scrollToErrorSection();
+			return;
+		}
+
+		// this.licenceApplicationService.saveLoginUserProfile().subscribe({
+		// 	next: (_resp: any) => {
+		// 		this.hotToastService.success('Your profile has been successfully updated');
+		// 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+		// 	},
+		// 	error: (error: any) => {
+		// 		console.log('An error occurred during save', error);
+		// 		this.hotToastService.error('An error occurred during the save. Please try again.');
+		// 	},
+		// });
 		// TODO save business profile
 	}
 }

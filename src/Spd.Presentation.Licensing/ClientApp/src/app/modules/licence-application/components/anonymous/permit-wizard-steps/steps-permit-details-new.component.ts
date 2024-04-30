@@ -125,10 +125,6 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 		if (this.permitModelChangedSubscription) this.permitModelChangedSubscription.unsubscribe();
 	}
 
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathPermitAnonymous()]);
-	}
-
 	onExpiredLicenceNextStep(): void {
 		this.permitExpiredComponent.onSearchAndValidate();
 	}

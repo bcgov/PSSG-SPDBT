@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
@@ -115,10 +114,6 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent i
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	}
-
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathPermitAnonymous()]);
 	}
 
 	override dirtyForm(step: number): boolean {

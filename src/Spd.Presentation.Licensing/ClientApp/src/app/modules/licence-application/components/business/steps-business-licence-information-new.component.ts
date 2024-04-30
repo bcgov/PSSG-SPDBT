@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BusinessTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
@@ -8,7 +8,6 @@ import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-lic
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
 import { StepBusinessLicenceNameComponent } from './step-business-licence-name.component';
-import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.component';
 
 @Component({
 	selector: 'app-steps-business-licence-information-new',
@@ -57,7 +56,7 @@ import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.c
 				</div>
 			</mat-step>
 
-			<mat-step>
+			<!-- <mat-step>
 				<app-step-business-licence-type></app-step-business-licence-type>
 
 				<div class="row wizard-button-row">
@@ -80,7 +79,7 @@ import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.c
 						</button>
 					</div>
 				</div>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step>
 				<app-step-business-licence-name></app-step-business-licence-name>
@@ -168,20 +167,16 @@ import { StepBusinessLicenceTypeComponent } from './step-business-licence-type.c
 })
 export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_EXPIRED = 1;
-	readonly STEP_LICENCE_TYPE = 2;
-	readonly STEP_LICENCE_NAME = 3;
-	readonly STEP_LICENCE_BRANDING = 4;
-	readonly STEP_LICENCE_LIABILITY = 5;
-
-	// private licenceModelChangedSubscription!: Subscription;
+	readonly STEP_LICENCE_NAME = 2;
+	readonly STEP_LICENCE_BRANDING = 3;
+	readonly STEP_LICENCE_LIABILITY = 4;
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@Input() businessTypeCode: BusinessTypeCode | null = null;
+	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	@ViewChild(StepBusinessLicenceTypeComponent) stepTypeComponent!: StepBusinessLicenceTypeComponent;
 	@ViewChild(StepBusinessLicenceNameComponent) stepNameComponent!: StepBusinessLicenceNameComponent;
 	@ViewChild(StepBusinessLicenceCompanyBrandingComponent)
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
@@ -215,8 +210,6 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 		switch (step) {
 			case this.STEP_LICENCE_EXPIRED:
 				return this.stepExpiredComponent.isFormValid();
-			case this.STEP_LICENCE_TYPE:
-				return this.stepTypeComponent.isFormValid();
 			case this.STEP_LICENCE_NAME:
 				return this.stepNameComponent.isFormValid();
 			case this.STEP_LICENCE_BRANDING:

@@ -8,6 +8,7 @@ import {
 	ApplicationTypeCode,
 	LicenceAppListResponse,
 	LicenceStatusCode,
+	LicenceTermCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -183,7 +184,7 @@ import { Observable, take, tap } from 'rxjs';
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">---</div>
+											<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 										</div>
 										<div class="col-lg-3">
 											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -429,6 +430,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			{
 				licenceId: '1',
 				licenceNumber: 'TEST-NWQ3X7A',
+				licenceTermCode: LicenceTermCode.TwoYears,
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				licenceExpiryDate: '2025-02-13T19:43:25+00:00',
@@ -575,7 +577,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW)
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
 					);
 				}),
 				take(1)

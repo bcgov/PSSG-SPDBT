@@ -390,10 +390,6 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
-	onCancel(): void {
-		this.commonApplicationService.onGoToHome();
-	}
-
 	onExpiredLicenceNextStep(): void {
 		this.licenceExpiredComponent.onSearchAndValidate();
 	}

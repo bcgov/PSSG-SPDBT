@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { WorkerCategoryTypeCode } from '@app/api/models';
 import { BusinessCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
@@ -24,6 +24,11 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 									</div>
 								</ng-container>
 							</div>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrueValidator')"
+								>At least one option must be selected</mat-error
+							>
 
 							<div class="mt-2" *ngIf="showLocksmithMessage">
 								<app-alert type="info" icon="">
@@ -132,7 +137,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	],
 })
 export class StepBusinessLicenceCategoryComponent implements LicenceChildStepperStepComponent {
-	isDirtyAndInvalid = false;
+	// isDirtyAndInvalid = false;
 
 	form = this.businessApplicationService.categoryFormGroup;
 
@@ -160,7 +165,8 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 	// readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
 	// readonly subtitle_update = 'You can change and remove existing categories as well as add new ones';
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	// @Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
@@ -298,52 +304,29 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 	// 		});
 	// }
 
-	// onPromptFireInvestigator() {
-	// 	if (this.showFireInvestigator) {
-	// 		return; // this has already been added
-	// 	}
-
-	// 	const data: DialogOptions = {
-	// 		icon: 'warning',
-	// 		title: 'Confirmation',
-	// 		message: 'Would you also like to add Fire Investigator to this licence?',
-	// 		actionText: 'Yes',
-	// 		cancelText: 'No',
-	// 	};
-
-	// 	this.dialog
-	// 		.open(DialogComponent, { data })
-	// 		.afterClosed()
-	// 		.subscribe((response: boolean) => {
-	// 			if (response) {
-	// 				this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
-
-	// 				this.validCategoryList = this.businessApplicationService.getValidCategoryList(this.categoryList);
-	// 			}
-	// 		});
-	// }
-
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
-		// this.categoryArmouredCarGuardFormGroup.markAllAsTouched();
-		// this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
-		// this.categorySecurityGuardFormGroup.markAllAsTouched();
 
-		// const isValid =
-		// 	this.categoryArmouredCarGuardFormGroup.valid &&
-		// 	this.categoryPrivateInvestigatorFormGroup.valid &&
-		// 	this.categorySecurityGuardFormGroup.valid;
+		const valid1 = this.form.valid;
+		let valid2 = true;
+		if (this.ArmouredCarGuard.value) {
+			this.categoryArmouredCarGuardFormGroup.markAllAsTouched();
+			valid2 = this.categoryArmouredCarGuardFormGroup.valid;
+		}
+		let valid3 = true;
+		if (this.PrivateInvestigator.value) {
+			this.categoryPrivateInvestigatorFormGroup.markAllAsTouched();
+			valid3 = this.categoryPrivateInvestigatorFormGroup.valid;
+		}
+		let valid4 = true;
+		if (this.SecurityGuard.value) {
+			this.categorySecurityGuardFormGroup.markAllAsTouched();
+			valid4 = this.categorySecurityGuardFormGroup.valid;
+		}
 
-		// // console.debug(
-		// // 	this.categoryArmouredCarGuardFormGroup.valid,
-		// // 	this.categoryPrivateInvestigatorFormGroup.valid,
-		// // 	this.categorySecurityGuardFormGroup.valid,
-		// // );
+		console.debug('[StepBusinessLicenceCategoryComponent] isFormValid', valid1, valid2, valid3, valid4);
 
-		// this.isDirtyAndInvalid = this.categoryList.length == 0;
-		// return isValid && !this.isDirtyAndInvalid;
+		return true; // TODO  return valid1 && valid2 && valid3 && valid4;
 	}
 
 	// private setupInitialExpansionPanel(): void {

@@ -16,16 +16,8 @@ export abstract class BusinessApplicationHelper {
 		applicationTypeCode: new FormControl('', [Validators.required]),
 	});
 
-	businessTypeFormGroup: FormGroup = this.formBuilder.group({
-		businessTypeCode: new FormControl('', [Validators.required]),
-	});
-
 	licenceTermFormGroup: FormGroup = this.formBuilder.group({
 		licenceTermCode: new FormControl('', [FormControlValidators.required]),
-	});
-
-	businessNameFormGroup: FormGroup = this.formBuilder.group({
-		name: new FormControl(''),
 	});
 
 	expiredLicenceFormGroup = this.formBuilder.group(
@@ -60,34 +52,46 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
+	businessInformationFormGroup: FormGroup = this.formBuilder.group({
+		businessTypeCode: new FormControl('', [Validators.required]),
+		legalBusinessName: new FormControl('', [FormControlValidators.required]),
+		doingBusinessAsName: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+		isTradeNameTheSameAsLegal: new FormControl(''),
+	});
+
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group({
-		noLogoOrBranding: new FormControl(false),
-		attachments: new FormControl(''),
+		noLogoOrBranding: new FormControl('', [FormControlValidators.required]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 
 	liabilityFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl(''),
+		attachments: new FormControl([], [Validators.required]),
 	});
 
-	categoryFormGroup: FormGroup = this.formBuilder.group({
-		ArmouredCarGuard: new FormControl(false),
-		BodyArmourSales: new FormControl(false),
-		ClosedCircuitTelevisionInstaller: new FormControl(false),
-		ElectronicLockingDeviceInstaller: new FormControl(false),
-		FireInvestigator: new FormControl(false),
-		Locksmith: new FormControl(false),
-		LocksmithUnderSupervision: new FormControl(false),
-		PrivateInvestigator: new FormControl(false),
-		PrivateInvestigatorUnderSupervision: new FormControl(false),
-		SecurityGuard: new FormControl(false),
-		SecurityGuardUnderSupervision: new FormControl(false),
-		SecurityAlarmInstallerUnderSupervision: new FormControl(false),
-		SecurityAlarmInstaller: new FormControl(false),
-		SecurityAlarmMonitor: new FormControl(false),
-		SecurityAlarmResponse: new FormControl(false),
-		SecurityAlarmSales: new FormControl(false),
-		SecurityConsultant: new FormControl(false),
-	});
+	categoryFormGroup: FormGroup = this.formBuilder.group(
+		{
+			ArmouredCarGuard: new FormControl(false),
+			BodyArmourSales: new FormControl(false),
+			ClosedCircuitTelevisionInstaller: new FormControl(false),
+			ElectronicLockingDeviceInstaller: new FormControl(false),
+			FireInvestigator: new FormControl(false),
+			Locksmith: new FormControl(false),
+			LocksmithUnderSupervision: new FormControl(false),
+			PrivateInvestigator: new FormControl(false),
+			PrivateInvestigatorUnderSupervision: new FormControl(false),
+			SecurityGuard: new FormControl(false),
+			SecurityGuardUnderSupervision: new FormControl(false),
+			SecurityAlarmInstallerUnderSupervision: new FormControl(false),
+			SecurityAlarmInstaller: new FormControl(false),
+			SecurityAlarmMonitor: new FormControl(false),
+			SecurityAlarmResponse: new FormControl(false),
+			SecurityAlarmSales: new FormControl(false),
+			SecurityConsultant: new FormControl(false),
+		},
+		{ validators: [FormGroupValidators.atLeastOneTrueValidator()] }
+	);
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -150,6 +154,12 @@ export abstract class BusinessApplicationHelper {
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		isBusinessManager: new FormControl(),
+		agivenName: new FormControl(''), // TODO applicant info - rename later
+		amiddleName1: new FormControl(''),
+		amiddleName2: new FormControl(''),
+		asurname: new FormControl('', [FormControlValidators.required]),
+		aemailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		aphoneNumber: new FormControl('', [Validators.required]),
 	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
@@ -162,6 +172,16 @@ export abstract class BusinessApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required]),
 		isMailingTheSame: new FormControl(false),
 	});
+
+	// mailingAddressFormGroup: FormGroup = this.formBuilder.group({ // TODO
+	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
+	// 	addressLine1: new FormControl('', [FormControlValidators.required]),
+	// 	addressLine2: new FormControl(''),
+	// 	city: new FormControl('', [FormControlValidators.required]),
+	// 	postalCode: new FormControl('', [FormControlValidators.required]),
+	// 	province: new FormControl('', [FormControlValidators.required]),
+	// 	country: new FormControl('', [FormControlValidators.required]),
+	// });
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{

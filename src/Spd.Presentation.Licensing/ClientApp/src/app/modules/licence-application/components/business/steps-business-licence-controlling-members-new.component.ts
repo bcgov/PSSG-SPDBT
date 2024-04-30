@@ -1,7 +1,6 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './step-business-licence-controlling-member-confirmation.component';
@@ -108,7 +107,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
+						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_EMPLOYEES)">
@@ -127,36 +126,6 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 					</div>
 				</div>
 			</mat-step>
-
-			<!-- <mat-step>
-				<app-step-business-licence-employeesxxx></app-step-business-licence-employeesxxx>
-
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_EMPLOYEES)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CONTROLLING_MEMBERS_EMPLOYEES)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step> -->
 
 			<mat-step>
 				<app-step-business-licence-application-on-hold></app-step-business-licence-application-on-hold>
@@ -203,8 +172,6 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 	stepMembersConfirmationComponent!: StepBusinessLicenceControllingMemberConfirmationComponent;
 	@ViewChild(StepBusinessLicenceControllingMemberInvitesComponent)
 	stepMembersInvitesComponent!: StepBusinessLicenceControllingMemberInvitesComponent;
-	// @ViewChild(StepBusinessLicenceEmployeesComponent)
-	// stepEmployeesComponent!: StepBusinessLicenceEmployeesComponent;
 	@ViewChild(StepBusinessLicenceApplicationOnHoldComponent)
 	stepOnHoldComponent!: StepBusinessLicenceApplicationOnHoldComponent;
 
@@ -227,11 +194,6 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 	// ngOnDestroy() {
 	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	// }
-
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathBusinessLicence()]);
-	}
-
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_CONTROLLING_MEMBERS:

@@ -398,6 +398,6 @@ export class BusinessManagersComponent implements OnInit {
 
 		// const currUser = this.managersList.find((item) => item.id == this.authUserService.bceidUserInfoProfile?.userId);
 		// return currUser ? currUser.contactAuthorizationTypeCode == 'Primary' : false;
-		return true;
+		return true; // TODO remove harcode.
 	}
 }
