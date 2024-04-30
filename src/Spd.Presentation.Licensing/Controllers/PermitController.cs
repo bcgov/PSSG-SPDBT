@@ -51,7 +51,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/permit-applications")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<PermitCommandResponse> SavePermitLicenceApplication([FromBody][Required] PermitAppUpsertRequest licenceCreateRequest)
+        public async Task<PermitAppCommandResponse> SavePermitLicenceApplication([FromBody][Required] PermitAppUpsertRequest licenceCreateRequest)
         {
             if (licenceCreateRequest.ApplicantId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
@@ -119,7 +119,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/permit-applications/submit")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<PermitCommandResponse> SubmitPermitApplication([FromBody][Required] PermitAppUpsertRequest permitSubmitRequest, CancellationToken ct)
+        public async Task<PermitAppCommandResponse> SubmitPermitApplication([FromBody][Required] PermitAppUpsertRequest permitSubmitRequest, CancellationToken ct)
         {
             var validateResult = await _permitAppUpsertValidator.ValidateAsync(permitSubmitRequest, ct);
             if (!validateResult.IsValid)
