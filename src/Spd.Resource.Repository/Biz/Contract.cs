@@ -33,6 +33,7 @@
         public string? BizLegalName { get; set; }
         public Guid? BizGuid { get; set; }
         public BizTypeEnum BizType { get; set; }
+        public IEnumerable<Addr>? BranchAddress { get; set; }
     }
     public record BizResult : Biz
     {
