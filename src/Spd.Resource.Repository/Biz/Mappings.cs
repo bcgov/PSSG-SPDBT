@@ -30,12 +30,33 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.MaxPrimaryContacts, opt => opt.MapFrom(s => s.spd_noofprimaryauthorizedcontacts))
             .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnums(s.spd_account_spd_servicetype)))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
-            .ForMember(d => d.HasInvoiceSupport, opt => opt.MapFrom(s => s.spd_eligibleforcreditpayment != null && s.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes));
+            .ForMember(d => d.HasInvoiceSupport, opt => opt.MapFrom(s => s.spd_eligibleforcreditpayment != null && s.spd_eligibleforcreditpayment == (int)YesNoOptionSet.Yes))
+            .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
+            .ForMember(d => d.BranchAddress, opt => opt.MapFrom(s => GetBranchAddress(s.spd_Organization_Addresses)));
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
         {
             return servicetypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid))).ToArray();
+        }
+
+        private static List<Addr>? GetBranchAddress(IEnumerable<spd_address> addresses)
+        {
+            List<Addr>? branchAddresses = new();
+
+            foreach (var branch in addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch))
+            {
+                Addr brachAddress = new();
+                brachAddress.AddressLine1 = branch.spd_address1;
+                brachAddress.AddressLine2 = branch.spd_address2;
+                brachAddress.City = branch.spd_city;
+                brachAddress.Province = branch.spd_provincestate;
+                brachAddress.PostalCode = branch.spd_postalcode;
+                brachAddress.Country = branch.spd_country;
+                branchAddresses.Add(brachAddress);
+            }
+
+            return branchAddresses;
         }
     }
 }
