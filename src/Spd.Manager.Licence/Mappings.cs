@@ -195,6 +195,12 @@ internal class Mappings : Profile
 
         CreateMap<BizResult, BizListResponse>()
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id));
+
+        CreateMap<BizResult, BizProfileResponse>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.BizTradeName, opt => opt.MapFrom(s => s.BizName))
+            .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => s.BizType))
+            .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => s.ServiceTypes));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
