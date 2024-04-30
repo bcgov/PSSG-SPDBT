@@ -136,3 +136,13 @@ public enum PortalUserServiceCategoryEnum
     Screening,
     Licensing
 }
+
+public enum BizTypeEnum
+{
+    NonRegisteredSoleProprietor,
+    NonRegisteredPartnership,
+    RegisteredSoleProprietor,
+    RegisteredPartnership,
+    Corporation,
+    None
+}
