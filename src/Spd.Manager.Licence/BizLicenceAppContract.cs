@@ -40,7 +40,7 @@ public abstract record BizLicenceApp
     public bool? HasExpiredLicence { get; set; }
 
     //branding
-    public bool? NoBranding { get; set; } //sole proprietor has branding?
+    public bool? NoBranding { get; set; } //wait
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
