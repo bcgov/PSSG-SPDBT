@@ -10,14 +10,15 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand command, CancellationToken ct);
 }
 
-public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<Guid>;
-public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<Guid>;
+public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
+public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
+public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
+
+public record BizLicAppUpsertRequest : BizLicenceApp;
 public record BizLicAppCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }
 };
-public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
-
 public record BizLicAppResponse : BizLicenceApp
 {
     public Guid LicenceAppId { get; set; }
@@ -30,12 +31,12 @@ public record BizLicAppResponse : BizLicenceApp
 public abstract record BizLicenceApp
 {
     // Licence info
+    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
 
     // Expired licence info
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }                        // For new application type
-    public DateOnly? ExpiryDate { get; set; }
 
     // Business info
     public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }
@@ -107,7 +108,4 @@ public record Employee : PersonalInfo
     public Guid? EmployeeContactId { get; set; }
 }
 
-public record BizLicAppUpsertRequest : BizLicenceApp
-{
 
-}
