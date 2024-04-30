@@ -17,7 +17,7 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
     public string? SupervisorName { get; set; }
     public string? SupervisorEmailAddress { get; set; }
     public string? SupervisorPhoneNumber { get; set; }
-    public EmployerPrimaryAddress? EmployerPrimaryAddress { get; set; }
+    public Address? EmployerPrimaryAddress { get; set; }
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
@@ -26,7 +26,7 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
 
 #region authenticated user
 public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitCommandResponse>;
-public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest) 
+public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest)
     : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitCommandResponse>;
 
 public record PermitAppUpsertRequest : PermitLicenceAppBase
@@ -108,7 +108,6 @@ public enum ArmouredVehiclePermitReasonCode
     MyEmployment,//armoured vehicle
     Other
 }
-public record EmployerPrimaryAddress : Address;
 #endregion
 
 
