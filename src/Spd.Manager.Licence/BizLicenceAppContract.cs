@@ -14,7 +14,17 @@ public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertReque
 public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
 
-public record BizLicAppUpsertRequest : BizLicenceApp;
+public record BizLicAppUpsertRequest : BizLicenceApp
+{
+    public Guid? LicenceAppId { get; set; }
+    public Guid BizId { get; set; }
+};
+
+public record SoleProprietorBizLicAppUpsertRequest : BizLicAppUpsertRequest
+{
+    public Guid? LicenceAppId { get; set; }
+    public Guid BizId { get; set; }
+};
 public record BizLicAppCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }
@@ -23,9 +33,12 @@ public record BizLicAppResponse : BizLicenceApp
 {
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
-    public string? CaseNumber { get; set; }
+    public string? CaseNumber { get; set; } //application number
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
-    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+}
+
+public abstract record SoleProprietorBizLicenceApp : BizLicenceApp
+{
 
 }
 public abstract record BizLicenceApp
@@ -36,33 +49,36 @@ public abstract record BizLicenceApp
 
     // Expired licence info
     public Guid? ExpiredLicenceId { get; set; }
-    public bool? HasExpiredLicence { get; set; }                        // For new application type
+    public bool? HasExpiredLicence { get; set; }
 
-    // Business info
-    public SecurityWorkerInfo? SecurityWorkerInfo { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? EmailAddress { get; set; }
+    //branding
+    public bool? NoBranding { get; set; }
 
-    public IEnumerable<Document>? DocumentInfos { get; set; }           // Contains branding, insurance, registrar, security dog certificate and BC report documents
+    public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
+    public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
+    public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
+
+    public IEnumerable<Document>? DocumentInfos { get; set; }  // Contains branding, insurance, registrar, security dog certificate and BC report documents
 
     // Licence category
-    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public PrivateInvestigatorInfo? PrivateInvestigatorInfo { get; set; }
-    public bool? UseDogs { get; set; }
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
+    public PrivateInvestigatorInfo? PrivateInvestigatorInfo { get; set; } //??should we just have a search, the same as controller member, what does manager mean
+    public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
 
     // Licence term
-    public LicenceTermCode? LicenceTermCode { get; set; }
+    public LicenceTermCode? LicenceTermCode { get; set; } //biz licence term, only 1,2,3 year
 
-    // Business manager info
-    public BusinessManagerInfo? BusinessManagerInfo { get; set; }
-    public BusinessManagerInfo? OtherContactInfo { get; set; }
+    // Business manager info : if sole propietor, no manager
+    public ContactInfo? BizManagerContactInfo { get; set; }
+    public ContactInfo? ApplicantContactInfo { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
 
-    // Controlling member
-    public IEnumerable<SwlControllerMemberInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlControllerMemberInfo>();
-    public IEnumerable<NonSwlControllerMemberInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<NonSwlControllerMemberInfo>();
+    // Controlling member : if sole propietor, no controller member
+    public IEnumerable<SwlContactInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlContactInfo>();
+    public IEnumerable<ContactInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<ContactInfo>();
 
-    // Employees
-    public IEnumerable<Employee> Employees { get; set; } = Enumerable.Empty<Employee>();
+    // Employees: if sole propietor, no employee
+    public IEnumerable<SwlContactInfo> Employees { get; set; } = Enumerable.Empty<SwlContactInfo>();
 }
 
 public record SecurityWorkerInfo : PersonalInfo
@@ -78,9 +94,8 @@ public record PrivateInvestigatorInfo : PersonalInfo
     public string? ManagerLicenceNumber { get; set; }
 }
 
-public record BusinessManagerInfo : PersonalInfo
+public record ContactInfo : PersonalInfo
 {
-    public bool? IsBusinessManager { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
 }
@@ -93,19 +108,12 @@ public record PersonalInfo
     public string? Surname { get; set; }
 }
 
-public record SwlControllerMemberInfo : PersonalInfo
+public record SwlContactInfo
 {
-    public string? SecurityWorkerLicenceNumber { get; set; }
+    public Guid ContactId { get; set; }
+    public Guid LicenceId { get; set; }
 }
 
-public record NonSwlControllerMemberInfo : PersonalInfo
-{
-    public string? EmailAddress { set; get; }
-}
 
-public record Employee : PersonalInfo
-{
-    public Guid? EmployeeContactId { get; set; }
-}
 
 
