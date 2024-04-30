@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
@@ -16,8 +15,8 @@ namespace Spd.Presentation.Licensing.Controllers
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
-        private readonly IConfiguration _configuration;
-        public BizLicensingController(IPrincipal currentUser, 
+
+        public BizLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -26,7 +25,6 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             _currentUser = currentUser;
             _mediator = mediator;
-            _configuration = configuration;
         }
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
-        public async Task<Unit> SaveBusinessLicenceApplication([FromBody][Required] BizLicenceAppUpsertRequest bizUpsertRequest, CancellationToken ct)
+        public async Task<Unit> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
             return default;
         }

@@ -3,8 +3,30 @@ using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
-public record BizLicenceAppNewCommand(BizLicenceAppUpsertRequest bizLicenceSubmitRequest) : IRequest<Guid>;
+public interface IBizLicAppManager
+{
+    public Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken ct);
+    public Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand command, CancellationToken ct);
+    public Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand command, CancellationToken ct);
+}
 
+public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<Guid>;
+public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<Guid>;
+public record BizLicAppCommandResponse : LicenceAppUpsertResponse
+{
+    public decimal? Cost { get; set; }
+};
+public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
+
+public record BizLicAppResponse : BizLicenceApp
+{
+    public Guid LicenceAppId { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
+    public string? CaseNumber { get; set; }
+    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+
+}
 public abstract record BizLicenceApp
 {
     // Licence info
@@ -85,7 +107,7 @@ public record Employee : PersonalInfo
     public Guid? EmployeeContactId { get; set; }
 }
 
-public record BizLicenceAppUpsertRequest : BizLicenceApp
+public record BizLicAppUpsertRequest : BizLicenceApp
 {
 
 }
