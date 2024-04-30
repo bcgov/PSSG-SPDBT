@@ -20,11 +20,6 @@ public record BizLicAppUpsertRequest : BizLicenceApp
     public Guid BizId { get; set; }
 };
 
-public record SoleProprietorBizLicAppUpsertRequest : BizLicAppUpsertRequest
-{
-    public Guid? LicenceAppId { get; set; }
-    public Guid BizId { get; set; }
-};
 public record BizLicAppCommandResponse : LicenceAppUpsertResponse
 {
     public decimal? Cost { get; set; }
@@ -37,71 +32,41 @@ public record BizLicAppResponse : BizLicenceApp
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
 }
 
-public abstract record SoleProprietorBizLicenceApp : BizLicenceApp
-{
-
-}
 public abstract record BizLicenceApp
 {
-    // Licence info
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
-
-    // Expired licence info
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
 
     //branding
-    public bool? NoBranding { get; set; }
+    public bool? NoBranding { get; set; } //sole proprietor has branding?
 
+    // Contains branding, insurance, registrar, security dog certificate and BC report documents
+    public IEnumerable<Document>? DocumentInfos { get; set; }
+    public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
+    public LicenceTermCode? LicenceTermCode { get; set; } //biz licence term, only 1,2,3 year
+
+    //sole proprietor properties
     public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
     public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
     public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
 
-    public IEnumerable<Document>? DocumentInfos { get; set; }  // Contains branding, insurance, registrar, security dog certificate and BC report documents
-
-    // Licence category
-    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
-    public PrivateInvestigatorInfo? PrivateInvestigatorInfo { get; set; } //??should we just have a search, the same as controller member, what does manager mean
-    public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
-
-    // Licence term
-    public LicenceTermCode? LicenceTermCode { get; set; } //biz licence term, only 1,2,3 year
-
-    // Business manager info : if sole propietor, no manager
+    //non sole proprietor properties
     public ContactInfo? BizManagerContactInfo { get; set; }
     public ContactInfo? ApplicantContactInfo { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
-
-    // Controlling member : if sole propietor, no controller member
     public IEnumerable<SwlContactInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlContactInfo>();
     public IEnumerable<ContactInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<ContactInfo>();
-
-    // Employees: if sole propietor, no employee
     public IEnumerable<SwlContactInfo> Employees { get; set; } = Enumerable.Empty<SwlContactInfo>();
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
+    public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //??should we just have a search, the same as controller member, what does manager mean
 }
 
-public record SecurityWorkerInfo : PersonalInfo
-{
-    public string? LicenceNumber { get; set; }                          // Security worker licence number
-    public bool? IsLicenceValid { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? EmailAddress { get; set; }
-}
-
-public record PrivateInvestigatorInfo : PersonalInfo
-{
-    public string? ManagerLicenceNumber { get; set; }
-}
-
-public record ContactInfo : PersonalInfo
+public record ContactInfo
 {
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
-}
-
-public record PersonalInfo
-{
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
