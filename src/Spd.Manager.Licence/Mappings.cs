@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
@@ -111,8 +112,8 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country))
             .ForPath(d => d.MailingAddress.AddressLine1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
             .ForPath(d => d.MailingAddress.AddressLine2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
-            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.MailingAddress.Province))
             .ForPath(d => d.MailingAddress.City, opt => opt.MapFrom(s => s.MailingAddress.City))
+            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.MailingAddress.Province))
             .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.MailingAddress.Country));
 
@@ -200,7 +201,12 @@ internal class Mappings : Profile
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.BizTradeName, opt => opt.MapFrom(s => s.BizName))
             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => s.BizType))
-            .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => s.ServiceTypes));
+            .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => GetServiceTypeCodes(s.ServiceTypes)))
+            .ForPath(d => d.MailingAddress.AddressLine1, opt => opt.MapFrom(s => s.AddressLine1))
+            .ForPath(d => d.MailingAddress.City, opt => opt.MapFrom(s => s.AddressCity))
+            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.AddressProvince))
+            .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.AddressCountry))
+            .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.AddressPostalCode));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
