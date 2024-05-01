@@ -38,11 +38,11 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<IEnumerable<BizResult>>(accounts.ToList());
         }
 
-        public async Task<BizResult?> GetBizAsync(Guid bizId, CancellationToken ct)
+        public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct)
         {
             IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                .Where(a => a.accountid == bizId);
+                .Where(a => a.accountid == accountId);
 
             account? Biz = await accounts.FirstOrDefaultAsync(ct);
             
