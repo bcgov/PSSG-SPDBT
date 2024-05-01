@@ -24,7 +24,6 @@
         public Addr? MailingAddress { get; set; }
         public Addr? BusinessAddress { get; set; }
         public Addr? BCBusinessAddress { get; set; }
-        public bool HasInvoiceSupport { get; set; }
         public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
         public string? BizName { get; set; }
         public string? BizLegalName { get; set; }
