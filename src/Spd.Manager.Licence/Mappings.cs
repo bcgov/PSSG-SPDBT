@@ -206,7 +206,10 @@ internal class Mappings : Profile
             .ForPath(d => d.MailingAddress.City, opt => opt.MapFrom(s => s.AddressCity))
             .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.AddressProvince))
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.AddressCountry))
-            .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.AddressPostalCode));
+            .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.AddressPostalCode))
+            .ForMember(d => d.Branches, opt => opt.MapFrom(s => s.BranchAddress));
+
+        CreateMap<BranchAddr, BranchInfo>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
