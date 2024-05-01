@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, PermitCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -152,7 +152,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	onSubmitStep(): void {
 		this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
-			next: (resp: StrictHttpResponse<PermitCommandResponse>) => {
+			next: (resp: StrictHttpResponse<PermitAppCommandResponse>) => {
 				const permitCommandResponse = resp.body;
 
 				// save this locally just in application payment fails

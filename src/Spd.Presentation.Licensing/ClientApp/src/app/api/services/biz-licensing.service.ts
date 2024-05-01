@@ -9,7 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { BizLicenceAppUpsertRequest } from '../models/biz-licence-app-upsert-request';
+import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { Unit } from '../models/unit';
@@ -41,7 +41,7 @@ export class BizLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiBusinessLicencePost$Response(params: {
-    body: BizLicenceAppUpsertRequest
+    body: BizLicAppUpsertRequest
   },
   context?: HttpContext
 
@@ -75,7 +75,7 @@ export class BizLicensingService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiBusinessLicencePost(params: {
-    body: BizLicenceAppUpsertRequest
+    body: BizLicAppUpsertRequest
   },
   context?: HttpContext
 
