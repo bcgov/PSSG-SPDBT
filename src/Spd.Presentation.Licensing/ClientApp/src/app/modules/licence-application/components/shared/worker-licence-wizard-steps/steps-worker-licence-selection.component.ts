@@ -24,18 +24,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-terms-of-use>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGotoUserProfile()"
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -52,47 +44,26 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				</ng-container>
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
-					<div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
-					<div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-								Previous
-							</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						(previousStepperStep)="onGotoUserProfile()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
 
 			<mat-step *ngIf="isRenewalOrUpdate">
 				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
@@ -100,21 +71,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-sole-proprietor>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
@@ -123,16 +83,10 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[isLoggedIn]="isLoggedIn"
 				></app-step-worker-licence-expired>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onExpiredLicenceNextStep()">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onExpiredLicenceNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -140,36 +94,14 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-category>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormCategoryValidNextStep()">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormCategoryValidNextStep()"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
@@ -177,36 +109,14 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-restraints>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_RESTRAINTS)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_RESTRAINTS)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_RESTRAINTS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_RESTRAINTS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_RESTRAINTS)"
+					(nextReviewStepperStep)="onNextReview(STEP_RESTRAINTS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
@@ -214,69 +124,27 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-dogs-authorization>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_DOGS)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormDogsValidNextStep()">Next</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_DOGS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_DOGS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormDogsValidNextStep()"
+					(nextReviewStepperStep)="onNextReview(STEP_DOGS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-worker-licence-term [applicationTypeCode]="applicationTypeCode"></app-step-worker-licence-term>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_LICENCE_TERM)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_TERM)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

@@ -14,34 +14,12 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 				></app-step-business-licence-category>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_CATEGORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -49,29 +27,12 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 				></app-step-business-licence-term>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_LICENCE_TERM)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_TERM)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

@@ -16,41 +16,16 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 			<mat-step>
 				<app-step-worker-licence-police-background></app-step-worker-licence-police-background>
 
-				<div class="row wizard-button-row" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_POLICE_BACKGROUND)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<ng-container *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						[showSaveAndExit]="showSaveAndExit"
+						(saveAndExit)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+						(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
+					></app-wizard-footer>
+				</ng-container>
 			</mat-step>
 
 			<mat-step>
@@ -58,41 +33,14 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-mental-health-conditions>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_MENTAL_HEALTH_CONDITIONS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
+					(nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
@@ -100,76 +48,27 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-criminal-history>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CRIMINAL_HISTORY)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_FINGERPRINTS)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_FINGERPRINTS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_FINGERPRINTS)"
+					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

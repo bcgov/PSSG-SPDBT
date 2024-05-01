@@ -30,14 +30,11 @@ import { CommonApplicationService } from '../../services/common-application.serv
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-mailing-address-anonymous>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPay()">Pay</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					nextButtonLabel="Pay"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onPay()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -68,6 +65,10 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+	}
+
+	onGoToPreviousStep(): void {
+		this.stepper.previous();
 	}
 
 	onPay(): void {

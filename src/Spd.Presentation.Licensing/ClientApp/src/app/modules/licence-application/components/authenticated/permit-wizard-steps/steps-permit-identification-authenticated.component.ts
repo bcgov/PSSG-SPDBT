@@ -16,36 +16,14 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 			<mat-step>
 				<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CITIZENSHIP)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+					(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -53,41 +31,14 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-bc-driver-licence>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+					(nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showPhotographOfYourself">
@@ -95,41 +46,14 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-photograph-of-yourself>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(nextReviewStepperStep)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -137,41 +61,14 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-physical-characteristics>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PHYSICAL_CHARACTERISTICS)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_PHYSICAL_CHARACTERISTICS)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
+					(nextReviewStepperStep)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

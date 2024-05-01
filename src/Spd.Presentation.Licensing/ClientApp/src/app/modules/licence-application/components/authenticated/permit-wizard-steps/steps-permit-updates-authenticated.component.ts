@@ -18,34 +18,19 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-permit-review-name-change></app-step-permit-review-name-change>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_NAME_CHANGE)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_NAME_CHANGE)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showReprint">
 				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepUpdatePrevious(STEP_REPRINT)">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_REPRINT)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_REPRINT)"
+					(nextStepperStep)="onFormValidNextStep(STEP_REPRINT)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="hasGenderChanged">
@@ -53,28 +38,10 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-photograph-of-yourself>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -83,18 +50,10 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-reason>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepUpdatePrevious(STEP_REASON)">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_REASON)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_REASON)"
+					(nextStepperStep)="onFormValidNextStep(STEP_REASON)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showEmployerInformation">
@@ -102,36 +61,19 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-employer-information>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_RATIONALE)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_RATIONALE)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

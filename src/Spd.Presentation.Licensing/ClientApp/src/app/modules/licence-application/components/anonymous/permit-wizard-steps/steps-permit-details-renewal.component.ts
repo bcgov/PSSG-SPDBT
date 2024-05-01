@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { Router } from '@angular/router';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
@@ -14,38 +16,36 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGotoUserProfile()"
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-checklist-renewal></app-step-permit-checklist-renewal>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #isLoggedInChecklistSteps>
+					<app-wizard-footer
+						(previousStepperStep)="onGotoUserProfile()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-confirmation></app-step-permit-confirmation>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PERMIT_CONFIRMATION)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PERMIT_CONFIRMATION)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -60,13 +60,14 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 	private licenceModelChangedSubscription!: Subscription;
 
 	isLoggedIn = false;
-	isFormValid = false;
+	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 
 	constructor(
 		override commonApplicationService: CommonApplicationService,
+		private router: Router,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
@@ -83,7 +84,9 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
 				// console.debug('permitModelValueChanges$', _resp);
-				this.isFormValid = _resp;
+				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
@@ -94,6 +97,13 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
+	}
+
+	onGotoUserProfile(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED),
+			{ state: { workerLicenceTypeCode: this.workerLicenceTypeCode, applicationTypeCode: this.applicationTypeCode } }
+		);
 	}
 
 	override dirtyForm(step: number): boolean {

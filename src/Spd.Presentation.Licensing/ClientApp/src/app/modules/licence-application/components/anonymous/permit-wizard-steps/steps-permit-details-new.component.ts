@@ -17,44 +17,26 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGotoUserProfile()"
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-checklist-new></app-step-permit-checklist-new>
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
-					<div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
-					<div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-								Previous
-							</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						(previousStepperStep)="onGotoUserProfile()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
 
@@ -64,16 +46,10 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 					[isLoggedIn]="isLoggedIn"
 				></app-step-permit-expired>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onExpiredLicenceNextStep()">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onExpiredLicenceNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

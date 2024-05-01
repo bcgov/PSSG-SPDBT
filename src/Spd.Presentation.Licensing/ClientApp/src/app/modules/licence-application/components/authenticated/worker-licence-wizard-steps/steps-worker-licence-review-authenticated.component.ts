@@ -20,14 +20,10 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 					></app-step-worker-licence-summary-review-authenticated>
 				</ng-template>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onGoToNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -35,32 +31,30 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-consent-and-declaration>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateConsent">
-							<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmitNow()">Submit</button>
-						</ng-container>
-						<ng-template #notUpdateConsent>
-							<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
-						</ng-template>
-					</div>
-				</div>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateConsent">
+					<app-wizard-footer
+						nextButtonLabel="Submit"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onSubmitNow()"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #notUpdateConsent>
+					<app-wizard-footer
+						nextButtonLabel="Pay Now"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onPayNow()"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step *ngIf="isUpdate">
 				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					nextButtonLabel="Pay Now"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onPayNow()"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

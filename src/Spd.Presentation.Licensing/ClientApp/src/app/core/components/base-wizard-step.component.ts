@@ -56,6 +56,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.nextReview.emit(true);
 	}
 
+	onGoToPreviousStep() {
+		this.childstepper.previous();
+	}
+
 	onGoToNextStep() {
 		this.childstepper.next();
 	}

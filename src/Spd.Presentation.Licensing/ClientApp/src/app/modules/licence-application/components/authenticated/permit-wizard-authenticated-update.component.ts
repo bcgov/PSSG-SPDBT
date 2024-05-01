@@ -29,16 +29,10 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 						<ng-template matStepLabel>Permit Confirmation</ng-template>
 						<app-step-permit-confirmation></app-step-permit-confirmation>
 
-						<div class="row wizard-button-row">
-							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-								<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-									Previous
-								</button>
-							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-								<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-							</div>
-						</div>
+						<app-wizard-footer
+							(previousStepperStep)="onGotoUserProfile()"
+							(nextStepperStep)="onGoToNextStep()"
+						></app-wizard-footer>
 					</mat-step>
 
 					<mat-step completed="false">
@@ -105,6 +99,10 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+	}
+
+	onGoToNextStep(): void {
+		this.stepper.next();
 	}
 
 	onGotoUserProfile(): void {

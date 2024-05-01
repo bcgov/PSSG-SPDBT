@@ -11,34 +11,12 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 			<mat-step>
 				<app-step-business-licence-manager-information></app-step-business-licence-manager-information>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepNext(STEP_LICENCE_MANAGER_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_MANAGER_INFORMATION)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onStepNext(STEP_LICENCE_MANAGER_INFORMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_MANAGER_INFORMATION)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,

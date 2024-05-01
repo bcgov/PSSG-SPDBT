@@ -20,73 +20,27 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-citizenship>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_CITIZENSHIP)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_CITIZENSHIP)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CITIZENSHIP)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+					(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="isNotRenewal">
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_FINGERPRINTS)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onFingerprintStepPrevious()">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_FINGERPRINTS)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_FINGERPRINTS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
+					(previousStepperStep)="onFingerprintStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_FINGERPRINTS)"
+					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -94,41 +48,14 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-bc-driver-licence>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_BC_DRIVERS_LICENCE)"
+					(previousStepperStep)="onDriversLicenceStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+					(nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -136,41 +63,14 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-physical-characteristics>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_HEIGHT_AND_WEIGHT)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_HEIGHT_AND_WEIGHT)"
+					(nextReviewStepperStep)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -178,34 +78,14 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-photograph-of-yourself>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							class="large bordered mb-2"
-							(click)="onSaveAndExit(STEP_PHOTO)"
-							*ngIf="showSaveAndExit"
-						>
-							Save & Exit
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PHOTO)">Next</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHOTO)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_PHOTO)"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PHOTO)"
+					(nextReviewStepperStep)="onNextReview(STEP_PHOTO)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -275,6 +155,15 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 
 	onFingerprintStepPrevious(): void {
 		if (this.showCitizenshipStep) {
+			this.childstepper.previous();
+			return;
+		}
+
+		this.previousStepperStep.emit(true);
+	}
+
+	onDriversLicenceStepPrevious(): void {
+		if (this.showCitizenshipStep || this.isNotRenewal) {
 			this.childstepper.previous();
 			return;
 		}
