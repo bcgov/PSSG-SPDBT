@@ -58,18 +58,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, null, licenceAppId), ct);
         }
 
-        /// <summary>
-        /// Get Business profile
-        /// </summary>
-        /// <param name="accountId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence/{accountId}")]
-        [Authorize(Policy = "OnlyBceid")]
-        [HttpGet]
-        public async Task<BizProfileResponse> GetProfile([FromRoute] Guid accountId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetBizProfileQuery(accountId), ct);
-        }
+        
     }
 }
