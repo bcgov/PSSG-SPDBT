@@ -287,6 +287,25 @@ namespace Spd.Manager.Licence.UnitTest
             Assert.IsType<Unit>(result);
         }
 
+        [Fact]
+        public async void Handle_GetBizProfileQuery_Success()
+        {
+            //Arrange
+            Guid bizId = Guid.NewGuid();
+            GetBizProfileQuery qry = new(bizId);
+            mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new BizResult() { BizGuid = bizId, BizName = "test" } );
+            mockMapper.Setup(m => m.Map<BizProfileResponse>(It.Is<BizResult>(b => b.BizGuid == bizId)))
+                .Returns(new BizProfileResponse() { BizId = bizId, BizLegalName = "test" });
+
+            //Action
+            var result = await sut.Handle(qry, CancellationToken.None);
+
+            //Assert
+            Assert.IsType<BizProfileResponse>(result);
+            Assert.Equal(bizId, result.BizId);
+        }
+
         private BceidIdentityInfo GetBceidIdentityInfo()
         {
             string test = @"{
