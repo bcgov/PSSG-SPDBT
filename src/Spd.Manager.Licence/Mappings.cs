@@ -202,14 +202,10 @@ internal class Mappings : Profile
             .ForMember(d => d.BizTradeName, opt => opt.MapFrom(s => s.BizName))
             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => s.BizType))
             .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => GetServiceTypeCodes(s.ServiceTypes)))
-            .ForPath(d => d.MailingAddress.AddressLine1, opt => opt.MapFrom(s => s.AddressLine1))
-            .ForPath(d => d.MailingAddress.City, opt => opt.MapFrom(s => s.AddressCity))
-            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.AddressProvince))
-            .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.AddressCountry))
-            .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.AddressPostalCode))
-            .ForMember(d => d.Branches, opt => opt.MapFrom(s => s.BranchAddress));
-
-        CreateMap<BranchAddr, BranchInfo>();
+            .ForMember(d => d.BizMailingAddress, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
+            .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
+            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddress)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -386,6 +382,29 @@ internal class Mappings : Profile
         }
 
         return serviceTypeCodes;
+    }
+
+    private static List<BranchInfo> GetBranchInfo(IEnumerable<BranchAddr> branchAddrs)
+    {
+        List<BranchInfo> branchInfos = new();
+
+        foreach (BranchAddr branchAddr in branchAddrs) 
+        {
+            BranchInfo branchInfo = new() { BranchAddress = new() };
+            branchInfo.BranchId = branchAddr.BranchId;
+            branchInfo.BranchManager = branchAddr.BranchManager;
+            branchInfo.BranchPhoneNumber = branchAddr.BranchPhoneNumber;
+            branchInfo.BranchEmailAddr = branchAddr.BranchEmailAddr;
+            branchInfo.BranchAddress.AddressLine1 = branchAddr.AddressLine1;
+            branchInfo.BranchAddress.AddressLine2 = branchAddr.AddressLine2;
+            branchInfo.BranchAddress.City = branchAddr.City;
+            branchInfo.BranchAddress.Country = branchAddr.Country;
+            branchInfo.BranchAddress.PostalCode = branchAddr.PostalCode;
+            branchInfo.BranchAddress.Province = branchAddr.Province;
+            branchInfos.Add(branchInfo);
+        }
+
+        return branchInfos;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
