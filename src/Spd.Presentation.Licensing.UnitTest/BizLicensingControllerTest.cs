@@ -35,6 +35,8 @@ public class BizLicensingControllerTest
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
+        mockMediator.Setup(m => m.Send(It.IsAny<GetBizProfileQuery>(), CancellationToken.None))
+            .ReturnsAsync(new BizProfileResponse());
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [
@@ -58,6 +60,15 @@ public class BizLicensingControllerTest
         var result = await sut.UploadLicenceAppFiles(request, Guid.NewGuid(), CancellationToken.None);
 
         Assert.IsType<List<LicenceAppDocumentResponse>>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Get_GetProfile_Return_BizProfileResponse()
+    {
+        var result = await sut.GetProfile(Guid.NewGuid(), CancellationToken.None);
+
+        Assert.IsType<BizProfileResponse>(result);
         mockMediator.Verify();
     }
 }
