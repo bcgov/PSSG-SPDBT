@@ -93,11 +93,11 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 									</mat-cell>
 								</ng-container>
 
-								<ng-container matColumnDef="email">
+								<ng-container matColumnDef="emailAddress">
 									<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
 									<mat-cell class="mat-cell-email" *matCellDef="let manager">
 										<span class="mobile-label">Email:</span>
-										{{ manager.email | default }}
+										{{ manager.emailAddress | default }}
 									</mat-cell>
 								</ng-container>
 
@@ -196,7 +196,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 })
 export class BusinessManagersComponent implements OnInit {
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	columns: string[] = ['status', 'managerRoleCode', 'managerName', 'email', 'phoneNumber', 'action1', 'action2'];
+	columns: string[] = ['status', 'managerRoleCode', 'managerName', 'emailAddress', 'phoneNumber', 'action1', 'action2'];
 
 	maximumNumberOfManagers = 6;
 	maximumNumberOfPrimaryManagers = 1;
@@ -216,9 +216,9 @@ export class BusinessManagersComponent implements OnInit {
 			{
 				id: '7ca9f3fa-92a1-4682-bf47-02a9f5d6a7d9',
 				managerRoleCode: 'Contact',
-				firstName: 'Bengal',
-				lastName: 'Benny',
-				email: 'asdf23@asdf.com',
+				givenName: 'Bengal',
+				surname: 'Benny',
+				emailAddress: 'asdf23@asdf.com',
 				jobTitle: 'Test',
 				phoneNumber: '345-345-3453',
 				isActive: true,
@@ -226,9 +226,9 @@ export class BusinessManagersComponent implements OnInit {
 			{
 				id: 'd64ecf3b-e2f3-483e-b7f7-337dbec86da3',
 				managerRoleCode: 'Primary',
-				firstName: 'Victoria',
-				lastName: 'Charity',
-				email: 'victoria.charity@quartech.com',
+				givenName: 'Victoria',
+				surname: 'Charity',
+				emailAddress: 'victoria.charity@quartech.com',
 				jobTitle: 'test',
 				phoneNumber: '444-444-4444',
 				isActive: true,
@@ -236,9 +236,9 @@ export class BusinessManagersComponent implements OnInit {
 			{
 				id: '985f7251-daa2-4f35-abef-882c70690acc',
 				managerRoleCode: 'Contact',
-				firstName: 'Nick',
-				lastName: 'Nanson',
-				email: 'nick.nanson@test.com',
+				givenName: 'Nick',
+				surname: 'Nanson',
+				emailAddress: 'nick.nanson@test.com',
 				jobTitle: 'Test',
 				phoneNumber: '250-888-9999',
 				isActive: false,
@@ -246,9 +246,9 @@ export class BusinessManagersComponent implements OnInit {
 			{
 				id: '8343b143-c09f-427a-8673-9cfc62cd3ef3',
 				managerRoleCode: 'Primary',
-				firstName: 'Jim',
-				lastName: 'Brad',
-				email: 'jim.brad@gov.bc.ca',
+				givenName: 'Jim',
+				surname: 'Brad',
+				emailAddress: 'jim.brad@gov.bc.ca',
 				jobTitle: null,
 				phoneNumber: null,
 				isActive: true,
@@ -265,18 +265,18 @@ export class BusinessManagersComponent implements OnInit {
 	}
 
 	onMaintainManager(manager: any): void {
-		this.managerDialog(manager, false);
+		this.openManagerDialog(manager, false);
 	}
 
 	onAddManager(): void {
-		this.managerDialog({}, true);
+		this.openManagerDialog(null, true);
 	}
 
 	onDeleteManager(manager: any): void {
 		this.deleteManager({
 			manager,
 			title: 'Confirmation',
-			message: `Are you sure you want to permanently remove '${manager.firstName} ${manager.lastName}'?`,
+			message: `Are you sure you want to permanently remove '${manager.givenName} ${manager.surname}'?`,
 			actionText: 'Yes, remove',
 			success: 'Manager was successfully removed',
 		});
@@ -286,7 +286,7 @@ export class BusinessManagersComponent implements OnInit {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: `Are you sure you want to cancel the request for '${manager.firstName} ${manager.lastName}'?`,
+			message: `Are you sure you want to cancel the request for '${manager.givenName} ${manager.surname}'?`,
 			actionText: 'Yes',
 			cancelText: 'Cancel',
 		};
@@ -326,19 +326,22 @@ export class BusinessManagersComponent implements OnInit {
 			const b1 = b.isActive ? 'a' : 'b';
 			const a2 = a.managerRoleCode?.toString() ?? '';
 			const b2 = b.managerRoleCode?.toString() ?? '';
-			const a3 = a.firstName?.toUpperCase() ?? '';
-			const b3 = b.firstName?.toUpperCase() ?? '';
-			const a4 = a.lastName?.toUpperCase() ?? '';
-			const b4 = b.lastName?.toUpperCase() ?? '';
+			const a3 = a.givenName?.toUpperCase() ?? '';
+			const b3 = b.givenName?.toUpperCase() ?? '';
+			const a4 = a.surname?.toUpperCase() ?? '';
+			const b4 = b.surname?.toUpperCase() ?? '';
 			return a1.localeCompare(b1) || a2.localeCompare(b2) * -1 || a3.localeCompare(b3) || a4.localeCompare(b4);
 		});
 	}
 
-	private managerDialog(dialogOptions: any, isCreate: boolean): void {
+	private openManagerDialog(manager: any | null, isCreate: boolean): void {
+		const data: DialogOptions = { data: manager ? { ...manager } : null };
+
+		console.log('data', data);
 		this.dialog
 			.open(ModalBusinessManagerEditComponent, {
 				width: '800px',
-				data: dialogOptions,
+				data,
 			})
 			.afterClosed()
 			.subscribe((resp) => {
@@ -347,7 +350,7 @@ export class BusinessManagersComponent implements OnInit {
 						this.managersList.push(resp.data);
 						this.hotToastService.success('Business Manager was successfully added');
 					} else {
-						const branchIndex = this.managersList.findIndex((item) => item.id == dialogOptions.id!);
+						const branchIndex = this.managersList.findIndex((item) => item.id == manager.id!);
 						if (branchIndex >= 0) {
 							this.managersList[branchIndex] = resp.data;
 							this.dataSource.data = this.managersList;

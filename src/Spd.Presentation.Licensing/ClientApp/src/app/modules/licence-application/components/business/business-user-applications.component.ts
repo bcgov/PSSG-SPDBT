@@ -269,7 +269,9 @@ import { Observable, take, tap } from 'rxjs';
 										<div class="col-12">
 											<mat-divider class="my-2"></mat-divider>
 											<span class="fw-semibold">Lost your licence? </span>
+											<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
 											<a
+												*ngIf="!applicationIsInProgress"
 												class="large"
 												tabindex="0"
 												(click)="onRequestReplacement(appl)"
@@ -391,7 +393,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	errorMessages: Array<string> = [];
 
 	// results$!: Observable<any>;
-	// applicationIsInProgress: boolean | null = null;
+	applicationIsInProgress: boolean | null = null;
 	// yourProfileLabel = '';
 	lostLicenceDaysText: string | null = null;
 
@@ -485,6 +487,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onRequestReplacement(_appl: UserLicenceResponse): void {
+		// if (this.applicationIsInProgress) return;
 		// 	this.licenceApplicationService
 		// 		.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
 		// 		.pipe(

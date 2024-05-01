@@ -54,8 +54,8 @@ export abstract class BusinessApplicationHelper {
 
 	businessInformationFormGroup: FormGroup = this.formBuilder.group({
 		businessTypeCode: new FormControl('', [Validators.required]),
-		legalBusinessName: new FormControl('', [FormControlValidators.required]),
-		doingBusinessAsName: new FormControl('', [FormControlValidators.required]),
+		legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
+		doingBusinessAsName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		isTradeNameTheSameAsLegal: new FormControl(''),

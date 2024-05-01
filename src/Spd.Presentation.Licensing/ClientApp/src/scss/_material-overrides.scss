@@ -4,12 +4,12 @@ button.mdc-button {
 
 	&.xlarge {
 		height: 60px;
-		font-size: 1rem;
+		font-size: 1em;
 	}
 
 	&.large {
 		height: 46px;
-		font-size: 1rem;
+		font-size: 1em;
 	}
 
 	&.bordered {
@@ -24,7 +24,7 @@ button.mdc-button {
 
 	&.large {
 		height: 46px;
-		font-size: 1rem;
+		font-size: 1em;
 	}
 
 	&.next-review-step {
@@ -35,7 +35,7 @@ button.mdc-button {
 a {
 	&.large {
 		height: 46px !important;
-		font-size: 1rem;
+		font-size: 1em;
 	}
 }
 
@@ -313,7 +313,7 @@ button.mat-red-button {
 	mat-footer-cell {
 		letter-spacing: normal !important;
 		padding: 0 !important;
-		font-size: 1rem !important;
+		font-size: 1em !important;
 	}
 
 	.mat-mdc-header-row {

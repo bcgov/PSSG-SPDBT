@@ -156,7 +156,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
-		const businessInformationData = { businessTypeCode: BusinessTypeCode.Corporation }; // TODO temporary
+		const businessInformationData = {
+			businessTypeCode: BusinessTypeCode.Corporation,
+			legalBusinessName: 'Burger King',
+			doingBusinessAsName: 'King of Burgers',
+		}; // TODO temporary
 		const businessAddressData = { isMailingTheSame: false };
 		const businessManagerData = { isBusinessManager: true }; // default
 

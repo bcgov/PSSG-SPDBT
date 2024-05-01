@@ -13,7 +13,7 @@ import { BranchResponse } from './common-business-bc-branches.component';
 				<div class="row">
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Lookup a licence number</mat-label>
+							<mat-label>Lookup a Licence Number</mat-label>
 							<input
 								matInput
 								type="search"

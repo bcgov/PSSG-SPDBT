@@ -7,7 +7,6 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
-import { StepBusinessLicenceNameComponent } from './step-business-licence-name.component';
 
 @Component({
 	selector: 'app-steps-business-licence-information-new',
@@ -49,56 +48,6 @@ import { StepBusinessLicenceNameComponent } from './step-business-licence-name.c
 							color="primary"
 							class="large next-review-step mb-2"
 							(click)="onNextReview(STEP_LICENCE_EXPIRED)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step>
-
-			<!-- <mat-step>
-				<app-step-business-licence-type></app-step-business-licence-type>
-
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_LICENCE_TYPE)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_TYPE)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
-			</mat-step> -->
-
-			<mat-step>
-				<app-step-business-licence-name></app-step-business-licence-name>
-
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_LICENCE_NAME)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_LICENCE_NAME)"
 						>
 							Next: Review
 						</button>
@@ -167,9 +116,8 @@ import { StepBusinessLicenceNameComponent } from './step-business-licence-name.c
 })
 export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_EXPIRED = 1;
-	readonly STEP_LICENCE_NAME = 2;
-	readonly STEP_LICENCE_BRANDING = 3;
-	readonly STEP_LICENCE_LIABILITY = 4;
+	readonly STEP_LICENCE_BRANDING = 2;
+	readonly STEP_LICENCE_LIABILITY = 3;
 
 	isFormValid = false;
 	applicationTypeCode: ApplicationTypeCode | null = null;
@@ -177,7 +125,6 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	@ViewChild(StepBusinessLicenceNameComponent) stepNameComponent!: StepBusinessLicenceNameComponent;
 	@ViewChild(StepBusinessLicenceCompanyBrandingComponent)
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
@@ -210,8 +157,6 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 		switch (step) {
 			case this.STEP_LICENCE_EXPIRED:
 				return this.stepExpiredComponent.isFormValid();
-			case this.STEP_LICENCE_NAME:
-				return this.stepNameComponent.isFormValid();
 			case this.STEP_LICENCE_BRANDING:
 				return this.stepCompanyBrandingComponent.isFormValid();
 			case this.STEP_LICENCE_LIABILITY:
