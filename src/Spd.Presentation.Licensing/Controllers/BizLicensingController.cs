@@ -63,15 +63,15 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <summary>
         /// Get Business profile
         /// </summary>
-        /// <param name="licenceAppId"></param>
+        /// <param name="bizId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{licenceAppId}")]
+        [Route("api/business-licence/{bizId}")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpGet]
-        public async Task<BizProfileResponse> GetProfile([FromRoute] Guid licenceAppId, CancellationToken ct)
+        public async Task<BizProfileResponse> GetProfile([FromRoute] Guid bizId, CancellationToken ct)
         {
-
+            return await _mediator.Send(new GetBizProfileQuery(bizId), ct);
         }
     }
 }
