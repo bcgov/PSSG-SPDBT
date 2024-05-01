@@ -28,10 +28,16 @@ namespace Spd.Manager.Licence.UnitTest
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+            var mapperConfig = new MapperConfiguration(x =>
+            {
+                x.AddProfile<Mappings>();
+            });
+            var mapper = mapperConfig.CreateMapper();
+
             sut = new BizProfileManager(mockIdRepo.Object,
                 mockBizRepo.Object,
                 mockPortalUserRepo.Object,
-                mockMapper.Object);
+                mapper);
         }
 
         [Fact]
@@ -51,14 +57,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new BizResult() { Id = bizId });
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PortalUserResp() { Id = portalUserId });
-            mockMapper.Setup(m => m.Map<BizUserLoginResponse>(It.IsAny<PortalUserResp>()))
-                .Returns(new BizUserLoginResponse()
-                {
-                    BizId = bizId,
-                    BizUserId = portalUserId,
-                    ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager
-                });
+                .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
 
             //Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -66,7 +65,7 @@ namespace Spd.Manager.Licence.UnitTest
             //Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
-            Assert.Equal(portalUserId, portalUserId);
+            Assert.Equal(portalUserId, result.BizUserId);
         }
 
         [Fact]
@@ -92,14 +91,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new IdentityCmdResult() { Id = identityId });
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PortalUserResp() { Id = portalUserId });
-            mockMapper.Setup(m => m.Map<BizUserLoginResponse>(It.IsAny<PortalUserResp>()))
-                .Returns(new BizUserLoginResponse()
-                {
-                    BizId = bizId,
-                    BizUserId = portalUserId,
-                    ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager
-                });
+                .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
 
             //Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -107,7 +99,7 @@ namespace Spd.Manager.Licence.UnitTest
             //Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
-            Assert.Equal(portalUserId, portalUserId);
+            Assert.Equal(portalUserId, result.BizUserId);
         }
 
         [Fact]
@@ -135,14 +127,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new PortalUserResp() { Id = portalUserId });
-            mockMapper.Setup(m => m.Map<BizUserLoginResponse>(It.IsAny<PortalUserResp>()))
-                .Returns(new BizUserLoginResponse()
-                {
-                    BizId = bizId,
-                    BizUserId = portalUserId,
-                    ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager
-                });
+                .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
 
             //Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -150,7 +135,7 @@ namespace Spd.Manager.Licence.UnitTest
             //Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
-            Assert.Equal(portalUserId, portalUserId);
+            Assert.Equal(portalUserId, result.BizUserId);
         }
 
         [Fact]
@@ -187,17 +172,9 @@ namespace Spd.Manager.Licence.UnitTest
                     {
                         Items = new List<PortalUserResp>
                         {
-                            new(){ Id = portalUserId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager}
+                            new(){ Id = portalUserId, OrganizationId = bizId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager}
                         }
                     });
-
-            mockMapper.Setup(m => m.Map<BizUserLoginResponse>(It.IsAny<PortalUserResp>()))
-                .Returns(new BizUserLoginResponse()
-                {
-                    BizId = bizId,
-                    BizUserId = portalUserId,
-                    ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager
-                });
 
             //Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -205,7 +182,7 @@ namespace Spd.Manager.Licence.UnitTest
             //Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
-            Assert.Equal(portalUserId, portalUserId);
+            Assert.Equal(portalUserId, result.BizUserId);
         }
 
         [Fact]
@@ -257,9 +234,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizGuid = Guid.NewGuid();
             GetBizsQuery qry = new(bizGuid);
             mockBizRepo.Setup(a => a.QueryBizAsync(It.Is<BizsQry>(q => q.BizGuid == bizGuid), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<BizResult> { new() { BizLegalName = "test" } });
-            mockMapper.Setup(m => m.Map<IEnumerable<BizListResponse>>(It.IsAny<List<BizResult>>()))
-                .Returns(new List<BizListResponse> { new() { BizLegalName = "test" } });
+                .ReturnsAsync(new List<BizResult> { new() { BizGuid = bizGuid, BizLegalName = "test" } });
 
             ////Act
             var result = await sut.Handle(qry, CancellationToken.None);
@@ -267,6 +242,8 @@ namespace Spd.Manager.Licence.UnitTest
             ////Assert
             mockBizRepo.VerifyAll();
             Assert.NotNull(result);
+            Assert.Equal("test", result.FirstOrDefault().BizLegalName);
+            Assert.Equal(bizGuid, result.FirstOrDefault().BizGuid);
             Assert.True(result.Any());
         }
 
@@ -295,14 +272,13 @@ namespace Spd.Manager.Licence.UnitTest
             GetBizProfileQuery qry = new(bizId);
             mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { BizGuid = bizId, BizName = "test" } );
-            mockMapper.Setup(m => m.Map<BizProfileResponse>(It.Is<BizResult>(b => b.BizGuid == bizId)))
-                .Returns(new BizProfileResponse() { BizId = bizId, BizLegalName = "test" });
 
             //Action
             var result = await sut.Handle(qry, CancellationToken.None);
 
             //Assert
             Assert.IsType<BizProfileResponse>(result);
+            Assert.Equal("test", result.BizTradeName);
             Assert.Equal(bizId, result.BizId);
         }
 
