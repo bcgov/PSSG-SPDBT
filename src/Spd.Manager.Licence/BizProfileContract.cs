@@ -31,7 +31,7 @@ public record BizInfo
     public BizTypeCode? BizTypeCode { get; set; }
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
-    public Address? MailingAddress { get; set; }
+    public Address? BizMailingAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
     public bool? MailingAddressIsSameBizAddress { get; set; }
     public IEnumerable<ServiceTypeCode>? ServiceTypeCodes { get; set; }
