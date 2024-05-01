@@ -17,8 +17,8 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
-        IRequestHandler<PermitUpsertCommand, PermitCommandResponse>,
-        IRequestHandler<PermitSubmitCommand, PermitCommandResponse>,
+        IRequestHandler<PermitUpsertCommand, PermitAppCommandResponse>,
+        IRequestHandler<PermitSubmitCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppReplaceCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppRenewCommand, PermitAppCommandResponse>,
@@ -46,7 +46,7 @@ internal class PermitAppManager :
 
     #region for portal
     // Authenticated save
-    public async Task<PermitCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
+    public async Task<PermitAppCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
             Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
@@ -67,16 +67,16 @@ internal class PermitAppManager :
             (Guid)cmd.PermitUpsertRequest.LicenceAppId,
             (List<Document>?)cmd.PermitUpsertRequest.DocumentInfos,
             cancellationToken);
-        return _mapper.Map<PermitCommandResponse>(response);
+        return _mapper.Map<PermitAppCommandResponse>(response);
     }
 
-    public async Task<PermitCommandResponse> Handle(PermitSubmitCommand cmd, CancellationToken cancellationToken)
+    public async Task<PermitAppCommandResponse> Handle(PermitSubmitCommand cmd, CancellationToken cancellationToken)
     {
         var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
         decimal? cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
-        return new PermitCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+        return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     #endregion
@@ -165,7 +165,7 @@ internal class PermitAppManager :
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
-        
+
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);

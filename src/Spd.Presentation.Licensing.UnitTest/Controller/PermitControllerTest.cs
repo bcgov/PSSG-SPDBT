@@ -52,9 +52,9 @@ public class PermitControllerTest
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitUpsertCommand>(), CancellationToken.None))
-            .ReturnsAsync(new PermitCommandResponse());
+            .ReturnsAsync(new PermitAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitSubmitCommand>(), CancellationToken.None))
-            .ReturnsAsync(new PermitCommandResponse());
+            .ReturnsAsync(new PermitAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitAppReplaceCommand>(), CancellationToken.None))
                .ReturnsAsync(new PermitAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitAppRenewCommand>(), CancellationToken.None))
@@ -115,7 +115,7 @@ public class PermitControllerTest
 
         var result = await sut.SavePermitLicenceApplication(request);
 
-        Assert.IsType<PermitCommandResponse>(result);
+        Assert.IsType<PermitAppCommandResponse>(result);
         mockMediator.Verify();
     }
 
@@ -134,7 +134,7 @@ public class PermitControllerTest
 
         var result = await sut.SubmitPermitApplication(request, CancellationToken.None);
 
-        Assert.IsType<PermitCommandResponse>(result);
+        Assert.IsType<PermitAppCommandResponse>(result);
         mockMediator.Verify();
     }
 

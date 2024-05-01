@@ -118,7 +118,7 @@ internal class Mappings : Profile
 
         CreateMap<LicenceApplicationCmdResp, WorkerLicenceCommandResponse>();
 
-        CreateMap<LicenceApplicationCmdResp, PermitCommandResponse>();
+        CreateMap<LicenceApplicationCmdResp, PermitAppCommandResponse>();
 
         CreateMap<LicenceApplicationResp, WorkerLicenceAppResponse>()
              .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ContactEmailAddress))
