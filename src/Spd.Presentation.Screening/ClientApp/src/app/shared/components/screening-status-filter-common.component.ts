@@ -110,11 +110,7 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 		if (this.portal == PortalTypeCode.Psso) {
 			this.applicationPortalStatusCodes = this.utilService
 				.getCodeDescSorted('ApplicationPortalStatusTypes')
-				.filter(
-					(item) =>
-						item.code != ApplicationPortalStatusCode.AwaitingPayment &&
-						item.code != ApplicationPortalStatusCode.ClosedJudicialReview
-				);
+				.filter((item) => item.code != ApplicationPortalStatusCode.AwaitingPayment);
 		} else {
 			this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
 		}
