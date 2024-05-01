@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
