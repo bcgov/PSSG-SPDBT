@@ -7,7 +7,127 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 @Component({
 	selector: 'app-common-business-profile',
 	template: `
-		<div class="text-minor-heading pt-2 pb-3">Business Information</div>
+		<div class="row mt-3">
+			<div class="col-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Business Information</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<section>
+								<app-common-business-information
+									[form]="businessInformationFormGroup"
+								></app-common-business-information>
+							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-lg-6 col-md-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Business Address</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-alert type="info" icon="" [showBorder]="false">
+								This is the address of the business's primary location
+							</app-alert>
+
+							<section>
+								<app-common-business-address
+									[form]="businessAddressFormGroup"
+									[isWizardStep]="false"
+									[isReadonly]="isReadonly"
+								></app-common-business-address>
+							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-lg-6 col-md-12" *ngIf="businessAddressIsNotInBc">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>B.C. Business Address</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-alert type="info" icon="" [showBorder]="false">
+								Provide an address in British Columbia for document service
+							</app-alert>
+
+							<section>
+								<app-common-address
+									[form]="bcBusinessAddressFormGroup"
+									[isWizardStep]="false"
+									[isReadonly]="isReadonly"
+								></app-common-address>
+							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-lg-6 col-md-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Mailing Address</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-alert type="info" icon="" [showBorder]="false">
+								Provide your mailing address, if different from your business address
+							</app-alert>
+
+							<ng-container *ngIf="isMailingTheSame; else mailingIsDifferentSection">
+								<div class="mb-3">
+									<mat-icon style="vertical-align: bottom;">label_important</mat-icon> The business address and mailing
+									address are the same
+								</div>
+							</ng-container>
+							<ng-template #mailingIsDifferentSection>
+								<section>
+									<app-common-address
+										[form]="mailingAddressFormGroup"
+										[isWizardStep]="false"
+										[isReadonly]="isReadonly"
+									></app-common-address>
+								</section>
+							</ng-template>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Branches in B.C.</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-alert type="info" icon="" [showBorder]="false"
+								>Branches in B.C. where licenced employees work</app-alert
+							>
+
+							<section>
+								<app-common-business-bc-branches [form]="branchesInBcFormGroup"></app-common-business-bc-branches>
+							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+		</div>
+
+		<!-- <div class="text-minor-heading pt-2 pb-3">Business Information</div>
 		<section>
 			<app-common-business-information [form]="businessInformationFormGroup"></app-common-business-information>
 		</section>
@@ -78,7 +198,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 				<app-common-business-bc-branches [form]="branchesInBcFormGroup"></app-common-business-bc-branches>
 			</div>
-		</div>
+		</div> -->
 	`,
 	styles: [],
 })

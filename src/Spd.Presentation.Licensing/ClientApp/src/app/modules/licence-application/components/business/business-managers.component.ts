@@ -336,8 +336,6 @@ export class BusinessManagersComponent implements OnInit {
 
 	private openManagerDialog(manager: any | null, isCreate: boolean): void {
 		const data: DialogOptions = { data: manager ? { ...manager } : null };
-
-		console.log('data', data);
 		this.dialog
 			.open(ModalBusinessManagerEditComponent, {
 				width: '800px',

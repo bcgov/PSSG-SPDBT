@@ -10,64 +10,100 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 @Component({
 	selector: 'app-common-user-profile',
 	template: `
-		<section>
-			<div class="text-minor-heading pt-2 pb-3">Personal Information</div>
-			<app-common-user-profile-personal-information
-				[personalInformationFormGroup]="personalInformationFormGroup"
-				[contactFormGroup]="contactFormGroup"
-				[isReadonly]="isReadonlyPersonalInfo"
-			></app-common-user-profile-personal-information>
-		</section>
-
-		<section>
-			<mat-divider class="mat-divider-main"></mat-divider>
-			<div class="text-minor-heading pt-2 pb-3">Aliases or Previous Names</div>
-			<app-common-alias-list [form]="aliasesFormGroup" [isReadonly]="isReadonlyPersonalInfo"></app-common-alias-list>
-		</section>
-
 		<div class="row mt-3">
-			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Residential Address</div>
+			<div class="col-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Personal Information</mat-panel-title>
+						</mat-expansion-panel-header>
 
-				<app-alert type="info" icon="" [showBorder]="false">
-					Has your residential address changed?
-					<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information on your
-					BC Services Card. Any changes you make will then be updated here.
-				</app-alert>
-
-				<section>
-					<app-common-residential-address
-						[form]="residentialAddressFormGroup"
-						[isWizardStep]="false"
-						[isReadonly]="true"
-						[isCheckboxReadOnly]="isReadonlyMailingAddress"
-					></app-common-residential-address>
-				</section>
+						<div class="my-3">
+							<app-common-user-profile-personal-information
+								[personalInformationFormGroup]="personalInformationFormGroup"
+								[contactFormGroup]="contactFormGroup"
+								[isReadonly]="isReadonlyPersonalInfo"
+							></app-common-user-profile-personal-information>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
 			</div>
 
-			<div class="col-lg-6 col-md-12">
-				<mat-divider class="mat-divider-main"></mat-divider>
-				<div class="text-minor-heading pt-2 pb-3">Mailing Address</div>
-				<app-alert type="info" icon="" [showBorder]="false" *ngIf="!isReadonlyMailingAddress">
-					Provide your mailing address, if different from your residential address. This cannot be a company address.
-				</app-alert>
+			<div class="col-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Aliases or Previous Names</mat-panel-title>
+						</mat-expansion-panel-header>
 
-				<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-					<div class="mb-3">
-						<mat-icon style="vertical-align: bottom;">label_important</mat-icon> My mailing address is the same as my
-						residential address
-					</div>
-				</ng-container>
-				<ng-template #mailingIsDifferentThanResidential>
-					<section>
-						<app-common-address
-							[form]="mailingAddressFormGroup"
-							[isWizardStep]="false"
-							[isReadonly]="isReadonlyMailingAddress"
-						></app-common-address>
-					</section>
-				</ng-template>
+						<div class="my-3">
+							<app-common-alias-list
+								[form]="aliasesFormGroup"
+								[isReadonly]="isReadonlyPersonalInfo"
+							></app-common-alias-list>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-6">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Residential Address</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-alert type="info" icon="" [showBorder]="false">
+								Has your residential address changed?
+								<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information
+								on your BC Services Card. Any changes you make will then be updated here.
+							</app-alert>
+
+							<section>
+								<app-common-residential-address
+									[form]="residentialAddressFormGroup"
+									[isWizardStep]="false"
+									[isReadonly]="true"
+									[isCheckboxReadOnly]="isReadonlyMailingAddress"
+								></app-common-residential-address>
+							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-6">
+				<mat-accordion>
+					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Mailing Address</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-alert type="info" icon="" [showBorder]="false" *ngIf="!isReadonlyMailingAddress">
+								Provide your mailing address, if different from your residential address. This cannot be a company
+								address.
+							</app-alert>
+
+							<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
+								<div class="mb-3">
+									<mat-icon style="vertical-align: bottom;">label_important</mat-icon> My mailing address is the same as
+									my residential address
+								</div>
+							</ng-container>
+							<ng-template #mailingIsDifferentThanResidential>
+								<section>
+									<app-common-address
+										[form]="mailingAddressFormGroup"
+										[isWizardStep]="false"
+										[isReadonly]="isReadonlyMailingAddress"
+									></app-common-address>
+								</section>
+							</ng-template>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
 			</div>
 		</div>
 	`,

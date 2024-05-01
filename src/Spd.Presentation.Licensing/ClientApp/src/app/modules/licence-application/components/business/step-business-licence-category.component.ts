@@ -65,7 +65,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
 											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
 												<mat-expansion-panel-header>
-													<mat-panel-title class="title">
+													<mat-panel-title>
 														{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
 													</mat-panel-title>
 												</mat-expansion-panel-header>
@@ -81,7 +81,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
 											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
 												<mat-expansion-panel-header>
-													<mat-panel-title class="title">
+													<mat-panel-title>
 														<mat-icon
 															class="error-icon"
 															color="warn"
@@ -106,7 +106,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
 											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
 												<mat-expansion-panel-header>
-													<mat-panel-title class="title">
+													<mat-panel-title>
 														{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
 													</mat-panel-title>
 												</mat-expansion-panel-header>

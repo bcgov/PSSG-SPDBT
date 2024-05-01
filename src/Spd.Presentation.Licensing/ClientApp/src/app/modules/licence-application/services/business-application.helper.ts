@@ -311,12 +311,16 @@ export abstract class BusinessApplicationHelper {
 	// });
 
 	managerFormGroup: FormGroup = this.formBuilder.group({
+		id: new FormControl(''),
+		managerRoleCode: new FormControl(''),
 		givenName: new FormControl('', [FormControlValidators.required]),
 		middleName1: new FormControl(''),
 		middleName2: new FormControl(''),
 		surname: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
 		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		jobTitle: new FormControl(''),
+		isActive: new FormControl(''),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({

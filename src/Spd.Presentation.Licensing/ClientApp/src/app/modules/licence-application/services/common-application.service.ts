@@ -5,6 +5,7 @@ import {
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
+	IdentityProviderTypeCode,
 	LicenceAppListResponse,
 	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
@@ -90,8 +91,13 @@ export class CommonApplicationService {
 
 	public onGoToHome(): void {
 		if (this.isLoggedIn) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-			return;
+			if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BcServicesCard) {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				return;
+			} else if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BusinessBceId) {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+				return;
+			}
 		}
 
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
