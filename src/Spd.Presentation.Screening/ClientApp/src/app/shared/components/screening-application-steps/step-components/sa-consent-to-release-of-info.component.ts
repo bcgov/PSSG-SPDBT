@@ -202,15 +202,16 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									<strong> Collection Notice </strong>
 									<p>
 										The Security Programs Division (SPD) will collect your personal information for the purpose of
-										fulfilling the criminal record check requirements of the Criminal Records Review Act and in
-										accordance with section 26(c) and 27(1)(a)(i) and (b) of the Freedom of Information and Protection
-										of Privacy Act (FoIPPA). Additionally, SPD may collect personal information under section 26(e) and
-										27(1)(a)(i) and (b) of FoIPPA for the purpose of evaluating the Criminal Records Review Program and
-										activities to better serve you. Should you have any questions about the collection, use, or
-										disclosure of your personal information, please contact the Policy Analyst of the Criminal Records
-										Review Program, Security Programs Division via mail to PO Box 9217 Stn Prov Govt Victoria, BC V8W
-										9J1; email to <a href="mailto:criminalrecords@gov.bc.ca">criminalrecords&#64;gov.bc.ca</a>; or by
-										telephone at 1- 855-587-0185 (option 2).
+										fulfilling the criminal record check requirements of the <i>Criminal Records Review Act</i> and in
+										accordance with section 26(c) and 27(1)(a)(i) and (b) of the
+										<i>Freedom of Information and Protection of Privacy Act</i> (FoIPPA). Additionally, SPD may collect
+										personal information under section 26(e) and 27(1)(a)(i) and (b) of FoIPPA for the purpose of
+										evaluating the Criminal Records Review Program and activities to better serve you. Should you have
+										any questions about the collection, use, or disclosure of your personal information, please contact
+										the Policy Analyst of the Criminal Records Review Program, Security Programs Division via mail to PO
+										Box 9217 Stn Prov Govt Victoria, BC V8W 9J1; email to
+										<a href="mailto:criminalrecords@gov.bc.ca">criminalrecords&#64;gov.bc.ca</a>; or by telephone at 1-
+										855-587-0185 (option 2).
 									</p>
 								</div>
 							</div>
