@@ -40,4 +40,11 @@
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
     }
+    public record BranchAddr() : Addr
+    {
+        public Guid? BranchId { get; set; }
+        public string? BranchManager { get; set; }
+        public string? BranchPhoneNumber { get; set; }
+        public string? BranchEmailAddr { get; set; }
+    }
 }
