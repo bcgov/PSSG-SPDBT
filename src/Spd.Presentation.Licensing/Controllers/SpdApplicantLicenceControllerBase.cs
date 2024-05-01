@@ -11,14 +11,14 @@ using System.Configuration;
 using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
-public abstract class SpdApplicantLicenceControllerBase : SpdControllerBase
+public abstract class SpdLicenceControllerBase : SpdControllerBase
 {
     private readonly ITimeLimitedDataProtector _dataProtector;
     private readonly IDistributedCache _cache;
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
     private readonly IConfiguration _configuration;
 
-    protected SpdApplicantLicenceControllerBase(IDistributedCache cache, 
+    protected SpdLicenceControllerBase(IDistributedCache cache, 
         IDataProtectionProvider dpProvider, 
         IRecaptchaVerificationService recaptchaVerificationService,
         IConfiguration configuration)

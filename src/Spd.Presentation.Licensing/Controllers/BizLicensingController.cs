@@ -11,12 +11,12 @@ using System.Security.Principal;
 namespace Spd.Presentation.Licensing.Controllers
 {
     [ApiController]
-    public class BizLicensingController : SpdApplicantLicenceControllerBase
+    public class BizLicensingController : SpdLicenceControllerBase
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
-        private readonly IConfiguration _configuration;
-        public BizLicensingController(IPrincipal currentUser, 
+
+        public BizLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IRecaptchaVerificationService recaptchaVerificationService,
@@ -25,7 +25,6 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             _currentUser = currentUser;
             _mediator = mediator;
-            _configuration = configuration;
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
-        public async Task<Unit> SaveBusinessLicenceApplication([FromBody][Required] BizLicenceAppUpsertRequest bizUpsertRequest, CancellationToken ct)
+        public async Task<Unit> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
             return default;
         }

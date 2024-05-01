@@ -346,7 +346,6 @@ export class SecurityScreeningListComponent implements OnInit {
 							'CancelledByApplicant',
 							'ClosedNoConsent',
 							'ClosedNoResponse',
-							'ClosedJudicialReview',
 							'CompletedCleared',
 						].includes(app.status ?? '');
 				  })
