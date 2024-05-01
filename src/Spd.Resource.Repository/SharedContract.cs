@@ -79,6 +79,13 @@ public enum GenderEnum
 
 public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;
+public record BranchAddr() : Addr
+{
+    public Guid? BranchId { get; set; }
+    public string? BranchManager { get; set; }
+    public string? BranchPhoneNumber { get; set; }
+    public string? BranchEmailAddr { get; set; }
+}
 public record Addr
 {
     public string? AddressLine1 { get; set; }
