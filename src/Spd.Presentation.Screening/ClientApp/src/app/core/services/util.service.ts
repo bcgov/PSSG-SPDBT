@@ -181,6 +181,10 @@ export class UtilService {
 		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 
+	getApplicationPortalStatusHint(code: string): string {
+		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.extra as string) ?? '';
+	}
+
 	getDateString(date: Date): string {
 		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
 	}

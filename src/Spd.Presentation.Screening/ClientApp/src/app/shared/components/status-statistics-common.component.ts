@@ -13,44 +13,66 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<div class="fw-semibold mb-4">
 				<div>Active applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.VerifyIdentity)"
+					>
 						<div class=" fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.VerifyIdentity] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.VerifyIdentity) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-green align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.InProgress)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.InProgress] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.InProgress) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
 					<div
 						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.AwaitingPayment)"
 						*ngIf="portal === portalTypeCodes.Crrp"
 					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingPayment) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.AwaitingThirdParty)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingThirdParty) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-yellow align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.AwaitingApplicant)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingApplicant] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.AwaitingApplicant) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-blue align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.UnderAssessment)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
 				</div>
 			</div>
@@ -58,38 +80,45 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<div class="row fw-semibold mb-4">
 				<div class="col-10">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.RiskFound)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.RiskFound) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
 					<div
 						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
-						*ngIf="portal === portalTypeCodes.Crrp"
+						[matTooltip]="getStatusHint(statisticsCodes.ClosedNoResponse)"
 					>
-						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.ClosedJudicialReview] ?? 0 }}
-						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedJudicialReview) }}</div>
-					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedNoResponse] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoResponse) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.ClosedNoConsent)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.ClosedNoConsent] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.ClosedNoConsent) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center mt-2 me-2"
+						[matTooltip]="getStatusHint(statisticsCodes.CancelledByApplicant)"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.CancelledByApplicant] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
+						<div class="m-2"><mat-icon>info_outline</mat-icon></div>
 					</div>
 				</div>
 			</div>
@@ -100,7 +129,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 			.statistic-card {
 				cursor: default;
 				height: 4em;
-				width: 10.5em;
+				width: 13em;
 				box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
 					0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 			}
@@ -155,5 +184,9 @@ export class StatusStatisticsCommonComponent implements OnInit {
 
 	getStatusDesc(code: string): string {
 		return this.utilService.getApplicationPortalStatusDesc(code);
+	}
+
+	getStatusHint(code: string): string {
+		return this.utilService.getApplicationPortalStatusHint(code);
 	}
 }

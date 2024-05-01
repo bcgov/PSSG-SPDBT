@@ -51,6 +51,6 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
         Assert.NotNull(resp);
         spd_application app = _context.spd_applications.Where(a => a.spd_applicationid == resp.LicenceAppId).FirstOrDefault();
         Assert.Equal("100000000,100000001", app.spd_uploadeddocuments);
-
+        Assert.NotNull(app.spd_portalmodifiedon);
     }
 }

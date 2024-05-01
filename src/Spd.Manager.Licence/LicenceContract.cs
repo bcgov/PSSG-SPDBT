@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.Licence;
 
 namespace Spd.Manager.Licence;
 
