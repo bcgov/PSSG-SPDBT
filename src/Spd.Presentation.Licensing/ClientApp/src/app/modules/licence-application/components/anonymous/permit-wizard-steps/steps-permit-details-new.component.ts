@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -94,11 +95,12 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	@ViewChild(StepPermitExpiredComponent) permitExpiredComponent!: StepPermitExpiredComponent;
 
 	constructor(
+		override commonApplicationService: CommonApplicationService,
 		private router: Router,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -66,11 +66,11 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 
 	constructor(
-		private router: Router,
+		override commonApplicationService: CommonApplicationService,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

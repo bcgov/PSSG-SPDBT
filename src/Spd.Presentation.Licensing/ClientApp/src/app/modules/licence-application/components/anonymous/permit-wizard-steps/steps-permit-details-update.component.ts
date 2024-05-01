@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
@@ -86,11 +86,11 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent i
 	@ViewChild(StepPermitReprintComponent) stepPermitPrintComponent!: StepPermitReprintComponent;
 
 	constructor(
-		private router: Router,
+		override commonApplicationService: CommonApplicationService,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

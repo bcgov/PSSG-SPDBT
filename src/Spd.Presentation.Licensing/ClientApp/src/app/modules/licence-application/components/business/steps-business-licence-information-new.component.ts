@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
@@ -29,7 +29,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				<app-step-business-licence-expired></app-step-business-licence-expired>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -59,7 +62,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				<app-step-business-licence-company-branding></app-step-business-licence-company-branding>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -89,7 +95,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				<app-step-business-licence-liability></app-step-business-licence-liability>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -129,8 +138,8 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {
-		super();
+	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
+		super(commonApplicationService);
 	}
 
 	// ngOnInit(): void {

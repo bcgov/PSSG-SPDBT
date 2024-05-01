@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -25,6 +26,9 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 							*ngIf="showSaveAndExit"
 						>
 							Save & Exit
+						</button>
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()" *ngIf="!showSaveAndExit">
+							Cancel
 						</button>
 					</div>
 					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -154,8 +158,11 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 	@ViewChild(StepPermitContactInformationComponent)
 	stepContactInformationComponent!: StepPermitContactInformationComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

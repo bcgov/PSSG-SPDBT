@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
@@ -199,8 +200,11 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

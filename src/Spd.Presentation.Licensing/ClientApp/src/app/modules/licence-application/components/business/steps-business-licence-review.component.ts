@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsul
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
 
@@ -13,7 +14,10 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -28,7 +32,10 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				></app-step-business-licence-consent-and-declaration>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -55,8 +62,11 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
-	constructor(private businessApplicationService: BusinessApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private businessApplicationService: BusinessApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

@@ -6,6 +6,7 @@ import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-fingerprints.component';
@@ -239,8 +240,11 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
 	photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsul
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent-and-declaration.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
 
 @Component({
@@ -71,8 +72,8 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
-	constructor() {
-		super();
+	constructor(override commonApplicationService: CommonApplicationService) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

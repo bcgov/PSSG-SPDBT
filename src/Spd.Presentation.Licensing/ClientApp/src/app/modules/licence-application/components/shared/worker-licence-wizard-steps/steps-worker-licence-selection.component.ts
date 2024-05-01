@@ -326,12 +326,12 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	showStepDogsAndRestraints = false;
 
 	constructor(
+		override commonApplicationService: CommonApplicationService,
 		private router: Router,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: CommonApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

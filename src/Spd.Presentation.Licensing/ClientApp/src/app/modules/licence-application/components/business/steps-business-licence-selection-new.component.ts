@@ -1,8 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceTermComponent } from './step-business-licence-term.component';
 
@@ -16,7 +15,10 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 				></app-step-business-licence-category>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -48,7 +50,10 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 				></app-step-business-licence-term>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -85,8 +90,8 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;
 
-	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {
-		super();
+	constructor(override commonApplicationService: CommonApplicationService) {
+		super(commonApplicationService);
 	}
 
 	// ngOnInit(): void {

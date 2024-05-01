@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
 	ApplicationPortalStatusCode,
@@ -32,6 +33,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
@@ -73,6 +75,7 @@ export class CommonApplicationService {
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
@@ -87,6 +90,25 @@ export class CommonApplicationService {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.isLoggedIn = isLoggedIn;
 		});
+	}
+
+	public cancelAndLoseChanges() {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to leave this application? All of your data will be lost.',
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.onGoToHome();
+				}
+			});
 	}
 
 	public onGoToHome(): void {

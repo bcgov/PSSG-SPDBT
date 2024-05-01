@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCategoryComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-category.component';
@@ -168,8 +169,11 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	@ViewChild(StepWorkerLicenceReprintComponent)
 	stepReprintComponent!: StepWorkerLicenceReprintComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

@@ -1,6 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 
 @Component({
@@ -19,6 +20,8 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+	constructor(protected commonApplicationService: CommonApplicationService) {}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
@@ -40,6 +43,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		if (!isValid) return;
 
 		this.saveAndExit.emit(true);
+	}
+
+	onExit(): void {
+		this.commonApplicationService.cancelAndLoseChanges();
 	}
 
 	onNextReview(formNumber: number): void {

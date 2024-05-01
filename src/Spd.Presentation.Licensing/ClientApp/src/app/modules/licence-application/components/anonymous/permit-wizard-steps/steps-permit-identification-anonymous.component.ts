@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-wizard-steps/step-permit-physical-characteristics.component';
@@ -261,8 +262,11 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

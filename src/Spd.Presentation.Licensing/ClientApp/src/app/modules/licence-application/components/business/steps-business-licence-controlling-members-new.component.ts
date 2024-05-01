@@ -1,7 +1,6 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './step-business-licence-controlling-member-confirmation.component';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './step-business-licence-controlling-member-invites-component';
@@ -16,7 +15,10 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 				<app-step-business-licence-controlling-members></app-step-business-licence-controlling-members>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -46,7 +48,10 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 				<app-step-business-licence-controlling-member-confirmation></app-step-business-licence-controlling-member-confirmation>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -76,7 +81,10 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 				<app-step-business-licence-controlling-member-invites></app-step-business-licence-controlling-member-invites>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -106,7 +114,10 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 				<app-step-business-licence-employees></app-step-business-licence-employees>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -131,7 +142,10 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 				<app-step-business-licence-application-on-hold></app-step-business-licence-application-on-hold>
 
 				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
+					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</div>
+					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
 					</div>
 					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
@@ -175,8 +189,8 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 	@ViewChild(StepBusinessLicenceApplicationOnHoldComponent)
 	stepOnHoldComponent!: StepBusinessLicenceApplicationOnHoldComponent;
 
-	constructor(private router: Router, private businessApplicationService: BusinessApplicationService) {
-		super();
+	constructor(override commonApplicationService: CommonApplicationService) {
+		super(commonApplicationService);
 	}
 
 	// ngOnInit(): void {
