@@ -40,19 +40,23 @@ namespace Spd.Resource.Repository.Biz
             return servicetypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid))).ToArray();
         }
 
-        private static List<Addr>? GetBranchAddress(IEnumerable<spd_address> addresses)
+        private static List<BranchAddr> GetBranchAddress(IEnumerable<spd_address> addresses)
         {
-            List<Addr>? branchAddresses = new();
+            List<BranchAddr> branchAddresses = new();
 
             foreach (var branch in addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch))
             {
-                Addr brachAddress = new();
+                BranchAddr brachAddress = new();
                 brachAddress.AddressLine1 = branch.spd_address1;
                 brachAddress.AddressLine2 = branch.spd_address2;
                 brachAddress.City = branch.spd_city;
                 brachAddress.Province = branch.spd_provincestate;
                 brachAddress.PostalCode = branch.spd_postalcode;
                 brachAddress.Country = branch.spd_country;
+                brachAddress.BranchId = branch.spd_addressid;
+                brachAddress.BranchManager = branch.spd_branchmanagername;
+                brachAddress.BranchPhoneNumber = branch.spd_branchphone;
+                brachAddress.BranchEmailAddr = branch.spd_branchemail;
                 branchAddresses.Add(brachAddress);
             }
 
