@@ -21,12 +21,9 @@
         public Guid Id { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressCity { get; set; }
-        public string? AddressCountry { get; set; }
-        public string? AddressPostalCode { get; set; }
-        public string? AddressProvince { get; set; }
+        public Addr? MailingAddress { get; set; }
+        public Addr? BusinessAddress { get; set; }
+        public Addr? BCBusinessAddress { get; set; }
         public bool HasInvoiceSupport { get; set; }
         public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
         public string? BizName { get; set; }
