@@ -15,6 +15,7 @@ namespace Spd.Resource.Repository.Document
         Guid? ClearanceId = null,
         Guid? ReportId = null,
         Guid? CaseId = null,
+        Guid? LicenceId = null,
         DocumentTypeEnum? FileType = null);
     public record DocumentListResp
     {

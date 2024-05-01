@@ -6,11 +6,11 @@ namespace Spd.Manager.Licence;
 public interface ILicenceManager
 {
     public Task<LicenceResponse> Handle(LicenceQuery query, CancellationToken ct);
-    public Task<IEnumerable<LicenceResponse>> Handle(ApplicantLicenceListQuery query, CancellationToken ct);
+    public Task<IEnumerable<LicenceBasicResponse>> Handle(ApplicantLicenceListQuery query, CancellationToken ct);
     public Task<FileResponse> Handle(LicencePhotoQuery query, CancellationToken ct);
 }
 
-public record LicenceResponse
+public record LicenceBasicResponse
 {
     public Guid? LicenceId { get; set; }
     public Guid? LicenceAppId { get; set; }
@@ -22,6 +22,10 @@ public record LicenceResponse
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
+};
+
+public record LicenceResponse : LicenceBasicResponse
+{
     //permit info
     public string? PermitOtherRequiredReason { get; set; }
     public string? EmployerName { get; set; }
@@ -32,8 +36,9 @@ public record LicenceResponse
     public string? Rationale { get; set; }
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
+    public IEnumerable<Document> RationalDocumentInfos { get; set; } = [];
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
-public record ApplicantLicenceListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceResponse>>;
+public record ApplicantLicenceListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceBasicResponse>>;
 public record LicencePhotoQuery(Guid LicenceId) : IRequest<FileResponse>;

@@ -35,8 +35,8 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns> 
         [Route("api/applicants/{applicantId}/licences")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceResponse>> GetLicences([FromRoute][Required] Guid applicantId)
+        //[Authorize(Policy = "OnlyBcsc")]
+        public async Task<IEnumerable<LicenceBasicResponse>> GetLicences([FromRoute][Required] Guid applicantId)
         {
             return await _mediator.Send(new ApplicantLicenceListQuery(applicantId));
         }
@@ -50,7 +50,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
+        //[Authorize(Policy = "OnlyBcsc")]
         public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string? accessCode = null)
         {
             return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
