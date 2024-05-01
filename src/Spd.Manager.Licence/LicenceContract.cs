@@ -22,10 +22,7 @@ public record LicenceResponse
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
-};
-
-public record PermitLicenceResponse : LicenceResponse
-{
+    //permit info
     public string? PermitOtherRequiredReason { get; set; }
     public string? EmployerName { get; set; }
     public string? SupervisorName { get; set; }
@@ -35,7 +32,7 @@ public record PermitLicenceResponse : LicenceResponse
     public string? Rationale { get; set; }
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
-}
+};
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
 public record ApplicantLicenceListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceResponse>>;
