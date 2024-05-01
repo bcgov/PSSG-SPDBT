@@ -40,12 +40,12 @@ namespace Spd.Resource.Repository.Biz
 
         public async Task<BizResult?> GetBizAsync(Guid bizId, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts
+            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == bizId);
 
             account? Biz = await accounts.FirstOrDefaultAsync(ct);
-
+            
             if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             List<spd_account_spd_servicetype> serviceTypes = _dynaContext.spd_account_spd_servicetypeset
