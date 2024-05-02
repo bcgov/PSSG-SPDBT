@@ -21,17 +21,15 @@
         public Guid Id { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressCity { get; set; }
-        public string? AddressCountry { get; set; }
-        public string? AddressPostalCode { get; set; }
-        public string? AddressProvince { get; set; }
-        public bool HasInvoiceSupport { get; set; }
+        public Addr? MailingAddress { get; set; }
+        public Addr? BusinessAddress { get; set; }
+        public Addr? BCBusinessAddress { get; set; }
         public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
         public string? BizName { get; set; }
         public string? BizLegalName { get; set; }
         public Guid? BizGuid { get; set; }
+        public BizTypeEnum BizType { get; set; }
+        public IEnumerable<BranchAddr>? BranchAddress { get; set; }
     }
     public record BizResult : Biz
     {
@@ -40,5 +38,12 @@
         public string? AccessCode { get; set; }
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
+    }
+    public record BranchAddr() : Addr
+    {
+        public Guid? BranchId { get; set; }
+        public string? BranchManager { get; set; }
+        public string? BranchPhoneNumber { get; set; }
+        public string? BranchEmailAddr { get; set; }
     }
 }
