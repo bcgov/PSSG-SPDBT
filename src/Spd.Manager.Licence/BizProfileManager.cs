@@ -89,7 +89,9 @@ internal class BizProfileManager :
 
     public async Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        BizResult? result = await _bizRepository.GetBizAsync(query.BizId, ct);
+
+        return _mapper.Map<BizProfileResponse>(result);
     }
 
     public async Task<Unit> Handle(BizTermAgreeCommand cmd, CancellationToken ct)
