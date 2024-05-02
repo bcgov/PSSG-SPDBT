@@ -28,7 +28,7 @@ public record BizInfo
 {
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
-    public BizTypeCode? BizTypeCode { get; set; }
+    public BusinessTypeCode? BizTypeCode { get; set; }
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? BizMailingAddress { get; set; }
@@ -75,13 +75,5 @@ public record BizProfileUpdateRequest : BizInfo
     public Guid? BizId { get; set; } //used when in update, renew or replace flow.
 }
 
-public enum BizTypeCode
-{
-    NonRegisteredSoleProprietor,
-    NonRegisteredPartnership,
-    RegisteredSoleProprietor,
-    RegisteredPartnership,
-    Corporation,
-    None
-}
+
 

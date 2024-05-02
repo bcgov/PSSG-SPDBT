@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 
 namespace Spd.Manager.Licence;
 public interface IPermitAppManager
@@ -19,7 +19,7 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
     public string? SupervisorName { get; set; }
     public string? SupervisorEmailAddress { get; set; }
     public string? SupervisorPhoneNumber { get; set; }
-    public EmployerPrimaryAddress? EmployerPrimaryAddress { get; set; }
+    public Address? EmployerPrimaryAddress { get; set; }
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
@@ -106,7 +106,6 @@ public enum ArmouredVehiclePermitReasonCode
     MyEmployment,//armoured vehicle
     Other
 }
-public record EmployerPrimaryAddress : Address;
 #endregion
 
 

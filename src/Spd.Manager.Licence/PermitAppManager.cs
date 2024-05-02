@@ -100,7 +100,7 @@ internal class PermitAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -151,7 +151,9 @@ internal class PermitAppManager :
             throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet renew condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         LicenceResp originalLic = originalLicences.Items.First();
@@ -161,7 +163,10 @@ internal class PermitAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(
+            cmd.LicenceAnonymousRequest.OriginalApplicationId,
+            cmd.LicenceAnonymousRequest.PreviousDocumentIds,
+            cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
@@ -174,6 +179,7 @@ internal class PermitAppManager :
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
+                null,
                 null,
                 null,
                 null,
@@ -203,16 +209,16 @@ internal class PermitAppManager :
             throw new ArgumentException("should be an update request");
 
         //validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
         LicenceResp originalLic = originalLicences.Items.First();
         if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
-        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
-        ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
-
+        ChangeSpec changes = await MakeChanges(originalLic, request, cmd.LicAppFileInfos, cancellationToken);
         LicenceApplicationCmdResp? createLicResponse = null;
         if ((request.Reprint != null && request.Reprint.Value))
         {
@@ -225,16 +231,38 @@ internal class PermitAppManager :
         {
             //update contact directly
             UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-            updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
+            updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
             await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
+
+        //clean up old files
+        DocumentListResp docResp = await _documentRepository.QueryAsync(
+            new DocumentQry()
+            {
+                LicenceId = originalLic.LicenceId,
+                FileType = originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit ?
+                    DocumentTypeEnum.BodyArmourRationale :
+                    DocumentTypeEnum.ArmouredVehicleRationale
+            },
+            cancellationToken);
+        IEnumerable<Guid> removeDocIds = docResp.Items
+            .Where(i => request.PreviousDocumentIds == null || !request.PreviousDocumentIds.Any(d => d == i.DocumentUrlId))
+            .Select(i => i.DocumentUrlId);
+        foreach (var id in removeDocIds)
+        {
+            await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
+        }
+
+
+        //upload new files
         await UploadNewDocsAsync(request,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
-            originalApp.ContactId,
+            originalLic.LicenceHolderId,
             null,
             null,
             changes.PurposeChangeTaskId,
+            originalLic.LicenceId,
             cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
@@ -274,18 +302,18 @@ internal class PermitAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
+    private async Task<ChangeSpec> MakeChanges(LicenceResp originalLic,
         PermitAppSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
-        LicenceResp originalLic, CancellationToken ct)
+        CancellationToken ct)
     {
         ChangeSpec changes = new();
 
         // Check if purpose changed
-        changes.PurposeChanged = ChangeInPurpose(originalApp, newRequest);
+        changes.PurposeChanged = ChangeInPurpose(originalLic, newRequest);
 
         // Check if rationale changed
-        if (!String.Equals(newRequest.Rationale, originalApp.Rationale, StringComparison.OrdinalIgnoreCase) ||
+        if (!String.Equals(newRequest.Rationale, originalLic.Rationale, StringComparison.OrdinalIgnoreCase) ||
             newFileInfos.Any(n => n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmouredVehicleRationale || n.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BodyArmourRationale))
             changes.RationaleChanged = true;
 
@@ -305,7 +333,7 @@ internal class PermitAppManager :
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Rational update for {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.ContactId,
+                RegardingContactId = originalLic.LicenceHolderId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
@@ -322,7 +350,7 @@ internal class PermitAppManager :
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.High,
-                RegardingContactId = originalApp.ContactId,
+                RegardingContactId = originalLic.LicenceHolderId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
             }, ct)).TaskId;
@@ -386,18 +414,18 @@ internal class PermitAppManager :
         }
     }
 
-    private bool ChangeInEmployerInfo(LicenceApplicationResp originalApp, PermitAppSubmitRequest newRequest)
+    private bool ChangeInEmployerInfo(LicenceResp originalLic, PermitAppSubmitRequest newRequest)
     {
-        if (!String.Equals(StringHelper.SanitizeNull(originalApp.EmployerName), StringHelper.SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorName), StringHelper.SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorEmailAddress), StringHelper.SanitizeNull(newRequest.SupervisorEmailAddress), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.SupervisorPhoneNumber), StringHelper.SanitizeNull(newRequest.SupervisorPhoneNumber), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine1), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine1), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.AddressLine2), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine2), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.City), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.City), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.Country), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Country), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.PostalCode), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.PostalCode), StringComparison.OrdinalIgnoreCase) ||
-            !String.Equals(StringHelper.SanitizeNull(originalApp.EmployerPrimaryAddress?.Province), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Province), StringComparison.OrdinalIgnoreCase))
+        if (!String.Equals(StringHelper.SanitizeNull(originalLic.EmployerName), StringHelper.SanitizeNull(newRequest.EmployerName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.SupervisorName), StringHelper.SanitizeNull(newRequest.SupervisorName), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.SupervisorEmailAddress), StringHelper.SanitizeNull(newRequest.SupervisorEmailAddress), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.SupervisorPhoneNumber), StringHelper.SanitizeNull(newRequest.SupervisorPhoneNumber), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.EmployerPrimaryAddress?.AddressLine1), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine1), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.EmployerPrimaryAddress?.AddressLine2), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.AddressLine2), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.EmployerPrimaryAddress?.City), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.City), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.EmployerPrimaryAddress?.Country), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Country), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.EmployerPrimaryAddress?.PostalCode), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.PostalCode), StringComparison.OrdinalIgnoreCase) ||
+            !String.Equals(StringHelper.SanitizeNull(originalLic.EmployerPrimaryAddress?.Province), StringHelper.SanitizeNull(newRequest.EmployerPrimaryAddress?.Province), StringComparison.OrdinalIgnoreCase))
         {
             return true;
         }
@@ -423,7 +451,7 @@ internal class PermitAppManager :
         return purposes;
     }
 
-    private bool ChangeInPurpose(LicenceApplicationResp originalApp, PermitAppSubmitRequest newRequest)
+    private bool ChangeInPurpose(LicenceResp originalLic, PermitAppSubmitRequest newRequest)
     {
         List<PermitPurposeEnum> permitPurposeRequest = [];
 
@@ -445,13 +473,13 @@ internal class PermitAppManager :
         }
 
         // Check if there is a different selection in reasons
-        if (permitPurposeRequest.Count != originalApp.PermitPurposeEnums?.Count())
+        if (permitPurposeRequest.Count != originalLic.PermitPurposeEnums?.Count())
             return true;
         else
         {
             List<PermitPurposeEnum> newList = permitPurposeRequest;
             newList.Sort();
-            List<PermitPurposeEnum> originalList = originalApp.PermitPurposeEnums.ToList();
+            List<PermitPurposeEnum> originalList = originalLic.PermitPurposeEnums.ToList();
             originalList.Sort();
 
             if (!newList.SequenceEqual(originalList))
@@ -460,14 +488,14 @@ internal class PermitAppManager :
 
         // Check if there is a different reason when selected value is "other"
         if (permitPurposeRequest.Contains(PermitPurposeEnum.Other) &&
-            originalApp.PermitPurposeEnums.Contains(PermitPurposeEnum.Other) &&
-            !String.Equals(newRequest.PermitOtherRequiredReason, originalApp.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
+            originalLic.PermitPurposeEnums.Contains(PermitPurposeEnum.Other) &&
+            !String.Equals(newRequest.PermitOtherRequiredReason, originalLic.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
             return true;
 
         // Check if there is a change in employer when selected value is "my employment"
         if (permitPurposeRequest.Contains(PermitPurposeEnum.MyEmployment) &&
-            originalApp.PermitPurposeEnums.Contains(PermitPurposeEnum.MyEmployment) &&
-            ChangeInEmployerInfo(originalApp, newRequest))
+            originalLic.PermitPurposeEnums.Contains(PermitPurposeEnum.MyEmployment) &&
+            ChangeInEmployerInfo(originalLic, newRequest))
             return true;
 
         return false;

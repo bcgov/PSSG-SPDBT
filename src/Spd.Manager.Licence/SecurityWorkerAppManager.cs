@@ -136,7 +136,7 @@ internal class SecurityWorkerAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, cancellationToken);
+        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
 
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -230,6 +230,7 @@ internal class SecurityWorkerAppManager :
                 null,
                 null,
                 null,
+                null,
                 cancellationToken);
 
         //copying all old files to new application in PreviousFileIds 
@@ -315,6 +316,7 @@ internal class SecurityWorkerAppManager :
             originalApp.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
+            null,
             null,
             cancellationToken);
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
