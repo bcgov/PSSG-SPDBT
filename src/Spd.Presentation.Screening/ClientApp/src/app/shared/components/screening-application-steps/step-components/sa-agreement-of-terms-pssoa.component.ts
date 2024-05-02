@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-agreement-of-terms-pecrc',
+	selector: 'app-sa-agreement-of-terms-pssoa',
 	template: `
 		<p style="margin-top: .6rem;">
 			<strong>Terms of Use for Submitting a Criminal Record Check Online</strong>
 		</p>
 		<p>
 			In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic Criminal Record
-			Check Portal (the "Site") on their own behalf to submit an online request for a criminal record check.
+			Check Portal (the "Site") on their own behalf to submit an online request for a criminal record check administered
+			by the Personnel Security Screening Office.
 		</p>
 		<p>
 			These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of British
@@ -27,8 +28,9 @@ import { Component } from '@angular/core';
 			<strong class="terms-subtitle">Disclaimer:</strong>
 			<li>
 				Reasonable efforts have been made to provide accurate, complete and timely information regarding the Services
-				and the Site in general. However, you are encouraged to refer to your prospective employer’s policy and other
-				official information materials before submitting an online request for a criminal record check.
+				and the Site in general. However, you are encouraged to refer to the BC Public Service Human Resources Policy 14
+				– Security Screening, any related policy and other official information materials before submitting an online
+				request for a criminal record check administered by the Personnel Security Screening Office.
 			</li>
 			<li>
 				THE SERVICES ARE PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND INCLUDING WARRANTY OF FITNESS FOR A PARTICULAR
@@ -49,8 +51,6 @@ import { Component } from '@angular/core';
 					<li>THE SERVICES WILL MEET YOUR EXPECTATIONS OR REQUIREMENTS.</li>
 				</ol>
 			</li>
-
-			<li>The Province is not responsible for the content of the Payment Site as defined below.</li>
 
 			<strong class="terms-subtitle">Information Collection:</strong>
 			<li>
@@ -89,17 +89,11 @@ import { Component } from '@angular/core';
 				>, following which you will be returned to, and allowed to access the application portions of, the Site.
 			</li>
 
-			<strong class="terms-subtitle">Payment:</strong>
-			<li>
-				You may be required to access an external payment processing site (“Payment Site” or, as the context requires,
-				“Associated Service” ) in order to pay the criminal record check fee.
-			</li>
-
 			<strong class="terms-subtitle">Additional Terms and Personal Information Collection:</strong>
 			<li>
 				You may be required to accept additional terms and conditions in order to use or access an Associated Service,
-				including the BC Services Card Site, and/or the Payment Site, in which case your access to, and use of the
-				services offered by, those Associated Services or the Payment Site is governed by such additional terms.
+				including the BC Services Card Site, in which case your access to, and use of the services offered by, those
+				Associated Services is governed by such additional terms.
 			</li>
 			<li>
 				Additional personal information may be collected from you by the providers of the Associated Services in
@@ -223,4 +217,4 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class AgreementOfTermsPecrcComponent {}
+export class SaAgreementOfTermsPssoaComponent {}

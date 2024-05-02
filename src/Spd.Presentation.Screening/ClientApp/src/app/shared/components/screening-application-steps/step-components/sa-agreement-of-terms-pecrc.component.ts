@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'app-agreement-of-terms-crrpa',
+	selector: 'app-sa-agreement-of-terms-pecrc',
 	template: `
 		<p style="margin-top: .6rem;">
 			<strong>Terms of Use for Submitting a Criminal Record Check Online</strong>
@@ -27,9 +27,8 @@ import { Component } from '@angular/core';
 			<strong class="terms-subtitle">Disclaimer:</strong>
 			<li>
 				Reasonable efforts have been made to provide accurate, complete and timely information regarding the Services
-				and the Site in general. However, you are encouraged to refer to the
-				<i>Criminal Records Review Act</i>, any related Regulations and other official information materials before
-				submitting an online request for a criminal record check.
+				and the Site in general. However, you are encouraged to refer to your prospective employer’s policy and other
+				official information materials before submitting an online request for a criminal record check.
 			</li>
 			<li>
 				THE SERVICES ARE PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND INCLUDING WARRANTY OF FITNESS FOR A PARTICULAR
@@ -92,9 +91,8 @@ import { Component } from '@angular/core';
 
 			<strong class="terms-subtitle">Payment:</strong>
 			<li>
-				You may be required to access an external payment processing site (“Payment Site”) in order to pay the criminal
-				record check fee. For volunteers completing an online request for a criminal record check, no payment is
-				required.
+				You may be required to access an external payment processing site (“Payment Site” or, as the context requires,
+				“Associated Service” ) in order to pay the criminal record check fee.
 			</li>
 
 			<strong class="terms-subtitle">Additional Terms and Personal Information Collection:</strong>
@@ -112,7 +110,7 @@ import { Component } from '@angular/core';
 			<li>
 				In accessing or using the Site, you represent and warrant that:
 				<ol type="a">
-					<li>You are at least 12 years of age; and</li>
+					<li>You are at least 16 years of age; and</li>
 					<li>You have the power and capacity to accept, execute and comply with these Terms of Use.</li>
 				</ol>
 			</li>
@@ -225,4 +223,4 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class AgreementOfTermsCrrpaComponent {}
+export class SaAgreementOfTermsPecrcComponent {}

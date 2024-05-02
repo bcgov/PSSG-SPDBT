@@ -19,15 +19,15 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							(scroll)="onScrollTermsAndConditions($event)"
 						>
 							<ng-container *ngIf="isPeCrcOrPeCrcVs">
-								<app-agreement-of-terms-pecrc></app-agreement-of-terms-pecrc>
+								<app-sa-agreement-of-terms-pecrc></app-sa-agreement-of-terms-pecrc>
 							</ng-container>
 
 							<ng-container *ngIf="isCrrpa">
-								<app-agreement-of-terms-crrpa></app-agreement-of-terms-crrpa>
+								<app-sa-agreement-of-terms-crrpa></app-sa-agreement-of-terms-crrpa>
 							</ng-container>
 
 							<ng-container *ngIf="isPssoa">
-								<app-agreement-of-terms-pssoa></app-agreement-of-terms-pssoa>
+								<app-sa-agreement-of-terms-pssoa></app-sa-agreement-of-terms-pssoa>
 							</ng-container>
 						</div>
 					</div>
