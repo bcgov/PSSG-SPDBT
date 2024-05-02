@@ -57,7 +57,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 					<div class="step-container__box">
 						<div style="padding-top: 4px">&nbsp;</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2"><span class="fw-bold">Continue without</span> your BC Services Card Login</div>
+							<div class="mx-2"><span class="fw-bold">Continue without</span> a BC Services Card Login</div>
 						</div>
 						<div class="step-container__box__content p-4">
 							<p>
