@@ -79,6 +79,7 @@ public enum GenderEnum
 
 public record MailingAddr() : Addr;
 public record ResidentialAddr() : Addr;
+
 public record Addr
 {
     public string? AddressLine1 { get; set; }
@@ -135,4 +136,14 @@ public enum PortalUserServiceCategoryEnum
 {
     Screening,
     Licensing
+}
+
+public enum BizTypeEnum
+{
+    NonRegisteredSoleProprietor,
+    NonRegisteredPartnership,
+    RegisteredSoleProprietor,
+    RegisteredPartnership,
+    Corporation,
+    None
 }
