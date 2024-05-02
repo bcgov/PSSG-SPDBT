@@ -8,6 +8,7 @@ import {
 	Document,
 	IdentityProviderTypeCode,
 	LicenceAppListResponse,
+	LicenceBasicResponse,
 	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	LicenceResponse,
@@ -211,14 +212,14 @@ export class CommonApplicationService {
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
-				switchMap((licenceResps: LicenceResponse[]) => {
+				switchMap((licenceResps: LicenceBasicResponse[]) => {
 					const apis: Observable<any>[] = [];
 
 					if (licenceResps.length === 0) {
 						return of([]);
 					}
 
-					licenceResps.forEach((appl: LicenceResponse) => {
+					licenceResps.forEach((appl: LicenceBasicResponse) => {
 						if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 							apis.push(
 								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({
@@ -247,7 +248,7 @@ export class CommonApplicationService {
 								licence.isReplacementPeriod = false;
 
 								const matchingLicence = licenceResps.find(
-									(item: LicenceResponse) => item.licenceAppId === resp.licenceAppId
+									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 								);
 
 								if (matchingLicence) {
