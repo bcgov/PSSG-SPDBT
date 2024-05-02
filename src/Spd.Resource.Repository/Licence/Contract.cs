@@ -39,6 +39,17 @@ namespace Spd.Resource.Repository.Licence
         public string? LicenceHolderMiddleName1 { get; set; }
         public LicenceStatusEnum LicenceStatusCode { get; set; }
         public string? NameOnCard { get; set; }
+
+        //for permit 
+        public string? PermitOtherRequiredReason { get; set; }
+        public string? EmployerName { get; set; }
+        public string? SupervisorName { get; set; }
+        public string? SupervisorEmailAddress { get; set; }
+        public string? SupervisorPhoneNumber { get; set; }
+        public Addr? EmployerPrimaryAddress { get; set; }
+        public string? Rationale { get; set; }
+        public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+        //permit
     }
 
     public enum LicenceStatusEnum
