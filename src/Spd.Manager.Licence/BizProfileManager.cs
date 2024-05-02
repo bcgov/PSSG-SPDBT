@@ -162,7 +162,7 @@ internal class BizProfileManager :
 
     private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
     {
-        Biz biz = new()
+        BizCreateCmd createCmd = new BizCreateCmd() 
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
@@ -170,7 +170,8 @@ internal class BizProfileManager :
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
         };
-        return await _bizRepository.ManageBizAsync(new BizCreateCmd(biz), ct);
+
+        return await _bizRepository.ManageBizAsync(createCmd, ct);
     }
 
     private async Task<PortalUserResp> AddPortalUserToBiz(BceidIdentityInfo info, Guid identityId, Guid bizId, CancellationToken ct)
