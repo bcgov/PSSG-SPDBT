@@ -77,8 +77,6 @@ export class StepBusinessLicenceControllingMemberInvitesComponent implements OnI
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		// return this.form.valid;
 		return true;
 	}
 	get membersArray(): FormArray {

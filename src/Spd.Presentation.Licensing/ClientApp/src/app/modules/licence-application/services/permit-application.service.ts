@@ -20,7 +20,6 @@ import {
 	PermitAppCommandResponse,
 	PermitAppSubmitRequest,
 	PermitAppUpsertRequest,
-	PermitCommandResponse,
 	PermitLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -343,9 +342,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	/**
 	 * Partial Save - Save the permit data as is.
-	 * @returns StrictHttpResponse<PermitCommandResponse>
+	 * @returns StrictHttpResponse<PermitAppCommandResponse>
 	 */
-	savePermitStepAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
+	savePermitStepAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
 
@@ -353,7 +352,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
 			take(1),
-			tap((res: StrictHttpResponse<PermitCommandResponse>) => {
+			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
 				const formValue = this.permitModelFormGroup.getRawValue();
 				if (!formValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
@@ -536,7 +535,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.permitService.apiPermitApplicationsSubmitPost$Response({ body });
 	}
 
-	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitCommandResponse>> {
+	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);

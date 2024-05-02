@@ -54,16 +54,9 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 			</div>
 		</section>
 
-		<div class="row mt-3" *ngIf="!isReadonly">
-			<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
-					<i class="fa fa-times mr-2"></i>Cancel
-				</button>
-			</div>
-			<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Save</button>
-			</div>
-		</div>
+		<ng-container *ngIf="!isReadonly">
+			<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>
+		</ng-container>
 	`,
 	styles: [],
 })

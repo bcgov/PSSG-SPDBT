@@ -16,6 +16,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	styles: [],
 })
 export class StepBusinessLicenceNameComponent implements LicenceChildStepperStepComponent {
+	// TODO delete component?
 	isFormValid(): boolean {
 		// this.form.markAllAsTouched();
 		// return this.form.valid;
