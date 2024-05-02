@@ -29,7 +29,7 @@
         public string? BizLegalName { get; set; }
         public Guid? BizGuid { get; set; }
         public BizTypeEnum BizType { get; set; }
-        public IEnumerable<BranchAddr>? BranchAddress { get; set; }
+        public IEnumerable<BranchAddr>? BranchAddresses { get; set; }
     }
     public record BizResult : Biz
     {
