@@ -53,6 +53,9 @@ internal class DocumentRepository : IDocumentRepository
         if (qry.ReportId != null)
             documents = documents.Where(d => d._spd_pdfreportid_value == qry.ReportId);
 
+        if (qry.LicenceId != null)
+            documents = documents.Where(d => d._spd_licenceid_value == qry.LicenceId);
+
         if (qry.FileType != null)
         {
             DynamicsContextLookupHelpers.BcGovTagDictionary.TryGetValue(qry.FileType.ToString(), out Guid tagId);

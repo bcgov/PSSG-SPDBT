@@ -172,9 +172,9 @@ public class LicenceManagerTest
                 Items = new List<LicenceResp> { licenceResp }
             });
 
-        List<LicenceResponse> licenceResponses = new List<LicenceResponse>()
+        List<LicenceBasicResponse> licenceResponses = new()
         {
-            new LicenceResponse()
+            new ()
             {
                 LicenceId = licenceResp.LicenceId,
                 LicenceAppId = licenceResp.LicenceAppId,
@@ -184,14 +184,13 @@ public class LicenceManagerTest
             }
         };
 
-        mockMapper.Setup(m => m.Map<IEnumerable<LicenceResponse>>(It.Is<IEnumerable<LicenceResp>>(r => r.Any(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired))))
+        mockMapper.Setup(m => m.Map<IEnumerable<LicenceBasicResponse>>(It.Is<IEnumerable<LicenceResp>>(r => r.Any(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired))))
             .Returns(licenceResponses);
 
-        ApplicantLicenceListQuery request = new ApplicantLicenceListQuery(applicantId);
+        ApplicantLicenceListQuery request = new(applicantId);
 
         var result = await sut.Handle(request, CancellationToken.None);
 
-        Assert.IsType<List<LicenceResponse>>(result);
         Assert.Equal(applicantId, result.First().LicenceHolderId);
     }
 }

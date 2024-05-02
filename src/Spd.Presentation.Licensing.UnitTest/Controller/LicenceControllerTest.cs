@@ -28,7 +28,7 @@ public class LicenceControllerTest
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
         mockMediator.Setup(m => m.Send(It.IsAny<ApplicantLicenceListQuery>(), CancellationToken.None))
-               .ReturnsAsync(new List<LicenceResponse>());
+               .ReturnsAsync(new List<LicenceBasicResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<LicencePhotoQuery>(), CancellationToken.None))
                .ReturnsAsync(new FileResponse());
 
@@ -47,7 +47,7 @@ public class LicenceControllerTest
     {
         var result = await sut.GetLicences(Guid.NewGuid());
 
-        Assert.IsType<List<LicenceResponse>>(result);
+        Assert.IsType<List<LicenceBasicResponse>>(result);
         mockMediator.Verify();
     }
 
