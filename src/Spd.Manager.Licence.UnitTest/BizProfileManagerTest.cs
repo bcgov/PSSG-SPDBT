@@ -53,7 +53,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new IdentityQueryResult(new List<Identity>()));
             mockIdRepo.Setup(m => m.Manage(It.IsAny<CreateIdentityCmd>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new IdentityCmdResult() { Id = identityId });
-            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<BizCreateCmd>(c => c.Biz.BizGuid == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<BizCreateCmd>(c => c.BizGuid == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { Id = bizId });
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
