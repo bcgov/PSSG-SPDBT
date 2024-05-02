@@ -27,12 +27,12 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         //Arrange
         Guid bizId = Guid.NewGuid();
-        BizCreateCmd cmd = new(new Spd.Resource.Repository.Biz.Biz
+        BizCreateCmd cmd = new() 
         {
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test"
-        });
+        };
 
         //Act
         var result = await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
@@ -40,7 +40,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         //Assert
         account? account = await _context.accounts.Where(c => c.accountid == bizId).FirstOrDefaultAsync();
         Assert.NotNull(account);
-        Assert.Equal(cmd.Biz.BizGuid.ToString(), account.spd_orgguid);
+        Assert.Equal(cmd.BizGuid.ToString(), account.spd_orgguid);
 
         //Annihilate : When we have delete privilege, we need to do following
         //_context.DeleteObject(account);
@@ -52,12 +52,12 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         //Arrange
         Guid bizId = Guid.NewGuid();
-        BizCreateCmd createCmd = new(new Spd.Resource.Repository.Biz.Biz
+        BizCreateCmd createCmd = new()
         {
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test"
-        });
+        };
         var biz = await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
         BizAddServiceTypeCmd cmd = new(bizId, ServiceTypeEnum.SecurityBusinessLicence);
 
