@@ -11,7 +11,10 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 					<div class="step-container__box dark">
 						<div class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2">Register <span class="fw-bold">with</span> your BC Services Card app</div>
+							<div class="mx-2">
+								Use the <span class="fw-bold">BC Services Card app</span> or <span class="fw-bold">BC Token</span> to
+								login
+							</div>
 						</div>
 						<div class="step-container__box__content pt-4 pe-4" style="padding-left: 4em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
@@ -45,7 +48,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 						</div>
 						<div class="step-container__box__footer p-4">
 							<button mat-flat-button class="large" (click)="onRegisterWithBcServicesCard()">
-								<span style="vertical-align: text-bottom;"> Log In with BC Services Card </span>
+								<span style="vertical-align: text-bottom;"> Log In with your BC Services Card </span>
 							</button>
 						</div>
 					</div>
@@ -54,10 +57,13 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 					<div class="step-container__box">
 						<div style="padding-top: 4px">&nbsp;</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2">Register <span class="fw-bold">without</span> your BC Services Card app</div>
+							<div class="mx-2"><span class="fw-bold">Continue without</span> your BC Services Card Login</div>
 						</div>
 						<div class="step-container__box__content p-4">
-							<p>If you don't have a BC Services Card you can still complete the application.</p>
+							<p>
+								If you don't have a <a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card</a> you can
+								still complete the application.
+							</p>
 						</div>
 						<div
 							class="p-4"
@@ -68,7 +74,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 							"
 						>
 							<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
-								Continue without BC Services Card
+								Continue without a BC Services Card
 							</button>
 						</div>
 					</div>
