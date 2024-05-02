@@ -7,9 +7,9 @@
         Task<BizResult> ManageBizAsync(BizCmd cmd, CancellationToken ct);
     }
     //command
-    public abstract record BizCmd;
-    public record BizUpdateCmd(Biz Biz) : BizCmd;
-    public record BizCreateCmd(Biz Biz) : BizCmd;
+    public abstract record BizCmd : Biz;
+    public record BizUpdateCmd() : BizCmd;
+    public record BizCreateCmd() : BizCmd;
     public record BizAddServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
 
     //query
