@@ -21,7 +21,20 @@ import { CrrpaRoutes } from './crrpa-routing.module';
 						<p>To submit an online request for a criminal record check, you must:</p>
 						<ul>
 							<li>Be at least 12 years of age as of today's date.</li>
-							<li>Have an access code provided by your organization.</li>
+							<li class="mt-2">Have an access code provided by your organization.</li>
+							<li class="mt-2">
+								<div>
+									Have your identity verified by using the
+									<a href="https://id.gov.bc.ca/account/services" target="_blank">BC Services Card Login</a>. If you
+									choose not to use the BC Services Card Login, your organization will verify your ID after you submit
+									your criminal record check.
+								</div>
+								<div class="mt-2">
+									<a href="https://id.gov.bc.ca/account/setup-instruction" target="_blank"
+										>Learn how to set up the BC Services Card Login</a
+									>
+								</div>
+							</li>
 						</ul>
 						<h3 class="subheading fw-normal my-3">Access code:</h3>
 						<p>
