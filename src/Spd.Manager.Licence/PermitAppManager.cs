@@ -151,7 +151,9 @@ internal class PermitAppManager :
             throw new ArgumentException("should be a renewal request");
 
         //validation: check if original licence meet renew condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         LicenceResp originalLic = originalLicences.Items.First();
@@ -161,7 +163,10 @@ internal class PermitAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(
+            cmd.LicenceAnonymousRequest.OriginalApplicationId,
+            cmd.LicenceAnonymousRequest.PreviousDocumentIds,
+            cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
@@ -204,7 +209,9 @@ internal class PermitAppManager :
             throw new ArgumentException("should be an update request");
 
         //validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = request.OriginalLicenceId }, cancellationToken);
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
         LicenceResp originalLic = originalLicences.Items.First();
@@ -227,6 +234,27 @@ internal class PermitAppManager :
             updateCmd.Id = originalLic.LicenceHolderId ?? Guid.Empty;
             await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
+
+        //clean up old files
+        DocumentListResp docResp = await _documentRepository.QueryAsync(
+            new DocumentQry()
+            {
+                LicenceId = originalLic.LicenceId,
+                FileType = originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit ?
+                    DocumentTypeEnum.BodyArmourRationale :
+                    DocumentTypeEnum.ArmouredVehicleRationale
+            },
+            cancellationToken);
+        IEnumerable<Guid> removeDocIds = docResp.Items
+            .Where(i => request.PreviousDocumentIds == null || !request.PreviousDocumentIds.Any(d => d == i.DocumentUrlId))
+            .Select(i => i.DocumentUrlId);
+        foreach (var id in removeDocIds)
+        {
+            await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
+        }
+
+
+        //upload new files
         await UploadNewDocsAsync(request,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
