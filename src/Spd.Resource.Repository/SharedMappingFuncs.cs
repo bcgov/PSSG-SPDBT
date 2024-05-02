@@ -1,4 +1,4 @@
-﻿using Microsoft.OData.Edm;
+using Microsoft.OData.Edm;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
@@ -148,5 +148,11 @@ internal static class SharedMappingFuncs
         if (optionsetStr == null) return null;
         string[] strs = optionsetStr.Split(',');
         return strs.Select(s => Enum.Parse<PermitPurposeEnum>(Enum.GetName(typeof(PermitPurposeOptionSet), Int32.Parse(s)))).ToList();
+    }
+
+    internal static BizTypeEnum? GetBizTypeEnum(int? optionset)
+    {
+        if (optionset == null) return null;
+        return Enum.Parse<BizTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
     }
 }

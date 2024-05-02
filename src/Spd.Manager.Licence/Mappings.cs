@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
@@ -111,8 +112,8 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country))
             .ForPath(d => d.MailingAddress.AddressLine1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
             .ForPath(d => d.MailingAddress.AddressLine2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
-            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.MailingAddress.Province))
             .ForPath(d => d.MailingAddress.City, opt => opt.MapFrom(s => s.MailingAddress.City))
+            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.MailingAddress.Province))
             .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.MailingAddress.Country));
 
@@ -200,6 +201,16 @@ internal class Mappings : Profile
 
         CreateMap<BizResult, BizListResponse>()
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id));
+
+        CreateMap<BizResult, BizProfileResponse>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.BizGuid))
+            .ForMember(d => d.BizTradeName, opt => opt.MapFrom(s => s.BizName))
+            .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => s.BizType))
+            .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => GetServiceTypeCodes(s.ServiceTypes)))
+            .ForMember(d => d.BizMailingAddress, opt => opt.MapFrom(s => s.MailingAddress))
+            .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
+            .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
+            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddress)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -363,6 +374,42 @@ internal class Mappings : Profile
         }
 
         return permitPurposes;
+    }
+
+    private static List<ServiceTypeCode> GetServiceTypeCodes(IEnumerable<ServiceTypeEnum> serviceTypes)
+    {
+        List<ServiceTypeCode> serviceTypeCodes = new();
+
+        foreach (ServiceTypeEnum serviceType in serviceTypes)
+        {
+            var serviceTypeCode = Enum.Parse<ServiceTypeCode>(serviceType.ToString());
+            serviceTypeCodes.Add(serviceTypeCode);
+        }
+
+        return serviceTypeCodes;
+    }
+
+    private static List<BranchInfo> GetBranchInfo(IEnumerable<BranchAddr> branchAddrs)
+    {
+        List<BranchInfo> branchInfos = new();
+
+        foreach (BranchAddr branchAddr in branchAddrs) 
+        {
+            BranchInfo branchInfo = new() { BranchAddress = new() };
+            branchInfo.BranchId = branchAddr.BranchId;
+            branchInfo.BranchManager = branchAddr.BranchManager;
+            branchInfo.BranchPhoneNumber = branchAddr.BranchPhoneNumber;
+            branchInfo.BranchEmailAddr = branchAddr.BranchEmailAddr;
+            branchInfo.BranchAddress.AddressLine1 = branchAddr.AddressLine1;
+            branchInfo.BranchAddress.AddressLine2 = branchAddr.AddressLine2;
+            branchInfo.BranchAddress.City = branchAddr.City;
+            branchInfo.BranchAddress.Country = branchAddr.Country;
+            branchInfo.BranchAddress.PostalCode = branchAddr.PostalCode;
+            branchInfo.BranchAddress.Province = branchAddr.Province;
+            branchInfos.Add(branchInfo);
+        }
+
+        return branchInfos;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
