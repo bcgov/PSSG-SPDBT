@@ -75,12 +75,12 @@ namespace Spd.Resource.Repository.Biz
         {
             IQueryable<account> accounts = _dynaContext.accounts
                  .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                 .Where(a => a.accountid == updateBizCmd.Biz.Id);
+                 .Where(a => a.accountid == updateBizCmd.Id);
 
             account? Biz = await accounts.FirstOrDefaultAsync(ct);
             var response = _mapper.Map<BizResult>(Biz);
 
-            _mapper.Map(updateBizCmd.Biz, Biz);
+            _mapper.Map(updateBizCmd, Biz);
 
             _dynaContext.UpdateObject(Biz);
             await _dynaContext.SaveChangesAsync(ct);
@@ -90,7 +90,7 @@ namespace Spd.Resource.Repository.Biz
 
         private async Task<BizResult?> BizCreateAsync(BizCreateCmd createBizCmd, CancellationToken ct)
         {
-            var account = _mapper.Map<account>(createBizCmd.Biz);
+            var account = _mapper.Map<account>(createBizCmd);
             _dynaContext.AddToaccounts(account);
             await _dynaContext.SaveChangesAsync(ct);
 
