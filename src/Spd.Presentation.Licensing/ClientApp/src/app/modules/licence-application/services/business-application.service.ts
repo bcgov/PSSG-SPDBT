@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BusinessTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -23,8 +23,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
-		businessTypeData: this.businessTypeFormGroup,
-		businessNameData: this.businessNameFormGroup,
+		businessInformationData: this.businessInformationFormGroup,
 		companyBrandingData: this.companyBrandingFormGroup,
 		liabilityData: this.liabilityFormGroup,
 
@@ -157,6 +156,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+		const businessInformationData = {
+			businessTypeCode: BusinessTypeCode.Corporation,
+			legalBusinessName: 'Burger King',
+			doingBusinessAsName: 'King of Burgers',
+		}; // TODO temporary
+		const businessAddressData = { isMailingTheSame: false };
+		const businessManagerData = { isBusinessManager: true }; // default
 
 		// const personalInformationData = {
 		// 	givenName: profile.givenName,
@@ -220,6 +226,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// 		applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				businessInformationData,
+				businessAddressData,
+				businessManagerData,
 				// 		...originalLicenceData,
 				// 		profileConfirmationData: { isProfileUpToDate: true },
 				// 		personalInformationData: { ...personalInformationData },

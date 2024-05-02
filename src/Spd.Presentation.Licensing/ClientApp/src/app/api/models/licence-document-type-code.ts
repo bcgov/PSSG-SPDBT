@@ -52,5 +52,10 @@ export enum LicenceDocumentTypeCode {
   Bcid = 'BCID',
   ArmouredVehicleRationale = 'ArmouredVehicleRationale',
   BodyArmourRationale = 'BodyArmourRationale',
-  PassportAdditional = 'PassportAdditional'
+  PassportAdditional = 'PassportAdditional',
+  BizBranding = 'BizBranding',
+  BizInsurance = 'BizInsurance',
+  ArmourCarGuardRegistrar = 'ArmourCarGuardRegistrar',
+  BizSecurityDogCertificate = 'BizSecurityDogCertificate',
+  BizBcReport = 'BizBCReport'
 }

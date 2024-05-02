@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCategoryComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-category.component';
@@ -17,34 +18,19 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 			<mat-step *ngIf="hasBcscNameChanged">
 				<app-step-worker-licence-review-name-change></app-step-worker-licence-review-name-change>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_NAME_CHANGE)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_NAME_CHANGE)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showReprint">
 				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepUpdatePrevious(STEP_REPRINT)">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_REPRINT)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_REPRINT)"
+					(nextStepperStep)="onFormValidNextStep(STEP_REPRINT)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="hasGenderChanged">
@@ -52,28 +38,10 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 					[applicationTypeCode]="applicationTypeCodes.Update"
 				></app-step-worker-licence-photograph-of-yourself>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -81,23 +49,10 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 					[applicationTypeCode]="applicationTypeCodes.Update"
 				></app-step-worker-licence-category>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepUpdatePrevious(STEP_LICENCE_CATEGORY)"
-						>
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidCategoryNextStep()">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_LICENCE_CATEGORY)"
+					(nextStepperStep)="onFormValidCategoryNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
@@ -105,16 +60,10 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 					[applicationTypeCode]="applicationTypeCodes.Update"
 				></app-step-worker-licence-restraints>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_RESTRAINTS)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_RESTRAINTS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showStepDogsAndRestraints">
@@ -122,14 +71,10 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 					[applicationTypeCode]="applicationTypeCodes.Update"
 				></app-step-worker-licence-dogs-authorization>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_DOGS)">Next</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_DOGS)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -168,8 +113,11 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	@ViewChild(StepWorkerLicenceReprintComponent)
 	stepReprintComponent!: StepWorkerLicenceReprintComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
+import { Address } from './address';
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
 import { ArmouredVehiclePermitReasonCode } from './armoured-vehicle-permit-reason-code';
 import { BodyArmourPermitReasonCode } from './body-armour-permit-reason-code';
 import { BusinessTypeCode } from './business-type-code';
 import { DocumentExpiredInfo } from './document-expired-info';
-import { EmployerPrimaryAddress } from './employer-primary-address';
 import { EyeColourCode } from './eye-colour-code';
 import { GenderCode } from './gender-code';
 import { HairColourCode } from './hair-colour-code';
@@ -30,7 +30,7 @@ export interface PermitAppSubmitRequest {
   documentKeyCodes?: null | Array<string>;
   emailAddress?: null | string;
   employerName?: null | string;
-  employerPrimaryAddress?: EmployerPrimaryAddress;
+  employerPrimaryAddress?: Address;
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;

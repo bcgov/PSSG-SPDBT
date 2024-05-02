@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-checklist-update',
@@ -58,7 +57,7 @@ export class StepPermitChecklistUpdateComponent implements LicenceChildStepperSt
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
 
-	constructor(private formBuilder: FormBuilder, private permitApplicationService: PermitApplicationService) {}
+	constructor(private formBuilder: FormBuilder) {}
 
 	isFormValid(): boolean {
 		return true;

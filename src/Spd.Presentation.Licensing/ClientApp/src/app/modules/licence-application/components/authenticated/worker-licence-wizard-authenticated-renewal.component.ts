@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -95,7 +94,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceApplicationService: LicenceApplicationService
