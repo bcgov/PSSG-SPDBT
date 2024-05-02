@@ -30,7 +30,6 @@ internal class LicenceRepository : ILicenceRepository
         {
             lics = lics.Where(a => a.spd_licenceid == qry.LicenceId);
         }
-
         if (qry.ContactId != null)
         {
             lics = lics.Where(a => a._spd_licenceholder_value == qry.ContactId);

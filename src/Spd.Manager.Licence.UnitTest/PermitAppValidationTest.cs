@@ -21,7 +21,7 @@ public class PermitAppValidationTest
     [Fact]
     public void PermitAppSubmitRequestValidator_ShouldPass()
     {
-        var employerPrimaryAddress = fixture.Build<EmployerPrimaryAddress>()
+        var employerPrimaryAddress = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
             .With(a => a.City, new string('a', 100))
             .With(a => a.Province, new string('a', 100))
@@ -70,7 +70,7 @@ public class PermitAppValidationTest
     [Fact]
     public void CanadianCitizenWithNoDocumentation_ShouldThrowError()
     {
-        var employerPrimaryAddress = fixture.Build<EmployerPrimaryAddress>()
+        var employerPrimaryAddress = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
             .With(a => a.City, new string('a', 100))
             .With(a => a.Province, new string('a', 100))
@@ -116,7 +116,7 @@ public class PermitAppValidationTest
     [Fact]
     public void CanadianResidentWithNoDocumentation_ShouldThrowError()
     {
-        var employerPrimaryAddress = fixture.Build<EmployerPrimaryAddress>()
+        var employerPrimaryAddress = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
             .With(a => a.City, new string('a', 100))
             .With(a => a.Province, new string('a', 100))
@@ -162,7 +162,7 @@ public class PermitAppValidationTest
     [Fact]
     public void NonCanadianCitizenWithNoDocumentation_ShouldThrowError()
     {
-        var employerPrimaryAddress = fixture.Build<EmployerPrimaryAddress>()
+        var employerPrimaryAddress = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
             .With(a => a.City, new string('a', 100))
             .With(a => a.Province, new string('a', 100))
