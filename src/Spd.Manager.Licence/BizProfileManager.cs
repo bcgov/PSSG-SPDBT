@@ -102,9 +102,13 @@ internal class BizProfileManager :
         return default;
     }
 
-    public async Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
+    public async Task<BizProfileResponse> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        BizUpdateCmd bizUpdateCmd = _mapper.Map<BizUpdateCmd>(cmd.BizProfileUpdateRequest);
+
+        BizResult? result = await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
+
+        return _mapper.Map<BizProfileResponse>(result);
     }
 
     private async Task<bool> IsBizFirstTimeLogin(BizLoginCommand cmd, CancellationToken ct)
