@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -16,44 +17,23 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-							Previous
-						</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-checklist-new></app-step-permit-checklist-new>
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
-					<div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
-					<div class="row wizard-button-row">
-						<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-								Previous
-							</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						(previousStepperStep)="onGotoUserProfile()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
 
@@ -63,16 +43,10 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 					[isLoggedIn]="isLoggedIn"
 				></app-step-permit-expired>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onExpiredLicenceNextStep()">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onExpiredLicenceNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -94,11 +68,12 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	@ViewChild(StepPermitExpiredComponent) permitExpiredComponent!: StepPermitExpiredComponent;
 
 	constructor(
+		override commonApplicationService: CommonApplicationService,
 		private router: Router,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {
@@ -123,10 +98,6 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	ngOnDestroy() {
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 		if (this.permitModelChangedSubscription) this.permitModelChangedSubscription.unsubscribe();
-	}
-
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathPermitAnonymous()]);
 	}
 
 	onExpiredLicenceNextStep(): void {
@@ -157,8 +128,7 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	}
 
 	get showTermsOfUse(): boolean {
-		// authenticated: agree everytime for Update
 		// anonymous: agree everytime for all
-		return (this.isLoggedIn && this.applicationTypeCode === ApplicationTypeCode.Update) || !this.isLoggedIn;
+		return !this.isLoggedIn;
 	}
 }

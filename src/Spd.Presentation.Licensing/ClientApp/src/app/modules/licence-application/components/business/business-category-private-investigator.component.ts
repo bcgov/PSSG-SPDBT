@@ -70,7 +70,6 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		return true; // TODO return this.form.valid;
 	}
 }

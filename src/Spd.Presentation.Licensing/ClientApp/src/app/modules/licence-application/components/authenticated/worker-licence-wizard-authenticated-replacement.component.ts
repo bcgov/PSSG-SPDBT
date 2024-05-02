@@ -26,16 +26,11 @@ import { CommonApplicationService } from '../../services/common-application.serv
 						<ng-template matStepLabel> Licence Confirmation </ng-template>
 						<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
-						<div class="row wizard-button-row">
-							<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-								<button mat-stroked-button color="primary" class="large mb-2" (click)="onGotoUserProfile()">
-									Previous
-								</button>
-							</div>
-							<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-								<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
-							</div>
-						</div>
+						<app-wizard-footer
+							nextButtonLabel="Pay Now"
+							(previousStepperStep)="onGotoUserProfile()"
+							(nextStepperStep)="onPayNow()"
+						></app-wizard-footer>
 					</mat-step>
 
 					<mat-step completed="false">

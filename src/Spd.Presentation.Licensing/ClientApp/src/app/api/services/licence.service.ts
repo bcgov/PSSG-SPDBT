@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { GoogleRecaptcha } from '../models/google-recaptcha';
+import { LicenceBasicResponse } from '../models/licence-basic-response';
 import { LicenceResponse } from '../models/licence-response';
 
 @Injectable({
@@ -44,7 +45,7 @@ export class LicenceService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Array<LicenceResponse>>> {
+): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiApplicantsApplicantIdLicencesGetPath, 'get');
     if (params) {
@@ -58,7 +59,7 @@ export class LicenceService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceResponse>>;
+        return r as StrictHttpResponse<Array<LicenceBasicResponse>>;
       })
     );
   }
@@ -79,10 +80,10 @@ export class LicenceService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<Array<LicenceResponse>> {
+): Observable<Array<LicenceBasicResponse>> {
 
     return this.apiApplicantsApplicantIdLicencesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceResponse>>) => r.body as Array<LicenceResponse>)
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>) => r.body as Array<LicenceBasicResponse>)
     );
   }
 

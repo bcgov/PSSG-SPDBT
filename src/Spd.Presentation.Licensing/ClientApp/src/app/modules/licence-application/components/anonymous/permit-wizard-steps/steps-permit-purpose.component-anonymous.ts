@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
@@ -18,31 +19,12 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-reason>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERMIT_REASON)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PERMIT_REASON)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PERMIT_REASON)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERMIT_REASON)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="showEmployerInformation">
@@ -50,56 +32,23 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-employer-information>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_EMPLOYER_INFORMATION)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_EMPLOYER_INFORMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_EMPLOYER_INFORMATION)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PERMIT_RATIONALE)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PERMIT_RATIONALE)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PERMIT_RATIONALE)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERMIT_RATIONALE)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -127,10 +76,11 @@ export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponen
 	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
 
 	constructor(
+		override commonApplicationService: CommonApplicationService,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

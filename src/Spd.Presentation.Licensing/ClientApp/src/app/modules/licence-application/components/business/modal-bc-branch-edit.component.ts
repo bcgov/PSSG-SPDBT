@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BranchResponse } from './common-business-bc-branches.component';
 
 export interface UserDialogData {
@@ -15,8 +15,6 @@ export interface UserDialogData {
 	template: `
 		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content>
-			<app-common-address [form]="form" [isWizardStep]="false"></app-common-address>
-
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-md-6">
@@ -65,6 +63,9 @@ export interface UserDialogData {
 					</div>
 				</div>
 			</form>
+
+			<div class="text-minor-heading my-2">Branch Address</div>
+			<app-common-address [form]="form" [isWizardStep]="false"></app-common-address>
 		</mat-dialog-content>
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">

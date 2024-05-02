@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsul
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-consent-and-declaration.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
 
 @Component({
@@ -13,14 +14,10 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 					(editStep)="onGoToStep($event)"
 				></app-step-worker-licence-summary-review-anonymous>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onGoToNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -28,29 +25,21 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-consent-and-declaration>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onSubmitNow()">
-							{{ submitButtonName }}
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[nextButtonLabel]="submitButtonName"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onSubmitNow()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">Pay Now</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					nextButtonLabel="Pay Now"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onPayNow()"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -71,8 +60,8 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	@ViewChild(StepWorkerLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepWorkerLicenceConsentAndDeclarationComponent;
 
-	constructor() {
-		super();
+	constructor(override commonApplicationService: CommonApplicationService) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {
