@@ -57,6 +57,7 @@ public class PermitAppValidationTest
             .With(r => r.ResidentialAddress, residentialAddress)
             .With(r => r.Rationale, new string('a', 3000))
             .With(r => r.IsCanadianCitizen, true)
+            .With(r => r.IsCanadianResident, false)
             .With(r => r.BodyArmourPermitReasonCodes, new List<BodyArmourPermitReasonCode>() { BodyArmourPermitReasonCode.PersonalProtection })
             .With(r => r.ArmouredVehiclePermitReasonCodes, new List<ArmouredVehiclePermitReasonCode>() { ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty })
             .With(r => r.LicenceTermCode, LicenceTermCode.FiveYears)
