@@ -206,6 +206,15 @@ internal class Mappings : Profile
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddress)));
+
+        CreateMap<BizProfileUpdateRequest, BizUpdateCmd>()
+            .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
+            .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
+            .ForMember(d => d.BusinessAddress, opt => opt.MapFrom(s => s.BizAddress))
+            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
+            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
+            .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnum(s.ServiceTypeCodes)))
+            .ForMember(d => d.BranchAddress, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
