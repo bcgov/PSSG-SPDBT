@@ -17,10 +17,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
-				<app-wizard-footer
-					(previousStepperStep)="onGotoUserProfile()"
-					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
-				></app-wizard-footer>
+				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -131,8 +128,7 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent impl
 	}
 
 	get showTermsOfUse(): boolean {
-		// authenticated: agree everytime for Update
 		// anonymous: agree everytime for all
-		return (this.isLoggedIn && this.applicationTypeCode === ApplicationTypeCode.Update) || !this.isLoggedIn;
+		return !this.isLoggedIn;
 	}
 }

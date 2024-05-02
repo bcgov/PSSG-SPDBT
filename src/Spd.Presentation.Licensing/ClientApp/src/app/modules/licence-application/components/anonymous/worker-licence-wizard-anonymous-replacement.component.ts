@@ -17,11 +17,7 @@ import { CommonApplicationService } from '../../services/common-application.serv
 				<ng-template matStepLabel> Licence Confirmation </ng-template>
 				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
-				<div class="row mt-4">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -65,6 +61,10 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+	}
+
+	onGoToNextStep(): void {
+		this.stepper.next();
 	}
 
 	onGoToPreviousStep(): void {

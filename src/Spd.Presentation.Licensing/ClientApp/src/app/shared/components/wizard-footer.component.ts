@@ -43,7 +43,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-container>
 			<ng-template #noPreviousButton>
-				<div class="offset-xxl-3 col-xxl-2 col-xl-6 col-lg-6 col-md-12">
+				<div class="offset-xxl-2 col-xxl-4 col-xl-6 col-lg-6 col-md-12">
 					<button
 						*ngIf="isNextStepperStepObserved"
 						mat-flat-button

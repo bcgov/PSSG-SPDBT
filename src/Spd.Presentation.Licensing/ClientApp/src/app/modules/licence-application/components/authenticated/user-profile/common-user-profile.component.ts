@@ -46,7 +46,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 				</mat-accordion>
 			</div>
 
-			<div class="col-6">
+			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
 					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
@@ -73,7 +73,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 				</mat-accordion>
 			</div>
 
-			<div class="col-6">
+			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
 					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>

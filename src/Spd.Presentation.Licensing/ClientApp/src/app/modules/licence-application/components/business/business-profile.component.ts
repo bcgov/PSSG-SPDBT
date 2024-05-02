@@ -53,16 +53,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			</div>
 		</section>
 
-		<div class="row mt-3">
-			<div class="offset-xl-8 offset-lg-6 col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
-					<i class="fa fa-times mr-2"></i>Cancel
-				</button>
-			</div>
-			<div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Save</button>
-			</div>
-		</div>
+		<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>
 	`,
 	styles: ``,
 })

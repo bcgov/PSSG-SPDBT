@@ -96,7 +96,7 @@ export class CommonApplicationService {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to leave this application? All of your data will be lost.',
+			message: 'Are you sure you want to exit? All unsaved data will be lost.',
 			actionText: 'Yes',
 			cancelText: 'Cancel',
 		};

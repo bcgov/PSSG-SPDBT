@@ -24,10 +24,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-terms-of-use>
 
-				<app-wizard-footer
-					(previousStepperStep)="onGotoUserProfile()"
-					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
-				></app-wizard-footer>
+				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>

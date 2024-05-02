@@ -15,7 +15,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			<mat-step>
 				<app-step-business-licence-checklist-new></app-step-business-licence-checklist-new>
 
-				<app-wizard-footer [isFormValid]="isFormValid" (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
+				<app-wizard-footer
+					(previousStepperStep)="onGotoUserProfile()"
+					(nextStepperStep)="onGoToNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -90,8 +93,10 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	// }
 
-	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+	onGotoUserProfile(): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
+		);
 	}
 
 	override dirtyForm(step: number): boolean {

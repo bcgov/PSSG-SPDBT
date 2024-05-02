@@ -139,12 +139,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 
 	@ViewChild(MatSort) sort!: MatSort;
 
-	constructor(
-		private utilService: UtilService,
-		private dialog: MatDialog,
-		// private businessApplicationService: BusinessApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private utilService: UtilService, private dialog: MatDialog, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
 		this.branchList = this.branchesArray.value;

@@ -39,18 +39,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			</div>
 		</section>
 
-		<div class="row mt-3">
-			<div class="offset-xl-6 offset-lg-5 col-xl-2 col-lg-3 col-md-6 col-sm-12">
-				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">
-					<i class="fa fa-times mr-2"></i>Cancel
-				</button>
-			</div>
-			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-				<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">
-					{{ saveAndContinueLabel }}
-				</button>
-			</div>
-		</div>
+		<app-wizard-footer [nextButtonLabel]="saveAndContinueLabel" (nextStepperStep)="onContinue()"></app-wizard-footer>
 	`,
 	styles: ``,
 })
@@ -70,10 +59,6 @@ export class StepBusinessLicenceProfileComponent {
 		private utilService: UtilService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
-
-	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-	}
 
 	onContinue(): void {
 		const isValid = this.businessProfileComponent.isFormValid();

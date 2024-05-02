@@ -113,9 +113,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		// private route: Router,
-		// private hotToastService: HotToastService,
-		private businessApplicationService: BusinessApplicationService // private commonApplicationService: CommonApplicationService
+		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);
 	}
