@@ -475,13 +475,13 @@ public class PermitAppManagerTest
         mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
             .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
 
-        LicenceApplicationResp originalApp = fixture.Build<LicenceApplicationResp>()
+        var existingdoc = fixture.Build<DocumentResp>()
             .With(r => r.ExpiryDate, expiryDate)
-            .With(r => r.LicenceAppId, licAppId)
             .Create();
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
-            .ReturnsAsync(originalApp);
-
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.LicenceId == licenceResp.LicenceId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp> { existingdoc } });
+        mockDocRepo.Setup(m => m.ManageAsync(It.Is<DeactivateDocumentCmd>(q => q.DocumentUrlId == existingdoc.DocumentUrlId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingdoc);
         mockTaskAppRepo.Setup(m => m.ManageAsync(It.IsAny<CreateTaskCmd>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new TaskResp());
         mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
@@ -492,6 +492,7 @@ public class PermitAppManagerTest
             .Returns(new CreateDocumentCmd());
 
         PermitAppSubmitRequest request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
+        request.PreviousDocumentIds = null;
         List<LicAppFileInfo> licAppFileInfos = new();
 
         PermitAppUpdateCommand cmd = new(request, licAppFileInfos);
