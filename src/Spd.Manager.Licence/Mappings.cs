@@ -416,6 +416,42 @@ internal class Mappings : Profile
         return branchInfos;
     }
 
+    private static List<BranchAddr> GetBranchAddr(IEnumerable<BranchInfo> branchInfos) 
+    {
+        List<BranchAddr> branchAddrs = new();
+
+        foreach (BranchInfo branchInfo in branchInfos)
+        {
+            BranchAddr branchAddr = new();
+            branchAddr.BranchId = branchInfo.BranchId;
+            branchAddr.BranchManager = branchInfo.BranchManager;
+            branchAddr.BranchPhoneNumber = branchInfo.BranchPhoneNumber;
+            branchAddr.BranchEmailAddr = branchInfo.BranchEmailAddr;
+            branchAddr.AddressLine1 = branchInfo.BranchAddress.AddressLine1;
+            branchAddr.AddressLine2 = branchInfo.BranchAddress.AddressLine2;
+            branchAddr.City = branchInfo.BranchAddress.City;
+            branchAddr.Country = branchInfo.BranchAddress.Country;
+            branchAddr.PostalCode = branchInfo.BranchAddress.PostalCode;
+            branchAddr.Province = branchInfo.BranchAddress.Province;
+            branchAddrs.Add(branchAddr);
+        }
+
+        return branchAddrs;
+    }
+
+    private static List<ServiceTypeEnum> GetServiceTypeEnum(IEnumerable<ServiceTypeCode> serviceTypeCodes)
+    {
+        List<ServiceTypeEnum> serviceTypes = new();
+
+        foreach (ServiceTypeCode serviceTypeCode in serviceTypeCodes)
+        {
+            ServiceTypeEnum serviceTypeEnum = Enum.Parse<ServiceTypeEnum>(serviceTypeCode.ToString());
+            serviceTypes.Add(serviceTypeEnum);
+        }
+
+        return serviceTypes;
+    }
+
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {
         {LicenceDocumentTypeCode.BcServicesCard, DocumentTypeEnum.BCServicesCard},
