@@ -13,7 +13,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		// private authUserBceidService: AuthUserBceidService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 

@@ -13,8 +13,15 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 				<app-step-title
 					title="Select your licence term"
 					subtitle="The licence term will apply to all licence categories"
-					[info]="infoText"
 				></app-step-title>
+			</div>
+
+			<div class="row" *ngIf="infoText">
+				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
+					<app-alert type="info" icon="info">
+						{{ infoText }}
+					</app-alert>
+				</div>
 			</div>
 
 			<div class="row">
@@ -49,7 +56,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;
 
-	@Input() isSoleProprietorRelated!: boolean;
+	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
@@ -71,10 +78,8 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 		)?.value;
 
 		const businessTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'businessTypeData.businessTypeCode'
+			'businessInformationData.businessTypeCode'
 		)?.value;
-
-		// console.debug('get termCodes', workerLicenceTypeCode, applicationTypeCode, businessTypeCode);
 
 		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
 			return [];
@@ -88,7 +93,7 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 	}
 
 	get infoText(): string {
-		return this.isSoleProprietorRelated
+		return this.isBusinessLicenceSoleProprietor
 			? 'If you select a term that is longer than your security worker licence, we will automatically extend your worker licence to match the expiry date of this business licence. You will then be able to renew them together in the future.'
 			: '';
 	}

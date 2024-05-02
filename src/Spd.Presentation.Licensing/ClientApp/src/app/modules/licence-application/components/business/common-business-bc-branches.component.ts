@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
 
@@ -138,12 +139,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 
 	@ViewChild(MatSort) sort!: MatSort;
 
-	constructor(
-		private utilService: UtilService,
-		private dialog: MatDialog,
-		// private businessApplicationService: BusinessApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private utilService: UtilService, private dialog: MatDialog, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
 		this.branchList = this.branchesArray.value;
@@ -160,17 +156,31 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		return true; // TODO return this.form.valid;
 	}
 
 	onEditBranch(branch: BranchResponse): void {
 		this.branchDialog(branch, false);
 	}
 
-	onRemoveBranch(index: number): void {
-		this.branchList.splice(index, 1);
-		this.dataSource = new MatTableDataSource(this.branchList);
+	onRemoveBranch(index: number) {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to remove this branch?',
+			actionText: 'Yes, remove',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.branchList.splice(index, 1);
+					this.dataSource = new MatTableDataSource(this.branchList);
+				}
+			});
 	}
 
 	onSortData(sort: Sort) {

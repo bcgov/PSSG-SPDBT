@@ -104,10 +104,11 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
+		const data = this.dialogData.data;
 		this.form.reset();
-		this.form.patchValue(this.dialogData);
-		this.isEdit = !!this.dialogData.id;
-		this.title = this.dialogData.id ? 'Edit Business Manager' : 'Add Business Manager';
+		this.form.patchValue(data);
+		this.isEdit = !!data.id;
+		this.title = data.id ? 'Edit Business Manager' : 'Add Business Manager';
 	}
 
 	onSave(): void {

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	BusinessTypeCode,
 	Document,
+	IdentityProviderTypeCode,
 	LicenceAppListResponse,
+	LicenceBasicResponse,
 	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	LicenceResponse,
@@ -31,6 +34,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
@@ -72,6 +76,7 @@ export class CommonApplicationService {
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
@@ -88,10 +93,34 @@ export class CommonApplicationService {
 		});
 	}
 
+	public cancelAndLoseChanges() {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to exit? All unsaved data will be lost.',
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.onGoToHome();
+				}
+			});
+	}
+
 	public onGoToHome(): void {
 		if (this.isLoggedIn) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
-			return;
+			if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BcServicesCard) {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
+				return;
+			} else if (this.authProcessService.identityProvider === IdentityProviderTypeCode.BusinessBceId) {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+				return;
+			}
 		}
 
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
@@ -183,14 +212,14 @@ export class CommonApplicationService {
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
-				switchMap((licenceResps: LicenceResponse[]) => {
+				switchMap((licenceResps: LicenceBasicResponse[]) => {
 					const apis: Observable<any>[] = [];
 
 					if (licenceResps.length === 0) {
 						return of([]);
 					}
 
-					licenceResps.forEach((appl: LicenceResponse) => {
+					licenceResps.forEach((appl: LicenceBasicResponse) => {
 						if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 							apis.push(
 								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({
@@ -219,7 +248,7 @@ export class CommonApplicationService {
 								licence.isReplacementPeriod = false;
 
 								const matchingLicence = licenceResps.find(
-									(item: LicenceResponse) => item.licenceAppId === resp.licenceAppId
+									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 								);
 
 								if (matchingLicence) {

@@ -301,12 +301,13 @@ import {
 												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
 													<span class="fw-semibold">Lost your licence? </span>
+													<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
 													<a
+														*ngIf="!applicationIsInProgress"
 														class="large"
 														tabindex="0"
 														(click)="onRequestReplacement(appl)"
 														(keydown)="onKeydownRequestReplacement($event, appl)"
-														[class.disable]="applicationIsInProgress"
 														>Request a replacement</a
 													>
 													and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
@@ -327,12 +328,13 @@ import {
 												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
 													<span class="fw-semibold">Lost or stolen permit? </span>
+													<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
 													<a
+														*ngIf="!applicationIsInProgress"
 														class="large"
 														tabindex="0"
 														(click)="onRequestReplacement(appl)"
 														(keydown)="onKeydownRequestReplacement($event, appl)"
-														[class.disable]="applicationIsInProgress"
 														>Request a replacement</a
 													>
 													and we'll send you one in {{ lostLicenceDaysText }} business days.
@@ -790,6 +792,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onRequestReplacement(appl: UserLicenceResponse): void {
+		if (this.applicationIsInProgress) return;
+
 		switch (appl.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
