@@ -127,7 +127,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_rationale, opt => opt.MapFrom(s => s.Rationale))
          .ForMember(d => d.spd_permitpurposeother, opt => opt.MapFrom(s => s.PermitOtherRequiredReason))
          .ForMember(d => d.spd_resideincanada, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsCanadianResident)))
-         .ForMember(d => d.spd_permitpurpose, opt => opt.MapFrom(s => GetPermitPurposeOptionSets(s.PermitPurposeEnums)))
+         .ForMember(d => d.spd_permitpurpose, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeOptionSets(s.PermitPurposeEnums)))
          .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
          .ForMember(d => d.spd_criminalchargesconvictionsdetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
@@ -173,7 +173,7 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => GetEmployerAddressData(s)))
          .ForMember(d => d.IsCanadianResident, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_resideincanada)))
-         .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPermitPurposeEnums(s.spd_permitpurpose)))
+         .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
          .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
          .ForMember(d => d.SupervisorEmailAddress, opt => opt.MapFrom(s => s.spd_employeremail))
          .ForMember(d => d.SupervisorPhoneNumber, opt => opt.MapFrom(s => s.spd_employerphonenumber))
@@ -436,19 +436,6 @@ internal class Mappings : Profile
         return string.IsNullOrWhiteSpace(result) ? null : result;
     }
 
-    private static string? GetPermitPurposeOptionSets(IEnumerable<PermitPurposeEnum>? permitPurposes)
-    {
-        if (permitPurposes == null) return null;
-        var result = String.Join(',', permitPurposes.Select(p => ((int)Enum.Parse<PermitPurposeOptionSet>(p.ToString())).ToString()).ToArray());
-        return string.IsNullOrWhiteSpace(result) ? null : result;
-    }
-
-    private static IEnumerable<PermitPurposeEnum> GetPermitPurposeEnums(string? optionsetStr)
-    {
-        if (optionsetStr == null) return null;
-        string[] strs = optionsetStr.Split(',');
-        return strs.Select(s => Enum.Parse<PermitPurposeEnum>(Enum.GetName(typeof(PermitPurposeOptionSet), Int32.Parse(s)))).ToList();
-    }
     private static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
     {
         if (dogreasonsStr == null) return null;

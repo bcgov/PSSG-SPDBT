@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -13,7 +14,7 @@ namespace Spd.Manager.Licence;
 internal class LicenceManager :
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
-        IRequestHandler<ApplicantLicenceListQuery, IEnumerable<LicenceResponse>>,
+        IRequestHandler<ApplicantLicenceListQuery, IEnumerable<LicenceBasicResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -50,11 +51,22 @@ internal class LicenceManager :
             _logger.LogDebug("No licence found.");
             return null;
         }
-
-        return _mapper.Map<LicenceResponse>(response.Items.First());
+        LicenceResp lic = response.Items.First();
+        DocumentListResp? docResp = null;
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.ArmouredVehiclePermit)
+            docResp = await _documentRepository.QueryAsync(
+                new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
+                cancellationToken);
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit)
+            docResp = await _documentRepository.QueryAsync(
+                new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.BodyArmourRationale },
+                cancellationToken);
+        LicenceResponse result = _mapper.Map<LicenceResponse>(response.Items.First());
+        result.RationalDocumentInfos = _mapper.Map<IEnumerable<Document>>(docResp?.Items);
+        return result;
     }
 
-    public async Task<IEnumerable<LicenceResponse>> Handle(ApplicantLicenceListQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceBasicResponse>> Handle(ApplicantLicenceListQuery query, CancellationToken cancellationToken)
     {
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
@@ -70,7 +82,7 @@ internal class LicenceManager :
         }
 
         //only return expired and active ones
-        return _mapper.Map<IEnumerable<LicenceResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired));
+        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired));
     }
 
     public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)
@@ -83,7 +95,7 @@ internal class LicenceManager :
             throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence holder.");
         }
 
-        DocumentQry qry = new DocumentQry
+        DocumentQry qry = new()
         {
             ApplicantId = applicantId,
             FileType = Enum.Parse<DocumentTypeEnum>(DocumentTypeEnum.Photograph.ToString()),
