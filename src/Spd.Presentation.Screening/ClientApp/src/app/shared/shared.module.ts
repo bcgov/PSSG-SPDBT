@@ -34,6 +34,9 @@ import { SaStepOrganizationInfoComponent } from './components/screening-applicat
 import { SaStepPayForApplicationComponent } from './components/screening-application-steps/sa-step-pay-for-application.component';
 import { SaStepPersonalInfoComponent } from './components/screening-application-steps/sa-step-personal-info.component';
 import { SaStepTermsAndCondComponent } from './components/screening-application-steps/sa-step-terms-and-cond.component';
+import { AgreementOfTermsCrrpaComponent } from './components/screening-application-steps/step-components/agreement-of-terms-crrpa.component';
+import { AgreementOfTermsPecrcComponent } from './components/screening-application-steps/step-components/agreement-of-terms-pecrc.component';
+import { AgreementOfTermsPssoaComponent } from './components/screening-application-steps/step-components/agreement-of-terms-pssoa.component';
 import { SaAgreementOfTermsComponent } from './components/screening-application-steps/step-components/sa-agreement-of-terms.component';
 import { SaApplicationSubmittedComponent } from './components/screening-application-steps/step-components/sa-application-submitted.component';
 import { SaChecklistComponent } from './components/screening-application-steps/step-components/sa-checklist.component';
@@ -83,6 +86,9 @@ const SHARED_COMPONENTS = [
 	AlertComponent,
 	StatusStatisticsCommonComponent,
 	ApplicationsBannerComponent,
+	AgreementOfTermsCrrpaComponent,
+	AgreementOfTermsPecrcComponent,
+	AgreementOfTermsPssoaComponent,
 	ScreeningStatusFilterCommonComponent,
 	ScreeningStatusesCommonComponent,
 	ScreeningRequestsCommonComponent,
