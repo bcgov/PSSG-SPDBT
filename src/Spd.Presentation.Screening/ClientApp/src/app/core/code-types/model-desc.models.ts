@@ -71,9 +71,9 @@ export const FileTypes: SelectOptions[] = [
 ];
 
 export const ScreeningTypes: SelectOptions[] = [
-	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
 	{ desc: 'Contractor', code: ScreeningTypeCode.Contractor },
 	{ desc: 'Licensee', code: ScreeningTypeCode.Licensee },
+	{ desc: 'Staff', code: ScreeningTypeCode.Staff },
 ];
 
 export const PayerPreferenceTypes: SelectOptions[] = [
