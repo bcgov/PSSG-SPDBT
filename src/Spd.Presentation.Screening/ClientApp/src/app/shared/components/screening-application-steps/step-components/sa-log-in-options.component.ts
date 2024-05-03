@@ -48,7 +48,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 						</div>
 						<div class="step-container__box__footer p-4">
 							<button mat-flat-button class="large" (click)="onRegisterWithBcServicesCard()">
-								<span style="vertical-align: text-bottom;"> Log In with your BC Services Card </span>
+								<span style="vertical-align: text-bottom;"> Log In with BC Services Card </span>
 							</button>
 						</div>
 					</div>
@@ -57,12 +57,13 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 					<div class="step-container__box">
 						<div style="padding-top: 4px">&nbsp;</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2"><span class="fw-bold">Continue without</span> a BC Services Card Login</div>
+							<div class="mx-2"><span class="fw-bold">Continue without</span> your BC Services Card Login</div>
 						</div>
 						<div class="step-container__box__content p-4">
 							<p>
-								If you don't have a <a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card</a> you can
-								still complete the application.
+								If you don't have a
+								<a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card account</a> you can still
+								complete the application.
 							</p>
 						</div>
 						<div
@@ -74,7 +75,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 							"
 						>
 							<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
-								Continue without a BC Services Card
+								Continue without BC Services Card
 							</button>
 						</div>
 					</div>
