@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
@@ -16,55 +15,31 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step *ngIf="showTermsOfUse">
 				<app-step-permit-terms-of-use [applicationTypeCode]="applicationTypeCode"></app-step-permit-terms-of-use>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_TERMS)">
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
 			</mat-step>
+
 			<mat-step>
 				<app-step-permit-checklist-update></app-step-permit-checklist-update>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-confirmation></app-step-permit-confirmation>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERMIT_CONFIRMATION)"
-						>
-							Next
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PERMIT_CONFIRMATION)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
 				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_PRINT)">Next</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PRINT)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -87,11 +62,11 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent i
 	@ViewChild(StepPermitReprintComponent) stepPermitPrintComponent!: StepPermitReprintComponent;
 
 	constructor(
-		private router: Router,
+		override commonApplicationService: CommonApplicationService,
 		private authProcessService: AuthProcessService,
 		private permitApplicationService: PermitApplicationService
 	) {
-		super();
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {
@@ -115,10 +90,6 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent i
 	ngOnDestroy() {
 		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-	}
-
-	onCancel(): void {
-		this.router.navigate([LicenceApplicationRoutes.pathPermitAnonymous()]);
 	}
 
 	override dirtyForm(step: number): boolean {

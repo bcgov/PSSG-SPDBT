@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
@@ -17,31 +18,14 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-police-background>
 
-				<div class="row wizard-button-row" *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_POLICE_BACKGROUND)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<ng-container *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+						(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
+					></app-wizard-footer>
+				</ng-container>
 			</mat-step>
 
 			<mat-step>
@@ -49,31 +33,12 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-mental-health-conditions>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_MENTAL_HEALTH_CONDITIONS)"
+					(nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH_CONDITIONS)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -81,56 +46,23 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-criminal-history>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_CRIMINAL_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onStepNext(STEP_FINGERPRINTS)">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_FINGERPRINTS)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_FINGERPRINTS)"
+					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -164,8 +96,11 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 	criminalHistoryComponent!: StepWorkerLicenceCriminalHistoryComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private licenceApplicationService: LicenceApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

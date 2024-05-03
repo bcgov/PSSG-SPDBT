@@ -16,7 +16,6 @@ import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
 import { PermitAppSubmitRequest } from '../models/permit-app-submit-request';
 import { PermitAppUpsertRequest } from '../models/permit-app-upsert-request';
-import { PermitCommandResponse } from '../models/permit-command-response';
 import { PermitLicenceAppResponse } from '../models/permit-licence-app-response';
 
 @Injectable({
@@ -50,7 +49,7 @@ export class PermitService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<PermitCommandResponse>> {
+): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsPostPath, 'post');
     if (params) {
@@ -64,7 +63,7 @@ export class PermitService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<PermitCommandResponse>;
+        return r as StrictHttpResponse<PermitAppCommandResponse>;
       })
     );
   }
@@ -84,10 +83,10 @@ export class PermitService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<PermitCommandResponse> {
+): Observable<PermitAppCommandResponse> {
 
     return this.apiPermitApplicationsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<PermitCommandResponse>) => r.body as PermitCommandResponse)
+      map((r: StrictHttpResponse<PermitAppCommandResponse>) => r.body as PermitAppCommandResponse)
     );
   }
 
@@ -309,7 +308,7 @@ export class PermitService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<PermitCommandResponse>> {
+): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsSubmitPostPath, 'post');
     if (params) {
@@ -323,7 +322,7 @@ export class PermitService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<PermitCommandResponse>;
+        return r as StrictHttpResponse<PermitAppCommandResponse>;
       })
     );
   }
@@ -343,10 +342,10 @@ export class PermitService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<PermitCommandResponse> {
+): Observable<PermitAppCommandResponse> {
 
     return this.apiPermitApplicationsSubmitPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<PermitCommandResponse>) => r.body as PermitCommandResponse)
+      map((r: StrictHttpResponse<PermitAppCommandResponse>) => r.body as PermitAppCommandResponse)
     );
   }
 

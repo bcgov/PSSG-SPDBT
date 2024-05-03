@@ -25,7 +25,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 
 			<mat-expansion-panel class="my-2 w-100" [expanded]="defaultExpanded">
 				<mat-expansion-panel-header>
-					<mat-panel-title class="title"> Employees </mat-panel-title>
+					<mat-panel-title>Employees</mat-panel-title>
 				</mat-expansion-panel-header>
 
 				<app-common-business-employees [form]="licenceHoldersFormGroup"></app-common-business-employees>

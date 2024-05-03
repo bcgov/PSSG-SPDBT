@@ -82,7 +82,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	permitRationaleFormGroup: FormGroup = this.formBuilder.group({
 		rationale: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl(''),
+		attachments: new FormControl([]),
 	});
 
 	employerInformationFormGroup: FormGroup = this.formBuilder.group({

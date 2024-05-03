@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -18,8 +18,8 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="summary-heading mb-2">Business Manager Information</div>
 					<form [formGroup]="form" novalidate>
+						<div class="summary-heading mb-2">Business Manager Information</div>
 						<div class="row">
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
@@ -80,6 +80,67 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								<mat-checkbox formControlName="isBusinessManager"> I am the business manager </mat-checkbox>
 							</div>
 						</div>
+
+						<ng-container *ngIf="!isBusinessManager.value">
+							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+							<div class="summary-heading mb-2">Your Information</div>
+							<div class="row">
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
+										<input matInput formControlName="agivenName" [errorStateMatcher]="matcher" maxlength="40" />
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
+										<input matInput formControlName="amiddleName1" maxlength="40" />
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
+										<input matInput formControlName="amiddleName2" maxlength="40" />
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Surname</mat-label>
+										<input matInput formControlName="asurname" [errorStateMatcher]="matcher" maxlength="40" />
+										<mat-error *ngIf="form.get('asurname')?.hasError('required')"> This is required </mat-error>
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Email Address</mat-label>
+										<input
+											matInput
+											formControlName="aemailAddress"
+											[errorStateMatcher]="matcher"
+											placeholder="name@domain.com"
+											maxlength="75"
+										/>
+										<mat-error *ngIf="form.get('aemailAddress')?.hasError('required')"> This is required </mat-error>
+										<mat-error *ngIf="form.get('aemailAddress')?.hasError('email')">
+											Must be a valid email address
+										</mat-error>
+									</mat-form-field>
+								</div>
+
+								<div class="col-xl-6 col-lg-6 col-md-12">
+									<mat-form-field>
+										<mat-label>Phone Number</mat-label>
+										<input matInput formControlName="aphoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+										<mat-error *ngIf="form.get('aphoneNumber')?.hasError('required')">This is required</mat-error>
+										<mat-error *ngIf="form.get('aphoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
+									</mat-form-field>
+								</div>
+							</div>
+						</ng-container>
 					</form>
 				</div>
 			</div>
@@ -97,7 +158,10 @@ export class StepBusinessLicenceManagerInformationComponent implements LicenceCh
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		return true; //  TODO  this.form.valid;
+	}
+
+	get isBusinessManager(): FormControl {
+		return this.form.get('isBusinessManager') as FormControl;
 	}
 }
