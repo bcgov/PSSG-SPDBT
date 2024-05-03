@@ -11,7 +11,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<ul *ngIf="payeeType === payerPreferenceTypeCodes.Applicant">
 							<li>
-								Your BC Services Card app (recommended), or other
+								Your BC Services Card Account Login (recommended), or other
 								<a
 									href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/law-policy"
 									target="_blank"
@@ -30,7 +30,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 						</ul>
 						<ul *ngIf="payeeType === payerPreferenceTypeCodes.Organization">
 							<li>
-								Your BC Services Card app (recommended), or other
+								Your BC Services Card Account Login (recommended), or other
 								<a
 									href="https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/law-policy"
 									target="_blank"
