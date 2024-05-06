@@ -28,6 +28,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
 						[mailingAddressFormGroup]="mailingAddressFormGroup"
 						[branchesInBcFormGroup]="branchesInBcFormGroup"
+						[isReadonly]="false"
 					></app-common-business-profile>
 
 					<div class="row mt-3">

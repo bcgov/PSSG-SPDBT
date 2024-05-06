@@ -37,7 +37,7 @@ import { Observable, take, tap } from 'rxjs';
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto me-2 mb-3" (click)="onBusinessProfile()">
 									<mat-icon>person</mat-icon>
-									Business Profile
+									{{ businessProfileLabel }}
 								</button>
 								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
 									<mat-icon>people</mat-icon>
@@ -394,7 +394,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	// results$!: Observable<any>;
 	applicationIsInProgress: boolean | null = null;
-	// yourProfileLabel = '';
+	businessProfileLabel = '';
 	lostLicenceDaysText: string | null = null;
 
 	activeLicenceExist = false;
@@ -446,6 +446,9 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				restraintAuthorization: null,
 			},
 		];
+		// this.applicationIsInProgress = true;
+
+		this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 
 		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
 	}
@@ -589,12 +592,16 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onBusinessProfile(): void {
+		// When a user has started an application but has not submitted it yet,
+		// the user can view their Profile page in read-only mode – they can't edit
+		// this info while the application is in progress
 		this.businessApplicationService
 			.loadBusinessProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_PROFILE)
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_PROFILE),
+						{ state: { isReadonly: this.applicationIsInProgress } }
 					);
 				}),
 				take(1)

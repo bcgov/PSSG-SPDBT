@@ -59,6 +59,7 @@ export abstract class BusinessApplicationHelper {
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 		isTradeNameTheSameAsLegal: new FormControl(''),
+		licenceNumberLookup: new FormControl(''), // TODO fix
 	});
 
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group({
@@ -276,7 +277,6 @@ export abstract class BusinessApplicationHelper {
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
 		managerName: new FormControl('', [Validators.requiredTrue]),
-		managerSwlNumber: new FormControl(''),
 		managerPhoneNumber: new FormControl('', [FormControlValidators.required]),
 		managerEmail: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
 	});

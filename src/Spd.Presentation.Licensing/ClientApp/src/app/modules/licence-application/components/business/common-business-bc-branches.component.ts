@@ -11,7 +11,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
 
 export interface BranchResponse {
-	id?: null | number;
+	branchId?: null | number;
 	addressSelected?: null | boolean;
 	addressLine1?: null | string;
 	addressLine2?: null | string;
@@ -19,10 +19,9 @@ export interface BranchResponse {
 	country?: null | string;
 	postalCode?: null | string;
 	province?: null | string;
-	managerName?: null | string;
-	managerSwlNumber?: null | string;
-	managerPhoneNumber?: null | string;
-	managerEmail?: null | string;
+	branchManager?: null | string;
+	branchPhoneNumber?: null | string;
+	branchEmailAddr?: null | string;
 }
 
 @Component({
@@ -56,13 +55,13 @@ export interface BranchResponse {
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="managerName">
+						<ng-container matColumnDef="branchManager">
 							<mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by manager name"
 								>Manager</mat-header-cell
 							>
 							<mat-cell *matCellDef="let branch">
 								<span class="mobile-label">Manager:</span>
-								{{ branch.managerName | default }}
+								{{ branch.branchManager | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -132,10 +131,9 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 	branchList: Array<BranchResponse> = [];
 
 	dataSource!: MatTableDataSource<BranchResponse>;
-	columns: string[] = ['addressLine1', 'city', 'managerName', 'action1', 'action2'];
+	columns: string[] = ['addressLine1', 'city', 'branchManager', 'action1', 'action2'];
 
 	@Input() form!: FormGroup;
-	// @Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(MatSort) sort!: MatSort;
 
@@ -192,8 +190,8 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 			switch (sort.active) {
 				case 'city':
 					return this.utilService.sortByDirection(a.city, b.city, sort.direction);
-				case 'managerName':
-					return this.utilService.sortByDirection(a.managerName, b.managerName, sort.direction);
+				case 'branchManager':
+					return this.utilService.sortByDirection(a.branchManager, b.branchManager, sort.direction);
 				default:
 					return 0;
 			}
@@ -218,7 +216,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 						this.branchList.push(resp.data);
 						this.hotToastService.success('Branch was successfully added');
 					} else {
-						const branchIndex = this.branchList.findIndex((item) => item.id == dialogOptions.id!);
+						const branchIndex = this.branchList.findIndex((item) => item.branchId == dialogOptions.branchId!);
 						if (branchIndex >= 0) {
 							this.branchList[branchIndex] = resp.data;
 							this.dataSource.data = this.branchList;
