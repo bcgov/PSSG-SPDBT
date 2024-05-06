@@ -14,46 +14,22 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<div class="row">
 				<div class="col-lg-6 col-md-12">
 					<div class="mb-3">
-						<div class="readonly-heading fw-semibold">Legal Business Name</div>
-						<div class="fs-5">{{ legalBusinessName.value | default }}</div>
-
-						<div class="my-4" style="color: var(--color-primary);" *ngIf="isBusinessLicenceSoleProprietor">
-							<mat-icon style="vertical-align: bottom;">label_important</mat-icon> The name of your business must be
-							your name, as it appears on your security worker licence
-						</div>
+						<ng-container *ngIf="isBusinessLicenceSoleProprietor">
+							<app-alert type="warning" icon="" [showBorder]="false">
+								The name of your business must be your name, as it appears on your security worker licence
+							</app-alert>
+						</ng-container>
+						<div class="text-primary-color fw-semibold">Legal Business Name</div>
+						<div class="text-primary-color fs-5">{{ legalBusinessName.value | default }}</div>
 					</div>
 					<div class="mb-3">
-						<div class="readonly-heading fw-semibold">
+						<div class="text-primary-color fw-semibold">
 							Trade or 'Doing Business As' Name
 							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
 						</div>
-						<div class="fs-5">{{ doingBusinessAsName.value | default }}</div>
+						<div class="text-primary-color fs-5">{{ doingBusinessAsName.value | default }}</div>
 					</div>
 				</div>
-
-				<!-- </div>
-			<div class="row">
-				<div class="col-lg-6 col-md-12">
-					<mat-form-field>
-						<mat-label>Legal Business Name</mat-label>
-						<input matInput formControlName="legalBusinessName" />
-					</mat-form-field>
-
-					<div class="mb-4" style="color: var(--color-primary);" *ngIf="isBusinessLicenceSoleProprietor">
-						<mat-icon style="vertical-align: bottom;">label_important</mat-icon> The name of your business must be your
-						name, as it appears on your security worker licence
-					</div>
-				</div> -->
-
-				<!-- <div class="col-lg-6 col-md-12">
-					<mat-form-field>
-						<mat-label
-							>Trade or 'Doing Business As' Name
-							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
-						</mat-label>
-						<input matInput formControlName="doingBusinessAsName" />
-					</mat-form-field>
-				</div> -->
 
 				<div class="col-lg-6 col-md-12">
 					<app-alert type="info" icon="" [showBorder]="false">
@@ -69,15 +45,15 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								{{ item.desc }}
 							</mat-option>
 						</mat-select>
-						<mat-error *ngIf="form.get('businessTypeCode')?.hasError('required')"> This is required </mat-error>
+						<mat-error *ngIf="form.get('businessTypeCode')?.hasError('required')">This is required</mat-error>
 					</mat-form-field>
 				</div>
 			</div>
 
 			<div *ngIf="isBusinessLicenceSoleProprietor" @showHideTriggerSlideAnimation>
 				<mat-divider class="mat-divider-main mt-3"></mat-divider>
-				<div class="text-minor-heading py-2">Sole Proprietors</div>
-				<div class="pb-3">Sole proprietors must have a valid security worker licence</div>
+				<div class="text-minor-heading py-2">Sole Proprietor</div>
+				<div class="pb-3">A sole proprietor must have a valid security worker licence</div>
 				<div class="row">
 					<div class="col-md-6 col-sm-12">
 						<mat-form-field>
@@ -89,7 +65,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								oninput="this.value = this.value.toUpperCase()"
 								maxlength="10"
 							/>
-							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')"> This is required </mat-error>
+							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 
@@ -107,8 +83,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								placeholder="name@domain.com"
 								maxlength="75"
 							/>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">Must be a valid email address</mat-error>
 						</mat-form-field>
 					</div>
 
@@ -117,20 +93,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-label>Phone Number</mat-label>
 							<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
+							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
 			</div>
 		</form>
 	`,
-	styles: [
-		`
-			.readonly-heading {
-				color: var(--color-primary) !important;
-			}
-		`,
-	],
+	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessInformationComponent implements LicenceChildStepperStepComponent {

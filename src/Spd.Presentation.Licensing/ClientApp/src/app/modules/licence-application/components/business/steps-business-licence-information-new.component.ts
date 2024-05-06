@@ -77,22 +77,6 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 		super(commonApplicationService);
 	}
 
-	// ngOnInit(): void {
-	// this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-	// 	(_resp: any) => {
-	// 		// console.debug('permitModelValueChanges$', _resp);
-	// 		this.isFormValid = _resp;
-	// 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-	// 			'applicationTypeData.applicationTypeCode'
-	// 		)?.value;
-	// 	}
-	// );
-	// }
-
-	// ngOnDestroy() {
-	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-	// }
-
 	onGotoUserProfile(): void {
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
