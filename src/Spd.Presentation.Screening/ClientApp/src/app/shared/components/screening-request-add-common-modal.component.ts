@@ -572,12 +572,12 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		const orgProfile = this.authUserBceidService.bceidUserOrgProfile!;
 		this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
-		const licenseesNeedVulnerableSectorScreening =
-			orgProfile.licenseesNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
-		const contractorsNeedVulnerableSectorScreening =
-			orgProfile.contractorsNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
-
 		if (this.isNotVolunteerOrg) {
+			const licenseesNeedVulnerableSectorScreening =
+				orgProfile.licenseesNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
+			const contractorsNeedVulnerableSectorScreening =
+				orgProfile.contractorsNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
+
 			if (licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
 				this.showScreeningType = true;
 				this.screeningTypes = ScreeningTypes; // show all values
