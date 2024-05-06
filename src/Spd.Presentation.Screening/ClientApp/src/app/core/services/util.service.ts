@@ -4,9 +4,9 @@ import { Inject, Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
-import { ApplicationPortalStatusCode, PaginationResponse } from 'src/app/api/models';
+import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
-import { ApplicationPortalStatusTypes, SelectOptions } from '../code-types/model-desc.models';
+import { ApplicationPortalStatusTypes, ScreeningTypes, SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
@@ -187,6 +187,30 @@ export class UtilService {
 
 	getDateString(date: Date): string {
 		return date ? moment(date).format(SPD_CONSTANTS.date.dateFormat) : '';
+	}
+
+	getShowScreeningType(
+		licenseesNeedVulnerableSectorScreening: boolean,
+		contractorsNeedVulnerableSectorScreening: boolean
+	): boolean {
+		if (!licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
+			return false;
+		}
+
+		return true;
+	}
+
+	getScreeningTypes(
+		licenseesNeedVulnerableSectorScreening: boolean,
+		contractorsNeedVulnerableSectorScreening: boolean
+	): SelectOptions[] {
+		if (!licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
+			return ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Licensee);
+		} else if (licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
+			return ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Contractor);
+		}
+
+		return ScreeningTypes; // show all values
 	}
 
 	/**

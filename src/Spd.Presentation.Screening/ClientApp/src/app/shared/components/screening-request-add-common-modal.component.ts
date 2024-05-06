@@ -578,18 +578,14 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			const contractorsNeedVulnerableSectorScreening =
 				orgProfile.contractorsNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
 
-			if (licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
-				this.showScreeningType = true;
-				this.screeningTypes = ScreeningTypes; // show all values
-			} else if (!licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
-				this.showScreeningType = true;
-				this.screeningTypes = ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Licensee);
-			} else if (licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
-				this.showScreeningType = true;
-				this.screeningTypes = ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Contractor);
-			} else {
-				this.showScreeningType = false;
-			}
+			this.showScreeningType = this.utilService.getShowScreeningType(
+				licenseesNeedVulnerableSectorScreening,
+				contractorsNeedVulnerableSectorScreening
+			);
+			this.screeningTypes = this.utilService.getScreeningTypes(
+				licenseesNeedVulnerableSectorScreening,
+				contractorsNeedVulnerableSectorScreening
+			);
 		} else {
 			this.showScreeningType = false;
 		}
