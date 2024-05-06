@@ -587,18 +587,13 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 			if (this.isNotVolunteerOrg) {
-				const licenseesNeedVulnerableSectorScreening =
-					orgProfile.licenseesNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
-				const contractorsNeedVulnerableSectorScreening =
-					orgProfile.contractorsNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
-
 				this.showScreeningType = this.utilService.getShowScreeningType(
-					licenseesNeedVulnerableSectorScreening,
-					contractorsNeedVulnerableSectorScreening
+					this.utilService.booleanTypeToBoolean(orgProfile.licenseesNeedVulnerableSectorScreening) ?? false,
+					this.utilService.booleanTypeToBoolean(orgProfile.contractorsNeedVulnerableSectorScreening) ?? false
 				);
 				this.screeningTypes = this.utilService.getScreeningTypes(
-					licenseesNeedVulnerableSectorScreening,
-					contractorsNeedVulnerableSectorScreening
+					this.utilService.booleanTypeToBoolean(orgProfile.licenseesNeedVulnerableSectorScreening) ?? false,
+					this.utilService.booleanTypeToBoolean(orgProfile.contractorsNeedVulnerableSectorScreening) ?? false
 				);
 			} else {
 				this.showScreeningType = false;

@@ -4,7 +4,12 @@ import { Inject, Injectable } from '@angular/core';
 import { HotToastService } from '@ngneat/hot-toast';
 import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
-import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
+import {
+	ApplicationPortalStatusCode,
+	BooleanTypeCode,
+	PaginationResponse,
+	ScreeningTypeCode,
+} from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { ApplicationPortalStatusTypes, ScreeningTypes, SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
@@ -271,6 +276,30 @@ export class UtilService {
 		} else {
 			this.scrollTop();
 		}
+	}
+
+	/**
+	 * Convert BooleanTypeCode to boolean
+	 * @param value
+	 * @returns
+	 */
+	booleanTypeToBoolean(value: BooleanTypeCode | undefined | null): boolean | null {
+		if (!value) return null;
+
+		if (value == BooleanTypeCode.Yes) return true;
+		return false;
+	}
+
+	/**
+	 * Convert boolean to BooleanTypeCode
+	 * @param value
+	 * @returns
+	 */
+	public booleanToBooleanType(value: boolean | null | undefined): BooleanTypeCode | null {
+		const isBooleanType = typeof value === 'boolean';
+		if (!isBooleanType) return null;
+
+		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 
 	//------------------------------------
