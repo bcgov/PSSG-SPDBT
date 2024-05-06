@@ -7,6 +7,7 @@ import {
 	ApplicationInvitePrepopulateDataResponse,
 	ApplicationInvitesCreateRequest,
 	ApplicationInvitesCreateResponse,
+	BooleanTypeCode,
 	MinistryResponse,
 	ScreeningTypeCode,
 	ServiceTypeCode,
@@ -572,13 +573,18 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 		if (this.isNotVolunteerOrg) {
+			const licenseesNeedVulnerableSectorScreening =
+				orgProfile.licenseesNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
+			const contractorsNeedVulnerableSectorScreening =
+				orgProfile.contractorsNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
+
 			this.showScreeningType = this.utilService.getShowScreeningType(
-				this.utilService.booleanTypeToBoolean(orgProfile.licenseesNeedVulnerableSectorScreening) ?? false,
-				this.utilService.booleanTypeToBoolean(orgProfile.contractorsNeedVulnerableSectorScreening) ?? false
+				licenseesNeedVulnerableSectorScreening,
+				contractorsNeedVulnerableSectorScreening
 			);
 			this.screeningTypes = this.utilService.getScreeningTypes(
-				this.utilService.booleanTypeToBoolean(orgProfile.licenseesNeedVulnerableSectorScreening) ?? false,
-				this.utilService.booleanTypeToBoolean(orgProfile.contractorsNeedVulnerableSectorScreening) ?? false
+				licenseesNeedVulnerableSectorScreening,
+				contractorsNeedVulnerableSectorScreening
 			);
 		} else {
 			this.showScreeningType = false;
