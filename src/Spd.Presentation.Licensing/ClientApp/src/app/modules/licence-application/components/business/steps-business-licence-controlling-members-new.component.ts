@@ -93,21 +93,6 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 		super(commonApplicationService);
 	}
 
-	// ngOnInit(): void {
-	// this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-	// 	(_resp: any) => {
-	// 		// console.debug('permitModelValueChanges$', _resp);
-	// 		this.isFormValid = _resp;
-	// 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-	// 			'applicationTypeData.applicationTypeCode'
-	// 		)?.value;
-	// 	}
-	// );
-	// }
-
-	// ngOnDestroy() {
-	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-	// }
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_CONTROLLING_MEMBERS:

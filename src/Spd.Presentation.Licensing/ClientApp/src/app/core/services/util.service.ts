@@ -294,6 +294,10 @@ export class UtilService {
 		);
 	}
 
+	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
+		return province === 'British Columbia' && country === 'Canada';
+	}
+
 	//------------------------------------
 	// Form related
 
