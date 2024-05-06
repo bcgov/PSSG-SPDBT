@@ -1,6 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
+import { Subscription } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
@@ -16,7 +17,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 							<h2 class="fs-3">Business Profile</h2>
 						</div>
 
-						<div class="col-xl-6 col-lg-4 col-md-12">
+						<div class="col-xl-6 col-lg-4 col-md-12" *ngIf="isReadonly">
 							<div class="d-flex justify-content-end">
 								<button
 									mat-stroked-button
@@ -33,8 +34,8 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<!-- <ng-container *ngIf="!isReadonly">
-	<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
-</ng-container> -->
+						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
+					</ng-container> -->
 
 					<app-common-business-profile
 						[businessInformationFormGroup]="businessInformationFormGroup"
@@ -42,6 +43,8 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
 						[mailingAddressFormGroup]="mailingAddressFormGroup"
 						[branchesInBcFormGroup]="branchesInBcFormGroup"
+						[isBcBusinessAddress]="isBcBusinessAddress"
+						[isReadonly]="isReadonly"
 					></app-common-business-profile>
 
 					<div class="row mt-3">
@@ -53,16 +56,24 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			</div>
 		</section>
 
-		<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>
+		<ng-container *ngIf="!isReadonly">
+			<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>
+		</ng-container>
 	`,
 	styles: ``,
 })
-export class BusinessProfileComponent {
+export class BusinessProfileComponent implements OnInit, OnDestroy {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
 	mailingAddressFormGroup = this.businessApplicationService.mailingAddressFormGroup;
 	branchesInBcFormGroup = this.businessApplicationService.branchesInBcFormGroup;
+
+	isBcBusinessAddress = true;
+
+	isReadonly = true;
+
+	private businessModelChangedSubscription!: Subscription;
 
 	@ViewChild(CommonBusinessProfileComponent) businessProfileComponent!: CommonBusinessProfileComponent;
 
@@ -70,7 +81,26 @@ export class BusinessProfileComponent {
 		private router: Router,
 		private utilService: UtilService,
 		private businessApplicationService: BusinessApplicationService
-	) {}
+	) {
+		// check if isReadonly was passed from 'BusinessUserApplicationsComponent'
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.isReadonly = state && state['isReadonly'];
+	}
+
+	ngOnInit() {
+		this.businessModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isBcBusinessAddress =
+					this.businessApplicationService.businessModelFormGroup.get('isBcBusinessAddress')?.value ?? true;
+
+				//console.debug('************************ this.isBcBusinessAddress', this.isBcBusinessAddress);
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.businessModelChangedSubscription) this.businessModelChangedSubscription.unsubscribe();
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
