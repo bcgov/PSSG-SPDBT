@@ -510,7 +510,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			dateOfBirth: new FormControl(null, [Validators.required]),
 			birthPlace: new FormControl('', [FormControlValidators.required]),
 			jobTitle: new FormControl('', [FormControlValidators.required]),
-			screeningType: new FormControl('', [FormControlValidators.required]),
+			screeningType: new FormControl(''),
 			serviceType: new FormControl(this.serviceTypeDefault),
 			contractedCompanyName: new FormControl(''),
 			employeeId: new FormControl(''),
@@ -583,14 +583,23 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 		if (this.portal == PortalTypeCode.Crrp) {
 			// using bceid
-			const orgProfile = this.authUserBceidService.bceidUserOrgProfile;
+			const orgProfile = this.authUserBceidService.bceidUserOrgProfile!;
 			this.isNotVolunteerOrg = orgProfile?.isNotVolunteerOrg ?? false;
 
 			if (this.isNotVolunteerOrg) {
-				this.showScreeningType = orgProfile
-					? orgProfile.contractorsNeedVulnerableSectorScreening == BooleanTypeCode.Yes ||
-					  orgProfile.licenseesNeedVulnerableSectorScreening == BooleanTypeCode.Yes
-					: false;
+				const licenseesNeedVulnerableSectorScreening =
+					orgProfile.licenseesNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
+				const contractorsNeedVulnerableSectorScreening =
+					orgProfile.contractorsNeedVulnerableSectorScreening === BooleanTypeCode.Yes;
+
+				this.showScreeningType = this.utilService.getShowScreeningType(
+					licenseesNeedVulnerableSectorScreening,
+					contractorsNeedVulnerableSectorScreening
+				);
+				this.screeningTypes = this.utilService.getScreeningTypes(
+					licenseesNeedVulnerableSectorScreening,
+					contractorsNeedVulnerableSectorScreening
+				);
 			} else {
 				this.showScreeningType = false;
 			}
@@ -658,6 +667,11 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			)
 				? createRequest.contractedCompanyName
 				: '';
+
+			if (!this.showScreeningType) {
+				createRequest.screeningType = ScreeningTypeCode.Staff;
+			}
+
 			createRequest.requireDuplicateCheck = true;
 
 			const body = {
