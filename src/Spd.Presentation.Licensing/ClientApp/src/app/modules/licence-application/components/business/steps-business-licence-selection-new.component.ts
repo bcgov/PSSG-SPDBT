@@ -1,5 +1,4 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
@@ -44,7 +43,6 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 	readonly STEP_LICENCE_TERM = 2;
 
 	isFormValid = false;
-	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
@@ -54,22 +52,6 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
-
-	// ngOnInit(): void {
-	// this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-	// 	(_resp: any) => {
-	// 		// console.debug('permitModelValueChanges$', _resp);
-	// 		this.isFormValid = _resp;
-	// 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-	// 			'applicationTypeData.applicationTypeCode'
-	// 		)?.value;
-	// 	}
-	// );
-	// }
-
-	// ngOnDestroy() {
-	// 	// if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-	// }
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
