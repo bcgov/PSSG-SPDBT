@@ -100,9 +100,25 @@ namespace Spd.Resource.Repository.Biz
             await _context.SaveChangesAsync(ct);
         }
 
-        public async Task UpdateBranchAsync()
+        public async Task UpdateAddressAsync(UpdateAddressCmd cmd, CancellationToken ct)
         {
+            foreach (BranchAddr address in cmd.Addresses)
+            {
+                spd_address? existingAddress = _context.spd_addresses.Where(a =>
+                    a.spd_addressid == address.BranchId &&
+                    a.statecode == DynamicsConstants.StateCode_Active
+                ).FirstOrDefault();
+            
+                if (existingAddress == null)
+                {
+                    _logger.LogError($"Address to be updated was not found");
+                    throw new ArgumentException("cannot find address to be updated");
+                }
 
+                _mapper.Map(address, existingAddress);
+                _context.UpdateObject(existingAddress);
+            }
+            await _context.SaveChangesAsync(ct);
         }
 
         private async Task<BizResult?> BizUpdateAsync(BizUpdateCmd updateBizCmd, CancellationToken ct)
