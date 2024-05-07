@@ -71,9 +71,30 @@ namespace Spd.Resource.Repository.Biz
             };
         }
 
+        public async Task DeleteAddressesAsync(List<Guid?> addressIds, CancellationToken ct)
+        {
+            foreach (var addressId in addressIds)
+            {
+                spd_address? address = _dynaContext.spd_addresses.Where(a =>
+                    a.spd_addressid == addressId &&
+                    a.statecode == DynamicsConstants.StateCode_Active
+                ).FirstOrDefault();
+
+                if (address == null)
+                {
+                    _logger.LogError($"Address to be deleted was not found");
+                    throw new ArgumentException("cannot find address to be deleted");
+                }
+
+                address.statecode = DynamicsConstants.StateCode_Inactive;
+                address.statuscode = DynamicsConstants.StatusCode_Inactive;
+                _dynaContext.UpdateObject(address);
+            }
+        }
+
         private async Task<BizResult?> BizUpdateAsync(BizUpdateCmd updateBizCmd, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts
+            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
                  .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                  .Where(a => a.accountid == updateBizCmd.Id);
 
