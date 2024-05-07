@@ -37,7 +37,25 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.City, opt => opt.MapFrom(s => s.spd_employercity))
              .ForMember(d => d.Province, opt => opt.MapFrom(s => s.spd_employerprovince))
              .ForMember(d => d.Country, opt => opt.MapFrom(s => s.spd_employercountry))
-             .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.spd_employerpostalcode));
+             .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.spd_employerpostalcode))
+             .ReverseMap();
+
+            _ = CreateMap<PermitLicence, spd_licence>()
+             .ForMember(d => d.spd_expirydate, opt => opt.Ignore())
+             .ForMember(d => d.statuscode, opt => opt.Ignore())
+             .ForMember(d => d.spd_permitpurposeother, opt => opt.MapFrom(s => s.PermitOtherRequiredReason))
+             .ForMember(d => d.spd_employername, opt => opt.MapFrom(s => s.EmployerName))
+             .ForMember(d => d.spd_employercontactname, opt => opt.MapFrom(s => s.SupervisorName))
+             .ForMember(d => d.spd_employeremail, opt => opt.MapFrom(s => s.SupervisorEmailAddress))
+             .ForMember(d => d.spd_employerphonenumber, opt => opt.MapFrom(s => s.SupervisorPhoneNumber))
+             .ForMember(d => d.spd_employeraddress1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.AddressLine1))
+             .ForMember(d => d.spd_employeraddress2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.AddressLine2))
+             .ForMember(d => d.spd_employercity, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.City))
+             .ForMember(d => d.spd_employerprovince, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.Province))
+             .ForMember(d => d.spd_employercountry, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.Country))
+             .ForMember(d => d.spd_employerpostalcode, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : s.EmployerPrimaryAddress.PostalCode))
+             .ForMember(d => d.spd_rationale, opt => opt.MapFrom(s => s.Rationale))
+             .ForMember(d => d.spd_permitpurpose, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeOptionSets(s.PermitPurposeEnums)));
         }
 
         internal static LicenceStatusEnum? GetLicenceStatusEnum(int? optionset)

@@ -254,6 +254,11 @@ internal class PermitAppManager :
         }
 
 
+        //update lic
+        await _licenceRepository.ManageAsync(
+            new UpdateLicenceCmd(_mapper.Map<PermitLicence>(cmd.LicenceAnonymousRequest), (Guid)originalLic.LicenceId),
+            cancellationToken);
+
         //upload new files
         await UploadNewDocsAsync(request,
             cmd.LicAppFileInfos,
