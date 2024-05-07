@@ -2,6 +2,7 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Address;
+using Spd.Resource.Repository.Biz;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.IntegrationTest;
@@ -53,6 +54,48 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task UpdateAddressesAsync_Run_Correctly()
     {
+        // Arrange
+        spd_address address = new spd_address()
+        {
+            spd_addressid = Guid.NewGuid(),
+            spd_address1 = "address1",
+            spd_address2 = "address2",
+            spd_city = "city",
+            spd_provincestate = "province",
+            spd_postalcode = "abc123",
+            spd_country = "Canada",
+            spd_branchmanagername = "manager",
+            spd_branchphone = "80000000",
+            spd_branchemail = "test@test.com",
+            statecode = DynamicsConstants.StateCode_Active,
+            statuscode = DynamicsConstants.StatusCode_Active
+        };
 
+        _context.AddTospd_addresses(address);
+        await _context.SaveChangesAsync();
+
+        BranchAddr addressToUpdate = fixture.Build<BranchAddr>()
+            .With(a => a.BranchId, address.spd_addressid)
+            .With(a => a.BranchPhoneNumber, "90000000")
+            .With(a => a.PostalCode, "V7N 5J2")
+            .Create();
+        UpdateAddressCmd cmd = new() { Addresses = new List<BranchAddr> { addressToUpdate } };
+
+        // Act
+        await _addressRepository.UpdateAddressesAsync(cmd, CancellationToken.None);
+
+        // Assert
+        spd_address? updatedAddress = _context.spd_addresses.
+            Where(a => a.spd_addressid == addressToUpdate.BranchId && 
+            a.spd_address1 == addressToUpdate.AddressLine1 &&
+            a.spd_address2 == addressToUpdate.AddressLine2 &&
+            a.spd_city == addressToUpdate.City &&
+            a.spd_country == addressToUpdate.Country &&
+            a.spd_branchmanagername == addressToUpdate.BranchManager &&
+            a.spd_branchphone == addressToUpdate.BranchPhoneNumber &&
+            a.spd_branchemail == addressToUpdate.BranchEmailAddr)
+            .FirstOrDefault();
+
+        Assert.NotNull(updatedAddress);
     }
 }
