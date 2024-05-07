@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ApplicationInvite;
@@ -56,6 +57,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IAliasRepository, AliasRepository>();
             configurationServices.Services.AddTransient<IBizRepository, BizRepository>();
             configurationServices.Services.AddTransient<IOptionSetRepository, OptionSetRepository>();
+            configurationServices.Services.AddTransient<IAddressRepository, AddressRepository>();
         }
     }
 }
