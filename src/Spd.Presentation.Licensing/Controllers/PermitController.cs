@@ -136,7 +136,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/permit-applications/authenticated/submit")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationJsonAuthenticated(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {
