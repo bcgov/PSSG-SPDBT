@@ -612,41 +612,22 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: UserLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return forkJoin([
-					this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
-				]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp);
-					})
-				);
-			}
-			case ApplicationTypeCode.Update: {
-				return forkJoin([
-					this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
-				]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
-						return this.applyUpdateDataUpdatesToModel(_resp);
-					})
-				);
-			}
-			default: {
-				return this.loadExistingPermitWithIdAuthenticated(licenceAppId);
-			}
-		}
+		return forkJoin([
+			this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
+			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
+		]).pipe(
+			catchError((error) => of(error)),
+			map((resps: any[]) => {
+				this.setPhotographOfYourself(resps[1]);
+				return resps[0];
+			}),
+			switchMap((_resp: any) => {
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalDataUpdatesToModel(_resp);
+				}
+				return this.applyUpdateDataUpdatesToModel(_resp);
+			})
+		);
 	}
 
 	/**
@@ -678,12 +659,19 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.applicantProfileService.apiApplicantIdGet({
 				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			}),
+			this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber: userLicenceInformation?.licenceNumber! }),
 		]).pipe(
 			switchMap((resps: any[]) => {
-				const permitLicenceAppResponse = resps[0];
-				const profile = resps[1];
+				const permitLicenceAppData = resps[0];
+				const profileData = resps[1];
+				const permitLicenceData = resps[2];
 
-				return this.applyPermitAndProfileIntoModel(permitLicenceAppResponse, profile, userLicenceInformation);
+				return this.applyPermitAndProfileIntoModel({
+					permitLicenceAppData,
+					permitLicenceData,
+					profileData,
+					userLicenceInformation,
+				});
 			})
 		);
 	}
@@ -716,9 +704,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	getPermitWithAccessCodeDataAnonymous(
 		accessCodeData: any,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		permitLicenceData: LicenceResponse
 	): Observable<PermitLicenceAppResponse> {
-		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!).pipe(
+		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!, permitLicenceData).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = { ..._resp.personalInformationData };
 
@@ -772,35 +761,27 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	private getPermitOfTypeUsingAccessCode(
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		permitLicenceData: LicenceResponse
 	): Observable<PermitLicenceAppResponse> {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadExistingPermitAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp);
-					})
-				);
-			}
-			default: {
-				// Must be ApplicationTypeCode.Update: there is no replacement for Permits
-				return forkJoin([this.loadExistingPermitAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
-						return this.applyUpdateDataUpdatesToModel(_resp);
-					})
-				);
-			}
-		}
+		return forkJoin([
+			this.loadExistingPermitAnonymous(permitLicenceData),
+			this.licenceService.apiLicencesLicencePhotoGet(),
+		]).pipe(
+			catchError((error) => of(error)),
+			map((resps: any[]) => {
+				this.setPhotographOfYourself(resps[1]);
+				return resps[0];
+			}),
+			switchMap((_resp: any) => {
+				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+					return this.applyRenewalDataUpdatesToModel(_resp);
+				} else {
+					// Must be ApplicationTypeCode.Update: there is no replacement for Permits
+					return this.applyUpdateDataUpdatesToModel(_resp);
+				}
+			})
+		);
 	}
 
 	/**
@@ -966,12 +947,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Load an existing permit related to an access code search
 	 * @returns
 	 */
-	private loadExistingPermitAnonymous(): Observable<PermitLicenceAppResponse> {
+	private loadExistingPermitAnonymous(permitLicenceData: LicenceResponse): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
 		return this.permitService.apiPermitApplicationGet().pipe(
 			switchMap((resp: PermitLicenceAppResponse) => {
-				return this.applyPermitAndProfileIntoModel(resp, null);
+				return this.applyPermitAndProfileIntoModel({ permitLicenceAppData: resp, permitLicenceData });
 			})
 		);
 	}
@@ -980,49 +961,57 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	// COMMON
 	/*************************************************************/
 
-	private applyPermitAndProfileIntoModel(
-		permitLicenceApplication: PermitLicenceAppResponse,
-		profile: ApplicantProfileResponse | null | undefined,
-		userLicenceInformation?: UserLicenceResponse
-	): Observable<any> {
+	private applyPermitAndProfileIntoModel({
+		permitLicenceAppData,
+		permitLicenceData,
+		profileData,
+		userLicenceInformation,
+	}: {
+		permitLicenceAppData: PermitLicenceAppResponse;
+		permitLicenceData: LicenceResponse;
+		profileData?: ApplicantProfileResponse;
+		userLicenceInformation?: UserLicenceResponse;
+	}): Observable<any> {
 		return this.applyPermitProfileIntoModel(
-			profile ?? permitLicenceApplication,
-			permitLicenceApplication.workerLicenceTypeCode!,
-			permitLicenceApplication.applicationTypeCode,
-			userLicenceInformation
+			profileData ?? permitLicenceAppData,
+			permitLicenceAppData.workerLicenceTypeCode!,
+			permitLicenceAppData.applicationTypeCode,
+			userLicenceInformation,
+			permitLicenceData
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyPermitIntoModel(permitLicenceApplication);
+				return this.applyPermitIntoModel(permitLicenceAppData, permitLicenceData);
 			})
 		);
 	}
 
 	private applyPermitProfileIntoModel(
-		profile: ApplicantProfileResponse | PermitLicenceAppResponse,
+		profileData: ApplicantProfileResponse | PermitLicenceAppResponse,
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation?: UserLicenceResponse | null,
+		updateLicenceData?: LicenceResponse | null
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const personalInformationData = {
-			givenName: profile.givenName,
-			middleName1: profile.middleName1,
-			middleName2: profile.middleName2,
-			surname: profile.surname,
-			dateOfBirth: profile.dateOfBirth,
-			genderCode: profile.genderCode,
+			givenName: profileData.givenName,
+			middleName1: profileData.middleName1,
+			middleName2: profileData.middleName2,
+			surname: profileData.surname,
+			dateOfBirth: profileData.dateOfBirth,
+			genderCode: profileData.genderCode,
 			hasGenderChanged: false,
 			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
-			origGivenName: profile.givenName,
-			origMiddleName1: profile.middleName1,
-			origMiddleName2: profile.middleName2,
-			origSurname: profile.surname,
-			origDateOfBirth: profile.dateOfBirth,
-			origGenderCode: profile.genderCode,
-			cardHolderName: userLicenceInformation?.cardHolderName ?? null,
-			licenceHolderName: userLicenceInformation?.licenceHolderName ?? null,
+			origGivenName: profileData.givenName,
+			origMiddleName1: profileData.middleName1,
+			origMiddleName2: profileData.middleName2,
+			origSurname: profileData.surname,
+			origDateOfBirth: profileData.dateOfBirth,
+			origGenderCode: profileData.genderCode,
+			cardHolderName: updateLicenceData?.nameOnCard ?? userLicenceInformation?.cardHolderName ?? null,
+			licenceHolderName: updateLicenceData?.licenceHolderName ?? userLicenceInformation?.licenceHolderName ?? null,
 		};
 
 		const originalLicenceData = {
@@ -1035,41 +1024,41 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		const contactInformationData = {
-			emailAddress: profile.emailAddress,
-			phoneNumber: profile.phoneNumber,
+			emailAddress: profileData.emailAddress,
+			phoneNumber: profileData.phoneNumber,
 		};
 
 		const residentialAddress = {
 			addressSelected: true,
 			isMailingTheSameAsResidential: false,
-			addressLine1: profile.residentialAddress?.addressLine1,
-			addressLine2: profile.residentialAddress?.addressLine2,
-			city: profile.residentialAddress?.city,
-			country: profile.residentialAddress?.country,
-			postalCode: profile.residentialAddress?.postalCode,
-			province: profile.residentialAddress?.province,
+			addressLine1: profileData.residentialAddress?.addressLine1,
+			addressLine2: profileData.residentialAddress?.addressLine2,
+			city: profileData.residentialAddress?.city,
+			country: profileData.residentialAddress?.country,
+			postalCode: profileData.residentialAddress?.postalCode,
+			province: profileData.residentialAddress?.province,
 		};
 
 		const mailingAddress = {
-			addressSelected: profile.mailingAddress ? true : false,
+			addressSelected: profileData.mailingAddress ? true : false,
 			isMailingTheSameAsResidential: false,
-			addressLine1: profile.mailingAddress?.addressLine1,
-			addressLine2: profile.mailingAddress?.addressLine2,
-			city: profile.mailingAddress?.city,
-			country: profile.mailingAddress?.country,
-			postalCode: profile.mailingAddress?.postalCode,
-			province: profile.mailingAddress?.province,
+			addressLine1: profileData.mailingAddress?.addressLine1,
+			addressLine2: profileData.mailingAddress?.addressLine2,
+			city: profileData.mailingAddress?.city,
+			country: profileData.mailingAddress?.country,
+			postalCode: profileData.mailingAddress?.postalCode,
+			province: profileData.mailingAddress?.province,
 		};
 
 		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(profile.hasCriminalHistory),
+			hasCriminalHistory: this.utilService.booleanToBooleanType(profileData.hasCriminalHistory),
 			criminalChargeDescription: '',
 		};
 
 		const policeBackgroundDataAttachments: Array<File> = [];
 		const mentalHealthConditionsDataAttachments: Array<File> = [];
 
-		profile.documentInfos?.forEach((doc: Document) => {
+		profileData.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.MentalHealthCondition: {
 					const aFile = this.fileUtilService.dummyFile(doc);
@@ -1087,25 +1076,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		let policeBackgroundData = {};
 		let mentalHealthConditionsData = {};
 
-		if ('isPoliceOrPeaceOfficer' in profile && 'policeOfficerRoleCode' in profile && 'otherOfficerRole' in profile) {
+		if (
+			'isPoliceOrPeaceOfficer' in profileData &&
+			'policeOfficerRoleCode' in profileData &&
+			'otherOfficerRole' in profileData
+		) {
 			policeBackgroundData = {
-				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profile.isPoliceOrPeaceOfficer),
-				policeOfficerRoleCode: profile.policeOfficerRoleCode,
-				otherOfficerRole: profile.otherOfficerRole,
+				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profileData.isPoliceOrPeaceOfficer),
+				policeOfficerRoleCode: profileData.policeOfficerRoleCode,
+				otherOfficerRole: profileData.otherOfficerRole,
 				attachments: policeBackgroundDataAttachments,
 			};
 		}
 
-		if ('isTreatedForMHC' in profile) {
+		if ('isTreatedForMHC' in profileData) {
 			mentalHealthConditionsData = {
-				isTreatedForMHC: this.utilService.booleanToBooleanType(profile.isTreatedForMHC),
+				isTreatedForMHC: this.utilService.booleanToBooleanType(profileData.isTreatedForMHC),
 				attachments: mentalHealthConditionsDataAttachments,
 			};
 		}
 
 		this.permitModelFormGroup.patchValue(
 			{
-				applicantId: 'applicantId' in profile ? profile.applicantId : null,
+				applicantId: 'applicantId' in profileData ? profileData.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
 				...originalLicenceData,
@@ -1116,7 +1109,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				mailingAddress: { ...mailingAddress },
 				contactInformationData: { ...contactInformationData },
 				aliasesData: {
-					previousNameFlag: this.utilService.booleanToBooleanType(profile.aliases && profile.aliases.length > 0),
+					previousNameFlag: this.utilService.booleanToBooleanType(
+						profileData.aliases && profileData.aliases.length > 0
+					),
 					aliases: [],
 				},
 				criminalHistoryData,
@@ -1129,7 +1124,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 
 		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
-		profile.aliases?.forEach((alias: Alias) => {
+		profileData.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -1145,7 +1140,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return of(this.permitModelFormGroup.value);
 	}
 
-	private applyPermitIntoModel(resp: PermitLicenceAppResponse): Observable<any> {
+	private applyPermitIntoModel(resp: PermitLicenceAppResponse, updateLicenceData?: LicenceResponse): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 
@@ -1165,52 +1160,64 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
 		};
 
+		// if this is a permit update, use the data supplied in 'updateLicenceData' (where applicable),
+		// other use the data in the 'resp'
+		const permitLicenceData = updateLicenceData ?? resp;
+
 		const bodyArmourRequirementFormGroup = {
-			isOutdoorRecreation: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.OutdoorRecreation),
-			isPersonalProtection: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.PersonalProtection),
-			isMyEmployment: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.MyEmployment),
-			isTravelForConflict: resp.bodyArmourPermitReasonCodes?.includes(
+			isOutdoorRecreation: permitLicenceData.bodyArmourPermitReasonCodes?.includes(
+				BodyArmourPermitReasonCode.OutdoorRecreation
+			),
+			isPersonalProtection: permitLicenceData.bodyArmourPermitReasonCodes?.includes(
+				BodyArmourPermitReasonCode.PersonalProtection
+			),
+			isMyEmployment: permitLicenceData.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.MyEmployment),
+			isTravelForConflict: permitLicenceData.bodyArmourPermitReasonCodes?.includes(
 				BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict
 			),
-			isOther: resp.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.Other),
+			isOther: permitLicenceData.bodyArmourPermitReasonCodes?.includes(BodyArmourPermitReasonCode.Other),
 		};
 
 		const armouredVehicleRequirementFormGroup = {
-			isPersonalProtection: resp.armouredVehiclePermitReasonCodes?.includes(
+			isPersonalProtection: permitLicenceData.armouredVehiclePermitReasonCodes?.includes(
 				ArmouredVehiclePermitReasonCode.PersonalProtection
 			),
-			isMyEmployment: resp.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.MyEmployment),
-			isProtectionOfAnotherPerson: resp.armouredVehiclePermitReasonCodes?.includes(
+			isMyEmployment: permitLicenceData.armouredVehiclePermitReasonCodes?.includes(
+				ArmouredVehiclePermitReasonCode.MyEmployment
+			),
+			isProtectionOfAnotherPerson: permitLicenceData.armouredVehiclePermitReasonCodes?.includes(
 				ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson
 			),
-			isProtectionOfPersonalProperty: resp.armouredVehiclePermitReasonCodes?.includes(
+			isProtectionOfPersonalProperty: permitLicenceData.armouredVehiclePermitReasonCodes?.includes(
 				ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty
 			),
-			isProtectionOfOthersProperty: resp.armouredVehiclePermitReasonCodes?.includes(
+			isProtectionOfOthersProperty: permitLicenceData.armouredVehiclePermitReasonCodes?.includes(
 				ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty
 			),
-			isOther: resp.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.Other),
+			isOther: permitLicenceData.armouredVehiclePermitReasonCodes?.includes(ArmouredVehiclePermitReasonCode.Other),
 		};
 
 		const permitRequirementData = {
 			workerLicenceTypeCode: resp.workerLicenceTypeCode,
 			bodyArmourRequirementFormGroup: bodyArmourRequirementFormGroup,
 			armouredVehicleRequirementFormGroup: armouredVehicleRequirementFormGroup,
-			otherReason: resp.permitOtherRequiredReason,
+			otherReason: permitLicenceData.permitOtherRequiredReason,
 		};
 
 		const employerData = {
-			employerName: resp.employerName,
-			supervisorName: resp.supervisorName,
-			supervisorEmailAddress: resp.supervisorEmailAddress,
-			supervisorPhoneNumber: resp.supervisorPhoneNumber,
-			addressSelected: resp.employerPrimaryAddress?.addressLine1 ? true : resp.employerPrimaryAddress?.addressLine1,
-			addressLine1: resp.employerPrimaryAddress?.addressLine1,
-			addressLine2: resp.employerPrimaryAddress?.addressLine2,
-			city: resp.employerPrimaryAddress?.city,
-			postalCode: resp.employerPrimaryAddress?.postalCode,
-			province: resp.employerPrimaryAddress?.province,
-			country: resp.employerPrimaryAddress?.country,
+			employerName: permitLicenceData.employerName,
+			supervisorName: permitLicenceData.supervisorName,
+			supervisorEmailAddress: permitLicenceData.supervisorEmailAddress,
+			supervisorPhoneNumber: permitLicenceData.supervisorPhoneNumber,
+			addressSelected: permitLicenceData.employerPrimaryAddress?.addressLine1
+				? true
+				: permitLicenceData.employerPrimaryAddress?.addressLine1,
+			addressLine1: permitLicenceData.employerPrimaryAddress?.addressLine1,
+			addressLine2: permitLicenceData.employerPrimaryAddress?.addressLine2,
+			city: permitLicenceData.employerPrimaryAddress?.city,
+			postalCode: permitLicenceData.employerPrimaryAddress?.postalCode,
+			province: permitLicenceData.employerPrimaryAddress?.province,
+			country: permitLicenceData.employerPrimaryAddress?.country,
 		};
 
 		let height = resp.height ? resp.height + '' : null;
@@ -1259,6 +1266,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const governmentIssuedAttachments: Array<File> = [];
 		const photographOfYourselfAttachments: Array<File> = [];
 		let photographOfYourselfLastUploadedDateTime = '';
+
+		if (updateLicenceData) {
+			updateLicenceData?.rationalDocumentInfos?.forEach((doc: Document) => {
+				const aFile = this.fileUtilService.dummyFile(doc);
+				rationaleAttachments.push(aFile);
+			});
+		}
 
 		resp.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
@@ -1309,8 +1323,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				}
 				case LicenceDocumentTypeCode.ArmouredVehicleRationale:
 				case LicenceDocumentTypeCode.BodyArmourRationale: {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					rationaleAttachments.push(aFile);
+					if (!updateLicenceData) {
+						const aFile = this.fileUtilService.dummyFile(doc);
+						rationaleAttachments.push(aFile);
+					}
 					break;
 				}
 			}
@@ -1322,7 +1338,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		const permitRationaleData = {
-			rationale: resp.rationale,
+			rationale: permitLicenceData.rationale,
 			attachments: rationaleAttachments,
 		};
 
@@ -1368,7 +1384,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const originalPhotoOfYourselfLastUpload = resp.photographOfYourselfData.uploadedDateTime;
 
 		// We require a new photo every 5 years. Please provide a new photo for your licence
-		const yearsDiff = moment().startOf('day').diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
+		const today = moment().startOf('day');
+		const yearsDiff = today.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
 		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
 		let photographOfYourselfData = {};

@@ -56,17 +56,17 @@ export class UtilService {
 	}
 
 	getBirthDateMax(): moment.Moment {
-		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
+		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
-		return moment(aDate).isAfter(moment(), 'day');
+		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');
 	}
 
 	getIsTodayOrFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
-		return moment(aDate).isSameOrAfter(moment(), 'day');
+		return moment(aDate).startOf('day').isSameOrAfter(moment().startOf('day'), 'day');
 	}
 
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {

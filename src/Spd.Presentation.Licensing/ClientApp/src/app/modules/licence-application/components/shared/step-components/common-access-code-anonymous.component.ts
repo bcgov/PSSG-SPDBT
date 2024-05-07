@@ -97,7 +97,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	@Output() linkSuccess = new EventEmitter();
+	@Output() linkSuccess = new EventEmitter<LicenceResponse>();
 
 	constructor(
 		private router: Router,
@@ -185,7 +185,9 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		const replacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
 		const updatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
 
-		const daysBetween = moment(resp.expiryDate).startOf('day').diff(moment().startOf('day'), 'days') + 1;
+		const today = moment().startOf('day');
+		const expiryDate = moment(resp.expiryDate).startOf('day');
+		const daysBetween = expiryDate.diff(today, 'days');
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
@@ -198,7 +200,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			//  access code matches licence, but the WorkerLicenceType does not match
 			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.errorMessage = `This ${this.label} is not a ${selWorkerLicenceTypeDesc}.`;
-		} else if (!this.utilService.getIsFutureDate(resp.expiryDate)) {
+		} else if (!this.utilService.getIsTodayOrFutureDate(resp.expiryDate)) {
 			// access code matches licence, but the licence is expired
 			this.isExpired = true;
 			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
@@ -231,7 +233,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 				linkedLicenceHolderId: resp.licenceHolderId,
 				linkedLicenceHolderName: resp.licenceHolderName,
 			});
-			this.linkSuccess.emit();
+			this.linkSuccess.emit(resp);
 
 			const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.hotToastService.success(`The ${workerLicenceTypeDesc} has been found.`);
