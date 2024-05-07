@@ -95,6 +95,7 @@ public record ApplicationCreateCmd
     public Guid? SharedClearanceId { get; set; } = null;
     public Guid? ContactId { get; set; }
     public string? EmployeeId { get; set; } //for psso
+    public string? UploadId { get; set; } //for generic upload in screening
 
 }
 
