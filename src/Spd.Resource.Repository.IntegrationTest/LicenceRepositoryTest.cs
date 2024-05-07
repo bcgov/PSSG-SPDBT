@@ -1,3 +1,4 @@
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
@@ -19,12 +20,24 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     public async Task ManageAsync_UpdateLicence_Correctly()
     {
         //Arrange
-        // PortalUserQry qry = new() { OrgId = Guid.Parse("0326f9fd-7043-ee11-b845-00505683fbf4") };
+        spd_licence lic = new();
+        lic.spd_licenceid = Guid.NewGuid();
+        lic.spd_employercontactname = IntegrationTestSetup.DataPrefix + "employername";
+        lic.spd_employeremail = "test@test.com";
+        _context.AddTospd_licences(lic);
+        await _context.SaveChangesAsync(CancellationToken.None);
+        PermitLicence pl = new()
+        {
+            EmployerName = "newEmployerName",
+            SupervisorPhoneNumber = "222222222"
+        };
+        UpdateLicenceCmd cmd = new(pl, (Guid)lic.spd_licenceid);
 
         //Action
-        // var response = await _licRepo.QueryAsync(qry, CancellationToken.None);
+        var response = await _licRepo.ManageAsync(cmd, CancellationToken.None);
 
         //Assert
-        //Assert.NotNull(response);
+        Assert.NotNull(response);
+        Assert.Equal("newEmployerName", response.EmployerName);
     }
 }
