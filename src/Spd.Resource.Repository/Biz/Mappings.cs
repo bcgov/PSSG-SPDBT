@@ -59,6 +59,19 @@ namespace Spd.Resource.Repository.Biz
             .ForPath(d => d.spd_bcbusinessaddressprovince, opt => opt.MapFrom(s => s.BCBusinessAddress.Province))
             .ForPath(d => d.spd_bcbusinessaddressline1, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine1))
             .ForPath(d => d.spd_bcbusinessaddressline2, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine2));
+
+            CreateMap<BranchAddr, spd_address>()
+            .ForMember(d => d.spd_address1, opt => opt.MapFrom(s => s.AddressLine1))
+            .ForMember(d => d.spd_address2, opt => opt.MapFrom(s => s.AddressLine2))
+            .ForMember(d => d.spd_city, opt => opt.MapFrom(s => s.City))
+            .ForMember(d => d.spd_provincestate, opt => opt.MapFrom(s => s.Province))
+            .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.PostalCode))
+            .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.Country))
+            .ForMember(d => d.spd_addressid, opt => opt.MapFrom(s => s.BranchId))
+            .ForMember(d => d.spd_branchmanagername, opt => opt.MapFrom(s => s.BranchManager))
+            .ForMember(d => d.spd_branchphone, opt => opt.MapFrom(s => s.BranchPhoneNumber))
+            .ForMember(d => d.spd_branchemail, opt => opt.MapFrom(s => s.BranchEmailAddr));
+
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
