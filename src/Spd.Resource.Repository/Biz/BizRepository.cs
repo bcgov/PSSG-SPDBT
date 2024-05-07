@@ -150,6 +150,5 @@ namespace Spd.Resource.Repository.Biz
             }
             return await GetBizAsync(bizAddServiceTypeCmd.BizId, ct);
         }
-
     }
 }
