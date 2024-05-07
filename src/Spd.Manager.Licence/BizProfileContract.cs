@@ -36,6 +36,11 @@ public record BizInfo
     public bool? MailingAddressIsSameBizAddress { get; set; }
     public IEnumerable<ServiceTypeCode>? ServiceTypeCodes { get; set; }
 
+    //sole proprietor properties
+    public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
+    public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
+    public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
+
 }
 
 public record BranchInfo

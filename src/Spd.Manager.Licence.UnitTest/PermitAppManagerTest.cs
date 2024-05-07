@@ -474,6 +474,8 @@ public class PermitAppManagerTest
             });
         mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
             .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
+        mockLicRepo.Setup(a => a.ManageAsync(It.IsAny<UpdateLicenceCmd>(), CancellationToken.None))
+            .ReturnsAsync(licenceResp);
 
         var existingdoc = fixture.Build<DocumentResp>()
             .With(r => r.ExpiryDate, expiryDate)
