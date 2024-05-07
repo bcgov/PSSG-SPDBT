@@ -139,7 +139,7 @@ internal class DocumentRepository : IDocumentRepository
         }
         if (cmd.LicenceId != null)
         {
-            spd_licence? lic = await _context.spd_licences.Where(l => l.spd_licenceid == cmd.LicenceId).FirstOrDefaultAsync();
+            spd_licence? lic = await _context.spd_licences.Where(l => l.spd_licenceid == cmd.LicenceId).FirstOrDefaultAsync(ct);
             _context.SetLink(documenturl, nameof(documenturl.spd_LicenceId), lic);
         }
 
