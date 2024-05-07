@@ -190,3 +190,8 @@ public record Alias
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
 }
+public record SwlContactInfo
+{
+    public Guid ContactId { get; set; }
+    public Guid LicenceId { get; set; }
+}
