@@ -5,7 +5,7 @@ namespace Spd.Resource.Repository.Licence
     public interface ILicenceRepository
     {
         public Task<LicenceListResp> QueryAsync(LicenceQry query, CancellationToken cancellationToken);
-        public Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken cancellationToken);
+        public Task<LicenceResp> ManageAsync(UpdateLicenceCmd cmd, CancellationToken cancellationToken);
     }
 
     public record LicenceQry
@@ -24,12 +24,18 @@ namespace Spd.Resource.Repository.Licence
         public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
     }
 
-    public abstract record LicenceCmd;
-    public record LicenceResp()
+    public record UpdateLicenceCmd(PermitLicence PermitLicence, Guid LicenceID);
+
+    public record LicenceResp() : PermitLicence
     {
         public Guid? LicenceId { get; set; }
         public Guid? LicenceAppId { get; set; }
-        public string? LicenceNumber { get; set; } = null;
+
+    }
+
+    public record Licence
+    {
+        public string? LicenceNumber { get; set; }
         public DateOnly ExpiryDate { get; set; }
         public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
         public LicenceTermEnum? LicenceTermCode { get; set; }
@@ -39,7 +45,10 @@ namespace Spd.Resource.Repository.Licence
         public string? LicenceHolderMiddleName1 { get; set; }
         public LicenceStatusEnum LicenceStatusCode { get; set; }
         public string? NameOnCard { get; set; }
+    }
 
+    public record PermitLicence : Licence
+    {
         //for permit 
         public string? PermitOtherRequiredReason { get; set; }
         public string? EmployerName { get; set; }
@@ -51,7 +60,6 @@ namespace Spd.Resource.Repository.Licence
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
         //permit
     }
-
     public enum LicenceStatusEnum
     {
         Active,
