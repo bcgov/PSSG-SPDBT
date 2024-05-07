@@ -36,6 +36,7 @@ namespace Spd.Manager.Screening
                  .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>()
                  .ForMember(d => d.AgreeToConsent, opt => opt.MapFrom(s => true));
             CreateMap<ApplicationCreateRequestFromBulk, ApplicationCreateCmd>()
+                .ForMember(d => d.UploadId, opt => opt.MapFrom(s => s.LicenceNo))
                 .IncludeBase<ApplicationCreateRequest, ApplicationCreateCmd>();
             CreateMap<AliasCreateRequest, AliasCreateCmd>();
             CreateMap<ApplicationResult, ApplicationResponse>()

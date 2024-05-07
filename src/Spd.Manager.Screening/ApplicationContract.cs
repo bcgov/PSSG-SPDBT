@@ -374,7 +374,7 @@ namespace Spd.Manager.Screening
     public record ApplicationCreateRequestFromBulk : ApplicationCreateRequest
     {
         public int LineNumber { get; set; }
-        public string? LicenceNo { get; set; }
+        public string? LicenceNo { get; set; } //upload id
     }
     public record BulkUploadRequest(IFormFile File, bool RequireDuplicateCheck = false);
 
