@@ -4,7 +4,7 @@ namespace Spd.Resource.Repository.Address;
 public interface IAddressRepository
 {
     Task DeleteAddressesAsync(List<Guid?> addressIds, CancellationToken cancellationToken);
-    Task UpdateAddressAsync(UpdateAddressCmd cmd, CancellationToken ct);
+    Task UpdateAddressesAsync(UpdateAddressCmd cmd, CancellationToken ct);
 }
 
 public record UpdateAddressCmd
