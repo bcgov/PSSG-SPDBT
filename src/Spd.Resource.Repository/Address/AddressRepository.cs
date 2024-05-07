@@ -43,7 +43,7 @@ internal class AddressRepository : IAddressRepository
         await _context.SaveChangesAsync(ct);
     }
 
-    public async Task UpdateAddressAsync(UpdateAddressCmd cmd, CancellationToken ct)
+    public async Task UpdateAddressesAsync(UpdateAddressCmd cmd, CancellationToken ct)
     {
         foreach (BranchAddr address in cmd.Addresses)
         {
