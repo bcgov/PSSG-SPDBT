@@ -211,6 +211,20 @@ internal class Mappings : Profile
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddress)));
+
+        CreateMap<PermitAppSubmitRequest, PermitLicence>()
+          .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPurposeEnums(s.BodyArmourPermitReasonCodes, s.ArmouredVehiclePermitReasonCodes)))
+          .ForMember(d => d.LicenceNumber, opt => opt.Ignore())
+          .ForMember(d => d.ExpiryDate, opt => opt.Ignore())
+          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.Ignore())
+          .ForMember(d => d.LicenceTermCode, opt => opt.Ignore())
+          .ForMember(d => d.LicenceHolderId, opt => opt.Ignore())
+          .ForMember(d => d.LicenceHolderFirstName, opt => opt.Ignore())
+          .ForMember(d => d.LicenceHolderLastName, opt => opt.Ignore())
+          .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.Ignore())
+          .ForMember(d => d.LicenceStatusCode, opt => opt.Ignore())
+          .ForMember(d => d.NameOnCard, opt => opt.Ignore())
+          ;
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -393,7 +407,7 @@ internal class Mappings : Profile
     {
         List<BranchInfo> branchInfos = new();
 
-        foreach (BranchAddr branchAddr in branchAddrs) 
+        foreach (BranchAddr branchAddr in branchAddrs)
         {
             BranchInfo branchInfo = new() { BranchAddress = new() };
             branchInfo.BranchId = branchAddr.BranchId;

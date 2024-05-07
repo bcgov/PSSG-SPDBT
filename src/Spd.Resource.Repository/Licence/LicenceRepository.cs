@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.Licence;
 internal class LicenceRepository : ILicenceRepository
@@ -63,9 +64,18 @@ internal class LicenceRepository : ILicenceRepository
         };
     }
 
-    public async Task<LicenceResp> ManageAsync(LicenceCmd cmd, CancellationToken ct)
+    public async Task<LicenceResp> ManageAsync(UpdateLicenceCmd cmd, CancellationToken ct)
     {
-        return null;
+        IQueryable<spd_licence> lics = _context.spd_licences
+            .Expand(i => i.spd_LicenceHolder_contact)
+            .Where(i => i.spd_licenceid == cmd.LicenceID);
+        spd_licence? lic = lics.FirstOrDefault();
+        if (lic == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid licenceId");
+        _mapper.Map<PermitLicence, spd_licence>(cmd.PermitLicence, lic);
+        _context.UpdateObject(lic);
+        await _context.SaveChangesAsync(ct);
+        return _mapper.Map<LicenceResp>(lic);
     }
 }
 
