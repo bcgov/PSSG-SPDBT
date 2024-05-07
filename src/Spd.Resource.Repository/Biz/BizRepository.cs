@@ -10,16 +10,22 @@ namespace Spd.Resource.Repository.Biz
 {
     internal class BizRepository : IBizRepository
     {
-        private readonly DynamicsContext _dynaContext;
+        private readonly DynamicsContext _context;
         private readonly IMapper _mapper;
-        public BizRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<BizRepository> logger)
+        private readonly ILogger<BizRepository> _logger;
+
+        public BizRepository(IDynamicsContextFactory ctx, 
+            IMapper mapper, 
+            ILogger<BizRepository> logger)
         {
-            _dynaContext = ctx.CreateChangeOverwrite();
+            _context = ctx.CreateChangeOverwrite();
             _mapper = mapper;
+            _logger = logger;
         }
+
         public async Task<IEnumerable<BizResult>> QueryBizAsync(BizsQry qry, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_account_spd_servicetype);
+            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_account_spd_servicetype);
             if (!qry.IncludeInactive)
                 accounts = accounts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
             if (qry.BizGuid != null)
@@ -40,7 +46,7 @@ namespace Spd.Resource.Repository.Biz
 
         public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
+            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == accountId);
 
@@ -48,7 +54,7 @@ namespace Spd.Resource.Repository.Biz
             
             if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            List<spd_account_spd_servicetype> serviceTypes = _dynaContext.spd_account_spd_servicetypeset
+            List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
                 .Where(so => so.accountid == Biz.accountid)
                 .ToList();
 
@@ -75,7 +81,7 @@ namespace Spd.Resource.Repository.Biz
         {
             foreach (var addressId in addressIds)
             {
-                spd_address? address = _dynaContext.spd_addresses.Where(a =>
+                spd_address? address = _context.spd_addresses.Where(a =>
                     a.spd_addressid == addressId &&
                     a.statecode == DynamicsConstants.StateCode_Active
                 ).FirstOrDefault();
@@ -88,13 +94,20 @@ namespace Spd.Resource.Repository.Biz
 
                 address.statecode = DynamicsConstants.StateCode_Inactive;
                 address.statuscode = DynamicsConstants.StatusCode_Inactive;
-                _dynaContext.UpdateObject(address);
+                _context.UpdateObject(address);
             }
+
+            await _context.SaveChangesAsync(ct);
+        }
+
+        public async Task UpdateBranchAsync()
+        {
+
         }
 
         private async Task<BizResult?> BizUpdateAsync(BizUpdateCmd updateBizCmd, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
+            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
                  .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                  .Where(a => a.accountid == updateBizCmd.Id);
 
@@ -103,8 +116,9 @@ namespace Spd.Resource.Repository.Biz
 
             _mapper.Map(updateBizCmd, Biz);
 
-            _dynaContext.UpdateObject(Biz);
-            await _dynaContext.SaveChangesAsync(ct);
+            _context.UpdateObject(Biz);
+
+            await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(Biz);
         }
@@ -112,16 +126,16 @@ namespace Spd.Resource.Repository.Biz
         private async Task<BizResult?> BizCreateAsync(BizCreateCmd createBizCmd, CancellationToken ct)
         {
             var account = _mapper.Map<account>(createBizCmd);
-            _dynaContext.AddToaccounts(account);
-            await _dynaContext.SaveChangesAsync(ct);
+            _context.AddToaccounts(account);
+            await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);
         }
 
         private async Task<BizResult?> BizAddServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
         {
-            spd_servicetype? st = _dynaContext.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
-            IQueryable<account> accounts = _dynaContext.accounts
+            spd_servicetype? st = _context.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
+            IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == bizAddServiceTypeCmd.BizId);
@@ -131,8 +145,8 @@ namespace Spd.Resource.Repository.Biz
             if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
             {
 
-                _dynaContext.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
-                await _dynaContext.SaveChangesAsync(ct);
+                _context.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
+                await _context.SaveChangesAsync(ct);
             }
             return await GetBizAsync(bizAddServiceTypeCmd.BizId, ct);
         }
