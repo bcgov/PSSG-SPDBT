@@ -25,7 +25,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task BizCreateAsync_Run_Correctly()
     {
-        //Arrange
+        // Arrange
         Guid bizId = Guid.NewGuid();
         BizCreateCmd cmd = new() 
         {
@@ -34,10 +34,10 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizLegalName = IntegrationTestSetup.DataPrefix + "test"
         };
 
-        //Act
+        // Act
         var result = await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
 
-        //Assert
+        // Assert
         account? account = await _context.accounts.Where(c => c.accountid == bizId).FirstOrDefaultAsync();
         Assert.NotNull(account);
         Assert.Equal(cmd.BizGuid.ToString(), account.spd_orgguid);
@@ -50,7 +50,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task BizAddServiceTypeAsync_Run_Correctly()
     {
-        //Arrange
+        // Arrange
         Guid bizId = Guid.NewGuid();
         BizCreateCmd createCmd = new()
         {
@@ -61,10 +61,10 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         var biz = await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
         BizAddServiceTypeCmd cmd = new(bizId, ServiceTypeEnum.SecurityBusinessLicence);
 
-        //Act
+        // Act
         await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
 
-        //Assert
+        // Assert
         account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
             .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
         Assert.NotNull(account);
