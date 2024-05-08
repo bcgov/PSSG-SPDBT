@@ -46,7 +46,7 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_BizLoginCommand_WithNoIdentityNoBiz_Return_BizUserLoginResponse()
         {
-            //Arrange
+            // Arrange
             BceidIdentityInfo identityInfo = GetBceidIdentityInfo();
             Guid identityId = Guid.NewGuid();
             Guid bizId = Guid.NewGuid();
@@ -62,10 +62,10 @@ namespace Spd.Manager.Licence.UnitTest
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
 
-            //Action
+            // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
 
-            //Assert
+            // Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
             Assert.Equal(portalUserId, result.BizUserId);
@@ -74,7 +74,7 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_BizLoginCommand_WithNoIdentityBizExists_Return_BizUserLoginResponse()
         {
-            //Arrange
+            // Arrange
             BceidIdentityInfo identityInfo = GetBceidIdentityInfo();
             Guid identityId = Guid.NewGuid();
             Guid bizId = Guid.NewGuid();
@@ -96,10 +96,10 @@ namespace Spd.Manager.Licence.UnitTest
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
 
-            //Action
+            // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
 
-            //Assert
+            // Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
             Assert.Equal(portalUserId, result.BizUserId);
@@ -108,7 +108,7 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_BizLoginCommand_WithIdentityBizExists_NoPortalUser_Return_BizUserLoginResponse()
         {
-            //Arrange
+            // Arrange
             BceidIdentityInfo identityInfo = GetBceidIdentityInfo();
             Guid identityId = Guid.NewGuid();
             Guid bizId = Guid.NewGuid();
@@ -132,10 +132,10 @@ namespace Spd.Manager.Licence.UnitTest
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
 
-            //Action
+            // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
 
-            //Assert
+            // Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
             Assert.Equal(portalUserId, result.BizUserId);
@@ -144,7 +144,7 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_BizLoginCommand_WithIdentityBizExists_CurrentUserIsManager_Return_BizUserLoginResponse()
         {
-            //Arrange
+            // Arrange
             BceidIdentityInfo identityInfo = GetBceidIdentityInfo();
             Guid identityId = Guid.NewGuid();
             Guid bizId = Guid.NewGuid();
@@ -179,10 +179,10 @@ namespace Spd.Manager.Licence.UnitTest
                         }
                     });
 
-            //Action
+            // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
 
-            //Assert
+            // Assert
             Assert.IsType<BizUserLoginResponse>(result);
             Assert.Equal(bizId, result.BizId);
             Assert.Equal(portalUserId, result.BizUserId);
@@ -191,7 +191,7 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_BizLoginCommand_WithIdentityBizExists_CurrentUserIsNotManager_Return_DenyAccess()
         {
-            //Arrange
+            // Arrange
             BceidIdentityInfo identityInfo = GetBceidIdentityInfo();
             Guid identityId = Guid.NewGuid();
             Guid bizId = Guid.NewGuid();
@@ -223,26 +223,26 @@ namespace Spd.Manager.Licence.UnitTest
                         Items = new List<PortalUserResp> { }
                     });
 
-            //Action
+            // Action
             Func<Task> act = () => sut.Handle(bizLogin, CancellationToken.None);
 
-            //Assert
+            // Assert
             await Assert.ThrowsAsync<ApiException>(act);
         }
 
         [Fact]
         public async void Handle_GetBizsQuery_Success()
         {
-            ////Arrange
+            // Arrange
             Guid bizGuid = Guid.NewGuid();
             GetBizsQuery qry = new(bizGuid);
             mockBizRepo.Setup(a => a.QueryBizAsync(It.Is<BizsQry>(q => q.BizGuid == bizGuid), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<BizResult> { new() { BizGuid = bizGuid, BizLegalName = "test" } });
 
-            ////Act
+            // Act
             var result = await sut.Handle(qry, CancellationToken.None);
 
-            ////Assert
+            // Assert
             mockBizRepo.VerifyAll();
             Assert.NotNull(result);
             Assert.Equal("test", result.FirstOrDefault().BizLegalName);
@@ -253,33 +253,33 @@ namespace Spd.Manager.Licence.UnitTest
         [Fact]
         public async void Handle_BizTermAgreeCommand_Success()
         {
-            //Arrange
+            // Arrange
             Guid bizUserId = Guid.NewGuid();
             BizTermAgreeCommand cmd = new(Guid.NewGuid(), bizUserId);
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<UpdatePortalUserCmd>(c => c.Id == bizUserId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp());
 
-            //Action
+            // Action
             var result = await sut.Handle(cmd, CancellationToken.None);
 
-            //Assert
+            // Assert
             Assert.IsType<Unit>(result);
         }
 
         [Fact]
         public async void Handle_GetBizProfileQuery_Success()
         {
-            //Arrange
+            // Arrange
             Guid bizId = Guid.NewGuid();
             GetBizProfileQuery qry = new(bizId);
             mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { BizGuid = bizId, BizName = "test" } );
 
-            //Action
+            // Action
             var result = await sut.Handle(qry, CancellationToken.None);
 
-            //Assert
+            // Assert
             Assert.IsType<BizProfileResponse>(result);
             Assert.Equal("test", result.BizTradeName);
             Assert.Equal(bizId, result.BizId);
