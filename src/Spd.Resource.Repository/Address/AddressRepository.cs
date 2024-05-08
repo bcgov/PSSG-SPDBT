@@ -38,10 +38,24 @@ internal class AddressRepository : IAddressRepository
         if (qry.Type != null)
             addresses = addresses.Where(a => a.spd_type == (int)Enum.Parse<AddressTypeOptionSet>(qry.Type.ToString()));
 
-        return new AddressListResp()
+        return _mapper.Map<IEnumerable<AddressResp>>(addresses);
+    }
+
+    public async Task<IEnumerable<AddressResp>> CreateAddressesAsync(UpsertAddressCmd cmd, CancellationToken ct)
+    {
+        List<AddressResp> createdAddresses = new();
+
+        foreach (BranchAddr address in cmd.Addresses)
         {
-            Items = _mapper.Map<IEnumerable<AddressResp>>(addresses)
-        };
+            spd_address addressToCreate = _mapper.Map<spd_address>(address);
+            _context.AddTospd_addresses(addressToCreate);
+            AddressResp createdAddress = _mapper.Map<AddressResp>(address);
+            createdAddresses.Add(createdAddress);
+        }
+
+        await _context.SaveChangesAsync(ct);
+
+        return createdAddresses;
     }
 
     public async Task DeleteAddressesAsync(List<Guid?> addressIds, CancellationToken ct)
