@@ -23,6 +23,30 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
+    public async Task QueryAsync_Run_Correctly()
+    {
+        // Arrange
+        AddressQry qry = new() { OrganizationId = Guid.Parse("dfa245a8-6a43-ee11-b845-00505683fbf4"), Type = AddressTypeEnum.Branch };
+
+        // Action
+        var response = await _addressRepository.QueryAsync(qry, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.NotEmpty(response.Items);
+    }
+
+    [Fact]
+    public async Task QueryAsync_WithNoFilteringCriteria_Throw_Exception()
+    {
+        // Arrange
+        AddressQry qry = new();
+
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _addressRepository.QueryAsync(qry, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task DeleteAddressesAsync_Run_Correctly()
     {
         // Arrange
