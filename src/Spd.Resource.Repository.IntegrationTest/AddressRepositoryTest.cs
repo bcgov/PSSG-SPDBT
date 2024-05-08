@@ -130,7 +130,7 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(a => a.BranchPhoneNumber, "90000000")
             .With(a => a.PostalCode, "V7N 5J2")
             .Create();
-        UpdateAddressCmd cmd = new() { Addresses = new List<BranchAddr> { addressToUpdate } };
+        UpsertAddressCmd cmd = new() { Addresses = new List<BranchAddr> { addressToUpdate } };
 
         // Act
         await _addressRepository.UpdateAddressesAsync(cmd, CancellationToken.None);
