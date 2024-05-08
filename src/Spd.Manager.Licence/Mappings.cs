@@ -1,6 +1,7 @@
 using AutoMapper;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
@@ -215,6 +216,8 @@ internal class Mappings : Profile
             .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
             .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnum(s.ServiceTypeCodes)))
             .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
+
+        CreateMap<BranchAddr, AddressResp>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
