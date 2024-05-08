@@ -179,7 +179,10 @@ import {
 										</div>
 
 										<ng-container
-											*ngIf="appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else isPermit"
+											*ngIf="
+												appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
+												else IsPermitContent
+											"
 										>
 											<div class="row mb-2">
 												<div class="col-lg-3">
@@ -249,7 +252,7 @@ import {
 												</div>
 											</div>
 										</ng-container>
-										<ng-template #isPermit>
+										<ng-template #IsPermitContent>
 											<div class="row mb-2">
 												<div class="col-lg-9">
 													<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
@@ -295,7 +298,10 @@ import {
 
 									<div class="row">
 										<ng-container
-											*ngIf="appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence; else IsPermit"
+											*ngIf="
+												appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
+												else IsPermitFooter
+											"
 										>
 											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
 												<div class="col-12" *ngIf="lostLicenceDaysText">
@@ -323,7 +329,7 @@ import {
 											</ng-template>
 										</ng-container>
 
-										<ng-template #IsPermit>
+										<ng-template #IsPermitFooter>
 											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
 												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
@@ -624,11 +630,16 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				renewals.forEach((item: UserLicenceResponse) => {
 					const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
 					const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
-					if (item.licenceExpiryNumberOfDays) {
-						if (item.licenceExpiryNumberOfDays > 7) {
+
+					if (item.licenceExpiryNumberOfDays != null) {
+						if (item.licenceExpiryNumberOfDays < 0) {
+							this.errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
+						} else if (item.licenceExpiryNumberOfDays > 7) {
 							this.warningMessages.push(
 								`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
 							);
+						} else if (item.licenceExpiryNumberOfDays === 0) {
+							this.errorMessages.push(`Your ${itemLabel} is expiring <strong>today</strong>. Please renew now.`);
 						} else {
 							const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
 							this.errorMessages.push(

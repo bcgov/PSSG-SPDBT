@@ -184,16 +184,18 @@ export class CommonApplicationService {
 							item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
 							item.applicationTypeCode === ApplicationTypeCode.New
 						) {
-							const applicationExpiryDate = moment(item.updatedOn).add(applicationNotSubmittedValidDays, 'days');
+							const today = moment().startOf('day');
+							const applicationExpiryDate = moment(item.updatedOn)
+								.startOf('day')
+								.add(applicationNotSubmittedValidDays, 'days');
+
 							item.applicationExpiryDate = applicationExpiryDate.toString();
 							if (
-								moment().isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))
+								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))
 							) {
 								item.isExpiryError = true;
 							} else if (
-								moment().isSameOrAfter(
-									moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days')
-								)
+								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
 							) {
 								item.isExpiryWarning = true;
 							}
@@ -252,46 +254,60 @@ export class CommonApplicationService {
 								);
 
 								if (matchingLicence) {
+									const today = moment().startOf('day');
+
 									licence.cardHolderName = matchingLicence.nameOnCard;
 									licence.licenceHolderName = matchingLicence.licenceHolderName;
 									licence.licenceStatusCode = matchingLicence.licenceStatusCode;
 									licence.licenceExpiryDate = matchingLicence.expiryDate;
-									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).diff(moment(), 'days') + 1;
+									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate)
+										.startOf('day')
+										.diff(today, 'days');
 									licence.licenceId = matchingLicence.licenceId;
 									licence.licenceNumber = matchingLicence.licenceNumber;
 									licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
 
-									if (
-										licence.licenceStatusCode === LicenceStatusCode.Active &&
-										moment().isBefore(
-											moment(licence.licenceExpiryDate).subtract(licenceUpdatePeriodPreventionDays, 'days')
-										)
-									) {
-										licence.isUpdatePeriod = true;
-									}
-
-									if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
+									if (licence.licenceExpiryNumberOfDays >= 0) {
 										if (
-											moment().isSameOrAfter(
-												moment(licence.licenceExpiryDate).subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
+											licence.licenceStatusCode === LicenceStatusCode.Active &&
+											today.isBefore(
+												moment(licence.licenceExpiryDate)
+													.startOf('day')
+													.subtract(licenceUpdatePeriodPreventionDays, 'days')
 											)
 										) {
-											licence.isRenewalPeriod = true;
+											licence.isUpdatePeriod = true;
 										}
-									} else {
-										if (
-											moment().isSameOrAfter(moment(licence.licenceExpiryDate).subtract(licenceRenewPeriodDays, 'days'))
-										) {
-											licence.isRenewalPeriod = true;
-										}
-									}
 
-									if (
-										moment().isBefore(
-											moment(licence.licenceExpiryDate).subtract(licenceReplacementPeriodPreventionDays, 'days')
-										)
-									) {
-										licence.isReplacementPeriod = true;
+										if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
+											if (
+												today.isSameOrAfter(
+													moment(licence.licenceExpiryDate)
+														.startOf('day')
+														.subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
+												)
+											) {
+												licence.isRenewalPeriod = true;
+											}
+										} else {
+											if (
+												today.isSameOrAfter(
+													moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
+												)
+											) {
+												licence.isRenewalPeriod = true;
+											}
+										}
+
+										if (
+											today.isBefore(
+												moment(licence.licenceExpiryDate)
+													.startOf('day')
+													.subtract(licenceReplacementPeriodPreventionDays, 'days')
+											)
+										) {
+											licence.isReplacementPeriod = true;
+										}
 									}
 								}
 
@@ -481,7 +497,7 @@ export class CommonApplicationService {
 			return false;
 		}
 
-		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days') + 1;
+		const daysBetween = moment(expiryDate).startOf('day').diff(moment().startOf('day'), 'days');
 
 		// Ability to submit Renewals only if current licence term is 1,2,3 or 5 years and expiry date is in 90 days or less.
 		// Ability to submit Renewals only if current licence term is 90 days and expiry date is in 60 days or less.
