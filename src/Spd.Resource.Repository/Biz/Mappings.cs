@@ -43,7 +43,7 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnums(s.spd_account_spd_servicetype)))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
-            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddress(s.spd_Organization_Addresses)));
+            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => s.spd_Organization_Addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch)));
 
             CreateMap<BizUpdateCmd, account>()
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)))
@@ -70,36 +70,14 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.spd_addressid, opt => opt.MapFrom(s => s.BranchId))
             .ForMember(d => d.spd_branchmanagername, opt => opt.MapFrom(s => s.BranchManager))
             .ForMember(d => d.spd_branchphone, opt => opt.MapFrom(s => s.BranchPhoneNumber))
-            .ForMember(d => d.spd_branchemail, opt => opt.MapFrom(s => s.BranchEmailAddr));
+            .ForMember(d => d.spd_branchemail, opt => opt.MapFrom(s => s.BranchEmailAddr))
+            .ReverseMap();
 
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
         {
             return servicetypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid))).ToArray();
-        }
-
-        private static List<BranchAddr> GetBranchAddress(IEnumerable<spd_address> addresses)
-        {
-            List<BranchAddr> branchAddresses = new();
-
-            foreach (var branch in addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch))
-            {
-                BranchAddr brachAddress = new();
-                brachAddress.AddressLine1 = branch.spd_address1;
-                brachAddress.AddressLine2 = branch.spd_address2;
-                brachAddress.City = branch.spd_city;
-                brachAddress.Province = branch.spd_provincestate;
-                brachAddress.PostalCode = branch.spd_postalcode;
-                brachAddress.Country = branch.spd_country;
-                brachAddress.BranchId = branch.spd_addressid;
-                brachAddress.BranchManager = branch.spd_branchmanagername;
-                brachAddress.BranchPhoneNumber = branch.spd_branchphone;
-                brachAddress.BranchEmailAddr = branch.spd_branchemail;
-                branchAddresses.Add(brachAddress);
-            }
-
-            return branchAddresses;
         }
     }
 }
