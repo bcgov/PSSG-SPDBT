@@ -77,7 +77,7 @@ import {
 
 			<h3 class="fw-semibold d-flex mt-2" style="color: var(--color-primary);">
 				{{ application.orgName }}
-				<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass" style="width: 250px;">
+				<mat-chip-row aria-label="Status" class="ms-4" [ngClass]="applicationPortalStatusClass" style="width: 275px;">
 					{{ application.status | options : 'ApplicationPortalStatusTypes' : application.status }}
 				</mat-chip-row>
 			</h3>
