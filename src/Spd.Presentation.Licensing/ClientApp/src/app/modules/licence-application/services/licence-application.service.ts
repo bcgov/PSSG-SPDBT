@@ -1159,7 +1159,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const mailingAddress = {
-			addressSelected: profile.mailingAddress ? true : false,
+			addressSelected: !!profile.mailingAddress,
 			isMailingTheSameAsResidential: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
 			addressLine2: profile.mailingAddress?.addressLine2,
@@ -1717,7 +1717,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			// We require a new photo every 5 years. Please provide a new photo for your licence
 			const today = moment().startOf('day');
 			const yearsDiff = today.diff(originalPhotoOfYourselfLastUpload, 'years');
-			originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+			originalPhotoOfYourselfExpired = yearsDiff >= 5;
 
 			if (originalPhotoOfYourselfExpired) {
 				// set flag - user will be updating their photo

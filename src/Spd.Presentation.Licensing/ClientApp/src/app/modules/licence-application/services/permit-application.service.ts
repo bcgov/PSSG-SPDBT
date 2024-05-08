@@ -707,7 +707,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		permitLicenceData: LicenceResponse
 	): Observable<PermitLicenceAppResponse> {
-		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode!, permitLicenceData).pipe(
+		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode, permitLicenceData).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = { ..._resp.personalInformationData };
 
@@ -974,7 +974,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}): Observable<any> {
 		return this.applyPermitProfileIntoModel(
 			profileData ?? permitLicenceAppData,
-			permitLicenceAppData.workerLicenceTypeCode!,
+			permitLicenceAppData.workerLicenceTypeCode,
 			permitLicenceAppData.applicationTypeCode,
 			userLicenceInformation,
 			permitLicenceData
@@ -1040,7 +1040,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		const mailingAddress = {
-			addressSelected: profileData.mailingAddress ? true : false,
+			addressSelected: !!profileData.mailingAddress,
 			isMailingTheSameAsResidential: false,
 			addressLine1: profileData.mailingAddress?.addressLine1,
 			addressLine2: profileData.mailingAddress?.addressLine2,
@@ -1209,9 +1209,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			supervisorName: permitLicenceData.supervisorName,
 			supervisorEmailAddress: permitLicenceData.supervisorEmailAddress,
 			supervisorPhoneNumber: permitLicenceData.supervisorPhoneNumber,
-			addressSelected: permitLicenceData.employerPrimaryAddress?.addressLine1
-				? true
-				: permitLicenceData.employerPrimaryAddress?.addressLine1,
+			addressSelected: !!permitLicenceData.employerPrimaryAddress?.addressLine1,
 			addressLine1: permitLicenceData.employerPrimaryAddress?.addressLine1,
 			addressLine2: permitLicenceData.employerPrimaryAddress?.addressLine2,
 			city: permitLicenceData.employerPrimaryAddress?.city,
