@@ -72,7 +72,6 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.spd_branchphone, opt => opt.MapFrom(s => s.BranchPhoneNumber))
             .ForMember(d => d.spd_branchemail, opt => opt.MapFrom(s => s.BranchEmailAddr))
             .ReverseMap();
-
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
