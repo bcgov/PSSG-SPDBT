@@ -20,7 +20,7 @@ internal class AddressRepository : IAddressRepository
         _logger = logger;
     }
 
-    public async Task<AddressListResp> QueryAsync(AddressQry qry, CancellationToken ct)
+    public async Task<IEnumerable<AddressResp>> QueryAsync(AddressQry qry, CancellationToken ct)
     {
         IQueryable<spd_address> addresses = _context.spd_addresses;
 

@@ -3,9 +3,10 @@
 namespace Spd.Resource.Repository.Address;
 public interface IAddressRepository
 {
-    Task<AddressListResp> QueryAsync(AddressQry qry, CancellationToken ct);
+    Task<IEnumerable<AddressResp>> QueryAsync(AddressQry qry, CancellationToken ct);
+    Task<IEnumerable<AddressResp>> CreateAddressesAsync(UpsertAddressCmd cmd, CancellationToken ct);
     Task DeleteAddressesAsync(List<Guid?> addressIds, CancellationToken cancellationToken);
-    Task UpdateAddressesAsync(UpdateAddressCmd cmd, CancellationToken ct);
+    Task UpdateAddressesAsync(UpsertAddressCmd cmd, CancellationToken ct);
 }
 
 public record AddressQry
