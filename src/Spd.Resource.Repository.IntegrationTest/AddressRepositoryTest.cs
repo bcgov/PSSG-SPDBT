@@ -47,6 +47,34 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
+    public async Task CreateAddressesAsync_Run_Correctly()
+    {
+        BranchAddr addressToCreate = fixture.Build<BranchAddr>()
+            .With(a => a.BranchId, Guid.NewGuid())
+            .With(a => a.BranchPhoneNumber, "90000000")
+            .With(a => a.PostalCode, "V7N 5J2")
+            .Create();
+        UpsertAddressCmd cmd = new() { Addresses = new List<BranchAddr> { addressToCreate } };
+
+        // Act
+        await _addressRepository.CreateAddressesAsync(cmd, CancellationToken.None);
+
+        // Assert
+        spd_address? createdAddress = _context.spd_addresses.
+            Where(a => a.spd_addressid == addressToCreate.BranchId &&
+            a.spd_address1 == addressToCreate.AddressLine1 &&
+            a.spd_address2 == addressToCreate.AddressLine2 &&
+            a.spd_city == addressToCreate.City &&
+            a.spd_country == addressToCreate.Country &&
+            a.spd_branchmanagername == addressToCreate.BranchManager &&
+            a.spd_branchphone == addressToCreate.BranchPhoneNumber &&
+            a.spd_branchemail == addressToCreate.BranchEmailAddr)
+            .FirstOrDefault();
+
+        Assert.NotNull(createdAddress);
+    }
+
+    [Fact]
     public async Task DeleteAddressesAsync_Run_Correctly()
     {
         // Arrange
