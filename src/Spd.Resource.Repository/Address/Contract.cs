@@ -15,14 +15,9 @@ public record AddressQry
     public bool IncludeInactive { get; set; }
 }
 
-public record UpdateAddressCmd
+public record UpsertAddressCmd
 {
     public IEnumerable<BranchAddr> Addresses { get; set; } = [];
-}
-
-public record AddressListResp
-{
-    public IEnumerable<AddressResp> Items { get; set; } = [];
 }
 
 public record AddressResp() : Addr
