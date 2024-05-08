@@ -20,6 +20,30 @@ internal class AddressRepository : IAddressRepository
         _logger = logger;
     }
 
+    public async Task<AddressListResp> QueryAsync(AddressQry qry, CancellationToken ct)
+    {
+        IQueryable<spd_address> addresses = _context.spd_addresses;
+
+        if (qry.OrganizationId == null && qry.Type == null)
+        {
+            throw new ArgumentException("at least need 1 parameter to do address query.");
+        }
+
+        if (!qry.IncludeInactive)
+            addresses = addresses.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
+
+        if (qry.OrganizationId != null)
+            addresses = addresses.Where(a => a._spd_organization_value == qry.OrganizationId);
+
+        if (qry.Type != null)
+            addresses = addresses.Where(a => a.spd_type == (int)Enum.Parse<AddressTypeOptionSet>(qry.Type.ToString()));
+
+        return new AddressListResp()
+        {
+            Items = _mapper.Map<IEnumerable<AddressResp>>(addresses)
+        };
+    }
+
     public async Task DeleteAddressesAsync(List<Guid?> addressIds, CancellationToken ct)
     {
         foreach (var addressId in addressIds)
