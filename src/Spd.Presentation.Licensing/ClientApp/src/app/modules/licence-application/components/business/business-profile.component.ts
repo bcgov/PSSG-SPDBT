@@ -9,7 +9,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 @Component({
 	selector: 'app-business-profile',
 	template: `
-		<section class="step-section">
+		<div class="step-section">
 			<div class="row">
 				<div class="col-xxl-11 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
@@ -54,7 +54,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
 
 		<ng-container *ngIf="!isReadonly">
 			<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>

@@ -100,6 +100,7 @@ import { CommonControllingMembersComponent } from './components/business/common-
 import { CommonEmployeesComponent } from './components/business/common-employees.component';
 import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
 import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
+import { ModalLookupSoleProprietorComponent } from './components/business/modal-lookup-sole-proprietor.component';
 import { ModalMemberWithSwlAddComponent } from './components/business/modal-member-with-swl-add.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/business/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
@@ -281,6 +282,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
+		ModalLookupSoleProprietorComponent,
 		ModalMemberWithoutSwlEditComponent,
 		ModalMemberWithSwlAddComponent,
 		PermitApplicationBaseAnonymousComponent,

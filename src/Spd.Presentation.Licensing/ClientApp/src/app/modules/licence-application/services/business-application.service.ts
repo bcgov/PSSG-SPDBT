@@ -181,6 +181,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessTypeCode: profile.bizTypeCode,
 			legalBusinessName: profile.bizLegalName,
 			doingBusinessAsName: profile.bizTradeName,
+			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
+			soleProprietorSwlPhoneNumber: profile.soleProprietorSwlPhoneNumber,
 		};
 		const businessManagerData = { isBusinessManager: true }; // default
 
