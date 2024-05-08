@@ -165,12 +165,12 @@ export const ApplicationPortalStatusTypes: SelectOptions[] = [
 		extra: 'The applicant did not consent to the CRC',
 	},
 	{
-		desc: 'Cancelled by Org.',
+		desc: 'Cancelled by Organization',
 		code: ApplicationPortalStatusCode.CancelledByOrganization,
 		extra: 'Organization cancelled the application',
 	},
 	{
-		desc: 'Cancelled by Appl.',
+		desc: 'Cancelled by Applicant',
 		code: ApplicationPortalStatusCode.CancelledByApplicant,
 		extra: 'The applicant cancelled their application',
 	},

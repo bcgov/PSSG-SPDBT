@@ -272,7 +272,7 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 	styles: [
 		`
 			.mat-column-status {
-				min-width: 250px;
+				min-width: 275px;
 			}
 
 			.mat-column-action1 {
