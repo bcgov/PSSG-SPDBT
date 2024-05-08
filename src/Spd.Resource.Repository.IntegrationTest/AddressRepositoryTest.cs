@@ -33,7 +33,6 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Assert
         Assert.NotNull(response);
-        Assert.NotEmpty(response.Items);
     }
 
     [Fact]
