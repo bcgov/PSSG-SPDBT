@@ -1717,7 +1717,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			// We require a new photo every 5 years. Please provide a new photo for your licence
 			const today = moment().startOf('day');
 			const yearsDiff = today.diff(originalPhotoOfYourselfLastUpload, 'years');
-			const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+			originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
 			if (originalPhotoOfYourselfExpired) {
 				// set flag - user will be updating their photo

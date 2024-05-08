@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-permit-confirmation',
@@ -34,7 +33,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							</div>
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Name on Permit</div>
-								<div class="summary-text-data">{{ permitHolderName }}</div>
+								<div class="summary-text-data">{{ cardHolderName }}</div>
 							</div>
 						</div>
 					</div>
@@ -51,7 +50,7 @@ export class StepPermitConfirmationComponent implements OnInit {
 
 	private permitModelData: any = {};
 
-	constructor(private utilService: UtilService, private permitApplicationService: PermitApplicationService) {}
+	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit() {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
@@ -59,13 +58,8 @@ export class StepPermitConfirmationComponent implements OnInit {
 		this.workerLicenceTypeCode = this.permitModelData.workerLicenceTypeData.workerLicenceTypeCode;
 	}
 
-	get permitHolderName(): string {
-		return this.utilService.getFullNameWithMiddle(
-			this.permitModelData.personalInformationData.givenName,
-			this.permitModelData.personalInformationData.middleName1,
-			this.permitModelData.personalInformationData.middleName2,
-			this.permitModelData.personalInformationData.surname
-		);
+	get cardHolderName(): string {
+		return this.permitModelData.personalInformationData.cardHolderName ?? '';
 	}
 	get originalLicenceNumber(): string {
 		return this.permitModelData.originalLicenceNumber ?? '';
