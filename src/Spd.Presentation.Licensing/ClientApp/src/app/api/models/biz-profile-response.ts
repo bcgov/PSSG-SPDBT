@@ -4,6 +4,7 @@ import { Address } from './address';
 import { BranchInfo } from './branch-info';
 import { BusinessTypeCode } from './business-type-code';
 import { ServiceTypeCode } from './service-type-code';
+import { SwlContactInfo } from './swl-contact-info';
 export interface BizProfileResponse {
   bizAddress?: Address;
   bizBCAddress?: Address;
@@ -15,4 +16,7 @@ export interface BizProfileResponse {
   branches?: null | Array<BranchInfo>;
   mailingAddressIsSameBizAddress?: null | boolean;
   serviceTypeCodes?: null | Array<ServiceTypeCode>;
+  soleProprietorSwlContactInfo?: SwlContactInfo;
+  soleProprietorSwlEmailAddress?: null | string;
+  soleProprietorSwlPhoneNumber?: null | string;
 }

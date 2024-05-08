@@ -23,9 +23,6 @@ export interface BizLicAppUpsertRequest {
   noBranding?: null | boolean;
   nonSwlControllerMemberInfos?: null | Array<ContactInfo>;
   privateInvestigatorSwlInfo?: SwlContactInfo;
-  soleProprietorSwlContactInfo?: SwlContactInfo;
-  soleProprietorSwlEmailAddress?: null | string;
-  soleProprietorSwlPhoneNumber?: null | string;
   swlControllerMemberInfos?: null | Array<SwlContactInfo>;
   useDogs?: null | boolean;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
