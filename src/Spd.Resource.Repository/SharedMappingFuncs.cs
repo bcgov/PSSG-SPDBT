@@ -21,7 +21,7 @@ internal static class SharedMappingFuncs
 
     internal static int? GetGender(GenderEnum? code)
     {
-        if (code == null) return (int)GenderOptionSet.U;
+        if (code == null) return null;
         return (int)Enum.Parse<GenderOptionSet>(code.ToString());
     }
 

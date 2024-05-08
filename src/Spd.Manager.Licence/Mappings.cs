@@ -66,7 +66,9 @@ internal class Mappings : Profile
             .ForMember(d => d.DisplayName, opt => opt.MapFrom(s => s.BcscIdentityInfo.DisplayName));
 
         CreateMap<ApplicantLoginCommand, UpdateContactCmd>()
-            .IncludeBase<ApplicantLoginCommand, Contact>();
+            .IncludeBase<ApplicantLoginCommand, Contact>()
+            .ForMember(d => d.EmailAddress, opt => opt.Ignore())
+            .ForMember(d => d.Gender, opt => opt.Ignore());
 
         CreateMap<Contact, Applicant>()
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.FirstName))

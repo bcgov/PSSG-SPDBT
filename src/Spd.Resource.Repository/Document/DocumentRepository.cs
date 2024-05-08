@@ -137,6 +137,11 @@ internal class DocumentRepository : IDocumentRepository
             contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
             _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
         }
+        if (cmd.LicenceId != null)
+        {
+            spd_licence? lic = await _context.spd_licences.Where(l => l.spd_licenceid == cmd.LicenceId).FirstOrDefaultAsync(ct);
+            _context.SetLink(documenturl, nameof(documenturl.spd_LicenceId), lic);
+        }
 
         await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
         await _context.SaveChangesAsync(ct);
