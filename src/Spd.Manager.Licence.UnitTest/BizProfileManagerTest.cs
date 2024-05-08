@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using Moq;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.PortalUser;
@@ -18,6 +19,7 @@ namespace Spd.Manager.Licence.UnitTest
         private Mock<IPortalUserRepository> mockPortalUserRepo = new();
         private Mock<IIdentityRepository> mockIdRepo = new();
         private Mock<IBizRepository> mockBizRepo = new();
+        private Mock<IAddressRepository> mockAddressRepo = new();
         private Mock<IMapper> mockMapper = new();
         private BizProfileManager sut;
 
@@ -37,6 +39,7 @@ namespace Spd.Manager.Licence.UnitTest
             sut = new BizProfileManager(mockIdRepo.Object,
                 mockBizRepo.Object,
                 mockPortalUserRepo.Object,
+                mockAddressRepo.Object,
                 mapper);
         }
 
