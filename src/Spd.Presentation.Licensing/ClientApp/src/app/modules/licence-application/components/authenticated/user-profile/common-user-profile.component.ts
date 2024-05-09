@@ -13,7 +13,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 		<div class="row mt-3">
 			<div class="col-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Personal Information</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -31,7 +31,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 
 			<div class="col-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Aliases or Previous Names</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -48,7 +48,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Residential Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -75,7 +75,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Mailing Address</mat-panel-title>
 						</mat-expansion-panel-header>

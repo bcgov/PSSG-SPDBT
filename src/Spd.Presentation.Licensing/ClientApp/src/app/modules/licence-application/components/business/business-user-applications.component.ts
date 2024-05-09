@@ -469,7 +469,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembers(): void {
 		this.businessApplicationService
-			.createNewBusinessLicence()
+			.createNewBusinessLicenceWithProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -579,7 +579,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onCreateNew(): void {
 		this.businessApplicationService
-			.createNewBusinessLicence()
+			.createNewBusinessLicenceWithProfile(ApplicationTypeCode.New)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -596,7 +596,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		// the user can view their Profile page in read-only mode – they can't edit
 		// this info while the application is in progress
 		this.businessApplicationService
-			.loadBusinessProfile()
+			.createNewBusinessLicenceWithProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
