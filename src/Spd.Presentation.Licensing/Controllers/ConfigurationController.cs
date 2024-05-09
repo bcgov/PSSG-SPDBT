@@ -36,7 +36,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<ConfigurationResponse> Get()
         {
-            OidcConfiguration oidcResp = new OidcConfiguration
+            OidcConfiguration oidcResp = new()
             {
                 Issuer = _bceidOption.Value.Issuer,
                 ClientId = _bceidOption.Value.ClientId,
@@ -46,7 +46,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 IdentityProvider = _bceidOption.Value.IdentityProvider
             };
 
-            OidcConfiguration bcscConfig = new OidcConfiguration
+            OidcConfiguration bcscConfig = new()
             {
                 Issuer = _bcscOption.Value.Issuer,
                 ClientId = _bcscOption.Value.ClientId,
@@ -56,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
                 IdentityProvider = _bcscOption.Value.IdentityProvider
             };
 
-            RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
+            RecaptchaConfiguration recaptchaResp = new(_captchaOption.Value.ClientKey);
 
             var invalidCategoryMatrix = _configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
             if (invalidCategoryMatrix == null)
@@ -65,7 +65,8 @@ namespace Spd.Presentation.Licensing.Controllers
             var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(null));
             var replacementProcessingTime = await _mediator.Send(new GetReplacementProcessingTimeQuery());
 
-            return await Task.FromResult(new ConfigurationResponse(oidcResp,
+            return await Task.FromResult(new ConfigurationResponse(
+                oidcResp,
                 recaptchaResp,
                 bcscConfig,
                 invalidCategoryMatrix,
