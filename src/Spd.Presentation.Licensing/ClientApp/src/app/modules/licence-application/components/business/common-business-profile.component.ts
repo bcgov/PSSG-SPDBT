@@ -10,7 +10,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 		<div class="row mt-3">
 			<div class="col-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Business Information</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -28,7 +28,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Business Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -52,7 +52,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-lg-6 col-md-12" *ngIf="!isBcBusinessAddress">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>B.C. Business Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -76,7 +76,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Mailing Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -108,7 +108,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Branches in B.C.</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -144,14 +144,13 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	isFormValid(): boolean {
 		const isValid1 = this.businessInformationComponent.isFormValid();
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
-		const isValid3 = this.isBcBusinessAddress ? this.isFormGroupValid(this.bcBusinessAddressFormGroup) : true;
+		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
 		const isValid4 = this.isMailingTheSame ? true : this.isFormGroupValid(this.mailingAddressFormGroup);
 		const isValid5 = this.businessBcBranchesComponent.isFormValid();
 
 		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);
 
-		// return isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
-		return true; // TODO remove hardcoded
+		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
 	}
 
 	private isFormGroupValid(form: FormGroup): boolean {
