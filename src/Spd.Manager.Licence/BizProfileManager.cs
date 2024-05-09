@@ -106,13 +106,20 @@ internal class BizProfileManager :
         return default;
     }
 
-    public async Task<BizProfileResponse> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
+    public async Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
     {
         BizUpdateCmd bizUpdateCmd = _mapper.Map<BizUpdateCmd>(cmd.BizProfileUpdateRequest);
 
-        BizResult? result = await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
+        await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
 
-        return _mapper.Map<BizProfileResponse>(result);
+        AddressQry qry = new AddressQry() { OrganizationId = bizUpdateCmd.Id, Type = AddressTypeEnum.Branch };
+        IEnumerable<AddressResp> addressesResp = await _addressRepository.QueryAsync(qry, ct);
+
+        IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
+
+        await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), ct);
+
+        return default;
     }
 
     private async Task<bool> IsBizFirstTimeLogin(BizLoginCommand cmd, CancellationToken ct)
@@ -190,5 +197,30 @@ internal class BizProfileManager :
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
             PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
         }, ct);
+    }
+
+    private async Task ProcessBranchAddresses(List<BranchAddr> branches, List<BranchAddr> branchesToProcess, CancellationToken ct)
+    {
+        // Remove branches defined in the entity that are not part of the request
+        var modifiedBrances = branchesToProcess.Where(b => b.BranchId != Guid.Empty && b.BranchId != null);
+        List<Guid?> addressesToRemove = branches.Where(b => modifiedBrances.All(mb => mb.BranchId != b.BranchId)).Select(b => b.BranchId).ToList();
+
+        await _addressRepository.DeleteAddressesAsync(addressesToRemove, ct);
+
+        UpsertAddressCmd updateAddressCmd = new()
+        {
+            Addresses = modifiedBrances
+        };
+
+        await _addressRepository.UpdateAddressesAsync(updateAddressCmd, ct);
+
+        List<BranchAddr> addressesToCreate = branchesToProcess.Where(b => b.BranchId == Guid.Empty || b.BranchId == null).ToList();
+
+        UpsertAddressCmd createAddressCmd = new()
+        {
+            Addresses = modifiedBrances
+        };
+
+        await _addressRepository.CreateAddressesAsync(createAddressCmd, ct);
     }
 }
