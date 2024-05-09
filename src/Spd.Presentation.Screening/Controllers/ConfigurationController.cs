@@ -14,7 +14,6 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IOptions<BcscAuthenticationConfiguration> _bcscOption;
         private readonly IOptions<IdirAuthenticationConfiguration> _idirOption;
         private readonly IConfiguration _configuration;
-        private readonly IHostEnvironment _environment;
         private readonly IOptions<GoogleReCaptchaConfiguration> _captchaOption;
         private readonly IMediator _mediator;
 
@@ -24,15 +23,13 @@ namespace Spd.Presentation.Screening.Controllers
             IOptions<IdirAuthenticationConfiguration> idirConfiguration,
             IOptions<GoogleReCaptchaConfiguration> captchaOption,
             IMediator mediator,
-            IConfiguration configuration,
-            IHostEnvironment environment)
+            IConfiguration configuration)
         {
             _bceidOption = bceidConfiguration;
             _captchaOption = captchaOption;
             _bcscOption = bcscConfiguration;
             _idirOption = idirConfiguration;
             _configuration = configuration;
-            _environment = environment;
             _mediator = mediator;
         }
 
