@@ -5,6 +5,7 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthUserIdirService } from 'src/app/core/services/auth-user-idir.service';
+import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
@@ -16,7 +17,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 			</span>
 			<mat-divider vertical class="app-header-divider mx-3"></mat-divider>
 			<div class="app-header-text pl-3">{{ title }}</div>
+
 			<span style="flex: 1 1 auto;"></span>
+
+			<mat-chip-option class="me-3" *ngIf="env" disabled>{{ env }}</mat-chip-option>
 			<div *ngIf="loggedInUserDisplay">
 				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
 				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
@@ -70,12 +74,15 @@ export class HeaderComponent implements OnInit {
 	@Input() title = '';
 	loggedInUserDisplay: string | null = null;
 
+	env: string | null | undefined = null;
+
 	constructor(
 		protected router: Router,
 		private authUserBceidService: AuthUserBceidService,
 		private authUserBcscService: AuthUserBcscService,
 		private authUserIdirService: AuthUserIdirService,
 		private authProcessService: AuthProcessService,
+		private configService: ConfigService,
 		private utilService: UtilService
 	) {}
 
@@ -88,6 +95,8 @@ export class HeaderComponent implements OnInit {
 
 			this.getUserInfo();
 		});
+
+		this.env = this.configService.isProduction() ? null : this.configService.configs?.environment;
 	}
 
 	onLogout(): void {
