@@ -302,31 +302,37 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(a => a.PostalCode, "abc123")
                 .Create();
 
-            BranchInfo branch = fixture.Build<BranchInfo>()
+            BranchInfo existingBranch = fixture.Build<BranchInfo>()
                 .With(a => a.BranchId, Guid.NewGuid())
                 .With(a => a.BranchPhoneNumber, "90000000")
                 .With(a => a.BranchAddress, branchAddress)
                 .Create();
 
+            BranchInfo newBranch = fixture.Build<BranchInfo>()
+                .With(a => a.BranchPhoneNumber, "90000000")
+                .With(a => a.BranchAddress, branchAddress)
+                .Without(a => a.BranchId)
+                .Create();
+
             BizProfileUpdateRequest request = fixture.Build<BizProfileUpdateRequest>()
                 .With(c => c.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
-                .With(c => c.Branches, new List<BranchInfo>() { branch })
+                .With(c => c.Branches, new List<BranchInfo>() { existingBranch, newBranch })
                 .With(c => c.BizBCAddress, address)
                 .With(c => c.BizMailingAddress, address)
                 .Create();
 
             AddressResp addressResp = new()
             {
-                BranchId = branch.BranchId,
-                BranchEmailAddr = branch.BranchEmailAddr,
-                BranchManager = branch.BranchManager,
-                BranchPhoneNumber = branch.BranchPhoneNumber,
-                AddressLine1 = branch.BranchAddress.AddressLine1,
-                AddressLine2 = branch.BranchAddress.AddressLine2,
-                PostalCode = branch.BranchAddress.PostalCode,
-                City = branch.BranchAddress.City,
-                Country = branch.BranchAddress.Country,
-                Province = branch.BranchAddress.Province
+                BranchId = existingBranch.BranchId,
+                BranchEmailAddr = existingBranch.BranchEmailAddr,
+                BranchManager = existingBranch.BranchManager,
+                BranchPhoneNumber = existingBranch.BranchPhoneNumber,
+                AddressLine1 = existingBranch.BranchAddress.AddressLine1,
+                AddressLine2 = existingBranch.BranchAddress.AddressLine2,
+                PostalCode = existingBranch.BranchAddress.PostalCode,
+                City = existingBranch.BranchAddress.City,
+                Country = existingBranch.BranchAddress.Country,
+                Province = existingBranch.BranchAddress.Province
             };
 
             BizProfileUpdateCommand cmd = new(bizUserId, bizId, request);
