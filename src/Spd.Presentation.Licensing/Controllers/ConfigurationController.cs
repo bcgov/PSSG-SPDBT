@@ -32,12 +32,6 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
         }
 
-        /// <summary>
-        /// Return the configuration FE needs.
-        /// The environment value could be: Development, Production, Staging,Test, Training
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="ApiException"></exception>
         [Route("api/configuration")]
         [HttpGet]
         public async Task<ConfigurationResponse> Get()
@@ -72,7 +66,6 @@ namespace Spd.Presentation.Licensing.Controllers
             var replacementProcessingTime = await _mediator.Send(new GetReplacementProcessingTimeQuery());
 
             return await Task.FromResult(new ConfigurationResponse(
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined",
                 oidcResp,
                 recaptchaResp,
                 bcscConfig,
@@ -83,7 +76,6 @@ namespace Spd.Presentation.Licensing.Controllers
     }
 
     public record ConfigurationResponse(
-        string Environment,
         OidcConfiguration OidcConfiguration,
         RecaptchaConfiguration RecaptchaConfiguration,
         OidcConfiguration BcscConfiguration,
