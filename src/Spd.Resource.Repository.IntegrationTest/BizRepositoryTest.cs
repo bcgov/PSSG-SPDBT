@@ -36,7 +36,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
 
         // Act
-        var result = await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
+        await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
 
         // Assert
         account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
@@ -126,34 +126,37 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Act
         await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
-        var result = await _bizRepository.ManageBizAsync(updateCmd, CancellationToken.None);
+        await _bizRepository.ManageBizAsync(updateCmd, CancellationToken.None);
+
+        account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
+            .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(updateCmd.Id, result.Id);
-        Assert.Equal(updateCmd.Email, result.Email);
-        Assert.Equal(updateCmd.BizName, result.BizName);
-        Assert.Equal(updateCmd.BizLegalName, result.BizLegalName);
-        Assert.Equal(updateCmd.BizGuid, result.BizGuid);
-        Assert.Equal(updateCmd.BizType, result.BizType);
-        Assert.Equal(updateCmd.PhoneNumber, result.PhoneNumber);
-        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine1, result.BCBusinessAddress.AddressLine1);
-        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine2, result.BCBusinessAddress.AddressLine2);
-        Assert.Equal(updateCmd.BCBusinessAddress.City, result.BCBusinessAddress.City);
-        Assert.Equal(updateCmd.BCBusinessAddress.Country, result.BCBusinessAddress.Country);
-        Assert.Equal(updateCmd.BCBusinessAddress.Province, result.BCBusinessAddress.Province);
-        Assert.Equal(updateCmd.BCBusinessAddress.PostalCode, result.BCBusinessAddress.PostalCode);
-        Assert.Equal(updateCmd.BusinessAddress.AddressLine1, result.BusinessAddress.AddressLine1);
-        Assert.Equal(updateCmd.BusinessAddress.AddressLine2, result.BusinessAddress.AddressLine2);
-        Assert.Equal(updateCmd.BusinessAddress.City, result.BusinessAddress.City);
-        Assert.Equal(updateCmd.BusinessAddress.Country, result.BusinessAddress.Country);
-        Assert.Equal(updateCmd.BusinessAddress.Province, result.BusinessAddress.Province);
-        Assert.Equal(updateCmd.BusinessAddress.PostalCode, result.BusinessAddress.PostalCode);
-        Assert.Equal(updateCmd.MailingAddress.AddressLine1, result.MailingAddress.AddressLine1);
-        Assert.Equal(updateCmd.MailingAddress.AddressLine2, result.MailingAddress.AddressLine2);
-        Assert.Equal(updateCmd.MailingAddress.City, result.MailingAddress.City);
-        Assert.Equal(updateCmd.MailingAddress.Country, result.MailingAddress.Country);
-        Assert.Equal(updateCmd.MailingAddress.Province, result.MailingAddress.Province);
-        Assert.Equal(updateCmd.MailingAddress.PostalCode, result.MailingAddress.PostalCode);
+        Assert.NotNull(account);
+        Assert.Equal(updateCmd.Id, account.accountid);
+        Assert.Equal(updateCmd.Email, account.emailaddress1);
+        Assert.Equal(updateCmd.BizName, account.name);
+        Assert.Equal(updateCmd.BizLegalName, account.spd_organizationlegalname);
+        Assert.Equal(updateCmd.BizGuid.ToString(), account.spd_orgguid);
+        Assert.Equal(updateCmd.BizType, SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype));
+        Assert.Equal(updateCmd.PhoneNumber, account.telephone1);
+        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine1, account.spd_bcbusinessaddressline1);
+        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine2, account.spd_bcbusinessaddressline2);
+        Assert.Equal(updateCmd.BCBusinessAddress.City, account.spd_bcbusinessaddresscity);
+        Assert.Equal(updateCmd.BCBusinessAddress.Country, account.spd_bcbusinessaddresscountry);
+        Assert.Equal(updateCmd.BCBusinessAddress.Province, account.spd_bcbusinessaddressprovince);
+        Assert.Equal(updateCmd.BCBusinessAddress.PostalCode, account.spd_bcbusinessaddresspostalcode);
+        Assert.Equal(updateCmd.BusinessAddress.AddressLine1, account.address2_line1);
+        Assert.Equal(updateCmd.BusinessAddress.AddressLine2, account.address2_line2);
+        Assert.Equal(updateCmd.BusinessAddress.City, account.address2_city);
+        Assert.Equal(updateCmd.BusinessAddress.Country, account.address2_country);
+        Assert.Equal(updateCmd.BusinessAddress.Province, account.address2_stateorprovince);
+        Assert.Equal(updateCmd.BusinessAddress.PostalCode, account.address2_postalcode);
+        Assert.Equal(updateCmd.MailingAddress.AddressLine1, account.address1_line1);
+        Assert.Equal(updateCmd.MailingAddress.AddressLine2, account.address1_line2);
+        Assert.Equal(updateCmd.MailingAddress.City, account.address1_city);
+        Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
+        Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
+        Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
     }
 }
