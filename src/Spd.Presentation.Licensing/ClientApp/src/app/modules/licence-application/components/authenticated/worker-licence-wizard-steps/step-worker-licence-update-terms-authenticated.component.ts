@@ -11,14 +11,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from '../../shared/worker-licenc
 			[applicationTypeCode]="applicationTypeCodeUpdate"
 		></app-step-worker-licence-terms-of-use>
 
-		<div class="row outside-wizard-button-row">
-			<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-				<button mat-stroked-button color="primary" class="large mb-2" (click)="onCancel()">Cancel</button>
-			</div>
-			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-				<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep()">Next</button>
-			</div>
-		</div>
+		<app-wizard-footer (nextStepperStep)="onFormValidNextStep()"></app-wizard-footer>
 	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
@@ -41,9 +34,5 @@ export class StepWorkerLicenceUpdateTermsAuthenticatedComponent {
 			),
 			{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
 		);
-	}
-
-	onCancel(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 	}
 }

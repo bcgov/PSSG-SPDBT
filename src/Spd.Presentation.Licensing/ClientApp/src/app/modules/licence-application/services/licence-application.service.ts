@@ -793,21 +793,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		userLicenceInformation: UserLicenceResponse
 	): Observable<any> {
 		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return forkJoin([
-					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
-				]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp, true);
-					})
-				);
-			}
+			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
 					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
@@ -819,19 +805,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						return resps[0];
 					}),
 					switchMap((_resp: any) => {
+						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+							return this.applyRenewalDataUpdatesToModel(_resp, true);
+						}
+
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
 			}
-			case ApplicationTypeCode.Replacement: {
+			default: {
+				// ApplicationTypeCode.Replacement
 				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyReplacementDataUpdatesToModel(_resp);
 					})
 				);
-			}
-			default: {
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation);
 			}
 		}
 	}
@@ -938,18 +926,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	private getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode: ApplicationTypeCode): Observable<any> {
 		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Renewal: {
-				return forkJoin([this.loadExistingLicenceAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
-					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
-						return this.applyRenewalDataUpdatesToModel(_resp, false);
-					})
-				);
-			}
+			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([this.loadExistingLicenceAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
@@ -958,6 +935,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						return resps[0];
 					}),
 					switchMap((_resp: any) => {
+						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
+							return this.applyRenewalDataUpdatesToModel(_resp, false);
+						}
+
 						return this.applyUpdateDataUpdatesToModel(_resp);
 					})
 				);
@@ -983,7 +964,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	private setPhotographOfYourself(image: Blob | null): void {
-		console.debug('setPhotographOfYourself', image);
 		if (!image || image.size == 0) {
 			this.photographOfYourself = null;
 			return;
@@ -1179,7 +1159,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		const mailingAddress = {
-			addressSelected: profile.mailingAddress ? true : false,
+			addressSelected: !!profile.mailingAddress,
 			isMailingTheSameAsResidential: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
 			addressLine2: profile.mailingAddress?.addressLine2,
@@ -1728,16 +1708,21 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			criminalChargeDescription: null,
 		};
 
-		const originalPhotoOfYourselfLastUpload = resp.photographOfYourselfData.uploadedDateTime;
 		const photographOfYourselfData = { ...resp.photographOfYourselfData };
+		let originalPhotoOfYourselfExpired = false;
 
-		// We require a new photo every 5 years. Please provide a new photo for your licence
-		const yearsDiff = moment().startOf('day').diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+		if (resp.photographOfYourselfData.uploadedDateTime) {
+			const originalPhotoOfYourselfLastUpload = moment(resp.photographOfYourselfData.uploadedDateTime).startOf('day');
 
-		if (originalPhotoOfYourselfExpired) {
-			// set flag - user will be updating their photo
-			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+			// We require a new photo every 5 years. Please provide a new photo for your licence
+			const today = moment().startOf('day');
+			const yearsDiff = today.diff(originalPhotoOfYourselfLastUpload, 'years');
+			originalPhotoOfYourselfExpired = yearsDiff >= 5;
+
+			if (originalPhotoOfYourselfExpired) {
+				// set flag - user will be updating their photo
+				photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
+			}
 		}
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,

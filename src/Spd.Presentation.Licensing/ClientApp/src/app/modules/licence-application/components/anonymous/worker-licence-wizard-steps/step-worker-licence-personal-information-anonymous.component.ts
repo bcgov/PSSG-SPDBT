@@ -39,6 +39,7 @@ export class StepWorkerLicencePersonalInformationAnonymousComponent
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
+
 	ngOnInit(): void {
 		this.title = this.isRenewalOrUpdate ? 'Confirm your personal information' : 'Your personal information';
 

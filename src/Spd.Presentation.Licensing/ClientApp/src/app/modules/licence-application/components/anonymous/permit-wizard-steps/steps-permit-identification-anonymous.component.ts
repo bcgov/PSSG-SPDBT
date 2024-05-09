@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Subscription } from 'rxjs';
 import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-wizard-steps/step-permit-physical-characteristics.component';
@@ -20,32 +21,12 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-personal-information>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PERSONAL_INFORMATION)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFORMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFORMATION)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -53,85 +34,35 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-criminal-history>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onCriminalHistoryNextStep()">
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_CRIMINAL_HISTORY)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onCriminalHistoryNextStep()"
+					(nextReviewStepperStep)="onNextReview(STEP_CRIMINAL_HISTORY)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 				<mat-step>
 					<app-step-permit-aliases [applicationTypeCode]="applicationTypeCode"></app-step-permit-aliases>
 
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" (click)="onFormValidNextStep(STEP_ALIASES)">
-								Next
-							</button>
-						</div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large next-review-step mb-2"
-								(click)="onNextReview(STEP_ALIASES)"
-							>
-								Next: Review
-							</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
+						(nextReviewStepperStep)="onNextReview(STEP_ALIASES)"
+					></app-wizard-footer>
 				</mat-step>
 
 				<mat-step>
 					<app-step-permit-citizenship [applicationTypeCode]="applicationTypeCode"></app-step-permit-citizenship>
 
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button
-								mat-flat-button
-								color="primary"
-								class="large mb-2"
-								(click)="onFormValidNextStep(STEP_CITIZENSHIP)"
-							>
-								Next
-							</button>
-						</div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large next-review-step mb-2"
-								(click)="onNextReview(STEP_CITIZENSHIP)"
-							>
-								Next: Review
-							</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
+						(nextReviewStepperStep)="onNextReview(STEP_CITIZENSHIP)"
+					></app-wizard-footer>
 				</mat-step>
 
 				<mat-step>
@@ -139,32 +70,12 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 						[applicationTypeCode]="applicationTypeCode"
 					></app-step-permit-bc-driver-licence>
 
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button
-								mat-flat-button
-								color="primary"
-								class="large mb-2"
-								(click)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
-							>
-								Next
-							</button>
-						</div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large next-review-step mb-2"
-								(click)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
-							>
-								Next: Review
-							</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onFormValidNextStep(STEP_BC_DRIVERS_LICENCE)"
+						(nextReviewStepperStep)="onNextReview(STEP_BC_DRIVERS_LICENCE)"
+					></app-wizard-footer>
 				</mat-step>
 
 				<mat-step>
@@ -172,27 +83,12 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 						[applicationTypeCode]="applicationTypeCode"
 					></app-step-permit-physical-characteristics>
 
-					<div class="row wizard-button-row">
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-						</div>
-						<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-							<button mat-flat-button color="primary" class="large mb-2" (click)="onPhysicalCharacteristicsNextStep()">
-								Next
-							</button>
-						</div>
-						<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-							<button
-								mat-stroked-button
-								color="primary"
-								class="large next-review-step mb-2"
-								(click)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
-							>
-								Next: Review
-							</button>
-						</div>
-					</div>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onPhysicalCharacteristicsNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
+					></app-wizard-footer>
 				</mat-step>
 			</ng-container>
 
@@ -201,32 +97,12 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-photograph-of-yourself-anonymous>
 
-				<div class="row wizard-button-row">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"></div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button
-							mat-flat-button
-							color="primary"
-							class="large mb-2"
-							(click)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next
-						</button>
-					</div>
-					<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
-						<button
-							mat-stroked-button
-							color="primary"
-							class="large next-review-step mb-2"
-							(click)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
-						>
-							Next: Review
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(nextReviewStepperStep)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -261,8 +137,11 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	@ViewChild(StepPermitPhotographOfYourselfAnonymousComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

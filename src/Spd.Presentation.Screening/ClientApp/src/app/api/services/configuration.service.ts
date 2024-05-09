@@ -28,6 +28,11 @@ export class ConfigurationService extends BaseService {
   static readonly ApiConfigurationGetPath = '/api/configuration';
 
   /**
+   * Return the configuration FE needs.
+   * The environment value could be: Development, Production, Staging,Test, Training.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiConfigurationGet()` instead.
    *
@@ -56,6 +61,11 @@ export class ConfigurationService extends BaseService {
   }
 
   /**
+   * Return the configuration FE needs.
+   * The environment value could be: Development, Production, Staging,Test, Training.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiConfigurationGet$Response()` instead.
    *

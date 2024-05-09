@@ -82,7 +82,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 	permitRationaleFormGroup: FormGroup = this.formBuilder.group({
 		rationale: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl(''),
+		attachments: new FormControl([]),
 	});
 
 	employerInformationFormGroup: FormGroup = this.formBuilder.group({
@@ -303,6 +303,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	getDocsToSaveBlobs(permitModelFormValue: any): Array<PermitDocumentsToSave> {
 		const documents: Array<PermitDocumentsToSave> = [];
 
+		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
 		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
 		const citizenshipData = { ...permitModelFormValue.citizenshipData };
 		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
@@ -354,9 +355,16 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
 		}
 
-		if (photographOfYourselfData.attachments) {
+		const updatePhoto = photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+		if (applicationTypeData.applicationTypeCode === ApplicationTypeCode.New || !updatePhoto) {
 			const docs: Array<Blob> = [];
-			photographOfYourselfData.attachments.forEach((doc: SpdFile) => {
+			photographOfYourselfData.attachments?.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });
+		} else {
+			const docs: Array<Blob> = [];
+			photographOfYourselfData.updateAttachments?.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
 			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.PhotoOfYourself, documents: docs });

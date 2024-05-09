@@ -71,8 +71,7 @@ export class BusinessCategorySecurityGuardComponent implements LicenceChildStepp
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		return true; // TODO return this.form.valid;
 	}
 
 	onFileUploaded(_file: File): void {

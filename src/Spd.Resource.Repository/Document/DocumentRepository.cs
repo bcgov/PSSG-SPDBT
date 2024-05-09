@@ -53,6 +53,9 @@ internal class DocumentRepository : IDocumentRepository
         if (qry.ReportId != null)
             documents = documents.Where(d => d._spd_pdfreportid_value == qry.ReportId);
 
+        if (qry.LicenceId != null)
+            documents = documents.Where(d => d._spd_licenceid_value == qry.LicenceId);
+
         if (qry.FileType != null)
         {
             DynamicsContextLookupHelpers.BcGovTagDictionary.TryGetValue(qry.FileType.ToString(), out Guid tagId);
@@ -133,6 +136,11 @@ internal class DocumentRepository : IDocumentRepository
         {
             contact? contact = await _context.GetContactById((Guid)cmd.SubmittedByApplicantId, ct);
             _context.SetLink(documenturl, nameof(documenturl.spd_SubmittedById), contact);
+        }
+        if (cmd.LicenceId != null)
+        {
+            spd_licence? lic = await _context.spd_licences.Where(l => l.spd_licenceid == cmd.LicenceId).FirstOrDefaultAsync(ct);
+            _context.SetLink(documenturl, nameof(documenturl.spd_LicenceId), lic);
         }
 
         await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);

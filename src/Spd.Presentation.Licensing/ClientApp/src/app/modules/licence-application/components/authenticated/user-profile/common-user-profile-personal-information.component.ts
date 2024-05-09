@@ -12,7 +12,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<div [formGroup]="personalInformationFormGroup">
 			<ng-container *ngIf="hasBcscNameChanged.value; else hasNameChanged">
-				<app-alert type="warning" icon="" [showBorder]="false">
+				<app-alert type="warning" icon="warning">
 					We noticed you changed your name recently on your BC Services Card.
 				</app-alert>
 			</ng-container>

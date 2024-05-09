@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WorkerCategoryTypeCode } from '@app/api/models';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -68,12 +66,7 @@ export class BusinessCategoryAmouredCarGuardComponent implements OnInit, Licence
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private authenticationService: AuthenticationService,
-		private businessApplicationService: BusinessApplicationService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');

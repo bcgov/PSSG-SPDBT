@@ -67,7 +67,9 @@ internal class Mappings : Profile
             .ForMember(d => d.DisplayName, opt => opt.MapFrom(s => s.BcscIdentityInfo.DisplayName));
 
         CreateMap<ApplicantLoginCommand, UpdateContactCmd>()
-            .IncludeBase<ApplicantLoginCommand, Contact>();
+            .IncludeBase<ApplicantLoginCommand, Contact>()
+            .ForMember(d => d.EmailAddress, opt => opt.Ignore())
+            .ForMember(d => d.Gender, opt => opt.Ignore());
 
         CreateMap<Contact, Applicant>()
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.FirstName))
@@ -128,8 +130,13 @@ internal class Mappings : Profile
              .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
              .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.MailingAddressData));
 
+        CreateMap<LicenceResp, LicenceBasicResponse>()
+             .ForMember(d => d.LicenceHolderName, opt => opt.MapFrom(s => GetHolderName(s.LicenceHolderFirstName, s.LicenceHolderMiddleName1, s.LicenceHolderLastName)));
+
         CreateMap<LicenceResp, LicenceResponse>()
-            .ForMember(d => d.LicenceHolderName, opt => opt.MapFrom(s => GetHolderName(s.LicenceHolderFirstName, s.LicenceHolderMiddleName1, s.LicenceHolderLastName)));
+            .IncludeBase<LicenceResp, LicenceBasicResponse>()
+            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes((WorkerLicenceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
+            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes((WorkerLicenceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
 
@@ -209,16 +216,16 @@ internal class Mappings : Profile
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)));
 
         CreateMap<BizProfileUpdateRequest, BizUpdateCmd>()
-            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.BizId))
-            .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
-            .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
-            .ForMember(d => d.BizGuid, opt => opt.Ignore())
-            .ForMember(d => d.BizLegalName, opt => opt.Ignore())
-            .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
-            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
-            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
-            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
-            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
+           .ForMember(d => d.Id, opt => opt.MapFrom(s => s.BizId))
+           .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
+           .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
+           .ForMember(d => d.BizGuid, opt => opt.Ignore())
+           .ForMember(d => d.BizLegalName, opt => opt.Ignore())
+           .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
+           .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
+           .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
+           .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
+           .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
 
         CreateMap<AddressResp, BranchAddr>();
     }
@@ -403,7 +410,7 @@ internal class Mappings : Profile
     {
         List<BranchInfo> branchInfos = new();
 
-        foreach (BranchAddr branchAddr in branchAddrs) 
+        foreach (BranchAddr branchAddr in branchAddrs)
         {
             BranchInfo branchInfo = new() { BranchAddress = new() };
             branchInfo.BranchId = branchAddr.BranchId;
