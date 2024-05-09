@@ -27,7 +27,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         // Arrange
         Guid bizId = Guid.NewGuid();
-        BizCreateCmd cmd = new() 
+        CreateBizCmd cmd = new() 
         {
             BizGuid = Guid.NewGuid(),
             Id = bizId,
@@ -62,14 +62,14 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         // Arrange
         Guid bizId = Guid.NewGuid();
-        BizCreateCmd createCmd = new()
+        CreateBizCmd createCmd = new()
         {
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test"
         };
         var biz = await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
-        BizAddServiceTypeCmd cmd = new(bizId, ServiceTypeEnum.SecurityBusinessLicence);
+        AddBizServiceTypeCmd cmd = new(bizId, ServiceTypeEnum.SecurityBusinessLicence);
 
         // Act
         await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
@@ -107,7 +107,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .Create();
 
         Guid bizId = Guid.NewGuid();
-        BizCreateCmd createCmd = fixture.Build<BizCreateCmd>()
+        CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
             .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MCFD })
@@ -118,7 +118,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.MailingAddress, address)
             .Create();
 
-        BizUpdateCmd updateCmd = fixture.Build<BizUpdateCmd>()
+        UpdateBizCmd updateCmd = fixture.Build<UpdateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "updated test")
             .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA })

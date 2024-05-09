@@ -55,7 +55,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new IdentityQueryResult(new List<Identity>()));
             mockIdRepo.Setup(m => m.Manage(It.IsAny<CreateIdentityCmd>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new IdentityCmdResult() { Id = identityId });
-            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<BizCreateCmd>(c => c.BizGuid == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<CreateBizCmd>(c => c.BizGuid == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { Id = bizId });
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
@@ -85,7 +85,7 @@ namespace Spd.Manager.Licence.UnitTest
                     Id = bizId,
                     ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
                 });
-            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<BizAddServiceTypeCmd>(c => c.BizId == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<AddBizServiceTypeCmd>(c => c.BizId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { Id = bizId });
             mockIdRepo.Setup(m => m.Query(It.Is<IdentityQry>(q => (q.UserGuid == identityInfo.UserGuid.ToString() && q.OrgGuid == identityInfo.BizGuid)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new IdentityQueryResult(new List<Identity>()));
@@ -119,7 +119,7 @@ namespace Spd.Manager.Licence.UnitTest
                     Id = bizId,
                     ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
                 });
-            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<BizAddServiceTypeCmd>(c => c.BizId == bizId), It.IsAny<CancellationToken>()))
+            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<AddBizServiceTypeCmd>(c => c.BizId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { Id = bizId });
             mockIdRepo.Setup(m => m.Query(It.Is<IdentityQry>(q => (q.UserGuid == identityInfo.UserGuid.ToString() && q.OrgGuid == identityInfo.BizGuid)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new IdentityQueryResult(new List<Identity>()
