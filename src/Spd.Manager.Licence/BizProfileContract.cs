@@ -70,9 +70,15 @@ public record BizUserLoginResponse
     public ContactRoleCode ContactRoleCode { get; set; }
 }
 
-public record BizProfileUpdateRequest : BizInfo
+public record BizProfileUpdateRequest 
 {
     public Guid? BizId { get; set; } //used when in update, renew or replace flow.
+    public string? BizTradeName { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
+    public Address? BizBCAddress { get; set; }
+    public Address? BizMailingAddress { get; set; }
+    public IEnumerable<BranchInfo>? Branches { get; set; }
+    public bool? MailingAddressIsSameBizAddress { get; set; }
 }
 
 public enum BizTypeCode
