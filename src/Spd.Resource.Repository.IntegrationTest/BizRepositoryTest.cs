@@ -32,6 +32,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            BizType = BizTypeEnum.Corporation,
             ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
         };
 
@@ -49,6 +50,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(cmd.BizGuid.ToString(), account.spd_orgguid);
         Assert.Equal(cmd.BizLegalName, account.spd_organizationlegalname);
         Assert.Equal(cmd.BizName, account.name);
+        Assert.Equal(cmd.BizType, SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype));
 
         //Annihilate : When we have delete privilege, we need to do following
         //_context.DeleteObject(account);
