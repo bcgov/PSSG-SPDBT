@@ -1,8 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 export interface DialogOopsOptions {
-	message?: string;
+	message: string | null;
 }
 
 @Component({
@@ -18,8 +19,13 @@ export interface DialogOopsOptions {
 				/>
 			</div>
 			<h2 class="mt-2">Oops! Something went wrong</h2>
-			<p>Looks like something went wrong on our end. Please try again later.</p>
-			<p class="px-4 py-2 error-message" [ngStyle]="{ 'word-break': 'break-word' }" [innerHTML]="data.message"></p>
+			<p>Looks like something went wrong on our end. Please try again or contact SPD at 1-855-587-0185 (option 2).</p>
+			<p
+				*ngIf="errorMessage"
+				class="px-4 py-2 error-message"
+				[ngStyle]="{ 'word-break': 'break-word' }"
+				[innerHTML]="errorMessage"
+			></p>
 			<ng-template appDialogContent></ng-template>
 		</mat-dialog-content>
 
@@ -53,8 +59,14 @@ export interface DialogOopsOptions {
 		`,
 	],
 })
-export class DialogOopsComponent {
-	constructor(@Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}
+export class DialogOopsComponent implements OnInit {
+	errorMessage: string | null = null;
+
+	constructor(private configService: ConfigService, @Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}
+
+	ngOnInit(): void {
+		this.errorMessage = this.configService.isHideErrorDetails() ? null : this.data.message;
+	}
 
 	public onHandleMissingImage(event: Event) {
 		(event.target as HTMLImageElement).style.display = 'none';

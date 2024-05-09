@@ -62,30 +62,25 @@ export class ErrorInterceptor implements HttpInterceptor {
 				}
 
 				let message = 'An error has occurred';
-				if (this.configService.isHideErrorDetails()) {
-					// do not show error details
-					message = 'An error has occurred. Please try again or contact SPD at 1-855-587-0185 (option 2).';
-				} else {
-					if (errorResponse.error) {
-						if (errorResponse.error?.errors) {
-							message = '<ul>';
-							for (const key in errorResponse.error?.errors) {
-								const value = errorResponse.error?.errors[key];
-								value.forEach((val: any) => {
-									message += `<li>${val}</li>`;
-								});
-							}
-							message += '</ul>';
-						} else if (errorResponse.error?.message) {
-							message = errorResponse.error?.message;
-						} else {
-							message = errorResponse.message;
+				if (errorResponse.error) {
+					if (errorResponse.error?.errors) {
+						message = '<ul>';
+						for (const key in errorResponse.error?.errors) {
+							const value = errorResponse.error?.errors[key];
+							value.forEach((val: any) => {
+								message += `<li>${val}</li>`;
+							});
 						}
+						message += '</ul>';
+					} else if (errorResponse.error?.message) {
+						message = errorResponse.error?.message;
 					} else {
-						message = `<p><strong>Technical error:</strong></p>
+						message = errorResponse.message;
+					}
+				} else {
+					message = `<p><strong>Technical error:</strong></p>
 							<p>Error Status: ${errorResponse.status}</p>
 							<p>Message: ${errorResponse.message}</p>`;
-					}
 				}
 
 				const dialogOptions: DialogOopsOptions = {
