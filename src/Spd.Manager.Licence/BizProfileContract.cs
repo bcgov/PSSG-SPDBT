@@ -19,7 +19,6 @@ public record GetBizsQuery(Guid BizGuid) : IRequest<IEnumerable<BizListResponse>
 public record BizLoginCommand(BceidIdentityInfo BceidIdentityInfo, Guid? BizId) : IRequest<BizUserLoginResponse>;
 public record BizTermAgreeCommand(Guid BizId, Guid BizUserId) : IRequest<Unit>;
 public record BizProfileUpdateCommand(
-    Guid BizUserId,
     Guid BizId,
     BizProfileUpdateRequest BizProfileUpdateRequest)
     : IRequest<Unit>;
