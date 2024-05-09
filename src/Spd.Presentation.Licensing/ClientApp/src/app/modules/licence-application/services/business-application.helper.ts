@@ -1,4 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BusinessTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
@@ -52,14 +53,35 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
-	businessInformationFormGroup: FormGroup = this.formBuilder.group({
-		businessTypeCode: new FormControl('', [Validators.required]),
-		legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
-		doingBusinessAsName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
-		isTradeNameTheSameAsLegal: new FormControl(''),
-		licenceNumberLookup: new FormControl(''), // TODO fix
+	businessInformationFormGroup: FormGroup = this.formBuilder.group(
+		{
+			businessTypeCode: new FormControl('', [Validators.required]),
+			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
+			doingBusinessAsName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
+			soleProprietorSwlEmailAddress: new FormControl('', [FormControlValidators.email]),
+			soleProprietorSwlPhoneNumber: new FormControl(''),
+			isTradeNameTheSameAsLegal: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'soleProprietorSwlEmailAddress',
+					(form) =>
+						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
+						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'phoneNumber',
+					(form) =>
+						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
+						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
+				),
+			],
+		}
+	);
+
+	soleProprietorFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
 
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group({

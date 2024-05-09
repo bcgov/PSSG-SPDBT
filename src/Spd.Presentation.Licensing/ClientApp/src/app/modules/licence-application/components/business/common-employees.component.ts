@@ -23,7 +23,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 				</div>
 			</ng-template> -->
 
-			<mat-expansion-panel class="my-2 w-100" [expanded]="defaultExpanded">
+			<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 				<mat-expansion-panel-header>
 					<mat-panel-title>Employees</mat-panel-title>
 				</mat-expansion-panel-header>
