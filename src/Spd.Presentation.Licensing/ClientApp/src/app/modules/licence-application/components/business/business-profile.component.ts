@@ -57,7 +57,15 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 		</div>
 
 		<ng-container *ngIf="!isReadonly">
-			<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>
+			<div class="row wizard-button-row">
+				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+					<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
+				</div>
+
+				<div class="offset-xxl-2 col-xxl-4 col-xl-6 col-lg-6 col-md-12">
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onSave()">Save</button>
+				</div>
+			</div>
 		</ng-container>
 	`,
 	styles: ``,
