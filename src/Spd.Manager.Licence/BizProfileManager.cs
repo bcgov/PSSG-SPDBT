@@ -207,20 +207,19 @@ internal class BizProfileManager :
 
         await _addressRepository.DeleteAddressesAsync(addressesToRemove, ct);
 
+        // Update branches
         UpsertAddressCmd updateAddressCmd = new()
         {
             Addresses = modifiedBranches
         };
-
         await _addressRepository.UpdateAddressesAsync(updateAddressCmd, ct);
 
+        //Create branches
         List<BranchAddr> addressesToCreate = branchesToProcess.Where(b => b.BranchId == Guid.Empty || b.BranchId == null).ToList();
-
         UpsertAddressCmd createAddressCmd = new()
         {
             Addresses = modifiedBranches
         };
-
         await _addressRepository.CreateAddressesAsync(createAddressCmd, ct);
     }
 }
