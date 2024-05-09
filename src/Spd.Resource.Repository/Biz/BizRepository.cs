@@ -70,14 +70,14 @@ namespace Spd.Resource.Repository.Biz
         {
             return cmd switch
             {
-                BizUpdateCmd c => await UpdateBizAsync(c, ct),
-                BizCreateCmd c => await CreateBizAsync(c, ct),
-                BizAddServiceTypeCmd c => await AddBizServiceTypeAsync(c, ct),
+                UpdateBizCmd c => await UpdateBizAsync(c, ct),
+                CreateBizCmd c => await CreateBizAsync(c, ct),
+                AddBizServiceTypeCmd c => await AddBizServiceTypeAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
 
-        private async Task<BizResult?> UpdateBizAsync(BizUpdateCmd updateBizCmd, CancellationToken ct)
+        private async Task<BizResult?> UpdateBizAsync(UpdateBizCmd updateBizCmd, CancellationToken ct)
         {
             IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
                  .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
@@ -93,7 +93,7 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<BizResult>(Biz);
         }
 
-        private async Task<BizResult?> CreateBizAsync(BizCreateCmd createBizCmd, CancellationToken ct)
+        private async Task<BizResult?> CreateBizAsync(CreateBizCmd createBizCmd, CancellationToken ct)
         {
             var account = _mapper.Map<account>(createBizCmd);
             _context.AddToaccounts(account);
@@ -109,7 +109,7 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<BizResult>(account);
         }
 
-        private async Task<BizResult?> AddBizServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
+        private async Task<BizResult?> AddBizServiceTypeAsync(AddBizServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
         {
             spd_servicetype? st = _context.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
             IQueryable<account> accounts = _context.accounts

@@ -58,7 +58,7 @@ internal class BizProfileManager :
             else
             {
                 //add biz type to org
-                BizResult b = await _bizRepository.ManageBizAsync(new BizAddServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
+                BizResult b = await _bizRepository.ManageBizAsync(new AddBizServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
                 bizId = b.Id;
             }
 
@@ -108,7 +108,7 @@ internal class BizProfileManager :
 
     public async Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
     {
-        BizUpdateCmd bizUpdateCmd = _mapper.Map<BizUpdateCmd>(cmd.BizProfileUpdateRequest);
+        UpdateBizCmd bizUpdateCmd = _mapper.Map<UpdateBizCmd>(cmd.BizProfileUpdateRequest);
 
         await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
 
@@ -173,7 +173,7 @@ internal class BizProfileManager :
 
     private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
     {
-        BizCreateCmd createCmd = new BizCreateCmd() 
+        CreateBizCmd createCmd = new CreateBizCmd() 
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
