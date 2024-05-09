@@ -16,12 +16,6 @@ namespace Spd.Resource.Repository.Biz
             .ForPath(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress.Province))
             .ForPath(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
             .ForPath(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
-            .ForPath(d => d.address2_city, opt => opt.MapFrom(s => s.BusinessAddress.City))
-            .ForPath(d => d.address2_country, opt => opt.MapFrom(s => s.BusinessAddress.Country))
-            .ForPath(d => d.address2_postalcode, opt => opt.MapFrom(s => s.BusinessAddress.PostalCode))
-            .ForPath(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.BusinessAddress.Province))
-            .ForPath(d => d.address2_line1, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine1))
-            .ForPath(d => d.address2_line2, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine2))
             .ForPath(d => d.spd_bcbusinessaddresscity, opt => opt.MapFrom(s => s.BCBusinessAddress.City))
             .ForPath(d => d.spd_bcbusinessaddresscountry, opt => opt.MapFrom(s => s.BCBusinessAddress.Country))
             .ForPath(d => d.spd_bcbusinessaddresspostalcode, opt => opt.MapFrom(s => s.BCBusinessAddress.PostalCode))
@@ -30,9 +24,7 @@ namespace Spd.Resource.Repository.Biz
             .ForPath(d => d.spd_bcbusinessaddressline2, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine2))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
-            .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
             .ForMember(d => d.name, opt => opt.MapFrom(s => s.BizName))
-            .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
             .ReverseMap();
 
             _ = CreateMap<account, BizResult>()
@@ -49,10 +41,26 @@ namespace Spd.Resource.Repository.Biz
 
             CreateMap<BizUpdateCmd, account>()
             .IncludeBase<Biz, account>()
+            .ForMember(d => d.spd_orgguid, opt => opt.Ignore())
+            .ForMember(d => d.spd_organizationlegalname, opt => opt.Ignore())
+            .ForPath(d => d.address2_city, opt => opt.Ignore())
+            .ForPath(d => d.address2_country, opt => opt.Ignore())
+            .ForPath(d => d.address2_postalcode, opt => opt.Ignore())
+            .ForPath(d => d.address2_stateorprovince, opt => opt.Ignore())
+            .ForPath(d => d.address2_line1, opt => opt.Ignore())
+            .ForPath(d => d.address2_line2, opt => opt.Ignore())
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
 
             CreateMap<BizCreateCmd, account>()
             .IncludeBase<Biz, account>()
+            .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
+            .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
+            .ForPath(d => d.address2_city, opt => opt.MapFrom(s => s.BusinessAddress.City))
+            .ForPath(d => d.address2_country, opt => opt.MapFrom(s => s.BusinessAddress.Country))
+            .ForPath(d => d.address2_postalcode, opt => opt.MapFrom(s => s.BusinessAddress.PostalCode))
+            .ForPath(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.BusinessAddress.Province))
+            .ForPath(d => d.address2_line1, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine1))
+            .ForPath(d => d.address2_line2, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine2))
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
 
             CreateMap<BranchAddr, spd_address>()
