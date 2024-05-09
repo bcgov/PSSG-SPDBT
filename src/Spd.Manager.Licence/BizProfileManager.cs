@@ -202,14 +202,14 @@ internal class BizProfileManager :
     private async Task ProcessBranchAddresses(List<BranchAddr> branches, List<BranchAddr> branchesToProcess, CancellationToken ct)
     {
         // Remove branches defined in the entity that are not part of the request
-        var modifiedBrances = branchesToProcess.Where(b => b.BranchId != Guid.Empty && b.BranchId != null);
-        List<Guid?> addressesToRemove = branches.Where(b => modifiedBrances.All(mb => mb.BranchId != b.BranchId)).Select(b => b.BranchId).ToList();
+        var modifiedBranches = branchesToProcess.Where(b => b.BranchId != Guid.Empty && b.BranchId != null);
+        List<Guid?> addressesToRemove = branches.Where(b => modifiedBranches.All(mb => mb.BranchId != b.BranchId)).Select(b => b.BranchId).ToList();
 
         await _addressRepository.DeleteAddressesAsync(addressesToRemove, ct);
 
         UpsertAddressCmd updateAddressCmd = new()
         {
-            Addresses = modifiedBrances
+            Addresses = modifiedBranches
         };
 
         await _addressRepository.UpdateAddressesAsync(updateAddressCmd, ct);
@@ -218,7 +218,7 @@ internal class BizProfileManager :
 
         UpsertAddressCmd createAddressCmd = new()
         {
-            Addresses = modifiedBrances
+            Addresses = modifiedBranches
         };
 
         await _addressRepository.CreateAddressesAsync(createAddressCmd, ct);
