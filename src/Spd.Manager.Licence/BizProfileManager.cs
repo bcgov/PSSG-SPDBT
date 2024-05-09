@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.PortalUser;
@@ -20,17 +21,20 @@ internal class BizProfileManager :
     private readonly IIdentityRepository _idRepository;
     private readonly IBizRepository _bizRepository;
     private readonly IPortalUserRepository _portalUserRepository;
+    private readonly IAddressRepository _addressRepository;
     private readonly IMapper _mapper;
 
     public BizProfileManager(
         IIdentityRepository idRepository,
         IBizRepository bizRepository,
         IPortalUserRepository portalUserRepository,
+        IAddressRepository addressRepository,
         IMapper mapper)
     {
         _mapper = mapper;
         _idRepository = idRepository;
         _bizRepository = bizRepository;
+        _addressRepository = addressRepository;
         _portalUserRepository = portalUserRepository;
     }
 
