@@ -32,6 +32,12 @@ namespace Spd.Presentation.Licensing.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Return the configuration FE needs.
+        /// The environment value could be: Development, Production, Staging,Test, Training
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ApiException"></exception>
         [Route("api/configuration")]
         [HttpGet]
         public async Task<ConfigurationResponse> Get()
