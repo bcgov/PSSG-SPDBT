@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+import { Address } from './address';
 import { Alias } from './alias';
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
@@ -8,7 +9,6 @@ import { BodyArmourPermitReasonCode } from './body-armour-permit-reason-code';
 import { BusinessTypeCode } from './business-type-code';
 import { Document } from './document';
 import { DocumentExpiredInfo } from './document-expired-info';
-import { EmployerPrimaryAddress } from './employer-primary-address';
 import { EyeColourCode } from './eye-colour-code';
 import { GenderCode } from './gender-code';
 import { HairColourCode } from './hair-colour-code';
@@ -33,7 +33,7 @@ export interface PermitLicenceAppResponse {
   documentInfos?: null | Array<Document>;
   emailAddress?: null | string;
   employerName?: null | string;
-  employerPrimaryAddress?: EmployerPrimaryAddress;
+  employerPrimaryAddress?: Address;
   expiredLicenceId?: null | string;
   expiredLicenceNumber?: null | string;
   expiryDate?: null | string;

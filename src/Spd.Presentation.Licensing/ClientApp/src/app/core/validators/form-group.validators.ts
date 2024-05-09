@@ -74,6 +74,27 @@ export class FormGroupValidators {
 		};
 	}
 
+	public static atLeastOneTrueValidator =
+		(minRequired = 1): ValidatorFn =>
+		(form: AbstractControl): ValidationErrors | null => {
+			let checked = 0;
+			Object.keys(form.value).forEach((key) => {
+				const control = form.value[key];
+
+				if (control === true) {
+					checked++;
+				}
+			});
+
+			if (checked < minRequired) {
+				return {
+					atLeastOneTrueValidator: true,
+				};
+			}
+
+			return null;
+		};
+
 	public static atLeastOneCheckboxValidator =
 		(requiredKey: string | null, requiredValue: string | null, minRequired = 1): ValidatorFn =>
 		(form: AbstractControl): ValidationErrors | null => {

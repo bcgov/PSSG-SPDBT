@@ -94,17 +94,16 @@ import { BusinessUserApplicationsComponent } from './components/business/busines
 import { CommonBusinessBcBranchesComponent } from './components/business/common-business-bc-branches.component';
 import { CommonBusinessControllingMembersComponent } from './components/business/common-business-controlling-members.component';
 import { CommonBusinessEmployeesComponent } from './components/business/common-business-employees.component';
+import { CommonBusinessInformationComponent } from './components/business/common-business-information.component';
 import { CommonBusinessProfileComponent } from './components/business/common-business-profile.component';
 import { CommonControllingMembersComponent } from './components/business/common-controlling-members.component';
 import { CommonEmployeesComponent } from './components/business/common-employees.component';
 import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
 import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
+import { ModalLookupSoleProprietorComponent } from './components/business/modal-lookup-sole-proprietor.component';
 import { ModalMemberWithSwlAddComponent } from './components/business/modal-member-with-swl-add.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/business/modal-member-without-swl-edit.component';
-import { StepBusinessLicenceControllingMembersComponent } from './components/business/step-business-licence-controlling-members.component';
-import { StepBusinessLicenceEmployeesComponent } from './components/business/step-business-licence-employees.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
-import { StepBusinessLicenceBcBranchesComponent } from './components/business/step-business-licence-bc-branches.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
 import { StepBusinessLicenceChecklistNewComponent } from './components/business/step-business-licence-checklist-new.component';
 import { StepBusinessLicenceChecklistRenewComponent } from './components/business/step-business-licence-checklist-renew.component';
@@ -112,20 +111,15 @@ import { StepBusinessLicenceCompanyBrandingComponent } from './components/busine
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './components/business/step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './components/business/step-business-licence-controlling-member-confirmation.component';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './components/business/step-business-licence-controlling-member-invites-component';
-import { StepBusinessLicenceControllingMemberWithSwlComponent } from './components/business/step-business-licence-controlling-member-with-swl.component';
-import { StepBusinessLicenceControllingMemberWithoutSwlComponent } from './components/business/step-business-licence-controlling-member-without-swl.component';
-import { StepBusinessLicenceEmployeesxxxComponent } from './components/business/step-business-licence-employeesxxx.component';
+import { StepBusinessLicenceControllingMembersComponent } from './components/business/step-business-licence-controlling-members.component';
+import { StepBusinessLicenceEmployeesComponent } from './components/business/step-business-licence-employees.component';
 import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './components/business/step-business-licence-liability.component';
-import { StepBusinessLicenceMailingAddressComponent } from './components/business/step-business-licence-mailing-address.component';
 import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
 import { StepBusinessLicenceNameComponent } from './components/business/step-business-licence-name.component';
 import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
 import { StepBusinessLicenceSummaryComponent } from './components/business/step-business-licence-summary.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
-import { StepBusinessLicenceTypeComponent } from './components/business/step-business-licence-type.component';
-import { StepBusinessLicenceBcBusinessAddressComponent } from './components/business/step-business_licence-bc-business-address.component';
-import { StepBusinessLicenceBusinessAddressComponent } from './components/business/step-business_licence-business-address.component';
 import { StepsBusinessLicenceContactInformationNewComponent } from './components/business/steps-business-licence-contact-information-new.component';
 import { StepsBusinessLicenceControllingMembersNewComponent } from './components/business/steps-business-licence-controlling-members-new.component';
 import { StepsBusinessLicenceInformationNewComponent } from './components/business/steps-business-licence-information-new.component';
@@ -150,6 +144,7 @@ import { CommonAddressComponent } from './components/shared/step-components/comm
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
+import { CommonBusinessAddressComponent } from './components/shared/step-components/common-business-address.component';
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
@@ -232,9 +227,11 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
+		CommonBusinessAddressComponent,
 		CommonBusinessBcBranchesComponent,
 		CommonBusinessControllingMembersComponent,
 		CommonBusinessEmployeesComponent,
+		CommonBusinessInformationComponent,
 		CommonBusinessProfileComponent,
 		CommonBusinessTermsComponent,
 		CommonContactInformationComponent,
@@ -285,6 +282,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
+		ModalLookupSoleProprietorComponent,
 		ModalMemberWithoutSwlEditComponent,
 		ModalMemberWithSwlAddComponent,
 		PermitApplicationBaseAnonymousComponent,
@@ -298,9 +296,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceControllingMembersComponent,
 		StepBusinessLicenceEmployeesComponent,
 		StepBusinessLicenceApplicationOnHoldComponent,
-		StepBusinessLicenceBcBusinessAddressComponent,
-		StepBusinessLicenceBcBranchesComponent,
-		StepBusinessLicenceBusinessAddressComponent,
 		StepBusinessLicenceCategoryComponent,
 		StepBusinessLicenceChecklistNewComponent,
 		StepBusinessLicenceChecklistRenewComponent,
@@ -308,18 +303,13 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceConsentAndDeclarationComponent,
 		StepBusinessLicenceControllingMemberConfirmationComponent,
 		StepBusinessLicenceControllingMemberInvitesComponent,
-		StepBusinessLicenceControllingMemberWithSwlComponent,
-		StepBusinessLicenceControllingMemberWithoutSwlComponent,
-		StepBusinessLicenceEmployeesxxxComponent,
 		StepBusinessLicenceLiabilityComponent,
 		StepBusinessLicenceNameComponent,
 		StepBusinessLicenceProfileComponent,
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,
 		StepBusinessLicenceTermComponent,
-		StepBusinessLicenceTypeComponent,
 		StepBusinessLicenceExpiredComponent,
-		StepBusinessLicenceMailingAddressComponent,
 		StepBusinessLicenceManagerInformationComponent,
 		StepPermitAccessCodeComponent,
 		StepPermitAliasesComponent,

@@ -8,6 +8,7 @@ import {
 	ApplicationTypeCode,
 	LicenceAppListResponse,
 	LicenceStatusCode,
+	LicenceTermCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -36,7 +37,7 @@ import { Observable, take, tap } from 'rxjs';
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto me-2 mb-3" (click)="onBusinessProfile()">
 									<mat-icon>person</mat-icon>
-									Business Profile
+									{{ businessProfileLabel }}
 								</button>
 								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
 									<mat-icon>people</mat-icon>
@@ -183,7 +184,7 @@ import { Observable, take, tap } from 'rxjs';
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">---</div>
+											<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 										</div>
 										<div class="col-lg-3">
 											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -268,7 +269,9 @@ import { Observable, take, tap } from 'rxjs';
 										<div class="col-12">
 											<mat-divider class="my-2"></mat-divider>
 											<span class="fw-semibold">Lost your licence? </span>
+											<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
 											<a
+												*ngIf="!applicationIsInProgress"
 												class="large"
 												tabindex="0"
 												(click)="onRequestReplacement(appl)"
@@ -390,8 +393,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	errorMessages: Array<string> = [];
 
 	// results$!: Observable<any>;
-	// applicationIsInProgress: boolean | null = null;
-	// yourProfileLabel = '';
+	applicationIsInProgress: boolean | null = null;
+	businessProfileLabel = '';
 	lostLicenceDaysText: string | null = null;
 
 	activeLicenceExist = false;
@@ -429,6 +432,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			{
 				licenceId: '1',
 				licenceNumber: 'TEST-NWQ3X7A',
+				licenceTermCode: LicenceTermCode.TwoYears,
 				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
 				applicationTypeCode: ApplicationTypeCode.New,
 				licenceExpiryDate: '2025-02-13T19:43:25+00:00',
@@ -442,6 +446,9 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				restraintAuthorization: null,
 			},
 		];
+		// this.applicationIsInProgress = true;
+
+		this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 
 		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
 	}
@@ -462,7 +469,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembers(): void {
 		this.businessApplicationService
-			.createNewBusinessLicence()
+			.createNewBusinessLicenceWithProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -483,6 +490,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onRequestReplacement(_appl: UserLicenceResponse): void {
+		// if (this.applicationIsInProgress) return;
 		// 	this.licenceApplicationService
 		// 		.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
 		// 		.pipe(
@@ -571,11 +579,11 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onCreateNew(): void {
 		this.businessApplicationService
-			.createNewBusinessLicence()
+			.createNewBusinessLicenceWithProfile(ApplicationTypeCode.New)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW)
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
 					);
 				}),
 				take(1)
@@ -584,12 +592,16 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onBusinessProfile(): void {
+		// When a user has started an application but has not submitted it yet,
+		// the user can view their Profile page in read-only mode – they can't edit
+		// this info while the application is in progress
 		this.businessApplicationService
-			.loadBusinessProfile()
+			.createNewBusinessLicenceWithProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_PROFILE)
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_PROFILE),
+						{ state: { isReadonly: this.applicationIsInProgress } }
 					);
 				}),
 				take(1)

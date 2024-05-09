@@ -15,6 +15,7 @@ namespace Spd.Resource.Repository.Document
         Guid? ClearanceId = null,
         Guid? ReportId = null,
         Guid? CaseId = null,
+        Guid? LicenceId = null,
         DocumentTypeEnum? FileType = null);
     public record DocumentListResp
     {
@@ -35,6 +36,7 @@ namespace Spd.Resource.Repository.Document
         public Guid? ReportId { get; set; }
         public DateOnly? ExpiryDate { get; set; }
         public Guid? ContactId { get; set; }
+        public Guid? LicenceId { get; set; }
         public string? Folder { get; set; }
     }
 
@@ -47,6 +49,7 @@ namespace Spd.Resource.Repository.Document
         public Guid? ApplicantId { get; set; }
         public Guid? TaskId { get; set; }
         public Guid? SubmittedByApplicantId { get; set; }
+        public Guid? LicenceId { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } //tag1
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
         public DateOnly? ExpiryDate { get; set; }

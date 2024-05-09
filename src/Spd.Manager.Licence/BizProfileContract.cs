@@ -28,13 +28,18 @@ public record BizInfo
 {
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
-    public BizTypeCode? BizTypeCode { get; set; }
+    public BusinessTypeCode? BizTypeCode { get; set; }
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? BizMailingAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
     public bool? MailingAddressIsSameBizAddress { get; set; }
     public IEnumerable<ServiceTypeCode>? ServiceTypeCodes { get; set; }
+
+    //sole proprietor properties
+    public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
+    public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
+    public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
 
 }
 
@@ -90,4 +95,3 @@ public enum BizTypeCode
     Corporation,
     None
 }
-

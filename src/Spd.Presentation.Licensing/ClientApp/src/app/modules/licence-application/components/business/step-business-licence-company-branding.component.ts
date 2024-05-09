@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -60,7 +59,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
-	constructor(private businessApplicationService: BusinessApplicationService, private domSanitizer: DomSanitizer) {}
+	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	onFileUploaded(_file: File): void {
 		// if (this.authenticationService.isLoggedIn()) {
@@ -88,8 +87,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		return true; // TODO return this.form.valid;
 	}
 
 	get attachments(): FormControl {
