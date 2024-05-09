@@ -8,10 +8,11 @@ import { ApplicantService, OrgService, OrgUserService, UserProfileService } from
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
+import { ConfigService } from '../services/config.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private router: Router, private dialog: MatDialog) {}
+	constructor(private configService: ConfigService, private router: Router, private dialog: MatDialog) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
@@ -61,27 +62,30 @@ export class ErrorInterceptor implements HttpInterceptor {
 				}
 
 				let message = 'An error has occurred';
-				// let title = errorResponse.statusText ?? 'Unexpected Error';
-				if (errorResponse.error) {
-					if (errorResponse.error?.errors) {
-						// title = errorResponse.error.title;
-						message = '<ul>';
-						for (const key in errorResponse.error?.errors) {
-							const value = errorResponse.error?.errors[key];
-							value.forEach((val: any) => {
-								message += `<li>${val}</li>`;
-							});
-						}
-						message += '</ul>';
-					} else if (errorResponse.error?.message) {
-						message = errorResponse.error?.message;
-					} else {
-						message = errorResponse.message;
-					}
+				if (this.configService.isProduction()) {
+					// do not show error details
+					message = 'An error has occurred. Please try again or contact SPD at 1-855-587-0185 (option 2).';
 				} else {
-					message = `<p><strong>Technical error:</strong></p>
-						<p>Error Status: ${errorResponse.status}</p>
-						<p>Message: ${errorResponse.message}</p>`;
+					if (errorResponse.error) {
+						if (errorResponse.error?.errors) {
+							message = '<ul>';
+							for (const key in errorResponse.error?.errors) {
+								const value = errorResponse.error?.errors[key];
+								value.forEach((val: any) => {
+									message += `<li>${val}</li>`;
+								});
+							}
+							message += '</ul>';
+						} else if (errorResponse.error?.message) {
+							message = errorResponse.error?.message;
+						} else {
+							message = errorResponse.message;
+						}
+					} else {
+						message = `<p><strong>Technical error:</strong></p>
+							<p>Error Status: ${errorResponse.status}</p>
+							<p>Message: ${errorResponse.message}</p>`;
+					}
 				}
 
 				const dialogOptions: DialogOopsOptions = {

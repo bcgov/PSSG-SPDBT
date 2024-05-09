@@ -94,4 +94,8 @@ export class ConfigService {
 			})
 		);
 	}
+
+	public isProduction(): boolean {
+		return this.configs?.environment === 'Production';
+	}
 }
