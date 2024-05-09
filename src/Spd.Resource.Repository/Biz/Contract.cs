@@ -8,9 +8,9 @@
     }
     //command
     public abstract record BizCmd : Biz;
-    public record BizUpdateCmd() : BizCmd;
-    public record BizCreateCmd() : BizCmd;
-    public record BizAddServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
+    public record UpdateBizCmd() : BizCmd;
+    public record CreateBizCmd() : BizCmd;
+    public record AddBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
     
     //query
     public record BizsQry(Guid? BizGuid = null, bool IncludeInactive = false, string? BizCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null);
