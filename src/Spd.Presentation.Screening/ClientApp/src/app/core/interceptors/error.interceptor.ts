@@ -62,7 +62,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 				}
 
 				let message = 'An error has occurred';
-				if (this.configService.isProduction()) {
+				if (this.configService.isHideErrorDetails()) {
 					// do not show error details
 					message = 'An error has occurred. Please try again or contact SPD at 1-855-587-0185 (option 2).';
 				} else {
