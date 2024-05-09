@@ -77,8 +77,11 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
             .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
+        Guid? serviceTypeId = _context.LookupServiceType(cmd.ServiceTypeEnum.ToString()).spd_servicetypeid;
+        spd_servicetype? serviceType = account.spd_account_spd_servicetype.Where(s => s.spd_servicetypeid == serviceTypeId).FirstOrDefault();
+
         Assert.NotNull(account);
-        Assert.Equal(Guid.Parse("86aa9004-4c32-ee11-b845-00505683fbf4"), account.spd_account_spd_servicetype.First().spd_servicetypeid);
+        Assert.NotNull(serviceType);
     }
 
     [Fact]
