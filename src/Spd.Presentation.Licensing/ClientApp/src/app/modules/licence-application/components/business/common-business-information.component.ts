@@ -1,11 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { BusinessTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { HotToastService } from '@ngneat/hot-toast';
+import { ModalLookupSoleProprietorComponent } from './modal-lookup-sole-proprietor.component';
 
 @Component({
 	selector: 'app-common-business-information',
@@ -51,50 +54,97 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 
 			<div *ngIf="isBusinessLicenceSoleProprietor" @showHideTriggerSlideAnimation>
-				<mat-divider class="mat-divider-main mt-3"></mat-divider>
-				<div class="text-minor-heading py-2">Sole Proprietor</div>
-				<div class="pb-3">A sole proprietor must have a valid security worker licence</div>
-				<div class="row">
-					<div class="col-md-6 col-sm-12">
-						<mat-form-field>
-							<mat-label>Lookup a Licence Number</mat-label>
-							<input
-								matInput
-								type="search"
-								formControlName="licenceNumberLookup"
-								oninput="this.value = this.value.toUpperCase()"
-								maxlength="10"
-							/>
-							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')">This is required</mat-error>
-						</mat-form-field>
+				<mat-divider class="mat-divider-main my-3"></mat-divider>
+				<div class="row mb-3">
+					<div class="col-md-6 col-sm-12"><div class="text-minor-heading">Sole Proprietor</div></div>
+					<div class="col-md-6 col-sm-12 text-end">
+						<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupSoleProprietor()">
+							Search for Sole Proprietor
+						</button>
 					</div>
+				</div>
 
-					<div class="col-md-6 col-sm-12">
-						<button mat-flat-button color="primary" class="large w-auto" (click)="onSearch()">Search</button>
-					</div>
+				<div class="my-2">
+					<app-alert type="success" icon="check_circle">
+						<div class="row">
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Name</div>
+								<div class="text-primary-color fs-5">Joe Smith</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Security Worker Licence Number</div>
+								<div class="text-primary-color fs-5">76434</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Expiry Date</div>
+								<div class="text-primary-color fs-5">Apr 25, 2025</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Licence Status</div>
+								<div class="text-primary-color fs-5 fw-bold">Valid</div>
+							</div>
+						</div>
+					</app-alert>
 
-					<div class="col-md-6 col-sm-12">
-						<mat-form-field>
-							<mat-label>Email Address</mat-label>
-							<input
-								matInput
-								formControlName="emailAddress"
-								[errorStateMatcher]="matcher"
-								placeholder="name@domain.com"
-								maxlength="75"
-							/>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">Must be a valid email address</mat-error>
-						</mat-form-field>
-					</div>
+					<!-- <app-alert type="warning" icon="cancel">
+						<div class="fs-5 mb-3">A sole proprietor must have a valid security worker licence</div>
+						<div class="row">
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Name</div>
+								<div class="text-primary-color fs-5">Joe Smith</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Security Worker Licence Number</div>
+								<div class="text-primary-color fs-5">76434</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Expiry Date</div>
+								<div class="text-primary-color fs-5">Apr 25, 2024</div>
+							</div>
+							<div class="col-md-3 col-sm-12">
+								<div class="text-primary-color">Licence Status</div>
+								<div class="text-primary-color fs-5 fw-bold">Expired</div>
+							</div>
+						</div>
+					</app-alert> -->
 
-					<div class="col-md-6 col-sm-12">
-						<mat-form-field>
-							<mat-label>Phone Number</mat-label>
-							<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
-						</mat-form-field>
+					<div class="row">
+						<div class="col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Email Address</mat-label>
+								<input
+									matInput
+									formControlName="soleProprietorSwlEmailAddress"
+									[errorStateMatcher]="matcher"
+									placeholder="name@domain.com"
+									maxlength="75"
+								/>
+								<mat-error *ngIf="form.get('soleProprietorSwlEmailAddress')?.hasError('required')"
+									>This is required</mat-error
+								>
+								<mat-error *ngIf="form.get('soleProprietorSwlEmailAddress')?.hasError('email')"
+									>Must be a valid email address</mat-error
+								>
+							</mat-form-field>
+						</div>
+
+						<div class="col-md-6 col-sm-12">
+							<mat-form-field>
+								<mat-label>Phone Number</mat-label>
+								<input
+									matInput
+									formControlName="soleProprietorSwlPhoneNumber"
+									[errorStateMatcher]="matcher"
+									[mask]="phoneMask"
+								/>
+								<mat-error *ngIf="form.get('soleProprietorSwlPhoneNumber')?.hasError('required')"
+									>This is required</mat-error
+								>
+								<mat-error *ngIf="form.get('soleProprietorSwlPhoneNumber')?.hasError('mask')"
+									>This must be 10 digits</mat-error
+								>
+							</mat-form-field>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -111,14 +161,27 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 
 	@Input() form!: FormGroup;
 
+	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 
 		return this.form.valid;
 	}
 
-	onSearch(): void {
-		// TODO perform search
+	onLookupSoleProprietor(): void {
+		this.dialog
+			.open(ModalLookupSoleProprietorComponent, {
+				width: '800px',
+				data: {}, //dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp: any) => {
+				if (resp) {
+					console.debug('resp.data', resp.data); // TODO handle search result
+					this.hotToastService.success('Sole Proprietor was successfully added');
+				}
+			});
 	}
 
 	get isBusinessLicenceSoleProprietor(): boolean {
