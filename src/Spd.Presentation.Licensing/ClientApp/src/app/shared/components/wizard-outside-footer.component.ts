@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
@@ -28,7 +27,7 @@ export class WizardOutsideFooterComponent implements OnInit {
 	@Output() cancel: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 
-	constructor(private commonApplicationService: CommonApplicationService) {}
+	constructor() {}
 
 	ngOnInit(): void {
 		this.isNextStepperStepObserved = this.nextStepperStep.observed;
