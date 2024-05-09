@@ -17,11 +17,7 @@ import { CommonApplicationService } from '../../services/common-application.serv
 				<ng-template matStepLabel> Licence Confirmation </ng-template>
 				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
-				<div class="row mt-4">
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12 mx-auto">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -30,14 +26,11 @@ import { CommonApplicationService } from '../../services/common-application.serv
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-mailing-address-anonymous>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPay()">Pay</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					nextButtonLabel="Pay"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onPay()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -68,6 +61,14 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+	}
+
+	onGoToNextStep(): void {
+		this.stepper.next();
+	}
+
+	onGoToPreviousStep(): void {
+		this.stepper.previous();
 	}
 
 	onPay(): void {

@@ -47,11 +47,6 @@ public abstract record BizLicenceApp
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
     public LicenceTermCode? LicenceTermCode { get; set; } //biz licence term, only 1,2,3 year
 
-    //sole proprietor properties
-    public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
-    public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
-    public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
-
     //non sole proprietor properties
     public ContactInfo? BizManagerContactInfo { get; set; }
     public ContactInfo? ApplicantContactInfo { get; set; }
@@ -73,11 +68,7 @@ public record ContactInfo
     public string? Surname { get; set; }
 }
 
-public record SwlContactInfo
-{
-    public Guid ContactId { get; set; }
-    public Guid LicenceId { get; set; }
-}
+
 
 
 

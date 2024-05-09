@@ -11,9 +11,9 @@ import { BranchResponse } from './common-business-bc-branches.component';
 		<mat-dialog-content class="pb-0">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-8 col-sm-12">
 						<mat-form-field>
-							<mat-label>Lookup a licence number</mat-label>
+							<mat-label>Lookup a Licence Number</mat-label>
 							<input
 								matInput
 								type="search"
@@ -24,7 +24,7 @@ import { BranchResponse } from './common-business-bc-branches.component';
 							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-4 col-sm-12">
 						<button mat-flat-button color="primary" class="large" (click)="onSearch()">Search</button>
 					</div>
 				</div>

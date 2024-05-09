@@ -34,11 +34,17 @@ import { SaStepOrganizationInfoComponent } from './components/screening-applicat
 import { SaStepPayForApplicationComponent } from './components/screening-application-steps/sa-step-pay-for-application.component';
 import { SaStepPersonalInfoComponent } from './components/screening-application-steps/sa-step-personal-info.component';
 import { SaStepTermsAndCondComponent } from './components/screening-application-steps/sa-step-terms-and-cond.component';
+import { SaAgreementOfTermsCrrpaComponent } from './components/screening-application-steps/step-components/sa-agreement-of-terms-crrpa.component';
+import { SaAgreementOfTermsPecrcComponent } from './components/screening-application-steps/step-components/sa-agreement-of-terms-pecrc.component';
+import { SaAgreementOfTermsPssoaComponent } from './components/screening-application-steps/step-components/sa-agreement-of-terms-pssoa.component';
 import { SaAgreementOfTermsComponent } from './components/screening-application-steps/step-components/sa-agreement-of-terms.component';
 import { SaApplicationSubmittedComponent } from './components/screening-application-steps/step-components/sa-application-submitted.component';
 import { SaChecklistComponent } from './components/screening-application-steps/step-components/sa-checklist.component';
 import { SaConsentToCrcComponent } from './components/screening-application-steps/step-components/sa-consent-to-crc.component';
+import { SaConsentToReleaseCrrpaComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-crrpa.component';
+import { SaConsentToReleaseMcfdComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-mcfd.component';
 import { SaConsentToReleaseOfInfoComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-of-info.component';
+import { SaConsentToReleasePssoaComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-pssoa.component';
 import { SaContactInformationComponent } from './components/screening-application-steps/step-components/sa-contact-information.component';
 import { SaDeclarationComponent } from './components/screening-application-steps/step-components/sa-declaration.component';
 import { SaLogInOptionsComponent } from './components/screening-application-steps/step-components/sa-log-in-options.component';
@@ -81,8 +87,15 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
+	SaConsentToReleasePssoaComponent,
+	SaConsentToReleaseCrrpaComponent,
+	SaConsentToReleaseMcfdComponent,
 	StatusStatisticsCommonComponent,
 	ApplicationsBannerComponent,
+	SaAgreementOfTermsCrrpaComponent,
+	SaAgreementOfTermsPecrcComponent,
+	SaAgreementOfTermsPssoaComponent,
+	SaConsentToReleaseCrrpaComponent,
 	ScreeningStatusFilterCommonComponent,
 	ScreeningStatusesCommonComponent,
 	ScreeningRequestsCommonComponent,

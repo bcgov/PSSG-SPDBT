@@ -147,8 +147,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 
 	isFormValid(): boolean {
 		// this.form.markAllAsTouched();
-		// return this.form.valid;
-		return true;
+		return true; // TODO return this.form.valid;
 	}
 
 	onRemoveMember(index: number) {

@@ -7,7 +7,6 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -111,7 +110,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private authenticationService: AuthenticationService,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService

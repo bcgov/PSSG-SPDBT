@@ -33,11 +33,16 @@ namespace Spd.Presentation.Screening.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Return the configuration FE needs.
+        /// The environment value could be: Development, Production, Staging,Test, Training
+        /// </summary>
+        /// <returns></returns>
         [Route("api/configuration")]
         [HttpGet]
         public async Task<ConfigurationResponse> Get()
         {
-            OidcConfiguration oidcResp = new OidcConfiguration
+            OidcConfiguration oidcResp = new()
             {
                 Issuer = _bceidOption.Value.Issuer,
                 ClientId = _bceidOption.Value.ClientId,
@@ -47,7 +52,7 @@ namespace Spd.Presentation.Screening.Controllers
                 IdentityProvider = _bceidOption.Value.IdentityProvider
             };
 
-            OidcConfiguration bcscConfig = new OidcConfiguration
+            OidcConfiguration bcscConfig = new()
             {
                 Issuer = _bcscOption.Value.Issuer,
                 ClientId = _bcscOption.Value.ClientId,
@@ -57,7 +62,7 @@ namespace Spd.Presentation.Screening.Controllers
                 IdentityProvider = _bcscOption.Value.IdentityProvider
             };
 
-            OidcConfiguration idirConfig = new OidcConfiguration
+            OidcConfiguration idirConfig = new()
             {
                 Issuer = _idirOption.Value.Issuer,
                 ClientId = _idirOption.Value.ClientId,
@@ -67,11 +72,12 @@ namespace Spd.Presentation.Screening.Controllers
                 IdentityProvider = _idirOption.Value.IdentityProvider
             };
 
-            RecaptchaConfiguration recaptchaResp = new RecaptchaConfiguration(_captchaOption.Value.ClientKey);
+            RecaptchaConfiguration recaptchaResp = new(_captchaOption.Value.ClientKey);
             var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());
             var payBcSearchInvoiceUrl = _configuration.GetValue<string>("PayBcSearchInvoiceUrl", string.Empty);
             return await Task.FromResult(new ConfigurationResponse()
             {
+                Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined",
                 BceidConfiguration = oidcResp,
                 BcscConfiguration = bcscConfig,
                 IdirConfiguration = idirConfig,
@@ -84,6 +90,7 @@ namespace Spd.Presentation.Screening.Controllers
 
     public record ConfigurationResponse
     {
+        public string Environment { get; set; }
         public OidcConfiguration BceidConfiguration { get; set; } = null!;
         public OidcConfiguration BcscConfiguration { get; set; } = null!;
         public OidcConfiguration IdirConfiguration { get; set; } = null!;

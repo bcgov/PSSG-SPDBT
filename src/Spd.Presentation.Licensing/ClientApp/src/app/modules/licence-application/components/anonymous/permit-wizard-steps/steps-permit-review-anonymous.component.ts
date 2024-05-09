@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from './step-permit-consent-and-declaration.component';
@@ -12,14 +13,10 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 			<mat-step>
 				<app-step-permit-summary-anonymous (editStep)="onGoToStep($event)"></app-step-permit-summary-anonymous>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" (click)="onStepPrevious()">Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" matStepperNext>Next</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onGoToNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -28,16 +25,11 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-consent-and-declaration>
 
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-2 offset-xl-3 col-xl-3 offset-lg-3 col-lg-3 col-md-12">
-						<button mat-stroked-button color="primary" class="large mb-2" matStepperPrevious>Previous</button>
-					</div>
-					<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onPayNow()">
-							{{ submitPayLabel }}
-						</button>
-					</div>
-				</div>
+				<app-wizard-footer
+					[nextButtonLabel]="submitPayLabel"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onPayNow()"
+				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -56,8 +48,11 @@ export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService) {
-		super();
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private permitApplicationService: PermitApplicationService
+	) {
+		super(commonApplicationService);
 	}
 
 	ngOnInit(): void {

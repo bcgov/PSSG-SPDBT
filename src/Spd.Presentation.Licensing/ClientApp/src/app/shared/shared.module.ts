@@ -24,6 +24,8 @@ import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint
 import { SpdFooterComponent } from './components/spd-footer.component';
 import { SpdHeaderComponent } from './components/spd-header.component';
 import { StepTitleComponent } from './components/step-title.component';
+import { WizardFooterComponent } from './components/wizard-footer.component';
+import { WizardOutsideFooterComponent } from './components/wizard-outside-footer.component';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -57,6 +59,8 @@ const SHARED_COMPONENTS = [
 	CommonPaymentFailComponent,
 	BaseFilterComponent,
 	ModalFingerprintTearOffComponent,
+	WizardFooterComponent,
+	WizardOutsideFooterComponent,
 ];
 
 @NgModule({

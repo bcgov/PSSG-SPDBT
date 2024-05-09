@@ -4,6 +4,7 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
@@ -51,6 +52,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IPortalUserRepository, PortalUserRepository>();
         serviceCollection.AddTransient<IOptionSetRepository, OptionSetRepository>();
         serviceCollection.AddTransient<IAddressRepository, AddressRepository>();
+        serviceCollection.AddTransient<ILicenceRepository, LicenceRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }
