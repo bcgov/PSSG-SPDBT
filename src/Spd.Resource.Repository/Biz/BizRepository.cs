@@ -99,6 +99,13 @@ namespace Spd.Resource.Repository.Biz
         {
             var account = _mapper.Map<account>(createBizCmd);
             _context.AddToaccounts(account);
+
+            foreach (ServiceTypeEnum serviceType in createBizCmd.ServiceTypes)
+            {
+                spd_servicetype? st = _context.LookupServiceType(serviceType.ToString());
+                _context.AddLink(account, nameof(account.spd_account_spd_servicetype), st);
+            }
+            
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);
