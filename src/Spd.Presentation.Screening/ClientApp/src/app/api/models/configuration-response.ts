@@ -6,6 +6,7 @@ export interface ConfigurationResponse {
   bannerMessage?: null | string;
   bceidConfiguration?: OidcConfiguration;
   bcscConfiguration?: OidcConfiguration;
+  environment?: null | string;
   idirConfiguration?: OidcConfiguration;
   payBcSearchInvoiceUrl?: null | string;
   recaptchaConfiguration?: RecaptchaConfiguration;
