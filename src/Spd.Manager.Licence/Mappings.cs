@@ -211,10 +211,12 @@ internal class Mappings : Profile
         CreateMap<BizProfileUpdateRequest, BizUpdateCmd>()
             .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
-            .ForMember(d => d.BusinessAddress, opt => opt.MapFrom(s => s.BizAddress))
+            .ForMember(d => d.BizGuid, opt => opt.Ignore())
+            .ForMember(d => d.BizLegalName, opt => opt.Ignore())
+            .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
             .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
             .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
-            .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnum(s.ServiceTypeCodes)))
+            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
             .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
 
         CreateMap<BranchAddr, AddressResp>();
