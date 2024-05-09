@@ -109,13 +109,13 @@ namespace Spd.Resource.Repository.Biz
             return _mapper.Map<BizResult>(account);
         }
 
-        private async Task<BizResult?> AddBizServiceTypeAsync(AddBizServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
+        private async Task<BizResult?> AddBizServiceTypeAsync(AddBizServiceTypeCmd addBizServiceTypeCmd, CancellationToken ct)
         {
-            spd_servicetype? st = _context.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
+            spd_servicetype? st = _context.LookupServiceType(addBizServiceTypeCmd.ServiceTypeEnum.ToString());
             IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                .Where(a => a.accountid == bizAddServiceTypeCmd.BizId);
+                .Where(a => a.accountid == addBizServiceTypeCmd.BizId);
             account? biz = await accounts.FirstOrDefaultAsync(ct);
             if (biz == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the biz");
@@ -124,7 +124,7 @@ namespace Spd.Resource.Repository.Biz
                 _context.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
                 await _context.SaveChangesAsync(ct);
             }
-            return await GetBizAsync(bizAddServiceTypeCmd.BizId, ct);
+            return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
     }
 }
