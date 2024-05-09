@@ -87,9 +87,7 @@ namespace Spd.Resource.Repository.Biz
             var response = _mapper.Map<BizResult>(Biz);
 
             _mapper.Map(updateBizCmd, Biz);
-
             _context.UpdateObject(Biz);
-
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(Biz);
@@ -123,7 +121,6 @@ namespace Spd.Resource.Repository.Biz
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the biz");
             if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
             {
-
                 _context.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
                 await _context.SaveChangesAsync(ct);
             }
