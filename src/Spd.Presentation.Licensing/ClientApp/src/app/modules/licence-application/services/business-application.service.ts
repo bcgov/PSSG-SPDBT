@@ -1,10 +1,21 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { ApplicationTypeCode, BizProfileResponse, BranchInfo, WorkerLicenceTypeCode } from '@app/api/models';
+import { BizProfileService } from '@app/api/services';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
+import { UtilService } from '@app/core/services/util.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, tap } from 'rxjs';
+import {
+	BehaviorSubject,
+	Observable,
+	Subscription,
+	debounceTime,
+	distinctUntilChanged,
+	of,
+	switchMap,
+	tap,
+} from 'rxjs';
 import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService } from './common-application.service';
 
@@ -19,12 +30,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(null),
+		bizId: new FormControl(null), // when authenticated, the biz id
+
+		isBcBusinessAddress: new FormControl(), // placeholder for flag
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
-		businessTypeData: this.businessTypeFormGroup,
-		businessNameData: this.businessNameFormGroup,
+		businessInformationData: this.businessInformationFormGroup,
 		companyBrandingData: this.companyBrandingFormGroup,
 		liabilityData: this.liabilityFormGroup,
 
@@ -36,7 +49,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
-		mailingAddress: this.mailingAddressFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
 
 		branchesInBcData: this.branchesInBcFormGroup,
@@ -50,6 +63,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
+		private utilService: UtilService,
+		private bizProfileService: BizProfileService,
+		private authUserBceidService: AuthUserBceidService,
 		private commonApplicationService: CommonApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe);
@@ -59,6 +75,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
 					this.hasValueChanged = true;
+
+					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
+					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
+					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
+
+					this.businessModelFormGroup.patchValue({ isBcBusinessAddress }, { emitEvent: false });
 
 					// const step1Complete = this.isStepLicenceSelectionComplete();
 					// const step2Complete = this.isStepBackgroundComplete();
@@ -78,34 +100,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 	}
 
-	loadBusinessProfile(): Observable<any> {
-		// return this.applicantProfileService
-		// 	.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
-		// 	.pipe(
-		// 		switchMap((resp: ApplicantProfileResponse) => {
-		return this.createEmptyLicenceAuthenticated({}, undefined).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
-
-				this.commonApplicationService.setApplicationTitle();
-			})
-		);
-		// 	})
-		// );
-	}
-
 	/**
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
-	createNewBusinessLicence(): Observable<any> {
-		return this.createEmptyLicenceAuthenticated({}, ApplicationTypeCode.New).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
+	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode | undefined): Observable<any> {
+		return this.bizProfileService.apiBizIdGet({ id: this.authUserBceidService.bceidUserProfile?.bizId! }).pipe(
+			switchMap((profile: BizProfileResponse) => {
+				return this.createEmptyLicenceAuthenticated(profile, applicationTypeCode).pipe(
+					tap((_resp: any) => {
+						this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
-					WorkerLicenceTypeCode.SecurityBusinessLicence,
-					ApplicationTypeCode.New
+						this.commonApplicationService.setApplicationTitle(
+							WorkerLicenceTypeCode.SecurityWorkerLicence,
+							applicationTypeCode // if undefined, we are just loading the profile.
+						);
+					})
 				);
 			})
 		);
@@ -142,7 +152,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	/*************************************************************/
 
 	private createEmptyLicenceAuthenticated(
-		profile: any, //ApplicantProfileResponse,
+		profile: BizProfileResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
 		this.reset();
@@ -151,12 +161,59 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private applyLicenceProfileIntoModel(
-		_profile: any, //ApplicantProfileResponse | WorkerLicenceAppResponse,
+		profile: BizProfileResponse, // | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined,
 		_userLicenceInformation?: any //UserLicenceResponse
 	): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+		const businessInformationData = {
+			businessTypeCode: profile.bizTypeCode,
+			legalBusinessName: profile.bizLegalName,
+			doingBusinessAsName: profile.bizTradeName,
+			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
+			soleProprietorSwlPhoneNumber: profile.soleProprietorSwlPhoneNumber,
+		};
+		const businessManagerData = { isBusinessManager: true }; // default
+
+		const bizAddress = profile.bizAddress;
+		const businessAddressData = {
+			addressSelected: !!bizAddress?.addressLine1,
+			addressLine1: bizAddress?.addressLine1,
+			addressLine2: bizAddress?.addressLine2,
+			city: bizAddress?.city,
+			postalCode: bizAddress?.postalCode,
+			province: bizAddress?.province,
+			country: bizAddress?.country,
+			isMailingTheSame: false,
+		};
+
+		const bizBCAddress = profile.bizBCAddress;
+		const bcBusinessAddressData = {
+			addressSelected: !!bizBCAddress?.addressLine1,
+			addressLine1: bizBCAddress?.addressLine1,
+			addressLine2: bizBCAddress?.addressLine2,
+			city: bizBCAddress?.city,
+			postalCode: bizBCAddress?.postalCode,
+			province: bizBCAddress?.province,
+			country: bizBCAddress?.country,
+		};
+
+		const bizMailingAddress = profile.bizMailingAddress;
+		const mailingAddressData = {
+			addressSelected: !!bizMailingAddress?.addressLine1,
+			addressLine1: bizMailingAddress?.addressLine1,
+			addressLine2: bizMailingAddress?.addressLine2,
+			city: bizMailingAddress?.city,
+			postalCode: bizMailingAddress?.postalCode,
+			province: bizMailingAddress?.province,
+			country: bizMailingAddress?.country,
+		};
+
+		console.debug('[applyLicenceProfileIntoModel] profile', profile);
+		console.debug('[applyLicenceProfileIntoModel] businessAddressData', businessAddressData);
+		console.debug('[applyLicenceProfileIntoModel] bcBusinessAddressData', bcBusinessAddressData);
+		console.debug('[applyLicenceProfileIntoModel] mailingAddressData', mailingAddressData);
 
 		// const personalInformationData = {
 		// 	givenName: profile.givenName,
@@ -186,45 +243,24 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// 	originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
 		// };
 
-		// const contactInformationData = {
-		// 	emailAddress: profile.emailAddress,
-		// 	phoneNumber: profile.phoneNumber,
-		// };
-
-		// const residentialAddress = {
-		// 	addressSelected: true,
-		// 	isMailingTheSameAsResidential: false,
-		// 	addressLine1: profile.residentialAddress?.addressLine1,
-		// 	addressLine2: profile.residentialAddress?.addressLine2,
-		// 	city: profile.residentialAddress?.city,
-		// 	country: profile.residentialAddress?.country,
-		// 	postalCode: profile.residentialAddress?.postalCode,
-		// 	province: profile.residentialAddress?.province,
-		// };
-
-		// const mailingAddress = {
-		// 	addressSelected: profile.mailingAddress ? true : false,
-		// 	isMailingTheSameAsResidential: false,
-		// 	addressLine1: profile.mailingAddress?.addressLine1,
-		// 	addressLine2: profile.mailingAddress?.addressLine2,
-		// 	city: profile.mailingAddress?.city,
-		// 	country: profile.mailingAddress?.country,
-		// 	postalCode: profile.mailingAddress?.postalCode,
-		// 	province: profile.mailingAddress?.province,
-		// };
-
-		const branchesInBcData = { hasBranchesInBc: BooleanTypeCode.Yes };
+		const hasBranchesInBc = (profile.branches ?? []).length > 0;
+		const branchesInBcData = { hasBranchesInBc: this.utilService.booleanToBooleanType(hasBranchesInBc) };
+		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
 
 		this.businessModelFormGroup.patchValue(
 			{
-				// 		applicantId: 'applicantId' in profile ? profile.applicantId : null,
+				bizId: 'bizId' in profile ? profile.bizId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
+				businessInformationData,
+				businessManagerData,
+
+				isBcBusinessAddress,
+				businessAddressData: { ...businessAddressData },
+				bcBusinessAddressData: { ...bcBusinessAddressData },
+				mailingAddressData: { ...mailingAddressData },
 				// 		...originalLicenceData,
 				// 		profileConfirmationData: { isProfileUpToDate: true },
-				// 		personalInformationData: { ...personalInformationData },
-				// 		residentialAddress: { ...residentialAddress },
-				// 		mailingAddress: { ...mailingAddress },
 				branchesInBcData,
 			},
 			{
@@ -232,55 +268,26 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		);
 
-		const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
-		bcBranchesArray.push(
-			new FormGroup({
-				id: new FormControl('1'),
-				addressSelected: new FormControl(true),
-				addressLine1: new FormControl('2344 Douglas Street'),
-				addressLine2: new FormControl(''),
-				city: new FormControl('Timmons'),
-				country: new FormControl('Canada'),
-				postalCode: new FormControl('V8R2E4'),
-				province: new FormControl('British Columbia'),
-				managerName: new FormControl('Barbara Streisand'),
-				managerSwlNumber: new FormControl('123123'),
-				managerPhoneNumber: new FormControl('5551228787'),
-				managerEmail: new FormControl('xxx@xxx.com'),
-			})
-		);
-		bcBranchesArray.push(
-			new FormGroup({
-				id: new FormControl('2'),
-				addressSelected: new FormControl(true),
-				addressLine1: new FormControl('2344 Douglas Street'),
-				addressLine2: new FormControl(''),
-				city: new FormControl('Kamloops'),
-				country: new FormControl('Canada'),
-				postalCode: new FormControl('V8R2E4'),
-				province: new FormControl('British Columbia'),
-				managerName: new FormControl('Jason Alexander'),
-				managerSwlNumber: new FormControl('123123'),
-				managerPhoneNumber: new FormControl('5551228787'),
-				managerEmail: new FormControl('yyy@yyy.com'),
-			})
-		);
-		bcBranchesArray.push(
-			new FormGroup({
-				id: new FormControl('3'),
-				addressSelected: new FormControl(true),
-				addressLine1: new FormControl('2344 Blenkinsop Street'),
-				addressLine2: new FormControl(''),
-				city: new FormControl('Victoria'),
-				country: new FormControl('Canada'),
-				postalCode: new FormControl('V8R2E4'),
-				province: new FormControl('British Columbia'),
-				managerName: new FormControl('Anderson Cooper'),
-				managerSwlNumber: new FormControl('4456789'),
-				managerPhoneNumber: new FormControl('5551228787'),
-				managerEmail: new FormControl('zzz@zzz.com'),
-			})
-		);
+		if (hasBranchesInBc) {
+			const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
+			profile.branches?.forEach((branchInfo: BranchInfo) => {
+				bcBranchesArray.push(
+					new FormGroup({
+						id: new FormControl(branchInfo.branchId),
+						addressSelected: new FormControl(true),
+						addressLine1: new FormControl(branchInfo.branchAddress?.addressLine1),
+						addressLine2: new FormControl(branchInfo.branchAddress?.addressLine2),
+						city: new FormControl(branchInfo.branchAddress?.city),
+						country: new FormControl(branchInfo.branchAddress?.country),
+						postalCode: new FormControl(branchInfo.branchAddress?.postalCode),
+						province: new FormControl(branchInfo.branchAddress?.province),
+						branchManager: new FormControl(branchInfo.branchManager),
+						branchPhoneNumber: new FormControl(branchInfo.branchPhoneNumber),
+						branchEmailAddr: new FormControl(branchInfo.branchEmailAddr),
+					})
+				);
+			});
+		}
 
 		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
 		controllingMembersArray.push(

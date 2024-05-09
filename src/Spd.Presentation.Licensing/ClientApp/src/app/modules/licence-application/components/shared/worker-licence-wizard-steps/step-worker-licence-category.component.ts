@@ -63,7 +63,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandArmouredCarGuard"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -118,7 +118,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandBodyArmourSales"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -173,7 +173,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandClosedCircuitTelevisionInstaller"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -232,7 +232,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandElectronicLockingDeviceInstaller"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -291,7 +291,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandFireInvestigator"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -347,7 +347,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandLocksmith"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -402,7 +402,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandLocksmithUnderSupervision"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -455,7 +455,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandPrivateInvestigator"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -511,7 +511,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandPrivateInvestigatorUnderSupervision"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -571,7 +571,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityAlarmInstaller"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -631,7 +631,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityAlarmInstallerUnderSupervision"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -693,7 +693,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityAlarmMonitor"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -751,7 +751,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityAlarmResponse"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -809,7 +809,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityAlarmSales"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -865,7 +865,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityConsultant"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -921,7 +921,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityGuard"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"
@@ -973,7 +973,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[expanded]="expandSecurityGuardUnderSupervision"
 										>
 											<mat-expansion-panel-header>
-												<mat-panel-title class="title">
+												<mat-panel-title>
 													<mat-icon
 														class="error-icon"
 														color="warn"

@@ -199,6 +199,10 @@ export const BusinessTypes: SelectOptions[] = [
 	{ desc: 'None', code: BusinessTypeCode.None },
 ];
 
+export const BusinessLicenceTypes: SelectOptions[] = BusinessTypes.filter(
+	(item: SelectOptions) => item.code != BusinessTypeCode.None
+);
+
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
 	{ desc: 'F', code: GenderCode.F },

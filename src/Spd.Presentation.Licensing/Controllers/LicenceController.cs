@@ -36,7 +36,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/applicants/{applicantId}/licences")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceResponse>> GetLicences([FromRoute][Required] Guid applicantId)
+        public async Task<IEnumerable<LicenceBasicResponse>> GetLicences([FromRoute][Required] Guid applicantId)
         {
             return await _mediator.Send(new ApplicantLicenceListQuery(applicantId));
         }

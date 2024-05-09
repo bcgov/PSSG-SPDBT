@@ -2,6 +2,7 @@ export { AddressAutoCompleteService } from './services/address-auto-complete.ser
 export { ApplicantLicenceAppService } from './services/applicant-licence-app.service';
 export { ApplicantProfileService } from './services/applicant-profile.service';
 export { BizLicensingService } from './services/biz-licensing.service';
+export { BizProfileService } from './services/biz-profile.service';
 export { ConfigurationService } from './services/configuration.service';
 export { LicenceService } from './services/licence.service';
 export { LicenceFeeService } from './services/licence-fee.service';

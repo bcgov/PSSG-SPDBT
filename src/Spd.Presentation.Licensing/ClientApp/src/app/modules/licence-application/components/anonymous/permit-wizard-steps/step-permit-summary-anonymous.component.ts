@@ -326,31 +326,48 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														</div>
 													</div>
 												</div>
-												<mat-divider class="mt-3 mb-2"></mat-divider>
 											</ng-container>
 
-											<div class="text-minor-heading">Identification</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
-													<div class="text-label d-block text-muted">Photograph of Yourself</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
+											<ng-container
+												*ngIf="applicationTypeCode === applicationTypeCodes.Update && photoOfYourselfAttachments"
+											>
+												<mat-divider class="mt-3 mb-2"></mat-divider>
+												<div class="text-minor-heading">Identification</div>
+												<div class="row mt-0">
+													<div class="col-lg-6 col-md-12">
+														<div class="text-label d-block text-muted">Photograph of Yourself</div>
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
 													</div>
 												</div>
+											</ng-container>
 
-												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<mat-divider class="mt-3 mb-2"></mat-divider>
+												<div class="text-minor-heading">Identification</div>
+												<div class="row mt-0">
+													<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
+														<div class="text-label d-block text-muted">Photograph of Yourself</div>
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
+													</div>
+
 													<div class="col-lg-6 col-md-12">
 														<div class="text-label d-block text-muted">BC Driver's Licence</div>
 														<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
 													</div>
-												</ng-container>
-											</div>
+												</div>
 
-											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 												<div class="row mt-0">
 													<div class="col-lg-3 col-md-12">
 														<div class="text-label d-block text-muted">Height</div>

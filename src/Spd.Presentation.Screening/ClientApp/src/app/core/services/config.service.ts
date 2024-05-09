@@ -90,8 +90,13 @@ export class ConfigService {
 		return this.configurationService.apiConfigurationGet().pipe(
 			tap((resp: ConfigurationResponse) => {
 				this.configs = { ...resp };
+				// this.configs.environment = 'Production'; // when testing
 				return resp;
 			})
 		);
+	}
+
+	public isProduction(): boolean {
+		return this.configs?.environment === 'Production' || this.configs?.environment === 'Training';
 	}
 }
