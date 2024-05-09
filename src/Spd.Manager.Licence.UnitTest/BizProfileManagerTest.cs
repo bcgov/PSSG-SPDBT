@@ -20,7 +20,6 @@ namespace Spd.Manager.Licence.UnitTest
         private Mock<IIdentityRepository> mockIdRepo = new();
         private Mock<IBizRepository> mockBizRepo = new();
         private Mock<IAddressRepository> mockAddressRepo = new();
-        private Mock<IMapper> mockMapper = new();
         private BizProfileManager sut;
 
         public BizProfileManagerTest()
@@ -283,6 +282,63 @@ namespace Spd.Manager.Licence.UnitTest
             Assert.IsType<BizProfileResponse>(result);
             Assert.Equal("test", result.BizTradeName);
             Assert.Equal(bizId, result.BizId);
+        }
+
+        [Fact]
+        public async void Handle_BizProfileUpdateCommand_Success()
+        {
+            // Arrange
+            Guid bizId = Guid.NewGuid();
+            Guid bizUserId = Guid.NewGuid();
+            Address address = fixture.Build<Address>()
+                .With(a => a.AddressLine1, "address 1")
+                .With(a => a.AddressLine1, "address 2")
+                .With(a => a.PostalCode, "abc123")
+                .Create();
+
+            Address branchAddress = fixture.Build<Address>()
+                .With(a => a.AddressLine1, "address 1")
+                .With(a => a.AddressLine1, "address 2")
+                .With(a => a.PostalCode, "abc123")
+                .Create();
+
+            BranchInfo branch = fixture.Build<BranchInfo>()
+                .With(a => a.BranchId, Guid.NewGuid())
+                .With(a => a.BranchPhoneNumber, "90000000")
+                .With(a => a.BranchAddress, branchAddress)
+                .Create();
+
+            BizProfileUpdateRequest request = fixture.Build<BizProfileUpdateRequest>()
+                .With(c => c.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
+                .With(c => c.Branches, new List<BranchInfo>() { branch })
+                .With(c => c.BizBCAddress, address)
+                .With(c => c.BizMailingAddress, address)
+                .Create();
+
+            AddressResp addressResp = new()
+            {
+                BranchId = branch.BranchId,
+                BranchEmailAddr = branch.BranchEmailAddr,
+                BranchManager = branch.BranchManager,
+                BranchPhoneNumber = branch.BranchPhoneNumber,
+                AddressLine1 = branch.BranchAddress.AddressLine1,
+                AddressLine2 = branch.BranchAddress.AddressLine2,
+                PostalCode = branch.BranchAddress.PostalCode,
+                City = branch.BranchAddress.City,
+                Country = branch.BranchAddress.Country,
+                Province = branch.BranchAddress.Province
+            };
+
+            BizProfileUpdateCommand cmd = new(bizUserId, bizId, request);
+            mockAddressRepo.Setup(a => a.QueryAsync(
+                It.Is<AddressQry>(q => q.OrganizationId == cmd.BizProfileUpdateRequest.BizId && q.Type == AddressTypeEnum.Branch), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new List<AddressResp>() { addressResp });
+
+            // Action
+            var result = await sut.Handle(cmd, CancellationToken.None);
+
+            // Assert
+            Assert.IsType<Unit>(result);
         }
 
         private BceidIdentityInfo GetBceidIdentityInfo()
