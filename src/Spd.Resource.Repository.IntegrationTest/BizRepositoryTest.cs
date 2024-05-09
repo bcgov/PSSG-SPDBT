@@ -31,16 +31,24 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         {
             BizGuid = Guid.NewGuid(),
             Id = bizId,
-            BizLegalName = IntegrationTestSetup.DataPrefix + "test"
+            BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
         };
 
         // Act
         var result = await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
 
         // Assert
-        account? account = await _context.accounts.Where(c => c.accountid == bizId).FirstOrDefaultAsync();
+        account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
+            .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
+        Guid? serviceTypeId = _context.LookupServiceType(cmd.ServiceTypes.FirstOrDefault().ToString()).spd_servicetypeid;
+        spd_servicetype? serviceType = account.spd_account_spd_servicetype.Where(s => s.spd_servicetypeid == serviceTypeId).FirstOrDefault();
+
         Assert.NotNull(account);
+        Assert.NotNull(serviceType);
         Assert.Equal(cmd.BizGuid.ToString(), account.spd_orgguid);
+        Assert.Equal(cmd.BizLegalName, account.spd_organizationlegalname);
+        Assert.Equal(cmd.BizName, account.name);
 
         //Annihilate : When we have delete privilege, we need to do following
         //_context.DeleteObject(account);
