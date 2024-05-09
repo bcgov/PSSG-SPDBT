@@ -39,7 +39,7 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
             .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => s.spd_Organization_Addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch)));
 
-            CreateMap<BizUpdateCmd, account>()
+            CreateMap<UpdateBizCmd, account>()
             .IncludeBase<Biz, account>()
             .ForMember(d => d.spd_orgguid, opt => opt.Ignore())
             .ForMember(d => d.spd_organizationlegalname, opt => opt.Ignore())
@@ -51,7 +51,7 @@ namespace Spd.Resource.Repository.Biz
             .ForPath(d => d.address2_line2, opt => opt.Ignore())
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
 
-            CreateMap<BizCreateCmd, account>()
+            CreateMap<CreateBizCmd, account>()
             .IncludeBase<Biz, account>()
             .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
             .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
