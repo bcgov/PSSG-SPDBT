@@ -100,32 +100,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 	}
 
-	loadBusinessProfile(): Observable<any> {
-		return this.bizProfileService.apiBizIdGet({ id: this.authUserBceidService.bceidUserProfile?.bizId! }).pipe(
-			switchMap((resp: BizProfileResponse) => {
-				return this.createEmptyLicenceAuthenticated(resp, undefined).pipe(
-					tap((_resp: any) => {
-						this.initialized = true;
-
-						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
-					})
-				);
-			})
-		);
-	}
-
 	/**
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
-	createNewBusinessLicence(): Observable<any> {
-		return this.createEmptyLicenceAuthenticated({}, ApplicationTypeCode.New).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
+	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode | undefined): Observable<any> {
+		return this.bizProfileService.apiBizIdGet({ id: this.authUserBceidService.bceidUserProfile?.bizId! }).pipe(
+			switchMap((profile: BizProfileResponse) => {
+				return this.createEmptyLicenceAuthenticated(profile, applicationTypeCode).pipe(
+					tap((_resp: any) => {
+						this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
-					WorkerLicenceTypeCode.SecurityBusinessLicence,
-					ApplicationTypeCode.New
+						this.commonApplicationService.setApplicationTitle(
+							WorkerLicenceTypeCode.SecurityWorkerLicence,
+							applicationTypeCode // if undefined, we are just loading the profile.
+						);
+					})
 				);
 			})
 		);
@@ -181,6 +171,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessTypeCode: profile.bizTypeCode,
 			legalBusinessName: profile.bizLegalName,
 			doingBusinessAsName: profile.bizTradeName,
+			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
+			soleProprietorSwlPhoneNumber: profile.soleProprietorSwlPhoneNumber,
 		};
 		const businessManagerData = { isBusinessManager: true }; // default
 

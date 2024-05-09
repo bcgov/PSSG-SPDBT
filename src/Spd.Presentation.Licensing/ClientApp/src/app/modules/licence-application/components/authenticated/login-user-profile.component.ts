@@ -55,7 +55,11 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 		</section>
 
 		<ng-container *ngIf="!isReadonly">
-			<app-wizard-footer nextButtonLabel="Save" (nextStepperStep)="onSave()"></app-wizard-footer>
+			<app-wizard-outside-footer
+				nextButtonLabel="Save"
+				(nextStepperStep)="onSave()"
+				(cancel)="onCancel()"
+			></app-wizard-outside-footer>
 		</ng-container>
 	`,
 	styles: [],
