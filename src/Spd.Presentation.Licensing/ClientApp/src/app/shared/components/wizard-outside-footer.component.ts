@@ -27,8 +27,6 @@ export class WizardOutsideFooterComponent implements OnInit {
 	@Output() cancel: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 
-	constructor() {}
-
 	ngOnInit(): void {
 		this.isNextStepperStepObserved = this.nextStepperStep.observed;
 	}
