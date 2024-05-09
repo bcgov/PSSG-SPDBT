@@ -335,7 +335,7 @@ namespace Spd.Manager.Licence.UnitTest
                 Province = existingBranch.BranchAddress.Province
             };
 
-            BizProfileUpdateCommand cmd = new(bizUserId, bizId, request);
+            BizProfileUpdateCommand cmd = new(bizId, request);
             mockAddressRepo.Setup(a => a.QueryAsync(
                 It.Is<AddressQry>(q => q.OrganizationId == cmd.BizProfileUpdateRequest.BizId && q.Type == AddressTypeEnum.Branch), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(new List<AddressResp>() { addressResp });
