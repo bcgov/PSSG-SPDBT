@@ -97,10 +97,6 @@ export class ConfigService {
 	}
 
 	public isProduction(): boolean {
-		return this.configs?.environment === 'Production';
-	}
-
-	public isHideErrorDetails(): boolean {
 		return this.configs?.environment === 'Production' || this.configs?.environment === 'Training';
 	}
 }

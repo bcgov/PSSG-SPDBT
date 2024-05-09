@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfigService } from 'src/app/core/services/config.service';
 
 export interface DialogOopsOptions {
-	message: string | null;
+	message?: string;
 }
 
 @Component({
@@ -60,12 +60,12 @@ export interface DialogOopsOptions {
 	],
 })
 export class DialogOopsComponent implements OnInit {
-	errorMessage: string | null = null;
+	errorMessage: string | null | undefined = null;
 
 	constructor(private configService: ConfigService, @Inject(MAT_DIALOG_DATA) public data: DialogOopsOptions) {}
 
 	ngOnInit(): void {
-		this.errorMessage = this.configService.isHideErrorDetails() ? null : this.data.message;
+		this.errorMessage = this.configService.isProduction() ? null : this.data.message;
 	}
 
 	public onHandleMissingImage(event: Event) {
