@@ -10,7 +10,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 		<div class="row mt-3">
 			<div class="col-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Business Information</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -28,7 +28,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Business Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -52,7 +52,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-lg-6 col-md-12" *ngIf="!isBcBusinessAddress">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>B.C. Business Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -76,7 +76,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Mailing Address</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -108,7 +108,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 			<div class="col-12">
 				<mat-accordion>
-					<mat-expansion-panel class="mb-3" [expanded]="true" [disabled]="true">
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title>Branches in B.C.</mat-panel-title>
 						</mat-expansion-panel-header>

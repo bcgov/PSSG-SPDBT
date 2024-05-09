@@ -68,7 +68,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			</div>
 		</ng-container>
 	`,
-	styles: ``,
+	styles: [],
 })
 export class BusinessProfileComponent implements OnInit, OnDestroy {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
