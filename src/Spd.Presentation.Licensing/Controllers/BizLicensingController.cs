@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -40,6 +43,9 @@ namespace Spd.Presentation.Licensing.Controllers
             return default;
         }
 
+        //
+
+
         /// <summary>
         /// Upload business licence application files to transient storage
         /// </summary>
@@ -58,6 +64,52 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, null, licenceAppId), ct);
         }
 
-        
+        /// <summary>
+        /// Submit Biz licence update, renew and replace
+        /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+        /// </summary>
+        /// <param name="request">BizLicAppSubmitRequest data</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/change")]
+        [Authorize(Policy = "OnlyBceid")]
+        [HttpPost]
+        public async Task<BizLicAppCommandResponse?> ChangeOnBizLicApp(BizLicAppChangeRequest request, CancellationToken ct)
+        {
+            BizLicAppCommandResponse? response = null;
+
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
+
+            //add validation here
+            //var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
+            //if (!validateResult.IsValid)
+            //    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+            if (request.ApplicationTypeCode == ApplicationTypeCode.New)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+            }
+
+            if (request.ApplicationTypeCode == ApplicationTypeCode.Replacement)
+            {
+                BizLicAppReplaceCommand command = new(request, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (request.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+            {
+                BizLicAppRenewCommand command = new(request, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            if (request.ApplicationTypeCode == ApplicationTypeCode.Update)
+            {
+                BizLicAppUpdateCommand command = new(request, newDocInfos);
+                response = await _mediator.Send(command, ct);
+            }
+
+            return response;
+        }
+
     }
 }
