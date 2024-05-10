@@ -24,7 +24,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
-    public async Task BizCreateAsync_Run_Correctly()
+    public async Task CreateBizAsync_Run_Correctly()
     {
         // Arrange
         Guid bizId = Guid.NewGuid();
@@ -59,7 +59,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
-    public async Task BizAddServiceTypeAsync_Run_Correctly()
+    public async Task AddBizServiceTypeAsync_Run_Correctly()
     {
         // Arrange
         Guid bizId = Guid.NewGuid();
@@ -86,7 +86,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
-    public async void BizUpdateAsync_Run_Correctly()
+    public async void UpdateBizAsync_Run_Correctly()
     {
         // Arrange
         BranchAddr branchAddress = fixture.Build<BranchAddr>()
