@@ -73,6 +73,7 @@ namespace Spd.Resource.Repository.Biz
                 UpdateBizCmd c => await UpdateBizAsync(c, ct),
                 CreateBizCmd c => await CreateBizAsync(c, ct),
                 AddBizServiceTypeCmd c => await AddBizServiceTypeAsync(c, ct),
+                UpdateBizServiceTypeCmd c => await UpdateBizServiceTypeAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
@@ -91,6 +92,32 @@ namespace Spd.Resource.Repository.Biz
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(Biz);
+        }
+
+        private async Task<BizResult?> UpdateBizServiceTypeAsync(UpdateBizServiceTypeCmd updateBizServiceTypeCmd, CancellationToken ct)
+        {
+            spd_servicetype? st = _context.LookupServiceType(updateBizServiceTypeCmd.ServiceTypeEnum.ToString());
+            IQueryable<account> accounts = _context.accounts
+                .Expand(a => a.spd_account_spd_servicetype)
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == updateBizServiceTypeCmd.BizId);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
+
+            if (biz == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the biz");
+
+            if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
+                _context.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
+
+            foreach (spd_servicetype serviceType in biz.spd_account_spd_servicetype)
+            {
+                var serviceTypeCode = DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceType.spd_servicetypeid);
+                if (updateBizServiceTypeCmd.ServiceTypeEnum.ToString() != serviceTypeCode)
+                    _context.DeleteLink(biz, nameof(biz.spd_account_spd_servicetype), serviceType);
+            }
+            
+            await _context.SaveChangesAsync(ct);
+            return await GetBizAsync(updateBizServiceTypeCmd.BizId, ct);
         }
 
         private async Task<BizResult?> CreateBizAsync(CreateBizCmd createBizCmd, CancellationToken ct)
