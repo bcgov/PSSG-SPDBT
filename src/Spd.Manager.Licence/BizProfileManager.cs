@@ -117,7 +117,7 @@ internal class BizProfileManager :
 
         IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
 
-        await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), ct);
+        await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), cmd.BizId, ct);
 
         return default;
     }
@@ -199,7 +199,7 @@ internal class BizProfileManager :
         }, ct);
     }
 
-    private async Task ProcessBranchAddresses(List<BranchAddr> branches, List<BranchAddr> branchesToProcess, CancellationToken ct)
+    private async Task ProcessBranchAddresses(List<BranchAddr> branches, List<BranchAddr> branchesToProcess, Guid bizId, CancellationToken ct)
     {
         // Remove branches defined in the entity that are not part of the request
         var modifiedBranches = branchesToProcess.Where(b => b.BranchId != Guid.Empty && b.BranchId != null);
@@ -218,7 +218,8 @@ internal class BizProfileManager :
         List<BranchAddr> addressesToCreate = branchesToProcess.Where(b => b.BranchId == Guid.Empty || b.BranchId == null).ToList();
         UpsertAddressCmd createAddressCmd = new()
         {
-            Addresses = modifiedBranches
+            BizId = bizId,
+            Addresses = addressesToCreate
         };
         await _addressRepository.CreateAddressesAsync(createAddressCmd, ct);
     }
