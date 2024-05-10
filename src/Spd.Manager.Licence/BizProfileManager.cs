@@ -109,7 +109,7 @@ internal class BizProfileManager :
     public async Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
     {
         UpdateBizCmd bizUpdateCmd = _mapper.Map<UpdateBizCmd>(cmd.BizProfileUpdateRequest);
-
+        bizUpdateCmd.Id = cmd.BizId;
         await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
 
         AddressQry qry = new AddressQry() { OrganizationId = bizUpdateCmd.Id, Type = AddressTypeEnum.Branch };
