@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Address;
@@ -9,12 +10,14 @@ namespace Spd.Resource.Repository.IntegrationTest;
 public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
 {
     private readonly IAddressRepository _addressRepository;
+    private readonly IBizRepository _bizRepository;
     private DynamicsContext _context;
     private readonly IFixture fixture;
 
     public AddressRepositoryTest(IntegrationTestSetup testSetup)
     {
         _addressRepository = testSetup.ServiceProvider.GetService<IAddressRepository>();
+        _bizRepository = testSetup.ServiceProvider.GetService<IBizRepository>();
         _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().CreateChangeOverwrite();
         fixture = new Fixture();
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
@@ -48,15 +51,28 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task CreateAddressesAsync_Run_Correctly()
     {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        CreateBizCmd createBizCmd = new()
+        {
+            BizGuid = Guid.NewGuid(),
+            Id = bizId,
+            BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            BizType = BizTypeEnum.Corporation,
+            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
+        };
+
+        await _bizRepository.ManageBizAsync(createBizCmd, CancellationToken.None);
+
         BranchAddr addressToCreate = fixture.Build<BranchAddr>()
             .With(a => a.BranchId, Guid.NewGuid())
             .With(a => a.BranchPhoneNumber, "90000000")
             .With(a => a.PostalCode, "V7N 5J2")
             .Create();
-        UpsertAddressCmd cmd = new() { Addresses = new List<BranchAddr> { addressToCreate } };
+        UpsertAddressCmd upsertAddressCmd = new() { BizId = bizId, Addresses = new List<BranchAddr> { addressToCreate } };
 
         // Act
-        await _addressRepository.CreateAddressesAsync(cmd, CancellationToken.None);
+        await _addressRepository.CreateAddressesAsync(upsertAddressCmd, CancellationToken.None);
 
         // Assert
         spd_address? createdAddress = _context.spd_addresses.
@@ -71,6 +87,21 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
             .FirstOrDefault();
 
         Assert.NotNull(createdAddress);
+    }
+
+    [Fact]
+    public async Task CreateAddressesAsync_WithoutBiz_Throw_Exception()
+    {
+        BranchAddr addressToCreate = fixture.Build<BranchAddr>()
+            .With(a => a.BranchId, Guid.NewGuid())
+            .With(a => a.BranchPhoneNumber, "90000000")
+            .With(a => a.PostalCode, "V7N 5J2")
+            .Create();
+
+        UpsertAddressCmd cmd = new() { BizId = Guid.NewGuid(), Addresses = new List<BranchAddr>() { addressToCreate } };
+
+        // Act and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _addressRepository.CreateAddressesAsync(cmd, CancellationToken.None));
     }
 
     [Fact]
@@ -100,6 +131,16 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
             .ToList();
 
         Assert.NotEmpty(deletedAddress);
+    }
+
+    [Fact]
+    public async Task DeleteAddressesAsync_WithAddressNotFound_Throw_Exception()
+    {
+        // Arrange
+        var addressToDelete = new List<Guid?>() { Guid.NewGuid() };
+
+        // Act and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _addressRepository.DeleteAddressesAsync(addressToDelete, CancellationToken.None));
     }
 
     [Fact]
@@ -148,5 +189,18 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
             .FirstOrDefault();
 
         Assert.NotNull(updatedAddress);
+    }
+
+    [Fact]
+    public async Task UpdateAddressesAsync_WithAddressNotFound_Throw_Exception()
+    {
+        // Arrange
+        BranchAddr branch = new BranchAddr() { BranchId = Guid.NewGuid() };
+        List<BranchAddr> branches = new List<BranchAddr>() { branch };
+
+        UpsertAddressCmd cmd = new UpsertAddressCmd { Addresses = branches };
+
+        // Act and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _addressRepository.UpdateAddressesAsync(cmd, CancellationToken.None));
     }
 }
