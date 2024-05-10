@@ -171,7 +171,7 @@ internal class BizProfileManager :
 
     private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
     {
-        CreateBizCmd createCmd = new CreateBizCmd() 
+        CreateBizCmd createCmd = new() 
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
