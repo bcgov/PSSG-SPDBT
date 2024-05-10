@@ -12,7 +12,7 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .NotEmpty()
             .When(r => r.MailingAddressIsSameBizAddress == false);
         RuleFor(r => r)
-            .Must(r => r.BizMailingAddress.AddressLine1 != r.BizBCAddress.AddressLine1)
+            .Must(r => r.BizMailingAddress?.AddressLine1 != r.BizBCAddress?.AddressLine1)
             .When(r => r.MailingAddressIsSameBizAddress == false);
     }
 }
