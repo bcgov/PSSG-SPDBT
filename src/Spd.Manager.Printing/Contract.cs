@@ -17,6 +17,7 @@ public record PrintJob(DocumentType DocumentType, Guid ApplicationId);
 public enum DocumentType
 {
     FingerprintLetter,
+    PersonalLicencePreview,
 }
 
 public record PrintJobStatusResp(PrintJobStatus Status, string? Error);

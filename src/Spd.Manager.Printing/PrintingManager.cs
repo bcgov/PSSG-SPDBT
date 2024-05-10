@@ -51,7 +51,7 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
       printJob.DocumentType switch
       {
           DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest(printJob.ApplicationId),
-
+          DocumentType.PersonalLicencePreview => new PersonalLicencePreviewTransformRequest(printJob.ApplicationId),
           _ => throw new NotImplementedException()
       };
 
