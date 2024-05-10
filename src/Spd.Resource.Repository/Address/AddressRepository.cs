@@ -48,12 +48,20 @@ internal class AddressRepository : IAddressRepository
         foreach (BranchAddr address in cmd.Addresses)
         {
             spd_address addressToCreate = _mapper.Map<spd_address>(address);
-            _context.AddTospd_addresses(addressToCreate);
+            IQueryable<account> accounts = _context.accounts.Where(a => a.accountid == cmd.BizId && a.statecode != DynamicsConstants.StateCode_Inactive);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
+
+            if (biz == null)
+            {
+                _logger.LogError($"Biz to be linked to address was not found");
+                throw new ArgumentException("cannot find biz to be linked");
+            }
+
+            CreateAddress(biz, addressToCreate);
+            await _context.SaveChangesAsync(ct);
             AddressResp createdAddress = _mapper.Map<AddressResp>(address);
             createdAddresses.Add(createdAddress);
         }
-
-        await _context.SaveChangesAsync(ct);
 
         return createdAddresses;
     }
@@ -100,5 +108,11 @@ internal class AddressRepository : IAddressRepository
             _context.UpdateObject(existingAddress);
         }
         await _context.SaveChangesAsync(ct);
+    }
+
+    private void CreateAddress(account account, spd_address address)
+    {
+        _context.AddTospd_addresses(address);
+        _context.SetLink(address, nameof(address.spd_Organization), account);
     }
 }
