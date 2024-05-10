@@ -76,7 +76,6 @@ public record BizUserLoginResponse
 
 public record BizProfileUpdateRequest 
 {
-    public Guid? BizId { get; set; } //used when in update, renew or replace flow.
     public string? BizTradeName { get; set; }
     public BizTypeCode? BizTypeCode { get; set; }
     public Address? BizBCAddress { get; set; }
