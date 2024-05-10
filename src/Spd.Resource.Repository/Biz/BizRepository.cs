@@ -85,6 +85,9 @@ namespace Spd.Resource.Repository.Biz
                  .Where(a => a.accountid == updateBizCmd.Id);
 
             account? Biz = await accounts.FirstOrDefaultAsync(ct);
+
+            if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
+
             var response = _mapper.Map<BizResult>(Biz);
 
             _mapper.Map(updateBizCmd, Biz);
