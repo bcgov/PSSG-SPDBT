@@ -5,7 +5,6 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
 {
     public BizProfileUpdateRequestValidator()
     {
-        RuleFor(r => r.BizId).NotEmpty();
         RuleFor(r => r.BizTypeCode).NotEmpty().IsInEnum();
         RuleFor(r => r.BizBCAddress).NotEmpty();
         RuleFor(r => r.BizMailingAddress)
