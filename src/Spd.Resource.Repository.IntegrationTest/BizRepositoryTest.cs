@@ -3,6 +3,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Biz;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -163,5 +164,66 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
         Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
         Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
+    }
+
+    [Fact]
+    public async void UpdateBizServiceTypeAsync_Run_Correctly()
+    {
+        // Arrange
+        BranchAddr branchAddress = fixture.Build<BranchAddr>()
+            .With(a => a.BranchId, Guid.NewGuid())
+            .With(a => a.BranchPhoneNumber, "90000000")
+            .With(a => a.PostalCode, "V7N 5J2")
+            .Create();
+
+        Addr address = fixture.Build<Addr>()
+            .With(a => a.AddressLine1, "address 1")
+            .With(a => a.AddressLine1, "address 2")
+            .With(a => a.PostalCode, "abc123")
+            .Create();
+
+        Addr updatedAddress = fixture.Build<Addr>()
+            .With(a => a.AddressLine1, "updated address 1")
+            .With(a => a.AddressLine1, "updated address 2")
+            .With(a => a.PostalCode, "xyz789")
+            .Create();
+
+        Guid bizId = Guid.NewGuid();
+        CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
+            .With(c => c.Id, bizId)
+            .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
+            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MCFD })
+            .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
+            .With(c => c.PhoneNumber, "80000000")
+            .With(c => c.BCBusinessAddress, address)
+            .With(c => c.BusinessAddress, address)
+            .With(c => c.MailingAddress, address)
+            .Create();
+
+        UpdateBizServiceTypeCmd updateServiceTypeCmd = new(bizId, ServiceTypeEnum.PSSO);  
+
+        // Act
+        await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
+        await _bizRepository.ManageBizAsync(updateServiceTypeCmd, CancellationToken.None);
+
+        // Assert
+        account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
+            .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
+        Guid? serviceTypeId = _context.LookupServiceType(updateServiceTypeCmd.ServiceTypeEnum.ToString()).spd_servicetypeid;
+        spd_servicetype? serviceType = account.spd_account_spd_servicetype.Where(s => s.spd_servicetypeid == serviceTypeId).FirstOrDefault();
+
+        Assert.NotNull(account);
+        Assert.NotNull(serviceType);
+        Assert.Equal(updateServiceTypeCmd.ServiceTypeEnum.ToString(), serviceType.spd_servicetypename);
+    }
+
+    [Fact]
+    public async void UpdateBizServiceTypeAsync_BizNotFound_Throw_Exception()
+    {
+        // Arrange
+        UpdateBizServiceTypeCmd cmd = new(Guid.NewGuid(), ServiceTypeEnum.PSSO);
+
+        // Act and Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.ManageBizAsync(cmd, CancellationToken.None));
     }
 }
