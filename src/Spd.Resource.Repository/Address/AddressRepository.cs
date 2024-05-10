@@ -25,9 +25,7 @@ internal class AddressRepository : IAddressRepository
         IQueryable<spd_address> addresses = _context.spd_addresses;
 
         if (qry.OrganizationId == null && qry.Type == null)
-        {
             throw new ArgumentException("at least need 1 parameter to do address query.");
-        }
 
         if (!qry.IncludeInactive)
             addresses = addresses.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
