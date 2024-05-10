@@ -9,6 +9,7 @@
     //command
     public abstract record BizCmd : Biz;
     public record UpdateBizCmd() : BizCmd;
+    public record UpdateBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
     public record CreateBizCmd() : BizCmd;
     public record AddBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
     
