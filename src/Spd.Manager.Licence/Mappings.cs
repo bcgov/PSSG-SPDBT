@@ -226,7 +226,8 @@ internal class Mappings : Profile
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
 
-        CreateMap<AddressResp, BranchAddr>();
+        CreateMap<AddressResp, BranchAddr>()
+            .ReverseMap();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
