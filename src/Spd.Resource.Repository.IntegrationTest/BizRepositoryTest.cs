@@ -167,6 +167,15 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
+    public async void UpdateBizAsync_BizNotFound_Throw_Exception()
+    {
+        UpdateBizCmd cmd = fixture.Create<UpdateBizCmd>();
+
+        // Act and Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.ManageBizAsync(cmd, CancellationToken.None));
+    }
+
+    [Fact]
     public async void UpdateBizServiceTypeAsync_Run_Correctly()
     {
         // Arrange
