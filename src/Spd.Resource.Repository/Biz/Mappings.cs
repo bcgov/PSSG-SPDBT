@@ -70,11 +70,23 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.spd_provincestate, opt => opt.MapFrom(s => s.Province))
             .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => s.PostalCode))
             .ForMember(d => d.spd_country, opt => opt.MapFrom(s => s.Country))
-            .ForMember(d => d.spd_addressid, opt => opt.MapFrom(s => s.BranchId))
+            .ForMember(d => d.spd_addressid, opt => opt.MapFrom(s => s.BranchId != null ? s.BranchId : Guid.NewGuid()))
             .ForMember(d => d.spd_branchmanagername, opt => opt.MapFrom(s => s.BranchManager))
             .ForMember(d => d.spd_branchphone, opt => opt.MapFrom(s => s.BranchPhoneNumber))
             .ForMember(d => d.spd_branchemail, opt => opt.MapFrom(s => s.BranchEmailAddr))
-            .ReverseMap();
+            .ForMember(d => d.spd_type, opt => opt.MapFrom(s => (int)AddressTypeOptionSet.Branch));
+
+            CreateMap<spd_address, BranchAddr>()
+            .ForMember(d => d.AddressLine1, opt => opt.MapFrom(s => s.spd_address1))
+            .ForMember(d => d.AddressLine2, opt => opt.MapFrom(s => s.spd_address2))
+            .ForMember(d => d.City, opt => opt.MapFrom(s => s.spd_city))
+            .ForMember(d => d.Province, opt => opt.MapFrom(s => s.spd_provincestate))
+            .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.spd_postalcode))
+            .ForMember(d => d.Country, opt => opt.MapFrom(s => s.spd_country))
+            .ForMember(d => d.BranchId, opt => opt.MapFrom(s => s.spd_addressid))
+            .ForMember(d => d.BranchManager, opt => opt.MapFrom(s => s.spd_branchmanagername))
+            .ForMember(d => d.BranchPhoneNumber, opt => opt.MapFrom(s => s.spd_branchphone))
+            .ForMember(d => d.BranchEmailAddr, opt => opt.MapFrom(s => s.spd_branchemail));
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
