@@ -18,6 +18,7 @@ public record AddressQry
 
 public record UpsertAddressCmd
 {
+    public Guid BizId { get; set; }
     public IEnumerable<BranchAddr> Addresses { get; set; } = [];
 }
 
