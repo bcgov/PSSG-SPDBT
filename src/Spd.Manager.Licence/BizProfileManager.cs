@@ -114,9 +114,7 @@ internal class BizProfileManager :
 
         AddressQry qry = new AddressQry() { OrganizationId = bizUpdateCmd.Id, Type = AddressTypeEnum.Branch };
         IEnumerable<AddressResp> addressesResp = await _addressRepository.QueryAsync(qry, ct);
-
         IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
-
         await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), cmd.BizId, ct);
 
         return default;
@@ -204,7 +202,6 @@ internal class BizProfileManager :
         // Remove branches defined in the entity that are not part of the request
         var modifiedBranches = branchesToProcess.Where(b => b.BranchId != Guid.Empty && b.BranchId != null);
         List<Guid?> addressesToRemove = branches.Where(b => modifiedBranches.All(mb => mb.BranchId != b.BranchId)).Select(b => b.BranchId).ToList();
-
         await _addressRepository.DeleteAddressesAsync(addressesToRemove, ct);
 
         // Update branches
@@ -214,7 +211,7 @@ internal class BizProfileManager :
         };
         await _addressRepository.UpdateAddressesAsync(updateAddressCmd, ct);
 
-        //Create branches
+        // Create branches
         List<BranchAddr> addressesToCreate = branchesToProcess.Where(b => b.BranchId == Guid.Empty || b.BranchId == null).ToList();
         UpsertAddressCmd createAddressCmd = new()
         {
