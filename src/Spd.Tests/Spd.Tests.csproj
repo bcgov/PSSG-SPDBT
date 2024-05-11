@@ -31,6 +31,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit %28Photo 1 good TIFF%29.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 1 good).json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
@@ -42,6 +45,9 @@
 	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 4 bad).json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit %28Photo 3 bad TIFF%29.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 1 good).json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -75,6 +81,9 @@
 	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated right%29.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 4 bad TIFF%29.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 1 good).json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

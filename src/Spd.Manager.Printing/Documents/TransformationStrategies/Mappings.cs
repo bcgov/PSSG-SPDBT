@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.Org;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies
@@ -34,6 +35,25 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.AddressProvince))
                 .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.AddressPostalCode))
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.AddressCountry));
+
+            CreateMap<LicenceApplicationResp, LicencePreviewJson>()
+                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => $"{s.GivenName} {s.MiddleName1} {s.SupervisorEmailAddress}"))
+                .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddressData.AddressLine1))
+                .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddressData.AddressLine2))
+                .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddressData.City))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData.Province))
+                .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddressData.PostalCode))
+                .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddressData.Country));
+
+            CreateMap<LicenceApplicationResp, SPD_CARD>()
+                 .ForMember(d => d.Eyes, opt => opt.MapFrom(s => s.EyeColourCode))
+                 //.ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddressData.AddressLine1))
+                 //.ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddressData.AddressLine2))
+                 //.ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddressData.City))
+                 //.ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData.Province))
+                 //.ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddressData.PostalCode))
+                 //.ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddressData.Country))
+                 ;
         }
     }
 }
