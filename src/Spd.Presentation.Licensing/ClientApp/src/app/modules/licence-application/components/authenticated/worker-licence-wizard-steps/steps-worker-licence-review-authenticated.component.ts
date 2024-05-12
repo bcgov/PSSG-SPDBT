@@ -81,13 +81,18 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 	}
 
 	onSubmitNow(): void {
-		const isValid = this.consentAndDeclarationComponent.isFormValid();
-		if (!isValid) return;
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
 
 		this.nextSubmitStep.emit();
 	}
 
 	onPayNow(): void {
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
+
 		this.nextPayStep.emit();
 	}
 
