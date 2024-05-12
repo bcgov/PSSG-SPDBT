@@ -273,7 +273,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             GetBizProfileQuery qry = new(bizId);
             mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new BizResult() { BizGuid = bizId, BizName = "test" } );
+                .ReturnsAsync(new BizResult() { Id = bizId, BizName = "test" } );
 
             // Action
             var result = await sut.Handle(qry, CancellationToken.None);
