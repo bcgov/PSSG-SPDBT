@@ -88,8 +88,6 @@ namespace Spd.Resource.Repository.Biz
 
             if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            var response = _mapper.Map<BizResult>(Biz);
-
             _mapper.Map(updateBizCmd, Biz);
             _context.UpdateObject(Biz);
             await _context.SaveChangesAsync(ct);
