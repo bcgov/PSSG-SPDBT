@@ -10,21 +10,29 @@ namespace Spd.Resource.Repository.Biz
         {
             _ = CreateMap<Biz, account>()
             .ForMember(d => d.accountid, opt => opt.MapFrom(s => s.Id))
-            .ForPath(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress.City))
-            .ForPath(d => d.address1_country, opt => opt.MapFrom(s => s.MailingAddress.Country))
-            .ForPath(d => d.address1_postalcode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
-            .ForPath(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress.Province))
-            .ForPath(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
-            .ForPath(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
-            .ForPath(d => d.spd_bcbusinessaddresscity, opt => opt.MapFrom(s => s.BCBusinessAddress.City))
-            .ForPath(d => d.spd_bcbusinessaddresscountry, opt => opt.MapFrom(s => s.BCBusinessAddress.Country))
-            .ForPath(d => d.spd_bcbusinessaddresspostalcode, opt => opt.MapFrom(s => s.BCBusinessAddress.PostalCode))
-            .ForPath(d => d.spd_bcbusinessaddressprovince, opt => opt.MapFrom(s => s.BCBusinessAddress.Province))
-            .ForPath(d => d.spd_bcbusinessaddressline1, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine1))
-            .ForPath(d => d.spd_bcbusinessaddressline2, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine2))
             .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
             .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.name, opt => opt.MapFrom(s => s.BizName))
+            .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
+            .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
+            .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress.City))
+            .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.MailingAddress.Country))
+            .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
+            .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress.Province))
+            .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
+            .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
+            .ForMember(d => d.spd_bcbusinessaddresscity, opt => opt.MapFrom(s => s.BCBusinessAddress.City))
+            .ForMember(d => d.spd_bcbusinessaddresscountry, opt => opt.MapFrom(s => s.BCBusinessAddress.Country))
+            .ForMember(d => d.spd_bcbusinessaddresspostalcode, opt => opt.MapFrom(s => s.BCBusinessAddress.PostalCode))
+            .ForMember(d => d.spd_bcbusinessaddressprovince, opt => opt.MapFrom(s => s.BCBusinessAddress.Province))
+            .ForMember(d => d.spd_bcbusinessaddressline1, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine1))
+            .ForMember(d => d.spd_bcbusinessaddressline2, opt => opt.MapFrom(s => s.BCBusinessAddress.AddressLine2))
+            .ForMember(d => d.address2_city, opt => opt.MapFrom(s => s.BusinessAddress.City))
+            .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.BusinessAddress.Country))
+            .ForMember(d => d.address2_postalcode, opt => opt.MapFrom(s => s.BusinessAddress.PostalCode))
+            .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.BusinessAddress.Province))
+            .ForMember(d => d.address2_line1, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine1))
+            .ForMember(d => d.address2_line2, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine2))
             .ReverseMap();
 
             _ = CreateMap<account, BizResult>()
@@ -41,26 +49,11 @@ namespace Spd.Resource.Repository.Biz
 
             CreateMap<UpdateBizCmd, account>()
             .IncludeBase<Biz, account>()
-            .ForMember(d => d.spd_orgguid, opt => opt.Ignore())
-            .ForMember(d => d.spd_organizationlegalname, opt => opt.Ignore())
-            .ForPath(d => d.address2_city, opt => opt.Ignore())
-            .ForPath(d => d.address2_country, opt => opt.Ignore())
-            .ForPath(d => d.address2_postalcode, opt => opt.Ignore())
-            .ForPath(d => d.address2_stateorprovince, opt => opt.Ignore())
-            .ForPath(d => d.address2_line1, opt => opt.Ignore())
-            .ForPath(d => d.address2_line2, opt => opt.Ignore())
-            .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
+            .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)))
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<CreateBizCmd, account>()
             .IncludeBase<Biz, account>()
-            .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
-            .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
-            .ForPath(d => d.address2_city, opt => opt.MapFrom(s => s.BusinessAddress.City))
-            .ForPath(d => d.address2_country, opt => opt.MapFrom(s => s.BusinessAddress.Country))
-            .ForPath(d => d.address2_postalcode, opt => opt.MapFrom(s => s.BusinessAddress.PostalCode))
-            .ForPath(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.BusinessAddress.Province))
-            .ForPath(d => d.address2_line1, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine1))
-            .ForPath(d => d.address2_line2, opt => opt.MapFrom(s => s.BusinessAddress.AddressLine2))
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
 
             CreateMap<BranchAddr, spd_address>()
@@ -92,6 +85,13 @@ namespace Spd.Resource.Repository.Biz
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
         {
             return serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid))).ToArray();
+        }
+
+        private static string SetAddressField(string src, string dest)
+        {
+            if (string.IsNullOrEmpty(src)) return dest;
+
+            return src;
         }
     }
 }
