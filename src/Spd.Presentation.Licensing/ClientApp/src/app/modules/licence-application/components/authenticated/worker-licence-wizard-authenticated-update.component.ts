@@ -153,19 +153,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 		stepper.next();
 	}
 
-	onPayNow(): void {
-		this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
-			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				this.hotToastService.success('Your licence update has been successfully submitted');
-				this.payNow(_resp.body.licenceAppId!);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
-		});
-	}
-
 	onSubmitStep(): void {
 		if (this.newLicenceAppId) {
 			if (this.newLicenceCost > 0) {
