@@ -71,8 +71,9 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	}
 
 	onSubmitNow(): void {
-		const isValid = this.consentAndDeclarationComponent.isFormValid();
-		if (!isValid) return;
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
 
 		// Update is a special case. The change might not require a payment
 		// so just submit at this point
@@ -84,6 +85,10 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 	}
 
 	onPayNow(): void {
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
+
 		this.nextPayStep.emit();
 	}
 

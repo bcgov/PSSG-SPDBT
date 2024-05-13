@@ -82,14 +82,14 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 ];
 
 export const ServiceTypes: SelectOptions[] = [
+	{ desc: 'CRC', code: ServiceTypeCode.Psso },
+	{ desc: 'CRC + Vulnerable Sector', code: ServiceTypeCode.PssoVs },
 	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
 	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
 	{ desc: 'MDRA', code: ServiceTypeCode.Mdra },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC + Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
-	{ desc: 'PSSO', code: ServiceTypeCode.Psso },
-	{ desc: 'PSSO + Vulnerable Sector', code: ServiceTypeCode.PssoVs },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
