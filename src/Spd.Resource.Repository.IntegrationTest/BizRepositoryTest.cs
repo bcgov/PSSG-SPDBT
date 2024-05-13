@@ -24,6 +24,56 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
+    public async Task GetBizAsync_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        CreateBizCmd cmd = new()
+        {
+            BizGuid = Guid.NewGuid(),
+            Id = bizId,
+            BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            BizType = BizTypeEnum.Corporation,
+            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
+        };
+
+        // Act
+        await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
+        var result = await _bizRepository.GetBizAsync(bizId, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<BizResult>(result);
+    }
+
+    [Fact]
+    public async Task GetBizAsync_BizNotFound_Throw_Exception()
+    {
+        // Arrange, Act and Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.GetBizAsync(Guid.NewGuid(), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task GetBizAsync_BizWithoutServiceType_Throw_Exception()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        CreateBizCmd cmd = new()
+        {
+            BizGuid = Guid.NewGuid(),
+            Id = bizId,
+            BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            BizType = BizTypeEnum.Corporation,
+            ServiceTypes = new List<ServiceTypeEnum>()
+        };
+
+        // Act
+        await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.GetBizAsync(bizId, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task CreateBizAsync_Run_Correctly()
     {
         // Arrange
