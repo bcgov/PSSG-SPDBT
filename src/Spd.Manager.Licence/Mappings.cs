@@ -465,19 +465,6 @@ internal class Mappings : Profile
         return branchAddrs;
     }
 
-    private static List<ServiceTypeEnum> GetServiceTypeEnum(IEnumerable<ServiceTypeCode> serviceTypeCodes)
-    {
-        List<ServiceTypeEnum> serviceTypes = new();
-
-        foreach (ServiceTypeCode serviceTypeCode in serviceTypeCodes)
-        {
-            ServiceTypeEnum serviceTypeEnum = Enum.Parse<ServiceTypeEnum>(serviceTypeCode.ToString());
-            serviceTypes.Add(serviceTypeEnum);
-        }
-
-        return serviceTypes;
-    }
-
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {
         {LicenceDocumentTypeCode.BcServicesCard, DocumentTypeEnum.BCServicesCard},
