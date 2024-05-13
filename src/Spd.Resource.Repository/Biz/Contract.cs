@@ -38,6 +38,9 @@
         public string? AccessCode { get; set; }
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
+        
+        //sole proprietor properties
+        public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
     }
     public record BranchAddr() : Addr
     {
