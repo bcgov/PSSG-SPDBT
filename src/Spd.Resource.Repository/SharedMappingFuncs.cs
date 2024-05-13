@@ -155,4 +155,11 @@ internal static class SharedMappingFuncs
         if (optionset == null) return null;
         return Enum.Parse<BizTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
     }
+
+    internal static int? GetBizTypeOptionSet(BizTypeEnum? bizType)
+    {
+        if (bizType == null)
+            return null;
+        return (int)Enum.Parse<BusinessTypeOptionSet>(bizType.ToString());
+    }
 }
