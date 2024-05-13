@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, BizProfileResponse, BranchInfo, WorkerLicenceTypeCode } from '@app/api/models';
-import { BizProfileService } from '@app/api/services';
+import {
+	ApplicationTypeCode,
+	BizProfileResponse,
+	BranchInfo,
+	LicenceResponse,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
+import { BizProfileService, LicenceService } from '@app/api/services';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -64,6 +70,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
 		private utilService: UtilService,
+		private licenceService: LicenceService,
 		private bizProfileService: BizProfileService,
 		private authUserBceidService: AuthUserBceidService,
 		private commonApplicationService: CommonApplicationService
@@ -150,6 +157,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	/*************************************************************/
 	// COMMON
 	/*************************************************************/
+
+	public getLicenceNumberLookup(licenceNumber: string): Observable<LicenceResponse> {
+		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber });
+	}
 
 	private createEmptyLicenceAuthenticated(
 		profile: BizProfileResponse,

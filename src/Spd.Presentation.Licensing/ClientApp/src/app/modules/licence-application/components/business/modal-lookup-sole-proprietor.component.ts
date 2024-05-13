@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { LicenceResponse, LicenceStatusCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { BranchResponse } from './common-business-bc-branches.component';
 
@@ -30,51 +31,62 @@ import { BranchResponse } from './common-business-bc-branches.component';
 					</div>
 				</div>
 
-				<div class="my-3" *ngIf="isFoundSuccess">
-					<app-alert type="info" icon="">
-						<div class="row">
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Name</div>
-								<div class="text-data">{{ searchResult.name }}</div>
+				<ng-container *ngIf="isSearchPerformed">
+					<ng-container *ngIf="isFound; else IsNotFound">
+						<ng-container *ngIf="isFoundValid; else IsFoundInvalid">
+							<div class="my-3">
+								<app-alert type="info" icon="">
+									<div class="row">
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Name</div>
+											<div class="text-data">{{ searchResult.name }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Security Worker Licence Number</div>
+											<div class="text-data">{{ searchResult.licenceNumber }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Expiry Date</div>
+											<div class="text-data">{{ searchResult.expiryDate }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Licence Status</div>
+											<div class="text-data fw-bold">{{ searchResult.status }}</div>
+										</div>
+									</div>
+								</app-alert>
 							</div>
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Security Worker Licence Number</div>
-								<div class="text-data">{{ searchResult.licenceNumber }}</div>
-							</div>
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Expiry Date</div>
-								<div class="text-data">{{ searchResult.expiryDate }}</div>
-							</div>
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Licence Status</div>
-								<div class="text-data fw-bold">{{ searchResult.status }}</div>
-							</div>
-						</div>
-					</app-alert>
-				</div>
+						</ng-container>
 
-				<div class="mt-3" *ngIf="isFoundFailure">
-					<app-alert type="warning" icon="">
-						<div class="row">
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Name</div>
-								<div class="text-data">{{ searchResult.name }}</div>
+						<ng-template #IsFoundInvalid>
+							<div class="mt-3">
+								<app-alert type="warning" icon="">
+									<div class="fs-5 mb-2">This licence is not valid</div>
+									<div class="row">
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Security Worker Licence Number</div>
+											<div class="text-data">{{ searchResult.licenceNumber }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Expiry Date</div>
+											<div class="text-data">{{ searchResult.expiryDate }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Licence Status</div>
+											<div class="text-data fw-bold">{{ searchResult.status }}</div>
+										</div>
+									</div>
+								</app-alert>
 							</div>
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Security Worker Licence Number</div>
-								<div class="text-data">{{ searchResult.licenceNumber }}</div>
-							</div>
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Expiry Date</div>
-								<div class="text-data">{{ searchResult.expiryDate }}</div>
-							</div>
-							<div class="col-md-6 col-sm-12">
-								<div class="d-block text-muted mt-2">Licence Status</div>
-								<div class="text-data fw-bold">{{ searchResult.status }}</div>
-							</div>
-						</div>
-					</app-alert>
-				</div>
+						</ng-template>
+					</ng-container>
+
+					<ng-template #IsNotFound>
+						<app-alert type="danger" icon="error">
+							This licence number does not match any existing Security Worker licences
+						</app-alert>
+					</ng-template>
+				</ng-container>
 			</form>
 		</mat-dialog-content>
 		<mat-dialog-actions>
@@ -82,7 +94,7 @@ import { BranchResponse } from './common-business-bc-branches.component';
 				<div class="col-md-4 col-sm-12 mb-2">
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
 				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isFoundSuccess">
+				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isFoundValid">
 					<button mat-flat-button color="primary" class="large" (click)="onSave()">Add</button>
 				</div>
 			</div>
@@ -95,8 +107,9 @@ export class ModalLookupSoleProprietorComponent implements OnInit {
 
 	searchResult: any = null;
 
-	isFoundSuccess = false;
-	isFoundFailure = false;
+	isSearchPerformed = false;
+	isFoundValid = false;
+	isFound = false;
 
 	constructor(
 		private dialogRef: MatDialogRef<ModalLookupSoleProprietorComponent>,
@@ -111,26 +124,42 @@ export class ModalLookupSoleProprietorComponent implements OnInit {
 
 	onSearch(): void {
 		this.searchResult = null;
-		this.isFoundSuccess = false;
-		this.isFoundFailure = false;
+
+		this.isSearchPerformed = false;
+		this.isFound = false;
+		this.isFoundValid = false;
 
 		this.form.markAllAsTouched();
 		if (!this.form.valid) return;
 
-		this.searchResult = {
-			id: 1,
-			name: 'Joe Smith',
-			licenceNumber: this.licenceNumberLookup.value,
-			status: 'Valid',
-			expiryDate: '2025-06-25',
-		};
+		const licenceNumber = this.licenceNumberLookup.value;
+		this.businessApplicationService
+			.getLicenceNumberLookup(licenceNumber)
+			.pipe()
+			.subscribe((resp: LicenceResponse) => {
+				this.isSearchPerformed = true;
+				this.isFound = !!resp;
+				this.isFoundValid = this.isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
 
-		this.isFoundSuccess = !!this.searchResult; // TODO perform search
-		this.isFoundFailure = false;
+				console.log('resp', resp);
+				console.log('isSearchPerformed', this.isSearchPerformed);
+				console.log('isFound', this.isFound);
+				console.log('isFoundValid', this.isFoundValid);
+
+				if (this.isFound) {
+					this.searchResult = {
+						id: resp.licenceId,
+						name: resp.licenceStatusCode === LicenceStatusCode.Active ? resp.licenceHolderName : '',
+						licenceNumber: resp.licenceNumber,
+						status: resp.licenceStatusCode,
+						expiryDate: resp.expiryDate,
+					};
+				}
+			});
 	}
 
 	onSave(): void {
-		if (!this.isFoundSuccess) return;
+		if (!this.isFoundValid) return;
 
 		this.dialogRef.close({
 			data: this.searchResult,
