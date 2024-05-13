@@ -11,8 +11,7 @@ internal class Mappings : Profile
     public Mappings()
     {
         CreateMap<UploadFileInfo, UploadFileRequest>()
-           .ForMember(d => d.FileTypeCode, opt => opt.MapFrom(s => GetFileTypeCode(s.FileKey)))
-        ;
+           .ForMember(d => d.FileTypeCode, opt => opt.MapFrom(s => GetFileTypeCode(s.FileKey)));
 
         CreateMap<PaybcPaymentResultViewModel, PaybcPaymentResult>()
            .ForMember(d => d.Success, opt => opt.MapFrom(s => s.trnApproved == 1))
@@ -27,7 +26,6 @@ internal class Mappings : Profile
            .ForMember(d => d.PaymentId, opt => opt.MapFrom(s => GetPaymentId(s.ref2)))
            .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => GetAppicationId(s.ref2)))
            .ForMember(d => d.IsFromSecurePaymentLink, opt => opt.MapFrom(s => !string.IsNullOrWhiteSpace(s.ref3) && Boolean.Parse(s.ref3)));
-
     }
 
     private static LicenceDocumentTypeCode GetFileTypeCode(string fileKey)

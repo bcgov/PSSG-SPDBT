@@ -19,7 +19,6 @@ public record GetBizsQuery(Guid BizGuid) : IRequest<IEnumerable<BizListResponse>
 public record BizLoginCommand(BceidIdentityInfo BceidIdentityInfo, Guid? BizId) : IRequest<BizUserLoginResponse>;
 public record BizTermAgreeCommand(Guid BizId, Guid BizUserId) : IRequest<Unit>;
 public record BizProfileUpdateCommand(
-    Guid BizUserId,
     Guid BizId,
     BizProfileUpdateRequest BizProfileUpdateRequest)
     : IRequest<Unit>;
@@ -75,10 +74,22 @@ public record BizUserLoginResponse
     public ContactRoleCode ContactRoleCode { get; set; }
 }
 
-public record BizProfileUpdateRequest : BizInfo
+public record BizProfileUpdateRequest 
 {
-    public Guid? BizId { get; set; } //used when in update, renew or replace flow.
+    public string? BizTradeName { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
+    public Address? BizBCAddress { get; set; }
+    public Address? BizMailingAddress { get; set; }
+    public Address? BizAddress { get; set; }
+    public IEnumerable<BranchInfo>? Branches { get; set; }
 }
 
-
-
+public enum BizTypeCode
+{
+    NonRegisteredSoleProprietor,
+    NonRegisteredPartnership,
+    RegisteredSoleProprietor,
+    RegisteredPartnership,
+    Corporation,
+    None
+}

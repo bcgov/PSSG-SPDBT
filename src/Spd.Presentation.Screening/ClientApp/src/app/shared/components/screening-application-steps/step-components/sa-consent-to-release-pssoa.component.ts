@@ -58,6 +58,12 @@ import { FormGroup } from '@angular/forms';
 				>
 			</div>
 			<p>
+				I understand and agree that the information obtained in the course of this record check or as a result of a
+				reported incident while I am employed may be used by the PSSO as the PSSO deems relevant for the purpose of
+				assessing my suitability in respect of any future position I may hold, or apply for, within the BC Public
+				Service.
+			</p>
+			<p>
 				This information is collected by the British Columbia Public Service under s.26(c) of FOIPPA. Any questions
 				about the collection and use of this information can be directed to an HR Service Representative at the BC
 				Public Service Agency by submitting a request at AskMyHR, phoning: 1-877-277-0772 or writing to: Manager,
