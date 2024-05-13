@@ -37,7 +37,7 @@ public class BizProfileValidationTest
     }
 
     [Fact]
-    public void MailingAddressEmpty_WhenIsNotTheSameAsBizAddress_ShouldThrowException()
+    public void BizBCAddressEmpty_WhenBizAddressIsNotInBC_ShouldThrowException()
     {
         var address = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
@@ -48,12 +48,11 @@ public class BizProfileValidationTest
 
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
-            .With(r => r.BizBCAddress, address)
-            .With(r => r.MailingAddressIsSameBizAddress, false)
-            .Without(r => r.BizMailingAddress)
+            .With(r => r.BizAddress, address)
+            .Without(r => r.BizBCAddress)
             .Create();
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.BizMailingAddress);
+        result.ShouldHaveValidationErrorFor(r => r.BizBCAddress);
     }
 }
