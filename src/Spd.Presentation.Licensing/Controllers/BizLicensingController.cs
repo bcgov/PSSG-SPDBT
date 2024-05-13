@@ -43,9 +43,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return default;
         }
 
-        //
-
-
         /// <summary>
         /// Upload business licence application files to transient storage
         /// </summary>
