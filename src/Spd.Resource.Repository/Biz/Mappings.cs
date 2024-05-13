@@ -44,7 +44,9 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
             .ForMember(d => d.BranchAddress, opt => opt.MapFrom(s => GetBranchAddress(s.spd_Organization_Addresses)))
-            .ForMember(d => d.SoleProprietorSwlContactInfo, opt => opt.MapFrom(s => GetSwlContactInfo(s.spd_organization_spd_licence_soleproprietor)));
+            .ForMember(d => d.SoleProprietorSwlContactInfo, opt => opt.MapFrom(s => GetSoleProprietorContactInfo(s.spd_organization_spd_licence_soleproprietor)))
+            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => GetSoleProprietorContactPhoneNumber(s.spd_organization_spd_licence_soleproprietor)))
+            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => GetSoleProprietorContactEmail(s.spd_organization_spd_licence_soleproprietor)));
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
@@ -75,16 +77,28 @@ namespace Spd.Resource.Repository.Biz
             return branchAddresses;
         }
 
-        private static SwlContactInfo GetSwlContactInfo(IEnumerable<spd_licence> licences)
+        private static SwlContactInfo GetSoleProprietorContactInfo(IEnumerable<spd_licence> licences)
         {
             spd_licence? solePropietorInfo = licences.FirstOrDefault(l => l.statuscode == DynamicsConstants.StatusCode_Active);
-
+            
             return new SwlContactInfo()
             {
-                //BizContactId = solePropietorInfo.,
-                ContactId = (Guid)solePropietorInfo?.spd_LicenceHolder_contact.contactid,
-                LicenceId = (Guid)solePropietorInfo?.spd_licenceid
+                BizContactId = solePropietorInfo?.spd_LicenceHolder_contact?.spd_contact_spd_businesscontact.FirstOrDefault()?.spd_businesscontactid,
+                ContactId = solePropietorInfo?.spd_LicenceHolder_contact?.contactid,
+                LicenceId = solePropietorInfo?.spd_licenceid
             };
+        }
+
+        private static string? GetSoleProprietorContactPhoneNumber(IEnumerable<spd_licence> licences)
+        {
+            spd_licence? solePropietorInfo = licences.FirstOrDefault(l => l.statuscode == DynamicsConstants.StatusCode_Active);
+            return solePropietorInfo?.spd_LicenceHolder_contact?.telephone1;
+        }
+
+        private static string? GetSoleProprietorContactEmail(IEnumerable<spd_licence> licences)
+        {
+            spd_licence? solePropietorInfo = licences.FirstOrDefault(l => l.statuscode == DynamicsConstants.StatusCode_Active);
+            return solePropietorInfo?.spd_LicenceHolder_contact?.emailaddress1;
         }
     }
 }
