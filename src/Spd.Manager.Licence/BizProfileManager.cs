@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.PortalUser;
@@ -20,17 +21,20 @@ internal class BizProfileManager :
     private readonly IIdentityRepository _idRepository;
     private readonly IBizRepository _bizRepository;
     private readonly IPortalUserRepository _portalUserRepository;
+    private readonly IAddressRepository _addressRepository;
     private readonly IMapper _mapper;
 
     public BizProfileManager(
         IIdentityRepository idRepository,
         IBizRepository bizRepository,
         IPortalUserRepository portalUserRepository,
+        IAddressRepository addressRepository,
         IMapper mapper)
     {
         _mapper = mapper;
         _idRepository = idRepository;
         _bizRepository = bizRepository;
+        _addressRepository = addressRepository;
         _portalUserRepository = portalUserRepository;
     }
 
@@ -54,7 +58,7 @@ internal class BizProfileManager :
             else
             {
                 //add biz type to org
-                BizResult b = await _bizRepository.ManageBizAsync(new BizAddServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
+                BizResult b = await _bizRepository.ManageBizAsync(new AddBizServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
                 bizId = b.Id;
             }
 
@@ -104,7 +108,16 @@ internal class BizProfileManager :
 
     public async Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        UpdateBizCmd bizUpdateCmd = _mapper.Map<UpdateBizCmd>(cmd.BizProfileUpdateRequest);
+        bizUpdateCmd.Id = cmd.BizId;
+        await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
+
+        AddressQry qry = new AddressQry() { OrganizationId = bizUpdateCmd.Id, Type = AddressTypeEnum.Branch };
+        IEnumerable<AddressResp> addressesResp = await _addressRepository.QueryAsync(qry, ct);
+        IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
+        await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), cmd.BizId, ct);
+
+        return default;
     }
 
     private async Task<bool> IsBizFirstTimeLogin(BizLoginCommand cmd, CancellationToken ct)
@@ -158,7 +171,7 @@ internal class BizProfileManager :
 
     private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
     {
-        Biz biz = new()
+        CreateBizCmd createCmd = new() 
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
@@ -166,7 +179,8 @@ internal class BizProfileManager :
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
         };
-        return await _bizRepository.ManageBizAsync(new BizCreateCmd(biz), ct);
+
+        return await _bizRepository.ManageBizAsync(createCmd, ct);
     }
 
     private async Task<PortalUserResp> AddPortalUserToBiz(BceidIdentityInfo info, Guid identityId, Guid bizId, CancellationToken ct)
@@ -181,5 +195,29 @@ internal class BizProfileManager :
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
             PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
         }, ct);
+    }
+
+    private async Task ProcessBranchAddresses(List<BranchAddr> branches, List<BranchAddr> branchesToProcess, Guid bizId, CancellationToken ct)
+    {
+        // Remove branches defined in the entity that are not part of the request
+        var modifiedBranches = branchesToProcess.Where(b => b.BranchId != Guid.Empty && b.BranchId != null);
+        List<Guid?> addressesToRemove = branches.Where(b => modifiedBranches.All(mb => mb.BranchId != b.BranchId)).Select(b => b.BranchId).ToList();
+        await _addressRepository.DeleteAddressesAsync(addressesToRemove, ct);
+
+        // Update branches
+        UpsertAddressCmd updateAddressCmd = new()
+        {
+            Addresses = modifiedBranches
+        };
+        await _addressRepository.UpdateAddressesAsync(updateAddressCmd, ct);
+
+        // Create branches
+        List<BranchAddr> addressesToCreate = branchesToProcess.Where(b => b.BranchId == Guid.Empty || b.BranchId == null).ToList();
+        UpsertAddressCmd createAddressCmd = new()
+        {
+            BizId = bizId,
+            Addresses = addressesToCreate
+        };
+        await _addressRepository.CreateAddressesAsync(createAddressCmd, ct);
     }
 }

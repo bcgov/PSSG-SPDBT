@@ -10,16 +10,22 @@ namespace Spd.Resource.Repository.Biz
 {
     internal class BizRepository : IBizRepository
     {
-        private readonly DynamicsContext _dynaContext;
+        private readonly DynamicsContext _context;
         private readonly IMapper _mapper;
-        public BizRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<BizRepository> logger)
+        private readonly ILogger<BizRepository> _logger;
+
+        public BizRepository(IDynamicsContextFactory ctx, 
+            IMapper mapper, 
+            ILogger<BizRepository> logger)
         {
-            _dynaContext = ctx.CreateChangeOverwrite();
+            _context = ctx.CreateChangeOverwrite();
             _mapper = mapper;
+            _logger = logger;
         }
+
         public async Task<IEnumerable<BizResult>> QueryBizAsync(BizsQry qry, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_account_spd_servicetype);
+            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_account_spd_servicetype);
             if (!qry.IncludeInactive)
                 accounts = accounts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
             if (qry.BizGuid != null)
@@ -40,7 +46,7 @@ namespace Spd.Resource.Repository.Biz
 
         public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
+            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == accountId);
 
@@ -48,7 +54,7 @@ namespace Spd.Resource.Repository.Biz
             
             if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            List<spd_account_spd_servicetype> serviceTypes = _dynaContext.spd_account_spd_servicetypeset
+            List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
                 .Where(so => so.accountid == Biz.accountid)
                 .ToList();
 
@@ -64,57 +70,89 @@ namespace Spd.Resource.Repository.Biz
         {
             return cmd switch
             {
-                BizUpdateCmd c => await BizUpdateAsync(c, ct),
-                BizCreateCmd c => await BizCreateAsync(c, ct),
-                BizAddServiceTypeCmd c => await BizAddServiceTypeAsync(c, ct),
+                UpdateBizCmd c => await UpdateBizAsync(c, ct),
+                CreateBizCmd c => await CreateBizAsync(c, ct),
+                AddBizServiceTypeCmd c => await AddBizServiceTypeAsync(c, ct),
+                UpdateBizServiceTypeCmd c => await UpdateBizServiceTypeAsync(c, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
         }
 
-        private async Task<BizResult?> BizUpdateAsync(BizUpdateCmd updateBizCmd, CancellationToken ct)
+        private async Task<BizResult?> UpdateBizAsync(UpdateBizCmd updateBizCmd, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts
+            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
                  .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                 .Where(a => a.accountid == updateBizCmd.Biz.Id);
+                 .Where(a => a.accountid == updateBizCmd.Id);
 
             account? Biz = await accounts.FirstOrDefaultAsync(ct);
-            var response = _mapper.Map<BizResult>(Biz);
 
-            _mapper.Map(updateBizCmd.Biz, Biz);
+            if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            _dynaContext.UpdateObject(Biz);
-            await _dynaContext.SaveChangesAsync(ct);
+            _mapper.Map(updateBizCmd, Biz);
+            _context.UpdateObject(Biz);
+            await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(Biz);
         }
 
-        private async Task<BizResult?> BizCreateAsync(BizCreateCmd createBizCmd, CancellationToken ct)
+        private async Task<BizResult?> UpdateBizServiceTypeAsync(UpdateBizServiceTypeCmd updateBizServiceTypeCmd, CancellationToken ct)
         {
-            var account = _mapper.Map<account>(createBizCmd.Biz);
-            _dynaContext.AddToaccounts(account);
-            await _dynaContext.SaveChangesAsync(ct);
+            spd_servicetype? st = _context.LookupServiceType(updateBizServiceTypeCmd.ServiceTypeEnum.ToString());
+            IQueryable<account> accounts = _context.accounts
+                .Expand(a => a.spd_account_spd_servicetype)
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == updateBizServiceTypeCmd.BizId);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
+
+            if (biz == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the biz");
+
+            if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
+                _context.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
+
+            foreach (spd_servicetype serviceType in biz.spd_account_spd_servicetype)
+            {
+                var serviceTypeCode = DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceType.spd_servicetypeid);
+                if (updateBizServiceTypeCmd.ServiceTypeEnum.ToString() != serviceTypeCode)
+                    _context.DeleteLink(biz, nameof(biz.spd_account_spd_servicetype), serviceType);
+            }
+            
+            await _context.SaveChangesAsync(ct);
+            return await GetBizAsync(updateBizServiceTypeCmd.BizId, ct);
+        }
+
+        private async Task<BizResult?> CreateBizAsync(CreateBizCmd createBizCmd, CancellationToken ct)
+        {
+            var account = _mapper.Map<account>(createBizCmd);
+            _context.AddToaccounts(account);
+
+            foreach (ServiceTypeEnum serviceType in createBizCmd.ServiceTypes)
+            {
+                spd_servicetype? st = _context.LookupServiceType(serviceType.ToString());
+                _context.AddLink(account, nameof(account.spd_account_spd_servicetype), st);
+            }
+            
+            await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);
         }
 
-        private async Task<BizResult?> BizAddServiceTypeAsync(BizAddServiceTypeCmd bizAddServiceTypeCmd, CancellationToken ct)
+        private async Task<BizResult?> AddBizServiceTypeAsync(AddBizServiceTypeCmd addBizServiceTypeCmd, CancellationToken ct)
         {
-            spd_servicetype? st = _dynaContext.LookupServiceType(bizAddServiceTypeCmd.ServiceTypeEnum.ToString());
-            IQueryable<account> accounts = _dynaContext.accounts
+            spd_servicetype? st = _context.LookupServiceType(addBizServiceTypeCmd.ServiceTypeEnum.ToString());
+            IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                .Where(a => a.accountid == bizAddServiceTypeCmd.BizId);
+                .Where(a => a.accountid == addBizServiceTypeCmd.BizId);
             account? biz = await accounts.FirstOrDefaultAsync(ct);
             if (biz == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "cannot find the biz");
             if (!biz.spd_account_spd_servicetype.Any(s => s.spd_servicetypeid == st.spd_servicetypeid))
             {
-
-                _dynaContext.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
-                await _dynaContext.SaveChangesAsync(ct);
+                _context.AddLink(biz, nameof(biz.spd_account_spd_servicetype), st);
+                await _context.SaveChangesAsync(ct);
             }
-            return await GetBizAsync(bizAddServiceTypeCmd.BizId, ct);
+            return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
-
     }
 }
