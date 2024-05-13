@@ -40,7 +40,9 @@ namespace Spd.Resource.Repository.Biz
 
         public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct)
         {
-            IQueryable<account> accounts = _dynaContext.accounts.Expand(a => a.spd_Organization_Addresses)
+            IQueryable<account> accounts = _dynaContext.accounts
+                .Expand(a => a.spd_Organization_Addresses)
+                .Expand(a => a.spd_organization_spd_licence_soleproprietor)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == accountId);
 
