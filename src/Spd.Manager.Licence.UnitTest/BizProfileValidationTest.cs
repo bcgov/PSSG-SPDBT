@@ -34,8 +34,7 @@ public class BizProfileValidationTest
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
             .With(r => r.BizMailingAddress, address)
-            .With(r => r.BizBCAddress, address)
-            .With(r => r.MailingAddressIsSameBizAddress, true)
+            .With(r => r.BizAddress, address)
             .Create();
 
         var result = validator.TestValidate(model);
