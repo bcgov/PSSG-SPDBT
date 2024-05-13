@@ -2,23 +2,22 @@
 using FluentValidation.TestHelper;
 
 namespace Spd.Manager.Licence.UnitTest;
-public class ApplicantProfileValidationTest
+public class BizProfileValidationTest
 {
-    private readonly ApplicantUpdateRequestValidator validator;
+    private readonly BizProfileUpdateRequestValidator validator;
     private readonly IFixture fixture;
 
-    public ApplicantProfileValidationTest()
+    public BizProfileValidationTest()
     {
-        validator = new ApplicantUpdateRequestValidator();
+        validator = new BizProfileUpdateRequestValidator();
 
         fixture = new Fixture();
-        fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
     }
 
     [Fact]
-    public void ApplicantUpdateRequestValidator_ShouldPass()
+    public void BizProfileUpdateRequestValidator_ShouldPass()
     {
         var address = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
@@ -27,11 +26,10 @@ public class ApplicantProfileValidationTest
             .With(a => a.PostalCode, new string('a', 20))
             .Create();
 
-        var model = fixture.Build<ApplicantUpdateRequest>()
-            .With(r => r.EmailAddress, "test@test.com")
-            .With(r => r.PhoneNumber, new string('9', 15))
-            .With(r => r.MailingAddress, address)
-            .With(r => r.ResidentialAddress, address)
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
+            .With(r => r.BizMailingAddress, address)
+            .With(r => r.BizAddress, address)
             .Create();
 
         var result = validator.TestValidate(model);
@@ -39,7 +37,7 @@ public class ApplicantProfileValidationTest
     }
 
     [Fact]
-    public void AliasesWithMoreThanTenRecords_ShouldThrowError()
+    public void BizBCAddressEmpty_WhenBizAddressIsNotInBC_ShouldThrowException()
     {
         var address = fixture.Build<Address>()
             .With(a => a.AddressLine1, new string('a', 100))
@@ -48,17 +46,13 @@ public class ApplicantProfileValidationTest
             .With(a => a.PostalCode, new string('a', 20))
             .Create();
 
-        var aliases = fixture.CreateMany<Alias>(11);
-
-        var model = fixture.Build<ApplicantUpdateRequest>()
-            .With(r => r.EmailAddress, "test@test.com")
-            .With(r => r.PhoneNumber, new string('9', 15))
-            .With(r => r.MailingAddress, address)
-            .With(r => r.ResidentialAddress, address)
-            .With(r => r.Aliases, aliases)
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
+            .With(r => r.BizAddress, address)
+            .Without(r => r.BizBCAddress)
             .Create();
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.Aliases);
+        result.ShouldHaveValidationErrorFor(r => r.BizBCAddress);
     }
 }
