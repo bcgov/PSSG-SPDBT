@@ -80,8 +80,8 @@ public record BizProfileUpdateRequest
     public BizTypeCode? BizTypeCode { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? BizMailingAddress { get; set; }
+    public Address? BizAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
-    public bool? MailingAddressIsSameBizAddress { get; set; }
 }
 
 public enum BizTypeCode
