@@ -23,8 +23,8 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								<h2 class="fs-3">Confirm your Profile</h2>
 							</div>
 						</div>
-						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
 						<app-common-user-profile
@@ -38,7 +38,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 						></app-common-user-profile>
 
 						<ng-container *ngIf="isVisibleBackgroundInfo">
-							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-criminal-history
 									[form]="criminalHistoryFormGroup"
@@ -46,7 +45,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								></app-common-user-profile-licence-criminal-history>
 							</section>
 
-							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-police-background
 									[form]="policeBackgroundFormGroup"
@@ -54,7 +52,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								></app-common-user-profile-licence-police-background>
 							</section>
 
-							<mat-divider class="mat-divider-main mt-3"></mat-divider>
 							<section>
 								<app-common-user-profile-licence-mental-health-conditions
 									[form]="mentalHealthConditionsFormGroup"
@@ -62,8 +59,6 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 								></app-common-user-profile-licence-mental-health-conditions>
 							</section>
 						</ng-container>
-
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
 
 						<section *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
