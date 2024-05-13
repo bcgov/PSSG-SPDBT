@@ -228,8 +228,7 @@ internal class Mappings : Profile
           .ForMember(d => d.LicenceHolderLastName, opt => opt.Ignore())
           .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.Ignore())
           .ForMember(d => d.LicenceStatusCode, opt => opt.Ignore())
-          .ForMember(d => d.NameOnCard, opt => opt.Ignore())
-          ;
+          .ForMember(d => d.NameOnCard, opt => opt.Ignore());
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
