@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Contact;
@@ -50,6 +51,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IOrgRepository, OrgRepository>();
         serviceCollection.AddTransient<IPortalUserRepository, PortalUserRepository>();
         serviceCollection.AddTransient<IOptionSetRepository, OptionSetRepository>();
+        serviceCollection.AddTransient<IAddressRepository, AddressRepository>();
         serviceCollection.AddTransient<ILicenceRepository, LicenceRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }

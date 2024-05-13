@@ -1,6 +1,7 @@
 using AutoMapper;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
@@ -205,14 +206,14 @@ internal class Mappings : Profile
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id));
 
         CreateMap<BizResult, BizProfileResponse>()
-            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.BizGuid))
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.BizTradeName, opt => opt.MapFrom(s => s.BizName))
             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => s.BizType))
             .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => GetServiceTypeCodes(s.ServiceTypes)))
             .ForMember(d => d.BizMailingAddress, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
-            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddress)))
+            .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
             .ForPath(d => d.SoleProprietorSwlContactInfo.BizContactId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.BizContactId))
             .ForPath(d => d.SoleProprietorSwlContactInfo.ContactId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.ContactId))
             .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId));
@@ -229,6 +230,20 @@ internal class Mappings : Profile
           .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.Ignore())
           .ForMember(d => d.LicenceStatusCode, opt => opt.Ignore())
           .ForMember(d => d.NameOnCard, opt => opt.Ignore());
+
+        CreateMap<BizProfileUpdateRequest, UpdateBizCmd>()
+           .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
+           .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
+           .ForMember(d => d.BizGuid, opt => opt.Ignore())
+           .ForMember(d => d.BizLegalName, opt => opt.Ignore())
+           .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
+           .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
+           .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
+           .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
+           .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
+
+        CreateMap<AddressResp, BranchAddr>()
+            .ReverseMap();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -428,6 +443,29 @@ internal class Mappings : Profile
         }
 
         return branchInfos;
+    }
+
+    private static List<BranchAddr> GetBranchAddr(IEnumerable<BranchInfo> branchInfos) 
+    {
+        List<BranchAddr> branchAddrs = new();
+
+        foreach (BranchInfo branchInfo in branchInfos)
+        {
+            BranchAddr branchAddr = new();
+            branchAddr.BranchId = branchInfo.BranchId;
+            branchAddr.BranchManager = branchInfo.BranchManager;
+            branchAddr.BranchPhoneNumber = branchInfo.BranchPhoneNumber;
+            branchAddr.BranchEmailAddr = branchInfo.BranchEmailAddr;
+            branchAddr.AddressLine1 = branchInfo.BranchAddress.AddressLine1;
+            branchAddr.AddressLine2 = branchInfo.BranchAddress.AddressLine2;
+            branchAddr.City = branchInfo.BranchAddress.City;
+            branchAddr.Country = branchInfo.BranchAddress.Country;
+            branchAddr.PostalCode = branchInfo.BranchAddress.PostalCode;
+            branchAddr.Province = branchInfo.BranchAddress.Province;
+            branchAddrs.Add(branchAddr);
+        }
+
+        return branchAddrs;
     }
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType1Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
