@@ -103,7 +103,6 @@ namespace Spd.Resource.Repository.Biz
             
             return new SwlContactInfo()
             {
-                BizContactId = solePropietorInfo?.spd_LicenceHolder_contact?.spd_contact_spd_businesscontact.FirstOrDefault()?.spd_businesscontactid,
                 ContactId = solePropietorInfo?.spd_LicenceHolder_contact?.contactid,
                 LicenceId = solePropietorInfo?.spd_licenceid
             };
