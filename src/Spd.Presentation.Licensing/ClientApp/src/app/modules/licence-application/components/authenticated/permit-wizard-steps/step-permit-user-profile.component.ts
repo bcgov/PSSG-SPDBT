@@ -35,8 +35,8 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 								</div>
 							</div>
 						</div>
-						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 						<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
 						<section>
@@ -51,7 +51,6 @@ import { CommonUserProfileLicenceCriminalHistoryComponent } from '../user-profil
 							></app-common-user-profile>
 						</section>
 
-						<mat-divider class="mat-divider-main mt-3"></mat-divider>
 						<section *ngIf="isVisibleBackgroundInfo">
 							<app-common-user-profile-licence-criminal-history
 								[form]="criminalHistoryFormGroup"
