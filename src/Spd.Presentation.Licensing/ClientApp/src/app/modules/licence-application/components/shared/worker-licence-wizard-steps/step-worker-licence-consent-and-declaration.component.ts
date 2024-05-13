@@ -71,11 +71,29 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 											</mat-error>
 										</div>
 										<div class="my-3">
-											<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
+											<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
 												I hereby consent to a check of available law enforcement systems for these purposes, including
 												any local police records, and I hereby consent to the disclosure to the Registrar of any
 												documents in the custody of the police, corrections, the courts, and crown counsel relating to
 												these Prescribed Checks.
+											</mat-checkbox>
+											<mat-error
+												class="mat-option-error"
+												*ngIf="
+													(form.get('check2')?.dirty || form.get('check2')?.touched) &&
+													form.get('check2')?.invalid &&
+													form.get('check2')?.hasError('required')
+												"
+												>This is required
+											</mat-error>
+										</div>
+										<div class="my-3">
+											<mat-checkbox formControlName="check3" (click)="onCheckboxChange()">
+												As a first-time applicant, I understand that the SSA requires that I submit my fingerprints to
+												the Registrar. My fingerprints will be used to verify my identity for the purposes of Prescribed
+												Checks and, as an alternative to my BC Services Card or other approved government-issued ID, may
+												also be used as an authentication method to apply for a security licence via the Electronic
+												Security Services Portal.
 											</mat-checkbox>
 											<mat-error
 												class="mat-option-error"
@@ -89,24 +107,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 										</div>
 										<div class="my-3">
 											<mat-checkbox formControlName="check4" (click)="onCheckboxChange()">
-												As a first-time applicant, I understand that the SSA requires that I submit my fingerprints to
-												the Registrar. My fingerprints will be used to verify my identity for the purposes of Prescribed
-												Checks and, as an alternative to my BC Services Card or other approved government-issued ID, may
-												also be used as an authentication method to apply for a security licence via the Electronic
-												Security Services Portal.
-											</mat-checkbox>
-											<mat-error
-												class="mat-option-error"
-												*ngIf="
-													(form.get('check4')?.dirty || form.get('check4')?.touched) &&
-													form.get('check4')?.invalid &&
-													form.get('check4')?.hasError('required')
-												"
-												>This is required
-											</mat-error>
-										</div>
-										<div class="my-3">
-											<mat-checkbox formControlName="check5" (click)="onCheckboxChange()">
 												For greater certainty, if I am not a first-time licence applicant, I will not need to re-submit
 												my fingerprints to the Registrar to verify my identity. However, upon renewal of my security
 												licence application on the Electronic Security Services Portal, if I choose not to use my BC
@@ -125,16 +125,16 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 											</mat-error>
 										</div>
 										<div class="my-3">
-											<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
+											<mat-checkbox formControlName="check5" (click)="onCheckboxChange()">
 												I hereby consent to my licence information (i.e. full name, licence number and licence status)
 												being available for viewing online.
 											</mat-checkbox>
 											<mat-error
 												class="mat-option-error"
 												*ngIf="
-													(form.get('check2')?.dirty || form.get('check2')?.touched) &&
-													form.get('check2')?.invalid &&
-													form.get('check2')?.hasError('required')
+													(form.get('check5')?.dirty || form.get('check5')?.touched) &&
+													form.get('check5')?.invalid &&
+													form.get('check5')?.hasError('required')
 												"
 												>This is required
 											</mat-error>

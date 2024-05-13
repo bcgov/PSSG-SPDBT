@@ -114,16 +114,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.updateCompleteStatus();
 	}
 
-	// ngAfterViewInit(): void {
-	// 	if (this.step3Complete) {
-	// 		this.stepper.selectedIndex = this.STEP_REVIEW;
-	// 	} else if (this.step2Complete) {
-	// 		this.stepper.selectedIndex = this.STEP_IDENTIFICATION;
-	// 	} else if (this.step1Complete) {
-	// 		this.stepper.selectedIndex = this.STEP_BACKGROUND;
-	// 	}
-	// }
-
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
 			case this.STEP_LICENCE_SELECTION:
