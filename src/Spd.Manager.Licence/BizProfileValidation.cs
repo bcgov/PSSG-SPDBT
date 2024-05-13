@@ -7,12 +7,10 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
     {
         RuleFor(r => r.BizTradeName).NotEmpty();
         RuleFor(r => r.BizTypeCode).NotEmpty().IsInEnum();
-        RuleFor(r => r.BizBCAddress).NotEmpty();
-        RuleFor(r => r.BizMailingAddress)
+        RuleFor(r => r.BizAddress).NotEmpty();
+        RuleFor(r => r.BizMailingAddress).NotEmpty();
+        RuleFor(r => r.BizBCAddress)
             .NotEmpty()
-            .When(r => r.MailingAddressIsSameBizAddress == false);
-        RuleFor(r => r)
-            .Must(r => r.BizMailingAddress?.AddressLine1 != r.BizBCAddress?.AddressLine1)
-            .When(r => r.MailingAddressIsSameBizAddress == false);
+            .When(r => r.BizAddress.Province != "BC");
     }
 }
