@@ -15,6 +15,8 @@ export { BizLicAppCommandResponse } from './models/biz-lic-app-command-response'
 export { BizLicAppUpsertRequest } from './models/biz-lic-app-upsert-request';
 export { BizListResponse } from './models/biz-list-response';
 export { BizProfileResponse } from './models/biz-profile-response';
+export { BizProfileUpdateRequest } from './models/biz-profile-update-request';
+export { BizTypeCode } from './models/biz-type-code';
 export { BizUserLoginResponse } from './models/biz-user-login-response';
 export { BodyArmourPermitReasonCode } from './models/body-armour-permit-reason-code';
 export { BranchInfo } from './models/branch-info';
