@@ -21,6 +21,11 @@ namespace Spd.Utilities.LogonUser
                 var onlyBceidPolicyBuilder = new AuthorizationPolicyBuilder(BCeIDAuthenticationConfiguration.AuthSchemeName);
                 options.AddPolicy("OnlyBCeID",
                     onlyBceidPolicyBuilder.RequireAuthenticatedUser().Build());
+
+                var bceidBcscPolicyBuilder = new AuthorizationPolicyBuilder(
+                    new string[] { BCeIDAuthenticationConfiguration.AuthSchemeName, BcscAuthenticationConfiguration.AuthSchemeName });
+                options.AddPolicy("BcscBCeID",
+                    bceidBcscPolicyBuilder.RequireAuthenticatedUser().Build());
             });
         }
     }
