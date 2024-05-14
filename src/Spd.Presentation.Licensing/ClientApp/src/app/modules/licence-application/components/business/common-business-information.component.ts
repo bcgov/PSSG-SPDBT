@@ -30,7 +30,15 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 							Trade or 'Doing Business As' Name
 							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
 						</div>
-						<div class="text-primary-color fs-5">{{ doingBusinessAsName.value | default }}</div>
+
+						<ng-container *ngIf="isBizTradeNameReadonly.value; else EditBizTradeName">
+							<div class="text-primary-color fs-5">{{ bizTradeName.value | default }}</div>
+						</ng-container>
+						<ng-template #EditBizTradeName>
+							<mat-form-field>
+								<input matInput formControlName="bizTradeName" [errorStateMatcher]="matcher" maxlength="160" />
+							</mat-form-field>
+						</ng-template>
 					</div>
 				</div>
 
@@ -86,28 +94,6 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 						</div>
 					</app-alert>
 
-					<!-- <app-alert type="warning" icon="cancel">
-						<div class="fs-5 mb-3">A sole proprietor must have a valid security worker licence</div>
-						<div class="row">
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Name</div>
-								<div class="text-primary-color fs-5">Joe Smith</div>
-							</div>
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Security Worker Licence Number</div>
-								<div class="text-primary-color fs-5">76434</div>
-							</div>
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Expiry Date</div>
-								<div class="text-primary-color fs-5">Apr 25, 2024</div>
-							</div>
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Licence Status</div>
-								<div class="text-primary-color fs-5 fw-bold">Expired</div>
-							</div>
-						</div>
-					</app-alert> -->
-
 					<div class="row">
 						<div class="col-md-6 col-sm-12">
 							<mat-form-field>
@@ -160,6 +146,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 	businessTypes = BusinessLicenceTypes;
 
 	@Input() form!: FormGroup;
+	@Input() isReadonly = false;
 
 	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
 
@@ -196,8 +183,11 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 	get legalBusinessName(): FormControl {
 		return this.form.get('legalBusinessName') as FormControl;
 	}
-	get doingBusinessAsName(): FormControl {
-		return this.form.get('doingBusinessAsName') as FormControl;
+	get bizTradeName(): FormControl {
+		return this.form.get('bizTradeName') as FormControl;
+	}
+	get isBizTradeNameReadonly(): FormControl {
+		return this.form.get('isBizTradeNameReadonly') as FormControl;
 	}
 	get businessTypeCode(): FormControl {
 		return this.form.get('businessTypeCode') as FormControl;
