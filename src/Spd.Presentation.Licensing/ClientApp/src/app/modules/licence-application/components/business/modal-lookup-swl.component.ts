@@ -152,7 +152,7 @@ export class ModalLookupSwlComponent implements OnInit {
 			.getLicenceNumberLookup(this.licenceNumberLookup.value)
 			.pipe()
 			.subscribe((resp: LicenceLookupResult) => {
-				this.isSearchPerformed = resp.isSearchPerformed;
+				this.isSearchPerformed = true;
 				this.isFound = resp.isFound;
 				this.isFoundValid = resp.isFoundValid;
 

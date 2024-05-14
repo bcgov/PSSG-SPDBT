@@ -47,7 +47,6 @@ export interface UserApplicationResponse extends LicenceAppListResponse {
 }
 
 export class LicenceLookupResult {
-	'isSearchPerformed': boolean;
 	'isFound': boolean;
 	'isFoundValid': boolean;
 	'isExpired': boolean;
@@ -480,14 +479,14 @@ export class CommonApplicationService {
 					const isInRenewalPeriod =
 						!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
 
-					return of({
-						isSearchPerformed: true,
+					const lookupResp: LicenceLookupResult = {
 						isFound,
 						isFoundValid,
 						isExpired,
 						isInRenewalPeriod,
-						searchResult: isFound ? resp : null,
-					});
+						searchResult: resp,
+					};
+					return of(lookupResp);
 				})
 			);
 	}
@@ -501,14 +500,14 @@ export class CommonApplicationService {
 				const isInRenewalPeriod =
 					!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
 
-				return of({
-					isSearchPerformed: true,
+				const lookupResp: LicenceLookupResult = {
 					isFound,
 					isFoundValid,
 					isExpired,
 					isInRenewalPeriod,
-					searchResult: isFound ? resp : null,
-				});
+					searchResult: resp,
+				};
+				return of(lookupResp);
 			})
 		);
 	}
