@@ -31,6 +31,11 @@
         public Guid? BizGuid { get; set; }
         public BizTypeEnum BizType { get; set; }
         public IEnumerable<BranchAddr> BranchAddresses { get; set; } = Array.Empty<BranchAddr>();
+
+        //sole proprietor properties
+        public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
+        public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
+        public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
     }
     public record BizResult : Biz
     {
@@ -39,11 +44,6 @@
         public string? AccessCode { get; set; }
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
-        
-        //sole proprietor properties
-        public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
-        public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
-        public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
     }
     public record BranchAddr() : Addr
     {
