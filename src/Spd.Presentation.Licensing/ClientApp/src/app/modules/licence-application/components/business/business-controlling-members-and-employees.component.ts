@@ -39,7 +39,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 						If your controlling members change during the business licence term, update their information here.
 					</app-alert>
 
-					<app-common-controlling-members></app-common-controlling-members>
+					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
 
 					<mat-divider class="mat-divider-primary my-4"></mat-divider>
 
@@ -49,7 +49,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 						their information here.
 					</app-alert>
 
-					<app-common-employees></app-common-employees>
+					<app-common-employees [defaultExpanded]="true"></app-common-employees>
 				</div>
 			</div>
 		</section>
