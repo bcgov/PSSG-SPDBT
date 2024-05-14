@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { CommonApplicationService, LicenceLookupResult } from '../../services/common-application.service';
 import { BranchResponse } from './common-business-bc-branches.component';
 
 @Component({
@@ -29,19 +30,38 @@ import { BranchResponse } from './common-business-bc-branches.component';
 					</div>
 				</div>
 
-				<div class="my-3" *ngIf="foundSuccess">
-					<div class="fs-5">{{ foundSuccess }} has been found with a valid licence</div>
-				</div>
+				<ng-container *ngIf="isSearchPerformed">
+					<ng-container *ngIf="isFound; else IsNotFound">
+						<ng-container *ngIf="isFoundValid; else IsFoundInvalid">
+							<div class="my-3">
+								<app-alert type="info" icon="">
+									<div class="fs-5">{{ searchResult.name }} has been found with a valid licence</div>
+								</app-alert>
+							</div>
+						</ng-container>
 
-				<div class="mt-3" *ngIf="foundIsExpired">
-					<div class="fs-5 my-2">{{ foundIsExpired }} has been found with an expired licence</div>
-					<div>
-						<app-alert type="warning" icon="warning">
-							<div>This member's licence has expired.</div>
-							<div>Add them as a member without a security worker licence to proceed.</div>
+						<ng-template #IsFoundInvalid>
+							<div class="mt-3">
+								<app-alert type="warning" icon="">
+									<div class="fs-5">{{ searchResult.name }} has been found with an expired licence</div>
+
+									<div>
+										<app-alert type="warning" icon="warning">
+											<div>This member's licence has expired.</div>
+											<div>Add them as a member without a security worker licence to proceed.</div>
+										</app-alert>
+									</div>
+								</app-alert>
+							</div>
+						</ng-template>
+					</ng-container>
+
+					<ng-template #IsNotFound>
+						<app-alert type="danger" icon="error">
+							This licence number does not match any existing Security Worker licences
 						</app-alert>
-					</div>
-				</div>
+					</ng-template>
+				</ng-container>
 			</form>
 		</mat-dialog-content>
 		<mat-dialog-actions>
@@ -49,7 +69,7 @@ import { BranchResponse } from './common-business-bc-branches.component';
 				<div class="col-md-4 col-sm-12 mb-2">
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
 				</div>
-				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="foundSuccess">
+				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isFoundValid">
 					<button mat-flat-button color="primary" class="large" (click)="onSave()">Add</button>
 				</div>
 			</div>
@@ -60,12 +80,16 @@ import { BranchResponse } from './common-business-bc-branches.component';
 export class ModalMemberWithSwlAddComponent implements OnInit {
 	form = this.businessApplicationService.memberWithSwlFormGroup;
 
-	foundSuccess: string | null = null;
-	foundIsExpired: string | null = null;
+	searchResult: any = null;
+
+	isSearchPerformed = false;
+	isFoundValid = false;
+	isFound = false;
 
 	constructor(
 		private dialogRef: MatDialogRef<ModalMemberWithSwlAddComponent>,
 		private businessApplicationService: BusinessApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: BranchResponse
 	) {}
 
@@ -75,18 +99,34 @@ export class ModalMemberWithSwlAddComponent implements OnInit {
 	}
 
 	onSearch(): void {
+		this.resetFlags();
+
 		this.form.markAllAsTouched();
 		if (!this.form.valid) return;
 
-		this.foundSuccess = null;
-		this.foundIsExpired = null;
+		const licenceNumber = this.licenceNumberLookup.value;
+		this.commonApplicationService
+			.getLicenceNumberLookup(licenceNumber)
+			.pipe()
+			.subscribe((resp: LicenceLookupResult) => {
+				this.isSearchPerformed = resp.isSearchPerformed;
+				this.isFound = !!resp;
+				this.isFoundValid = resp.isFoundValid;
 
-		this.foundSuccess = 'Timothy Test';
-		// this.foundIsExpired = 'Timothy Test';
+				if (resp.searchResult) {
+					this.searchResult = {
+						id: resp.searchResult.licenceId,
+						name: resp.searchResult.licenceHolderName,
+						licenceNumber: resp.searchResult.licenceNumber,
+						status: resp.searchResult.licenceStatusCode,
+						expiryDate: resp.searchResult.expiryDate,
+					};
+				}
+			});
 	}
 
 	onSave(): void {
-		if (!this.foundSuccess) return;
+		if (!this.isFoundValid) return;
 
 		const newData = {
 			id: 1,
@@ -101,6 +141,14 @@ export class ModalMemberWithSwlAddComponent implements OnInit {
 		this.dialogRef.close({
 			data: newData,
 		});
+	}
+
+	resetFlags(): void {
+		this.searchResult = null;
+
+		this.isSearchPerformed = false;
+		this.isFound = false;
+		this.isFoundValid = false;
 	}
 
 	get licenceNumberLookup(): FormControl {

@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LicenceResponse, LicenceStatusCode } from '@app/api/models';
+import { LicenceStatusCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { CommonApplicationService, LicenceLookupResult } from '../../services/common-application.service';
 import { BranchResponse } from './common-business-bc-branches.component';
 
 @Component({
@@ -114,6 +115,7 @@ export class ModalLookupSoleProprietorComponent implements OnInit {
 	constructor(
 		private dialogRef: MatDialogRef<ModalLookupSoleProprietorComponent>,
 		private businessApplicationService: BusinessApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		@Inject(MAT_DIALOG_DATA) public dialogData: BranchResponse
 	) {}
 
@@ -123,36 +125,30 @@ export class ModalLookupSoleProprietorComponent implements OnInit {
 	}
 
 	onSearch(): void {
-		this.searchResult = null;
-
-		this.isSearchPerformed = false;
-		this.isFound = false;
-		this.isFoundValid = false;
+		this.resetFlags();
 
 		this.form.markAllAsTouched();
 		if (!this.form.valid) return;
 
 		const licenceNumber = this.licenceNumberLookup.value;
-		this.businessApplicationService
+		this.commonApplicationService
 			.getLicenceNumberLookup(licenceNumber)
 			.pipe()
-			.subscribe((resp: LicenceResponse) => {
-				this.isSearchPerformed = true;
+			.subscribe((resp: LicenceLookupResult) => {
+				this.isSearchPerformed = resp.isSearchPerformed;
 				this.isFound = !!resp;
-				this.isFoundValid = this.isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
+				this.isFoundValid = resp.isFoundValid;
 
-				console.log('resp', resp);
-				console.log('isSearchPerformed', this.isSearchPerformed);
-				console.log('isFound', this.isFound);
-				console.log('isFoundValid', this.isFoundValid);
-
-				if (this.isFound) {
+				if (resp.searchResult) {
 					this.searchResult = {
-						id: resp.licenceId,
-						name: resp.licenceStatusCode === LicenceStatusCode.Active ? resp.licenceHolderName : '',
-						licenceNumber: resp.licenceNumber,
-						status: resp.licenceStatusCode,
-						expiryDate: resp.expiryDate,
+						id: resp.searchResult.licenceId,
+						name:
+							resp.searchResult.licenceStatusCode === LicenceStatusCode.Active
+								? resp.searchResult.licenceHolderName
+								: '',
+						licenceNumber: resp.searchResult.licenceNumber,
+						status: resp.searchResult.licenceStatusCode,
+						expiryDate: resp.searchResult.expiryDate,
 					};
 				}
 			});
@@ -164,6 +160,14 @@ export class ModalLookupSoleProprietorComponent implements OnInit {
 		this.dialogRef.close({
 			data: this.searchResult,
 		});
+	}
+
+	resetFlags(): void {
+		this.searchResult = null;
+
+		this.isSearchPerformed = false;
+		this.isFound = false;
+		this.isFoundValid = false;
 	}
 
 	get licenceNumberLookup(): FormControl {
