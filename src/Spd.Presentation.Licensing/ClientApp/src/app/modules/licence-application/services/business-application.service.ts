@@ -136,37 +136,37 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	private continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
-		switch (applicationTypeCode) {
-			case ApplicationTypeCode.Replacement: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathBusinessLicence(
-						LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_REPLACEMENT
-					)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Renewal: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathBusinessLicence(
-						LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_RENEW
-					)
-				);
-				break;
-			}
-			case ApplicationTypeCode.Update: {
-				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathBusinessLicence(
-						LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_UPDATE
-					)
-				);
-				break;
-			}
-			default: {
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
-				break;
-			}
-		}
+	private continueToNextStep(_applicationTypeCode: ApplicationTypeCode): void {
+		// switch (applicationTypeCode) {
+		// 	case ApplicationTypeCode.Replacement: {
+		// 		this.router.navigateByUrl(
+		// 			LicenceApplicationRoutes.pathBusinessLicence(
+		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_REPLACEMENT
+		// 			)
+		// 		);
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Renewal: {
+		// 		this.router.navigateByUrl(
+		// 			LicenceApplicationRoutes.pathBusinessLicence(
+		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_RENEW
+		// 			)
+		// 		);
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Update: {
+		// 		this.router.navigateByUrl(
+		// 			LicenceApplicationRoutes.pathBusinessLicence(
+		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_UPDATE
+		// 			)
+		// 		);
+		// 		break;
+		// 	}
+		// 	default: {
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
+		// 		break;
+		// 	}
+		// }
 	}
 
 	/**

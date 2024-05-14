@@ -64,7 +64,7 @@ export class StepBusinessLicenceProfileComponent {
 		private businessApplicationService: BusinessApplicationService
 	) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.applicationTypeCode = state && state['applicationTypeCode'];
+		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
 	}
 
 	ngOnInit(): void {
