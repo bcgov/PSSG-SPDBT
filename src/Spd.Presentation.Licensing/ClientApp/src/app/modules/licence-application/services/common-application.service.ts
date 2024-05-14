@@ -48,6 +48,7 @@ export interface UserApplicationResponse extends LicenceAppListResponse {
 
 export class LicenceLookupResult {
 	'isSearchPerformed': boolean;
+	'isFound': boolean;
 	'isFoundValid': boolean;
 	'isExpired': boolean;
 	'isInRenewalPeriod': boolean;
@@ -481,6 +482,7 @@ export class CommonApplicationService {
 
 					return of({
 						isSearchPerformed: true,
+						isFound,
 						isFoundValid,
 						isExpired,
 						isInRenewalPeriod,
@@ -501,6 +503,7 @@ export class CommonApplicationService {
 
 				return of({
 					isSearchPerformed: true,
+					isFound,
 					isFoundValid,
 					isExpired,
 					isInRenewalPeriod,
@@ -524,7 +527,7 @@ export class CommonApplicationService {
 			if (licence.workerLicenceTypeCode !== workerLicenceTypeCode) {
 				//   WorkerLicenceType does not match
 				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-				messageError = `This ${label} is not a ${selWorkerLicenceTypeDesc}.`;
+				messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
 				if (!isExpired) {
 					if (isInRenewalPeriod) {

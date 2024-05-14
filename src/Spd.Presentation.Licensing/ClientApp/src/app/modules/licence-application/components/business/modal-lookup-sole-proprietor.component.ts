@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LicenceStatusCode } from '@app/api/models';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { CommonApplicationService, LicenceLookupResult } from '../../services/common-application.service';
 import { BranchResponse } from './common-business-bc-branches.component';
@@ -40,7 +40,7 @@ import { BranchResponse } from './common-business-bc-branches.component';
 									<div class="row">
 										<div class="col-md-6 col-sm-12">
 											<div class="d-block text-muted mt-2">Name</div>
-											<div class="text-data">{{ searchResult.name }}</div>
+											<div class="text-data">{{ searchResult.licenceHolderName }}</div>
 										</div>
 										<div class="col-md-6 col-sm-12">
 											<div class="d-block text-muted mt-2">Security Worker Licence Number</div>
@@ -62,17 +62,19 @@ import { BranchResponse } from './common-business-bc-branches.component';
 						<ng-template #IsFoundInvalid>
 							<div class="mt-3">
 								<app-alert type="warning" icon="">
-									<div class="fs-5 mb-2">This licence is not valid</div>
+									<div class="fs-5 mb-2">This licence is not valid Security Worker licence</div>
 									<div class="row">
-										<div class="col-md-6 col-sm-12">
-											<div class="d-block text-muted mt-2">Security Worker Licence Number</div>
+										<div class="col-md-5 col-sm-12">
+											<div class="d-block text-muted mt-2">
+												{{ searchResult.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} Number
+											</div>
 											<div class="text-data">{{ searchResult.licenceNumber }}</div>
 										</div>
-										<div class="col-md-6 col-sm-12">
+										<div class="col-md-3 col-sm-12">
 											<div class="d-block text-muted mt-2">Expiry Date</div>
 											<div class="text-data">{{ searchResult.expiryDate }}</div>
 										</div>
-										<div class="col-md-6 col-sm-12">
+										<div class="col-md-4 col-sm-12">
 											<div class="d-block text-muted mt-2">Licence Status</div>
 											<div class="text-data fw-bold">{{ searchResult.status }}</div>
 										</div>
@@ -130,26 +132,20 @@ export class ModalLookupSoleProprietorComponent implements OnInit {
 		this.form.markAllAsTouched();
 		if (!this.form.valid) return;
 
-		const licenceNumber = this.licenceNumberLookup.value;
 		this.commonApplicationService
-			.getLicenceNumberLookup(licenceNumber)
+			.getLicenceNumberLookup(this.licenceNumberLookup.value)
 			.pipe()
 			.subscribe((resp: LicenceLookupResult) => {
 				this.isSearchPerformed = resp.isSearchPerformed;
-				this.isFound = !!resp;
+				this.isFound = resp.isFound;
 				this.isFoundValid = resp.isFoundValid;
 
 				if (resp.searchResult) {
-					this.searchResult = {
-						id: resp.searchResult.licenceId,
-						name:
-							resp.searchResult.licenceStatusCode === LicenceStatusCode.Active
-								? resp.searchResult.licenceHolderName
-								: '',
-						licenceNumber: resp.searchResult.licenceNumber,
-						status: resp.searchResult.licenceStatusCode,
-						expiryDate: resp.searchResult.expiryDate,
-					};
+					if (resp.searchResult.workerLicenceTypeCode !== WorkerLicenceTypeCode.SecurityWorkerLicence) {
+						this.isFoundValid = false;
+					}
+
+					this.searchResult = resp.searchResult;
 				}
 			});
 	}

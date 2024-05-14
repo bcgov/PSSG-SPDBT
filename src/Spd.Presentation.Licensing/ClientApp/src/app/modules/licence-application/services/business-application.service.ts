@@ -293,24 +293,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
 		controllingMembersArray.push(
 			new FormGroup({
-				id: new FormControl('1'),
-				givenName: new FormControl('Kimberly'),
-				surname: new FormControl('Streisand'),
-				emailAddress: new FormControl(),
-				licenceNumber: new FormControl('7465766'),
-				status: new FormControl('Valid'),
-				expiryDate: new FormControl('2024-05-15'),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
-		controllingMembersArray.push(
-			new FormGroup({
 				id: new FormControl('2'),
+				licenceHolderName: new FormControl('Yank Alexander'),
 				givenName: new FormControl('Yank'),
 				surname: new FormControl('Alexander'),
 				emailAddress: new FormControl(),
 				licenceNumber: new FormControl('2345433'),
-				status: new FormControl('Expired'),
+				licenceStatusCode: new FormControl('Expired'),
 				expiryDate: new FormControl('2023-05-15'),
 				clearanceStatus: new FormControl('Completed'),
 			})
@@ -318,11 +307,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		controllingMembersArray.push(
 			new FormGroup({
 				id: new FormControl('3'),
+				licenceHolderName: new FormControl('Anderson Cooper'),
 				givenName: new FormControl('Anderson'),
 				surname: new FormControl('Cooper'),
 				emailAddress: new FormControl('test@test.com'),
 				licenceNumber: new FormControl(),
-				status: new FormControl(),
+				licenceStatusCode: new FormControl(),
 				expiryDate: new FormControl(),
 				clearanceStatus: new FormControl('Completed'),
 			})
@@ -330,6 +320,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		controllingMembersArray.push(
 			new FormGroup({
 				id: new FormControl('3'),
+				licenceHolderName: new FormControl('James Clark'),
 				givenName: new FormControl('James'),
 				surname: new FormControl('Clark'),
 				emailAddress: new FormControl(),
@@ -344,20 +335,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		employeesArray.push(
 			new FormGroup({
 				id: new FormControl('1'),
-				givenName: new FormControl('Barbara'),
-				surname: new FormControl('Streisand'),
+				licenceHolderName: new FormControl('Barbara Streisand'),
 				licenceNumber: new FormControl('7465766'),
-				status: new FormControl('Valid'),
+				licenceStatusCode: new FormControl('Valid'),
 				expiryDate: new FormControl('2024-05-15'),
 			})
 		);
 		employeesArray.push(
 			new FormGroup({
 				id: new FormControl('2'),
-				givenName: new FormControl('Yank'),
-				surname: new FormControl('Alexander'),
+				licenceHolderName: new FormControl('Yank Alexander'),
 				licenceNumber: new FormControl('2345433'),
-				status: new FormControl('Expired'),
+				licenceStatusCode: new FormControl('Expired'),
 				expiryDate: new FormControl('2023-05-15'),
 			})
 		);
