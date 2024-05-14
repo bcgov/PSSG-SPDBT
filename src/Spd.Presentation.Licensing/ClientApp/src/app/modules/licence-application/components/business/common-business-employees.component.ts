@@ -7,7 +7,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.component';
+import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 
 @Component({
 	selector: 'app-common-business-employees',
@@ -143,10 +143,13 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 	}
 
 	onAddLicenceHolder(): void {
+		const dialogOptions: LookupSwlDialogData = {
+			title: 'Add Member with Security Worker Licence',
+		};
 		this.dialog
-			.open(ModalMemberWithSwlAddComponent, {
+			.open(ModalLookupSwlComponent, {
 				width: '800px',
-				data: {}, //dialogOptions,
+				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {

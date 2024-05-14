@@ -4,14 +4,19 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { CommonApplicationService, LicenceLookupResult } from '../../services/common-application.service';
-import { BranchResponse } from './common-business-bc-branches.component';
+
+export interface LookupSwlDialogData {
+	title: string;
+	subtitle?: string;
+	notValidSwlMessage?: string;
+}
 
 @Component({
-	selector: 'app-modal-lookup-sole-proprietor',
+	selector: 'app-modal-lookup-swl',
 	template: `
-		<div mat-dialog-title>Add Sole Proprietor</div>
+		<div mat-dialog-title>{{ title }}</div>
 		<mat-dialog-content class="pb-0">
-			<div class="fs-6 fw-normal pb-3">A sole proprietor must have a valid security worker licence</div>
+			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-md-8 col-sm-12">
@@ -52,7 +57,7 @@ import { BranchResponse } from './common-business-bc-branches.component';
 										</div>
 										<div class="col-md-6 col-sm-12">
 											<div class="d-block text-muted mt-2">Licence Status</div>
-											<div class="text-data fw-bold">{{ searchResult.status }}</div>
+											<div class="text-data fw-bold">{{ searchResult.licenceStatusCode }}</div>
 										</div>
 									</div>
 								</app-alert>
@@ -76,8 +81,13 @@ import { BranchResponse } from './common-business-bc-branches.component';
 										</div>
 										<div class="col-md-4 col-sm-12">
 											<div class="d-block text-muted mt-2">Licence Status</div>
-											<div class="text-data fw-bold">{{ searchResult.status }}</div>
+											<div class="text-data fw-bold">{{ searchResult.licenceStatusCode }}</div>
 										</div>
+									</div>
+									<div class="mt-2" *ngIf="notValidSwlMessage">
+										{{ notValidSwlMessage }}
+										<!-- 'Cancel' to exit this dialog and then add them as a member without a security worker licence to
+										proceed. -->
 									</div>
 								</app-alert>
 							</div>
@@ -105,25 +115,31 @@ import { BranchResponse } from './common-business-bc-branches.component';
 	`,
 	styles: [],
 })
-export class ModalLookupSoleProprietorComponent implements OnInit {
-	form = this.businessApplicationService.soleProprietorFormGroup;
+export class ModalLookupSwlComponent implements OnInit {
+	form = this.businessApplicationService.swlLookupLicenceFormGroup;
+
+	title = '';
+	subtitle: string | null = null;
+	notValidSwlMessage: string | null = null;
 
 	searchResult: any = null;
-
 	isSearchPerformed = false;
 	isFoundValid = false;
 	isFound = false;
 
 	constructor(
-		private dialogRef: MatDialogRef<ModalLookupSoleProprietorComponent>,
+		private dialogRef: MatDialogRef<ModalLookupSwlComponent>,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: BranchResponse
+		@Inject(MAT_DIALOG_DATA) public dialogData: LookupSwlDialogData
 	) {}
 
 	ngOnInit(): void {
 		this.form.reset();
-		this.form.patchValue(this.dialogData);
+
+		this.title = this.dialogData.title;
+		this.subtitle = this.dialogData.subtitle ?? null;
+		this.notValidSwlMessage = this.dialogData.notValidSwlMessage ?? null;
 	}
 
 	onSearch(): void {

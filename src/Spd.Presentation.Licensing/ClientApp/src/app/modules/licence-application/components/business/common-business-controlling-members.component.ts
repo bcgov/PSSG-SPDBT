@@ -7,7 +7,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.component';
+import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -179,10 +179,14 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 	}
 
 	onAddMemberWithSWL(): void {
+		const dialogOptions: LookupSwlDialogData = {
+			title: 'Add Member with Security Worker Licence',
+			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
+		};
 		this.dialog
-			.open(ModalMemberWithSwlAddComponent, {
+			.open(ModalLookupSwlComponent, {
 				width: '800px',
-				data: {}, //dialogOptions,
+				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
