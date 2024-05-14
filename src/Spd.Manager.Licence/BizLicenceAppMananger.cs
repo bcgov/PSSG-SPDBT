@@ -37,7 +37,18 @@ internal class BizLicenceAppMananger :
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        // * hasDuplicate?
+
+        SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.BizLicAppUpsertRequest);
+        saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
+        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
+            cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
+            (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
+            cancellationToken);
+        return _mapper.Map<BizLicAppCommandResponse>(response);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand cmd, CancellationToken cancellationToken)
