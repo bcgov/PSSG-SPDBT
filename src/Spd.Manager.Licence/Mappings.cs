@@ -180,6 +180,15 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceAppSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
 
+        CreateMap<BizLicAppUpsertRequest, SaveLicenceApplicationCmd>()
+            .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.BizId))
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantContactInfo.Surname))
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.ApplicantContactInfo.GivenName))
+            .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName1))
+            .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName2))
+            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.ApplicantContactInfo.EmailAddress));
+
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
 
