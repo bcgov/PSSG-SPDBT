@@ -40,7 +40,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
-            if (bizUpsertRequest.LicenceAppId == Guid.Empty)
+            if (bizUpsertRequest.BizId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have application");
             return await _mediator.Send(new BizLicAppUpsertCommand(bizUpsertRequest), ct);
         }
