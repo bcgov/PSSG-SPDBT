@@ -8,7 +8,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ModalLookupSoleProprietorComponent } from './modal-lookup-sole-proprietor.component';
+import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 
 @Component({
 	selector: 'app-common-business-information',
@@ -170,15 +170,18 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 	}
 
 	onLookupSoleProprietor(): void {
+		const dialogOptions: LookupSwlDialogData = {
+			title: 'Add Sole Proprietor',
+			subtitle: 'A sole proprietor must have a valid security worker licence',
+		};
 		this.dialog
-			.open(ModalLookupSoleProprietorComponent, {
+			.open(ModalLookupSwlComponent, {
 				width: '800px',
-				data: {}, //dialogOptions,
+				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
 				if (resp) {
-					console.debug('resp.data', resp.data); // TODO handle search result
 					this.hotToastService.success('Sole Proprietor was successfully added');
 				}
 			});
