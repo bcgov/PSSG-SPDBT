@@ -80,6 +80,10 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
+	swlLookupLicenceFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
+	});
+
 	soleProprietorFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});

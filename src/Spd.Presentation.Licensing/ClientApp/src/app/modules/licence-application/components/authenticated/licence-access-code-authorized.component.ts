@@ -86,7 +86,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									<mat-icon>link</mat-icon>Link to your Account
 								</button>
 							</div>
-							<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12" *ngIf="isLinkErrorMessage">
+							<div class="col-12" *ngIf="isLinkErrorMessage">
 								<app-alert type="danger" icon="error">
 									{{ isLinkErrorMessage }}
 								</app-alert>
