@@ -46,6 +46,14 @@ export interface UserApplicationResponse extends LicenceAppListResponse {
 	isExpiryError: boolean;
 }
 
+export class LicenceLookupResult {
+	'isFound': boolean;
+	'isFoundValid': boolean;
+	'isExpired': boolean;
+	'isInRenewalPeriod': boolean;
+	'searchResult': LicenceResponse | null;
+}
+
 export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse {
 	hasBcscNameChanged: boolean;
 	cardHolderName?: null | string;
@@ -460,22 +468,65 @@ export class CommonApplicationService {
 			});
 	}
 
+	getLicenceNumberLookupAnonymous(licenceNumber: string, recaptchaCode: string): Observable<LicenceLookupResult> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					const isFound = !!resp;
+					const isFoundValid = isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
+					const isExpired = isFound && resp.licenceStatusCode != LicenceStatusCode.Active;
+					const isInRenewalPeriod =
+						!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
+
+					const lookupResp: LicenceLookupResult = {
+						isFound,
+						isFoundValid,
+						isExpired,
+						isInRenewalPeriod,
+						searchResult: resp,
+					};
+					return of(lookupResp);
+				})
+			);
+	}
+
+	getLicenceNumberLookup(licenceNumber: string): Observable<LicenceLookupResult> {
+		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber }).pipe(
+			switchMap((resp: LicenceResponse) => {
+				const isFound = !!resp;
+				const isFoundValid = isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
+				const isExpired = isFound && resp.licenceStatusCode != LicenceStatusCode.Active;
+				const isInRenewalPeriod =
+					!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
+
+				const lookupResp: LicenceLookupResult = {
+					isFound,
+					isFoundValid,
+					isExpired,
+					isInRenewalPeriod,
+					searchResult: resp,
+				};
+				return of(lookupResp);
+			})
+		);
+	}
+
 	setExpiredLicenceLookupMessage(
-		resp: LicenceResponse,
+		licence: LicenceResponse | null,
 		label: string,
 		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		isFound: boolean,
 		isExpired: boolean,
 		isInRenewalPeriod: boolean
 	): [string | null, string | null] {
 		let messageWarn = null;
 		let messageError = null;
 
-		if (isFound) {
-			if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
+		if (licence) {
+			if (licence.workerLicenceTypeCode !== workerLicenceTypeCode) {
 				//   WorkerLicenceType does not match
 				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-				messageError = `This ${label} is not a ${selWorkerLicenceTypeDesc}.`;
+				messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
 				if (!isExpired) {
 					if (isInRenewalPeriod) {

@@ -9,6 +9,8 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { BizLicAppChangeRequest } from '../models/biz-lic-app-change-request';
+import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
 import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
@@ -153,6 +155,77 @@ export class BizLicensingService extends BaseService {
 
     return this.apiBusinessLicenceLicenceAppIdFilesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>) => r.body as Array<LicenceAppDocumentResponse>)
+    );
+  }
+
+  /**
+   * Path part for operation apiBusinessLicenceChangePost
+   */
+  static readonly ApiBusinessLicenceChangePostPath = '/api/business-licence/change';
+
+  /**
+   * Submit Biz licence update, renew and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessLicenceChangePost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessLicenceChangePost$Response(params?: {
+
+    /**
+     * BizLicAppSubmitRequest data
+     */
+    body?: BizLicAppChangeRequest
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceChangePostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<BizLicAppCommandResponse>;
+      })
+    );
+  }
+
+  /**
+   * Submit Biz licence update, renew and replace
+   * After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessLicenceChangePost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessLicenceChangePost(params?: {
+
+    /**
+     * BizLicAppSubmitRequest data
+     */
+    body?: BizLicAppChangeRequest
+  },
+  context?: HttpContext
+
+): Observable<BizLicAppCommandResponse> {
+
+    return this.apiBusinessLicenceChangePost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<BizLicAppCommandResponse>) => r.body as BizLicAppCommandResponse)
     );
   }
 
