@@ -82,21 +82,24 @@ namespace Spd.Resource.Repository.Biz
 
         private async Task<BizResult?> UpdateBizAsync(UpdateBizCmd updateBizCmd, CancellationToken ct)
         {
-            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
-                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                 .Where(a => a.accountid == updateBizCmd.Id);
+            IQueryable<account> accounts = _context.accounts
+                .Expand(a => a.spd_Organization_Addresses)
+                .Expand(a => a.spd_organization_spd_licence_soleproprietor)
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == updateBizCmd.Id);
 
-            account? Biz = await accounts.FirstOrDefaultAsync(ct);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
 
-            // Add remove/add link here
+            if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
+            _mapper.Map(updateBizCmd, biz);
+            _context.UpdateObject(biz);
 
-            _mapper.Map(updateBizCmd, Biz);
-            _context.UpdateObject(Biz);
+            UpdateLicenceLink(biz, (Guid)(updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId));
+
             await _context.SaveChangesAsync(ct);
 
-            return _mapper.Map<BizResult>(Biz);
+            return _mapper.Map<BizResult>(biz);
         }
 
         private async Task<BizResult?> UpdateBizServiceTypeAsync(UpdateBizServiceTypeCmd updateBizServiceTypeCmd, CancellationToken ct)
@@ -157,6 +160,25 @@ namespace Spd.Resource.Repository.Biz
                 await _context.SaveChangesAsync(ct);
             }
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
+        }
+
+        private void UpdateLicenceLink(account account, Guid licenceId)
+        {
+            // Remove link with current licence
+            spd_licence? licence = account.spd_organization_spd_licence_soleproprietor.FirstOrDefault();
+
+            if (licence != null)
+            {
+                _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
+            }
+
+            // Add link with new licence
+            spd_licence? newLicence = account.spd_organization_spd_licence_soleproprietor.Where(l => l.spd_licenceid == licenceId).FirstOrDefault();
+
+            if (newLicence != null)
+            {
+                _context.AddLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), newLicence);
+            }
         }
     }
 }
