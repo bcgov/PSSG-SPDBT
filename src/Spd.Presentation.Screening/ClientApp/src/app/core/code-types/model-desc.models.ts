@@ -83,7 +83,7 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 
 export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'CRC', code: ServiceTypeCode.Psso },
-	{ desc: 'CRC + Vulnerable Sector', code: ServiceTypeCode.PssoVs },
+	{ desc: 'CRC + CRRA', code: ServiceTypeCode.PssoVs },
 	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
 	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },

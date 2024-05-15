@@ -412,7 +412,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	continueToNextStep(workerLicenceTypeCode: WorkerLicenceTypeCode, applicationTypeCode: ApplicationTypeCode): void {
+	private continueToNextStep(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode
+	): void {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
