@@ -374,6 +374,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					return of(resp);
 				}
 
+				// Licence status does not matter for the merge
+
 				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
 					oldApplicantId: resp.body.licenceHolderId!,
 					newApplicantId,
@@ -479,7 +481,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
+	private continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				this.router.navigateByUrl(
