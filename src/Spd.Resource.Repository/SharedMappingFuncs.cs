@@ -72,16 +72,16 @@ internal static class SharedMappingFuncs
         return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
     }
 
-    internal static BusinessTypeEnum? GetBusinessTypeEnum(int? optionset)
+    internal static BizTypeEnum? GetBizTypeEnum(int? optionset)
     {
         if (optionset == null) return null;
-        return Enum.Parse<BusinessTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
+        return Enum.Parse<BizTypeEnum>(Enum.GetName(typeof(BizTypeOptionSet), optionset));
     }
 
-    internal static int? GetBusinessType(BusinessTypeEnum? code)
+    internal static int? GetBizType(BizTypeEnum? code)
     {
-        if (code == null) return (int)BusinessTypeOptionSet.None;
-        return (int)Enum.Parse<BusinessTypeOptionSet>(code.ToString());
+        if (code == null) return (int)BizTypeOptionSet.None;
+        return (int)Enum.Parse<BizTypeOptionSet>(code.ToString());
     }
 
     internal static ApplicationTypeEnum? GetLicenceApplicationTypeEnum(int? applicationTypeOptionSet)
@@ -150,16 +150,10 @@ internal static class SharedMappingFuncs
         return strs.Select(s => Enum.Parse<PermitPurposeEnum>(Enum.GetName(typeof(PermitPurposeOptionSet), Int32.Parse(s)))).ToList();
     }
 
-    internal static BizTypeEnum? GetBizTypeEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<BizTypeEnum>(Enum.GetName(typeof(BusinessTypeOptionSet), optionset));
-    }
-
     internal static int? GetBizTypeOptionSet(BizTypeEnum? bizType)
     {
         if (bizType == null)
             return null;
-        return (int)Enum.Parse<BusinessTypeOptionSet>(bizType.ToString());
+        return (int)Enum.Parse<BizTypeOptionSet>(bizType.ToString());
     }
 }
