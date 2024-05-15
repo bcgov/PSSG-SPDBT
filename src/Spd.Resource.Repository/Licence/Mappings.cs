@@ -29,6 +29,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.SupervisorPhoneNumber, opt => opt.MapFrom(s => s.spd_employerphonenumber))
              .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => s))
              .ForMember(d => d.Rationale, opt => opt.MapFrom(s => s.spd_rationale))
+             .ForMember(d => d.IsTemporary, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_temporarylicence)))
              .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)));
 
             _ = CreateMap<spd_licence, Addr>()

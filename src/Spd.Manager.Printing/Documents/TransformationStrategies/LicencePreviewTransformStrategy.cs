@@ -1,13 +1,18 @@
 ﻿using AutoMapper;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Incident;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.ServiceTypes;
+using Spd.Resource.Repository.WorkerLicenceCategory;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Printing.BCMailPlus;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Utilities.Shared.Tools;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -16,54 +21,68 @@ using System.Text.Json.Serialization;
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
 internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository licAppRepository,
+    ILicenceRepository licRepository,
     IContactRepository contactRepository,
     IOrgRepository orgRepository,
     IOptionSetRepository optionsetRepository,
     IServiceTypeRepository serviceTypeRepository,
     IDocumentRepository documentRepository,
     IMainFileStorageService fileStorageService,
+    IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
+    IIncidentRepository incidentRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<LicencePreviewTransformRequest, LicencePreviewJson>(Jobs.SecurityWorkerLicense)
 {
     protected override async Task<LicencePreviewJson> CreateDocument(LicencePreviewTransformRequest request, CancellationToken cancellationToken)
     {
         //following is for personal licence.
-        LicenceApplicationResp app = await licAppRepository.GetLicenceApplicationAsync(request.ApplicationId, cancellationToken);
-        if (app == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the application");
+        LicenceListResp lics = await licRepository.QueryAsync(new LicenceQry() { LicenceId = request.LicenceId }, cancellationToken);
+        if (lics == null || !lics.Items.Any())
+        {
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no licence found for the licenceId");
+        }
+        LicenceResp lic = lics.Items.First();
+        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
+        var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
+                new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), cancellationToken);
+        string name = serviceTypeListResp.Items.First().ServiceTypeName;
+        preview.LicenceType = name;
 
-        LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(app);
-        preview.Photo = await EncodedPhoto((Guid)app.ContactId, cancellationToken);
+        LicenceApplicationResp app = await licAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
+        {
+            preview.LicenceCategories = await GetCategoryNamesAsync(app.CategoryCodes, cancellationToken);
+        }
+        mapper.Map(app, preview);
+        preview.Photo = await EncodedPhoto((Guid)lic.LicenceId, cancellationToken);
+        preview.SPD_CARD = mapper.Map<SPD_CARD>(app);
+        preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
 
+        //missing conditions
+        IncidentListResp resp = await incidentRepository.QueryAsync(
+            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
+            cancellationToken);
+        preview.Conditions = resp.Items.First().Conditions;
 
-
-        //ContactResp applicant = await contactRepository.GetAsync((Guid)app.ApplicantId, cancellationToken);
-        //OrgQryResult org = (OrgQryResult)await orgRepository.QueryOrgAsync(new OrgByIdentifierQry(app.OrgId), cancellationToken);
-
-        //FingerprintLetter letter = mapper.Map<FingerprintLetter>(app);
-        //letter.ServiceType = await GetServiceTypeForLetter(app.ServiceType, cancellationToken);
-
-        //if (org.OrgResult?.EmployeeInteractionType == null)
-        //    letter.WorksWithCategory = string.Empty;
-        //else
-        //    letter.WorksWithCategory = await optionsetRepository.GetLabelAsync(
-        //        (EmployeeInteractionTypeCode)org.OrgResult.EmployeeInteractionType,
-        //        cancellationToken);
-
-        //letter.Applicant = mapper.Map<Applicant>(applicant);
-        //if (applicant.Gender == null)
-        //    letter.Applicant.Sex = string.Empty;
-        //else
-        //    letter.Applicant.Sex = await optionsetRepository.GetLabelAsync((GenderEnum)applicant.Gender, CancellationToken.None);
-
-        //letter.Organization = mapper.Map<Organization>(org.OrgResult);
-        //return letter;
-        return new LicencePreviewJson();
+        return preview;
+    }
+    private async Task<IEnumerable<string>> GetCategoryNamesAsync(IEnumerable<WorkerCategoryTypeEnum> categoryTypeEnums, CancellationToken ct)
+    {
+        List<string> names = new();
+        foreach (WorkerCategoryTypeEnum categoryTypeEnum in categoryTypeEnums)
+        {
+            var listResult = await workerLicenceCategoryRepository.QueryAsync(
+                new WorkerLicenceCategoryQry(null, categoryTypeEnum),
+                ct);
+            names.Add(listResult.Items.First().WorkerCategoryTypeName);
+        }
+        return names;
     }
 
-    private async Task<string> EncodedPhoto(Guid applicantId, CancellationToken cancellationToken)
+    private async Task<string> EncodedPhoto(Guid licenceId, CancellationToken cancellationToken)
     {
         DocumentListResp resp = await documentRepository.QueryAsync(
-            new DocumentQry(ApplicantId: applicantId, FileType: DocumentTypeEnum.Photograph),
+            new DocumentQry(LicenceId: licenceId, FileType: DocumentTypeEnum.Photograph),
             cancellationToken);
         DocumentResp? photoDoc = resp.Items.OrderByDescending(d => d.UploadedDateTime).FirstOrDefault();
         if (photoDoc == null) throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "cannot find photograph for the applicant");
@@ -74,11 +93,10 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
         {
             Image photo = Image.FromStream(ms);
             Image finalPhoto;
-            if (photo.Size.Width < 600 && photo.Size.Height < 800)
+            if (photo.Size.Width <= 600 && photo.Size.Height <= 800)
             {
-                //no need to resize as it is within 800 x 600 scope
+                //no need to resize as it is within 600 x 800 scope
                 finalPhoto = photo;
-
             }
             else
             {
@@ -96,11 +114,11 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
                 }
             }
 
-            finalPhoto.Save("C:\\Users\\PeggyZ\\tempImage.jpg", ImageFormat.Jpeg);
-            return Convert.ToBase64String(fileResult.File.Content);
-        }
+            Stream memoryStream = new MemoryStream();
+            finalPhoto.Save(memoryStream, ImageFormat.Jpeg);
 
-        return null;
+            return memoryStream.ConvertToBase64();
+        }
     }
 
     /// <summary>
@@ -136,7 +154,7 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
     }
 }
 
-public record LicencePreviewTransformRequest(Guid ApplicationId) : DocumentTransformRequest;
+public record LicencePreviewTransformRequest(Guid LicenceId) : DocumentTransformRequest;
 public record LicencePreviewJson()
 {
     [JsonPropertyName("licenceNumber")]
@@ -163,7 +181,7 @@ public record LicencePreviewJson()
     [JsonPropertyName("expiryDate")]
     public string? ExpiryDate { get; set; } //yyyy-MM-dd
 
-    ////[JsonPropertyName("mailingAddress1")]
+    [JsonPropertyName("mailingAddress1")]
     public string? MailingAddress1 { get; set; }
 
     [JsonPropertyName("mailingAddress2")]

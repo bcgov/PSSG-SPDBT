@@ -10,6 +10,7 @@ namespace Spd.Resource.Repository.Incident
             _ = CreateMap<incident, IncidentResp>()
             .ForMember(d => d.ApplicationId, opt => opt.MapFrom(s => s._spd_applicationid_value))
             .ForMember(d => d.IncidentId, opt => opt.MapFrom(s => s.incidentid))
+            .ForMember(d => d.Conditions, opt => opt.MapFrom(s => s.spd_incident_spd_licencecondition.Select(c => c.spd_conditionname).ToList()))
             .ForMember(d => d.Title, opt => opt.MapFrom(s => s.title));
         }
     }
