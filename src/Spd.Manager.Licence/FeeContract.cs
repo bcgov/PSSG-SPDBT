@@ -11,7 +11,7 @@ public interface IFeeManager
 public record LicenceFeeResponse
 {
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
-    public BusinessTypeCode? BusinessTypeCode { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
     public bool? HasValidSwl90DayLicence { get; set; }

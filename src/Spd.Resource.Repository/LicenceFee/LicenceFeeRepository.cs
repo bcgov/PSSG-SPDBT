@@ -48,9 +48,9 @@ internal class LicenceFeeRepository : ILicenceFeeRepository
             feeResult = feeResult.Where(f => f.spd_type == type);
         }
 
-        if (qry.BusinessTypeEnum != null)
+        if (qry.BizTypeEnum != null)
         {
-            int bizType = (int)Enum.Parse<BusinessTypeOptionSet>(qry.BusinessTypeEnum.ToString());
+            int bizType = (int)Enum.Parse<BizTypeOptionSet>(qry.BizTypeEnum.ToString());
             feeResult = feeResult.Where(f => f.spd_businesstype == bizType);
         }
 
