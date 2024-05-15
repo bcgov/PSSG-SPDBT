@@ -96,31 +96,6 @@ internal class ContactRepository : IContactRepository
         return true;
     }
 
-    public async Task UpdateContactLinkASync(UpdateContactLinkCmd cmd, CancellationToken ct)
-    {
-        RemoveContactLinkAsync(cmd.OldLink.ContactId, cmd.OldLink.LicenceId);
-        AddContactLinkAsync(cmd.NewLink.ContactId, cmd.NewLink.LicenceId);
-        await _context.SaveChangesAsync(ct);
-    }
-
-    private void RemoveContactLinkAsync(Guid contactId, Guid licenceId)
-    {
-        spd_licence? licence = _context.spd_licences.Where(l => l.spd_licenceid == licenceId).FirstOrDefault();
-        contact? contact = _context.contacts.Where(c => c.contactid == contactId).FirstOrDefault();
-
-        if (licence != null && contact != null)
-            _context.DeleteLink(licence, nameof(spd_licence.spd_LicenceHolder_contact), contact);
-    }
-
-    private void AddContactLinkAsync(Guid contactId, Guid licenceId)
-    {
-        spd_licence? licence = _context.spd_licences.Where(l => l.spd_licenceid == licenceId).FirstOrDefault();
-        contact? contact = _context.contacts.Where(c => c.contactid == contactId).FirstOrDefault();
-
-        if (licence != null && contact != null)
-            _context.AddLink(licence, nameof(spd_licence.spd_LicenceHolder_contact), contact);
-    }
-
     private async Task<ContactResp> UpdateContactAsync(UpdateContactCmd c, CancellationToken ct)
     {
         contact newContact = _mapper.Map<contact>(c);
