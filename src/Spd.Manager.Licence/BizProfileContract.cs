@@ -27,7 +27,7 @@ public record BizInfo
 {
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
-    public BusinessTypeCode? BizTypeCode { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? BizMailingAddress { get; set; }

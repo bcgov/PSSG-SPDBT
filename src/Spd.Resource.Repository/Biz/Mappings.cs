@@ -45,7 +45,8 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.ServiceTypes, opt => opt.MapFrom(s => GetServiceTypeEnums(s.spd_account_spd_servicetype)))
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
-            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => s.spd_Organization_Addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch)));
+            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => s.spd_Organization_Addresses.Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch 
+                && a.statecode == DynamicsConstants.StateCode_Active)));
 
             CreateMap<UpdateBizCmd, account>()
             .IncludeBase<Biz, account>()
