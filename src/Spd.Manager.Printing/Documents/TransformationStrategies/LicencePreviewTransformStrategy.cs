@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
-using Spd.Resource.Repository.OptionSet;
-using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.ServiceTypes;
 using Spd.Resource.Repository.WorkerLicenceCategory;
 using Spd.Utilities.FileStorage;
@@ -22,9 +19,6 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
 internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository licAppRepository,
     ILicenceRepository licRepository,
-    IContactRepository contactRepository,
-    IOrgRepository orgRepository,
-    IOptionSetRepository optionsetRepository,
     IServiceTypeRepository serviceTypeRepository,
     IDocumentRepository documentRepository,
     IMainFileStorageService fileStorageService,
