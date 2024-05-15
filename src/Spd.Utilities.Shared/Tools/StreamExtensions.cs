@@ -4,9 +4,7 @@ public static class StreamExtensions
     public static string ConvertToBase64(this Stream stream)
     {
         if (stream is MemoryStream memoryStream)
-        {
             return Convert.ToBase64String(memoryStream.ToArray());
-        }
 
         var bytes = new Byte[(int)stream.Length];
 

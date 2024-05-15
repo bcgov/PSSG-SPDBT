@@ -30,24 +30,19 @@ internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationReposi
 {
     protected override async Task<LicencePreviewJson> CreateDocument(PersonalLicencePreviewTransformRequest request, CancellationToken cancellationToken)
     {
-        //following is for personal licence.
         LicenceListResp lics = await licRepository.QueryAsync(new LicenceQry() { LicenceId = request.LicenceId }, cancellationToken);
         if (lics == null || !lics.Items.Any())
-        {
             throw new ApiException(HttpStatusCode.BadRequest, "no licence found for the licenceId");
-        }
+
         LicenceResp lic = lics.Items.First();
         LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
                 new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), cancellationToken);
-        string name = serviceTypeListResp.Items.First().ServiceTypeName;
-        preview.LicenceType = name;
+        preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
 
         LicenceApplicationResp app = await licAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);
         if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
-        {
             preview.LicenceCategories = await GetCategoryNamesAsync(app.CategoryCodes, cancellationToken);
-        }
         mapper.Map(app, preview);
 
         if (lic.PhotoDocumentUrlId == null)
@@ -57,7 +52,7 @@ internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationReposi
         preview.SPD_CARD = mapper.Map<SPD_CARD>(app);
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
 
-        //missing conditions
+        //conditions
         IncidentListResp resp = await incidentRepository.QueryAsync(
             new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
             cancellationToken);
@@ -83,7 +78,9 @@ internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationReposi
         DocumentResp photoDoc = await documentRepository.GetAsync(
             documentUrlId,
             cancellationToken);
-        if (photoDoc == null) throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "cannot find photograph for the applicant");
+        if (photoDoc == null)
+            throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "cannot find photograph for the applicant");
+
         FileQueryResult fileResult = (FileQueryResult)await fileStorageService.HandleQuery(
             new FileQuery { Key = photoDoc.DocumentUrlId.ToString(), Folder = photoDoc.Folder },
             cancellationToken);

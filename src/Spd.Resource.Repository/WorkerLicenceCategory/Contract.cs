@@ -6,7 +6,6 @@ public partial interface IWorkerLicenceCategoryRepository
     public Task<WorkerLicenceCategoryListResp> QueryAsync(WorkerLicenceCategoryQry query, CancellationToken cancellationToken);
 }
 
-
 public record WorkerLicenceCategoryQry(Guid? WorkerCategoryTypeId, WorkerCategoryTypeEnum? WorkerCategoryType);
 
 public record WorkerLicenceCategoryResp()
