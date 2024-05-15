@@ -85,7 +85,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 									</mat-cell>
 								</ng-container>
 
-								<ng-container matColumnDef="managerName">
+								<ng-container matColumnDef="branchManager">
 									<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Applicant Name:</span>
@@ -196,7 +196,15 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 })
 export class BusinessManagersComponent implements OnInit {
 	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	columns: string[] = ['status', 'managerRoleCode', 'managerName', 'emailAddress', 'phoneNumber', 'action1', 'action2'];
+	columns: string[] = [
+		'status',
+		'managerRoleCode',
+		'branchManager',
+		'emailAddress',
+		'phoneNumber',
+		'action1',
+		'action2',
+	];
 
 	maximumNumberOfManagers = 6;
 	maximumNumberOfPrimaryManagers = 1;
