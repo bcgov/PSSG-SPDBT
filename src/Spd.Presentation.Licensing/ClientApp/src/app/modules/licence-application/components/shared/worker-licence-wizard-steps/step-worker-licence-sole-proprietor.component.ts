@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, BusinessTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
@@ -54,21 +54,21 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 						<div class="col-xxl-5 col-xl-6 col-lg-8 col-md-12 mx-auto">
 							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 							<div class="text-minor-heading my-2">What is the type of business or company?</div>
-							<mat-radio-group aria-label="Select an option" formControlName="businessTypeCode">
-								<mat-radio-button class="radio-label" [value]="businessTypeCodes.NonRegisteredPartnership"
+							<mat-radio-group aria-label="Select an option" formControlName="bizTypeCode">
+								<mat-radio-button class="radio-label" [value]="bizTypeCodes.NonRegisteredPartnership"
 									>Non-Registered Sole Proprietor</mat-radio-button
 								>
 								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="businessTypeCodes.RegisteredSoleProprietor"
+								<mat-radio-button class="radio-label" [value]="bizTypeCodes.RegisteredSoleProprietor"
 									>Registered Sole Proprietor</mat-radio-button
 								>
 							</mat-radio-group>
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('businessTypeCode')?.dirty || form.get('businessTypeCode')?.touched) &&
-									form.get('businessTypeCode')?.invalid &&
-									form.get('businessTypeCode')?.hasError('required')
+									(form.get('bizTypeCode')?.dirty || form.get('bizTypeCode')?.touched) &&
+									form.get('bizTypeCode')?.invalid &&
+									form.get('bizTypeCode')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
@@ -82,7 +82,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 })
 export class StepWorkerLicenceSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	businessTypeCodes = BusinessTypeCode;
+	bizTypeCodes = BizTypeCode;
 	title = '';
 	infoTitle = '';
 
@@ -117,11 +117,9 @@ export class StepWorkerLicenceSoleProprietorComponent implements OnInit, Licence
 
 	onSoleProprietorChange(): void {
 		if (this.form.value.isSoleProprietor == BooleanTypeCode.No) {
-			// this.form.value.businessTypeCode = BusinessTypeCode.None;
-			this.form.patchValue({ businessTypeCode: BusinessTypeCode.None });
+			this.form.patchValue({ bizTypeCode: BizTypeCode.None });
 		} else {
-			this.form.patchValue({ businessTypeCode: null });
-			// this.form.value.businessTypeCode = null;
+			this.form.patchValue({ bizTypeCode: null });
 		}
 
 		// const soleProprietorData = {
@@ -130,10 +128,10 @@ export class StepWorkerLicenceSoleProprietorComponent implements OnInit, Licence
 		// };
 
 		// this.licenceApplicationService.licenceModelFormGroup.patchValue({
-		// 	businessTypeCode:
+		// 	bizTypeCode:
 		// 		this.form.value.isSoleProprietor === BooleanTypeCode.No
 		// 			? BusinessTypeCode.None
-		// 			: this.form.value.businessTypeCode,
+		// 			: this.form.value.bizTypeCode,
 		// });
 	}
 

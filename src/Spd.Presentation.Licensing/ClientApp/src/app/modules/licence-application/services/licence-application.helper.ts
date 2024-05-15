@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import {
 	ApplicantUpdateRequest,
 	ApplicationTypeCode,
-	BusinessTypeCode,
+	BizTypeCode,
 	Document,
 	DocumentExpiredInfo,
 	HeightUnitCode,
@@ -45,12 +45,12 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),
-			businessTypeCode: new FormControl(''),
+			bizTypeCode: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator(
-					'businessTypeCode',
+					'bizTypeCode',
 					(form) => form.get('isSoleProprietor')?.value == this.booleanTypeCodes.Yes
 				),
 			],
@@ -1029,10 +1029,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
-			businessTypeCode:
-				soleProprietorData.isSoleProprietor === BooleanTypeCode.No
-					? BusinessTypeCode.None
-					: soleProprietorData.businessTypeCode,
+			bizTypeCode:
+				soleProprietorData.isSoleProprietor === BooleanTypeCode.No ? BizTypeCode.None : soleProprietorData.bizTypeCode,
 			//-----------------------------------
 			hasPreviousName: this.utilService.booleanTypeToBoolean(licenceModelFormValue.aliasesData.previousNameFlag),
 			aliases:

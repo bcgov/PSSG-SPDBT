@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BusinessTypeCode } from '@app/api/models';
+import { BizTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -51,12 +51,12 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 					</app-alert>
 					<mat-form-field>
 						<mat-label>Business Type</mat-label>
-						<mat-select formControlName="businessTypeCode" [errorStateMatcher]="matcher">
+						<mat-select formControlName="bizTypeCode" [errorStateMatcher]="matcher">
 							<mat-option *ngFor="let item of businessTypes; let i = index" [value]="item.code">
 								{{ item.desc }}
 							</mat-option>
 						</mat-select>
-						<mat-error *ngIf="form.get('businessTypeCode')?.hasError('required')">This is required</mat-error>
+						<mat-error *ngIf="form.get('bizTypeCode')?.hasError('required')">This is required</mat-error>
 					</mat-form-field>
 				</div>
 			</div>
@@ -176,8 +176,8 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 
 	get isBusinessLicenceSoleProprietor(): boolean {
 		return (
-			this.businessTypeCode.value === BusinessTypeCode.NonRegisteredSoleProprietor ||
-			this.businessTypeCode.value === BusinessTypeCode.RegisteredSoleProprietor
+			this.bizTypeCode.value === BizTypeCode.NonRegisteredSoleProprietor ||
+			this.bizTypeCode.value === BizTypeCode.RegisteredSoleProprietor
 		);
 	}
 	get legalBusinessName(): FormControl {
@@ -189,7 +189,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 	get isBizTradeNameReadonly(): FormControl {
 		return this.form.get('isBizTradeNameReadonly') as FormControl;
 	}
-	get businessTypeCode(): FormControl {
-		return this.form.get('businessTypeCode') as FormControl;
+	get bizTypeCode(): FormControl {
+		return this.form.get('bizTypeCode') as FormControl;
 	}
 }

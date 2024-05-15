@@ -44,12 +44,14 @@ export interface UserDialogData {
 							<mat-label>Email</mat-label>
 							<input
 								matInput
-								formControlName="managerEmail"
+								formControlName="branchEmailAddr"
 								placeholder="name@domain.com"
 								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('managerEmail')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('branchEmailAddr')?.hasError('email')">
+								Must be a valid email address
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>

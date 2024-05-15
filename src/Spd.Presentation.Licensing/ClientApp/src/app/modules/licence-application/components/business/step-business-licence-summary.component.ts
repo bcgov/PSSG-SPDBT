@@ -1,18 +1,15 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
-	ArmouredVehiclePermitReasonCode,
-	BodyArmourPermitReasonCode,
-	BusinessTypeCode,
-	LicenceDocumentTypeCode,
+	BizTypeCode,
+	LicenceFeeResponse,
+	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
+import { BusinessApplicationService } from '../../services/business-application.service';
 
 @Component({
 	selector: 'app-step-business-licence-summary',
@@ -33,107 +30,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Licence Selection</div>
-													<button
-														mat-mini-fab
-														color="primary"
-														class="go-to-step-button"
-														matTooltip="Go to Step 2"
-														aria-label="Go to Step 2"
-														(click)="$event.stopPropagation(); onEditStep(1)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-												</mat-toolbar>
-											</mat-panel-title>
-										</mat-expansion-panel-header>
-										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Licence Information</div>
-											<div class="row mt-0">
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Licence Type</div>
-													<div class="summary-text-data">
-														{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Application Type</div>
-													<div class="summary-text-data">
-														{{ applicationTypeCode | options : 'ApplicationTypes' }}
-													</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Licence Term</div>
-													<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
-												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Fee</div>
-													<div class="summary-text-data">
-														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
-													</div>
-												</div>
-												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Reprint Licence</div>
-														<div class="summary-text-data">{{ isPrintPermit }}</div>
-													</div>
-												</ng-container>
-											</div>
-
-											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-												<div class="text-minor-heading">Expired Licence</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Licence Number</div>
-														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
-														<div class="summary-text-data">
-															{{ expiredLicenceExpiryDate | formatDate | default }}
-														</div>
-													</div>
-												</div>
-											</ng-container>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading mt-4">Purpose and Rationale</div>
-											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Reason to Require a Licence</div>
-													<div class="summary-text-data">
-														{{ reasonForRequirement }}
-													</div>
-												</div>
-												<div class="col-12" *ngIf="isOtherReason">
-													<div class="text-label d-block text-muted">Other Reason</div>
-													<div class="summary-text-data">
-														{{ otherReason }}
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="text-label d-block text-muted">Rationale</div>
-													<div class="summary-text-data">
-														{{ rationale }}
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="isRationaleAttachments">
-													<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of rationaleAttachments; let i = index">
-															{{ doc.name }}
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</mat-expansion-panel>
-
-									<mat-expansion-panel class="mb-2" [expanded]="true">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="review-panel-title">
-												<mat-toolbar class="d-flex justify-content-between">
 													<div class="panel-header">Business Information</div>
 													<button
 														mat-mini-fab
@@ -148,64 +44,76 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												</mat-toolbar>
 											</mat-panel-title>
 										</mat-expansion-panel-header>
+
 										<div class="panel-body">
-											<div class="text-minor-heading">Business Name</div>
+											<div class="text-minor-heading mt-4">Licence Information</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Business Name</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Licence Type</div>
 													<div class="summary-text-data">
-														{{ employerName }}
+														{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Supervisor's Name</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Application Type</div>
 													<div class="summary-text-data">
-														{{ supervisorName }}
+														{{ applicationTypeCode | options : 'ApplicationTypes' }}
 													</div>
 												</div>
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Phone Number</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Business Type</div>
 													<div class="summary-text-data">
-														{{ supervisorEmailAddress }}
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Email Address</div>
-													<div class="summary-text-data">
-														{{ supervisorPhoneNumber | mask : constants.phone.displayMask }}
+														{{ bizTypeCode | options : 'BizTypes' }}
 													</div>
 												</div>
 											</div>
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading">Business's Primary Address</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 1</div>
-													<div class="summary-text-data">{{ businessAddressLine1 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 2</div>
-													<div class="summary-text-data">{{ businessAddressLine2 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">City</div>
-													<div class="summary-text-data">{{ businessCity | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Postal Code</div>
-													<div class="summary-text-data">{{ businessPostalCode | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Province</div>
-													<div class="summary-text-data">
-														{{ businessProvince | default }}
+											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+												<div class="text-minor-heading">Expired Licence</div>
+												<div class="row mt-0">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Expired Licence Number</div>
+														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
+														<div class="summary-text-data">
+															{{ expiredLicenceExpiryDate | formatDate | default }}
+														</div>
 													</div>
 												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Country</div>
+												<mat-divider class="mt-3 mb-2"></mat-divider>
+											</ng-container>
+
+											<div class="text-minor-heading">Company Branding</div>
+											<div class="row mt-3">
+												<div class="col-lg-6 col-md-12">
+													<ng-container *ngIf="noLogoOrBranding; else CompanyBrandingExamples">
+														<div class="summary-text-data">There is no logo or branding</div>
+													</ng-container>
+													<ng-template #CompanyBrandingExamples>
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of companyBrandingAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
+													</ng-template>
+												</div>
+											</div>
+
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Proof of Insurance</div>
+											<div class="row mt-3">
+												<div class="col-lg-6 col-md-12">
 													<div class="summary-text-data">
-														{{ businessCountry | default }}
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
 													</div>
 												</div>
 											</div>
@@ -216,13 +124,13 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Controlling Members and Employees</div>
+													<div class="panel-header">Licence Selection</div>
 													<button
 														mat-mini-fab
 														color="primary"
 														class="go-to-step-button"
-														matTooltip="Go to Step 3"
-														aria-label="Go to Step 3"
+														matTooltip="Go to Step 2"
+														aria-label="Go to Step 2"
 														(click)="$event.stopPropagation(); onEditStep(2)"
 													>
 														<mat-icon>edit</mat-icon>
@@ -230,247 +138,204 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												</mat-toolbar>
 											</mat-panel-title>
 										</mat-expansion-panel-header>
+
 										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Personal Information</div>
+											<div class="text-minor-heading mt-4">Licence Information</div>
+
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Licence Term</div>
+													<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Fee</div>
+													<div class="summary-text-data">
+														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+													</div>
+												</div>
+
+												<ng-container
+													*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
+												>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
+														</div>
+														<div class="summary-text-data">
+															{{ category | options : 'WorkerCategoryTypes' }}
+														</div>
+													</div>
+												</ng-container>
+
+												<ng-container *ngIf="isAnyDocuments">
+													<mat-divider class="mt-3 mb-2"></mat-divider>
+													<div class="text-minor-heading">Documents Uploaded</div>
+													<div class="row mt-0">
+														<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
+															<div class="text-label d-block text-muted">
+																{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
+															</div>
+															<div class="summary-text-data">
+																<ul class="m-0">
+																	<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
+															</div>
+														</div>
+														<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
+															<div class="text-label d-block text-muted">
+																{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
+															</div>
+															<div class="summary-text-data">
+																<ul class="m-0">
+																	<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
+																		<li>{{ doc.name }}</li>
+																	</ng-container>
+																</ul>
+															</div>
+														</div>
+													</div>
+												</ng-container>
+											</div>
+										</div>
+									</mat-expansion-panel>
+
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header">Contact Information</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 2"
+														aria-label="Go to Step 2"
+														(click)="$event.stopPropagation(); onEditStep(3)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Business Manager Information</div>
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Applicant Name</div>
+													<div class="text-label d-block text-muted">Name</div>
 													<div class="summary-text-data">
-														{{ givenName }} {{ middleName1 }} {{ middleName2 }}
-														{{ surname }}
+														{{ businessManagerGivenName }} {{ businessManagerMiddleName1 }}
+														{{ businessManagerMiddleName2 }}
+														{{ businessManagerSurname }}
 													</div>
 												</div>
 												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Date of Birth</div>
+													<div class="text-label d-block text-muted">Email Address</div>
 													<div class="summary-text-data">
-														{{ dateOfBirth | formatDate | default }}
+														{{ businessManagerEmailAddress | default }}
 													</div>
 												</div>
 												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Sex</div>
+													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ genderCode | options : 'GenderTypes' | default }}
+														{{ businessManagerPhoneNumber | mask : constants.phone.displayMask | default }}
 													</div>
 												</div>
 											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-												<div class="text-minor-heading">Aliases</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Previous Names or Aliases</div>
-														<div class="summary-text-data">{{ previousNameFlag }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-															<div class="text-label d-block text-muted">Alias Name(s)</div>
-															<div class="summary-text-data">
-																<div
-																	*ngFor="let alias of aliases; let i = index; let first = first"
-																	[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-																>
-																	{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-																	{{ alias.surname }}
-																</div>
-															</div>
-														</ng-container>
-													</div>
-												</div>
+											<ng-container *ngIf="!isBusinessManager">
 												<mat-divider class="mt-3 mb-2"></mat-divider>
-
-												<div class="text-minor-heading">Citizenship</div>
+												<div class="text-minor-heading">Your Information</div>
 												<div class="row mt-0">
 													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">Canadian Citizen</div>
-														<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-													</div>
-													<div class="col-lg-6 col-md-12" *ngIf="isCanadianCitizen === booleanTypeCodes.No">
-														<div class="text-label d-block text-muted">Resident of Canada</div>
-														<div class="summary-text-data">{{ isCanadianResident }}</div>
-													</div>
-													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">
-															<span *ngIf="canadianCitizenProofTypeCode">
-																{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-															</span>
-															<span *ngIf="proofOfResidentStatusCode">
-																{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
-															</span>
-															<span *ngIf="proofOfCitizenshipCode">
-																{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
-															</span>
-														</div>
+														<div class="text-label d-block text-muted">Name</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of attachments; let i = index">
-																{{ doc.name }}
-															</div>
+															{{ yourContactGivenName }} {{ yourContactMiddleName1 }} {{ yourContactMiddleName2 }}
+															{{ yourContactSurname }}
 														</div>
 													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-														<div class="text-label d-block text-muted">
-															{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-														</div>
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Email Address</div>
 														<div class="summary-text-data">
-															<div *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																{{ doc.name }}
-															</div>
+															{{ yourContactEmailAddress | default }}
+														</div>
+													</div>
+													<div class="col-lg-3 col-md-12">
+														<div class="text-label d-block text-muted">Phone Number</div>
+														<div class="summary-text-data">
+															{{ yourContactPhoneNumber | mask : constants.phone.displayMask | default }}
 														</div>
 													</div>
 												</div>
-												<mat-divider class="mt-3 mb-2"></mat-divider>
 											</ng-container>
+										</div>
+									</mat-expansion-panel>
 
-											<div class="text-minor-heading">Identification</div>
+									<mat-expansion-panel class="mb-2" [expanded]="true">
+										<mat-expansion-panel-header>
+											<mat-panel-title class="review-panel-title">
+												<mat-toolbar class="d-flex justify-content-between">
+													<div class="panel-header">Controlling Members & Employees</div>
+													<button
+														mat-mini-fab
+														color="primary"
+														class="go-to-step-button"
+														matTooltip="Go to Step 2"
+														aria-label="Go to Step 2"
+														(click)="$event.stopPropagation(); onEditStep(4)"
+													>
+														<mat-icon>edit</mat-icon>
+													</button>
+												</mat-toolbar>
+											</mat-panel-title>
+										</mat-expansion-panel-header>
+
+										<div class="panel-body">
+											<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Photograph of Yourself</div>
-													<div class="summary-text-data">
-														<div *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-															{{ doc.name }}
+												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
 														</div>
-													</div>
-												</div>
-
-												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-													<div class="col-lg-6 col-md-12">
-														<div class="text-label d-block text-muted">BC Driver's Licence</div>
-														<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+														<div class="summary-text-data">
+															{{ member.licenceHolderName }} - {{ member.licenceNumber }}
+														</div>
 													</div>
 												</ng-container>
 											</div>
 
-											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-												<div class="row mt-0">
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Height</div>
-														<div class="summary-text-data">
-															{{ height }}
-															{{ heightUnitCode | options : 'HeightUnitTypes' }}
-															{{ heightInches }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Weight</div>
-														<div class="summary-text-data">
-															{{ weight }}
-															{{ weightUnitCode | options : 'WeightUnitTypes' }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Hair Colour</div>
-														<div class="summary-text-data">
-															{{ hairColourCode | options : 'HairColourTypes' }}
-														</div>
-													</div>
-													<div class="col-lg-3 col-md-12">
-														<div class="text-label d-block text-muted">Eye Colour</div>
-														<div class="summary-text-data">
-															{{ eyeColourCode | options : 'EyeColourTypes' }}
-														</div>
-													</div>
-												</div>
-											</ng-container>
 											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Criminal History</div>
+											<div class="text-minor-heading">Members who require Criminal Record Checks</div>
 											<div class="row mt-0">
-												<div class="col-12">
-													<div class="text-label d-block text-muted">{{ criminalHistoryLabel }}</div>
-													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-												</div>
-												<div class="col-12" *ngIf="criminalChargeDescription">
-													<div class="text-label d-block text-muted">Description of New Charges or Convictions</div>
-													<div class="summary-text-data">{{ criminalChargeDescription }}</div>
-												</div>
+												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
+														</div>
+														<div class="summary-text-data">
+															{{ member.licenceHolderName }}
+														</div>
+													</div>
+												</ng-container>
 											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-											<div class="text-minor-heading mt-4">Contact</div>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Employees</div>
 											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Email Address</div>
-													<div class="summary-text-data">{{ emailAddress | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Phone Number</div>
-													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
+												<ng-container *ngFor="let employee of employeesList; let i = index">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Employee <span *ngIf="employeesList.length > 1"> #{{ i + 1 }}</span>
+														</div>
+														<div class="summary-text-data">
+															{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}
+														</div>
 													</div>
-												</div>
+												</ng-container>
 											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Residential Address</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 1</div>
-													<div class="summary-text-data">{{ residentialAddressLine1 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 2</div>
-													<div class="summary-text-data">{{ residentialAddressLine2 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">City</div>
-													<div class="summary-text-data">{{ residentialCity | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Postal Code</div>
-													<div class="summary-text-data">{{ residentialPostalCode | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Province</div>
-													<div class="summary-text-data">
-														{{ residentialProvince | default }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Country</div>
-													<div class="summary-text-data">
-														{{ residentialCountry | default }}
-													</div>
-												</div>
-											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Mailing Address</div>
-											<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-												<div class="row mt-0">
-													<div class="col-12">
-														<div class="summary-text-data">Mailing address is the same as the residential address</div>
-													</div>
-												</div>
-											</ng-container>
-											<ng-template #mailingIsDifferentThanResidential>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Address Line 1</div>
-														<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Address Line 2</div>
-														<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">City</div>
-														<div class="summary-text-data">{{ mailingCity | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Postal Code</div>
-														<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Province</div>
-														<div class="summary-text-data">{{ mailingProvince | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Country</div>
-														<div class="summary-text-data">{{ mailingCountry | default }}</div>
-													</div>
-												</div>
-											</ng-template>
 										</div>
 									</mat-expansion-panel>
 								</mat-accordion>
@@ -526,24 +391,23 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 	],
 })
 export class StepBusinessLicenceSummaryComponent implements OnInit {
-	permitModelData: any = {};
+	businessModelData: any = {};
 	showEmployerInformation = false;
 
 	constants = SPD_CONSTANTS;
 	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
+	categoryTypeCodes = WorkerCategoryTypeCode;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
-		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService,
-		private utilService: UtilService,
-		private optionsPipe: OptionsPipe
+		private businessApplicationService: BusinessApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
+		this.businessModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 	}
 
 	onEditStep(stepNumber: number) {
@@ -551,353 +415,135 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		this.permitModelData = {
-			...this.permitApplicationService.permitModelFormGroup.getRawValue(),
+		this.businessModelData = {
+			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
+		console.log('onUpdateData', this.businessModelData);
+	}
+
+	get hasExpiredLicence(): string {
+		return this.businessModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	get expiredLicenceNumber(): string {
+		return this.businessModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	get expiredLicenceExpiryDate(): string {
+		return this.businessModelData.expiredLicenceData.expiryDate ?? '';
+	}
+
+	get noLogoOrBranding(): string {
+		return this.businessModelData.companyBrandingData.noLogoOrBranding ?? '';
+	}
+	get companyBrandingAttachments(): File[] {
+		return this.businessModelData.companyBrandingData.attachments ?? [];
+	}
+
+	get proofOfInsuranceAttachments(): File[] {
+		return this.businessModelData.liabilityData.attachments ?? [];
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+		return this.businessModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
 	}
-
 	get applicationTypeCode(): ApplicationTypeCode | null {
-		return this.permitModelData.applicationTypeData?.applicationTypeCode ?? null;
+		return this.businessModelData.applicationTypeData?.applicationTypeCode ?? null;
 	}
-
+	get bizTypeCode(): BizTypeCode | null {
+		return this.businessModelData.businessInformationData?.bizTypeCode ?? null;
+	}
+	get licenceTermCode(): string {
+		return this.businessModelData.licenceTermData.licenceTermCode ?? '';
+	}
 	get licenceFee(): number | null {
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BusinessTypeCode.None)
-			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
+		if (!this.licenceTermCode) {
+			return null;
+		}
 
+		const fee = this.commonApplicationService
+			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, this.bizTypeCode)
+			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}
 
-	get licenceTermCode(): string {
-		return this.permitModelData.licenceTermData.licenceTermCode ?? '';
-	}
-	get isPrintPermit(): string {
-		return this.permitModelData.reprintLicenceData.reprintLicence ?? '';
-	}
-	get hasExpiredLicence(): string {
-		return this.permitModelData.expiredLicenceData.hasExpiredLicence ?? '';
-	}
-	get expiredLicenceNumber(): string {
-		return this.permitModelData.expiredLicenceData.expiredLicenceNumber ?? '';
-	}
-	get expiredLicenceExpiryDate(): string {
-		return this.permitModelData.expiredLicenceData.expiryDate ?? '';
-	}
+	get categoryList(): Array<WorkerCategoryTypeCode> {
+		const list: Array<WorkerCategoryTypeCode> = [];
+		const categoryData = { ...this.businessModelData.categoryData };
 
-	get givenName(): string {
-		return this.permitModelData.personalInformationData.givenName ?? '';
-	}
-	get middleName1(): string {
-		return this.permitModelData.personalInformationData.middleName1 ?? '';
-	}
-	get middleName2(): string {
-		return this.permitModelData.personalInformationData.middleName2 ?? '';
-	}
-	get surname(): string {
-		return this.permitModelData.personalInformationData.surname ?? '';
-	}
-	get genderCode(): string {
-		return this.permitModelData.personalInformationData.genderCode ?? '';
-	}
-	get dateOfBirth(): string {
-		return this.permitModelData.personalInformationData.dateOfBirth ?? '';
-	}
-
-	get previousNameFlag(): string {
-		return this.permitModelData.aliasesData.previousNameFlag ?? '';
-	}
-	get aliases(): Array<any> {
-		return this.permitModelData.aliasesData.aliases ?? [];
-	}
-
-	get criminalHistoryLabel(): string {
-		if (
-			this.applicationTypeCode === ApplicationTypeCode.Update ||
-			this.applicationTypeCode === ApplicationTypeCode.Renewal
-		) {
-			return 'New Criminal Charges or Convictions';
-		} else {
-			return 'Previously been Charged or Convicted of a Crime';
+		for (const [key, value] of Object.entries(categoryData)) {
+			if (value) {
+				list.push(key as WorkerCategoryTypeCode);
+			}
 		}
+		return list;
 	}
-	get hasCriminalHistory(): string {
-		return this.permitModelData.criminalHistoryData.hasCriminalHistory ?? '';
+	get isAnyDocuments(): boolean {
+		return this.showArmouredCarGuard || this.showSecurityGuard;
 	}
-	get criminalChargeDescription(): string {
-		return this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory === BooleanTypeCode.Yes
-			? this.permitModelData.criminalHistoryData.criminalChargeDescription
-			: '';
+	get showArmouredCarGuard(): boolean {
+		return this.businessModelData.categoryArmouredCarGuardData?.isInclude ?? false;
 	}
-
-	get isCanadianCitizen(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen ?? '';
-	}
-	get canadianCitizenProofTypeCode(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
-			? this.permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
-			: '';
-	}
-	get isCanadianResident(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? this.permitModelData.citizenshipData.isCanadianResident ?? ''
-			: '';
-	}
-	get proofOfResidentStatusCode(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
-			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.Yes
-			? this.permitModelData.citizenshipData.proofOfResidentStatusCode ?? ''
-			: '';
-	}
-	get proofOfCitizenshipCode(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
-			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.No
-			? this.permitModelData.citizenshipData.proofOfCitizenshipCode ?? ''
-			: '';
-	}
-	get citizenshipExpiryDate(): string {
-		return this.permitModelData.citizenshipData.expiryDate ?? '';
-	}
-	get attachments(): File[] {
-		return this.permitModelData.citizenshipData.attachments ?? [];
-	}
-
-	get showAdditionalGovIdData(): boolean {
-		return this.utilService.getPermitShowAdditionalGovIdData(
-			this.isCanadianCitizen == BooleanTypeCode.Yes,
-			this.isCanadianResident == BooleanTypeCode.Yes,
-			this.canadianCitizenProofTypeCode as LicenceDocumentTypeCode,
-			this.proofOfResidentStatusCode as LicenceDocumentTypeCode,
-			this.proofOfCitizenshipCode as LicenceDocumentTypeCode
+	get showSecurityGuard(): boolean {
+		const isInclude = this.businessModelData.categorySecurityGuardData?.isInclude ?? false;
+		return (
+			isInclude && this.businessModelData.categorySecurityGuardData?.isRequestDogAuthorization === BooleanTypeCode.Yes
 		);
 	}
-
-	get governmentIssuedPhotoTypeCode(): string {
-		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedPhotoTypeCode : '';
+	get categoryArmouredCarGuardAttachments(): File[] {
+		return this.businessModelData.categoryArmouredCarGuardData.attachments ?? [];
 	}
-	get governmentIssuedPhotoExpiryDate(): string {
-		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedExpiryDate : '';
-	}
-	get governmentIssuedPhotoAttachments(): File[] {
-		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedAttachments : [];
+	get categorySecurityGuardAttachments(): File[] {
+		return this.businessModelData.categorySecurityGuardData.attachments ?? [];
 	}
 
-	get hasBcDriversLicence(): string {
-		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';
+	get businessManagerGivenName(): string {
+		return this.businessModelData.businessManagerData.givenName ?? '';
 	}
-	get bcDriversLicenceNumber(): string {
-		return this.permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '';
+	get businessManagerMiddleName1(): string {
+		return this.businessModelData.businessManagerData.middleName1 ?? '';
 	}
-
-	get hairColourCode(): string {
-		return this.permitModelData.characteristicsData.hairColourCode ?? '';
+	get businessManagerMiddleName2(): string {
+		return this.businessModelData.businessManagerData.middleName2 ?? '';
 	}
-	get eyeColourCode(): string {
-		return this.permitModelData.characteristicsData.eyeColourCode ?? '';
+	get businessManagerSurname(): string {
+		return this.businessModelData.businessManagerData.surname ?? '';
 	}
-	get height(): string {
-		return this.permitModelData.characteristicsData.height ?? '';
+	get businessManagerEmailAddress(): string {
+		return this.businessModelData.businessManagerData.emailAddress ?? '';
 	}
-	get heightInches(): string {
-		return this.permitModelData.characteristicsData.heightInches ?? '';
-	}
-	get heightUnitCode(): string {
-		return this.permitModelData.characteristicsData.heightUnitCode ?? '';
-	}
-	get weight(): string {
-		return this.permitModelData.characteristicsData.weight ?? '';
-	}
-	get weightUnitCode(): string {
-		return this.permitModelData.characteristicsData.weightUnitCode ?? '';
+	get businessManagerPhoneNumber(): string {
+		return this.businessModelData.businessManagerData.phoneNumber ?? '';
 	}
 
-	get photoOfYourselfAttachments(): File[] {
-		return this.permitModelData.photographOfYourselfData.attachments ?? [];
+	get isBusinessManager(): string {
+		return this.businessModelData.businessManagerData.isBusinessManager ?? '';
+	}
+	get yourContactGivenName(): string {
+		return this.businessModelData.businessManagerData.agivenName ?? '';
+	}
+	get yourContactMiddleName1(): string {
+		return this.businessModelData.businessManagerData.amiddleName1 ?? '';
+	}
+	get yourContactMiddleName2(): string {
+		return this.businessModelData.businessManagerData.amiddleName2 ?? '';
+	}
+	get yourContactSurname(): string {
+		return this.businessModelData.businessManagerData.asurname ?? '';
+	}
+	get yourContactEmailAddress(): string {
+		return this.businessModelData.businessManagerData.aemailAddress ?? '';
+	}
+	get yourContactPhoneNumber(): string {
+		return this.businessModelData.businessManagerData.aphoneNumber ?? '';
 	}
 
-	get emailAddress(): string {
-		return this.permitModelData.contactInformationData?.emailAddress ?? '';
+	get membersWithSwlList(): Array<any> {
+		return this.businessModelData.controllingMembersData.members.filter((item: any) => !!item.licenceNumber);
 	}
-	get phoneNumber(): string {
-		return this.permitModelData.contactInformationData?.phoneNumber ?? '';
-	}
-
-	get reasonForRequirement(): string {
-		const reasonList = [];
-		this.showEmployerInformation = false;
-
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
-			if (armouredVehicleRequirement.isPersonalProtection) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.PersonalProtection,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isProtectionOfAnotherPerson) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isProtectionOfPersonalProperty) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isProtectionOfOthersProperty) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isMyEmployment) {
-				this.showEmployerInformation = true;
-				reasonList.push(
-					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.MyEmployment, 'ArmouredVehiclePermitReasonTypes')
-				);
-			}
-			if (armouredVehicleRequirement.isOther) {
-				reasonList.push(
-					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.Other, 'ArmouredVehiclePermitReasonTypes')
-				);
-			}
-		} else {
-			const bodyArmourRequirementFormGroup = this.permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
-			if (bodyArmourRequirementFormGroup.isOutdoorRecreation) {
-				reasonList.push(
-					this.optionsPipe.transform(BodyArmourPermitReasonCode.OutdoorRecreation, 'BodyArmourPermitReasonTypes')
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isPersonalProtection) {
-				reasonList.push(
-					this.optionsPipe.transform(BodyArmourPermitReasonCode.PersonalProtection, 'BodyArmourPermitReasonTypes')
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isMyEmployment) {
-				this.showEmployerInformation = true;
-				reasonList.push(
-					this.optionsPipe.transform(BodyArmourPermitReasonCode.MyEmployment, 'BodyArmourPermitReasonTypes')
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isTravelForConflict) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict,
-						'BodyArmourPermitReasonTypes'
-					)
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isOther) {
-				reasonList.push(this.optionsPipe.transform(BodyArmourPermitReasonCode.Other, 'BodyArmourPermitReasonTypes'));
-			}
-		}
-		return reasonList.join(', ');
-	}
-	get isOtherReason(): boolean {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
-			return armouredVehicleRequirement.isOther;
-		} else {
-			const bodyArmourRequirementFormGroup = this.permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
-			return bodyArmourRequirementFormGroup.isOther;
-		}
-	}
-	get otherReason(): boolean {
-		return this.permitModelData.permitRequirementData.otherReason;
+	get membersWithoutSwlList(): Array<any> {
+		return this.businessModelData.controllingMembersData.members.filter((item: any) => !item.licenceNumber);
 	}
 
-	get rationale(): string {
-		return this.permitModelData.permitRationaleData?.rationale ?? '';
-	}
-	get isRationaleAttachments(): boolean {
-		return this.permitModelData.permitRationaleData?.attachments?.length > 0;
-	}
-	get rationaleAttachments(): File[] {
-		return this.permitModelData.permitRationaleData?.attachments ?? [];
-	}
-
-	get employerName(): string {
-		return this.permitModelData.employerData?.employerName ?? '';
-	}
-	get supervisorName(): string {
-		return this.permitModelData.employerData?.supervisorName ?? '';
-	}
-	get supervisorEmailAddress(): string {
-		return this.permitModelData.employerData?.supervisorEmailAddress ?? '';
-	}
-	get supervisorPhoneNumber(): string {
-		return this.permitModelData.employerData?.supervisorPhoneNumber ?? '';
-	}
-	get businessAddressLine1(): string {
-		return this.permitModelData.employerData?.addressLine1 ?? '';
-	}
-	get businessAddressLine2(): string {
-		return this.permitModelData.employerData?.addressLine2 ?? '';
-	}
-	get businessCity(): string {
-		return this.permitModelData.employerData?.city ?? '';
-	}
-	get businessPostalCode(): string {
-		return this.permitModelData.employerData?.postalCode ?? '';
-	}
-	get businessProvince(): string {
-		return this.permitModelData.employerData?.province ?? '';
-	}
-	get businessCountry(): string {
-		return this.permitModelData.employerData?.country ?? '';
-	}
-
-	get residentialAddressLine1(): string {
-		return this.permitModelData.residentialAddress?.addressLine1 ?? '';
-	}
-	get residentialAddressLine2(): string {
-		return this.permitModelData.residentialAddress?.addressLine2 ?? '';
-	}
-	get residentialCity(): string {
-		return this.permitModelData.residentialAddress?.city ?? '';
-	}
-	get residentialPostalCode(): string {
-		return this.permitModelData.residentialAddress?.postalCode ?? '';
-	}
-	get residentialProvince(): string {
-		return this.permitModelData.residentialAddress?.province ?? '';
-	}
-	get residentialCountry(): string {
-		return this.permitModelData.residentialAddress?.country ?? '';
-	}
-	get isMailingTheSameAsResidential(): string {
-		return this.permitModelData.residentialAddress?.isMailingTheSameAsResidential ?? '';
-	}
-
-	get mailingAddressLine1(): string {
-		return this.permitModelData.mailingAddress?.addressLine1 ?? '';
-	}
-	get mailingAddressLine2(): string {
-		return this.permitModelData.mailingAddress?.addressLine2 ?? '';
-	}
-	get mailingCity(): string {
-		return this.permitModelData.mailingAddress?.city ?? '';
-	}
-	get mailingPostalCode(): string {
-		return this.permitModelData.mailingAddress?.postalCode ?? '';
-	}
-	get mailingProvince(): string {
-		return this.permitModelData.mailingAddress?.province ?? '';
-	}
-	get mailingCountry(): string {
-		return this.permitModelData.mailingAddress?.country ?? '';
+	get employeesList(): Array<any> {
+		return this.businessModelData.employeesData.employees ?? [];
 	}
 }
