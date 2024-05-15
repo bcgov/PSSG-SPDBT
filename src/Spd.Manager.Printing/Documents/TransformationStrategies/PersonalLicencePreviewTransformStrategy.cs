@@ -113,7 +113,7 @@ internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationReposi
             }
 
             Stream memoryStream = new MemoryStream();
-            finalPhoto.Save(memoryStream, ImageFormat.Jpeg);
+            finalPhoto.Save(memoryStream, ImageFormat.Png);
 
             return memoryStream.ConvertToBase64();
         }

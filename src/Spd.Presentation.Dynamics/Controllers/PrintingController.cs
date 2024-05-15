@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Printing;
@@ -9,7 +10,7 @@ using PrintJobStatus = Spd.Presentation.Dynamics.Models.PrintJobStatus;
 
 namespace Spd.Presentation.Dynamics.Controllers;
 
-//[Authorize]
+[Authorize]
 public class PrintingController(IMediator mediator, IMapper mapper) : SpdControllerBase
 {
     /// <summary>
