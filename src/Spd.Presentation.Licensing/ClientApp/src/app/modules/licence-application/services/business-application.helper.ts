@@ -57,7 +57,8 @@ export abstract class BusinessApplicationHelper {
 		{
 			businessTypeCode: new FormControl('', [Validators.required]),
 			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
-			doingBusinessAsName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
+			bizTradeName: new FormControl(''),
+			isBizTradeNameReadonly: new FormControl(''),
 			soleProprietorSwlEmailAddress: new FormControl('', [FormControlValidators.email]),
 			soleProprietorSwlPhoneNumber: new FormControl(''),
 			isTradeNameTheSameAsLegal: new FormControl(''),
@@ -71,7 +72,7 @@ export abstract class BusinessApplicationHelper {
 						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'phoneNumber',
+					'soleProprietorSwlPhoneNumber',
 					(form) =>
 						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
 						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
@@ -200,16 +201,6 @@ export abstract class BusinessApplicationHelper {
 		isMailingTheSame: new FormControl(false),
 	});
 
-	// mailingAddressFormGroup: FormGroup = this.formBuilder.group({ // TODO
-	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
-	// 	addressLine1: new FormControl('', [FormControlValidators.required]),
-	// 	addressLine2: new FormControl(''),
-	// 	city: new FormControl('', [FormControlValidators.required]),
-	// 	postalCode: new FormControl('', [FormControlValidators.required]),
-	// 	province: new FormControl('', [FormControlValidators.required]),
-	// 	country: new FormControl('', [FormControlValidators.required]),
-	// });
-
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{
 			addressSelected: new FormControl(false),
@@ -276,17 +267,6 @@ export abstract class BusinessApplicationHelper {
 		employees: this.formBuilder.array([]),
 	});
 
-	// membersWithSwlFormGroup: FormGroup = this.formBuilder.group({
-	// 	hasMembersWithSwl: new FormControl(''),
-	// 	licenceNumberLookup: new FormControl(''),
-	// 	members: this.formBuilder.array([]),
-	// });
-
-	// membersWithoutSwlFormGroup: FormGroup = this.formBuilder.group({
-	// 	hasMembersWithoutSwl: new FormControl(''),
-	// 	members: this.formBuilder.array([]),
-	// });
-
 	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
 		attachments: this.formBuilder.array([]),
 	});
@@ -302,9 +282,9 @@ export abstract class BusinessApplicationHelper {
 			FormControlValidators.requiredValue('British Columbia'),
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
-		managerName: new FormControl('', [Validators.requiredTrue]),
-		managerPhoneNumber: new FormControl('', [FormControlValidators.required]),
-		managerEmail: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		branchManager: new FormControl('', [FormControlValidators.required]),
+		branchPhoneNumber: new FormControl(''),
+		managerEmail: new FormControl('', [FormControlValidators.email]),
 	});
 
 	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({
