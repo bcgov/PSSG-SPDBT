@@ -88,6 +88,8 @@ namespace Spd.Resource.Repository.Biz
 
             account? Biz = await accounts.FirstOrDefaultAsync(ct);
 
+            // Add remove/add link here
+
             if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             _mapper.Map(updateBizCmd, Biz);
