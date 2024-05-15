@@ -80,16 +80,6 @@ public enum LicenceDocumentTypeCode
     BizBCReport
 }
 
-public enum BusinessTypeCode
-{
-    NonRegisteredSoleProprietor,
-    NonRegisteredPartnership,
-    RegisteredSoleProprietor,
-    RegisteredPartnership,
-    Corporation,
-    None
-}
-
 public enum PoliceOfficerRoleCode
 {
     AuxiliaryorReserveConstable,
