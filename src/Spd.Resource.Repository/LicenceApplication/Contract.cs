@@ -122,16 +122,6 @@ public enum WorkerLicenceTypeEnum
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
 }
 
-public enum BusinessTypeEnum
-{
-    NonRegisteredSoleProprietor,
-    NonRegisteredPartnership,
-    RegisteredSoleProprietor,
-    RegisteredPartnership,
-    Corporation,
-    None
-}
-
 public enum HairColourEnum
 {
     Black,
