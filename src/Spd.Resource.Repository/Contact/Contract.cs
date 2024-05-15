@@ -83,16 +83,4 @@ namespace Spd.Resource.Repository.Contact
         public Guid OldContactId { get; set; }
         public Guid NewContactId { get; set; }
     }
-
-    public record UpdateContactLinkCmd()
-    {
-        public ContactLink OldLink { get; set; }
-        public ContactLink NewLink { get; set; }
-    }
-
-    public record ContactLink()
-    {
-        public Guid ContactId { get; set; }
-        public Guid LicenceId { get; set; }
-    }
 }
