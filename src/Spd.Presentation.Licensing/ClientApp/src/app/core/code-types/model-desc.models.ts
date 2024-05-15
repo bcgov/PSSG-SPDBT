@@ -2,6 +2,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
+	BizTypeCode,
 	BodyArmourPermitReasonCode,
 	BusinessTypeCode,
 	EyeColourCode,
@@ -197,6 +198,15 @@ export const BusinessTypes: SelectOptions[] = [
 	{ desc: 'Registered Partnership', code: BusinessTypeCode.RegisteredPartnership },
 	{ desc: 'Registered Sole Proprietor', code: BusinessTypeCode.RegisteredSoleProprietor },
 	{ desc: 'None', code: BusinessTypeCode.None },
+];
+
+export const BizTypes: SelectOptions[] = [
+	{ desc: 'Corporation', code: BizTypeCode.Corporation },
+	{ desc: 'Non-Registered Partnership', code: BizTypeCode.NonRegisteredPartnership },
+	{ desc: 'Non-Registered Sole Proprietor', code: BizTypeCode.NonRegisteredSoleProprietor },
+	{ desc: 'Registered Partnership', code: BizTypeCode.RegisteredPartnership },
+	{ desc: 'Registered Sole Proprietor', code: BizTypeCode.RegisteredSoleProprietor },
+	{ desc: 'None', code: BizTypeCode.None },
 ];
 
 export const BusinessLicenceTypes: SelectOptions[] = BusinessTypes.filter(

@@ -1,7 +1,17 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, BizProfileResponse, BranchInfo, WorkerLicenceTypeCode } from '@app/api/models';
+import { Router } from '@angular/router';
+import {
+	Address,
+	ApplicationTypeCode,
+	BizProfileResponse,
+	BizProfileUpdateRequest,
+	BranchInfo,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
 import { BizProfileService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -16,6 +26,7 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs';
+import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService } from './common-application.service';
 
@@ -63,6 +74,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
+		private router: Router,
 		private utilService: UtilService,
 		private bizProfileService: BizProfileService,
 		private authUserBceidService: AuthUserBceidService,
@@ -98,6 +110,63 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					this.businessModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	/**
+	 * Save the login user profile
+	 * @returns
+	 */
+	saveLoginBusinessProfile(): Observable<StrictHttpResponse<string>> {
+		return this.saveBusinessProfile();
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	saveBusinessProfileAndContinue(applicationTypeCode: ApplicationTypeCode): Observable<StrictHttpResponse<string>> {
+		return this.saveBusinessProfile().pipe(
+			tap((_resp: StrictHttpResponse<string>) => {
+				this.continueToNextStep(applicationTypeCode);
+			})
+		);
+	}
+
+	/**
+	 * Save the user profile in a flow
+	 * @returns
+	 */
+	private continueToNextStep(_applicationTypeCode: ApplicationTypeCode): void {
+		// switch (applicationTypeCode) {
+		// 	case ApplicationTypeCode.Replacement: {
+		// 		this.router.navigateByUrl(
+		// 			LicenceApplicationRoutes.pathBusinessLicence(
+		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_REPLACEMENT
+		// 			)
+		// 		);
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Renewal: {
+		// 		this.router.navigateByUrl(
+		// 			LicenceApplicationRoutes.pathBusinessLicence(
+		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_RENEW
+		// 			)
+		// 		);
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Update: {
+		// 		this.router.navigateByUrl(
+		// 			LicenceApplicationRoutes.pathBusinessLicence(
+		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_UPDATE
+		// 			)
+		// 		);
+		// 		break;
+		// 	}
+		// 	default: {
+		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
+		// 		break;
+		// 	}
+		// }
 	}
 
 	/**
@@ -151,6 +220,56 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	// COMMON
 	/*************************************************************/
 
+	/**
+	 * Save the business profile
+	 * @returns
+	 */
+	private saveBusinessProfile(): Observable<StrictHttpResponse<string>> {
+		const modelFormValue = this.businessModelFormGroup.getRawValue();
+
+		const branches: Array<BranchInfo> = [];
+		if (modelFormValue.branchesInBcData.hasBranchesInBc === BooleanTypeCode.Yes) {
+			modelFormValue.branchesInBcData.branches.forEach((item: any) => {
+				const branchAddress: Address = {
+					addressLine1: item.addressLine1,
+					addressLine2: item.addressLine2,
+					city: item.city,
+					country: item.country,
+					postalCode: item.postalCode,
+					province: item.province,
+				};
+				const branch: BranchInfo = {
+					branchId: item.branchId,
+					managerEmail: item.managerEmail,
+					branchManager: item.branchManager,
+					branchPhoneNumber: item.branchPhoneNumber,
+					branchAddress,
+				};
+				branches.push(branch);
+			});
+		}
+
+		const bizBCAddress = modelFormValue.isBcBusinessAddress ? {} : { ...modelFormValue.bcBusinessAddressData };
+
+		const bizMailingAddress = modelFormValue.businessAddressData.isMailingTheSame
+			? { ...modelFormValue.businessAddressData }
+			: { ...modelFormValue.mailingAddressData };
+
+		const body: BizProfileUpdateRequest = {
+			bizAddress: { ...modelFormValue.businessAddressData },
+			bizBCAddress,
+			bizMailingAddress,
+			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
+			bizTypeCode: modelFormValue.businessInformationData.businessTypeCode,
+			branches,
+		};
+
+		return this.bizProfileService.apiBizBizIdPut$Response({
+			bizId: modelFormValue.bizId,
+			body,
+		});
+	}
+
 	private createEmptyLicenceAuthenticated(
 		profile: BizProfileResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined
@@ -170,7 +289,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const businessInformationData = {
 			businessTypeCode: profile.bizTypeCode,
 			legalBusinessName: profile.bizLegalName,
-			doingBusinessAsName: profile.bizTradeName,
+			bizTradeName: profile.bizTradeName,
+			isBizTradeNameReadonly: !!profile.bizTradeName, // user cannot overwrite value from bceid
 			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
 			soleProprietorSwlPhoneNumber: profile.soleProprietorSwlPhoneNumber,
 		};
@@ -273,7 +393,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			profile.branches?.forEach((branchInfo: BranchInfo) => {
 				bcBranchesArray.push(
 					new FormGroup({
-						id: new FormControl(branchInfo.branchId),
+						branchId: new FormControl(branchInfo.branchId),
 						addressSelected: new FormControl(true),
 						addressLine1: new FormControl(branchInfo.branchAddress?.addressLine1),
 						addressLine2: new FormControl(branchInfo.branchAddress?.addressLine2),
@@ -283,7 +403,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						province: new FormControl(branchInfo.branchAddress?.province),
 						branchManager: new FormControl(branchInfo.branchManager),
 						branchPhoneNumber: new FormControl(branchInfo.branchPhoneNumber),
-						branchEmailAddr: new FormControl(branchInfo.branchEmailAddr),
+						managerEmail: new FormControl(branchInfo.managerEmail),
 					})
 				);
 			});
@@ -292,24 +412,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
 		controllingMembersArray.push(
 			new FormGroup({
-				id: new FormControl('1'),
-				givenName: new FormControl('Kimberly'),
-				surname: new FormControl('Streisand'),
-				emailAddress: new FormControl(),
-				licenceNumber: new FormControl('7465766'),
-				status: new FormControl('Valid'),
-				expiryDate: new FormControl('2024-05-15'),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
-		controllingMembersArray.push(
-			new FormGroup({
 				id: new FormControl('2'),
+				licenceHolderName: new FormControl('Yank Alexander'),
 				givenName: new FormControl('Yank'),
 				surname: new FormControl('Alexander'),
 				emailAddress: new FormControl(),
 				licenceNumber: new FormControl('2345433'),
-				status: new FormControl('Expired'),
+				licenceStatusCode: new FormControl('Expired'),
 				expiryDate: new FormControl('2023-05-15'),
 				clearanceStatus: new FormControl('Completed'),
 			})
@@ -317,11 +426,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		controllingMembersArray.push(
 			new FormGroup({
 				id: new FormControl('3'),
+				licenceHolderName: new FormControl('Anderson Cooper'),
 				givenName: new FormControl('Anderson'),
 				surname: new FormControl('Cooper'),
 				emailAddress: new FormControl('test@test.com'),
 				licenceNumber: new FormControl(),
-				status: new FormControl(),
+				licenceStatusCode: new FormControl(),
 				expiryDate: new FormControl(),
 				clearanceStatus: new FormControl('Completed'),
 			})
@@ -329,6 +439,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		controllingMembersArray.push(
 			new FormGroup({
 				id: new FormControl('3'),
+				licenceHolderName: new FormControl('James Clark'),
 				givenName: new FormControl('James'),
 				surname: new FormControl('Clark'),
 				emailAddress: new FormControl(),
@@ -343,20 +454,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		employeesArray.push(
 			new FormGroup({
 				id: new FormControl('1'),
-				givenName: new FormControl('Barbara'),
-				surname: new FormControl('Streisand'),
+				licenceHolderName: new FormControl('Barbara Streisand'),
 				licenceNumber: new FormControl('7465766'),
-				status: new FormControl('Valid'),
+				licenceStatusCode: new FormControl('Valid'),
 				expiryDate: new FormControl('2024-05-15'),
 			})
 		);
 		employeesArray.push(
 			new FormGroup({
 				id: new FormControl('2'),
-				givenName: new FormControl('Yank'),
-				surname: new FormControl('Alexander'),
+				licenceHolderName: new FormControl('Yank Alexander'),
 				licenceNumber: new FormControl('2345433'),
-				status: new FormControl('Expired'),
+				licenceStatusCode: new FormControl('Expired'),
 				expiryDate: new FormControl('2023-05-15'),
 			})
 		);

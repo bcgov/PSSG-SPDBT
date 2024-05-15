@@ -19,6 +19,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 							<section>
 								<app-common-business-information
 									[form]="businessInformationFormGroup"
+									[isReadonly]="isReadonly"
 								></app-common-business-information>
 							</section>
 						</div>
@@ -42,7 +43,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 								<app-common-business-address
 									[form]="businessAddressFormGroup"
 									[isWizardStep]="false"
-									[isReadonly]="isReadonly"
+									[isReadonly]="true"
 								></app-common-business-address>
 							</section>
 						</div>

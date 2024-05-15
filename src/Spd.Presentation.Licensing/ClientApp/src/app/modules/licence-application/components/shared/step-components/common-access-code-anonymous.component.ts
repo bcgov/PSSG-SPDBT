@@ -199,7 +199,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
 			//  access code matches licence, but the WorkerLicenceType does not match
 			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-			this.errorMessage = `This ${this.label} is not a ${selWorkerLicenceTypeDesc}.`;
+			this.errorMessage = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
 		} else if (!this.utilService.getIsTodayOrFutureDate(resp.expiryDate)) {
 			// access code matches licence, but the licence is expired
 			this.isExpired = true;
