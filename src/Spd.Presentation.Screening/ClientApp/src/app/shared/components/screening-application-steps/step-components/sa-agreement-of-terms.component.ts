@@ -55,7 +55,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						</div>
 						<div class="col-lg-3 col-md-4 col-sm-12">
 							<a
-								*ngIf="orgData?.isCrrpa"
+								*ngIf="isCrrpa"
 								mat-stroked-button
 								color="primary"
 								class="mt-2 float-end"
@@ -67,13 +67,25 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							</a>
 
 							<a
-								*ngIf="!orgData?.isCrrpa"
+								*ngIf="isPssoa"
 								mat-stroked-button
 								color="primary"
 								class="mt-2 float-end"
 								aria-label="Download Terms of Use"
 								download="Psso-terms-and-conditions"
 								[href]="constants.files.pssoTerms"
+							>
+								<mat-icon>file_download</mat-icon>Terms of Use
+							</a>
+
+							<a
+								*ngIf="isPeCrcOrPeCrcVs"
+								mat-stroked-button
+								color="primary"
+								class="mt-2 float-end"
+								aria-label="Download Terms of Use"
+								download="Psso-pe-crc-terms-and-conditions"
+								[href]="constants.files.pssoPeCrcTerms"
 							>
 								<mat-icon>file_download</mat-icon>Terms of Use
 							</a>
