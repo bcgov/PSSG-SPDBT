@@ -446,7 +446,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				restraintAuthorization: null,
 			},
 		];
-		// this.applicationIsInProgress = true;
+
+		this.applicationIsInProgress = false; // TODO remove hardcoded flag
 
 		this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 
@@ -583,7 +584,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
 					);
 				}),
 				take(1)
