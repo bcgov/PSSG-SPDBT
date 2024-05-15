@@ -122,12 +122,6 @@ internal class BizProfileManager :
         IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
         await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), cmd.BizId, ct);
 
-        var contactId = cmd.BizProfileUpdateRequest.SoleProprietorSwlContactInfo.ContactId;
-        var licenceId = cmd.BizProfileUpdateRequest.SoleProprietorSwlContactInfo.LicenceId;
-
-        if (contactId != null && licenceId != null)
-            await ProcessSoleProprietorInfo((Guid)contactId, (Guid)licenceId, cmd.BizId, ct);
-
         return default;
     }
 
@@ -230,21 +224,5 @@ internal class BizProfileManager :
             Addresses = addressesToCreate
         };
         await _addressRepository.CreateAddressesAsync(createAddressCmd, ct);
-    }
-
-    private async Task ProcessSoleProprietorInfo(Guid contactId, Guid licenceId, Guid bizId, CancellationToken ct)
-    {
-        BizResult? biz = await _bizRepository.GetBizAsync(bizId, ct);
-
-        if (biz == null)
-            throw new ApiException(System.Net.HttpStatusCode.NotFound, "update sole proprietor failed, biz not found.");
-
-        UpdateContactLinkCmd cmd = new()
-        {
-            OldLink = new() { ContactId = (Guid)(biz.SoleProprietorSwlContactInfo?.ContactId), LicenceId = (Guid)(biz.SoleProprietorSwlContactInfo?.LicenceId) },
-            NewLink = new() { ContactId = contactId, LicenceId = licenceId }
-        };
-
-        await _contactRepository.UpdateContactLinkASync(cmd, ct);
     }
 }
