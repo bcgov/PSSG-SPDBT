@@ -21,7 +21,7 @@ export interface BranchResponse {
 	province?: null | string;
 	branchManager?: null | string;
 	branchPhoneNumber?: null | string;
-	branchEmailAddr?: null | string;
+	managerEmail?: null | string;
 }
 
 @Component({
@@ -153,8 +153,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 	}
 
 	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return true;
 	}
 
 	onEditBranch(branch: BranchResponse): void {
@@ -175,6 +174,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					this.branchesArray.removeAt(index);
 					this.branchList.splice(index, 1);
 					this.dataSource = new MatTableDataSource(this.branchList);
 				}
