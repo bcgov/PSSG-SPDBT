@@ -43,7 +43,7 @@ internal abstract class LicenceAppManagerBase
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
         {
             ApplicationTypeEnum = request.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(request.ApplicationTypeCode.ToString()),
-            BusinessTypeEnum = request.BusinessTypeCode == null ? BusinessTypeEnum.None : Enum.Parse<BusinessTypeEnum>(request.BusinessTypeCode.ToString()),
+            BizTypeEnum = request.BizTypeCode == null ? BizTypeEnum.None : Enum.Parse<BizTypeEnum>(request.BizTypeCode.ToString()),
             LicenceTermEnum = request.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(request.LicenceTermCode.ToString()),
             WorkerLicenceTypeEnum = request.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(request.WorkerLicenceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence

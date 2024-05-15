@@ -12,7 +12,7 @@ public record LicenceFeeQry
     public WorkerLicenceTypeEnum? WorkerLicenceTypeEnum { get; set; } = null;
     public LicenceTermEnum? LicenceTermEnum { get; set; } = null;
     public ApplicationTypeEnum? ApplicationTypeEnum { get; set; } = null;
-    public BusinessTypeEnum? BusinessTypeEnum { get; set; } = null;
+    public BizTypeEnum? BizTypeEnum { get; set; } = null;
     public bool IncludeInactive { get; set; } = false;
     public bool? HasValidSwl90DayLicence { get; set; } = null;
 };
@@ -20,7 +20,7 @@ public record LicenceFeeQry
 public record LicenceFeeResp()
 {
     public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
-    public BusinessTypeEnum? BusinessTypeCode { get; set; }
+    public BizTypeEnum? BizTypeCode { get; set; }
     public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool HasValidSwl90DayLicence { get; set; }
