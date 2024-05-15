@@ -123,7 +123,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		private utilService: UtilService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
-		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state && state['applicationTypeCode'];
 
