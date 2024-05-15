@@ -90,13 +90,6 @@ namespace Spd.Resource.Repository.Biz
             return serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid))).ToArray();
         }
 
-        private static string SetAddressField(string src, string dest)
-        {
-            if (string.IsNullOrEmpty(src)) return dest;
-
-            return src;
-        }
-
         private static SwlContactInfo GetSoleProprietorContactInfo(IEnumerable<spd_licence> licences)
         {
             spd_licence? solePropietorInfo = licences.FirstOrDefault(l => l.statuscode == DynamicsConstants.StatusCode_Active);
