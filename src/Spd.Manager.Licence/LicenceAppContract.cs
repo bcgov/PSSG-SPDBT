@@ -6,7 +6,7 @@ public abstract record PersonalLicenceAppBase
 {
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
-    public BusinessTypeCode? BusinessTypeCode { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }

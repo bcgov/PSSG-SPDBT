@@ -263,7 +263,7 @@ namespace Spd.Utilities.Dynamics
         FiveYears = 100000004
     }
 
-    public enum BusinessTypeOptionSet
+    public enum BizTypeOptionSet
     {
         NonRegisteredSoleProprietor = 100000000,
         NonRegisteredPartnership = 100000001,
