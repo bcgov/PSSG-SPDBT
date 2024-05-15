@@ -23,7 +23,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 								record check fee is non-refundable.
 							</li>
 							<li>
-								If you don’t have the BC Services Card app, you can
+								If you don’t have a BC Services Card Login account, you can
 								<a href="https://id.gov.bc.ca/account/setup-instruction" target="_blank">set it up now</a> and return to
 								this application process when you have completed that process.
 							</li>
@@ -38,7 +38,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 								>.
 							</li>
 							<li>
-								If you don’t have the BC Services Card app, you can
+								If you don’t have a BC Services Card Login account, you can
 								<a href="https://id.gov.bc.ca/account/setup-instruction" target="_blank">set it up now</a> and return to
 								this application process when you have completed that process.
 							</li>
