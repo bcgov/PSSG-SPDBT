@@ -53,13 +53,13 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
         if (printJob.DocumentType == DocumentType.FingerprintLetter && printJob.ApplicationId == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationId cannot be null if documentType is FingerprintLetter");
 
-        if (printJob.DocumentType == DocumentType.LicencePreview && printJob.LicenceId == null)
+        if (printJob.DocumentType == DocumentType.PersonalLicencePreview && printJob.LicenceId == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if documentType is LicencePreview");
 
         return printJob.DocumentType switch
         {
             DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest((Guid)printJob.ApplicationId),
-            DocumentType.LicencePreview => new LicencePreviewTransformRequest((Guid)printJob.LicenceId),
+            DocumentType.PersonalLicencePreview => new PersonalLicencePreviewTransformRequest((Guid)printJob.LicenceId),
             _ => throw new NotImplementedException()
         };
     }

@@ -11,6 +11,6 @@
     {
         FingerprintLetter,
         BCMailPlusBusinessLicence,
-        LicencePreview
+        PersonalLicencePreview
     }
 }

@@ -13,11 +13,12 @@ using Spd.Utilities.Shared.Tools;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
-internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository licAppRepository,
+internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationRepository licAppRepository,
     ILicenceRepository licRepository,
     IServiceTypeRepository serviceTypeRepository,
     IDocumentRepository documentRepository,
@@ -25,15 +26,15 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
     IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
     IIncidentRepository incidentRepository,
     IMapper mapper)
-    : BcMailPlusTransformStrategyBase<LicencePreviewTransformRequest, LicencePreviewJson>(Jobs.SecurityWorkerLicense)
+    : BcMailPlusTransformStrategyBase<PersonalLicencePreviewTransformRequest, LicencePreviewJson>(Jobs.SecurityWorkerLicense)
 {
-    protected override async Task<LicencePreviewJson> CreateDocument(LicencePreviewTransformRequest request, CancellationToken cancellationToken)
+    protected override async Task<LicencePreviewJson> CreateDocument(PersonalLicencePreviewTransformRequest request, CancellationToken cancellationToken)
     {
         //following is for personal licence.
         LicenceListResp lics = await licRepository.QueryAsync(new LicenceQry() { LicenceId = request.LicenceId }, cancellationToken);
         if (lics == null || !lics.Items.Any())
         {
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no licence found for the licenceId");
+            throw new ApiException(HttpStatusCode.BadRequest, "no licence found for the licenceId");
         }
         LicenceResp lic = lics.Items.First();
         LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
@@ -48,7 +49,11 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
             preview.LicenceCategories = await GetCategoryNamesAsync(app.CategoryCodes, cancellationToken);
         }
         mapper.Map(app, preview);
-        preview.Photo = await EncodedPhoto((Guid)lic.LicenceId, cancellationToken);
+
+        if (lic.PhotoDocumentUrlId == null)
+            throw new ApiException(HttpStatusCode.InternalServerError, "No photograph for the licence");
+        preview.Photo = await EncodedPhoto((Guid)lic.PhotoDocumentUrlId, cancellationToken);
+
         preview.SPD_CARD = mapper.Map<SPD_CARD>(app);
         preview.SPD_CARD.TemporaryLicence = lic.IsTemporary ?? false;
 
@@ -73,12 +78,11 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
         return names;
     }
 
-    private async Task<string> EncodedPhoto(Guid licenceId, CancellationToken cancellationToken)
+    private async Task<string> EncodedPhoto(Guid documentUrlId, CancellationToken cancellationToken)
     {
-        DocumentListResp resp = await documentRepository.QueryAsync(
-            new DocumentQry(LicenceId: licenceId, FileType: DocumentTypeEnum.Photograph),
+        DocumentResp photoDoc = await documentRepository.GetAsync(
+            documentUrlId,
             cancellationToken);
-        DocumentResp? photoDoc = resp.Items.OrderByDescending(d => d.UploadedDateTime).FirstOrDefault();
         if (photoDoc == null) throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "cannot find photograph for the applicant");
         FileQueryResult fileResult = (FileQueryResult)await fileStorageService.HandleQuery(
             new FileQuery { Key = photoDoc.DocumentUrlId.ToString(), Folder = photoDoc.Folder },
@@ -148,7 +152,7 @@ internal class LicencePreviewTransformStrategy(ILicenceApplicationRepository lic
     }
 }
 
-public record LicencePreviewTransformRequest(Guid LicenceId) : DocumentTransformRequest;
+public record PersonalLicencePreviewTransformRequest(Guid LicenceId) : DocumentTransformRequest;
 public record LicencePreviewJson()
 {
     [JsonPropertyName("licenceNumber")]
