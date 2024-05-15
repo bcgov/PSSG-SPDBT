@@ -229,14 +229,19 @@ public record BranchAddress
 {
     [JsonPropertyName("mailingAddress1")]
     public string? MailingAddress1 { get; set; }
+
     [JsonPropertyName("mailingAddress2")]
     public string? MailingAddress2 { get; set; }
+
     [JsonPropertyName("city")]
     public string? City { get; set; }
+
     [JsonPropertyName("country")]
     public string? Country { get; set; }
+
     [JsonPropertyName("postalCode")]
     public string? PostalCode { get; set; }
+
     [JsonPropertyName("provinceState")]
     public string? ProvinceState { get; set; }
 }
