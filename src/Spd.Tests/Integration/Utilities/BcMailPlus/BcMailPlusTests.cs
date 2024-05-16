@@ -20,6 +20,7 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated 270).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 rotated 360).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 4 bad).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 4 bad TIFF).json")]
     public async Task RunSecurityWorkerLicenseJob(string fileName)
     {
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
@@ -30,6 +31,7 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 3 bad).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 4 bad).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 1 good TIFF).json")]
     public async Task RunArmouredVehiclePermitJob(string fileName)
     {
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
@@ -40,6 +42,7 @@ public class BcMailPlusTests : IAsyncLifetime
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 3 bad).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 4 bad).json")]
+    [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 3 bad TIFF).json")]
     public async Task RunBodyArmourPermitJob(string fileName)
     {
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();

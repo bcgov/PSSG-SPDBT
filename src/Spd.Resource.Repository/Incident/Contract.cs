@@ -1,6 +1,3 @@
-using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.Document;
-
 namespace Spd.Resource.Repository.Incident
 {
     public interface IIncidentRepository
@@ -19,6 +16,7 @@ namespace Spd.Resource.Repository.Incident
         public Guid IncidentId { get; set; }
         public Guid ApplicationId { get; set; }
         public string Title { get; set; } = null!;
+        public IEnumerable<string> Conditions { get; set; } = Enumerable.Empty<string>();
     }
 
     public abstract record IncidentCmd;
@@ -27,6 +25,7 @@ namespace Spd.Resource.Repository.Incident
         public Guid? IncidentId { get; set; }
         public Guid? ApplicationId { get; set; }
         public string? CaseNumber { get; set; }
+        public bool IncludeInactive { get; set; }
     };
     public record UpdateIncidentCmd : IncidentCmd
     {
