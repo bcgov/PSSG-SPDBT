@@ -180,9 +180,13 @@ namespace Spd.Resource.Repository.Biz
 
         private void UpdateLicenceLink(account account, Guid licenceId)
         {
-            // Remove link with current licence
-            spd_licence? licence = account.spd_organization_spd_licence_soleproprietor.FirstOrDefault();
+            spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
+                .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
 
+            if (licence != null && licence.spd_licenceid == licenceId)
+                return;
+
+            // Remove link with current licence
             if (licence != null)
             {
                 _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
