@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
@@ -45,7 +45,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 	`,
 	styles: ``,
 })
-export class StepBusinessLicenceProfileComponent {
+export class StepBusinessLicenceProfileComponent implements OnInit {
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	saveAndContinueLabel = 'Save & Continue to Application';

@@ -20,7 +20,6 @@ export { BizTypeCode } from './models/biz-type-code';
 export { BizUserLoginResponse } from './models/biz-user-login-response';
 export { BodyArmourPermitReasonCode } from './models/body-armour-permit-reason-code';
 export { BranchInfo } from './models/branch-info';
-export { BusinessTypeCode } from './models/business-type-code';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactInfo } from './models/contact-info';
 export { ContactRoleCode } from './models/contact-role-code';

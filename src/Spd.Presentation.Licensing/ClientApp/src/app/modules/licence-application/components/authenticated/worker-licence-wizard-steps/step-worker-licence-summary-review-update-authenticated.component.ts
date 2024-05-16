@@ -176,14 +176,14 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 			return null;
 		}
 
-		const businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+		const bizTypeCode = this.licenceModelData.originalBizTypeCode;
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				ApplicationTypeCode.Update,
-				businessTypeCode,
+				bizTypeCode,
 				originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);

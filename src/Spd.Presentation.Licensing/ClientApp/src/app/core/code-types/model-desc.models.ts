@@ -4,7 +4,6 @@ import {
 	ArmouredVehiclePermitReasonCode,
 	BizTypeCode,
 	BodyArmourPermitReasonCode,
-	BusinessTypeCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -191,15 +190,6 @@ export const ApplicationPortalStatusTypes: SelectOptions[] = [
 	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
 ];
 
-export const BusinessTypes: SelectOptions[] = [
-	{ desc: 'Corporation', code: BusinessTypeCode.Corporation },
-	{ desc: 'Non-Registered Partnership', code: BusinessTypeCode.NonRegisteredPartnership },
-	{ desc: 'Non-Registered Sole Proprietor', code: BusinessTypeCode.NonRegisteredSoleProprietor },
-	{ desc: 'Registered Partnership', code: BusinessTypeCode.RegisteredPartnership },
-	{ desc: 'Registered Sole Proprietor', code: BusinessTypeCode.RegisteredSoleProprietor },
-	{ desc: 'None', code: BusinessTypeCode.None },
-];
-
 export const BizTypes: SelectOptions[] = [
 	{ desc: 'Corporation', code: BizTypeCode.Corporation },
 	{ desc: 'Non-Registered Partnership', code: BizTypeCode.NonRegisteredPartnership },
@@ -209,8 +199,8 @@ export const BizTypes: SelectOptions[] = [
 	{ desc: 'None', code: BizTypeCode.None },
 ];
 
-export const BusinessLicenceTypes: SelectOptions[] = BusinessTypes.filter(
-	(item: SelectOptions) => item.code != BusinessTypeCode.None
+export const BusinessLicenceTypes: SelectOptions[] = BizTypes.filter(
+	(item: SelectOptions) => item.code != BizTypeCode.None
 );
 
 export const GenderTypes: SelectOptions[] = [

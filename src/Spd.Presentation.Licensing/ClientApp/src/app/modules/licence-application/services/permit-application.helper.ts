@@ -4,8 +4,8 @@ import {
 	ApplicantUpdateRequest,
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
+	BizTypeCode,
 	BodyArmourPermitReasonCode,
-	BusinessTypeCode,
 	Document,
 	DocumentExpiredInfo,
 	HeightUnitCode,
@@ -645,7 +645,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
-			businessTypeCode: BusinessTypeCode.None,
+			bizTypeCode: BizTypeCode.None,
 			//-----------------------------------
 			hasPreviousName: this.utilService.booleanTypeToBoolean(permitModelFormValue.aliasesData.previousNameFlag),
 			aliases:

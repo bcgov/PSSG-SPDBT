@@ -240,7 +240,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				};
 				const branch: BranchInfo = {
 					branchId: item.branchId,
-					managerEmail: item.managerEmail,
+					branchEmailAddr: item.branchEmailAddr,
 					branchManager: item.branchManager,
 					branchPhoneNumber: item.branchPhoneNumber,
 					branchAddress,
@@ -260,7 +260,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			bizBCAddress,
 			bizMailingAddress,
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
-			bizTypeCode: modelFormValue.businessInformationData.businessTypeCode,
+			bizTypeCode: modelFormValue.businessInformationData.bizTypeCode,
 			branches,
 		};
 
@@ -287,7 +287,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 		const businessInformationData = {
-			businessTypeCode: profile.bizTypeCode,
+			bizTypeCode: profile.bizTypeCode,
 			legalBusinessName: profile.bizLegalName,
 			bizTradeName: profile.bizTradeName,
 			isBizTradeNameReadonly: !!profile.bizTradeName, // user cannot overwrite value from bceid
@@ -335,34 +335,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		console.debug('[applyLicenceProfileIntoModel] bcBusinessAddressData', bcBusinessAddressData);
 		console.debug('[applyLicenceProfileIntoModel] mailingAddressData', mailingAddressData);
 
-		// const personalInformationData = {
-		// 	givenName: profile.givenName,
-		// 	middleName1: profile.middleName1,
-		// 	middleName2: profile.middleName2,
-		// 	surname: profile.surname,
-		// 	dateOfBirth: profile.dateOfBirth,
-		// 	genderCode: profile.genderCode,
-		// 	hasGenderChanged: false,
-		// 	hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
-		// 	origGivenName: profile.givenName,
-		// 	origMiddleName1: profile.middleName1,
-		// 	origMiddleName2: profile.middleName2,
-		// 	origSurname: profile.surname,
-		// 	origDateOfBirth: profile.dateOfBirth,
-		// 	origGenderCode: profile.genderCode,
-		// 	cardHolderName: userLicenceInformation?.cardHolderName ?? null,
-		// 	licenceHolderName: userLicenceInformation?.licenceHolderName ?? null,
-		// };
-
-		// const originalLicenceData = {
-		// 	originalApplicationId: userLicenceInformation?.licenceAppId ?? null,
-		// 	originalLicenceId: userLicenceInformation?.licenceId ?? null,
-		// 	originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
-		// 	originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
-		// 	originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-		// 	originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
-		// };
-
 		const hasBranchesInBc = (profile.branches ?? []).length > 0;
 		const branchesInBcData = { hasBranchesInBc: this.utilService.booleanToBooleanType(hasBranchesInBc) };
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
@@ -379,8 +351,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
 				mailingAddressData: { ...mailingAddressData },
-				// 		...originalLicenceData,
-				// 		profileConfirmationData: { isProfileUpToDate: true },
 				branchesInBcData,
 			},
 			{
@@ -389,8 +359,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 
 		if (hasBranchesInBc) {
+			const branchList = [...profile.branches!].sort((a, b) => {
+				return this.utilService.sortByDirection(
+					a.branchAddress?.city?.toUpperCase(),
+					b.branchAddress?.city?.toUpperCase()
+				);
+			});
+
 			const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
-			profile.branches?.forEach((branchInfo: BranchInfo) => {
+			branchList.forEach((branchInfo: BranchInfo) => {
 				bcBranchesArray.push(
 					new FormGroup({
 						branchId: new FormControl(branchInfo.branchId),
@@ -403,7 +380,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						province: new FormControl(branchInfo.branchAddress?.province),
 						branchManager: new FormControl(branchInfo.branchManager),
 						branchPhoneNumber: new FormControl(branchInfo.branchPhoneNumber),
-						managerEmail: new FormControl(branchInfo.managerEmail),
+						branchEmailAddr: new FormControl(branchInfo.branchEmailAddr),
 					})
 				);
 			});
