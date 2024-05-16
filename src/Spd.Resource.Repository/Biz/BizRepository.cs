@@ -192,7 +192,10 @@ namespace Spd.Resource.Repository.Biz
             }
 
             // Add link with new licence
-            spd_licence? newLicence = account.spd_organization_spd_licence_soleproprietor.Where(l => l.spd_licenceid == licenceId).FirstOrDefault();
+            spd_licence? newLicence = _context.spd_licences
+                .Where(l => l.spd_licenceid == licenceId)
+                .Where(l => l.statecode == DynamicsConstants.StateCode_Active)
+                .FirstOrDefault();
 
             if (newLicence != null)
             {
