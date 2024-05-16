@@ -24,7 +24,6 @@ internal class BizProfileManager :
     private readonly IBizRepository _bizRepository;
     private readonly IPortalUserRepository _portalUserRepository;
     private readonly IAddressRepository _addressRepository;
-    private readonly IContactRepository _contactRepository;
     private readonly IMapper _mapper;
 
     public BizProfileManager(
@@ -32,14 +31,12 @@ internal class BizProfileManager :
         IBizRepository bizRepository,
         IPortalUserRepository portalUserRepository,
         IAddressRepository addressRepository,
-        IContactRepository contactRepository,
         IMapper mapper)
     {
         _mapper = mapper;
         _idRepository = idRepository;
         _bizRepository = bizRepository;
         _addressRepository = addressRepository;
-        _contactRepository = contactRepository;
         _portalUserRepository = portalUserRepository;
     }
 
