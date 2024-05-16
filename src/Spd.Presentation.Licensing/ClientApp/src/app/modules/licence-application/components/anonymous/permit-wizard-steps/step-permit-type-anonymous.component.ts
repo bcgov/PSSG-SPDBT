@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BusinessTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -97,11 +97,7 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
 
-		const fees = this.commonApplicationService.getLicenceTermsAndFees(
-			workerLicenceTypeCode,
-			null,
-			BusinessTypeCode.None
-		);
+		const fees = this.commonApplicationService.getLicenceTermsAndFees(workerLicenceTypeCode, null, BizTypeCode.None);
 
 		fees?.forEach((item: LicenceFeeResponse) => {
 			if (item.applicationTypeCode === ApplicationTypeCode.New) {

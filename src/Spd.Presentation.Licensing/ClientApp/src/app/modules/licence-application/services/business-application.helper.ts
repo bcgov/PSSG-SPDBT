@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BusinessTypeCode } from '@app/api/models';
+import { BizTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
@@ -55,7 +55,7 @@ export abstract class BusinessApplicationHelper {
 
 	businessInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			businessTypeCode: new FormControl('', [Validators.required]),
+			bizTypeCode: new FormControl('', [Validators.required]),
 			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
 			bizTradeName: new FormControl(''),
 			isBizTradeNameReadonly: new FormControl(''),
@@ -68,14 +68,14 @@ export abstract class BusinessApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'soleProprietorSwlEmailAddress',
 					(form) =>
-						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
-						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
+						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
+						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'soleProprietorSwlPhoneNumber',
 					(form) =>
-						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
-						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
+						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
+						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
 				),
 			],
 		}
@@ -154,6 +154,7 @@ export abstract class BusinessApplicationHelper {
 			],
 		}
 	);
+
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
@@ -284,7 +285,7 @@ export abstract class BusinessApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
 		branchPhoneNumber: new FormControl(''),
-		managerEmail: new FormControl('', [FormControlValidators.email]),
+		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
 	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({

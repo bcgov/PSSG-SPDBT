@@ -80,7 +80,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
-		originalBusinessTypeCode: new FormControl(null),
+		originalBizTypeCode: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),
 		originalDogAuthorizationExists: new FormControl(false),
 
@@ -1023,7 +1023,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
 			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
+			originalBizTypeCode: userLicenceInformation?.bizTypeCode ?? null,
 		};
 
 		const contactInformationData = {

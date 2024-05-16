@@ -137,8 +137,6 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	],
 })
 export class StepBusinessLicenceCategoryComponent implements LicenceChildStepperStepComponent {
-	// isDirtyAndInvalid = false;
-
 	form = this.businessApplicationService.categoryFormGroup;
 
 	businessCategoryTypes = BusinessCategoryTypes;
@@ -261,8 +259,6 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 				this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: privateInvestigator });
 				break;
 		}
-
-		// 	this.isDirtyAndInvalid = false;
 	}
 
 	// onRemove(code: string) {
@@ -329,23 +325,6 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 		return true; // TODO  return valid1 && valid2 && valid3 && valid4;
 	}
 
-	// private setupInitialExpansionPanel(): void {
-	// if (
-	// 	this.applicationTypeCode === ApplicationTypeCode.Update ||
-	// 	this.applicationTypeCode === ApplicationTypeCode.Renewal
-	// ) {
-	// 	if (this.showArmouredCarGuard) {
-	// 		this.blockArmouredCarGuard = true;
-	// 	}
-	// 	if (this.showPrivateInvestigator) {
-	// 		this.blockPrivateInvestigator = true;
-	// 	}
-	// 	if (this.showSecurityGuard) {
-	// 		this.blockSecurityGuard = true;
-	// 	}
-	// }
-	// }
-
 	private setAndDisable(itemType: WorkerCategoryTypeCode): void {
 		const item = this.form.get(itemType) as FormControl;
 		item.setValue(true, { emitEvent: false });
@@ -357,16 +336,6 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 		item.setValue(false, { emitEvent: false });
 		item.enable({ emitEvent: false });
 	}
-
-	// get showArmouredCarGuard(): boolean {
-	// 	return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
-	// }
-	// get showPrivateInvestigator(): boolean {
-	// 	return this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value;
-	// }
-	// get showSecurityGuard(): boolean {
-	// 	return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
-	// }
 
 	// get isRenewalOrUpdate(): boolean {
 	// 	return (
