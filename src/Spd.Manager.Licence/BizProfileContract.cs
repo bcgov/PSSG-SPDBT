@@ -82,6 +82,8 @@ public record BizProfileUpdateRequest
     public Address? BizAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
     public Guid? SoleProprietorLicenceId { get; set; }
+    public string? SoleProprietorSwlPhoneNumber { get; set; }
+    public string? SoleProprietorSwlEmailAddress { get; set; }
 }
 
 public enum BizTypeCode
