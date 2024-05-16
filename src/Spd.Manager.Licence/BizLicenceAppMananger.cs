@@ -45,9 +45,7 @@ internal class BizLicenceAppMananger :
             cancellationToken);
 
         if (hasDuplicate)
-        {
-            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
-        }
+            throw new ApiException(HttpStatusCode.Forbidden, "Biz already has the same kind of licence or licence application");
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.BizLicAppUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
