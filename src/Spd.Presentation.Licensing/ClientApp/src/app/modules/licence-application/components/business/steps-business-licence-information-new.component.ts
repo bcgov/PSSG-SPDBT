@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -63,7 +63,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent implements OnInit {
+export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
 	readonly STEP_LICENCE_EXPIRED = 1;
 	readonly STEP_LICENCE_BRANDING = 2;
 	readonly STEP_LICENCE_LIABILITY = 3;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { Subscription } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -82,7 +82,10 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWizardStepComponent implements OnInit {
+export class StepsBusinessLicenceControllingMembersNewComponent
+	extends BaseWizardStepComponent
+	implements OnInit, OnDestroy
+{
 	readonly STEP_CONTROLLING_MEMBERS = 1;
 	readonly STEP_CONTROLLING_MEMBERS_CONFIRMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS_INVITES = 3;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { Subscription } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -26,7 +26,10 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceContactInformationNewComponent extends BaseWizardStepComponent implements OnInit {
+export class StepsBusinessLicenceContactInformationNewComponent
+	extends BaseWizardStepComponent
+	implements OnInit, OnDestroy
+{
 	readonly STEP_LICENCE_MANAGER_INFORMATION = 1;
 
 	isFormValid = false;
