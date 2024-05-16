@@ -60,11 +60,30 @@ namespace Spd.Resource.Repository.Biz
                 .Where(so => so.accountid == Biz.accountid)
                 .ToList();
 
+            Guid? licHolderId = Biz.spd_organization_spd_licence_soleproprietor
+                .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)
+                ._spd_licenceholder_value;
+
+            spd_licence? licHolderContact = _context.spd_licences
+                .Expand(l => l.spd_LicenceHolder_contact)
+                .Where(l => l.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(l => l._spd_licenceholder_value == licHolderId)
+                .FirstOrDefault();
+
             if (!serviceTypes.Any())
                 throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {Biz.name} does not have service type.");
 
             var response = _mapper.Map<BizResult>(Biz);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
+
+            if (licHolderContact != null)
+            {
+                response.SoleProprietorSwlContactInfo.LicenceId = licHolderContact.spd_licenceid;
+                response.SoleProprietorSwlContactInfo.ContactId = licHolderContact.spd_LicenceHolder_contact.contactid;
+                response.SoleProprietorSwlEmailAddress = licHolderContact.spd_LicenceHolder_contact.emailaddress1;
+                response.SoleProprietorSwlPhoneNumber = licHolderContact.spd_LicenceHolder_contact.telephone1;
+            }
+
             return response;
         }
 
