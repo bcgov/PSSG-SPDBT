@@ -113,7 +113,7 @@ namespace Spd.Resource.Repository.Biz
             _context.UpdateObject(biz);
 
             if (updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
-                UpdateLicenceLink(biz, (Guid)(updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId));
+                UpdateLicenceLink(biz, (Guid)updateBizCmd.SoleProprietorSwlContactInfo.LicenceId);
 
             await _context.SaveChangesAsync(ct);
 
