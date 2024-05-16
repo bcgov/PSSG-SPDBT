@@ -30,7 +30,8 @@ namespace Spd.Resource.Repository.Licence
     {
         public Guid? LicenceId { get; set; }
         public Guid? LicenceAppId { get; set; }
-
+        public bool? IsTemporary { get; set; }
+        public Guid? PhotoDocumentUrlId { get; set; }
     }
 
     public record Licence

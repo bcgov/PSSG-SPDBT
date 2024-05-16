@@ -2,6 +2,7 @@
 using Spd.Manager.Printing.Documents;
 using Spd.Manager.Printing.Documents.TransformationStrategies;
 using Spd.Utilities.Printing;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Printing;
 
@@ -47,13 +48,21 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
         };
     }
 
-    private static DocumentTransformRequest CreateDocumentTransformRequest(PrintJob printJob) =>
-      printJob.DocumentType switch
-      {
-          DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest(printJob.ApplicationId),
+    private static DocumentTransformRequest CreateDocumentTransformRequest(PrintJob printJob)
+    {
+        if (printJob.DocumentType == DocumentType.FingerprintLetter && printJob.ApplicationId == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationId cannot be null if documentType is FingerprintLetter");
 
-          _ => throw new NotImplementedException()
-      };
+        if (printJob.DocumentType == DocumentType.PersonalLicencePreview && printJob.LicenceId == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if documentType is LicencePreview");
+
+        return printJob.DocumentType switch
+        {
+            DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest((Guid)printJob.ApplicationId),
+            DocumentType.PersonalLicencePreview => new PersonalLicencePreviewTransformRequest((Guid)printJob.LicenceId),
+            _ => throw new NotImplementedException()
+        };
+    }
 
     private async Task<string> PrintViaBcMailPlus(BcMailPlusTransformResponse bcmailplusResponse, CancellationToken cancellationToken)
     {

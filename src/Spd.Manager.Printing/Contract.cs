@@ -12,11 +12,12 @@ public record StartPrintJobCommand(PrintJob PrintJob) : IRequest<string>;
 public record PrintJobStatusQuery(string PrintJobId) : IRequest<PrintJobStatusResp>;
 public record PreviewDocumentCommand(PrintJob PrintJob) : IRequest<PreviewDocumentResp>;
 
-public record PrintJob(DocumentType DocumentType, Guid ApplicationId);
+public record PrintJob(DocumentType DocumentType, Guid? ApplicationId, Guid? LicenceId);
 
 public enum DocumentType
 {
     FingerprintLetter,
+    PersonalLicencePreview,
 }
 
 public record PrintJobStatusResp(PrintJobStatus Status, string? Error);
