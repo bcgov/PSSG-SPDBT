@@ -145,7 +145,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 
 	ngOnInit(): void {
 		this.dataSource = new MatTableDataSource(this.membersArray.value);
-		this.updateAndSortData();
 	}
 
 	isFormValid(): boolean {
@@ -184,16 +183,9 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				console.log('resp', resp);
 				const memberData = resp?.data;
-				console.log('memberData', memberData);
 				if (memberData) {
-					// this.memberList.push(resp.data);
-					// this.dataSource.data.push(memberData);
 					this.membersArray.push(this.newMemberRow(memberData));
-					// this.dataSource = new MatTableDataSource(memberList);
-					// this.hotToastService.success('Controlling member was successfully added');
-					// this.updateAndSortData();
 
 					this.dataSource.data = this.membersArray.value;
 				}
@@ -208,13 +200,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 		this.memberDialog({}, true);
 	}
 
-	private updateAndSortData() {
-		// this.memberList = [...this.memberList].sort((a, b) => {
-		// 	return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
-		// });
-		// this.dataSource.data = this.memberList;
-	}
-
 	private memberDialog(dialogOptions: any, isCreate: boolean): void {
 		this.dialog
 			.open(ModalMemberWithoutSwlEditComponent, {
@@ -223,28 +208,12 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				console.log('resp', resp);
 				const memberData = resp?.data;
-				console.log('memberData', memberData);
 				if (memberData) {
-					// if (isCreate) {
-					// 	this.memberList.push(resp.data);
-					// 	this.hotToastService.success('Controlling member was successfully added');
-					// 	this.updateAndSortData();
-					// } else {
-					// 	const memberIndex = this.memberList.findIndex((item) => item.id == dialogOptions.id!);
-					// 	if (memberIndex >= 0) {
-					// 		this.memberList[memberIndex] = resp.data;
-					// 		this.updateAndSortData();
-					// 	}
-					// 	this.hotToastService.success('Controlling member was successfully updated');
-					// }
-
 					if (isCreate) {
 						this.membersArray.push(this.newMemberRow(memberData));
 					} else {
 						const memberIndex = this.membersArray.value.findIndex((item: any) => item.id == dialogOptions.id!);
-						console.log('memberIndex', memberIndex);
 						this.patchMemberData(memberIndex, memberData);
 					}
 
@@ -254,6 +223,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 	}
 
 	private newMemberRow(memberData: any): FormGroup {
+		// TODO update once a controlling member class is defined
 		return this.formBuilder.group({
 			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
 			givenName: [memberData.givenName],
