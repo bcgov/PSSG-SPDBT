@@ -11,13 +11,15 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<div class="fs-5 lh-base mt-3 mb-2">
-						Do you want to request authorization to use dogs for the purpose of security work?
-					</div>
+				<div class="fs-5 lh-base mt-3 mb-2">
+					Do you want to request authorization to use dogs for the purpose of security work?
+				</div>
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
 					<mat-radio-group aria-label="Select an option" formControlName="isRequestDogAuthorization">
-						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-						<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+						<div class="d-flex justify-content-start">
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+						</div>
 					</mat-radio-group>
 					<mat-error
 						class="mat-option-error"

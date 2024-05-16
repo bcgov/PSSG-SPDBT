@@ -115,10 +115,6 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false"
-								>Branches in B.C. where licenced employees work</app-alert
-							>
-
 							<section>
 								<app-common-business-bc-branches [form]="branchesInBcFormGroup"></app-common-business-bc-branches>
 							</section>

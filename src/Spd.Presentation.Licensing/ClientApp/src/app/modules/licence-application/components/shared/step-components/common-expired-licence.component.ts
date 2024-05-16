@@ -2,11 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { UtilService } from '@app/core/services/util.service';
 import {
 	CommonApplicationService,
 	LicenceLookupResult,
@@ -96,9 +94,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 	constructor(
 		private dialog: MatDialog,
-		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
-		private licenceService: LicenceService,
 		private formatDatePipe: FormatDatePipe,
 		private commonApplicationService: CommonApplicationService
 	) {}

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
-	BusinessTypeCode,
+	BizTypeCode,
 	Document,
 	IdentityProviderTypeCode,
 	LicenceAppListResponse,
@@ -141,18 +141,18 @@ export class CommonApplicationService {
 	public getLicenceTermsAndFees(
 		workerLicenceTypeCode: WorkerLicenceTypeCode | null,
 		applicationTypeCode: ApplicationTypeCode | null,
-		businessTypeCode: BusinessTypeCode | null,
+		bizTypeCode: BizTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
 		// console.debug(
 		// 	'getLicenceTermsAndFees',
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
-		// 	businessTypeCode,
+		// 	bizTypeCode,
 		// 	originalLicenceTermCode
 		// );
 
-		if (!workerLicenceTypeCode || !businessTypeCode) {
+		if (!workerLicenceTypeCode || !bizTypeCode) {
 			return [];
 		}
 
@@ -166,7 +166,7 @@ export class CommonApplicationService {
 			.filter(
 				(item) =>
 					item.workerLicenceTypeCode == workerLicenceTypeCode &&
-					item.businessTypeCode == businessTypeCode &&
+					item.bizTypeCode == bizTypeCode &&
 					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
 					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
 			);
@@ -323,7 +323,7 @@ export class CommonApplicationService {
 								const fee = this.getLicenceTermsAndFees(
 									resp.workerLicenceTypeCode!,
 									ApplicationTypeCode.Replacement,
-									resp.businessTypeCode!,
+									resp.bizTypeCode!,
 									resp.licenceTermCode
 								).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
 								licence.licenceReprintFee = fee?.amount ? fee.amount : null;

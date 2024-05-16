@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { BusinessTypeCode } from '@app/api/models';
+import { BizTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -103,7 +103,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	@ViewChild(StepsBusinessLicenceInformationNewComponent)
 	stepsBusinessInformationComponent!: StepsBusinessLicenceInformationNewComponent;
 	@ViewChild(StepsBusinessLicenceSelectionNewComponent)
-	stepsBusinessSelectionComponent!: StepsBusinessLicenceSelectionNewComponent;
+	stepsLicenceSelectionComponent!: StepsBusinessLicenceSelectionNewComponent;
 	@ViewChild(StepsBusinessLicenceContactInformationNewComponent)
 	stepsContactInformationComponent!: StepsBusinessLicenceContactInformationNewComponent;
 	@ViewChild(StepsBusinessLicenceControllingMembersNewComponent)
@@ -128,13 +128,13 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			(_resp: boolean) => {
 				// this.isFormValid = _resp;
 
-				const businessTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-					'businessInformationData.businessTypeCode'
+				const bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+					'businessInformationData.bizTypeCode'
 				)?.value;
 
 				this.isBusinessLicenceSoleProprietor =
-					businessTypeCode === BusinessTypeCode.NonRegisteredSoleProprietor ||
-					businessTypeCode === BusinessTypeCode.RegisteredSoleProprietor;
+					bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor ||
+					bizTypeCode === BizTypeCode.RegisteredSoleProprietor;
 			}
 		);
 		// this.updateCompleteStatus();
@@ -150,13 +150,19 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsBusinessInformationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepsBusinessSelectionComponent?.onGoToFirstStep();
+				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
 				this.stepsContactInformationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_CONTROLLING_MEMBERS:
-				this.stepsControllingMembersComponent?.onGoToFirstStep();
+				// If Sole Proprietor biz type, this step is not the controlling members step,
+				// but the review step
+				if (this.isBusinessLicenceSoleProprietor) {
+					this.stepsReviewAndConfirm?.onGoToFirstStep();
+				} else {
+					this.stepsControllingMembersComponent?.onGoToFirstStep();
+				}
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
@@ -174,7 +180,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsBusinessInformationComponent?.onGoToLastStep();
 				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepsBusinessSelectionComponent?.onGoToLastStep();
+				this.stepsLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
 				this.stepsContactInformationComponent?.onGoToLastStep();
@@ -218,7 +224,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 	onGoToStep(step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
-		this.stepsBusinessSelectionComponent?.onGoToFirstStep();
+		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 		this.stepsContactInformationComponent?.onGoToFirstStep();
 		this.stepsControllingMembersComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
@@ -248,7 +254,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsBusinessInformationComponent?.onGoToNextStep();
 				break;
 			case this.STEP_LICENCE_SELECTION:
-				this.stepsBusinessSelectionComponent?.onGoToNextStep();
+				this.stepsLicenceSelectionComponent?.onGoToNextStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
 				this.stepsContactInformationComponent?.onGoToNextStep();

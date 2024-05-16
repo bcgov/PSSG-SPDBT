@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
-	BusinessTypeCode,
+	BizTypeCode,
 	LicenceFeeResponse,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
@@ -246,7 +246,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
+														<div class="text-label d-block text-muted">Expiry Date</div>
 														<div class="summary-text-data">
 															{{ expiredLicenceExpiryDate | formatDate | default }}
 														</div>
@@ -590,21 +590,16 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		}
 
 		const applicationTypeCode = this.applicationTypeCode;
-		let businessTypeCode: BusinessTypeCode | null = null;
+		let bizTypeCode: BizTypeCode | null = null;
 		if (applicationTypeCode === ApplicationTypeCode.New) {
-			businessTypeCode = this.licenceModelData.soleProprietorData.businessTypeCode;
+			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
 		} else {
-			businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+			bizTypeCode = this.licenceModelData.originalBizTypeCode;
 		}
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(
-				this.workerLicenceTypeCode,
-				applicationTypeCode,
-				businessTypeCode,
-				originalLicenceTermCode
-			)
+			.getLicenceTermsAndFees(this.workerLicenceTypeCode, applicationTypeCode, bizTypeCode, originalLicenceTermCode)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}

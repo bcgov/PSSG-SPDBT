@@ -3,7 +3,7 @@
 import { Alias } from './alias';
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
-import { BusinessTypeCode } from './business-type-code';
+import { BizTypeCode } from './biz-type-code';
 import { Document } from './document';
 import { DocumentExpiredInfo } from './document-expired-info';
 import { EyeColourCode } from './eye-colour-code';
@@ -23,7 +23,7 @@ export interface WorkerLicenceAppResponse {
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
-  businessTypeCode?: BusinessTypeCode;
+  bizTypeCode?: BizTypeCode;
   carryAndUseRestraints?: null | boolean;
   caseNumber?: null | string;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
