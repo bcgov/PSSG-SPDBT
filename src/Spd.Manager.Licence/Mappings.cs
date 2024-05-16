@@ -207,6 +207,7 @@ internal class Mappings : Profile
 
         CreateMap<BizResult, BizProfileResponse>()
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.Id))
+            .ForMember(d => d.BizLegalName, opt => opt.MapFrom(s => s.BizLegalName))
             .ForMember(d => d.BizTradeName, opt => opt.MapFrom(s => s.BizName))
             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => s.BizType))
             .ForMember(d => d.ServiceTypeCodes, opt => opt.MapFrom(s => GetServiceTypeCodes(s.ServiceTypes)))
