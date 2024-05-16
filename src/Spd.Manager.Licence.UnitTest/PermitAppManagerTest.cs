@@ -26,7 +26,6 @@ public class PermitAppManagerTest
     private Mock<IContactRepository> mockContactRepo = new();
     private Mock<IMainFileStorageService> mockMainFileService = new();
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
-    private Mock<IMapper> mockMapper = new();
     private PermitAppManager sut;
 
     public PermitAppManagerTest()
@@ -37,10 +36,16 @@ public class PermitAppManagerTest
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         permitFixture = new PermitFixture();
 
+        var mapperConfig = new MapperConfiguration(x =>
+        {
+            x.AddProfile<Mappings>();
+        });
+        var mapper = mapperConfig.CreateMapper();
+
         sut = new PermitAppManager(
             mockLicRepo.Object,
             mockLicAppRepo.Object,
-            mockMapper.Object,
+            mapper,
             mockDocRepo.Object,
             mockLicFeeRepo.Object,
             mockContactRepo.Object,
@@ -65,10 +70,6 @@ public class PermitAppManagerTest
             });
         mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
-        mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.Is<PermitAppUpsertRequest>(r => r.ApplicantId == applicantId)))
-            .Returns(new SaveLicenceApplicationCmd());
-        mockMapper.Setup(m => m.Map<PermitAppCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
-            .Returns(new PermitAppCommandResponse() { LicenceAppId = licAppId });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
 
@@ -168,8 +169,6 @@ public class PermitAppManagerTest
             {
                 Items = new List<LicenceResp> { licenceResp }
             });
-        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
         mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
@@ -257,8 +256,6 @@ public class PermitAppManagerTest
             {
                 Items = new List<LicenceResp> { licenceResp }
             });
-        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
         mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
 
@@ -286,10 +283,6 @@ public class PermitAppManagerTest
             });
         mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
-        mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.Is<PermitAppUpsertRequest>(r => r.ApplicantId == applicantId)))
-            .Returns(new SaveLicenceApplicationCmd());
-        mockMapper.Setup(m => m.Map<PermitAppCommandResponse>(It.IsAny<LicenceApplicationCmdResp>()))
-            .Returns(new PermitAppCommandResponse() { LicenceAppId = licAppId });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
         PermitAppUpsertRequest request = new()
@@ -324,10 +317,6 @@ public class PermitAppManagerTest
         Guid licAppId = Guid.NewGuid();
         Guid contactId = Guid.NewGuid();
         Guid originalApplicationId = Guid.NewGuid();
-        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = originalApplicationId });
-        mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
-            .Returns(new CreateDocumentCmd());
         mockLicAppRepo.Setup(a => a.CreateLicenceApplicationAsync(It.IsAny<CreateLicenceApplicationCmd>(), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, contactId));
 
@@ -350,10 +339,6 @@ public class PermitAppManagerTest
         Guid licAppId = Guid.NewGuid();
         Guid contactId = Guid.NewGuid();
         Guid originalApplicationId = Guid.NewGuid();
-        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = originalApplicationId });
-        mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
-            .Returns(new CreateDocumentCmd());
         mockLicAppRepo.Setup(a => a.CreateLicenceApplicationAsync(It.IsAny<CreateLicenceApplicationCmd>(), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, contactId));
 
@@ -382,10 +367,6 @@ public class PermitAppManagerTest
             {
                 Items = new List<LicenceResp> { licenceResp }
             });
-        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
-        mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
-            .Returns(new CreateDocumentCmd());
         mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
@@ -472,8 +453,6 @@ public class PermitAppManagerTest
             {
                 Items = new List<LicenceResp> { licenceResp }
             });
-        mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
         mockLicRepo.Setup(a => a.ManageAsync(It.IsAny<UpdateLicenceCmd>(), CancellationToken.None))
             .ReturnsAsync(licenceResp);
 
@@ -488,10 +467,6 @@ public class PermitAppManagerTest
             .ReturnsAsync(new TaskResp());
         mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
-        mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<PermitAppSubmitRequest>()))
-            .Returns(new UpdateContactCmd());
-        mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
-            .Returns(new CreateDocumentCmd());
 
         PermitAppSubmitRequest request = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
         request.PreviousDocumentIds = null;
