@@ -6,6 +6,7 @@ import {
 	ApplicationTypeCode,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
+	BizTypeCode,
 	BranchInfo,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -88,28 +89,115 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (this.initialized) {
 					this.hasValueChanged = true;
 
+					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
 					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
 					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 
 					this.businessModelFormGroup.patchValue({ isBcBusinessAddress }, { emitEvent: false });
 
-					// const step1Complete = this.isStepLicenceSelectionComplete();
-					// const step2Complete = this.isStepBackgroundComplete();
-					// const step3Complete = this.isStepIdentificationComplete();
-					const isValid = false; //TODO is businessModelFormGroup valid? // step1Complete && step2Complete && step3Complete;
+					const isSoleProprietor =
+						bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor ||
+						bizTypeCode === BizTypeCode.RegisteredSoleProprietor;
+
+					const step1Complete = this.isStepBackgroundInformationComplete();
+					const step2Complete = this.isStepLicenceSelectionComplete();
+					const step3Complete = this.isStepContactInformationComplete();
+					const step4Complete = isSoleProprietor ? true : this.isStepControllingMembersAndEmployeesComplete();
+					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
 						'businessModelFormGroup CHANGED',
-						// 	step1Complete,
-						// 	step2Complete,
-						// 	step3Complete,
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						step4Complete,
 						this.businessModelFormGroup.getRawValue()
 					);
 
 					this.businessModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (!this.isSaveAndExit()) {
+			return false;
+		}
+
+		return this.hasValueChanged;
+	}
+
+	/**
+	 * Determine if the Save & Exit process can occur
+	 * @returns
+	 */
+	isSaveAndExit(): boolean {
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepBackgroundInformationComplete(): boolean {
+		console.debug(
+			'isStepBackgroundInformationComplete',
+			this.expiredLicenceFormGroup.valid,
+			this.companyBrandingFormGroup.valid,
+			this.liabilityFormGroup.valid
+		);
+
+		return this.expiredLicenceFormGroup.valid && this.companyBrandingFormGroup.valid && this.liabilityFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepLicenceSelectionComplete(): boolean {
+		console.debug(
+			'isStepLicenceSelectionComplete',
+			this.categoryFormGroup.valid,
+			this.categoryPrivateInvestigatorFormGroup.valid,
+			this.categoryArmouredCarGuardFormGroup.valid,
+			this.categorySecurityGuardFormGroup.valid,
+			this.licenceTermFormGroup.valid
+		);
+
+		return this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepContactInformationComplete(): boolean {
+		console.debug('isStepContactInformationComplete', this.businessManagerFormGroup.valid);
+
+		return this.businessManagerFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepControllingMembersAndEmployeesComplete(): boolean {
+		console.debug(
+			'isStepControllingMembersAndEmployeesComplete',
+			this.controllingMembersFormGroup.valid,
+			this.employeesFormGroup.valid
+		);
+
+		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
 	/**
@@ -330,6 +418,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			country: bizMailingAddress?.country,
 		};
 
+		const categoryData = {
+			PrivateInvestigator: true,
+			// SecurityAlarmInstaller: true,
+			// SecurityGuard: true,
+			// ElectronicLockingDeviceInstaller: true,
+			// SecurityAlarmMonitor: true,
+		}; // TODO remove hardcoded
+
+		const categoryPrivateInvestigatorData = {
+			isInclude: true,
+			givenName: '',
+			middleName1: '',
+			middleName2: '',
+			surname: 'invest',
+			managerLicenceNumber: '234234',
+		};
+
 		console.debug('[applyLicenceProfileIntoModel] profile', profile);
 		console.debug('[applyLicenceProfileIntoModel] businessAddressData', businessAddressData);
 		console.debug('[applyLicenceProfileIntoModel] bcBusinessAddressData', bcBusinessAddressData);
@@ -347,6 +452,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessInformationData,
 				businessManagerData,
 
+				categoryData,
+				categoryPrivateInvestigatorData,
 				isBcBusinessAddress,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },

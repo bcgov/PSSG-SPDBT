@@ -1,5 +1,7 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { Subscription } from 'rxjs';
+import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './step-business-licence-controlling-member-confirmation.component';
@@ -16,6 +18,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS)"
 					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS)"
@@ -27,6 +31,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS_CONFIRMATION)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_CONFIRMATION)"
 					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS_CONFIRMATION)"
@@ -38,6 +44,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS_INVITES)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_INVITES)"
 					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS_INVITES)"
@@ -49,6 +57,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_EMPLOYEES)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_EMPLOYEES)"
 					(nextReviewStepperStep)="onNextReview(STEP_EMPLOYEES)"
@@ -60,6 +70,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_APPLICATION_ON_HOLD)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_APPLICATION_ON_HOLD)"
 					(nextReviewStepperStep)="onNextReview(STEP_APPLICATION_ON_HOLD)"
@@ -70,7 +82,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWizardStepComponent {
+export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWizardStepComponent implements OnInit {
 	readonly STEP_CONTROLLING_MEMBERS = 1;
 	readonly STEP_CONTROLLING_MEMBERS_CONFIRMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS_INVITES = 3;
@@ -78,6 +90,7 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 	readonly STEP_APPLICATION_ON_HOLD = 5;
 
 	isFormValid = false;
+	showSaveAndExit = false;
 
 	@ViewChild(StepBusinessLicenceControllingMembersComponent)
 	stepControllingMembersComponent!: StepBusinessLicenceControllingMembersComponent;
@@ -89,8 +102,27 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 	@ViewChild(StepBusinessLicenceApplicationOnHoldComponent)
 	stepOnHoldComponent!: StepBusinessLicenceApplicationOnHoldComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	private licenceModelChangedSubscription!: Subscription;
+
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private businessApplicationService: BusinessApplicationService
+	) {
 		super(commonApplicationService);
+	}
+
+	ngOnInit(): void {
+		this.licenceModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isFormValid = _resp;
+
+				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override dirtyForm(step: number): boolean {

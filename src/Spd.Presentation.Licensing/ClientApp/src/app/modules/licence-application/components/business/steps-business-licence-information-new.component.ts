@@ -1,8 +1,9 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
+import { Subscription } from 'rxjs';
+import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
@@ -37,6 +38,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_BRANDING)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_BRANDING)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_BRANDING)"
@@ -48,6 +51,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_LIABILITY)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_LIABILITY)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_LIABILITY)"
@@ -58,13 +63,13 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent {
+export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent implements OnInit {
 	readonly STEP_LICENCE_EXPIRED = 1;
 	readonly STEP_LICENCE_BRANDING = 2;
 	readonly STEP_LICENCE_LIABILITY = 3;
 
 	isFormValid = false;
-	applicationTypeCode: ApplicationTypeCode | null = null;
+	showSaveAndExit = false;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
@@ -73,8 +78,28 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
+	private licenceModelChangedSubscription!: Subscription;
+
+	constructor(
+		override commonApplicationService: CommonApplicationService,
+		private router: Router,
+		private businessApplicationService: BusinessApplicationService
+	) {
 		super(commonApplicationService);
+	}
+
+	ngOnInit(): void {
+		this.licenceModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isFormValid = _resp;
+
+				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onGotoUserProfile(): void {

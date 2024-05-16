@@ -117,7 +117,7 @@ export class StepBusinessLicenceControllingMemberConfirmationComponent
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return this.form.valid;
 	}
 
 	get attachments(): FormControl {

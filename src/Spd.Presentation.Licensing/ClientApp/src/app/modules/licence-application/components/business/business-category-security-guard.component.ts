@@ -30,33 +30,29 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 						"
 						>This is required</mat-error
 					>
-
-					<div
-						class="my-4"
-						*ngIf="isRequestDogAuthorization.value === booleanTypeCodes.Yes"
-						@showHideTriggerSlideAnimation
-					>
-						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
-						<div class="text-minor-heading mb-2">Upload your Security Dog Validation Certificate</div>
-						<app-file-upload
-							(fileUploaded)="onFileUploaded($event)"
-							(fileRemoved)="onFileRemoved()"
-							[control]="attachments"
-							[maxNumberOfFiles]="1"
-							[files]="attachments.value"
-						></app-file-upload>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="
-								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-								form.get('attachments')?.invalid &&
-								form.get('attachments')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</div>
 				</div>
+			</div>
+
+			<div class="my-4" *ngIf="isRequestDogAuthorization.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+				<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+
+				<div class="text-minor-heading mb-2">Upload your Security Dog Validation Certificate</div>
+				<app-file-upload
+					(fileUploaded)="onFileUploaded($event)"
+					(fileRemoved)="onFileRemoved()"
+					[control]="attachments"
+					[maxNumberOfFiles]="1"
+					[files]="attachments.value"
+				></app-file-upload>
+				<mat-error
+					class="mat-option-error"
+					*ngIf="
+						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+						form.get('attachments')?.invalid &&
+						form.get('attachments')?.hasError('required')
+					"
+					>This is required</mat-error
+				>
 			</div>
 		</form>
 	`,
@@ -73,23 +69,28 @@ export class BusinessCategorySecurityGuardComponent implements LicenceChildStepp
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return this.form.valid;
 	}
 
 	onFileUploaded(_file: File): void {
-		// if (this.authenticationService.isLoggedIn()) {
-		// 	this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
-		// 		next: (resp: any) => {
-		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during file upload', error);
-		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
-		// 			this.fileUploadComponent.removeFailedFile(file);
-		// 		},
-		// 	});
-		// }
+		this.businessApplicationService.hasValueChanged = true;
+
+		if (this.businessApplicationService.isAutoSave()) {
+			// TODO upload file on partial save
+			// this.businessApplicationService
+			// 	.addUploadDocument(LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate, file)
+			// 	.subscribe({
+			// 		next: (resp: any) => {
+			// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+			// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			// 		},
+			// 		error: (error: any) => {
+			// 			console.log('An error occurred during file upload', error);
+			// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
+			// 			this.fileUploadComponent.removeFailedFile(file);
+			// 		},
+			// 	});
+		}
 	}
 
 	onFileRemoved(): void {
