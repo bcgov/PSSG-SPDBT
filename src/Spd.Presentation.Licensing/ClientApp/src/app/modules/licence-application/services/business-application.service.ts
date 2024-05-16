@@ -530,7 +530,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			},
 		];
 
-		const sortedControllingMembersData = [...controllingMembersData!].sort((a, b) => {
+		const sortedControllingMembersData = controllingMembersData.sort((a, b) => {
 			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
 		});
 		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
