@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spd.Resource.Repository.Document;
+using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Incident;
@@ -17,12 +17,16 @@ internal class IncidentRepository : IIncidentRepository
 
     public async Task<IncidentListResp> QueryAsync(IncidentQry qry, CancellationToken ct)
     {
-        var incidents = _context.incidents.Where(i => i.statecode != DynamicsConstants.StateCode_Inactive);
+        IQueryable<incident> incidents = _context.incidents
+            .Expand(i => i.spd_incident_spd_licencecondition);
+
+        if (!qry.IncludeInactive)
+            incidents = incidents.Where(i => i.statecode != DynamicsConstants.StateCode_Inactive);
 
         if (qry.IncidentId != null)
             incidents = incidents.Where(i => i.incidentid == qry.IncidentId);
 
-        if(qry.ApplicationId != null)
+        if (qry.ApplicationId != null)
             incidents = incidents.Where(i => i._spd_applicationid_value == qry.ApplicationId);
 
         if (qry.CaseNumber != null)
