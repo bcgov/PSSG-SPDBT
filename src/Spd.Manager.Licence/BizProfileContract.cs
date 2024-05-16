@@ -25,6 +25,7 @@ public record BizProfileUpdateCommand(
 
 public record BizInfo
 {
+    public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
     public BizTypeCode? BizTypeCode { get; set; }
     public Address? BizAddress { get; set; }
