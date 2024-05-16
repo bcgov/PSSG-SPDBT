@@ -254,7 +254,7 @@ import { Subscription } from 'rxjs';
 														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
+														<div class="text-label d-block text-muted">Expiry Date</div>
 														<div class="summary-text-data">
 															{{ expiredLicenceExpiryDate | formatDate | default }}
 														</div>

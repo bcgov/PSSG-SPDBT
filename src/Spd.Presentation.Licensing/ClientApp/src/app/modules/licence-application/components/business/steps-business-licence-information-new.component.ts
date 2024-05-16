@@ -22,13 +22,13 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-expired></app-step-business-licence-expired>
+				<app-step-business-licence-expired
+					(validExpiredLicenceData)="onValidExpiredLicence()"
+				></app-step-business-licence-expired>
 
 				<app-wizard-footer
-					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
-					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
+					(nextStepperStep)="onExpiredLicenceNextStep()"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -81,6 +81,14 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
 		);
+	}
+
+	onExpiredLicenceNextStep(): void {
+		this.stepExpiredComponent.onSearchAndValidate();
+	}
+
+	onValidExpiredLicence(): void {
+		this.childNextStep.emit(true);
 	}
 
 	override dirtyForm(step: number): boolean {
