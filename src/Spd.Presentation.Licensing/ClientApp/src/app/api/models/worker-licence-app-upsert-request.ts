@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { Alias } from './alias';
 import { ApplicationTypeCode } from './application-type-code';
-import { BusinessTypeCode } from './business-type-code';
+import { BizTypeCode } from './biz-type-code';
 import { Document } from './document';
 import { DocumentExpiredInfo } from './document-expired-info';
 import { EyeColourCode } from './eye-colour-code';
@@ -22,7 +22,7 @@ export interface WorkerLicenceAppUpsertRequest {
   applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   bcDriversLicenceNumber?: null | string;
-  businessTypeCode?: BusinessTypeCode;
+  bizTypeCode?: BizTypeCode;
   carryAndUseRestraints?: null | boolean;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   dateOfBirth?: null | string;

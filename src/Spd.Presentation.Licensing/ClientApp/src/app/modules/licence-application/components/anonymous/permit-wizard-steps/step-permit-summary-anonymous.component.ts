@@ -2,8 +2,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
+	BizTypeCode,
 	BodyArmourPermitReasonCode,
-	BusinessTypeCode,
 	LicenceDocumentTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -612,7 +612,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	get licenceFee(): number | null {
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BusinessTypeCode.None)
+			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BizTypeCode.None)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		return fee ? fee.amount ?? null : null;

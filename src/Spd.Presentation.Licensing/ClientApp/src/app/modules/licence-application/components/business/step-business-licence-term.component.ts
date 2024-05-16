@@ -77,18 +77,18 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		const businessTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'businessInformationData.businessTypeCode'
+		const bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+			'businessInformationData.bizTypeCode'
 		)?.value;
 
-		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
+		if (!workerLicenceTypeCode || !applicationTypeCode || !bizTypeCode) {
 			return [];
 		}
 
 		return this.commonApplicationService.getLicenceTermsAndFees(
 			workerLicenceTypeCode,
 			applicationTypeCode,
-			businessTypeCode
+			bizTypeCode
 		);
 	}
 

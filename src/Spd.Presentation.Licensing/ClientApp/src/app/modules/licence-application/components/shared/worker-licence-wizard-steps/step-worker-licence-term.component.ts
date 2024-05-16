@@ -78,8 +78,8 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		const businessTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-			'soleProprietorData.businessTypeCode'
+		const bizTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			'soleProprietorData.bizTypeCode'
 		)?.value;
 
 		const originalLicenceTermCode =
@@ -89,11 +89,11 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 		// 	'get termCodes',
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
-		// 	businessTypeCode,
+		// 	bizTypeCode,
 		// 	originalLicenceTermCode
 		// );
 
-		if (!workerLicenceTypeCode || !applicationTypeCode || !businessTypeCode) {
+		if (!workerLicenceTypeCode || !applicationTypeCode || !bizTypeCode) {
 			return [];
 		}
 
@@ -106,7 +106,7 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 		// 	'get termCodes',
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
-		// 	businessTypeCode,
+		// 	bizTypeCode,
 		// 	originalLicenceTermCode,
 		// 	hasValidSwl90DayLicence
 		// );
@@ -114,7 +114,7 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 		return this.commonApplicationService.getLicenceTermsAndFees(
 			workerLicenceTypeCode,
 			applicationTypeCode,
-			businessTypeCode,
+			bizTypeCode,
 			originalLicenceTermCode
 		);
 	}
