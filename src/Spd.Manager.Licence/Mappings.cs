@@ -240,7 +240,8 @@ internal class Mappings : Profile
            .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
-           .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)));
+           .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
+           .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
 
         CreateMap<AddressResp, BranchAddr>()
             .ReverseMap();
