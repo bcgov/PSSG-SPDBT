@@ -34,7 +34,7 @@ internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
     private async Task<PreviewResponse> GeneratePreview(BCMailPlusPrintRequest req, CancellationToken ct)
     {
         var createStatus = await bcMailPlusApi.CreateJob(req.JobTemplate, req.payload, ct);
-        if (createStatus.Errors != null) return new PreviewResponse(string.Empty, JobStatus.Failed, createStatus.Errors, null, null);
+        if (!string.IsNullOrWhiteSpace(createStatus.Errors)) return new PreviewResponse(string.Empty, JobStatus.Failed, createStatus.Errors, null, null);
         if (createStatus.JobId == null) return new PreviewResponse(string.Empty, JobStatus.Failed, "job id was returned null", null, null);
         var jobId = createStatus.JobId!;
 
