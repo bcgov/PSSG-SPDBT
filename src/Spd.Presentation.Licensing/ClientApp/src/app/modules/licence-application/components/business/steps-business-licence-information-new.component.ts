@@ -1,9 +1,7 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { Subscription } from 'rxjs';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
@@ -63,43 +61,22 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_EXPIRED = 1;
 	readonly STEP_LICENCE_BRANDING = 2;
 	readonly STEP_LICENCE_LIABILITY = 3;
 
-	isFormValid = false;
-	showSaveAndExit = false;
-
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
 	@ViewChild(StepBusinessLicenceCompanyBrandingComponent)
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	private licenceModelChangedSubscription!: Subscription;
-
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private router: Router,
-		private businessApplicationService: BusinessApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
-			(_resp: any) => {
-				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onGotoUserProfile(): void {

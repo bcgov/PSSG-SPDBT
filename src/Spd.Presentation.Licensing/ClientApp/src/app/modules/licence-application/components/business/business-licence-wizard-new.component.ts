@@ -28,6 +28,8 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-steps-business-licence-information-new
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -40,6 +42,8 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-business-licence-selection-new
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -53,6 +57,8 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-business-licence-contact-information-new
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -65,6 +71,8 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
 				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
 				<app-steps-business-licence-controlling-members-new
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -105,6 +113,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	step3Complete = false;
 	step4Complete = false;
 
+	isFormValid = false;
+	showSaveAndExit = false;
+
 	isBusinessLicenceSoleProprietor = false;
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -143,6 +154,10 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.isBusinessLicenceSoleProprietor =
 					bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor ||
 					bizTypeCode === BizTypeCode.RegisteredSoleProprietor;
+
+				this.isFormValid = _resp;
+
+				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
 			}
 		);
 		this.updateCompleteStatus();

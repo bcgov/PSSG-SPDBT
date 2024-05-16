@@ -70,6 +70,15 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 								[maxNumberOfFiles]="10"
 								[files]="attachments.value"
 							></app-file-upload>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+									form.get('attachments')?.invalid &&
+									form.get('attachments')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
 					</div>
 				</form>

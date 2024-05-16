@@ -1,7 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { Subscription } from 'rxjs';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceControllingMemberConfirmationComponent } from './step-business-licence-controlling-member-confirmation.component';
@@ -82,18 +80,15 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceControllingMembersNewComponent
-	extends BaseWizardStepComponent
-	implements OnInit, OnDestroy
-{
+export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWizardStepComponent {
 	readonly STEP_CONTROLLING_MEMBERS = 1;
 	readonly STEP_CONTROLLING_MEMBERS_CONFIRMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS_INVITES = 3;
 	readonly STEP_EMPLOYEES = 4;
 	readonly STEP_APPLICATION_ON_HOLD = 5;
 
-	isFormValid = false;
-	showSaveAndExit = false;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceControllingMembersComponent)
 	stepControllingMembersComponent!: StepBusinessLicenceControllingMembersComponent;
@@ -105,27 +100,8 @@ export class StepsBusinessLicenceControllingMembersNewComponent
 	@ViewChild(StepBusinessLicenceApplicationOnHoldComponent)
 	stepOnHoldComponent!: StepBusinessLicenceApplicationOnHoldComponent;
 
-	private licenceModelChangedSubscription!: Subscription;
-
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private businessApplicationService: BusinessApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
-			(_resp: any) => {
-				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override dirtyForm(step: number): boolean {

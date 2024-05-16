@@ -1,7 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { Subscription } from 'rxjs';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceTermComponent } from './step-business-licence-term.component';
@@ -44,39 +42,19 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 1;
 	readonly STEP_LICENCE_TERM = 2;
 
-	isFormValid = false;
-	showSaveAndExit = false;
-
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;
 
-	private licenceModelChangedSubscription!: Subscription;
-
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private businessApplicationService: BusinessApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
-			(_resp: any) => {
-				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override dirtyForm(step: number): boolean {

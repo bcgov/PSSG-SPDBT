@@ -1,7 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { Subscription } from 'rxjs';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 
@@ -26,39 +24,17 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceContactInformationNewComponent
-	extends BaseWizardStepComponent
-	implements OnInit, OnDestroy
-{
+export class StepsBusinessLicenceContactInformationNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_MANAGER_INFORMATION = 1;
 
-	isFormValid = false;
-	showSaveAndExit = false;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerInformationComponent!: StepBusinessLicenceManagerInformationComponent;
 
-	private licenceModelChangedSubscription!: Subscription;
-
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private businessApplicationService: BusinessApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
-			(_resp: any) => {
-				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override dirtyForm(step: number): boolean {
