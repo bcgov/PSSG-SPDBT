@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
@@ -152,7 +151,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, LicenceChildSt
 
 	@Input() form!: FormGroup;
 
-	constructor(private formBuilder: FormBuilder, private utilService: UtilService, private dialog: MatDialog) {}
+	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
 		this.dataSource = new MatTableDataSource(this.branchesArray.value);

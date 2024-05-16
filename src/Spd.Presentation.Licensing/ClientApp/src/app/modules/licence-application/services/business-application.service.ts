@@ -493,48 +493,65 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
+		const controllingMembersData = [
+			// TODO remove hardcoded data
+			{
+				id: '1',
+				licenceHolderName: 'Yank Alexander',
+				givenName: 'Yank',
+				surname: 'Alexander',
+				emailAddress: '',
+				licenceNumber: '2345433',
+				licenceStatusCode: 'Expired',
+				expiryDate: '2023-05-15',
+				clearanceStatus: 'Completed',
+			},
+			{
+				id: '2',
+				licenceHolderName: 'Anderson Cooper',
+				givenName: 'Anderson',
+				surname: 'Cooper',
+				emailAddress: 'test@test.com',
+				licenceNumber: '',
+				status: '',
+				expiryDate: '',
+				clearanceStatus: 'Submitted',
+			},
+			{
+				id: '3',
+				licenceHolderName: 'James Clark',
+				givenName: 'James',
+				surname: 'Clark',
+				emailAddress: '',
+				licenceNumber: '',
+				status: '',
+				expiryDate: '',
+				clearanceStatus: 'Completed',
+			},
+		];
+
+		const sortedControllingMembersData = [...controllingMembersData!].sort((a, b) => {
+			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
+		});
 		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
-		controllingMembersArray.push(
-			new FormGroup({
-				id: new FormControl('2'),
-				licenceHolderName: new FormControl('Yank Alexander'),
-				givenName: new FormControl('Yank'),
-				surname: new FormControl('Alexander'),
-				emailAddress: new FormControl(),
-				licenceNumber: new FormControl('2345433'),
-				licenceStatusCode: new FormControl('Expired'),
-				expiryDate: new FormControl('2023-05-15'),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
-		controllingMembersArray.push(
-			new FormGroup({
-				id: new FormControl('3'),
-				licenceHolderName: new FormControl('Anderson Cooper'),
-				givenName: new FormControl('Anderson'),
-				surname: new FormControl('Cooper'),
-				emailAddress: new FormControl('test@test.com'),
-				licenceNumber: new FormControl(),
-				licenceStatusCode: new FormControl(),
-				expiryDate: new FormControl(),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
-		controllingMembersArray.push(
-			new FormGroup({
-				id: new FormControl('3'),
-				licenceHolderName: new FormControl('James Clark'),
-				givenName: new FormControl('James'),
-				surname: new FormControl('Clark'),
-				emailAddress: new FormControl(),
-				licenceNumber: new FormControl(),
-				status: new FormControl(),
-				expiryDate: new FormControl(),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
+		sortedControllingMembersData.forEach((item: any) => {
+			controllingMembersArray.push(
+				new FormGroup({
+					id: new FormControl(item.id),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					givenName: new FormControl(item.givenName),
+					surname: new FormControl(item.surname),
+					emailAddress: new FormControl(item.emailAddress),
+					licenceNumber: new FormControl(item.licenceNumber),
+					licenceStatusCode: new FormControl(item.licenceStatusCode),
+					expiryDate: new FormControl(item.expiryDate),
+					clearanceStatus: new FormControl(item.clearanceStatus),
+				})
+			);
+		});
 
 		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
+		// TODO remove hardcoded data
 		employeesArray.push(
 			new FormGroup({
 				id: new FormControl('1'),

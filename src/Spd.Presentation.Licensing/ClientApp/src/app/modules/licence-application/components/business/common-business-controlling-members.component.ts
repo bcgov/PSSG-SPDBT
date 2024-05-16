@@ -1,12 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
@@ -132,8 +130,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 
 	@Input() form!: FormGroup;
 
-	memberList: Array<any> = [];
-
 	dataSource!: MatTableDataSource<any>;
 	columns: string[] = [
 		'licenceHolderName',
@@ -145,17 +141,15 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 		'action2',
 	];
 
-	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
+	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.memberList = this.membersArray.value;
-		this.dataSource = new MatTableDataSource(this.memberList);
+		this.dataSource = new MatTableDataSource(this.membersArray.value);
 		this.updateAndSortData();
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return true;
 	}
 
 	onRemoveMember(index: number) {
@@ -172,8 +166,8 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.memberList.splice(index, 1);
-					this.dataSource = new MatTableDataSource(this.memberList);
+					this.membersArray.removeAt(index);
+					this.dataSource = new MatTableDataSource(this.membersArray.value);
 				}
 			});
 	}
@@ -190,10 +184,18 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp) {
-					this.memberList.push(resp.data);
-					this.hotToastService.success('Controlling member was successfully added');
-					this.updateAndSortData();
+				console.log('resp', resp);
+				const memberData = resp?.data;
+				console.log('memberData', memberData);
+				if (memberData) {
+					// this.memberList.push(resp.data);
+					// this.dataSource.data.push(memberData);
+					this.membersArray.push(this.newMemberRow(memberData));
+					// this.dataSource = new MatTableDataSource(memberList);
+					// this.hotToastService.success('Controlling member was successfully added');
+					// this.updateAndSortData();
+
+					this.dataSource.data = this.membersArray.value;
 				}
 			});
 	}
@@ -207,10 +209,10 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 	}
 
 	private updateAndSortData() {
-		this.memberList = [...this.memberList].sort((a, b) => {
-			return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
-		});
-		this.dataSource.data = this.memberList;
+		// this.memberList = [...this.memberList].sort((a, b) => {
+		// 	return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
+		// });
+		// this.dataSource.data = this.memberList;
 	}
 
 	private memberDialog(dialogOptions: any, isCreate: boolean): void {
@@ -221,21 +223,64 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp) {
+				console.log('resp', resp);
+				const memberData = resp?.data;
+				console.log('memberData', memberData);
+				if (memberData) {
+					// if (isCreate) {
+					// 	this.memberList.push(resp.data);
+					// 	this.hotToastService.success('Controlling member was successfully added');
+					// 	this.updateAndSortData();
+					// } else {
+					// 	const memberIndex = this.memberList.findIndex((item) => item.id == dialogOptions.id!);
+					// 	if (memberIndex >= 0) {
+					// 		this.memberList[memberIndex] = resp.data;
+					// 		this.updateAndSortData();
+					// 	}
+					// 	this.hotToastService.success('Controlling member was successfully updated');
+					// }
+
 					if (isCreate) {
-						this.memberList.push(resp.data);
-						this.hotToastService.success('Controlling member was successfully added');
-						this.updateAndSortData();
+						this.membersArray.push(this.newMemberRow(memberData));
 					} else {
-						const memberIndex = this.memberList.findIndex((item) => item.id == dialogOptions.id!);
-						if (memberIndex >= 0) {
-							this.memberList[memberIndex] = resp.data;
-							this.updateAndSortData();
-						}
-						this.hotToastService.success('Controlling member was successfully updated');
+						const memberIndex = this.membersArray.value.findIndex((item: any) => item.id == dialogOptions.id!);
+						console.log('memberIndex', memberIndex);
+						this.patchMemberData(memberIndex, memberData);
 					}
+
+					this.dataSource.data = this.membersArray.value;
 				}
 			});
+	}
+
+	private newMemberRow(memberData: any): FormGroup {
+		return this.formBuilder.group({
+			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
+			givenName: [memberData.givenName],
+			surname: [memberData.surname],
+			emailAddress: [memberData.emailAddress],
+			licenceNumber: [memberData.licenceNumber],
+			licenceStatusCode: [memberData.licenceStatusCode],
+			expiryDate: [memberData.expiryDate],
+			clearanceStatus: [memberData.clearanceStatus],
+		});
+	}
+
+	private patchMemberData(memberIndex: number, memberData: any) {
+		if (memberIndex < 0) {
+			return;
+		}
+
+		this.membersArray.at(memberIndex).patchValue({
+			licenceHolderName: memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`,
+			givenName: memberData.givenName,
+			surname: memberData.surname,
+			emailAddress: memberData.emailAddress,
+			licenceNumber: memberData.licenceNumber,
+			licenceStatusCode: memberData.licenceStatusCode,
+			expiryDate: memberData.expiryDate,
+			clearanceStatus: memberData.clearanceStatus,
+		});
 	}
 
 	get membersArray(): FormArray {
