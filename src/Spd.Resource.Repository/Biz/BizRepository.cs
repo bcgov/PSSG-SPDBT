@@ -79,8 +79,6 @@ namespace Spd.Resource.Repository.Biz
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licHolderContact.spd_licenceid;
             response.SoleProprietorSwlContactInfo.ContactId = licHolderContact.spd_LicenceHolder_contact?.contactid;
-            response.SoleProprietorSwlEmailAddress = licHolderContact.spd_LicenceHolder_contact?.emailaddress1;
-            response.SoleProprietorSwlPhoneNumber = licHolderContact.spd_LicenceHolder_contact?.telephone1;
 
             return response;
         }
