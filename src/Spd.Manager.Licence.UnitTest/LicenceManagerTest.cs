@@ -14,7 +14,6 @@ public class LicenceManagerTest
     private Mock<ILicenceRepository> mockLicRepo = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<IMainFileStorageService> mockFileService = new();
-    private Mock<IMapper> mockMapper = new();
 
     private LicenceManager sut;
 
@@ -25,11 +24,17 @@ public class LicenceManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        var mapperConfig = new MapperConfiguration(x =>
+        {
+            x.AddProfile<Mappings>();
+        });
+        var mapper = mapperConfig.CreateMapper();
+
         sut = new LicenceManager(mockLicRepo.Object,
             mockDocRepo.Object,
             null,
             mockFileService.Object,
-            mockMapper.Object);
+            mapper);
     }
 
     [Fact]
@@ -183,9 +188,6 @@ public class LicenceManagerTest
                 LicenceStatusCode = Enum.Parse<LicenceStatusCode>(licenceResp.LicenceStatusCode.ToString())
             }
         };
-
-        mockMapper.Setup(m => m.Map<IEnumerable<LicenceBasicResponse>>(It.Is<IEnumerable<LicenceResp>>(r => r.Any(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired))))
-            .Returns(licenceResponses);
 
         ApplicantLicenceListQuery request = new(applicantId);
 
