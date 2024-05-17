@@ -2,6 +2,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -94,6 +95,23 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task GetAsync_Licence_Correctly()
     {
+        // Arrange
+        Guid licenceId = Guid.NewGuid();
+        spd_licence licence = new() { spd_licenceid = licenceId };
+        _context.AddTospd_licences(licence);
+        await _context.SaveChangesAsync(CancellationToken.None);
 
+        // Action
+        var response = await _licRepo.GetAsync(licenceId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task GetAsync_Licence_Throw_Exception()
+    {
+        // Action and Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _licRepo.GetAsync(Guid.NewGuid(), CancellationToken.None));
     }
 }
