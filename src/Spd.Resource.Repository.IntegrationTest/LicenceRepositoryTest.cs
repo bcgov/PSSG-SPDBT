@@ -112,6 +112,6 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     public async Task GetAsync_Licence_Throw_Exception()
     {
         // Action and Assert
-        await Assert.ThrowsAsync<ApiException>(async () => await _licRepo.GetAsync(Guid.NewGuid(), CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _licRepo.GetAsync(Guid.NewGuid(), CancellationToken.None));
     }
 }
