@@ -6,6 +6,7 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
@@ -61,6 +62,14 @@ public class BizLicensingControllerTest
 
         Assert.IsType<BizLicAppCommandResponse>(result);
         mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SaveBusinessLicenceApplication_With_Empty_Guid_Throw_Exception()
+    {
+        BizLicAppUpsertRequest request = new();
+
+        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SaveBusinessLicenceApplication(request, CancellationToken.None));
     }
 
     [Fact]
