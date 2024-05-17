@@ -37,7 +37,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 														class="go-to-step-button"
 														matTooltip="Go to Step 2"
 														aria-label="Go to Step 2"
-														(click)="$event.stopPropagation(); onEditStep(1)"
+														(click)="$event.stopPropagation(); onEditStep(0)"
 													>
 														<mat-icon>edit</mat-icon>
 													</button>
@@ -131,7 +131,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 														class="go-to-step-button"
 														matTooltip="Go to Step 2"
 														aria-label="Go to Step 2"
-														(click)="$event.stopPropagation(); onEditStep(2)"
+														(click)="$event.stopPropagation(); onEditStep(1)"
 													>
 														<mat-icon>edit</mat-icon>
 													</button>
@@ -212,7 +212,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 														class="go-to-step-button"
 														matTooltip="Go to Step 2"
 														aria-label="Go to Step 2"
-														(click)="$event.stopPropagation(); onEditStep(3)"
+														(click)="$event.stopPropagation(); onEditStep(2)"
 													>
 														<mat-icon>edit</mat-icon>
 													</button>
@@ -284,7 +284,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 														class="go-to-step-button"
 														matTooltip="Go to Step 2"
 														aria-label="Go to Step 2"
-														(click)="$event.stopPropagation(); onEditStep(4)"
+														(click)="$event.stopPropagation(); onEditStep(3)"
 													>
 														<mat-icon>edit</mat-icon>
 													</button>

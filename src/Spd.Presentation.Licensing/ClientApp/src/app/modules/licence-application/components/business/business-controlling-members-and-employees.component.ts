@@ -45,7 +45,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 
 					<div class="fs-5 mb-2">Employee Updates</div>
 					<app-alert type="info" icon="info">
-						If your employees who are licence holders for the business change during the business licence term, update
+						If your employees, who are licence holders for the business, change during the business licence term, update
 						their information here.
 					</app-alert>
 

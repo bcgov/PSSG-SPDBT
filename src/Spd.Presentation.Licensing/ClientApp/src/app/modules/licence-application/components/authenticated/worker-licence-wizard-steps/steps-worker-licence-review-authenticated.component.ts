@@ -20,10 +20,21 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 					></app-step-worker-licence-summary-review-authenticated>
 				</ng-template>
 
-				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onGoToNextStep()"
-				></app-wizard-footer>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else notNewWizardFooter">
+					<app-wizard-footer
+						[isFormValid]="true"
+						[showSaveAndExit]="true"
+						(saveAndExit)="onNoSaveAndExit()"
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #notNewWizardFooter>
+					<app-wizard-footer
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step>
@@ -31,20 +42,32 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-consent-and-declaration>
 
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else notUpdateConsent">
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-wizard-footer
 						nextButtonLabel="Submit"
 						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onSubmitNow()"
 					></app-wizard-footer>
 				</ng-container>
-				<ng-template #notUpdateConsent>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
+					<app-wizard-footer
+						[isFormValid]="true"
+						[showSaveAndExit]="true"
+						(saveAndExit)="onNoSaveAndExit()"
+						nextButtonLabel="Pay Now"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onPayNow()"
+					></app-wizard-footer>
+				</ng-container>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
 					<app-wizard-footer
 						nextButtonLabel="Pay Now"
 						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onPayNow()"
 					></app-wizard-footer>
-				</ng-template>
+				</ng-container>
 			</mat-step>
 
 			<mat-step *ngIf="isUpdate">
