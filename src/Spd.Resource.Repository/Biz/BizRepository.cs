@@ -46,23 +46,34 @@ namespace Spd.Resource.Repository.Biz
 
         public async Task<BizResult?> GetBizAsync(Guid accountId, CancellationToken ct)
         {
-            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
+            IQueryable<account> accounts = _context.accounts
+                .Expand(a => a.spd_Organization_Addresses)
+                .Expand(a => a.spd_organization_spd_licence_soleproprietor)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == accountId);
 
-            account? Biz = await accounts.FirstOrDefaultAsync(ct);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
             
-            if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
+            if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
-                .Where(so => so.accountid == Biz.accountid)
+                .Where(so => so.accountid == biz.accountid)
                 .ToList();
 
             if (!serviceTypes.Any())
-                throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {Biz.name} does not have service type.");
+                throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {biz.name} does not have service type.");
 
-            var response = _mapper.Map<BizResult>(Biz);
+            var licenceId = biz.spd_organization_spd_licence_soleproprietor
+                .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)?.spd_licenceid;
+
+            var contactId = biz.spd_organization_spd_licence_soleproprietor
+                .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)?._spd_licenceholder_value;
+
+            var response = _mapper.Map<BizResult>(biz);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
+            response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
+            response.SoleProprietorSwlContactInfo.ContactId = contactId;
+
             return response;
         }
 
@@ -80,19 +91,25 @@ namespace Spd.Resource.Repository.Biz
 
         private async Task<BizResult?> UpdateBizAsync(UpdateBizCmd updateBizCmd, CancellationToken ct)
         {
-            IQueryable<account> accounts = _context.accounts.Expand(a => a.spd_Organization_Addresses)
-                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-                 .Where(a => a.accountid == updateBizCmd.Id);
+            IQueryable<account> accounts = _context.accounts
+                .Expand(a => a.spd_Organization_Addresses)
+                .Expand(a => a.spd_organization_spd_licence_soleproprietor)
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == updateBizCmd.Id);
 
-            account? Biz = await accounts.FirstOrDefaultAsync(ct);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
 
-            if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
+            if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            _mapper.Map(updateBizCmd, Biz);
-            _context.UpdateObject(Biz);
+            _mapper.Map(updateBizCmd, biz);
+            _context.UpdateObject(biz);
+
+            if (updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
+                UpdateLicenceLink(biz, (Guid)updateBizCmd.SoleProprietorSwlContactInfo.LicenceId);
+
             await _context.SaveChangesAsync(ct);
 
-            return _mapper.Map<BizResult>(Biz);
+            return _mapper.Map<BizResult>(biz);
         }
 
         private async Task<BizResult?> UpdateBizServiceTypeAsync(UpdateBizServiceTypeCmd updateBizServiceTypeCmd, CancellationToken ct)
@@ -153,6 +170,32 @@ namespace Spd.Resource.Repository.Biz
                 await _context.SaveChangesAsync(ct);
             }
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
+        }
+
+        private void UpdateLicenceLink(account account, Guid licenceId)
+        {
+            spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
+                .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
+
+            if (licence != null && licence.spd_licenceid == licenceId)
+                return;
+
+            // Remove link with current licence
+            if (licence != null)
+            {
+                _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
+            }
+
+            // Add link with new licence
+            spd_licence? newLicence = _context.spd_licences
+                .Where(l => l.spd_licenceid == licenceId)
+                .Where(l => l.statecode == DynamicsConstants.StateCode_Active)
+                .FirstOrDefault();
+
+            if (newLicence != null)
+            {
+                _context.AddLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), newLicence);
+            }
         }
     }
 }
