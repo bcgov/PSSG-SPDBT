@@ -46,16 +46,12 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.AccessCode, opt => opt.MapFrom(s => s.spd_accesscode))
             .ForMember(d => d.BizType, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_licensingbusinesstype)))
             .ForMember(d => d.SoleProprietorSwlContactInfo, opt => opt.Ignore())
-            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => s.telephone1))
-            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => s.emailaddress1))
             .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => s.spd_Organization_Addresses
                 .Where(a => a.spd_type == (int)AddressTypeOptionSet.Branch && a.statecode == DynamicsConstants.StateCode_Active)));
 
             CreateMap<UpdateBizCmd, account>()
             .IncludeBase<Biz, account>()
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)))
-            .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.SoleProprietorSwlEmailAddress))
-            .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.SoleProprietorSwlPhoneNumber))
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<CreateBizCmd, account>()
