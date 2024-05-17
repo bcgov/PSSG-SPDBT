@@ -215,6 +215,8 @@ internal class Mappings : Profile
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
+            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => s.Email))
             .ForPath(d => d.SoleProprietorSwlContactInfo.BizContactId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.BizContactId))
             .ForPath(d => d.SoleProprietorSwlContactInfo.ContactId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.ContactId))
             .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId));
@@ -242,6 +244,8 @@ internal class Mappings : Profile
            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
+           .ForMember(d => d.Email, opt => opt.MapFrom(s => s.SoleProprietorSwlEmailAddress))
+           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.SoleProprietorSwlPhoneNumber))
            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
 
         CreateMap<AddressResp, BranchAddr>()
