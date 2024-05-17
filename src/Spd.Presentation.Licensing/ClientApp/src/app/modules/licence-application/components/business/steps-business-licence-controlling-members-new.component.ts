@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
@@ -16,6 +16,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS)"
 					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS)"
@@ -27,6 +29,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS_CONFIRMATION)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_CONFIRMATION)"
 					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS_CONFIRMATION)"
@@ -38,6 +42,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CONTROLLING_MEMBERS_INVITES)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CONTROLLING_MEMBERS_INVITES)"
 					(nextReviewStepperStep)="onNextReview(STEP_CONTROLLING_MEMBERS_INVITES)"
@@ -49,6 +55,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_EMPLOYEES)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_EMPLOYEES)"
 					(nextReviewStepperStep)="onNextReview(STEP_EMPLOYEES)"
@@ -60,6 +68,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_APPLICATION_ON_HOLD)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_APPLICATION_ON_HOLD)"
 					(nextReviewStepperStep)="onNextReview(STEP_APPLICATION_ON_HOLD)"
@@ -77,7 +87,8 @@ export class StepsBusinessLicenceControllingMembersNewComponent extends BaseWiza
 	readonly STEP_EMPLOYEES = 4;
 	readonly STEP_APPLICATION_ON_HOLD = 5;
 
-	isFormValid = false;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceControllingMembersComponent)
 	stepControllingMembersComponent!: StepBusinessLicenceControllingMembersComponent;

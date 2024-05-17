@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="col-12">
 					<div class="fs-5 lh-base my-3">
 						To qualify for a private investigator business licence, you must have a manager with a valid security worker
 						licence
@@ -70,6 +70,6 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return this.form.valid;
 	}
 }

@@ -115,7 +115,6 @@ import { StepBusinessLicenceEmployeesComponent } from './components/business/ste
 import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './components/business/step-business-licence-liability.component';
 import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
-import { StepBusinessLicenceNameComponent } from './components/business/step-business-licence-name.component';
 import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
 import { StepBusinessLicenceSummaryComponent } from './components/business/step-business-licence-summary.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
@@ -302,7 +301,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceControllingMemberConfirmationComponent,
 		StepBusinessLicenceControllingMemberInvitesComponent,
 		StepBusinessLicenceLiabilityComponent,
-		StepBusinessLicenceNameComponent,
 		StepBusinessLicenceProfileComponent,
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,
