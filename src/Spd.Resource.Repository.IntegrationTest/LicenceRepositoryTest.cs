@@ -2,6 +2,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -19,7 +20,7 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task ManageAsync_UpdateLicence_Correctly()
     {
-        //Arrange
+        // Arrange
         spd_licence lic = new();
         lic.spd_licenceid = Guid.NewGuid();
         lic.spd_employercontactname = IntegrationTestSetup.DataPrefix + "employername";
@@ -33,10 +34,10 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         };
         UpdateLicenceCmd cmd = new(pl, (Guid)lic.spd_licenceid);
 
-        //Action
+        // Action
         var response = await _licRepo.ManageAsync(cmd, CancellationToken.None);
 
-        //Assert
+        // Assert
         Assert.NotNull(response);
         Assert.Equal("newEmployerName", response.EmployerName);
     }
@@ -44,7 +45,7 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task QueryAsync_SwlPermitLicence_Correctly()
     {
-        //Arrange
+        // Arrange
         contact p = new();
         p.firstname = $"{IntegrationTestSetup.DataPrefix}{new Random().Next(1000)}";
         p.contactid = Guid.NewGuid();
@@ -58,10 +59,10 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync(CancellationToken.None);
         LicenceQry q = new() { LicenceId = (Guid)lic.spd_licenceid };
 
-        //Action
+        // Action
         var response = await _licRepo.QueryAsync(q, CancellationToken.None);
 
-        //Assert
+        // Assert
         Assert.NotNull(response);
         Assert.Equal(p.firstname, response.Items.First().LicenceHolderFirstName);
     }
@@ -69,7 +70,7 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task QueryAsync_BizLicence_Correctly()
     {
-        //Arrange
+        // Arrange
         account biz = new();
         biz.name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}";
         biz.accountid = Guid.NewGuid();
@@ -83,11 +84,34 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync(CancellationToken.None);
         LicenceQry q = new() { LicenceId = (Guid)lic.spd_licenceid };
 
-        //Action
+        // Action
         var response = await _licRepo.QueryAsync(q, CancellationToken.None);
 
-        //Assert
+        // Assert
         Assert.NotNull(response);
         Assert.Equal(biz.name, response.Items.First().LicenceHolderFirstName);
+    }
+
+    [Fact]
+    public async Task GetAsync_Licence_Correctly()
+    {
+        // Arrange
+        Guid licenceId = Guid.NewGuid();
+        spd_licence licence = new() { spd_licenceid = licenceId };
+        _context.AddTospd_licences(licence);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+        // Action
+        var response = await _licRepo.GetAsync(licenceId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task GetAsync_Licence_Throw_Exception()
+    {
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _licRepo.GetAsync(Guid.NewGuid(), CancellationToken.None));
     }
 }
