@@ -24,6 +24,7 @@ namespace Spd.Resource.Repository.Licence
         public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
     }
 
+    //we should only update fields for permit when there is update
     public record UpdateLicenceCmd(PermitLicence PermitLicence, Guid LicenceID);
 
     public record LicenceResp() : PermitLicence
