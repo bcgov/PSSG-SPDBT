@@ -1,6 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -37,6 +36,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_BRANDING)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_BRANDING)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_BRANDING)"
@@ -48,6 +49,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_LIABILITY)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_LIABILITY)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_LIABILITY)"
@@ -63,10 +66,9 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 	readonly STEP_LICENCE_BRANDING = 2;
 	readonly STEP_LICENCE_LIABILITY = 3;
 
-	isFormValid = false;
-	applicationTypeCode: ApplicationTypeCode | null = null;
-
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
 	@ViewChild(StepBusinessLicenceCompanyBrandingComponent)

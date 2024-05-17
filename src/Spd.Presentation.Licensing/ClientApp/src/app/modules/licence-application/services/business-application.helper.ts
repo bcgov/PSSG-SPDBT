@@ -53,6 +53,21 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
+	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
+		{
+			noLogoOrBranding: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => !form.get('noLogoOrBranding')?.value
+				),
+			],
+		}
+	);
+
 	businessInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
 			bizTypeCode: new FormControl('', [Validators.required]),
@@ -87,11 +102,6 @@ export abstract class BusinessApplicationHelper {
 
 	soleProprietorFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
-	});
-
-	companyBrandingFormGroup: FormGroup = this.formBuilder.group({
-		noLogoOrBranding: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
 	});
 
 	liabilityFormGroup: FormGroup = this.formBuilder.group({
@@ -175,21 +185,39 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
-	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
-		isBusinessManager: new FormControl(),
-		agivenName: new FormControl(''), // TODO applicant info - rename later
-		amiddleName1: new FormControl(''),
-		amiddleName2: new FormControl(''),
-		asurname: new FormControl('', [FormControlValidators.required]),
-		aemailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		aphoneNumber: new FormControl('', [Validators.required]),
-	});
+	businessManagerFormGroup: FormGroup = this.formBuilder.group(
+		{
+			givenName: new FormControl(''),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [FormControlValidators.required]),
+			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+			phoneNumber: new FormControl('', [Validators.required]),
+			isBusinessManager: new FormControl(),
+			agivenName: new FormControl(''), // TODO applicant info - rename later
+			amiddleName1: new FormControl(''),
+			amiddleName2: new FormControl(''),
+			asurname: new FormControl(''),
+			aemailAddress: new FormControl('', [FormControlValidators.email]),
+			aphoneNumber: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'asurname',
+					(form) => !form.get('isBusinessManager')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'aemailAddress',
+					(form) => !form.get('isBusinessManager')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'aphoneNumber',
+					(form) => !form.get('isBusinessManager')?.value
+				),
+			],
+		}
+	);
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
@@ -269,7 +297,7 @@ export abstract class BusinessApplicationHelper {
 	});
 
 	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: this.formBuilder.array([]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 
 	branchInBcFormGroup: FormGroup = this.formBuilder.group({

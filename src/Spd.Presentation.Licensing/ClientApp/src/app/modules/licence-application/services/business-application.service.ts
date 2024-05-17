@@ -6,6 +6,7 @@ import {
 	ApplicationTypeCode,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
+	BizTypeCode,
 	BranchInfo,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -88,28 +89,115 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (this.initialized) {
 					this.hasValueChanged = true;
 
+					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
 					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
 					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 
 					this.businessModelFormGroup.patchValue({ isBcBusinessAddress }, { emitEvent: false });
 
-					// const step1Complete = this.isStepLicenceSelectionComplete();
-					// const step2Complete = this.isStepBackgroundComplete();
-					// const step3Complete = this.isStepIdentificationComplete();
-					const isValid = false; //TODO is businessModelFormGroup valid? // step1Complete && step2Complete && step3Complete;
+					const isSoleProprietor =
+						bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor ||
+						bizTypeCode === BizTypeCode.RegisteredSoleProprietor;
+
+					const step1Complete = this.isStepBackgroundInformationComplete();
+					const step2Complete = this.isStepLicenceSelectionComplete();
+					const step3Complete = this.isStepContactInformationComplete();
+					const step4Complete = isSoleProprietor ? true : this.isStepControllingMembersAndEmployeesComplete();
+					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
 						'businessModelFormGroup CHANGED',
-						// 	step1Complete,
-						// 	step2Complete,
-						// 	step3Complete,
+						step1Complete,
+						step2Complete,
+						step3Complete,
+						step4Complete,
 						this.businessModelFormGroup.getRawValue()
 					);
 
 					this.businessModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	/**
+	 * Determine if the step data should be saved. If the data has changed and category data exists;
+	 * @returns
+	 */
+	isAutoSave(): boolean {
+		if (!this.isSaveAndExit()) {
+			return false;
+		}
+
+		return this.hasValueChanged;
+	}
+
+	/**
+	 * Determine if the Save & Exit process can occur
+	 * @returns
+	 */
+	isSaveAndExit(): boolean {
+		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepBackgroundInformationComplete(): boolean {
+		console.debug(
+			'isStepBackgroundInformationComplete',
+			this.expiredLicenceFormGroup.valid,
+			this.companyBrandingFormGroup.valid,
+			this.liabilityFormGroup.valid
+		);
+
+		return this.expiredLicenceFormGroup.valid && this.companyBrandingFormGroup.valid && this.liabilityFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepLicenceSelectionComplete(): boolean {
+		console.debug(
+			'isStepLicenceSelectionComplete',
+			this.categoryFormGroup.valid,
+			this.categoryPrivateInvestigatorFormGroup.valid,
+			this.categoryArmouredCarGuardFormGroup.valid,
+			this.categorySecurityGuardFormGroup.valid,
+			this.licenceTermFormGroup.valid
+		);
+
+		return this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepContactInformationComplete(): boolean {
+		console.debug('isStepContactInformationComplete', this.businessManagerFormGroup.valid);
+
+		return this.businessManagerFormGroup.valid;
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepControllingMembersAndEmployeesComplete(): boolean {
+		console.debug(
+			'isStepControllingMembersAndEmployeesComplete',
+			this.controllingMembersFormGroup.valid,
+			this.employeesFormGroup.valid
+		);
+
+		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
 	/**
@@ -330,6 +418,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			country: bizMailingAddress?.country,
 		};
 
+		const categoryData = {
+			PrivateInvestigator: true,
+			// SecurityAlarmInstaller: true,
+			// SecurityGuard: true,
+			// ElectronicLockingDeviceInstaller: true,
+			// SecurityAlarmMonitor: true,
+		}; // TODO remove hardcoded
+
+		const categoryPrivateInvestigatorData = {
+			isInclude: true,
+			givenName: '',
+			middleName1: '',
+			middleName2: '',
+			surname: 'invest',
+			managerLicenceNumber: '234234',
+		};
+
 		console.debug('[applyLicenceProfileIntoModel] profile', profile);
 		console.debug('[applyLicenceProfileIntoModel] businessAddressData', businessAddressData);
 		console.debug('[applyLicenceProfileIntoModel] bcBusinessAddressData', bcBusinessAddressData);
@@ -347,6 +452,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessInformationData,
 				businessManagerData,
 
+				categoryData,
+				categoryPrivateInvestigatorData,
 				isBcBusinessAddress,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
@@ -386,48 +493,65 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
+		const controllingMembersData = [
+			// TODO remove hardcoded data
+			{
+				id: '1',
+				licenceHolderName: 'Yank Alexander',
+				givenName: 'Yank',
+				surname: 'Alexander',
+				emailAddress: '',
+				licenceNumber: '2345433',
+				licenceStatusCode: 'Expired',
+				expiryDate: '2023-05-15',
+				clearanceStatus: 'Completed',
+			},
+			{
+				id: '2',
+				licenceHolderName: 'Anderson Cooper',
+				givenName: 'Anderson',
+				surname: 'Cooper',
+				emailAddress: 'test@test.com',
+				licenceNumber: '',
+				status: '',
+				expiryDate: '',
+				clearanceStatus: 'Submitted',
+			},
+			{
+				id: '3',
+				licenceHolderName: 'James Clark',
+				givenName: 'James',
+				surname: 'Clark',
+				emailAddress: '',
+				licenceNumber: '',
+				status: '',
+				expiryDate: '',
+				clearanceStatus: 'Completed',
+			},
+		];
+
+		const sortedControllingMembersData = controllingMembersData.sort((a, b) => {
+			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
+		});
 		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
-		controllingMembersArray.push(
-			new FormGroup({
-				id: new FormControl('2'),
-				licenceHolderName: new FormControl('Yank Alexander'),
-				givenName: new FormControl('Yank'),
-				surname: new FormControl('Alexander'),
-				emailAddress: new FormControl(),
-				licenceNumber: new FormControl('2345433'),
-				licenceStatusCode: new FormControl('Expired'),
-				expiryDate: new FormControl('2023-05-15'),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
-		controllingMembersArray.push(
-			new FormGroup({
-				id: new FormControl('3'),
-				licenceHolderName: new FormControl('Anderson Cooper'),
-				givenName: new FormControl('Anderson'),
-				surname: new FormControl('Cooper'),
-				emailAddress: new FormControl('test@test.com'),
-				licenceNumber: new FormControl(),
-				licenceStatusCode: new FormControl(),
-				expiryDate: new FormControl(),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
-		controllingMembersArray.push(
-			new FormGroup({
-				id: new FormControl('3'),
-				licenceHolderName: new FormControl('James Clark'),
-				givenName: new FormControl('James'),
-				surname: new FormControl('Clark'),
-				emailAddress: new FormControl(),
-				licenceNumber: new FormControl(),
-				status: new FormControl(),
-				expiryDate: new FormControl(),
-				clearanceStatus: new FormControl('Completed'),
-			})
-		);
+		sortedControllingMembersData.forEach((item: any) => {
+			controllingMembersArray.push(
+				new FormGroup({
+					id: new FormControl(item.id),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					givenName: new FormControl(item.givenName),
+					surname: new FormControl(item.surname),
+					emailAddress: new FormControl(item.emailAddress),
+					licenceNumber: new FormControl(item.licenceNumber),
+					licenceStatusCode: new FormControl(item.licenceStatusCode),
+					expiryDate: new FormControl(item.expiryDate),
+					clearanceStatus: new FormControl(item.clearanceStatus),
+				})
+			);
+		});
 
 		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
+		// TODO remove hardcoded data
 		employeesArray.push(
 			new FormGroup({
 				id: new FormControl('1'),

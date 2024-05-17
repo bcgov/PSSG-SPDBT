@@ -21,10 +21,21 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '../../anony
 					></app-step-permit-summary-authenticated>
 				</ng-template>
 
-				<app-wizard-footer
-					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onGoToNextStep()"
-				></app-wizard-footer>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else NotNewWizardFooter">
+					<app-wizard-footer
+						[isFormValid]="true"
+						[showSaveAndExit]="true"
+						(saveAndExit)="onNoSaveAndExit()"
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #NotNewWizardFooter>
+					<app-wizard-footer
+						(previousStepperStep)="onStepPrevious()"
+						(nextStepperStep)="onGoToNextStep()"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step>
@@ -33,11 +44,23 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '../../anony
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-consent-and-declaration>
 
-				<app-wizard-footer
-					[nextButtonLabel]="submitPayLabel"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onPayNow()"
-				></app-wizard-footer>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else NotNewConsentWizardFooter">
+					<app-wizard-footer
+						[isFormValid]="true"
+						[showSaveAndExit]="true"
+						(saveAndExit)="onNoSaveAndExit()"
+						[nextButtonLabel]="submitPayLabel"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onPayNow()"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #NotNewConsentWizardFooter>
+					<app-wizard-footer
+						[nextButtonLabel]="submitPayLabel"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onPayNow()"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 		</mat-stepper>
 	`,
