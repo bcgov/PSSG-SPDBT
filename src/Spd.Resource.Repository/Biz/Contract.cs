@@ -34,8 +34,6 @@
 
         //sole proprietor properties
         public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } = new(); //for sole proprietor (registered or non-registered)
-        public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
-        public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
     }
     public record BizResult : Biz
     {
