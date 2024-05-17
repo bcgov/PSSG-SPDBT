@@ -45,6 +45,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.saveAndExit.emit(true);
 	}
 
+	onNoSaveAndExit(): void {
+		this.saveAndExit.emit(true);
+	}
+
 	onExit(): void {
 		this.commonApplicationService.cancelAndLoseChanges();
 	}
