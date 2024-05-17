@@ -40,4 +40,54 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.NotNull(response);
         Assert.Equal("newEmployerName", response.EmployerName);
     }
+
+    [Fact]
+    public async Task QueryAsync_SwlPermitLicence_Correctly()
+    {
+        //Arrange
+        contact p = new();
+        p.firstname = $"{IntegrationTestSetup.DataPrefix}{new Random().Next(1000)}";
+        p.contactid = Guid.NewGuid();
+        _context.AddTocontacts(p);
+        spd_licence lic = new();
+        lic.spd_licenceid = Guid.NewGuid();
+        lic.spd_licencenumber = $"{IntegrationTestSetup.DataPrefix}{new Random().Next(1000)}";
+        _context.AddTospd_licences(lic);
+        _context.SetLink(lic, nameof(lic.spd_LicenceHolder_contact), p);
+        _context.SetLink(lic, nameof(lic.spd_LicenceType), _context.LookupServiceType(ServiceTypeEnum.BodyArmourPermit.ToString()));
+        await _context.SaveChangesAsync(CancellationToken.None);
+        LicenceQry q = new() { LicenceId = (Guid)lic.spd_licenceid };
+
+        //Action
+        var response = await _licRepo.QueryAsync(q, CancellationToken.None);
+
+        //Assert
+        Assert.NotNull(response);
+        Assert.Equal(p.firstname, response.Items.First().LicenceHolderFirstName);
+    }
+
+    [Fact]
+    public async Task QueryAsync_BizLicence_Correctly()
+    {
+        //Arrange
+        account biz = new();
+        biz.name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}";
+        biz.accountid = Guid.NewGuid();
+        _context.AddToaccounts(biz);
+        spd_licence lic = new();
+        lic.spd_licenceid = Guid.NewGuid();
+        lic.spd_licencenumber = $"{IntegrationTestSetup.DataPrefix}{new Random().Next(1000)}";
+        _context.AddTospd_licences(lic);
+        _context.SetLink(lic, nameof(lic.spd_LicenceHolder_account), biz);
+        _context.SetLink(lic, nameof(lic.spd_LicenceType), _context.LookupServiceType(ServiceTypeEnum.SecurityBusinessLicence.ToString()));
+        await _context.SaveChangesAsync(CancellationToken.None);
+        LicenceQry q = new() { LicenceId = (Guid)lic.spd_licenceid };
+
+        //Action
+        var response = await _licRepo.QueryAsync(q, CancellationToken.None);
+
+        //Assert
+        Assert.NotNull(response);
+        Assert.Equal(biz.name, response.Items.First().LicenceHolderFirstName);
+    }
 }
