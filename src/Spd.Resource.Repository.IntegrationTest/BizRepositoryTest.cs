@@ -48,7 +48,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task GetBizAsync_BizNotFound_Throw_Exception()
     {
-        // Arrange, Act and Assert
+        // Act and Assert
         await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.GetBizAsync(Guid.NewGuid(), CancellationToken.None));
     }
 
