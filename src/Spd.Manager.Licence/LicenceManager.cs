@@ -12,6 +12,7 @@ using System.Net;
 namespace Spd.Manager.Licence;
 
 internal class LicenceManager :
+        IRequestHandler<LicenceByIdQuery, LicenceResponse>,
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
         IRequestHandler<ApplicantLicenceListQuery, IEnumerable<LicenceBasicResponse>>,
@@ -35,6 +36,13 @@ internal class LicenceManager :
         _mapper = mapper;
         _logger = logger;
         _fileStorageService = fileStorageService;
+    }
+
+    public async Task<LicenceResponse> Handle(LicenceByIdQuery query, CancellationToken cancellationToken)
+    {
+        var response = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
+
+        return _mapper.Map<LicenceResponse>(response);
     }
 
     public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken cancellationToken)
