@@ -33,6 +33,8 @@ public class BizLicensingControllerTest
 
         mockDpProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
+        mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppUpsertCommand>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
 
@@ -48,6 +50,17 @@ public class BizLicensingControllerTest
             mockRecaptch.Object,
             mockCache.Object,
             mockDpProvider.Object);
+    }
+
+    [Fact]
+    public async void Post_SaveBusinessLicenceApplication_Return_BizLicAppCommandResponse()
+    {
+        BizLicAppUpsertRequest request = new() { BizId = Guid.NewGuid() };
+
+        var result = await sut.SaveBusinessLicenceApplication(request, CancellationToken.None);
+
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        mockMediator.Verify();
     }
 
     [Fact]
