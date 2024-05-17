@@ -186,3 +186,14 @@ public record SwlContactInfo
     public Guid ContactId { get; set; }
     public Guid LicenceId { get; set; }
 }
+
+public record ContactInfo
+{
+    public Guid? BizContactId { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
+    public string? GivenName { get; set; }
+    public string? MiddleName1 { get; set; }
+    public string? MiddleName2 { get; set; }
+    public string? Surname { get; set; }
+}

@@ -108,5 +108,35 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
+
+        /// <summary>
+        /// Get Biz Application controlling members, include swl and non-swl
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/{bizId}/{applicationId}/controlling-members")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<ControllingMembers> GetControllerMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
+        {
+            return await _mediator.Send(new GetBizControllerMembersQuery(bizId, applicationId), ct);
+        }
+
+        /// <summary>
+        /// Get Biz Application employees
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/{bizId}/{applicationId}/employees")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<IEnumerable<SwlContactInfo>> GetEmployees([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
+        {
+            return await _mediator.Send(new GetBizEmployeesQuery(bizId, applicationId), ct);
+        }
     }
 }
