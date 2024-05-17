@@ -18,9 +18,10 @@ internal class LicenceRepository : ILicenceRepository
     public async Task<LicenceResp> GetAsync(Guid licenceId, CancellationToken ct)
     {
         spd_licence? licence = await _context.spd_licences
+            .Where(l => l.statecode != DynamicsConstants.StateCode_Inactive)
             .Where(l => l.spd_licenceid == licenceId)
             .FirstOrDefaultAsync(ct);
-        
+
         if (licence == null) 
             throw new ArgumentException($"cannot find the licence with licenceId : {licenceId}");
 
