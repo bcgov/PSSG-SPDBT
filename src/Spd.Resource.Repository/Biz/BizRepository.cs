@@ -52,15 +52,15 @@ namespace Spd.Resource.Repository.Biz
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.accountid == accountId);
 
-            account? Biz = await accounts.FirstOrDefaultAsync(ct);
+            account? biz = await accounts.FirstOrDefaultAsync(ct);
             
-            if (Biz == null) throw new ApiException(HttpStatusCode.NotFound);
+            if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
-                .Where(so => so.accountid == Biz.accountid)
+                .Where(so => so.accountid == biz.accountid)
                 .ToList();
 
-            Guid? licHolderId = Biz.spd_organization_spd_licence_soleproprietor
+            Guid? licHolderId = biz.spd_organization_spd_licence_soleproprietor
                 .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)?
                 ._spd_licenceholder_value;
             spd_licence? licHolderContact = new();
@@ -73,9 +73,9 @@ namespace Spd.Resource.Repository.Biz
                     .FirstOrDefault();
 
             if (!serviceTypes.Any())
-                throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {Biz.name} does not have service type.");
+                throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {biz.name} does not have service type.");
 
-            var response = _mapper.Map<BizResult>(Biz);
+            var response = _mapper.Map<BizResult>(biz);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licHolderContact.spd_licenceid;
             response.SoleProprietorSwlContactInfo.ContactId = licHolderContact.spd_LicenceHolder_contact?.contactid;
