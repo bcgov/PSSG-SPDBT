@@ -23,6 +23,7 @@ internal class LicenceRepository : ILicenceRepository
 
         IQueryable<spd_licence> lics = _context.spd_licences
             .Expand(i => i.spd_LicenceHolder_contact)
+            .Expand(i => i.spd_LicenceHolder_account)
             .Expand(i => i.spd_CaseId);
         if (!qry.IncludeInactive)
             lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
