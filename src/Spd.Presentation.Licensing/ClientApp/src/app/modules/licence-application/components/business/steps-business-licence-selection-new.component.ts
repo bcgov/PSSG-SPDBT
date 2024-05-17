@@ -15,6 +15,8 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
@@ -28,6 +30,8 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
@@ -42,9 +46,9 @@ export class StepsBusinessLicenceSelectionNewComponent extends BaseWizardStepCom
 	readonly STEP_LICENCE_CATEGORY = 1;
 	readonly STEP_LICENCE_TERM = 2;
 
-	isFormValid = false;
-
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceTermComponent) stepTermComponent!: StepBusinessLicenceTermComponent;

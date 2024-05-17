@@ -95,7 +95,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 					</app-alert>
 
 					<div class="row">
-						<div class="col-md-6 col-sm-12">
+						<div class="col-lg-4 col-md-7 col-sm-12">
 							<mat-form-field>
 								<mat-label>Email Address</mat-label>
 								<input
@@ -114,7 +114,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 							</mat-form-field>
 						</div>
 
-						<div class="col-md-6 col-sm-12">
+						<div class="col-lg-4 col-md-5 col-sm-12">
 							<mat-form-field>
 								<mat-label>Phone Number</mat-label>
 								<input
@@ -152,7 +152,6 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-
 		return this.form.valid;
 	}
 
