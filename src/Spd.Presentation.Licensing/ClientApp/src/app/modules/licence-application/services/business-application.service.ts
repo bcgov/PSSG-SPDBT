@@ -343,13 +343,28 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			? { ...modelFormValue.businessAddressData }
 			: { ...modelFormValue.mailingAddressData };
 
+		const bizTypeCode = modelFormValue.businessInformationData.bizTypeCode;
+
+		let soleProprietorLicenceId: null | string = null;
+		let soleProprietorSwlEmailAddress: null | string = null;
+		let soleProprietorSwlPhoneNumber: null | string = null;
+
+		if (this.isSoleProprietor(bizTypeCode)) {
+			soleProprietorLicenceId = modelFormValue.businessInformationData.soleProprietorLicenceId;
+			soleProprietorSwlEmailAddress = modelFormValue.businessInformationData.soleProprietorSwlEmailAddress;
+			soleProprietorSwlPhoneNumber = modelFormValue.businessInformationData.soleProprietorSwlPhoneNumber;
+		}
+
 		const body: BizProfileUpdateRequest = {
 			bizAddress: { ...modelFormValue.businessAddressData },
 			bizBCAddress,
 			bizMailingAddress,
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
-			bizTypeCode: modelFormValue.businessInformationData.bizTypeCode,
+			bizTypeCode,
 			branches,
+			soleProprietorLicenceId,
+			soleProprietorSwlEmailAddress,
+			soleProprietorSwlPhoneNumber,
 		};
 
 		return this.bizProfileService.apiBizBizIdPut$Response({
@@ -573,5 +588,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
+	}
+
+	private isSoleProprietor(bizTypeCode: BizTypeCode): boolean {
+		return (
+			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
+		);
 	}
 }

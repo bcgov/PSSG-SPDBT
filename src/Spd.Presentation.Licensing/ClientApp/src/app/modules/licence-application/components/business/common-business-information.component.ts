@@ -73,26 +73,35 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 				</div>
 
 				<div class="my-2">
-					<app-alert type="success" icon="check_circle">
-						<div class="row">
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Name</div>
-								<div class="text-primary-color fs-5">Joe Smith</div>
+					<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
+						<app-alert type="success" icon="check_circle">
+							<div class="row">
+								<div class="col-md-3 col-sm-12">
+									<div class="text-primary-color">Name</div>
+									<div class="text-primary-color fs-5">{{ soleProprietorLicenceHolderName.value }}</div>
+								</div>
+								<div class="col-md-3 col-sm-12">
+									<div class="text-primary-color">Security Worker Licence Number</div>
+									<div class="text-primary-color fs-5">{{ soleProprietorLicenceNumber.value }}</div>
+								</div>
+								<div class="col-md-3 col-sm-12">
+									<div class="text-primary-color">Expiry Date</div>
+									<div class="text-primary-color fs-5">
+										{{ soleProprietorLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
+									</div>
+								</div>
+								<div class="col-md-3 col-sm-12">
+									<div class="text-primary-color">Licence Status</div>
+									<div class="text-primary-color fs-5 fw-bold">{{ soleProprietorLicenceStatusCode.value }}</div>
+								</div>
 							</div>
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Security Worker Licence Number</div>
-								<div class="text-primary-color fs-5">76434</div>
-							</div>
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Expiry Date</div>
-								<div class="text-primary-color fs-5">Apr 25, 2025</div>
-							</div>
-							<div class="col-md-3 col-sm-12">
-								<div class="text-primary-color">Licence Status</div>
-								<div class="text-primary-color fs-5 fw-bold">Valid</div>
-							</div>
-						</div>
-					</app-alert>
+						</app-alert>
+					</ng-container>
+					<ng-template #SearchForSP>
+						<app-alert type="warning" icon="">
+							Search for a sole proprietor with a valid security worker licence
+						</app-alert>
+					</ng-template>
 
 					<div class="row">
 						<div class="col-lg-4 col-md-7 col-sm-12">
@@ -140,6 +149,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessInformationComponent implements LicenceChildStepperStepComponent {
+	constants = SPD_CONSTANTS;
 	matcher = new FormErrorStateMatcher();
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
@@ -167,8 +177,31 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp) {
+				console.debug('onLookupSoleProprietor', resp?.data);
+
+				if (resp?.data) {
+					this.form.patchValue(
+						{
+							soleProprietorLicenceId: resp.data.licenceId,
+							soleProprietorLicenceHolderName: resp.data.licenceHolderName,
+							soleProprietorLicenceNumber: resp.data.licenceNumber,
+							soleProprietorLicenceExpiryDate: resp.data.expiryDate,
+							soleProprietorLicenceStatusCode: resp.data.licenceStatusCode,
+						},
+						{ emitEvent: false }
+					);
 					this.hotToastService.success('Sole Proprietor was successfully added');
+				} else {
+					this.form.patchValue(
+						{
+							soleProprietorLicenceId: null,
+							soleProprietorLicenceHolderName: null,
+							soleProprietorLicenceNumber: null,
+							soleProprietorLicenceExpiryDate: null,
+							soleProprietorLicenceStatusCode: null,
+						},
+						{ emitEvent: false }
+					);
 				}
 			});
 	}
@@ -190,5 +223,20 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 	}
 	get bizTypeCode(): FormControl {
 		return this.form.get('bizTypeCode') as FormControl;
+	}
+	get soleProprietorLicenceId(): FormControl {
+		return this.form.get('soleProprietorLicenceId') as FormControl;
+	}
+	get soleProprietorLicenceHolderName(): FormControl {
+		return this.form.get('soleProprietorLicenceHolderName') as FormControl;
+	}
+	get soleProprietorLicenceNumber(): FormControl {
+		return this.form.get('soleProprietorLicenceNumber') as FormControl;
+	}
+	get soleProprietorLicenceExpiryDate(): FormControl {
+		return this.form.get('soleProprietorLicenceExpiryDate') as FormControl;
+	}
+	get soleProprietorLicenceStatusCode(): FormControl {
+		return this.form.get('soleProprietorLicenceStatusCode') as FormControl;
 	}
 }
