@@ -93,8 +93,6 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode = ApplicationTypeCode.Update;
 
-	// private licenceModelChangedSubscription!: Subscription;
-
 	@ViewChild(StepPermitReviewNameChangeComponent)
 	stepNameChangeComponent!: StepPermitReviewNameChangeComponent;
 	@ViewChild(StepPermitPhotographOfYourselfComponent)
@@ -104,48 +102,9 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitReprintComponent) stepReprintComponent!: StepPermitReprintComponent;
 	@ViewChild(StepPermitEmployerInformationComponent) stepEmployerComponent!: StepPermitEmployerInformationComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService
-	) // private permitApplicationService: PermitApplicationService
-	{
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
-
-	// ngOnInit(): void {
-	// 	this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-	// 		(_resp: boolean) => {
-	// 			this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-	// 				'workerLicenceTypeData.workerLicenceTypeCode'
-	// 			)?.value;
-
-	// 			this.hasBcscNameChanged = this.permitApplicationService.permitModelFormGroup.get(
-	// 				'personalInformationData.hasBcscNameChanged'
-	// 			)?.value;
-
-	// 			this.hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
-	// 				'personalInformationData.hasGenderChanged'
-	// 			)?.value;
-
-	// 			if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
-	// 				const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-	// 					'permitRequirementData.bodyArmourRequirementFormGroup'
-	// 				)?.value;
-
-	// 				this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-	// 			} else {
-	// 				const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-	// 					'permitRequirementData.armouredVehicleRequirementFormGroup'
-	// 				)?.value;
-
-	// 				this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-	// 			}
-	// 		}
-	// 	);
-	// }
-
-	// ngOnDestroy() {
-	// 	if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-	// }
 
 	onStepUpdatePrevious(step: number): void {
 		switch (step) {

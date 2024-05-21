@@ -1,10 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
@@ -46,50 +43,20 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
 	readonly STEP_PERMIT_CONFIRMATION = 1;
 	readonly STEP_PRINT = 2;
 
-	private authenticationSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
-
-	isLoggedIn = false;
-	isFormValid = false;
-	applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isLoggedIn!: boolean;
+	@Input() isFormValid!: boolean;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 	@ViewChild(StepPermitReprintComponent) stepPermitPrintComponent!: StepPermitReprintComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private authProcessService: AuthProcessService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-			}
-		);
-
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-			(_resp: any) => {
-				// console.debug('permitModelValueChanges$', _resp);
-				this.isFormValid = _resp;
-				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 	}
 
 	override dirtyForm(step: number): boolean {
