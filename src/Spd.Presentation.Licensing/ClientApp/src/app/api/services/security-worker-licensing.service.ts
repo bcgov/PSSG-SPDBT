@@ -116,7 +116,7 @@ export class SecurityWorkerLicensingService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdGetPath, 'get');
     if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {});
     }
 
     return this.http.request(rb.build({
@@ -181,7 +181,7 @@ export class SecurityWorkerLicensingService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath, 'post');
     if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {});
       rb.body(params.body, 'multipart/form-data');
     }
 
