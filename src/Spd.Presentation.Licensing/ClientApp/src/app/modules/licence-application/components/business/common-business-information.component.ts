@@ -76,21 +76,21 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 					<ng-container *ngIf="soleProprietorLicenceId.value; else SearchForSP">
 						<app-alert type="success" icon="check_circle">
 							<div class="row">
-								<div class="col-md-3 col-sm-12">
+								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Name</div>
 									<div class="text-primary-color fs-5">{{ soleProprietorLicenceHolderName.value }}</div>
 								</div>
-								<div class="col-md-3 col-sm-12">
+								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Security Worker Licence Number</div>
 									<div class="text-primary-color fs-5">{{ soleProprietorLicenceNumber.value }}</div>
 								</div>
-								<div class="col-md-3 col-sm-12">
+								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Expiry Date</div>
 									<div class="text-primary-color fs-5">
 										{{ soleProprietorLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
 									</div>
 								</div>
-								<div class="col-md-3 col-sm-12">
+								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 									<div class="text-primary-color">Licence Status</div>
 									<div class="text-primary-color fs-5 fw-bold">{{ soleProprietorLicenceStatusCode.value }}</div>
 								</div>

@@ -49,7 +49,7 @@ export class LicenceService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiApplicantsApplicantIdLicencesGetPath, 'get');
     if (params) {
-      rb.path('applicantId', params.applicantId, {"style":"simple"});
+      rb.path('applicantId', params.applicantId, {});
     }
 
     return this.http.request(rb.build({
@@ -113,8 +113,8 @@ export class LicenceService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicenceLookupLicenceNumberGetPath, 'get');
     if (params) {
-      rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
-      rb.query('accessCode', params.accessCode, {"style":"form"});
+      rb.path('licenceNumber', params.licenceNumber, {});
+      rb.query('accessCode', params.accessCode, {});
     }
 
     return this.http.request(rb.build({
@@ -180,8 +180,8 @@ export class LicenceService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicenceLookupAnonymousLicenceNumberPostPath, 'post');
     if (params) {
-      rb.path('licenceNumber', params.licenceNumber, {"style":"simple"});
-      rb.query('accessCode', params.accessCode, {"style":"form"});
+      rb.path('licenceNumber', params.licenceNumber, {});
+      rb.query('accessCode', params.accessCode, {});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -247,7 +247,7 @@ export class LicenceService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicencePhotoLicenceIdGetPath, 'get');
     if (params) {
-      rb.path('licenceId', params.licenceId, {"style":"simple"});
+      rb.path('licenceId', params.licenceId, {});
     }
 
     return this.http.request(rb.build({
@@ -370,7 +370,7 @@ export class LicenceService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicenceIdGetPath, 'get');
     if (params) {
-      rb.path('licenceId', params.licenceId, {"style":"simple"});
+      rb.path('licenceId', params.licenceId, {});
     }
 
     return this.http.request(rb.build({

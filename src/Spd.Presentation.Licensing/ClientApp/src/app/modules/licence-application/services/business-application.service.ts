@@ -8,9 +8,10 @@ import {
 	BizProfileUpdateRequest,
 	BizTypeCode,
 	BranchInfo,
+	LicenceResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { BizProfileService } from '@app/api/services';
+import { BizProfileService, LicenceService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
@@ -77,6 +78,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		private router: Router,
 		private utilService: UtilService,
+		private licenceService: LicenceService,
 		private bizProfileService: BizProfileService,
 		private authUserBceidService: AuthUserBceidService,
 		private commonApplicationService: CommonApplicationService
@@ -264,6 +266,26 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode | undefined): Observable<any> {
 		return this.bizProfileService.apiBizIdGet({ id: this.authUserBceidService.bceidUserProfile?.bizId! }).pipe(
 			switchMap((profile: BizProfileResponse) => {
+				// If the profile is a sole proprietor, then we need to get the associated licence info
+				if (profile.soleProprietorSwlContactInfo?.licenceId) {
+					return this.licenceService
+						.apiLicencesLicenceIdGet({ licenceId: profile.soleProprietorSwlContactInfo?.licenceId })
+						.pipe(
+							switchMap((licence: LicenceResponse) => {
+								return this.createEmptyLicenceAuthenticated(profile, applicationTypeCode, licence).pipe(
+									tap((_resp: any) => {
+										this.initialized = true;
+
+										this.commonApplicationService.setApplicationTitle(
+											WorkerLicenceTypeCode.SecurityWorkerLicence,
+											applicationTypeCode // if undefined, we are just loading the profile.
+										);
+									})
+								);
+							})
+						);
+				}
+
 				return this.createEmptyLicenceAuthenticated(profile, applicationTypeCode).pipe(
 					tap((_resp: any) => {
 						this.initialized = true;
@@ -375,17 +397,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	private createEmptyLicenceAuthenticated(
 		profile: BizProfileResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined
+		applicationTypeCode: ApplicationTypeCode | undefined,
+		relatedLicenceInformation?: LicenceResponse
 	): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode);
+		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode, relatedLicenceInformation);
 	}
 
 	private applyLicenceProfileIntoModel(
 		profile: BizProfileResponse, // | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		_userLicenceInformation?: any //UserLicenceResponse
+		relatedLicenceInformation?: LicenceResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -394,8 +417,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			legalBusinessName: profile.bizLegalName,
 			bizTradeName: profile.bizTradeName,
 			isBizTradeNameReadonly: !!profile.bizTradeName, // user cannot overwrite value from bceid
-			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
+			soleProprietorLicenceId: profile.soleProprietorSwlContactInfo?.licenceId,
+			soleProprietorLicenceHolderName: relatedLicenceInformation?.licenceHolderName,
+			soleProprietorLicenceNumber: relatedLicenceInformation?.licenceNumber,
+			soleProprietorLicenceExpiryDate: relatedLicenceInformation?.expiryDate,
+			soleProprietorLicenceStatusCode: relatedLicenceInformation?.licenceStatusCode,
 			soleProprietorSwlPhoneNumber: profile.soleProprietorSwlPhoneNumber,
+			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
 		};
 		const businessManagerData = { isBusinessManager: true }; // default
 
