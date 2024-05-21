@@ -188,8 +188,6 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				console.debug('onLookupSoleProprietor', resp?.data);
-
 				if (resp?.data) {
 					this.form.patchValue(
 						{
@@ -201,7 +199,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 						},
 						{ emitEvent: false }
 					);
-					this.hotToastService.success('Sole Proprietor was successfully added');
+					this.hotToastService.success('A sole proprietor was successfully selected');
 				} else {
 					this.form.patchValue(
 						{
