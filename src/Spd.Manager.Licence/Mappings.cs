@@ -5,6 +5,7 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.BizApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -180,7 +181,7 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceAppSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
 
-        CreateMap<BizLicAppUpsertRequest, SaveLicenceApplicationCmd>()
+        CreateMap<BizLicAppUpsertRequest, SaveBizLicenceApplicationCmd>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.BizId))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantContactInfo.Surname))
