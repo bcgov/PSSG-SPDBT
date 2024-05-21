@@ -27,7 +27,7 @@ public class BizProfileValidationTest
             .Create();
 
         var model = fixture.Build<BizProfileUpdateRequest>()
-            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
+            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
             .With(r => r.BizMailingAddress, address)
             .With(r => r.BizAddress, address)
             .Create();
