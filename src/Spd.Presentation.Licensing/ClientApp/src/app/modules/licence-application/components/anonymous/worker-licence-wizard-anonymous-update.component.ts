@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
@@ -30,7 +30,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-worker-licence-selection
-					[isLoggedIn]="true"
+					[isLoggedIn]="false"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
@@ -95,7 +95,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit {
+export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;

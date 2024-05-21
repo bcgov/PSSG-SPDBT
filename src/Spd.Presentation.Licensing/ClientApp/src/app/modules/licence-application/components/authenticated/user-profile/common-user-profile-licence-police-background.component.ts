@@ -20,12 +20,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div class="mt-3">
 					<div class="py-2">{{ title }}</div>
 
-					<ng-container *ngIf="isRenewalOrUpdate">
-						<app-alert type="info" icon="" [showBorder]="false">
-							Update any information that has changed since your last application
-						</app-alert>
-					</ng-container>
-
 					<form [formGroup]="form" novalidate>
 						<div class="row">
 							<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
@@ -181,11 +175,5 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
-	}
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }

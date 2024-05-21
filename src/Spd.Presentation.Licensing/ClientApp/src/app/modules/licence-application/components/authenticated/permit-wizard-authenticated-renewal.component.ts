@@ -176,13 +176,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 				}
 
 				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
-
-				console.log('permitModelFormGroup', this.permitApplicationService.permitModelFormGroup.value);
-				console.log('isFormValid', this.isFormValid);
-				console.log('workerLicenceTypeCode', this.workerLicenceTypeCode);
-				console.log('applicationTypeCode', this.applicationTypeCode);
-				console.log('showEmployerInformation', this.showEmployerInformation);
-				console.log('showSaveAndExit', this.showSaveAndExit);
 			}
 		);
 	}

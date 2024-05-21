@@ -63,9 +63,9 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	readonly STEP_CONTACT_INFORMATION = 3;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() isFormValid: boolean = false;
-	@Input() showSaveAndExit: boolean = false;
-	@Input() showMailingAddressStep: boolean = false;
+	@Input() isFormValid = false;
+	@Input() showSaveAndExit = false;
+	@Input() showMailingAddressStep = false;
 
 	@ViewChild(StepPermitResidentialAddressComponent)
 	stepResidentialAddressComponent!: StepPermitResidentialAddressComponent;

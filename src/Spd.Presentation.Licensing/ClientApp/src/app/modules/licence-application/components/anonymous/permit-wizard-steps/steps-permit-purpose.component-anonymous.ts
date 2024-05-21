@@ -59,8 +59,8 @@ export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponen
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
-	@Input() isFormValid: boolean = false;
-	@Input() showEmployerInformation: boolean = false;
+	@Input() isFormValid = false;
+	@Input() showEmployerInformation = false;
 
 	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
 	@ViewChild(StepPermitEmployerInformationComponent)

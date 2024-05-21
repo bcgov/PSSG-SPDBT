@@ -65,9 +65,9 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
-	@Input() isFormValid: boolean = false;
-	@Input() showSaveAndExit: boolean = false;
-	@Input() showEmployerInformation: boolean = false;
+	@Input() isFormValid = false;
+	@Input() showSaveAndExit = false;
+	@Input() showEmployerInformation = false;
 
 	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
 	@ViewChild(StepPermitEmployerInformationComponent)

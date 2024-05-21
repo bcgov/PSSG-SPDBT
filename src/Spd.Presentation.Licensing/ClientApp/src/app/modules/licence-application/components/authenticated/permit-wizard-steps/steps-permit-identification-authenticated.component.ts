@@ -81,8 +81,8 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 4;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() isFormValid: boolean = false;
-	@Input() showSaveAndExit: boolean = false;
+	@Input() isFormValid = false;
+	@Input() showSaveAndExit = false;
 
 	@ViewChild(StepPermitCitizenshipComponent) stepCitizenshipComponent!: StepPermitCitizenshipComponent;
 	@ViewChild(StepPermitBcDriverLicenceComponent)

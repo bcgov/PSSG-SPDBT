@@ -183,13 +183,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
 					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
-
-				console.log('permitModelFormGroup', this.permitApplicationService.permitModelFormGroup.value);
-				console.log('isFormValid', this.isFormValid);
-				console.log('workerLicenceTypeCode', this.workerLicenceTypeCode);
-				console.log('applicationTypeCode', this.applicationTypeCode);
-				console.log('showEmployerInformation', this.showEmployerInformation);
-				console.log('showMailingAddressStep', this.showMailingAddressStep);
 			}
 		);
 	}

@@ -120,7 +120,7 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() isFormValid: boolean = false;
+	@Input() isFormValid = false;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
 	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;

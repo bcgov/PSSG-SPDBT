@@ -28,7 +28,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-worker-licence-selection
-					[isLoggedIn]="true"
+					[isLoggedIn]="false"
 					[showSaveAndExit]="showSaveAndExit"
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"

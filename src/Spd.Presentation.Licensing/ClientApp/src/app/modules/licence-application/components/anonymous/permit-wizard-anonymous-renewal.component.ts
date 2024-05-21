@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -98,7 +98,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 	`,
 	styles: [],
 })
-export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent implements OnInit {
+export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_PURPOSE_AND_RATIONALE = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -180,13 +180,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
 					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
-
-				console.log('permitModelFormGroup', this.permitApplicationService.permitModelFormGroup.value);
-				console.log('isFormValid', this.isFormValid);
-				console.log('workerLicenceTypeCode', this.workerLicenceTypeCode);
-				console.log('applicationTypeCode', this.applicationTypeCode);
-				console.log('showEmployerInformation', this.showEmployerInformation);
-				console.log('showMailingAddressStep', this.showMailingAddressStep);
 			}
 		);
 	}
