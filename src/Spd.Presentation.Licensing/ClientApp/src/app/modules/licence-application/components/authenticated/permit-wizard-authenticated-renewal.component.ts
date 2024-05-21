@@ -118,12 +118,11 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
 	stepReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showSaveAndExit = false;
 	showEmployerInformation = false;
-
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
-	applicationTypeCode!: ApplicationTypeCode;
 
 	private permitModelChangedSubscription!: Subscription;
 

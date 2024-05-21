@@ -179,15 +179,20 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
 
-				// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-				const personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
-				this.hasGenderChanged = !!personalInformationFormGroup.value.hasGenderChanged;
+				// for Update flow: only show unauthenticated user option to upload a new photo
+				// if they changed their sex selection earlier in the application
+				this.hasGenderChanged = !!this.licenceApplicationService.licenceModelFormGroup.get(
+					'personalInformationData.hasGenderChanged'
+				)?.value;
 
-				// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-				this.hasLegalNameChanged = !!personalInformationFormGroup.value.hasLegalNameChanged;
+				// for Update flow: only show unauthenticated user option to upload a new photo
+				// if they changed their sex selection earlier in the application
+				this.hasLegalNameChanged = !!this.licenceApplicationService.licenceModelFormGroup.get(
+					'personalInformationData.hashasLegalNameChangedGenderChanged'
+				)?.value;
 
-				// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-				// and name change
+				// for Update flow: only show unauthenticated user option to upload a new photo
+				// if they changed their sex selection earlier in the application and name change
 				this.showReprint = this.hasGenderChanged || this.hasLegalNameChanged;
 
 				this.showPhotographOfYourself = this.hasGenderChanged;

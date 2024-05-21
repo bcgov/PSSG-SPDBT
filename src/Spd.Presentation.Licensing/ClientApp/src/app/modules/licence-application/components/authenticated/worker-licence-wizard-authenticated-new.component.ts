@@ -67,6 +67,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
+							(saveAndExit)="onSaveAndExit()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -100,12 +101,11 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
 	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
+	applicationTypeCode!: ApplicationTypeCode;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
-
-	applicationTypeCode!: ApplicationTypeCode;
 
 	private licenceModelChangedSubscription!: Subscription;
 

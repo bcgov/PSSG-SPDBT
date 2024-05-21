@@ -98,12 +98,11 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
 	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
+	applicationTypeCode!: ApplicationTypeCode;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
-
-	applicationTypeCode!: ApplicationTypeCode;
 
 	private licenceModelChangedSubscription!: Subscription;
 

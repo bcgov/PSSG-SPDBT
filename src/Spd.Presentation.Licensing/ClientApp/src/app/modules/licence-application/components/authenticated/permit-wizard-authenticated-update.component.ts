@@ -51,7 +51,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
 							[workerLicenceTypeCode]="workerLicenceTypeCode"
-							[applicationTypeCode]="applicationTypeCodeUpdate"
+							[applicationTypeCode]="applicationTypeCode"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onSubmitStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -78,12 +78,11 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	@ViewChild(StepsPermitUpdatesAuthenticatedComponent) stepsUpdatesComponent!: StepsPermitUpdatesAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent) stepsReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showSaveAndExit = false;
 	showEmployerInformation = false;
-
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
-	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
 
 	private permitModelChangedSubscription!: Subscription;
 
@@ -113,6 +112,9 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 			(_resp: boolean) => {
 				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
+				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
 				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
