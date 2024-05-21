@@ -105,17 +105,18 @@ namespace Spd.Resource.Repository.Biz
             account? biz = await accounts.FirstOrDefaultAsync(ct);
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
-
+            
             _mapper.Map(updateBizCmd, biz);
+            //_context.UpdateObject(biz);
 
             if (!IsSoleProprietor(updateBizCmd.BizType))
             {
-                biz.emailaddress1 = null;
-                biz.telephone1 = null;
+                biz.emailaddress1 = string.Empty;
+                biz.telephone1 = string.Empty;
             }
 
             _context.UpdateObject(biz);
-            UpdateLicenceLink(biz, (Guid)updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
+            UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(biz);
