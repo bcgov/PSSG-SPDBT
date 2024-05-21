@@ -345,4 +345,67 @@ export class LicenceService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiLicencesLicenceIdGet
+   */
+  static readonly ApiLicencesLicenceIdGetPath = '/api/licences/{licenceId}';
+
+  /**
+   * Get licence info by licenceId.
+   * Example: api/licences/10000000-0000-0000-0000-000000000000.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiLicencesLicenceIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesLicenceIdGet$Response(params: {
+    licenceId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<LicenceResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicenceIdGetPath, 'get');
+    if (params) {
+      rb.path('licenceId', params.licenceId, {"style":"simple"});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<LicenceResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get licence info by licenceId.
+   * Example: api/licences/10000000-0000-0000-0000-000000000000.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiLicencesLicenceIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiLicencesLicenceIdGet(params: {
+    licenceId: string;
+  },
+  context?: HttpContext
+
+): Observable<LicenceResponse> {
+
+    return this.apiLicencesLicenceIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
+    );
+  }
+
 }

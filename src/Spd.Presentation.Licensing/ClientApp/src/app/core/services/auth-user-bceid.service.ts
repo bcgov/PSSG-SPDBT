@@ -17,18 +17,16 @@ export class AuthUserBceidService {
 	async whoAmIAsync(): Promise<boolean> {
 		this.clearUserData();
 
-		return await this.setBizProfile('0326f9fd-7043-ee11-b845-00505683fbf4'); // TODO hardcode for now
+		const bizsList: Array<BizListResponse> = await lastValueFrom(this.loginService.apiBizsGet());
 
-		// const bizsList: Array<BizListResponse> = await lastValueFrom(this.loginService.apiBizsGet());
-
-		// if (bizsList.length === 0) {
-		// 	return await this.setBizProfile();
-		// } else if (bizsList.length === 1) {
-		// 	return await this.setBizProfile(bizsList[0].bizId!);
-		// } else {
-		// 	const biz = await this.bizSelectionAsync(bizsList);
-		// 	return await this.setBizProfile(biz.bizId);
-		// }
+		if (bizsList.length === 0) {
+			return await this.setBizProfile();
+		} else if (bizsList.length === 1) {
+			return await this.setBizProfile(bizsList[0].bizId!);
+		} else {
+			const biz = await this.bizSelectionAsync(bizsList);
+			return await this.setBizProfile(biz.bizId);
+		}
 	}
 
 	public clearUserData(): void {

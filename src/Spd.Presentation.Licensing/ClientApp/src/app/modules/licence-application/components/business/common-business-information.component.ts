@@ -103,6 +103,17 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 						</app-alert>
 					</ng-template>
 
+					<mat-error
+						class="mat-option-error mb-4"
+						*ngIf="
+							(form.get('soleProprietorLicenceId')?.dirty || form.get('soleProprietorLicenceId')?.touched) &&
+							form.get('soleProprietorLicenceId')?.invalid &&
+							form.get('soleProprietorLicenceId')?.hasError('required')
+						"
+					>
+						A valid security worker licence must be selected
+					</mat-error>
+
 					<div class="row">
 						<div class="col-lg-4 col-md-7 col-sm-12">
 							<mat-form-field>
