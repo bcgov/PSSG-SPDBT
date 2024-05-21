@@ -8,7 +8,7 @@
     //command
 
     //query
-    public record BizContactQry(Guid? BizId, Guid? AppId, bool IncludeInactive);
+    public record BizContactQry(Guid? BizId, Guid? AppId, bool IncludeInactive = false);
 
     //shared content
     public record BizContactResp
