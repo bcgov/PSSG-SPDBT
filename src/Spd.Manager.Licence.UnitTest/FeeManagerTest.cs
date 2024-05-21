@@ -22,7 +22,7 @@ public class FeeManagerTest
         LicenceFeeResponse licenceFeeResponse = new()
         {
             WorkerLicenceTypeCode = (WorkerLicenceTypeCode?)licenceFee.WorkerLicenceTypeCode,
-            BusinessTypeCode = (BusinessTypeCode?)licenceFee.BusinessTypeCode,
+            BizTypeCode = (BizTypeCode?)licenceFee.BizTypeCode,
             ApplicationTypeCode = (Shared.ApplicationTypeCode?)licenceFee.ApplicationTypeCode,
             LicenceTermCode = (Shared.LicenceTermCode?)licenceFee.LicenceTermCode,
             HasValidSwl90DayLicence = licenceFee.HasValidSwl90DayLicence,

@@ -24,6 +24,56 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
+    public async Task GetBizAsync_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        CreateBizCmd cmd = new()
+        {
+            BizGuid = Guid.NewGuid(),
+            Id = bizId,
+            BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            BizType = BizTypeEnum.Corporation,
+            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
+        };
+
+        // Act
+        await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
+        var result = await _bizRepository.GetBizAsync(bizId, CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.IsType<BizResult>(result);
+    }
+
+    [Fact]
+    public async Task GetBizAsync_BizNotFound_Throw_Exception()
+    {
+        // Act and Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.GetBizAsync(Guid.NewGuid(), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task GetBizAsync_BizWithoutServiceType_Throw_Exception()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        CreateBizCmd cmd = new()
+        {
+            BizGuid = Guid.NewGuid(),
+            Id = bizId,
+            BizLegalName = IntegrationTestSetup.DataPrefix + "test",
+            BizType = BizTypeEnum.Corporation,
+            ServiceTypes = new List<ServiceTypeEnum>()
+        };
+
+        // Act
+        await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.GetBizAsync(bizId, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task CreateBizAsync_Run_Correctly()
     {
         // Arrange
@@ -108,6 +158,9 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .Create();
 
         Guid bizId = Guid.NewGuid();
+        Guid newLicenceId = Guid.NewGuid();
+        Guid newLicHolderId = Guid.NewGuid();
+
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
@@ -128,13 +181,31 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BCBusinessAddress, updatedAddress)
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
+            .With(c => c.SoleProprietorSwlContactInfo, new SwlContactInfo()
+            {
+                LicenceId = newLicenceId
+            })
             .Create();
+
+        spd_licence licence = new spd_licence() 
+        { 
+            spd_licenceid = newLicenceId, 
+            statecode = DynamicsConstants.StateCode_Active,
+            createdon = DateTime.Now
+        };
+        _context.AddTospd_licences(licence);
+        contact contact = new contact() { contactid = newLicHolderId, statecode = DynamicsConstants.StateCode_Active };
+        _context.AddTocontacts(contact);
+        _context.SetLink(licence, nameof(licence.spd_LicenceHolder_contact), contact);
+        await _context.SaveChangesAsync();
 
         // Act
         await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
         await _bizRepository.ManageBizAsync(updateCmd, CancellationToken.None);
 
-        account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
+        account? account = await _context.accounts
+            .Expand(a => a.spd_account_spd_servicetype)
+            .Expand(a => a.spd_organization_spd_licence_soleproprietor)
             .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
 
         // Assert
@@ -164,6 +235,8 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
         Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
         Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
+        Assert.Equal(licence.spd_licenceid, account.spd_organization_spd_licence_soleproprietor.FirstOrDefault()?.spd_licenceid);
+        Assert.Equal(licence._spd_licenceholder_value, account.spd_organization_spd_licence_soleproprietor.FirstOrDefault()?._spd_licenceholder_value);
     }
 
     [Fact]

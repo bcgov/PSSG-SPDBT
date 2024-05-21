@@ -31,6 +31,9 @@
         public Guid? BizGuid { get; set; }
         public BizTypeEnum BizType { get; set; }
         public IEnumerable<BranchAddr> BranchAddresses { get; set; } = Array.Empty<BranchAddr>();
+
+        //sole proprietor properties
+        public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } = new(); //for sole proprietor (registered or non-registered)
     }
     public record BizResult : Biz
     {

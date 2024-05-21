@@ -7,7 +7,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
-import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.component';
+import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 
 @Component({
 	selector: 'app-common-business-employees',
@@ -16,11 +16,11 @@ import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.comp
 			<div class="row mt-4" *ngIf="dataSource.data.length > 0">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="fullName">
+						<ng-container matColumnDef="licenceHolderName">
 							<mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Full Name:</span>
-								{{ member | fullname | default }}
+								{{ member.licenceHolderName | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -32,11 +32,11 @@ import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.comp
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="status">
+						<ng-container matColumnDef="licenceStatusCode">
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Status:</span>
-								{{ member.status | default }}
+								{{ member.licenceStatusCode | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -106,7 +106,7 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 	employeesList: Array<any> = [];
 
 	dataSource!: MatTableDataSource<any>;
-	columns: string[] = ['fullName', 'licenceNumber', 'status', 'expiryDate', 'action1'];
+	columns: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
 
 	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
 
@@ -143,10 +143,13 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 	}
 
 	onAddLicenceHolder(): void {
+		const dialogOptions: LookupSwlDialogData = {
+			title: 'Add Member with Security Worker Licence',
+		};
 		this.dialog
-			.open(ModalMemberWithSwlAddComponent, {
+			.open(ModalLookupSwlComponent, {
 				width: '800px',
-				data: {}, //dialogOptions,
+				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
@@ -160,7 +163,7 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 
 	private updateAndSortData() {
 		this.employeesList = [...this.employeesList].sort((a, b) => {
-			return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
+			return this.utilService.sortByDirection(a.licenceHolderName, b.licenceHolderName, 'asc');
 		});
 		this.dataSource.data = this.employeesList;
 	}

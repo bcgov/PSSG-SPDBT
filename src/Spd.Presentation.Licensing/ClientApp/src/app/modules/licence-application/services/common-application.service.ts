@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
-	BusinessTypeCode,
+	BizTypeCode,
 	Document,
 	IdentityProviderTypeCode,
 	LicenceAppListResponse,
@@ -44,6 +44,14 @@ export interface UserApplicationResponse extends LicenceAppListResponse {
 	applicationExpiryDate?: string;
 	isExpiryWarning: boolean;
 	isExpiryError: boolean;
+}
+
+export class LicenceLookupResult {
+	'isFound': boolean;
+	'isFoundValid': boolean;
+	'isExpired': boolean;
+	'isInRenewalPeriod': boolean;
+	'searchResult': LicenceResponse | null;
 }
 
 export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse {
@@ -133,18 +141,18 @@ export class CommonApplicationService {
 	public getLicenceTermsAndFees(
 		workerLicenceTypeCode: WorkerLicenceTypeCode | null,
 		applicationTypeCode: ApplicationTypeCode | null,
-		businessTypeCode: BusinessTypeCode | null,
+		bizTypeCode: BizTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
 		// console.debug(
 		// 	'getLicenceTermsAndFees',
 		// 	workerLicenceTypeCode,
 		// 	applicationTypeCode,
-		// 	businessTypeCode,
+		// 	bizTypeCode,
 		// 	originalLicenceTermCode
 		// );
 
-		if (!workerLicenceTypeCode || !businessTypeCode) {
+		if (!workerLicenceTypeCode || !bizTypeCode) {
 			return [];
 		}
 
@@ -158,7 +166,7 @@ export class CommonApplicationService {
 			.filter(
 				(item) =>
 					item.workerLicenceTypeCode == workerLicenceTypeCode &&
-					item.businessTypeCode == businessTypeCode &&
+					item.bizTypeCode == bizTypeCode &&
 					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
 					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
 			);
@@ -315,7 +323,7 @@ export class CommonApplicationService {
 								const fee = this.getLicenceTermsAndFees(
 									resp.workerLicenceTypeCode!,
 									ApplicationTypeCode.Replacement,
-									resp.businessTypeCode!,
+									resp.bizTypeCode!,
 									resp.licenceTermCode
 								).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
 								licence.licenceReprintFee = fee?.amount ? fee.amount : null;
@@ -460,22 +468,65 @@ export class CommonApplicationService {
 			});
 	}
 
+	getLicenceNumberLookupAnonymous(licenceNumber: string, recaptchaCode: string): Observable<LicenceLookupResult> {
+		return this.licenceService
+			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
+			.pipe(
+				switchMap((resp: LicenceResponse) => {
+					const isFound = !!resp;
+					const isFoundValid = isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
+					const isExpired = isFound && resp.licenceStatusCode != LicenceStatusCode.Active;
+					const isInRenewalPeriod =
+						!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
+
+					const lookupResp: LicenceLookupResult = {
+						isFound,
+						isFoundValid,
+						isExpired,
+						isInRenewalPeriod,
+						searchResult: resp,
+					};
+					return of(lookupResp);
+				})
+			);
+	}
+
+	getLicenceNumberLookup(licenceNumber: string): Observable<LicenceLookupResult> {
+		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber }).pipe(
+			switchMap((resp: LicenceResponse) => {
+				const isFound = !!resp;
+				const isFoundValid = isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
+				const isExpired = isFound && resp.licenceStatusCode != LicenceStatusCode.Active;
+				const isInRenewalPeriod =
+					!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
+
+				const lookupResp: LicenceLookupResult = {
+					isFound,
+					isFoundValid,
+					isExpired,
+					isInRenewalPeriod,
+					searchResult: resp,
+				};
+				return of(lookupResp);
+			})
+		);
+	}
+
 	setExpiredLicenceLookupMessage(
-		resp: LicenceResponse,
+		licence: LicenceResponse | null,
 		label: string,
 		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		isFound: boolean,
 		isExpired: boolean,
 		isInRenewalPeriod: boolean
 	): [string | null, string | null] {
 		let messageWarn = null;
 		let messageError = null;
 
-		if (isFound) {
-			if (resp.workerLicenceTypeCode !== workerLicenceTypeCode) {
+		if (licence) {
+			if (licence.workerLicenceTypeCode !== workerLicenceTypeCode) {
 				//   WorkerLicenceType does not match
 				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-				messageError = `This ${label} is not a ${selWorkerLicenceTypeDesc}.`;
+				messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
 				if (!isExpired) {
 					if (isInRenewalPeriod) {

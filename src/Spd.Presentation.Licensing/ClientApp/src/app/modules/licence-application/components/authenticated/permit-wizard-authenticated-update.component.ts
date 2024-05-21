@@ -140,7 +140,6 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	onChildNextStep() {
 		this.stepsUpdatesComponent?.onGoToNextStep();
-		// this.updateCompleteStatus();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
