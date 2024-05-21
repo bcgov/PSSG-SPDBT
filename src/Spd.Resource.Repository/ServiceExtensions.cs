@@ -24,6 +24,7 @@ using Spd.Resource.Repository.Report;
 using Spd.Resource.Repository.ServiceTypes;
 using Spd.Resource.Repository.Tasks;
 using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.WorkerLicenceCategory;
 using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Repository
@@ -58,6 +59,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IBizRepository, BizRepository>();
             configurationServices.Services.AddTransient<IOptionSetRepository, OptionSetRepository>();
             configurationServices.Services.AddTransient<IAddressRepository, AddressRepository>();
+            configurationServices.Services.AddTransient<IWorkerLicenceCategoryRepository, WorkerLicenceCategoryRepository>();
         }
     }
 }

@@ -100,8 +100,7 @@ import { CommonControllingMembersComponent } from './components/business/common-
 import { CommonEmployeesComponent } from './components/business/common-employees.component';
 import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
 import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
-import { ModalLookupSoleProprietorComponent } from './components/business/modal-lookup-sole-proprietor.component';
-import { ModalMemberWithSwlAddComponent } from './components/business/modal-member-with-swl-add.component';
+import { ModalLookupSwlComponent } from './components/business/modal-lookup-swl.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/business/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
@@ -116,7 +115,6 @@ import { StepBusinessLicenceEmployeesComponent } from './components/business/ste
 import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './components/business/step-business-licence-liability.component';
 import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
-import { StepBusinessLicenceNameComponent } from './components/business/step-business-licence-name.component';
 import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
 import { StepBusinessLicenceSummaryComponent } from './components/business/step-business-licence-summary.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
@@ -282,9 +280,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
-		ModalLookupSoleProprietorComponent,
+		ModalLookupSwlComponent,
 		ModalMemberWithoutSwlEditComponent,
-		ModalMemberWithSwlAddComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitUpdateReceivedSuccessComponent,
 		PermitWizardAnonymousNewComponent,
@@ -304,7 +301,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceControllingMemberConfirmationComponent,
 		StepBusinessLicenceControllingMemberInvitesComponent,
 		StepBusinessLicenceLiabilityComponent,
-		StepBusinessLicenceNameComponent,
 		StepBusinessLicenceProfileComponent,
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,

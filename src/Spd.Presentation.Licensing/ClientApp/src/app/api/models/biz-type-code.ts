@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum BusinessTypeCode {
+export enum BizTypeCode {
   NonRegisteredSoleProprietor = 'NonRegisteredSoleProprietor',
   NonRegisteredPartnership = 'NonRegisteredPartnership',
   RegisteredSoleProprietor = 'RegisteredSoleProprietor',

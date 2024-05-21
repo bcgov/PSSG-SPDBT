@@ -80,7 +80,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
-		originalBusinessTypeCode: new FormControl(null),
+		originalBizTypeCode: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),
 		originalDogAuthorizationExists: new FormControl(false),
 
@@ -412,7 +412,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	continueToNextStep(workerLicenceTypeCode: WorkerLicenceTypeCode, applicationTypeCode: ApplicationTypeCode): void {
+	private continueToNextStep(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode
+	): void {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
@@ -442,7 +445,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	getPermitToResume(licenceAppId: string): Observable<PermitLicenceAppResponse> {
-		return this.loadExistingPermitWithIdAuthenticated(licenceAppId).pipe(
+		return this.loadExistingPermitToResumeWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -671,6 +674,31 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					permitLicenceData,
 					profileData,
 					userLicenceInformation,
+				});
+			})
+		);
+	}
+
+	/**
+	 * Load a permit using an ID
+	 * @returns
+	 */
+	private loadExistingPermitToResumeWithIdAuthenticated(licenceAppId: string): Observable<PermitLicenceAppResponse> {
+		this.reset();
+
+		return forkJoin([
+			this.permitService.apiPermitApplicationsLicenceAppIdGet({ licenceAppId }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		]).pipe(
+			switchMap((resps: any[]) => {
+				const permitLicenceAppData = resps[0];
+				const profileData = resps[1];
+
+				return this.applyPermitAndProfileIntoModel({
+					permitLicenceAppData,
+					profileData,
 				});
 			})
 		);
@@ -968,7 +996,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		userLicenceInformation,
 	}: {
 		permitLicenceAppData: PermitLicenceAppResponse;
-		permitLicenceData: LicenceResponse;
+		permitLicenceData?: LicenceResponse;
 		profileData?: ApplicantProfileResponse;
 		userLicenceInformation?: UserLicenceResponse;
 	}): Observable<any> {
@@ -1020,7 +1048,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
 			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
+			originalBizTypeCode: userLicenceInformation?.bizTypeCode ?? null,
 		};
 
 		const contactInformationData = {

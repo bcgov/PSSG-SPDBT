@@ -14,6 +14,9 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
 
 				<app-wizard-footer
+					[isFormValid]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onNoSaveAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
@@ -25,6 +28,9 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				></app-step-business-licence-consent-and-declaration>
 
 				<app-wizard-footer
+					[isFormValid]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onNoSaveAndExit()"
 					[nextButtonLabel]="submitPayLabel"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onPayNow()"

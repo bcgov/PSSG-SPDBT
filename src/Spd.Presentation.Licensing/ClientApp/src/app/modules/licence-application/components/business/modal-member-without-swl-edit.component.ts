@@ -2,9 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-modal-member-without-swl-edit',
@@ -54,7 +54,7 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 						</mat-form-field>
 						<mat-checkbox formControlName="noEmailAddress"> Doesn’t have an email address </mat-checkbox>
 					</div>
-					<div class="col-12" *ngIf="noEmailAddress.value" @showHideTriggerSlideAnimation>
+					<div class="col-12 mt-3" *ngIf="noEmailAddress.value" @showHideTriggerSlideAnimation>
 						<app-alert type="danger" icon="error">
 							Download the Consent to Criminal Record Check form and provide it to the member to fill out.
 						</app-alert>

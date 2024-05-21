@@ -1,5 +1,4 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
@@ -13,6 +12,8 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_MANAGER_INFORMATION)"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_MANAGER_INFORMATION)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_MANAGER_INFORMATION)"
@@ -26,8 +27,8 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 export class StepsBusinessLicenceContactInformationNewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_MANAGER_INFORMATION = 1;
 
-	isFormValid = false;
-	applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerInformationComponent!: StepBusinessLicenceManagerInformationComponent;

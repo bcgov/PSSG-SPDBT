@@ -6,6 +6,7 @@ namespace Spd.Resource.Repository.Licence
     {
         public Task<LicenceListResp> QueryAsync(LicenceQry query, CancellationToken cancellationToken);
         public Task<LicenceResp> ManageAsync(UpdateLicenceCmd cmd, CancellationToken cancellationToken);
+        public Task<LicenceResp> GetAsync(Guid licenceId, CancellationToken cancellationToken);
     }
 
     public record LicenceQry
@@ -24,13 +25,15 @@ namespace Spd.Resource.Repository.Licence
         public IEnumerable<LicenceResp> Items { get; set; } = Array.Empty<LicenceResp>();
     }
 
+    //we should only update fields for permit when there is update
     public record UpdateLicenceCmd(PermitLicence PermitLicence, Guid LicenceID);
 
     public record LicenceResp() : PermitLicence
     {
         public Guid? LicenceId { get; set; }
         public Guid? LicenceAppId { get; set; }
-
+        public bool? IsTemporary { get; set; }
+        public Guid? PhotoDocumentUrlId { get; set; }
     }
 
     public record Licence
