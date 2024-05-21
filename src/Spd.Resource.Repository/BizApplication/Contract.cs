@@ -5,12 +5,12 @@ using Spd.Resource.Repository.LicenceApplication;
 namespace Spd.Resource.Repository.BizApplication;
 public partial interface IBizApplicationRepository
 {
-    public Task<BizLicenceApplicationCmdResp> SaveBizLicenceApplicationAsync(SaveBizLicenceApplicationCmd cmd, CancellationToken ct);
+    public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
 }
 
-public record BizLicenceApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
+public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
 
-public record BizLicenceApplication
+public record BizLicApplication
 {
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
@@ -68,7 +68,7 @@ public record BizLicenceApplication
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
 }
 
-public record SaveBizLicenceApplicationCmd() : BizLicenceApplication
+public record SaveBizLicApplicationCmd() : BizLicApplication
 {
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }

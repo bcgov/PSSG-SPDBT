@@ -181,7 +181,7 @@ internal class Mappings : Profile
         CreateMap<WorkerLicenceAppSubmitRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
 
-        CreateMap<BizLicAppUpsertRequest, SaveBizLicenceApplicationCmd>()
+        CreateMap<BizLicAppUpsertRequest, SaveBizLicApplicationCmd>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.BizId))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantContactInfo.Surname))
