@@ -4,6 +4,7 @@ using Moq;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -14,7 +15,6 @@ public class LicenceManagerTest
     private Mock<ILicenceRepository> mockLicRepo = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<IMainFileStorageService> mockFileService = new();
-    private Mock<IMapper> mockMapper = new();
 
     private LicenceManager sut;
 
@@ -25,11 +25,17 @@ public class LicenceManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        var mapperConfig = new MapperConfiguration(x =>
+        {
+            x.AddProfile<Mappings>();
+        });
+        var mapper = mapperConfig.CreateMapper();
+
         sut = new LicenceManager(mockLicRepo.Object,
             mockDocRepo.Object,
             null,
             mockFileService.Object,
-            mockMapper.Object);
+            mapper);
     }
 
     [Fact]
@@ -184,13 +190,29 @@ public class LicenceManagerTest
             }
         };
 
-        mockMapper.Setup(m => m.Map<IEnumerable<LicenceBasicResponse>>(It.Is<IEnumerable<LicenceResp>>(r => r.Any(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired))))
-            .Returns(licenceResponses);
-
         ApplicantLicenceListQuery request = new(applicantId);
 
         var result = await sut.Handle(request, CancellationToken.None);
 
         Assert.Equal(applicantId, result.First().LicenceHolderId);
+    }
+
+    [Fact]
+    public async void Handle_LicenceByIdQuery_Return_LicenceResponse()
+    {
+        Guid licenceId = Guid.NewGuid();
+        LicenceResp licenceResp = fixture.Build<LicenceResp>()
+            .With(r => r.LicenceId, licenceId)
+            .With(r => r.PermitPurposeEnums, new List<PermitPurposeEnum>() { PermitPurposeEnum.ProtectionOfPersonalProperty })
+            .Create();
+
+        mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(g => g.Equals(licenceId)), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(licenceResp);
+
+        LicenceByIdQuery request = new(licenceId);
+
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        Assert.Equal(licenceId, result.LicenceId);
     }
 }

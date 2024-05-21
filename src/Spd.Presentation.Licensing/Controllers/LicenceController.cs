@@ -146,5 +146,18 @@ namespace Spd.Presentation.Licensing.Controllers
 
             return File(content, contentType, response?.FileName);
         }
+
+        /// <summary>
+        /// Get licence info by licenceId.
+        /// Example: api/licences/10000000-0000-0000-0000-000000000000
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/licences/{licenceId}")]
+        [HttpGet]
+        [Authorize(Policy = "BcscBCeID")]
+        public async Task<LicenceResponse> GetLicence([FromRoute] Guid licenceId, CancellationToken ct)
+        {
+            return await _mediator.Send(new LicenceByIdQuery(licenceId), ct);
+        }
     }
 }

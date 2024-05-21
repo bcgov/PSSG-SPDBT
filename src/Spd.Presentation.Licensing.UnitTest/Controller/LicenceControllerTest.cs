@@ -31,6 +31,8 @@ public class LicenceControllerTest
                .ReturnsAsync(new List<LicenceBasicResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<LicencePhotoQuery>(), CancellationToken.None))
                .ReturnsAsync(new FileResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<LicenceByIdQuery>(), CancellationToken.None))
+               .ReturnsAsync(new LicenceResponse());
 
         mockDpProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
@@ -57,6 +59,15 @@ public class LicenceControllerTest
         var result = await sut.GetLicencePhoto(Guid.NewGuid());
 
         Assert.IsType<FileStreamResult>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Get_GetLicence_Return_LicenceResponse()
+    {
+        var result = await sut.GetLicence(Guid.NewGuid(), CancellationToken.None);
+
+        Assert.IsType<LicenceResponse>(result);
         mockMediator.Verify();
     }
 }
