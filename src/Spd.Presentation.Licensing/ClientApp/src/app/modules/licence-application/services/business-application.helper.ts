@@ -77,9 +77,20 @@ export abstract class BusinessApplicationHelper {
 			soleProprietorSwlEmailAddress: new FormControl('', [FormControlValidators.email]),
 			soleProprietorSwlPhoneNumber: new FormControl(''),
 			isTradeNameTheSameAsLegal: new FormControl(''),
+			soleProprietorLicenceId: new FormControl(''),
+			soleProprietorLicenceHolderName: new FormControl(''),
+			soleProprietorLicenceNumber: new FormControl(''),
+			soleProprietorLicenceExpiryDate: new FormControl(''),
+			soleProprietorLicenceStatusCode: new FormControl(''),
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'soleProprietorLicenceId',
+					(form) =>
+						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
+						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
+				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'soleProprietorSwlEmailAddress',
 					(form) =>

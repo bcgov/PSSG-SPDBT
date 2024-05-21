@@ -2,6 +2,6 @@
 /* eslint-disable */
 export interface SwlContactInfo {
   bizContactId?: null | string;
-  contactId?: string;
-  licenceId?: string;
+  contactId?: null | string;
+  licenceId?: null | string;
 }

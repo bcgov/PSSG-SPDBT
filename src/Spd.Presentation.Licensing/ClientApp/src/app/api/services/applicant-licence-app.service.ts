@@ -46,7 +46,7 @@ export class ApplicantLicenceAppService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicantLicenceAppService.ApiApplicantsApplicantIdLicenceApplicationsGetPath, 'get');
     if (params) {
-      rb.path('applicantId', params.applicantId, {"style":"simple"});
+      rb.path('applicantId', params.applicantId, {});
     }
 
     return this.http.request(rb.build({
