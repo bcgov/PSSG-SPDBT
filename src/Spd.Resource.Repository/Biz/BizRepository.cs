@@ -107,7 +107,6 @@ namespace Spd.Resource.Repository.Biz
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
             
             _mapper.Map(updateBizCmd, biz);
-            //_context.UpdateObject(biz);
 
             if (!IsSoleProprietor(updateBizCmd.BizType))
             {
