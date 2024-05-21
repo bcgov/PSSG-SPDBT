@@ -1,13 +1,11 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
 
 export interface BranchResponse {
@@ -28,79 +26,98 @@ export interface BranchResponse {
 	selector: 'app-common-business-bc-branches',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row mb-2">
-				<div class="col-12">
-					<mat-table
-						[dataSource]="dataSource"
-						(matSortChange)="onSortData($event)"
-						matSortActive="city"
-						matSortDirection="asc"
-						matSort
+			<div class="row">
+				<div class="py-2">Does your business have any branches in B.C.?</div>
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
+					<mat-radio-group aria-label="Select an option" formControlName="hasBranchesInBc">
+						<div class="d-flex justify-content-start">
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+						</div>
+					</mat-radio-group>
+					<mat-error
+						class="mat-option-error"
+						*ngIf="
+							(form.get('hasBranchesInBc')?.dirty || form.get('hasBranchesInBc')?.touched) &&
+							form.get('hasBranchesInBc')?.invalid &&
+							form.get('hasBranchesInBc')?.hasError('required')
+						"
+						>This is required</mat-error
 					>
-						<ng-container matColumnDef="addressLine1">
-							<mat-header-cell *matHeaderCellDef>Address Line 1</mat-header-cell>
-							<mat-cell *matCellDef="let branch">
-								<span class="mobile-label">Address Line 1:</span>
-								{{ branch.addressLine1 | default }}
-							</mat-cell>
-						</ng-container>
+				</div>
+			</div>
 
-						<ng-container matColumnDef="city">
-							<mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by city"
-								>City</mat-header-cell
-							>
-							<mat-cell *matCellDef="let branch">
-								<span class="mobile-label">City:</span>
-								{{ branch.city | default }}
-							</mat-cell>
-						</ng-container>
+			<div *ngIf="hasBranchesInBc.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+				<div class="row my-2">
+					<div class="col-12">
+						<app-alert type="info" icon="" [showBorder]="false">
+							Branches in B.C. where licenced employees work
+						</app-alert>
+						<mat-table [dataSource]="dataSource">
+							<ng-container matColumnDef="addressLine1">
+								<mat-header-cell *matHeaderCellDef>Address Line 1</mat-header-cell>
+								<mat-cell *matCellDef="let branch">
+									<span class="mobile-label">Address Line 1:</span>
+									{{ branch.addressLine1 | default }}
+								</mat-cell>
+							</ng-container>
 
-						<ng-container matColumnDef="branchManager">
-							<mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by manager name"
-								>Manager</mat-header-cell
-							>
-							<mat-cell *matCellDef="let branch">
-								<span class="mobile-label">Manager:</span>
-								{{ branch.branchManager | default }}
-							</mat-cell>
-						</ng-container>
+							<ng-container matColumnDef="city">
+								<mat-header-cell *matHeaderCellDef sortActionDescription="Sort by city">City</mat-header-cell>
+								<mat-cell *matCellDef="let branch">
+									<span class="mobile-label">City:</span>
+									{{ branch.city | default }}
+								</mat-cell>
+							</ng-container>
 
-						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let branch">
-								<button
-									mat-flat-button
-									class="table-button w-auto"
-									style="color: var(--color-green);"
-									aria-label="Edit branch"
-									(click)="onEditBranch(branch)"
+							<ng-container matColumnDef="branchManager">
+								<mat-header-cell *matHeaderCellDef sortActionDescription="Sort by manager name"
+									>Manager</mat-header-cell
 								>
-									<mat-icon>edit</mat-icon>Edit
-								</button>
-							</mat-cell>
-						</ng-container>
+								<mat-cell *matCellDef="let branch">
+									<span class="mobile-label">Manager:</span>
+									{{ branch.branchManager | default }}
+								</mat-cell>
+							</ng-container>
 
-						<ng-container matColumnDef="action2">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
-							<mat-cell *matCellDef="let branch; let i = index">
-								<button
-									mat-flat-button
-									class="table-button w-auto"
-									style="color: var(--color-red);"
-									aria-label="Remove branch"
-									(click)="onRemoveBranch(i)"
-								>
-									<mat-icon>delete_outline</mat-icon>Remove
-								</button>
-							</mat-cell>
-						</ng-container>
+							<ng-container matColumnDef="action1">
+								<mat-header-cell *matHeaderCellDef></mat-header-cell>
+								<mat-cell *matCellDef="let branch">
+									<button
+										mat-flat-button
+										class="table-button w-auto"
+										style="color: var(--color-green);"
+										aria-label="Edit branch"
+										(click)="onEditBranch(branch)"
+									>
+										<mat-icon>edit</mat-icon>Edit
+									</button>
+								</mat-cell>
+							</ng-container>
 
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
-					</mat-table>
-					<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
-						<mat-icon class="add-icon">add_circle</mat-icon>Add Another Branch
-					</button>
+							<ng-container matColumnDef="action2">
+								<mat-header-cell *matHeaderCellDef></mat-header-cell>
+								<mat-cell *matCellDef="let branch; let i = index">
+									<button
+										mat-flat-button
+										class="table-button w-auto"
+										style="color: var(--color-red);"
+										aria-label="Remove branch"
+										(click)="onRemoveBranch(i)"
+									>
+										<mat-icon>delete_outline</mat-icon>Remove
+									</button>
+								</mat-cell>
+							</ng-container>
+
+							<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
+							<mat-row *matRowDef="let row; columns: columns"></mat-row>
+						</mat-table>
+
+						<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
+							<mat-icon class="add-icon">add_circle</mat-icon>Add Branch
+						</button>
+					</div>
 				</div>
 			</div>
 		</form>
@@ -124,37 +141,34 @@ export interface BranchResponse {
 			}
 		`,
 	],
+	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit, LicenceChildStepperStepComponent {
+export class CommonBusinessBcBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-
-	branchList: Array<BranchResponse> = [];
 
 	dataSource!: MatTableDataSource<BranchResponse>;
 	columns: string[] = ['addressLine1', 'city', 'branchManager', 'action1', 'action2'];
 
 	@Input() form!: FormGroup;
 
-	@ViewChild(MatSort) sort!: MatSort;
-
-	constructor(private utilService: UtilService, private dialog: MatDialog, private hotToastService: HotToastService) {}
+	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.branchList = this.branchesArray.value;
-		this.dataSource = new MatTableDataSource(this.branchList);
-		this.onSortData({
-			active: 'city',
-			direction: 'asc',
-		});
+		this.dataSource = new MatTableDataSource(this.branchesArray.value);
 	}
 
-	ngAfterViewInit(): void {
-		this.dataSource.sort = this.sort;
+	onHasBranchesInBcChange(): void {
+		if (this.form.value.hasBranchesInBc != BooleanTypeCode.Yes) {
+			const branchesArray = this.branchesArray;
+			while (branchesArray.length) {
+				branchesArray.removeAt(0);
+			}
+			this.form.setControl('branches', branchesArray);
+		}
 	}
 
 	isFormValid(): boolean {
-		this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return true;
 	}
 
 	onEditBranch(branch: BranchResponse): void {
@@ -175,28 +189,10 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.branchList.splice(index, 1);
-					this.dataSource = new MatTableDataSource(this.branchList);
+					this.branchesArray.removeAt(index);
+					this.dataSource = new MatTableDataSource(this.branchesArray.value);
 				}
 			});
-	}
-
-	onSortData(sort: Sort) {
-		if (!sort.active || !sort.direction) {
-			return;
-		}
-
-		this.branchList = [...this.branchList].sort((a, b) => {
-			switch (sort.active) {
-				case 'city':
-					return this.utilService.sortByDirection(a.city, b.city, sort.direction);
-				case 'branchManager':
-					return this.utilService.sortByDirection(a.branchManager, b.branchManager, sort.direction);
-				default:
-					return 0;
-			}
-		});
-		this.dataSource.data = this.branchList;
 	}
 
 	onAddBranch(): void {
@@ -211,23 +207,57 @@ export class CommonBusinessBcBranchesComponent implements OnInit, AfterViewInit,
 			})
 			.afterClosed()
 			.subscribe((resp) => {
-				if (resp) {
+				const branchData = resp?.data;
+				if (branchData) {
 					if (isCreate) {
-						this.branchList.push(resp.data);
-						this.hotToastService.success('Branch was successfully added');
+						this.branchesArray.push(this.newBranchRow(branchData));
 					} else {
-						const branchIndex = this.branchList.findIndex((item) => item.branchId == dialogOptions.branchId!);
-						if (branchIndex >= 0) {
-							this.branchList[branchIndex] = resp.data;
-							this.dataSource.data = this.branchList;
-						}
-						this.hotToastService.success('Branch was successfully updated');
+						const branchIndex = this.branchesArray.value.findIndex(
+							(item: any) => item.branchId == dialogOptions.branchId!
+						);
+						this.patchBranchData(branchIndex, branchData);
 					}
-					this.dataSource.sort = this.sort;
+
+					this.dataSource.data = this.branchesArray.value;
 				}
 			});
 	}
 
+	private newBranchRow(branchData: any): FormGroup {
+		return this.formBuilder.group({
+			addressLine1: [branchData.addressLine1],
+			addressLine2: [branchData.addressLine2],
+			city: [branchData.city],
+			postalCode: [branchData.postalCode],
+			province: [branchData.province],
+			country: [branchData.country],
+			branchManager: [branchData.branchManager],
+			branchPhoneNumber: [branchData.branchPhoneNumber],
+			branchEmailAddr: [branchData.branchEmailAddr],
+		});
+	}
+
+	private patchBranchData(branchIndex: number, branchData: any) {
+		if (branchIndex < 0) {
+			return;
+		}
+
+		this.branchesArray.at(branchIndex).patchValue({
+			addressLine1: branchData.addressLine1,
+			addressLine2: branchData.addressLine2,
+			city: branchData.city,
+			postalCode: branchData.postalCode,
+			province: branchData.province,
+			country: branchData.country,
+			branchManager: branchData.branchManager,
+			branchPhoneNumber: branchData.branchPhoneNumber,
+			branchEmailAddr: branchData.branchEmailAddr,
+		});
+	}
+
+	get hasBranchesInBc(): FormControl {
+		return this.form.get('hasBranchesInBc') as FormControl;
+	}
 	get branchesArray(): FormArray {
 		return <FormArray>this.form.get('branches');
 	}

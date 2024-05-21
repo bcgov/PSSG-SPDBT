@@ -27,10 +27,9 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
         return TypedResults.Ok(createdJobId);
     }
 
-    [HttpPost("api/printjobs/{jobId}/preview")]
-    public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(string? jobId, PrintJobRequest request, CancellationToken ct)
+    [HttpPost("api/printjobs/preview")]
+    public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(PrintJobRequest request, CancellationToken ct)
     {
-        if (jobId != request.JobId) return TypedResults.BadRequest();
         var printJob = mapper.Map<PrintJob>(request);
         var previewResponse = await mediator.Send(new PreviewDocumentCommand(printJob), ct);
         return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);

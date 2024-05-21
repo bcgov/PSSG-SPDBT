@@ -1,13 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
-import { ModalMemberWithSwlAddComponent } from './modal-member-with-swl-add.component';
+import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -17,11 +15,11 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 			<div class="row mt-4" *ngIf="dataSource.data.length > 0">
 				<div class="col-12">
 					<mat-table [dataSource]="dataSource">
-						<ng-container matColumnDef="fullName">
+						<ng-container matColumnDef="licenceHolderName">
 							<mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Full Name:</span>
-								{{ member | fullname | default }}
+								{{ member.licenceHolderName | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -33,11 +31,11 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="status">
+						<ng-container matColumnDef="licenceStatusCode">
 							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Status:</span>
-								{{ member.status | default }}
+								{{ member.licenceStatusCode | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -132,22 +130,25 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 
 	@Input() form!: FormGroup;
 
-	memberList: Array<any> = [];
-
 	dataSource!: MatTableDataSource<any>;
-	columns: string[] = ['fullName', 'licenceNumber', 'status', 'expiryDate', 'clearanceStatus', 'action1', 'action2'];
+	columns: string[] = [
+		'licenceHolderName',
+		'licenceNumber',
+		'licenceStatusCode',
+		'expiryDate',
+		'clearanceStatus',
+		'action1',
+		'action2',
+	];
 
-	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
+	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.memberList = this.membersArray.value;
-		this.dataSource = new MatTableDataSource(this.memberList);
-		this.updateAndSortData();
+		this.dataSource = new MatTableDataSource(this.membersArray.value);
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		return true; // TODO return this.form.valid;
+		return true;
 	}
 
 	onRemoveMember(index: number) {
@@ -164,24 +165,29 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.memberList.splice(index, 1);
-					this.dataSource = new MatTableDataSource(this.memberList);
+					this.membersArray.removeAt(index);
+					this.dataSource = new MatTableDataSource(this.membersArray.value);
 				}
 			});
 	}
 
 	onAddMemberWithSWL(): void {
+		const dialogOptions: LookupSwlDialogData = {
+			title: 'Add Member with Security Worker Licence',
+			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
+		};
 		this.dialog
-			.open(ModalMemberWithSwlAddComponent, {
+			.open(ModalLookupSwlComponent, {
 				width: '800px',
-				data: {}, //dialogOptions,
+				data: dialogOptions,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp) {
-					this.memberList.push(resp.data);
-					this.hotToastService.success('Controlling member was successfully added');
-					this.updateAndSortData();
+				const memberData = resp?.data;
+				if (memberData) {
+					this.membersArray.push(this.newMemberRow(memberData));
+
+					this.dataSource.data = this.membersArray.value;
 				}
 			});
 	}
@@ -194,13 +200,6 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 		this.memberDialog({}, true);
 	}
 
-	private updateAndSortData() {
-		this.memberList = [...this.memberList].sort((a, b) => {
-			return this.utilService.sortByDirection(a.fullName, b.fullName, 'asc');
-		});
-		this.dataSource.data = this.memberList;
-	}
-
 	private memberDialog(dialogOptions: any, isCreate: boolean): void {
 		this.dialog
 			.open(ModalMemberWithoutSwlEditComponent, {
@@ -209,21 +208,49 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp) {
+				const memberData = resp?.data;
+				if (memberData) {
 					if (isCreate) {
-						this.memberList.push(resp.data);
-						this.hotToastService.success('Controlling member was successfully added');
-						this.updateAndSortData();
+						this.membersArray.push(this.newMemberRow(memberData));
 					} else {
-						const memberIndex = this.memberList.findIndex((item) => item.id == dialogOptions.id!);
-						if (memberIndex >= 0) {
-							this.memberList[memberIndex] = resp.data;
-							this.updateAndSortData();
-						}
-						this.hotToastService.success('Controlling member was successfully updated');
+						const memberIndex = this.membersArray.value.findIndex((item: any) => item.id == dialogOptions.id!);
+						this.patchMemberData(memberIndex, memberData);
 					}
+
+					this.dataSource.data = this.membersArray.value;
 				}
 			});
+	}
+
+	private newMemberRow(memberData: any): FormGroup {
+		// TODO update once a controlling member class is defined
+		return this.formBuilder.group({
+			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
+			givenName: [memberData.givenName],
+			surname: [memberData.surname],
+			emailAddress: [memberData.emailAddress],
+			licenceNumber: [memberData.licenceNumber],
+			licenceStatusCode: [memberData.licenceStatusCode],
+			expiryDate: [memberData.expiryDate],
+			clearanceStatus: [memberData.clearanceStatus],
+		});
+	}
+
+	private patchMemberData(memberIndex: number, memberData: any) {
+		if (memberIndex < 0) {
+			return;
+		}
+
+		this.membersArray.at(memberIndex).patchValue({
+			licenceHolderName: memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`,
+			givenName: memberData.givenName,
+			surname: memberData.surname,
+			emailAddress: memberData.emailAddress,
+			licenceNumber: memberData.licenceNumber,
+			licenceStatusCode: memberData.licenceStatusCode,
+			expiryDate: memberData.expiryDate,
+			clearanceStatus: memberData.clearanceStatus,
+		});
 	}
 
 	get membersArray(): FormArray {

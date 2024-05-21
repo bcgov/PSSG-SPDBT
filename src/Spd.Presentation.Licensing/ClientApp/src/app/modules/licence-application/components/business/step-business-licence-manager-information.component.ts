@@ -158,7 +158,7 @@ export class StepBusinessLicenceManagerInformationComponent implements LicenceCh
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		return true; //  TODO  this.form.valid;
+		return this.form.valid;
 	}
 
 	get isBusinessManager(): FormControl {

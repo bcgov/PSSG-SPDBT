@@ -19,6 +19,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 							<section>
 								<app-common-business-information
 									[form]="businessInformationFormGroup"
+									[isReadonly]="isReadonly"
 								></app-common-business-information>
 							</section>
 						</div>
@@ -42,7 +43,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 								<app-common-business-address
 									[form]="businessAddressFormGroup"
 									[isWizardStep]="false"
-									[isReadonly]="isReadonly"
+									[isReadonly]="true"
 								></app-common-business-address>
 							</section>
 						</div>
@@ -114,10 +115,6 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false"
-								>Branches in B.C. where licenced employees work</app-alert
-							>
-
 							<section>
 								<app-common-business-bc-branches [form]="branchesInBcFormGroup"></app-common-business-bc-branches>
 							</section>

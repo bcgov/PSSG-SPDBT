@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
+import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -84,6 +85,7 @@ export class BusinessProfileComponent implements OnInit, OnDestroy {
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
+		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		// check if isReadonly was passed from 'BusinessUserApplicationsComponent'
@@ -118,16 +120,15 @@ export class BusinessProfileComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		// this.licenceApplicationService.saveLoginUserProfile().subscribe({
-		// 	next: (_resp: any) => {
-		// 		this.hotToastService.success('Your profile has been successfully updated');
-		// 		this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		// 	},
-		// 	error: (error: any) => {
-		// 		console.log('An error occurred during save', error);
-		// 		this.hotToastService.error('An error occurred during the save. Please try again.');
-		// 	},
-		// });
-		// TODO save business profile
+		this.businessApplicationService.saveLoginBusinessProfile().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your business profile has been successfully updated');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
 	}
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { BusinessCategoryTypes } from '@app/core/code-types/model-desc.models';
@@ -66,7 +66,15 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title>
-														{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															*ngIf="
+																categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
+															"
+															>error</mat-icon
+														>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 
@@ -107,6 +115,13 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
 												<mat-expansion-panel-header>
 													<mat-panel-title>
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
+															>error</mat-icon
+														>
 														{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
 													</mat-panel-title>
 												</mat-expansion-panel-header>
@@ -136,9 +151,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 		`,
 	],
 })
-export class StepBusinessLicenceCategoryComponent implements LicenceChildStepperStepComponent {
-	// isDirtyAndInvalid = false;
-
+export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categoryFormGroup;
 
 	businessCategoryTypes = BusinessCategoryTypes;
@@ -170,33 +183,53 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
-	// ngOnInit(): void {
-	// switch (this.applicationTypeCode) {
-	// 	case ApplicationTypeCode.New: {
-	// 		this.title = this.title_new;
-	// 		this.infoTitle = this.subtitle_new;
-	// 		break;
-	// 	}
-	// 	case ApplicationTypeCode.Renewal: {
-	// 		this.title = this.title_renew;
-	// 		this.infoTitle = this.subtitle_renew;
-	// 		break;
-	// 	}
-	// 	case ApplicationTypeCode.Update: {
-	// 		this.title = this.title_update;
-	// 		this.infoTitle = this.subtitle_update;
-	// 		break;
-	// 	}
-	// }
+	ngOnInit(): void {
+		// switch (this.applicationTypeCode) {
+		// 	case ApplicationTypeCode.New: {
+		// 		this.title = this.title_new;
+		// 		this.infoTitle = this.subtitle_new;
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Renewal: {
+		// 		this.title = this.title_renew;
+		// 		this.infoTitle = this.subtitle_renew;
+		// 		break;
+		// 	}
+		// 	case ApplicationTypeCode.Update: {
+		// 		this.title = this.title_update;
+		// 		this.infoTitle = this.subtitle_update;
+		// 		break;
+		// 	}
 
-	// this.validCategoryList = this.businessApplicationService.getValidCategoryList(this.categoryList);
+		this.setupCategories();
+	}
 
-	// this.setupInitialExpansionPanel();
-	// }
+	setupCategories(): void {
+		const formValue = this.form.value;
+
+		if (formValue.SecurityAlarmInstaller) {
+			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+		}
+
+		if (formValue.SecurityGuard) {
+			this.onCategoryChange(WorkerCategoryTypeCode.SecurityGuard);
+		}
+
+		if (formValue.SecurityAlarmResponse) {
+			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmResponse);
+		}
+
+		if (formValue.Locksmith) {
+			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith);
+		}
+
+		if (formValue.Locksmith) {
+			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith);
+		}
+	}
 
 	onCategoryChange(changedItem: string): void {
 		const formValue = this.form.value;
-		console.debug('onCategoryChange', formValue);
 
 		type CategoryKey = keyof typeof this.businessApplicationService.categoryFormGroup;
 
@@ -261,48 +294,7 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 				this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: privateInvestigator });
 				break;
 		}
-
-		// 	this.isDirtyAndInvalid = false;
 	}
-
-	// onRemove(code: string) {
-	// 	const codeDesc = this.optionsPipe.transform(code, 'WorkerCategoryTypes');
-	// 	const data: DialogOptions = {
-	// 		icon: 'warning',
-	// 		title: 'Confirmation',
-	// 		message: `Are you sure you want to remove the ${codeDesc} category?`,
-	// 		actionText: 'Yes',
-	// 		cancelText: 'Cancel',
-	// 	};
-
-	// 	this.dialog
-	// 		.open(DialogComponent, { data })
-	// 		.afterClosed()
-	// 		.subscribe((response: boolean) => {
-	// 			if (response) {
-	// 				switch (code) {
-	// 					case WorkerCategoryTypeCode.ArmouredCarGuard:
-	// 						this.categoryArmouredCarGuardFormGroup.reset();
-	// 						this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
-	// 						this.blockArmouredCarGuard = false;
-	// 						break;
-	// 					case WorkerCategoryTypeCode.PrivateInvestigator:
-	// 						this.categoryPrivateInvestigatorFormGroup.reset();
-	// 						this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
-	// 						this.blockPrivateInvestigator = false;
-	// 						break;
-	// 					case WorkerCategoryTypeCode.SecurityGuard:
-	// 						this.categorySecurityGuardFormGroup.reset();
-	// 						this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
-	// 						this.blockSecurityGuard = false;
-	// 						break;
-	// 				}
-
-	// 				this.validCategoryList = this.businessApplicationService.getValidCategoryList(this.categoryList);
-	// 				this.isDirtyAndInvalid = false;
-	// 			}
-	// 		});
-	// }
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
@@ -326,25 +318,8 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 
 		console.debug('[StepBusinessLicenceCategoryComponent] isFormValid', valid1, valid2, valid3, valid4);
 
-		return true; // TODO  return valid1 && valid2 && valid3 && valid4;
+		return valid1 && valid2 && valid3 && valid4;
 	}
-
-	// private setupInitialExpansionPanel(): void {
-	// if (
-	// 	this.applicationTypeCode === ApplicationTypeCode.Update ||
-	// 	this.applicationTypeCode === ApplicationTypeCode.Renewal
-	// ) {
-	// 	if (this.showArmouredCarGuard) {
-	// 		this.blockArmouredCarGuard = true;
-	// 	}
-	// 	if (this.showPrivateInvestigator) {
-	// 		this.blockPrivateInvestigator = true;
-	// 	}
-	// 	if (this.showSecurityGuard) {
-	// 		this.blockSecurityGuard = true;
-	// 	}
-	// }
-	// }
 
 	private setAndDisable(itemType: WorkerCategoryTypeCode): void {
 		const item = this.form.get(itemType) as FormControl;
@@ -357,16 +332,6 @@ export class StepBusinessLicenceCategoryComponent implements LicenceChildStepper
 		item.setValue(false, { emitEvent: false });
 		item.enable({ emitEvent: false });
 	}
-
-	// get showArmouredCarGuard(): boolean {
-	// 	return this.categoryArmouredCarGuardFormGroup.get('isInclude')?.value;
-	// }
-	// get showPrivateInvestigator(): boolean {
-	// 	return this.categoryPrivateInvestigatorFormGroup.get('isInclude')?.value;
-	// }
-	// get showSecurityGuard(): boolean {
-	// 	return this.categorySecurityGuardFormGroup.get('isInclude')?.value;
-	// }
 
 	// get isRenewalOrUpdate(): boolean {
 	// 	return (

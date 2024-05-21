@@ -80,16 +80,6 @@ public enum LicenceDocumentTypeCode
     BizBCReport
 }
 
-public enum BusinessTypeCode
-{
-    NonRegisteredSoleProprietor,
-    NonRegisteredPartnership,
-    RegisteredSoleProprietor,
-    RegisteredPartnership,
-    Corporation,
-    None
-}
-
 public enum PoliceOfficerRoleCode
 {
     AuxiliaryorReserveConstable,
@@ -193,6 +183,6 @@ public record Alias
 public record SwlContactInfo
 {
     public Guid? BizContactId { get; set; }
-    public Guid ContactId { get; set; }
-    public Guid LicenceId { get; set; }
+    public Guid? ContactId { get; set; }
+    public Guid? LicenceId { get; set; }
 }

@@ -20,7 +20,7 @@ public record LicenceApplication
 {
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public BusinessTypeEnum? BusinessTypeCode { get; set; }
+    public BizTypeEnum? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -120,16 +120,6 @@ public enum WorkerLicenceTypeEnum
     BodyArmourPermit,
     SecurityBusinessLicence,
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
-}
-
-public enum BusinessTypeEnum
-{
-    NonRegisteredSoleProprietor,
-    NonRegisteredPartnership,
-    RegisteredSoleProprietor,
-    RegisteredPartnership,
-    Corporation,
-    None
 }
 
 public enum HairColourEnum

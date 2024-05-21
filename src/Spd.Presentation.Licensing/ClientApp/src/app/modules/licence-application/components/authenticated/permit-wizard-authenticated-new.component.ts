@@ -69,6 +69,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
 							[applicationTypeCode]="applicationTypeCodeNew"
+							(saveAndExit)="onSaveAndExit()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -253,7 +254,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
-					this.updateCompleteStatus();
+					// this.updateCompleteStatus();
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -270,7 +271,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				},
 			});
 		} else {
-			this.updateCompleteStatus();
+			// this.updateCompleteStatus();
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
 	}
@@ -339,6 +340,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
+		// this.updateCompleteStatus();
 	}
 }

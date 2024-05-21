@@ -7,7 +7,7 @@ import {
 	ApplicantProfileResponse,
 	ApplicantUpdateRequest,
 	ApplicationTypeCode,
-	BusinessTypeCode,
+	BizTypeCode,
 	Document,
 	GoogleRecaptcha,
 	HeightUnitCode,
@@ -78,7 +78,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		originalLicenceNumber: new FormControl(null),
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
-		originalBusinessTypeCode: new FormControl(null),
+		originalBizTypeCode: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),
 		originalDogAuthorizationExists: new FormControl(false),
 
@@ -374,6 +374,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					return of(resp);
 				}
 
+				// Licence status does not matter for the merge
+
 				return this.applicantProfileService.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response({
 					oldApplicantId: resp.body.licenceHolderId!,
 					newApplicantId,
@@ -479,7 +481,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
+	private continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
 				this.router.navigateByUrl(
@@ -1139,7 +1141,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
 			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBusinessTypeCode: userLicenceInformation?.businessTypeCode ?? null,
+			originalBizTypeCode: userLicenceInformation?.bizTypeCode ?? null,
 		};
 
 		const contactInformationData = {
@@ -1250,8 +1252,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
 
 		const soleProprietorData = {
-			isSoleProprietor: resp.businessTypeCode === BusinessTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
-			businessTypeCode: resp.businessTypeCode,
+			isSoleProprietor: resp.bizTypeCode === BizTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
+			bizTypeCode: resp.bizTypeCode,
 		};
 
 		const expiredLicenceData = {
@@ -1621,7 +1623,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: resp.licenceAppId,
 				caseNumber: resp.caseNumber,
-				originalBusinessTypeCode: soleProprietorData.businessTypeCode,
+				originalBizTypeCode: soleProprietorData.bizTypeCode,
 				applicationPortalStatus: resp.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
@@ -1668,7 +1670,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		// Remove data that should be re-prompted for
 		const soleProprietorData = {
 			isSoleProprietor: null,
-			businessTypeCode: null,
+			bizTypeCode: null,
 		};
 		const licenceTermData = {
 			licenceTermCode: null,

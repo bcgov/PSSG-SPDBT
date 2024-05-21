@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BusinessTypeCode } from '@app/api/models';
+import { BizTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ConfigService } from '@app/core/services/config.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
@@ -53,11 +53,27 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
+	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
+		{
+			noLogoOrBranding: new FormControl(''),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => !form.get('noLogoOrBranding')?.value
+				),
+			],
+		}
+	);
+
 	businessInformationFormGroup: FormGroup = this.formBuilder.group(
 		{
-			businessTypeCode: new FormControl('', [Validators.required]),
+			bizTypeCode: new FormControl('', [Validators.required]),
 			legalBusinessName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
-			doingBusinessAsName: new FormControl({ value: '', disabled: true }, [FormControlValidators.required]),
+			bizTradeName: new FormControl(''),
+			isBizTradeNameReadonly: new FormControl(''),
 			soleProprietorSwlEmailAddress: new FormControl('', [FormControlValidators.email]),
 			soleProprietorSwlPhoneNumber: new FormControl(''),
 			isTradeNameTheSameAsLegal: new FormControl(''),
@@ -67,26 +83,25 @@ export abstract class BusinessApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'soleProprietorSwlEmailAddress',
 					(form) =>
-						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
-						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
+						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
+						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'phoneNumber',
+					'soleProprietorSwlPhoneNumber',
 					(form) =>
-						form.get('businessTypeCode')?.value == BusinessTypeCode.NonRegisteredSoleProprietor ||
-						form.get('businessTypeCode')?.value == BusinessTypeCode.RegisteredSoleProprietor
+						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
+						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
 				),
 			],
 		}
 	);
 
-	soleProprietorFormGroup: FormGroup = this.formBuilder.group({
+	swlLookupLicenceFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
 
-	companyBrandingFormGroup: FormGroup = this.formBuilder.group({
-		noLogoOrBranding: new FormControl('', [FormControlValidators.required]),
-		attachments: new FormControl([], [Validators.required]),
+	soleProprietorFormGroup: FormGroup = this.formBuilder.group({
+		licenceNumberLookup: new FormControl('', [FormControlValidators.required]),
 	});
 
 	liabilityFormGroup: FormGroup = this.formBuilder.group({
@@ -149,6 +164,7 @@ export abstract class BusinessApplicationHelper {
 			],
 		}
 	);
+
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
@@ -169,21 +185,39 @@ export abstract class BusinessApplicationHelper {
 		}
 	);
 
-	businessManagerFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
-		isBusinessManager: new FormControl(),
-		agivenName: new FormControl(''), // TODO applicant info - rename later
-		amiddleName1: new FormControl(''),
-		amiddleName2: new FormControl(''),
-		asurname: new FormControl('', [FormControlValidators.required]),
-		aemailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		aphoneNumber: new FormControl('', [Validators.required]),
-	});
+	businessManagerFormGroup: FormGroup = this.formBuilder.group(
+		{
+			givenName: new FormControl(''),
+			middleName1: new FormControl(''),
+			middleName2: new FormControl(''),
+			surname: new FormControl('', [FormControlValidators.required]),
+			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+			phoneNumber: new FormControl('', [Validators.required]),
+			isBusinessManager: new FormControl(),
+			agivenName: new FormControl(''), // TODO applicant info - rename later
+			amiddleName1: new FormControl(''),
+			amiddleName2: new FormControl(''),
+			asurname: new FormControl(''),
+			aemailAddress: new FormControl('', [FormControlValidators.email]),
+			aphoneNumber: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'asurname',
+					(form) => !form.get('isBusinessManager')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'aemailAddress',
+					(form) => !form.get('isBusinessManager')?.value
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'aphoneNumber',
+					(form) => !form.get('isBusinessManager')?.value
+				),
+			],
+		}
+	);
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
@@ -195,16 +229,6 @@ export abstract class BusinessApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required]),
 		isMailingTheSame: new FormControl(false),
 	});
-
-	// mailingAddressFormGroup: FormGroup = this.formBuilder.group({ // TODO
-	// 	addressSelected: new FormControl(false, [Validators.requiredTrue]),
-	// 	addressLine1: new FormControl('', [FormControlValidators.required]),
-	// 	addressLine2: new FormControl(''),
-	// 	city: new FormControl('', [FormControlValidators.required]),
-	// 	postalCode: new FormControl('', [FormControlValidators.required]),
-	// 	province: new FormControl('', [FormControlValidators.required]),
-	// 	country: new FormControl('', [FormControlValidators.required]),
-	// });
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -272,19 +296,8 @@ export abstract class BusinessApplicationHelper {
 		employees: this.formBuilder.array([]),
 	});
 
-	// membersWithSwlFormGroup: FormGroup = this.formBuilder.group({
-	// 	hasMembersWithSwl: new FormControl(''),
-	// 	licenceNumberLookup: new FormControl(''),
-	// 	members: this.formBuilder.array([]),
-	// });
-
-	// membersWithoutSwlFormGroup: FormGroup = this.formBuilder.group({
-	// 	hasMembersWithoutSwl: new FormControl(''),
-	// 	members: this.formBuilder.array([]),
-	// });
-
 	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: this.formBuilder.array([]),
+		attachments: new FormControl([], [Validators.required]),
 	});
 
 	branchInBcFormGroup: FormGroup = this.formBuilder.group({
@@ -298,9 +311,9 @@ export abstract class BusinessApplicationHelper {
 			FormControlValidators.requiredValue('British Columbia'),
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
-		managerName: new FormControl('', [Validators.requiredTrue]),
-		managerPhoneNumber: new FormControl('', [FormControlValidators.required]),
-		managerEmail: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		branchManager: new FormControl('', [FormControlValidators.required]),
+		branchPhoneNumber: new FormControl(''),
+		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
 	});
 
 	memberWithSwlFormGroup: FormGroup = this.formBuilder.group({
