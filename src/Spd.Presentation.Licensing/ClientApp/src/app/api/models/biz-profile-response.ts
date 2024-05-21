@@ -14,7 +14,6 @@ export interface BizProfileResponse {
   bizTradeName?: null | string;
   bizTypeCode?: BizTypeCode;
   branches?: null | Array<BranchInfo>;
-  mailingAddressIsSameBizAddress?: null | boolean;
   serviceTypeCodes?: null | Array<ServiceTypeCode>;
   soleProprietorSwlContactInfo?: SwlContactInfo;
   soleProprietorSwlEmailAddress?: null | string;
