@@ -182,7 +182,7 @@ namespace Spd.Resource.Repository.Biz
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
 
-        private void UpdateLicenceLink(account account, Guid licenceId, BizTypeEnum bizType)
+        private void UpdateLicenceLink(account account, Guid? licenceId, BizTypeEnum bizType)
         {
             spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
                 .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
