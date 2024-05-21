@@ -12,5 +12,6 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.BizBCAddress)
             .NotEmpty()
             .When(r => r.BizAddress.Province != "BC");
+        //todo: add rule for branches
     }
 }
