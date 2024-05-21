@@ -115,10 +115,7 @@ namespace Spd.Resource.Repository.Biz
             }
 
             _context.UpdateObject(biz);
-
-            //if (updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
             UpdateLicenceLink(biz, (Guid)updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
-
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(biz);
