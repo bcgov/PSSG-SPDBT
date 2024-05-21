@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonExpiredLicenceComponent } from '../shared/step-components/common-expired-licence.component';
 
 @Component({
 	selector: 'app-step-business-licence-expired',
@@ -17,7 +18,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 				<app-common-expired-licence
 					[form]="form"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					(linkSuccess)="onLinkSuccess()"
+					(validExpiredLicenceData)="onValidData()"
 				></app-common-expired-licence>
 			</div>
 		</section>
@@ -28,6 +29,11 @@ export class StepBusinessLicenceExpiredComponent implements OnInit, LicenceChild
 	form: FormGroup = this.businessApplicationService.expiredLicenceFormGroup;
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
+	@Output() validExpiredLicenceData = new EventEmitter();
+
+	@ViewChild(CommonExpiredLicenceComponent)
+	expiredLicenceComponent!: CommonExpiredLicenceComponent;
+
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
@@ -36,12 +42,16 @@ export class StepBusinessLicenceExpiredComponent implements OnInit, LicenceChild
 		)?.value;
 	}
 
+	onSearchAndValidate(): void {
+		this.expiredLicenceComponent.onValidateAndSearch();
+	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	onLinkSuccess(): void {
-		// TODO handle onLinkSuccess
+	onValidData(): void {
+		this.validExpiredLicenceData.emit();
 	}
 }

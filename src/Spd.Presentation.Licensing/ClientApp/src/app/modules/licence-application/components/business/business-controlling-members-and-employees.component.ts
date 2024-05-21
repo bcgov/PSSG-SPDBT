@@ -39,17 +39,17 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 						If your controlling members change during the business licence term, update their information here.
 					</app-alert>
 
-					<app-common-controlling-members></app-common-controlling-members>
+					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
 
 					<mat-divider class="mat-divider-primary my-4"></mat-divider>
 
 					<div class="fs-5 mb-2">Employee Updates</div>
 					<app-alert type="info" icon="info">
-						If your employees who are licence holders for the business change during the business licence term, update
+						If your employees, who are licence holders for the business, change during the business licence term, update
 						their information here.
 					</app-alert>
 
-					<app-common-employees></app-common-employees>
+					<app-common-employees [defaultExpanded]="true"></app-common-employees>
 				</div>
 			</div>
 		</section>

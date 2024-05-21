@@ -72,6 +72,11 @@ a {
 	background-color: var(--color-primary-lightest) !important;
 }
 
+// do not allow navigation by clicking on step
+.mat-step-header {
+	pointer-events: none;
+}
+
 .mat-horizontal-content-container {
 	padding: 0 !important;
 }

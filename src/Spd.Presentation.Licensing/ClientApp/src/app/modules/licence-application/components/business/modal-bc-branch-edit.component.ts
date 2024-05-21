@@ -17,7 +17,7 @@ export interface UserDialogData {
 		<mat-dialog-content>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<mat-form-field>
 							<mat-label>Branch Manager</mat-label>
 							<input matInput formControlName="branchManager" maxlength="100" [errorStateMatcher]="matcher" />
@@ -27,14 +27,7 @@ export interface UserDialogData {
 
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Manager's Security Worker Licence Number (optional)</mat-label>
-							<input matInput formControlName="managerSwlNumber" maxlength="10" [errorStateMatcher]="matcher" />
-						</mat-form-field>
-					</div>
-
-					<div class="col-md-6">
-						<mat-form-field>
-							<mat-label>Manager's Phone Number</mat-label>
+							<mat-label>Manager's Phone Number <span class="optional-label">(optional)</span></mat-label>
 							<input
 								matInput
 								formControlName="branchPhoneNumber"
@@ -42,14 +35,13 @@ export interface UserDialogData {
 								[showMaskTyped]="false"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 
 					<div class="col-md-6">
 						<mat-form-field>
-							<mat-label>Email</mat-label>
+							<mat-label>Manager's Email <span class="optional-label">(optional)</span></mat-label>
 							<input
 								matInput
 								formControlName="branchEmailAddr"
@@ -60,7 +52,6 @@ export interface UserDialogData {
 							<mat-error *ngIf="form.get('branchEmailAddr')?.hasError('email')">
 								Must be a valid email address
 							</mat-error>
-							<mat-error *ngIf="form.get('branchEmailAddr')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>

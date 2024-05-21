@@ -27,12 +27,11 @@ public record BizInfo
 {
     public string? BizLegalName { get; set; }
     public string? BizTradeName { get; set; }
-    public BusinessTypeCode? BizTypeCode { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
     public Address? BizAddress { get; set; }
     public Address? BizBCAddress { get; set; }
     public Address? BizMailingAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
-    public bool? MailingAddressIsSameBizAddress { get; set; }
     public IEnumerable<ServiceTypeCode>? ServiceTypeCodes { get; set; }
 
     //sole proprietor properties
@@ -74,7 +73,7 @@ public record BizUserLoginResponse
     public ContactRoleCode ContactRoleCode { get; set; }
 }
 
-public record BizProfileUpdateRequest 
+public record BizProfileUpdateRequest
 {
     public string? BizTradeName { get; set; }
     public BizTypeCode? BizTypeCode { get; set; }
@@ -82,6 +81,9 @@ public record BizProfileUpdateRequest
     public Address? BizMailingAddress { get; set; }
     public Address? BizAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
+    public Guid? SoleProprietorLicenceId { get; set; }
+    public string? SoleProprietorSwlPhoneNumber { get; set; }
+    public string? SoleProprietorSwlEmailAddress { get; set; }
 }
 
 public enum BizTypeCode

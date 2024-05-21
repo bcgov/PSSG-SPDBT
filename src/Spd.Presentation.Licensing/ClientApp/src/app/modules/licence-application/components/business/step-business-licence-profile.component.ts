@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApplicationTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -44,7 +45,9 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 	`,
 	styles: ``,
 })
-export class StepBusinessLicenceProfileComponent {
+export class StepBusinessLicenceProfileComponent implements OnInit {
+	applicationTypeCode: ApplicationTypeCode | null = null;
+
 	saveAndContinueLabel = 'Save & Continue to Application';
 
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
@@ -59,7 +62,16 @@ export class StepBusinessLicenceProfileComponent {
 		private router: Router,
 		private utilService: UtilService,
 		private businessApplicationService: BusinessApplicationService
-	) {}
+	) {
+		const state = this.router.getCurrentNavigation()?.extras.state;
+		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
+	}
+
+	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+		}
+	}
 
 	onContinue(): void {
 		const isValid = this.businessProfileComponent.isFormValid();
@@ -69,7 +81,6 @@ export class StepBusinessLicenceProfileComponent {
 			return;
 		}
 
-		// TODO save business profile
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
+		this.businessApplicationService.saveBusinessProfileAndContinue(this.applicationTypeCode!).subscribe();
 	}
 }

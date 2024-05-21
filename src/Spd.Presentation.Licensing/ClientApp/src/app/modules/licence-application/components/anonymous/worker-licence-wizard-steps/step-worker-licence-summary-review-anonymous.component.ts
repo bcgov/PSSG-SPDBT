@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
-	BusinessTypeCode,
+	BizTypeCode,
 	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
@@ -64,12 +64,12 @@ import { Subscription } from 'rxjs';
 													</div>
 												</div>
 												<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-													<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBusinessTypeCode">
+													<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
 														<div class="text-label d-block text-muted">
 															Sole Proprietorship Security Business Licence
 														</div>
 														<div class="summary-text-data">
-															{{ soleProprietorBusinessTypeCode | options : 'BusinessTypes' }}
+															{{ soleProprietorBizTypeCode | options : 'BizTypes' }}
 														</div>
 													</div>
 												</ng-container>
@@ -254,7 +254,7 @@ import { Subscription } from 'rxjs';
 														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
 													</div>
 													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Licence Expiry Date</div>
+														<div class="text-label d-block text-muted">Expiry Date</div>
 														<div class="summary-text-data">
 															{{ expiredLicenceExpiryDate | formatDate | default }}
 														</div>
@@ -823,9 +823,9 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		return this.licenceModelData.applicationTypeData?.applicationTypeCode ?? null;
 	}
 
-	get soleProprietorBusinessTypeCode(): string {
+	get soleProprietorBizTypeCode(): string {
 		const isSoleProprietor = this.licenceModelData.soleProprietorData.isSoleProprietor === BooleanTypeCode.Yes;
-		return isSoleProprietor ? this.licenceModelData.soleProprietorData?.businessTypeCode : '';
+		return isSoleProprietor ? this.licenceModelData.soleProprietorData?.bizTypeCode : '';
 	}
 
 	get categoryArmouredCarGuardAttachments(): File[] {
@@ -877,11 +877,11 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 		}
 
 		const applicationTypeCode = this.applicationTypeCode;
-		let businessTypeCode: BusinessTypeCode | null = null;
+		let bizTypeCode: BizTypeCode | null = null;
 		if (applicationTypeCode === ApplicationTypeCode.New) {
-			businessTypeCode = this.licenceModelData.soleProprietorData.businessTypeCode;
+			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
 		} else {
-			businessTypeCode = this.licenceModelData.originalBusinessTypeCode;
+			bizTypeCode = this.licenceModelData.originalBizTypeCode;
 		}
 		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
@@ -889,7 +889,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit,
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				this.applicationTypeCode,
-				businessTypeCode,
+				bizTypeCode,
 				originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);

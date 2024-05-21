@@ -2,12 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { UtilService } from '@app/core/services/util.service';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import {
+	CommonApplicationService,
+	LicenceLookupResult,
+} from '@app/modules/licence-application/services/common-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -93,9 +94,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 	constructor(
 		private dialog: MatDialog,
-		private utilService: UtilService,
 		private optionsPipe: OptionsPipe,
-		private licenceService: LicenceService,
 		private formatDatePipe: FormatDatePipe,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -121,46 +120,29 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 		if (!licenceNumber || licenceNumber.trim().length == 0) return;
 
-		return this.licenceService
-			.apiLicenceLookupLicenceNumberGet({ licenceNumber })
+		this.commonApplicationService
+			.getLicenceNumberLookup(licenceNumber)
 			.pipe()
-			.subscribe((resp: LicenceResponse) => {
-				const isFound = !!(resp && resp?.expiryDate);
-				const isExpired = isFound ? !this.utilService.getIsTodayOrFutureDate(resp?.expiryDate) : false;
-				const isInRenewalPeriod =
-					isExpired || !isFound
-						? false
-						: this.commonApplicationService.getIsInRenewalPeriod(resp?.expiryDate, resp.licenceTermCode);
+			.subscribe((resp: LicenceLookupResult) => {
+				this.messageInfo = null;
+				[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
+					resp.searchResult,
+					this.label,
+					this.workerLicenceTypeCode,
+					resp.isExpired,
+					resp.isInRenewalPeriod
+				);
 
-				this.handleLookupResult(resp, isFound, isExpired, isInRenewalPeriod);
+				if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
+					this.handleValidExpiredLicence(resp.searchResult);
+				}
 			});
 	}
 
-	private handleLookupResult(
-		resp: LicenceResponse,
-		isFound: boolean,
-		isExpired: boolean,
-		isInRenewalPeriod: boolean
-	): void {
-		this.messageInfo = null;
-		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
-			resp,
-			this.label,
-			this.workerLicenceTypeCode,
-			isFound,
-			isExpired,
-			isInRenewalPeriod
-		);
+	private handleValidExpiredLicence(licence: LicenceResponse): void {
+		const name = licence.licenceHolderName;
 
-		if (isExpired && !this.messageWarn && !this.messageError) {
-			this.handleValidExpiredLicence(resp);
-		}
-	}
-
-	private handleValidExpiredLicence(resp: LicenceResponse): void {
-		const name = resp.licenceHolderName;
-
-		const formattedExpiryDate = this.formatDatePipe.transform(resp.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
+		const formattedExpiryDate = this.formatDatePipe.transform(licence.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
 		this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
 
 		const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} and with name "${name}" has been found. If this is correct then continue.`;
@@ -179,9 +161,9 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.form.patchValue({
-						expiredLicenceId: resp.licenceId,
-						expiredLicenceNumber: resp.licenceNumber,
-						expiryDate: resp.expiryDate,
+						expiredLicenceId: licence.licenceId,
+						expiredLicenceNumber: licence.licenceNumber,
+						expiryDate: licence.expiryDate,
 					});
 					this.validExpiredLicenceData.emit();
 				}

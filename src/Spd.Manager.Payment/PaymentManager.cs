@@ -419,7 +419,7 @@ namespace Spd.Manager.Payment
                         WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
                         ApplicationTypeEnum = licApp.ApplicationTypeCode,
                         LicenceTermEnum = licApp.LicenceTermCode,
-                        BusinessTypeEnum = licApp.BusinessTypeCode ?? BusinessTypeEnum.None,
+                        BizTypeEnum = licApp.BizTypeCode ?? BizTypeEnum.None,
                         HasValidSwl90DayLicence = licApp.OriginalLicenceTermCode == LicenceTermEnum.NinetyDays &&
                             licApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence &&
                             licApp.ApplicationTypeCode == ApplicationTypeEnum.Renewal
