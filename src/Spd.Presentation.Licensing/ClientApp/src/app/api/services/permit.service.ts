@@ -114,7 +114,7 @@ export class PermitService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsLicenceAppIdGetPath, 'get');
     if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {});
     }
 
     return this.http.request(rb.build({
@@ -179,7 +179,7 @@ export class PermitService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PermitService.ApiPermitApplicationsLicenceAppIdFilesPostPath, 'post');
     if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {});
       rb.body(params.body, 'multipart/form-data');
     }
 

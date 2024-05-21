@@ -48,7 +48,7 @@ export class LicenceFeeService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LicenceFeeService.ApiLicenceFeeGetPath, 'get');
     if (params) {
-      rb.query('workerLicenceTypeCode', params.workerLicenceTypeCode, {"style":"form"});
+      rb.query('workerLicenceTypeCode', params.workerLicenceTypeCode, {});
     }
 
     return this.http.request(rb.build({
