@@ -11,7 +11,6 @@ import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
 	selector: 'app-step-permit-summary-review-update-authenticated',
@@ -227,9 +226,6 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	showEmployerInformation = false;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
-
-	applicationTypeCodes = ApplicationTypeCode;
-	booleanTypeCodes = BooleanTypeCode;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 

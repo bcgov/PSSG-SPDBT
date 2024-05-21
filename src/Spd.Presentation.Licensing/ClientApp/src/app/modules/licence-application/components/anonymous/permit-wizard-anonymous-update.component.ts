@@ -3,12 +3,12 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, PermitAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitContactComponent } from './permit-wizard-steps/steps-permit-contact.component';
@@ -40,6 +40,10 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Purpose & Rationale</ng-template>
 				<app-steps-permit-purpose-anonymous
+					[isFormValid]="isFormValid"
+					[showEmployerInformation]="showEmployerInformation"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -51,6 +55,8 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Identification</ng-template>
 				<app-steps-permit-identification-anonymous
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -62,6 +68,10 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step [completed]="step4Complete">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-permit-contact
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[showSaveAndExit]="false"
+					[showMailingAddressStep]="showMailingAddressStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -73,7 +83,8 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-permit-review-anonymous
-					[applicationTypeCode]="applicationTypeCodes.Update"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmitStep()"
 					(scrollIntoView)="onScrollIntoView()"
@@ -100,8 +111,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	step3Complete = false;
 	step4Complete = false;
 
-	applicationTypeCodes = ApplicationTypeCode;
-
 	newLicenceAppId: string | null = null;
 	newLicenceCost = 0;
 
@@ -120,6 +129,15 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	@ViewChild(StepsPermitReviewAnonymousComponent)
 	stepReviewLicenceComponent!: StepsPermitReviewAnonymousComponent;
 
+	isFormValid = false;
+	showEmployerInformation = false;
+	showMailingAddressStep = false;
+
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	applicationTypeCode!: ApplicationTypeCode;
+
+	private permitModelChangedSubscription!: Subscription;
+
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
@@ -137,6 +155,47 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
+
+		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isFormValid = _resp;
+
+				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
+				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.bodyArmourRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+				} else {
+					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.armouredVehicleRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+				}
+				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
+					'residentialAddress.isMailingTheSameAsResidential'
+				)?.value;
+
+				console.log('permitModelFormGroup', this.permitApplicationService.permitModelFormGroup.value);
+				console.log('isFormValid', this.isFormValid);
+				console.log('workerLicenceTypeCode', this.workerLicenceTypeCode);
+				console.log('applicationTypeCode', this.applicationTypeCode);
+				console.log('showEmployerInformation', this.showEmployerInformation);
+				console.log('showMailingAddressStep', this.showMailingAddressStep);
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.permitModelChangedSubscription) this.permitModelChangedSubscription.unsubscribe();
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

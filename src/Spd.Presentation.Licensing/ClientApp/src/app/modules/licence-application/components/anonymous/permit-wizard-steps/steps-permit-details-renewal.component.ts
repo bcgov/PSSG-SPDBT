@@ -1,11 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
@@ -49,51 +46,18 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 0;
 	readonly STEP_PERMIT_CONFIRMATION = 1;
 
-	private authenticationSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
-
-	isLoggedIn = false;
-	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
-	applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isLoggedIn = false;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private router: Router,
-		private authProcessService: AuthProcessService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.authenticationSubscription = this.authProcessService.waitUntilAuthentication$.subscribe(
-			(isLoggedIn: boolean) => {
-				this.isLoggedIn = isLoggedIn;
-			}
-		);
-
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-			(_resp: any) => {
-				// console.debug('permitModelValueChanges$', _resp);
-				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
-				)?.value;
-				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
 	}
 
 	onGotoUserProfile(): void {

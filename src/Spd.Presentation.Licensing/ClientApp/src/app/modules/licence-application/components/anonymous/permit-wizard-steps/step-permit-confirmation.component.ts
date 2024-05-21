@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -46,7 +46,8 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 export class StepPermitConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	private permitModelData: any = {};
 
@@ -54,8 +55,6 @@ export class StepPermitConfirmationComponent implements OnInit {
 
 	ngOnInit() {
 		this.permitModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
-
-		this.workerLicenceTypeCode = this.permitModelData.workerLicenceTypeData.workerLicenceTypeCode;
 	}
 
 	get cardHolderName(): string {

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitConsentAndDeclarationComponent } from '../../anonymous/permit-wizard-steps/step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAuthenticatedComponent } from '../../anonymous/permit-wizard-steps/step-permit-summary-authenticated.component';
@@ -69,10 +68,10 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '../../anony
 })
 export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -83,10 +82,7 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
 
@@ -95,10 +91,6 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 			this.submitPayLabel = 'Submit';
 		}
-
-		this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
 	}
 
 	onPayNow(): void {

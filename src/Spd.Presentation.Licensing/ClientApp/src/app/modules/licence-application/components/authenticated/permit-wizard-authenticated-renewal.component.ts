@@ -1,16 +1,16 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitDetailsNewComponent } from '../anonymous/permit-wizard-steps/steps-permit-details-new.component';
@@ -33,6 +33,9 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 					<mat-step [completed]="step1Complete">
 						<ng-template matStepLabel>Permit Details</ng-template>
 						<app-steps-permit-details-renewal
+							[isLoggedIn]="true"
+							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -43,6 +46,11 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 					<mat-step [completed]="step2Complete">
 						<ng-template matStepLabel>Purpose & Rationale</ng-template>
 						<app-steps-permit-purpose-authenticated
+							[isFormValid]="isFormValid"
+							[showSaveAndExit]="showSaveAndExit"
+							[showEmployerInformation]="showEmployerInformation"
+							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -54,6 +62,9 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 					<mat-step [completed]="step3Complete">
 						<ng-template matStepLabel>Identification</ng-template>
 						<app-steps-permit-identification-authenticated
+							[isFormValid]="isFormValid"
+							[showSaveAndExit]="showSaveAndExit"
+							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -65,6 +76,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
+							[workerLicenceTypeCode]="workerLicenceTypeCode"
 							[applicationTypeCode]="applicationTypeCodeRenewal"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
@@ -82,7 +94,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/s
 	`,
 	styles: [],
 })
-export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit {
+export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	applicationTypeCodeRenewal = ApplicationTypeCode.Renewal;
 
 	readonly STEP_PERMIT_DETAILS = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -106,6 +118,15 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
 	stepReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
+	isFormValid = false;
+	showSaveAndExit = false;
+	showEmployerInformation = false;
+
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	applicationTypeCode!: ApplicationTypeCode;
+
+	private permitModelChangedSubscription!: Subscription;
+
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
@@ -128,6 +149,46 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		}
 
 		this.updateCompleteStatus();
+
+		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
+			(_resp: any) => {
+				this.isFormValid = _resp;
+
+				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
+				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.bodyArmourRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+				} else {
+					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.armouredVehicleRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+				}
+
+				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
+
+				console.log('permitModelFormGroup', this.permitApplicationService.permitModelFormGroup.value);
+				console.log('isFormValid', this.isFormValid);
+				console.log('workerLicenceTypeCode', this.workerLicenceTypeCode);
+				console.log('applicationTypeCode', this.applicationTypeCode);
+				console.log('showEmployerInformation', this.showEmployerInformation);
+				console.log('showSaveAndExit', this.showSaveAndExit);
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.permitModelChangedSubscription) this.permitModelChangedSubscription.unsubscribe();
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
