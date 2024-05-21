@@ -181,6 +181,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BCBusinessAddress, updatedAddress)
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
+            .With(c => c.BizType, BizTypeEnum.NonRegisteredSoleProprietor)
             .With(c => c.SoleProprietorSwlContactInfo, new SwlContactInfo()
             {
                 LicenceId = newLicenceId
