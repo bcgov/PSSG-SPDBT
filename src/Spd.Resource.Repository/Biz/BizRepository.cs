@@ -13,6 +13,11 @@ namespace Spd.Resource.Repository.Biz
         private readonly DynamicsContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<BizRepository> _logger;
+        private readonly List<BizTypeEnum> soleProprietorTypes = new() 
+        { 
+            BizTypeEnum.RegisteredSoleProprietor,
+            BizTypeEnum.NonRegisteredSoleProprietor 
+        };
 
         public BizRepository(IDynamicsContextFactory ctx, 
             IMapper mapper, 
@@ -102,10 +107,17 @@ namespace Spd.Resource.Repository.Biz
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             _mapper.Map(updateBizCmd, biz);
+
+            if (!IsSoleProprietor(updateBizCmd.BizType))
+            {
+                biz.emailaddress1 = null;
+                biz.telephone1 = null;
+            }
+
             _context.UpdateObject(biz);
 
-            if (updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
-                UpdateLicenceLink(biz, (Guid)updateBizCmd.SoleProprietorSwlContactInfo.LicenceId);
+            //if (updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
+            UpdateLicenceLink(biz, (Guid)updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
 
             await _context.SaveChangesAsync(ct);
 
@@ -172,12 +184,12 @@ namespace Spd.Resource.Repository.Biz
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
 
-        private void UpdateLicenceLink(account account, Guid licenceId)
+        private void UpdateLicenceLink(account account, Guid licenceId, BizTypeEnum bizType)
         {
             spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
                 .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
 
-            if (licence != null && licence.spd_licenceid == licenceId)
+            if (licence != null && licence.spd_licenceid == licenceId && IsSoleProprietor(bizType))
                 return;
 
             // Remove link with current licence
