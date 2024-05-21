@@ -186,6 +186,9 @@ namespace Spd.Resource.Repository.Biz
                 _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
             }
 
+            if (!IsSoleProprietor(bizType))
+                return;
+
             // Add link with new licence
             spd_licence? newLicence = _context.spd_licences
                 .Where(l => l.spd_licenceid == licenceId)
@@ -196,6 +199,11 @@ namespace Spd.Resource.Repository.Biz
             {
                 _context.AddLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), newLicence);
             }
+        }
+
+        private bool IsSoleProprietor(BizTypeEnum bizType)
+        {
+            return soleProprietorTypes.Any(s => s.Equals(bizType));
         }
     }
 }
