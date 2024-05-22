@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.BizApplication;
@@ -13,8 +15,86 @@ internal class BizApplicationRepository : IBizApplicationRepository
         _mapper = mapper;
     }
 
-    public async Task<BizLicenceApplicationCmdResp> SaveBizLicenceApplicationAsync(SaveBizLicenceApplicationCmd cmd, CancellationToken ct)
+    public async Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct)
     {
-        return null;
+        spd_application? app;
+        if (cmd.LicenceAppId != null)
+        {
+            app = _context.spd_applications
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
+            if (app == null)
+                throw new ArgumentException("invalid app id");
+            _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
+            app.spd_applicationid = (Guid)(cmd.LicenceAppId);
+            _context.UpdateObject(app);
+        }
+        else
+        {
+            app = _mapper.Map<spd_application>(cmd);
+            _context.AddTospd_applications(app);
+            var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
+            if (contact != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+            }
+        }
+        LinkServiceType(cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
+        await _context.SaveChangesAsync();
+        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
+        //then update category.
+        ProcessCategories(cmd.CategoryCodes, app);
+        await _context.SaveChangesAsync();
+        return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
+    }
+
+    private void ProcessCategories(IEnumerable<WorkerCategoryTypeEnum> categories, spd_application app)
+    {
+        foreach (var c in categories)
+        {
+            var cat = _context.LookupLicenceCategory(c.ToString());
+            if (cat != null && !app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
+            {
+                _context.AddLink(app, nameof(spd_application.spd_application_spd_licencecategory), cat);
+            }
+        }
+        foreach (var appCategory in app.spd_application_spd_licencecategory)
+        {
+            var code = DynamicsContextLookupHelpers.LookupLicenceCategoryKey(appCategory.spd_licencecategoryid);
+            //if categories do not contain cat
+            if (!categories.Any(c => c.ToString() == code))
+            {
+                _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+            }
+        }
+    }
+
+    private void LinkServiceType(WorkerLicenceTypeEnum? licenceType, spd_application app)
+    {
+        if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
+        spd_servicetype? servicetype = _context.LookupServiceType(licenceType.ToString());
+        if (servicetype != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), servicetype);
+        }
+    }
+
+    private void LinkExpiredLicence(Guid? expiredLicenceId, spd_application app)
+    {
+        if (expiredLicenceId == null) return;
+        var licence = _context.spd_licences.Where(l => l.spd_licenceid == expiredLicenceId).FirstOrDefault();
+        if (licence != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
+        }
+    }
+
+    private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
+    {
+        Guid teamGuid = Guid.Parse(teamGuidStr);
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 }
