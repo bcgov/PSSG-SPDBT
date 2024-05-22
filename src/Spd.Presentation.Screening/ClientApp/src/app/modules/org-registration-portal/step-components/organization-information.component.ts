@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
+import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
@@ -44,12 +45,12 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 								<div class="row mt-2">
 									<div class="col-lg-6 col-md-12 col-sm-12">
 										<mat-form-field>
-											<mat-label>Email</mat-label>
+											<mat-label>Shared or Generic Email Account</mat-label>
 											<input
 												matInput
 												formControlName="genericEmail"
 												type="email"
-												required
+												placeholder="hiring@organization.ca"
 												[errorStateMatcher]="matcher"
 												maxlength="75"
 											/>
@@ -61,13 +62,12 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 									</div>
 									<div class="col-lg-6 col-md-12 col-sm-12">
 										<mat-form-field>
-											<mat-label>Phone Number</mat-label>
+											<mat-label>Central Phone Number</mat-label>
 											<input
 												matInput
 												formControlName="genericPhoneNumber"
 												[mask]="phoneMask"
 												[showMaskTyped]="false"
-												required
 												[errorStateMatcher]="matcher"
 											/>
 											<mat-error *ngIf="form.get('genericPhoneNumber')?.hasError('required')">
@@ -78,6 +78,16 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 											</mat-error>
 										</mat-form-field>
 									</div>
+
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('genericEmail')?.dirty || form.get('genericEmail')?.touched) &&
+											form.invalid &&
+											form.hasError('atleastonerequired')
+										"
+										>An email account or phone number must be provided
+									</mat-error>
 								</div>
 							</ng-container>
 						</div>
@@ -98,15 +108,14 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 	constructor(private formBuilder: FormBuilder, private maskPipe: NgxMaskPipe) {}
 
 	ngOnInit(): void {
-		this.form = this.formBuilder.group({
-			hasPhoneOrEmail: new FormControl('', [FormControlValidators.required]),
-			genericEmail: new FormControl('', [Validators.required, FormControlValidators.email]),
-			genericPhoneNumber: new FormControl('', [Validators.required]),
-		});
-	}
-
-	get isEmailMismatch() {
-		return this.form.getError('emailMismatch');
+		this.form = this.formBuilder.group(
+			{
+				hasPhoneOrEmail: new FormControl('', [FormControlValidators.required]),
+				genericEmail: new FormControl('', [FormControlValidators.email]),
+				genericPhoneNumber: new FormControl(''),
+			},
+			{ validators: [FormGroupValidators.atleastonerequired('genericEmail', 'genericPhoneNumber')] }
+		);
 	}
 
 	getDataToSave(): any {
@@ -124,7 +133,7 @@ export class OrganizationInformationComponent implements OnInit, RegistrationFor
 		this.form.reset();
 	}
 
-	public get hasPhoneOrEmail(): FormControl {
+	get hasPhoneOrEmail(): FormControl {
 		return this.form.get('hasPhoneOrEmail') as FormControl;
 	}
 }
