@@ -142,7 +142,7 @@ export class HeaderComponent implements OnInit {
 		);
 
 		const userData = this.authUserBceidService.bceidUserInfoProfile;
-		let name = this.utilService.getFullName(userData!.firstName, userData!.lastName);
+		let name = this.utilService.getFullName(userData?.firstName, userData?.lastName);
 		if (!name) {
 			name = this.authProcessService.loggedInUserTokenData.display_name;
 		}
