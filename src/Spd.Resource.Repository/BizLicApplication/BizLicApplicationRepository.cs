@@ -22,7 +22,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
-                .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
+                .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.spd_applicationid == cmd.LicenceAppId)
+                .FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveBizLicApplicationCmd, spd_application>(cmd, app);
