@@ -45,9 +45,11 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             }
         }
         LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) LinkExpiredLicence(cmd.ExpiredLicenceId, app);
-        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) 
+            LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        LinkOrganization(cmd.ApplicantId, app);
         await _context.SaveChangesAsync();
+
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         ProcessCategories(cmd.CategoryCodes, app);
@@ -101,5 +103,15 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         Guid teamGuid = Guid.Parse(teamGuidStr);
         team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
+    }
+
+    private void LinkOrganization(Guid? accountId, spd_application app)
+    {
+        if (accountId == null) return;
+        var account = _context.accounts.Where(a => a.accountid == accountId).FirstOrDefault();
+        if (account != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+        }
     }
 }
