@@ -33,7 +33,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
-            var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
+            var contact = _context.contacts
+                .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(c => c.contactid == cmd.ApplicantId)
+                .FirstOrDefault();
             if (contact != null)
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
