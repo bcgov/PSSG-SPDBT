@@ -10,4 +10,7 @@ export interface BizProfileUpdateRequest {
   bizTradeName?: null | string;
   bizTypeCode?: BizTypeCode;
   branches?: null | Array<BranchInfo>;
+  soleProprietorLicenceId?: null | string;
+  soleProprietorSwlEmailAddress?: null | string;
+  soleProprietorSwlPhoneNumber?: null | string;
 }

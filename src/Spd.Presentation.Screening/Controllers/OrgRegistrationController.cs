@@ -84,12 +84,5 @@ namespace Spd.Presentation.Screening.Controllers
         }
     }
 
-    /// <summary>
-    /// for Anonymous OrgRegistration
-    /// </summary>
-    public class AnonymousOrgRegistrationCreateRequest : OrgRegistrationCreateRequest
-    {
-        public string Recaptcha { get; set; } = null!;
-    }
 }
 

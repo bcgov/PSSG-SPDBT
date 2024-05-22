@@ -47,7 +47,7 @@ export class BizProfileService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, BizProfileService.ApiBizIdGetPath, 'get');
     if (params) {
-      rb.path('id', params.id, {"style":"simple"});
+      rb.path('id', params.id, {});
     }
 
     return this.http.request(rb.build({
@@ -109,7 +109,7 @@ export class BizProfileService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, BizProfileService.ApiBizBizIdPutPath, 'put');
     if (params) {
-      rb.path('bizId', params.bizId, {"style":"simple"});
+      rb.path('bizId', params.bizId, {});
       rb.body(params.body, 'application/*+json');
     }
 

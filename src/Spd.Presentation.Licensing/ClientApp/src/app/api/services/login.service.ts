@@ -107,7 +107,7 @@ export class LoginService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LoginService.ApiApplicantApplicantIdTermAgreeGetPath, 'get');
     if (params) {
-      rb.path('applicantId', params.applicantId, {"style":"simple"});
+      rb.path('applicantId', params.applicantId, {});
     }
 
     return this.http.request(rb.build({
@@ -227,7 +227,7 @@ export class LoginService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizLoginGetPath, 'get');
     if (params) {
-      rb.query('bizId', params.bizId, {"style":"form"});
+      rb.query('bizId', params.bizId, {});
     }
 
     return this.http.request(rb.build({
@@ -290,8 +290,8 @@ export class LoginService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizBizIdManagerBizUserIdTermAgreeGetPath, 'get');
     if (params) {
-      rb.path('bizId', params.bizId, {"style":"simple"});
-      rb.path('bizUserId', params.bizUserId, {"style":"simple"});
+      rb.path('bizId', params.bizId, {});
+      rb.path('bizUserId', params.bizUserId, {});
     }
 
     return this.http.request(rb.build({
