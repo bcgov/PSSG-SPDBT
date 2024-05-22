@@ -82,5 +82,4 @@ public class BizLicensingControllerTest
         Assert.IsType<List<LicenceAppDocumentResponse>>(result);
         mockMediator.Verify();
     }
-
 }
