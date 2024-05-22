@@ -112,8 +112,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.UseDogs, false)
             .Create();
 
-        contact contact = new() { contactid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
-        _context.AddTocontacts(contact);
+        spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
+        _context.AddTospd_applications(app);
         spd_licence expiredLicence = new() { spd_licenceid = cmd.ExpiredLicenceId };
         _context.AddTospd_licences(expiredLicence);
         await _context.SaveChangesAsync();
@@ -150,7 +150,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(updatedApp.spd_origin);
         Assert.NotNull(updatedApp.spd_payer);
         Assert.NotNull(updatedApp.spd_portalmodifiedon);
-        Assert.NotNull(updatedApp.spd_ApplicantId_contact);
         Assert.NotNull(updatedApp.spd_ServiceTypeId);
         Assert.NotNull(updatedApp.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
