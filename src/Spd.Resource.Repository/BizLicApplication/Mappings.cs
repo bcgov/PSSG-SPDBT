@@ -3,7 +3,7 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
 
-namespace Spd.Resource.Repository.BizApplication;
+namespace Spd.Resource.Repository.BizLicApplication;
 internal class Mappings : Profile
 {
     public Mappings() 
