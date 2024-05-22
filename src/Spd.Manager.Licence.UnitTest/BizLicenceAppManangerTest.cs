@@ -18,7 +18,7 @@ public class BizLicenceAppManangerTest
     private Mock<ILicenceFeeRepository> mockLicFeeRepo = new();
     private Mock<IMainFileStorageService> mockMainFileService = new();
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
-    private BizLicenceAppMananger sut;
+    private BizLicAppMananger sut;
 
     public BizLicenceAppManangerTest()
     {
