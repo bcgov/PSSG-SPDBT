@@ -14,7 +14,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 		<section class="step-section p-4">
 			<div class="step">
 				<app-step-title
-					title="Does your organization have a shared inbox and/or central phone line?"
+					title="Does your organization have a shared or generic email account and/or a central phone line?"
 					subtitle="This is where criminal record check results will be returned to"
 				></app-step-title>
 				<form [formGroup]="form" novalidate>
