@@ -1,11 +1,14 @@
-﻿namespace Spd.Resource.Repository.BizContact
+﻿using MediatR;
+
+namespace Spd.Resource.Repository.BizContact
 {
     public interface IBizContactRepository
     {
         Task<IEnumerable<BizContactResp>> GetBizAppContactsAsync(BizContactQry qry, CancellationToken ct);
-        //Task<Unit> ManageBizAsync(BizContactCmd cmd, CancellationToken ct);
+        Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct);
     }
     //command
+    public record BizContactUpsertCmd(Guid? BizId, Guid? AppId, IEnumerable<BizContactResp> Data);
 
     //query
     public record BizContactQry(Guid? BizId, Guid? AppId, bool IncludeInactive = false);
