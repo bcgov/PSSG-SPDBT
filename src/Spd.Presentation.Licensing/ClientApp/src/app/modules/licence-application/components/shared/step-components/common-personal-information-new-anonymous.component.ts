@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -70,7 +70,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonPersonalInformationNewAnonymousComponent {
+export class CommonPersonalInformationNewAnonymousComponent implements OnInit {
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 
@@ -79,4 +79,36 @@ export class CommonPersonalInformationNewAnonymousComponent {
 	@Input() form!: FormGroup;
 
 	constructor(private utilService: UtilService) {}
+
+	ngOnInit(): void {
+		this.enableData();
+	}
+
+	private enableData(): void {
+		this.surname.enable({ emitEvent: false });
+		this.givenName.enable({ emitEvent: false });
+		this.middleName1.enable({ emitEvent: false });
+		this.middleName2.enable({ emitEvent: false });
+		this.genderCode.enable({ emitEvent: false });
+		this.dateOfBirth.enable({ emitEvent: false });
+	}
+
+	get surname(): FormControl {
+		return this.form.get('surname') as FormControl;
+	}
+	get givenName(): FormControl {
+		return this.form.get('givenName') as FormControl;
+	}
+	get middleName1(): FormControl {
+		return this.form.get('middleName1') as FormControl;
+	}
+	get middleName2(): FormControl {
+		return this.form.get('middleName2') as FormControl;
+	}
+	get dateOfBirth(): FormControl {
+		return this.form.get('dateOfBirth') as FormControl;
+	}
+	get genderCode(): FormControl {
+		return this.form.get('genderCode') as FormControl;
+	}
 }

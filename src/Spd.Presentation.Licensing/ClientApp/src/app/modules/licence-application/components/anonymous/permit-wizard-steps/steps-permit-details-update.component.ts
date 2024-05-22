@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { StepPermitReprintComponent } from '../../shared/permit-wizard-steps/step-permit-reprint.component';
@@ -22,7 +22,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-confirmation></app-step-permit-confirmation>
+				<app-step-permit-confirmation [workerLicenceTypeCode]="workerLicenceTypeCode"></app-step-permit-confirmation>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -50,6 +50,7 @@ export class StepsPermitDetailsUpdateComponent extends BaseWizardStepComponent {
 
 	@Input() isLoggedIn!: boolean;
 	@Input() isFormValid!: boolean;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;

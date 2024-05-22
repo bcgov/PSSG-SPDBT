@@ -28,6 +28,9 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel> Permit Details </ng-template>
 				<app-steps-permit-details-renewal
+					[isLoggedIn]="false"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"

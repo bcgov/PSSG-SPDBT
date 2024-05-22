@@ -34,7 +34,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-confirmation></app-step-permit-confirmation>
+				<app-step-permit-confirmation [workerLicenceTypeCode]="workerLicenceTypeCode"></app-step-permit-confirmation>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"

@@ -32,6 +32,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 				<app-steps-permit-details-update
 					[isLoggedIn]="false"
 					[isFormValid]="isFormValid"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
