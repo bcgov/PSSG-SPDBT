@@ -183,12 +183,20 @@ internal class Mappings : Profile
 
         CreateMap<BizLicAppUpsertRequest, SaveBizLicApplicationCmd>()
             .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.BizId))
+            .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
-            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantContactInfo.Surname))
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.ApplicantContactInfo.GivenName))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.ApplicantContactInfo.Surname))
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName2))
-            .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.ApplicantContactInfo.EmailAddress));
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ApplicantContactInfo.EmailAddress))
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ApplicantContactInfo.PhoneNumber))
+            .ForMember(d => d.ManagerGivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+            .ForMember(d => d.ManagerSurname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
+            .ForMember(d => d.ManagerMiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+            .ForMember(d => d.ManagerMiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
+            .ForMember(d => d.ManagerEmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+            .ForMember(d => d.ManagerPhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber));
 
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
