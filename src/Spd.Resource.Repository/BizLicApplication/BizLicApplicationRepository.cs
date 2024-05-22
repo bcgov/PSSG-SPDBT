@@ -3,13 +3,13 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
 
-namespace Spd.Resource.Repository.BizApplication;
-internal class BizApplicationRepository : IBizApplicationRepository
+namespace Spd.Resource.Repository.BizLicApplication;
+internal class BizLicApplicationRepository : IBizLicApplicationRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
 
-    public BizApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper)
+    public BizLicApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper)
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
@@ -25,7 +25,7 @@ internal class BizApplicationRepository : IBizApplicationRepository
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
-            _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
+            _mapper.Map<SaveBizLicApplicationCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.LicenceAppId);
             _context.UpdateObject(app);
         }
