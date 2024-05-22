@@ -124,7 +124,7 @@ export class VulnerableSectorQuestionModel {
 							[ngClass]="{ 'active-selection-whole': employeeInteractionFlag === employeeInteractionTypeCodes.Neither }"
 						>
 							<div class="icon-container d-none d-md-block"><mat-icon>person_off</mat-icon></div>
-							My employee <strong>do not work</strong> with children or vulnerable adults
+							My employees <strong>do not work</strong> with children or vulnerable adults
 						</div>
 					</div>
 				</div>

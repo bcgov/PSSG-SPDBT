@@ -65,7 +65,7 @@ internal class PaymentRepository : IPaymentRepository
         spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
         if (payment == null) throw new ApiException(HttpStatusCode.BadRequest, "payment does not exist.");
         payment = _mapper.Map(cmd, payment);
-        if(cmd.PaymentStatus != null)
+        if (cmd.PaymentStatus != null)
         {
             payment.statuscode = (int)Enum.Parse<PaymentStatusCodeOptionSet>(cmd.PaymentStatus.ToString());
         }
