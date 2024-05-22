@@ -10,5 +10,6 @@ public class ServiceExtension : IConfigureComponentServices
         configurationServices.Services.AddTransient<IFeeManager, FeeManager>();
         configurationServices.Services.AddTransient<ILicenceManager, LicenceManager>();
         configurationServices.Services.AddTransient<IPermitAppManager, PermitAppManager>();
+        configurationServices.Services.AddTransient<IBizLicAppManager, BizLicAppMananger>();
     }
 }
