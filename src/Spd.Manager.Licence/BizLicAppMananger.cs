@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Repository.BizApplication;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
@@ -20,7 +20,7 @@ internal class BizLicAppMananger :
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
         IBizLicAppManager
 {
-    private readonly IBizApplicationRepository _bizApplicationRepository;
+    private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
 
     public BizLicAppMananger(
         ILicenceRepository licenceRepository,
@@ -30,10 +30,10 @@ internal class BizLicAppMananger :
         ILicenceFeeRepository feeRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService,
-        IBizApplicationRepository bizApplicationRepository)
+        IBizLicApplicationRepository bizApplicationRepository)
     : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
-        _bizApplicationRepository = bizApplicationRepository;
+        _bizLicApplicationRepository = bizApplicationRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery cmd, CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ internal class BizLicAppMananger :
 
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.BizLicAppUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
-        var response = await _bizApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+        var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(

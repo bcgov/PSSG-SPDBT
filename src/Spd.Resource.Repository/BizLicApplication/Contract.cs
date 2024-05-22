@@ -1,8 +1,8 @@
 ﻿using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.LicenceApplication;
 
-namespace Spd.Resource.Repository.BizApplication;
-public partial interface IBizApplicationRepository
+namespace Spd.Resource.Repository.BizLicApplication;
+public partial interface IBizLicApplicationRepository
 {
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
 }

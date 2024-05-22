@@ -5,7 +5,7 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
-using Spd.Resource.Repository.BizApplication;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
