@@ -102,6 +102,7 @@ namespace Spd.Manager.Payment
         public DateTimeOffset TransDateTime { get; set; }
         public decimal TransAmount { get; set; }
         public ServiceTypeCode? ServiceTypeCode { get; set; }
+        public string? Email { get; set; }
     }
     #endregion
 
