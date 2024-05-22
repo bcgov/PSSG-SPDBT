@@ -81,6 +81,10 @@ export class CommonPersonalInformationNewAnonymousComponent implements OnInit {
 	constructor(private utilService: UtilService) {}
 
 	ngOnInit(): void {
+		// fields may have been previously disabled if user was using
+		// this formGroup (personalInformationFormGroup) in a different component.
+		// for example, if the user does an 'update' (which displays the fields as readonly),
+		// then does a 'new' - fields would display as disabled.
 		this.enableData();
 	}
 
