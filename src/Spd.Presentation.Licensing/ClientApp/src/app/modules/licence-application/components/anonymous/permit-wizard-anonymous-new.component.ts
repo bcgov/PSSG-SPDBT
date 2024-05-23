@@ -154,8 +154,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
-
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
 				this.isFormValid = _resp;
@@ -183,6 +181,8 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
 					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -254,8 +254,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -269,8 +267,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
@@ -292,7 +288,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 				this.stepsPermitContactComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	private updateCompleteStatus(): void {
@@ -301,7 +296,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
 		this.step4Complete = this.permitApplicationService.isStepContactComplete();
 
-		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 
 	private payNow(licenceAppId: string): void {

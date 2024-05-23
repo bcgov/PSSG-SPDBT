@@ -150,8 +150,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
-
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -198,6 +196,8 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				this.showPhotographOfYourself = this.hasGenderChanged;
 
 				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -242,8 +242,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -262,8 +260,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -282,7 +278,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	onSubmitStep(): void {
@@ -325,7 +320,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
 		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private payNow(licenceAppId: string): void {

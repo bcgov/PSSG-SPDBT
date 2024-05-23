@@ -39,7 +39,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodeUpdate">
 				<app-step-worker-licence-criminal-history
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-criminal-history>
@@ -54,7 +54,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodeUpdate">
 				<app-step-worker-licence-fingerprints></app-step-worker-licence-fingerprints>
 
 				<app-wizard-footer
@@ -84,7 +84,7 @@ export class StepsWorkerLicenceBackgroundComponent extends BaseWizardStepCompone
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() policeOfficerRoleCode: string | null = null;
 
-	applicationTypeCodes = ApplicationTypeCode;
+	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
 
 	@ViewChild(StepWorkerLicencePoliceBackgroundComponent)
 	policeBackgroundComponent!: StepWorkerLicencePoliceBackgroundComponent;

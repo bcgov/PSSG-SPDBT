@@ -137,8 +137,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
-
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -167,6 +165,8 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 				)?.value;
 
 				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -211,8 +211,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -225,8 +223,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -245,7 +241,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	onNextPayStep(): void {
@@ -275,7 +270,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
 		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private payNow(licenceAppId: string): void {
