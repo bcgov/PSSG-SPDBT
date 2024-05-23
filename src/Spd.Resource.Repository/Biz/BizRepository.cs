@@ -89,6 +89,82 @@ namespace Spd.Resource.Repository.Biz
             };
         }
 
+        public async Task UpsertBizContact(UpsertBizContactsCmd upsertBizContactsCmd, CancellationToken ct)
+        {
+            var accountId = upsertBizContactsCmd.BizId;
+
+            account? account = await _context.accounts
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == accountId)
+                .FirstOrDefaultAsync(ct);
+
+            if (account == null) throw new ApiException(HttpStatusCode.NotFound);
+
+            foreach (SwlContactInfo swlContactInfo in upsertBizContactsCmd.SwlContacts)
+            {
+                var contactId = swlContactInfo.ContactId;
+                contact? contact = await _context.contacts
+                    .Where(c => c.contactid == contactId)
+                    .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
+                    .FirstOrDefaultAsync(ct);
+
+                if (contact == null)
+                    continue;
+
+                var bizContactId = swlContactInfo.BizContactId;
+
+                if (bizContactId == null)
+                {
+                    spd_businesscontact newBusinessContact = _mapper.Map<spd_businesscontact>(contact);
+                    newBusinessContact.spd_businesscontactid = Guid.NewGuid();
+                    _context.AddTospd_businesscontacts(newBusinessContact);
+                    _context.AddLink(contact, nameof(contact.spd_contact_spd_businesscontact), account);
+                }
+                else
+                {
+                    spd_businesscontact? businessContact = await _context.spd_businesscontacts
+                        .Where(c => c.spd_businesscontactid == bizContactId)
+                        .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
+                        .FirstOrDefaultAsync(ct);
+
+                    if (businessContact == null)
+                        continue;
+
+                    _mapper.Map(contact, businessContact);
+                    _context.UpdateObject(businessContact);
+                }
+                
+                await _context.SaveChangesAsync(ct);
+            }
+
+            foreach (NonSwlContactInfo nonSwlContactInfo in upsertBizContactsCmd.NonSwlContacts)
+            {
+                var bizContactId = nonSwlContactInfo.BizContactId;
+
+                if (bizContactId == null)
+                {
+                    spd_businesscontact newBusinessContact = _mapper.Map<spd_businesscontact>(nonSwlContactInfo);
+                    _context.AddTospd_businesscontacts(newBusinessContact);
+                    // *** link?
+                }
+                else
+                {
+                    spd_businesscontact? businessContact = await _context.spd_businesscontacts
+                        .Where(c => c.spd_businesscontactid == bizContactId)
+                        .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
+                        .FirstOrDefaultAsync(ct);
+
+                    if (businessContact == null)
+                        continue;
+
+                    _mapper.Map(nonSwlContactInfo, businessContact);
+                    _context.UpdateObject(businessContact);
+                }
+
+                await _context.SaveChangesAsync(ct);
+            }
+        }
+
         private async Task<BizResult?> UpdateBizAsync(UpdateBizCmd updateBizCmd, CancellationToken ct)
         {
             IQueryable<account> accounts = _context.accounts
