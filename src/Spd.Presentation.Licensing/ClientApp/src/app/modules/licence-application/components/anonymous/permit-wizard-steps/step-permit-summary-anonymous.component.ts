@@ -257,8 +257,8 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												</div>
 											</div>
 
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+												<mat-divider class="mt-3 mb-2"></mat-divider>
 												<div class="text-minor-heading">Aliases</div>
 												<div class="row mt-0">
 													<div class="col-lg-4 col-md-12">

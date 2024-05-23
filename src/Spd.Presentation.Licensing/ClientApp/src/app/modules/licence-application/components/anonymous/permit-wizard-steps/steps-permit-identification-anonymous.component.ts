@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 import { StepPermitPhysicalCharacteristicsComponent } from '../../shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitAliasesComponent } from './step-permit-aliases.component';
 import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
@@ -109,7 +108,7 @@ import { StepPermitPhotographOfYourselfAnonymousComponent } from './step-permit-
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 1;
 	readonly STEP_CRIMINAL_HISTORY = 2;
 	readonly STEP_ALIASES = 4;
@@ -118,12 +117,10 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	readonly STEP_PHYSICAL_CHARACTERISTICS = 7;
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 8;
 
-	private licenceModelChangedSubscription!: Subscription;
-
-	isFormValid = false;
-
 	applicationTypeCodes = ApplicationTypeCode;
-	applicationTypeCode: ApplicationTypeCode | null = null;
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isFormValid = false;
 
 	@ViewChild(StepPermitPersonalInformationComponent)
 	stepPersonalInformationComponent!: StepPermitPersonalInformationComponent;
@@ -142,23 +139,6 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 		private permitApplicationService: PermitApplicationService
 	) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-			(_resp: any) => {
-				// console.debug('permitModelValueChanges$', _resp);
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onCriminalHistoryNextStep(): void {

@@ -106,7 +106,6 @@ export class StepPermitMailingAddressComponent implements OnInit, LicenceChildSt
 	subtitle = '';
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
-	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 

@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
@@ -8,7 +8,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/steps-permit-review-authenticated.component';
 import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/steps-permit-updates-authenticated.component';
@@ -27,7 +27,9 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 				>
 					<mat-step completed="true">
 						<ng-template matStepLabel>Permit Confirmation</ng-template>
-						<app-step-permit-confirmation></app-step-permit-confirmation>
+						<app-step-permit-confirmation
+							[workerLicenceTypeCode]="workerLicenceTypeCode"
+						></app-step-permit-confirmation>
 
 						<app-wizard-footer
 							(previousStepperStep)="onGotoUserProfile()"
@@ -48,7 +50,8 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
-							[applicationTypeCode]="applicationTypeCodeUpdate"
+							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[applicationTypeCode]="applicationTypeCode"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onSubmitStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -65,10 +68,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit {
-	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
-	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
-
+export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
 
 	readonly STEP_PERMIT_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -77,6 +77,14 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 	@ViewChild(StepsPermitUpdatesAuthenticatedComponent) stepsUpdatesComponent!: StepsPermitUpdatesAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent) stepsReviewComponent!: StepsPermitReviewAuthenticatedComponent;
+
+	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	applicationTypeCode!: ApplicationTypeCode;
+	isFormValid = false;
+	showSaveAndExit = false;
+	showEmployerInformation = false;
+
+	private permitModelChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -99,6 +107,35 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+
+		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
+			(_resp: boolean) => {
+				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'workerLicenceTypeData.workerLicenceTypeCode'
+				)?.value;
+				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.bodyArmourRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
+				} else {
+					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
+						'permitRequirementData.armouredVehicleRequirementFormGroup'
+					)?.value;
+
+					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
+				}
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.permitModelChangedSubscription) this.permitModelChangedSubscription.unsubscribe();
 	}
 
 	onGoToNextStep(): void {
