@@ -23,7 +23,7 @@ import { CommonApplicationService } from '../../services/common-application.serv
 					#stepper
 				>
 					<mat-step completed="true">
-						<ng-template matStepLabel> Licence Confirmation </ng-template>
+						<ng-template matStepLabel>Licence Confirmation</ng-template>
 						<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 						<app-wizard-footer

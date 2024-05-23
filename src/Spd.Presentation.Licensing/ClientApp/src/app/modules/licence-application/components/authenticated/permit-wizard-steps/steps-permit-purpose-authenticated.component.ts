@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitEmployerInformationComponent } from '../../anonymous/permit-wizard-steps/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '../../anonymous/permit-wizard-steps/step-permit-rationale.component';
@@ -60,20 +58,16 @@ import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/s
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_PERMIT_REASON = 1;
 	readonly STEP_EMPLOYER_INFORMATION = 2;
 	readonly STEP_PERMIT_RATIONALE = 3;
 
-	private authenticationSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
-
-	showSaveAndExit = false;
-	isFormValid = false;
-	showEmployerInformation = true;
-
-	applicationTypeCode: ApplicationTypeCode | null = null;
-	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() isFormValid = false;
+	@Input() showSaveAndExit = false;
+	@Input() showEmployerInformation = false;
 
 	@ViewChild(StepPermitReasonComponent) stepPermitReasonComponent!: StepPermitReasonComponent;
 	@ViewChild(StepPermitEmployerInformationComponent)
@@ -81,57 +75,15 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
 
 	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private permitApplicationService: PermitApplicationService
+		override commonApplicationService: CommonApplicationService // private permitApplicationService: PermitApplicationService
 	) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-			(_resp: any) => {
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-
-				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
-				)?.value;
-
-				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
-					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.bodyArmourRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-				} else {
-					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.armouredVehicleRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-				}
-
-				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
 		const isValid = this.dirtyForm(_formNumber);
 		if (!isValid) return;
 
-		// if (_formNumber === this.STEP_MENTAL_HEALTH_CONDITIONS && this.applicationTypeCode === ApplicationTypeCode.Update) {
-		// 	this.nextStepperStep.emit(true);
-		// 	return;
-		// }
 		this.childNextStep.next(true);
 	}
 

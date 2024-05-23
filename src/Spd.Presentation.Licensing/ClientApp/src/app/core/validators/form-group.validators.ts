@@ -1,4 +1,6 @@
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { PoliceOfficerRoleCode } from '@app/api/models';
+import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
@@ -55,6 +57,19 @@ export class FormGroupValidators {
 			}
 			return null;
 		};
+
+	public static nopoliceofficer(controlName: string, checkControlName: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control = controls.get(controlName);
+			const checkControl = controls.get(checkControlName);
+
+			if (checkControl?.value === BooleanTypeCode.Yes && control?.value === PoliceOfficerRoleCode.PoliceOfficer) {
+				return { nopoliceofficer: true };
+			} else {
+				return null;
+			}
+		};
+	}
 
 	public static match(controlName: string, checkControlName: string): ValidatorFn {
 		return (controls: AbstractControl) => {
