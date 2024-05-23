@@ -17,6 +17,7 @@ namespace Spd.Resource.Repository.BizContact
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s._spd_contactid_value))
+            .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_swlnumber_value))
             .ReverseMap();
         }
 

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.BizContact
 {
@@ -69,6 +70,24 @@ namespace Spd.Resource.Repository.BizContact
                 {
                     spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(item);
                     _context.AddTospd_businesscontacts(bizContact);
+                    if (item.LicenceId != null)
+                    {
+                        spd_licence swlLic = _context.spd_licences.Where(l => l.spd_licenceid == item.LicenceId).FirstOrDefault();
+                        if (swlLic == null
+                            || swlLic.statecode == DynamicsConstants.StateCode_Inactive
+                            || swlLic._spd_licencetype_value != DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeEnum.SecurityWorkerLicence.ToString()])
+                        {
+                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid licence");
+                        }
+                        _context.SetLink(bizContact, nameof(bizContact.spd_SWLNumber), swlLic);
+                    }
+                    if (item.ContactId != null)
+                    {
+                        contact c = _context.contacts.Where(l => l.contactid == item.ContactId).FirstOrDefault();
+                        if (c == null)
+                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid contact");
+                        _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
+                    }
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
                     _context.SetLink(bizContact, nameof(bizContact.spd_Application), app);
                 }
