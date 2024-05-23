@@ -89,7 +89,7 @@ namespace Spd.Resource.Repository.Biz
             };
         }
 
-        public async Task UpsertBizContact(UpsertBizContactsCmd upsertBizContactsCmd, CancellationToken ct)
+        public async Task UpsertBizContactAsync(UpsertBizContactsCmd upsertBizContactsCmd, CancellationToken ct)
         {
             var accountId = upsertBizContactsCmd.BizId;
 
