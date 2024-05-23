@@ -5,6 +5,7 @@
         Task<IEnumerable<BizResult>> QueryBizAsync(BizsQry qry, CancellationToken ct);
         Task<BizResult?> GetBizAsync(Guid bizId, CancellationToken ct);
         Task<BizResult> ManageBizAsync(BizCmd cmd, CancellationToken ct);
+        Task UpsertBizContactAsync(UpsertBizContactsCmd upsertBizContactsCmd, CancellationToken ct);
     }
     //command
     public abstract record BizCmd : Biz;
