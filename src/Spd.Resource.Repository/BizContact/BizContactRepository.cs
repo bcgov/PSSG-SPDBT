@@ -43,17 +43,20 @@ namespace Spd.Resource.Repository.BizContact
                 bizContacts = bizContacts.Where(a => a._spd_application_value == cmd.AppId);
             var list = bizContacts.ToList();
             //remove all not in cmd.Data
-            var toRemove = list.Where(c => !cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid)).ToList();
+            var toRemove = list.Where(c => !cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid));
             foreach (var item in toRemove)
             {
                 item.statecode = DynamicsConstants.StateCode_Inactive;
+                item.statuscode = DynamicsConstants.StatusCode_Inactive;
+                _context.UpdateObject(item);
             }
 
             //update all that in cmd.Data
-            var toModify = list.Where(c => cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid)).ToList();
+            var toModify = list.Where(c => cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid));
             foreach (var item in toModify)
             {
                 _mapper.Map(cmd.Data.FirstOrDefault(d => d.BizContactId == item.spd_businesscontactid), item);
+                _context.UpdateObject(item);
             }
 
             //add all that in cmd.Data which does not have id
