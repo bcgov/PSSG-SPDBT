@@ -154,8 +154,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
-
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
 				this.isFormValid = _resp;
@@ -183,6 +181,8 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
 					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -233,8 +233,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -248,8 +246,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
@@ -271,7 +267,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 				this.stepsPermitContactComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	onNextPayStep(): void {
@@ -306,6 +301,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
 		this.step4Complete = this.permitApplicationService.isStepContactComplete();
 
-		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 }

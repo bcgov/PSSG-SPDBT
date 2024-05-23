@@ -153,8 +153,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
-
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -189,6 +187,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 				)?.value;
 
 				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -254,8 +254,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -274,8 +272,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -294,7 +290,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	private updateCompleteStatus(): void {
@@ -302,7 +297,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
 		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private payNow(licenceAppId: string): void {

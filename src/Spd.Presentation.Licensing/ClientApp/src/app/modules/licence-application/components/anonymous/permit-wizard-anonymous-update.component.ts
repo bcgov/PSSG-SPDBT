@@ -158,8 +158,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
-
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
 				this.isFormValid = _resp;
@@ -187,6 +185,8 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
 					'residentialAddress.isMailingTheSameAsResidential'
 				)?.value;
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -237,8 +237,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -252,8 +250,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
@@ -275,7 +271,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 				this.stepsPermitContactComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	onSubmitStep(): void {
@@ -322,7 +317,7 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
 		this.step4Complete = this.permitApplicationService.isStepContactComplete();
 
-		console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 
 	private payNow(licenceAppId: string): void {
