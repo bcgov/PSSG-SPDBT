@@ -11,7 +11,7 @@ namespace Spd.Resource.Repository.BizContact
     public record BizContactUpsertCmd(Guid? BizId, Guid? AppId, IEnumerable<BizContactResp> Data);
 
     //query
-    public record BizContactQry(Guid? BizId, Guid? AppId, bool IncludeInactive = false);
+    public record BizContactQry(Guid? BizId, Guid? AppId, BizContactRoleEnum? RoleCode = null, bool IncludeInactive = false);
 
     //shared content
     public record BizContactResp

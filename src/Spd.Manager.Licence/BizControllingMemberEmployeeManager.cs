@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.BizContact;
 
 namespace Spd.Manager.Licence;
 internal class BizControllingMemberEmployeeManager :
@@ -11,25 +11,43 @@ internal class BizControllingMemberEmployeeManager :
         IBizControllingMemberEmployeeManager
 {
 
-    private readonly IBizRepository _bizRepository;
+    private readonly IBizContactRepository _bizContactRepository;
     private readonly IMapper _mapper;
 
     public BizControllingMemberEmployeeManager(
-        IBizRepository bizRepository,
+        IBizContactRepository bizContactRepository,
         IMapper mapper)
     {
         _mapper = mapper;
-        _bizRepository = bizRepository;
+        _bizContactRepository = bizContactRepository;
     }
 
-    public async Task<ControllingMembers> Handle(GetBizControllerMembersQuery cmd, CancellationToken ct)
+    public async Task<ControllingMembers> Handle(GetBizControllerMembersQuery qry, CancellationToken ct)
     {
-        return null;
+        var contacts = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId, BizContactRoleEnum.ControllingMember), ct);
+        ControllingMembers controllingMembers = new();
+        controllingMembers.SwlControllingMembers = contacts.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Select(c => new SwlContactInfo()
+            {
+                BizContactId = c.BizContactId,
+                LicenceId = c.LicenceId,
+                ContactId = c.ContactId,
+            });
+        controllingMembers.NonSwlControllingMembers = contacts.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Select(c => _mapper.Map<ContactInfo>(c));
+        return controllingMembers;
     }
 
-    public async Task<IEnumerable<SwlContactInfo>> Handle(GetBizEmployeesQuery query, CancellationToken ct)
+    public async Task<IEnumerable<SwlContactInfo>> Handle(GetBizEmployeesQuery qry, CancellationToken ct)
     {
-        return null;
+        var employees = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId, BizContactRoleEnum.Employee), ct);
+        return employees.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Select(c => new SwlContactInfo()
+            {
+                BizContactId = c.BizContactId,
+                LicenceId = c.LicenceId,
+                ContactId = c.ContactId,
+            });
     }
 
     public async Task<Unit> Handle(UpsertBizControllerMembersCommand query, CancellationToken ct)

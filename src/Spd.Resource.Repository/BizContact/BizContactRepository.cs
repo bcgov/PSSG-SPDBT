@@ -31,6 +31,8 @@ namespace Spd.Resource.Repository.BizContact
                 bizContacts = bizContacts.Where(a => a._spd_organizationid_value == qry.BizId);
             if (qry.AppId != null)
                 bizContacts = bizContacts.Where(a => a._spd_application_value == qry.AppId);
+            if (qry.RoleCode != null)
+                bizContacts = bizContacts.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode));
 
             return _mapper.Map<IEnumerable<BizContactResp>>(bizContacts.ToList());
         }
