@@ -151,8 +151,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 		}
 
-		this.updateCompleteStatus();
-
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
 				this.isFormValid = _resp;
@@ -179,6 +177,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				}
 
 				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -307,7 +307,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.permitApplicationService.hasValueChanged = false;
-					// this.updateCompleteStatus();
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -324,7 +323,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				},
 			});
 		} else {
-			// this.updateCompleteStatus();
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
 	}
@@ -358,7 +356,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		this.step2Complete = this.permitApplicationService.isStepPurposeAndRationaleComplete();
 		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		// console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private handleDuplicateLicence(): void {
@@ -393,6 +391,5 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		// this.updateCompleteStatus();
 	}
 }
