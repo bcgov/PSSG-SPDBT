@@ -9,31 +9,43 @@ import { PssoRoutes } from './psso-routing.module';
 
 @Component({
 	selector: 'app-psso-terms-and-conds',
+
 	template: `
 		<div class="container" *ngIf="isAuthenticated | async">
 			<section class="step-section my-4">
 				<div class="row m-4">
 					<div class="col-lg-8 mx-auto">
-						<h3 class="subheading fw-normal my-3">IMPORTANT - PLEASE READ</h3>
+						<h2>Terms and Conditions</h2>
+
+						<p class="mb-4">Read, download, and accept the Terms of Use to continue.</p>
+
 						<form [formGroup]="form" novalidate>
-							<div class="row mt-4">
-								<div class="col-12">
-									<div class="mb-3">
-										<p>
-											As a condition of using this service, I agree that I am responsible for all actions performed by
-											my "username", and acknowledge that use of this service is solely for conducting one or more
-											criminal record checks subject to the Public Service Agency Screening Policies, and/or usage
-											agreement between my employer and the PSSO.
-										</p>
-										<p>
-											PSSO will review audit reports and inappropriate use of this service will be investigated. Misuse
-											is subject to disciplinary action, and may include dismissal, cancellation of contract, and/or
-											other legal remedies.
-										</p>
-									</div>
+							<app-terms-text (hasScrolledToBottom)="onHasScrolledToBottom()"></app-terms-text>
+
+							<div class="row" *ngIf="displayValidationErrors && !hasScrolledToBottom">
+								<div class="col-12 p-0">
+									<div class="alert alert-warning" role="alert">Please scroll to the bottom</div>
 								</div>
 							</div>
+
 							<div class="row">
+								<div class="col-12">
+									<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
+										I understand that if I change positions within my organization, I may only retain access to, or use
+										of, the Site in relation to the criminal record checks I have initiated in my capacity as hiring
+										manager. I further understand that my access to the Site will end immediately if I leave my
+										organization .
+									</mat-checkbox>
+									<mat-error
+										class="mat-option-error"
+										*ngIf="
+											(form.get('check1')?.dirty || form.get('check1')?.touched) &&
+											form.get('check1')?.invalid &&
+											form.get('check1')?.hasError('required')
+										"
+										>This is required</mat-error
+									>
+								</div>
 								<div class="col-12">
 									<mat-checkbox formControlName="readTerms" (click)="onCheckboxChange()">
 										I have read and accept the above Terms of Use.
@@ -64,8 +76,8 @@ import { PssoRoutes } from './psso-routing.module';
 										color="primary"
 										class="large w-auto"
 										aria-label="Download Terms of Use"
-										download="Psso-terms-and-conditions"
-										[href]="constants.files.pssoTerms"
+										download="Psso-pe-crc-org-terms-and-conditions"
+										[href]="pssoTerms"
 									>
 										<mat-icon>file_download</mat-icon>Terms of Use
 									</a>
@@ -91,10 +103,14 @@ import { PssoRoutes } from './psso-routing.module';
 	],
 })
 export class PssoTermsAndCondsComponent implements OnInit {
-	constants = SPD_CONSTANTS;
+	pssoTerms = SPD_CONSTANTS.files.pssoFirstTimeTerms;
 	isAuthenticated = this.authProcessService.waitUntilAuthentication$;
 
+	hasScrolledToBottom = false;
+	displayValidationErrors = false;
+
 	form: FormGroup = this.formBuilder.group({
+		check1: new FormControl(null, [Validators.requiredTrue]),
 		readTerms: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
 	});
@@ -116,16 +132,25 @@ export class PssoTermsAndCondsComponent implements OnInit {
 
 	onCheckboxChange(): void {
 		const data = this.form.value;
-		if (data.readTerms) {
+		if (this.hasScrolledToBottom && data.check1 && data.readTerms) {
 			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
 		} else {
 			this.form.controls['dateSigned'].setValue('');
 		}
 	}
 
+	onHasScrolledToBottom(): void {
+		this.hasScrolledToBottom = true;
+		this.onCheckboxChange();
+	}
+
 	onContinue(): void {
 		this.form.markAllAsTouched();
-		if (this.form.valid) {
+
+		this.displayValidationErrors = !this.hasScrolledToBottom;
+		const isValid = this.form.valid && this.hasScrolledToBottom;
+
+		if (isValid) {
 			this.router.navigateByUrl(PssoRoutes.path(PssoRoutes.SCREENING_STATUSES));
 		}
 	}

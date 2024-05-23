@@ -130,7 +130,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						class="large w-auto"
 						aria-label="Download Terms of Use"
 						download="Crrp-terms-and-conditions"
-						[href]="constants.files.crrpTerms"
+						[href]="crrpTerms"
 					>
 						<mat-icon>file_download</mat-icon>Terms of Use
 					</a>
@@ -152,7 +152,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 	],
 })
 export class CommonTermsAndCondsComponent {
-	constants = SPD_CONSTANTS;
+	crrpTerms = SPD_CONSTANTS.files.crrpTerms;
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
