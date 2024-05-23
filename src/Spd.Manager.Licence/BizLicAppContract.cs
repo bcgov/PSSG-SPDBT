@@ -78,15 +78,19 @@ public abstract record BizLicenceApp
     public ContactInfo? ApplicantContactInfo { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
     public IEnumerable<SwlContactInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlContactInfo>();
-    public IEnumerable<ContactInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<ContactInfo>();
+    public IEnumerable<NonSwlContactInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<NonSwlContactInfo>();
     public IEnumerable<SwlContactInfo> Employees { get; set; } = Enumerable.Empty<SwlContactInfo>();
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
 }
 
-public record ContactInfo
+public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
+}
+
+public record ContactInfo
+{
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
     public string? GivenName { get; set; }
@@ -94,9 +98,3 @@ public record ContactInfo
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
 }
-
-
-
-
-
-
