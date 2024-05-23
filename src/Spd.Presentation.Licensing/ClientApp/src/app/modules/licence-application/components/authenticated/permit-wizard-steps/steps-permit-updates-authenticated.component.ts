@@ -1,9 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 import { StepPermitEmployerInformationComponent } from '../../anonymous/permit-wizard-steps/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '../../anonymous/permit-wizard-steps/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/step-permit-reason.component';
@@ -80,10 +78,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
-	applicationTypeCode = ApplicationTypeCode.Update;
-
+export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_NAME_CHANGE = 0;
 	readonly STEP_REPRINT = 1;
 	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 2;
@@ -91,11 +86,12 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	readonly STEP_EMPLOYER_INFORMATION = 4;
 	readonly STEP_RATIONALE = 5;
 
-	hasBcscNameChanged = false;
-	hasGenderChanged = false;
-	showEmployerInformation = true;
+	@Input() hasBcscNameChanged = false;
+	@Input() hasGenderChanged = false;
+	@Input() showEmployerInformation = true;
 
-	private licenceModelChangedSubscription!: Subscription;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode = ApplicationTypeCode.Update;
 
 	@ViewChild(StepPermitReviewNameChangeComponent)
 	stepNameChangeComponent!: StepPermitReviewNameChangeComponent;
@@ -106,47 +102,8 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitReprintComponent) stepReprintComponent!: StepPermitReprintComponent;
 	@ViewChild(StepPermitEmployerInformationComponent) stepEmployerComponent!: StepPermitEmployerInformationComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-			(_resp: boolean) => {
-				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
-				)?.value;
-
-				this.hasBcscNameChanged = this.permitApplicationService.permitModelFormGroup.get(
-					'personalInformationData.hasBcscNameChanged'
-				)?.value;
-
-				this.hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
-					'personalInformationData.hasGenderChanged'
-				)?.value;
-
-				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
-					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.bodyArmourRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!bodyArmourRequirement.isMyEmployment;
-				} else {
-					const armouredVehicleRequirement = this.permitApplicationService.permitModelFormGroup.get(
-						'permitRequirementData.armouredVehicleRequirementFormGroup'
-					)?.value;
-
-					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
-				}
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onStepUpdatePrevious(step: number): void {

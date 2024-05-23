@@ -57,6 +57,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 								<div class="col-lg-7 col-md-12">
 									<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizen">
 										<mat-form-field>
+											<mat-label>Type of Proof</mat-label>
 											<mat-select formControlName="canadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -73,6 +74,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</ng-container>
 									<ng-template #notCanadianCitizen>
 										<mat-form-field>
+											<mat-label>Type of Proof</mat-label>
 											<mat-select formControlName="notCanadianCitizenProofTypeCode" [errorStateMatcher]="matcher">
 												<mat-option
 													class="proof-option"
@@ -148,6 +150,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									<div class="row my-2">
 										<div class="col-lg-6 col-md-12">
 											<mat-form-field>
+												<mat-label>Additional Type of Proof</mat-label>
 												<mat-select formControlName="governmentIssuedPhotoTypeCode" [errorStateMatcher]="matcher">
 													<mat-option
 														*ngFor="let item of governmentIssuedPhotoIdTypes; let i = index"
