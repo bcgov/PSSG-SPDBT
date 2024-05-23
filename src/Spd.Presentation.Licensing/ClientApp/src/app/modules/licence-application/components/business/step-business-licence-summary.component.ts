@@ -392,10 +392,8 @@ import { BusinessApplicationService } from '../../services/business-application.
 })
 export class StepBusinessLicenceSummaryComponent implements OnInit {
 	businessModelData: any = {};
-	showEmployerInformation = false;
 
 	constants = SPD_CONSTANTS;
-	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
 
