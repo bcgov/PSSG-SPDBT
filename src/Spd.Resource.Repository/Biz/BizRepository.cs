@@ -98,7 +98,8 @@ namespace Spd.Resource.Repository.Biz
                 .Where(a => a.accountid == accountId)
                 .FirstOrDefaultAsync(ct);
 
-            if (account == null) throw new ApiException(HttpStatusCode.NotFound);
+            if (account == null) 
+                throw new ApiException(HttpStatusCode.NotFound);
 
             foreach (SwlContactInfo swlContactInfo in upsertBizContactsCmd.SwlContacts)
             {
