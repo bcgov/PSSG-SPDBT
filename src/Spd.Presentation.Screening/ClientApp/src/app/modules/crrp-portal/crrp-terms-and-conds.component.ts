@@ -4,7 +4,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-terms-and-conds',
+	selector: 'app-crrp-terms-and-conds',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<app-terms-text (hasScrolledToBottom)="onHasScrolledToBottom()"></app-terms-text>
@@ -151,7 +151,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 		`,
 	],
 })
-export class CommonTermsAndCondsComponent {
+export class CrrpTermsAndCondsComponent {
 	crrpTerms = SPD_CONSTANTS.files.crrpTerms;
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
