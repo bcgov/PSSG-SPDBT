@@ -87,7 +87,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() licenceCost = 0;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();

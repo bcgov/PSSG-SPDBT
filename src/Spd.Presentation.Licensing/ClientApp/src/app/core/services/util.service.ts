@@ -227,7 +227,8 @@ export class UtilService {
 		const firstElementWithError =
 			document.querySelector('mat-form-field.ng-invalid') ||
 			document.querySelector('mat-radio-group.ng-invalid') ||
-			document.querySelector('mat-checkbox.ng-invalid');
+			document.querySelector('mat-checkbox.ng-invalid') ||
+			document.querySelector('form.ng-invalid');
 
 		if (firstElementWithError) {
 			const element =
