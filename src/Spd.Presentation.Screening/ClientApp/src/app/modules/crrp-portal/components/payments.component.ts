@@ -19,7 +19,6 @@ import {
 import { ApplicationService, PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -440,7 +439,7 @@ export class PaymentsComponent implements OnInit {
 			.pipe(
 				tap((res: ApplicationStatisticsResponse) => {
 					const applicationStatistics = res.statistics ?? {};
-					this.count = applicationStatistics[ApplicationPortalStatisticsTypeCode.AwaitingPayment];
+					this.count = applicationStatistics.AwaitingPayment ?? 0;
 				})
 			);
 	}

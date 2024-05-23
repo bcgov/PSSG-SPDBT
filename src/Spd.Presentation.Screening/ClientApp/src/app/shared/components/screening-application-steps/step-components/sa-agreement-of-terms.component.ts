@@ -84,8 +84,8 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 								color="primary"
 								class="mt-2 float-end"
 								aria-label="Download Terms of Use"
-								download="Psso-pe-crc-terms-and-conditions"
-								[href]="constants.files.pssoPeCrcTerms"
+								download="Pe-crc-terms-and-conditions"
+								[href]="constants.files.peCrcOrPeCrcVsTerms"
 							>
 								<mat-icon>file_download</mat-icon>Terms of Use
 							</a>
