@@ -22,6 +22,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 					linear
 					labelPosition="bottom"
 					[orientation]="orientation"
+					class="mat-stepper-disable-header-navigation"
 					(selectionChange)="onStepSelectionChange($event)"
 					#stepper
 				>
@@ -40,6 +41,11 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/
 					<mat-step completed="false">
 						<ng-template matStepLabel>Permit Updates</ng-template>
 						<app-steps-permit-updates-authenticated
+							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[applicationTypeCode]="applicationTypeCode"
+							[hasBcscNameChanged]="hasBcscNameChanged"
+							[hasGenderChanged]="hasGenderChanged"
+							[showEmployerInformation]="showEmployerInformation"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -83,6 +89,8 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	isFormValid = false;
 	showSaveAndExit = false;
 	showEmployerInformation = false;
+	hasBcscNameChanged = false;
+	hasGenderChanged = false;
 
 	private permitModelChangedSubscription!: Subscription;
 
@@ -130,6 +138,14 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 				}
+
+				this.hasBcscNameChanged = this.permitApplicationService.permitModelFormGroup.get(
+					'personalInformationData.hasBcscNameChanged'
+				)?.value;
+
+				this.hasGenderChanged = this.permitApplicationService.permitModelFormGroup.get(
+					'personalInformationData.hasGenderChanged'
+				)?.value;
 			}
 		);
 	}
