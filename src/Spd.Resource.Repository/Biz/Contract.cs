@@ -35,6 +35,7 @@
         //sole proprietor properties
         public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } = new(); //for sole proprietor (registered or non-registered)
     }
+    
     public record BizResult : Biz
     {
         public int MaxContacts { get; } = 6;
@@ -43,6 +44,7 @@
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
     }
+    
     public record BranchAddr() : Addr
     {
         public Guid? BranchId { get; set; }
