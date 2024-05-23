@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCategoryComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceReprintComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-reprint.component';
@@ -81,10 +79,7 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceUpdatesAuthenticatedComponent
-	extends BaseWizardStepComponent
-	implements OnInit, OnDestroy
-{
+export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
 	readonly STEP_NAME_CHANGE = 0;
@@ -94,11 +89,9 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	readonly STEP_DOGS = 4;
 	readonly STEP_RESTRAINTS = 5;
 
-	showStepDogsAndRestraints = false;
-	hasBcscNameChanged = false;
-	hasGenderChanged = false;
-
-	private licenceModelChangedSubscription!: Subscription;
+	@Input() showStepDogsAndRestraints = false;
+	@Input() hasBcscNameChanged = false;
+	@Input() hasGenderChanged = false;
 
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
 	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
@@ -113,33 +106,8 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent
 	@ViewChild(StepWorkerLicenceReprintComponent)
 	stepReprintComponent!: StepWorkerLicenceReprintComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private licenceApplicationService: LicenceApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: boolean) => {
-				this.showStepDogsAndRestraints = this.licenceApplicationService.licenceModelFormGroup.get(
-					'categorySecurityGuardFormGroup.isInclude'
-				)?.value;
-
-				this.hasBcscNameChanged = this.licenceApplicationService.licenceModelFormGroup.get(
-					'personalInformationData.hasBcscNameChanged'
-				)?.value;
-
-				this.hasGenderChanged = this.licenceApplicationService.licenceModelFormGroup.get(
-					'personalInformationData.hasGenderChanged'
-				)?.value;
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onStepUpdatePrevious(step: number): void {

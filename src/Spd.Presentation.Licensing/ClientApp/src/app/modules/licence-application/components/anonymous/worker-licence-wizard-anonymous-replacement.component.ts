@@ -14,14 +14,14 @@ import { CommonApplicationService } from '../../services/common-application.serv
 	template: `
 		<mat-stepper linear labelPosition="bottom" [orientation]="orientation" #stepper>
 			<mat-step>
-				<ng-template matStepLabel> Licence Confirmation </ng-template>
+				<ng-template matStepLabel>Licence Confirmation</ng-template>
 				<app-step-worker-licence-confirmation></app-step-worker-licence-confirmation>
 
 				<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
-				<ng-template matStepLabel> Address Update </ng-template>
+				<ng-template matStepLabel>Address Update</ng-template>
 				<app-step-worker-licence-mailing-address-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-mailing-address-anonymous>

@@ -1,16 +1,17 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-steps/steps-worker-licence-identification-anonymous.component';
@@ -27,8 +28,13 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			#stepper
 		>
 			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel> Licence Selection </ng-template>
+				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-worker-licence-selection
+					[isLoggedIn]="false"
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -39,6 +45,9 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Background</ng-template>
 				<app-steps-worker-licence-background-renew-and-update
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[policeOfficerRoleCode]="policeOfficerRoleCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -50,6 +59,14 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Identification</ng-template>
 				<app-steps-worker-licence-identification-anonymous
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[showMailingAddressStep]="showMailingAddressStep"
+					[showCitizenshipStep]="showCitizenshipStep"
+					[showPhotographOfYourself]="showPhotographOfYourself"
+					[hasGenderChanged]="hasGenderChanged"
+					[hasLegalNameChanged]="hasLegalNameChanged"
+					[showReprint]="showReprint"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -78,9 +95,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 	`,
 	styles: [],
 })
-export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit {
-	applicationTypeCode = ApplicationTypeCode.Update;
-
+export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -105,6 +120,20 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
 	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
+	applicationTypeCode!: ApplicationTypeCode;
+	showSaveAndExit = false;
+	isFormValid = false;
+	showStepDogsAndRestraints = false;
+	showMailingAddressStep = false;
+	showCitizenshipStep = false;
+	showPhotographOfYourself = true;
+	hasGenderChanged = false;
+	hasLegalNameChanged = false;
+	showReprint = false;
+	policeOfficerRoleCode: string | null = null;
+
+	private licenceModelChangedSubscription!: Subscription;
+
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
@@ -122,6 +151,59 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 			.subscribe(() => this.breakpointChanged());
 
 		this.updateCompleteStatus();
+
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: boolean) => {
+				this.isFormValid = _resp;
+
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				this.showStepDogsAndRestraints =
+					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+
+				this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
+					'residentialAddress.isMailingTheSameAsResidential'
+				)?.value;
+
+				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+					'citizenshipData.isCanadianCitizen'
+				)?.value;
+
+				this.showCitizenshipStep =
+					this.applicationTypeCode === ApplicationTypeCode.New ||
+					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+
+				this.policeOfficerRoleCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'policeBackgroundData.policeOfficerRoleCode'
+				)?.value;
+
+				// for Update flow: only show unauthenticated user option to upload a new photo
+				// if they changed their sex selection earlier in the application
+				this.hasGenderChanged = !!this.licenceApplicationService.licenceModelFormGroup.get(
+					'personalInformationData.hasGenderChanged'
+				)?.value;
+
+				// for Update flow: only show unauthenticated user option to upload a new photo
+				// if they changed their sex selection earlier in the application
+				this.hasLegalNameChanged = !!this.licenceApplicationService.licenceModelFormGroup.get(
+					'personalInformationData.hashasLegalNameChangedGenderChanged'
+				)?.value;
+
+				// for Update flow: only show unauthenticated user option to upload a new photo
+				// if they changed their sex selection earlier in the application and name change
+				this.showReprint = this.hasGenderChanged || this.hasLegalNameChanged;
+
+				this.showPhotographOfYourself = this.hasGenderChanged;
+
+				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

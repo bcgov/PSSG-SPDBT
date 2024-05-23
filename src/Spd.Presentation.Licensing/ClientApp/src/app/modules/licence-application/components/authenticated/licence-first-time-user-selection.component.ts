@@ -4,9 +4,9 @@ import { ApplicantListResponse, ApplicationTypeCode } from '@app/api/models';
 import { ApplicantProfileService } from '@app/api/services';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
+import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 
 @Component({
 	selector: 'app-licence-first-time-user-selection',
@@ -88,7 +88,6 @@ export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceCh
 
 	@Input() inWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	applicationTypeCodes = ApplicationTypeCode;
 
 	constructor(
 		private router: Router,
