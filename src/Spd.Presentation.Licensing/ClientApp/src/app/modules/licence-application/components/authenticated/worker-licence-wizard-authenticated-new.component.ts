@@ -130,8 +130,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 		}
 
-		this.updateCompleteStatus();
-
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -152,6 +150,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				this.showCitizenshipStep =
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+
+				this.updateCompleteStatus();
 			}
 		);
 	}
@@ -270,7 +270,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.licenceApplicationService.hasValueChanged = false;
-					this.updateCompleteStatus();
 
 					this.hotToastService.success('Licence information has been saved');
 
@@ -287,7 +286,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				},
 			});
 		} else {
-			this.updateCompleteStatus();
 			this.stepper.selectedIndex = this.STEP_REVIEW;
 		}
 	}
@@ -326,7 +324,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
 		this.step2Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete);
 	}
 
 	private handleDuplicateLicence(): void {
@@ -358,7 +356,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	private payNow(licenceAppId: string): void {
