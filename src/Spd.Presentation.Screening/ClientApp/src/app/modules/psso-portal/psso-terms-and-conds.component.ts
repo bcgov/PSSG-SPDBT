@@ -34,7 +34,7 @@ import { PssoRoutes } from './psso-routing.module';
 										I understand that if I change positions within my organization, I may only retain access to, or use
 										of, the Site in relation to the criminal record checks I have initiated in my capacity as hiring
 										manager. I further understand that my access to the Site will end immediately if I leave my
-										organization .
+										organization.
 									</mat-checkbox>
 									<mat-error
 										class="mat-option-error"
