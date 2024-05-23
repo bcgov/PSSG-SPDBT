@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -19,7 +19,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							<div class="fs-5 mb-2">Current members with active security worker licences</div>
 							<div class="row">
 								<ng-container *ngFor="let empl of membersWithSwlList; let i = index">
-									<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.givenName }} {{ empl.surname }}</div>
+									<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.licenceHolderName }}</div>
 									<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">{{ empl.licenceNumber }}</div>
 								</ng-container>
 							</div>
@@ -87,37 +87,34 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceControllingMemberConfirmationComponent
-	implements OnInit, LicenceChildStepperStepComponent
-{
+export class StepBusinessLicenceControllingMemberConfirmationComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
 	form: FormGroup = this.businessApplicationService.membersConfirmationFormGroup;
-
-	memberList: Array<any> = [];
 
 	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
 	employeesFormGroup = this.businessApplicationService.employeesFormGroup;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
-	ngOnInit(): void {
-		this.memberList = this.membersArray.value;
-	}
-
 	onFileUploaded(_file: File): void {
-		// 	this.permitApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
-		// 		next: (resp: any) => {
-		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during file upload', error);
-		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
-		// 			this.fileUploadComponent.removeFailedFile(file);
-		// 		},
-		// 	});
+		// TODO upload file on partial save
+		this.businessApplicationService.hasValueChanged = true;
+
+		if (this.businessApplicationService.isAutoSave()) {
+			// this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.xxx, file).subscribe({
+			// 	next: (resp: any) => {
+			// 		const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+			// 		matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			// 	},
+			// 	error: (error: any) => {
+			// 		console.log('An error occurred during file upload', error);
+			// 		this.hotToastService.error('An error occurred during the file upload. Please try again.');
+			// 		this.fileUploadComponent.removeFailedFile(file);
+			// 	},
+			// });
+		}
 	}
 
 	onFileRemoved(): void {
@@ -136,9 +133,11 @@ export class StepBusinessLicenceControllingMemberConfirmationComponent
 		return <FormArray>this.controllingMembersFormGroup.get('members');
 	}
 	get membersWithSwlList(): Array<any> {
-		return this.memberList.filter((item) => !!item.licenceNumber);
+		const memberList = this.membersArray.value ?? [];
+		return memberList.filter((item: any) => !!item.licenceNumber);
 	}
 	get membersWithoutSwlList(): Array<any> {
-		return this.memberList.filter((item) => !item.licenceNumber);
+		const memberList = this.membersArray.value ?? [];
+		return memberList.filter((item: any) => !item.licenceNumber);
 	}
 }
