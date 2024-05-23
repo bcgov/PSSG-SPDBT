@@ -23,6 +23,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 					linear
 					labelPosition="bottom"
 					[orientation]="orientation"
+					class="mat-stepper-disable-header-navigation"
 					(selectionChange)="onStepSelectionChange($event)"
 					#stepper
 				>
@@ -177,7 +178,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 
 	onChildNextStep() {
 		this.stepsLicenceUpdatesComponent?.onGoToNextStep();
-		// this.updateCompleteStatus();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
