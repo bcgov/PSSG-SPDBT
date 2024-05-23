@@ -82,6 +82,13 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.BranchManager, opt => opt.MapFrom(s => s.spd_branchmanagername))
             .ForMember(d => d.BranchPhoneNumber, opt => opt.MapFrom(s => s.spd_branchphone))
             .ForMember(d => d.BranchEmailAddr, opt => opt.MapFrom(s => s.spd_branchemail));
+
+            CreateMap<contact, spd_businesscontact>()
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.firstname))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.lastname))
+            .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.spd_middlename1))
+            .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.spd_middlename2))
+            .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.emailaddress1));
         }
 
         private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
