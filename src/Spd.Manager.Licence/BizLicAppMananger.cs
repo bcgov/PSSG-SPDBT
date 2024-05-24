@@ -54,12 +54,15 @@ internal class BizLicAppMananger :
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.BizLicAppUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
         var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+        
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
+        
         await UpdateDocumentsAsync(
             (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
             (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
             cancellationToken);
+
         return _mapper.Map<BizLicAppCommandResponse>(response);
     }
 
