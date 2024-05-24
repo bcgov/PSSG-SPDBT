@@ -1,6 +1,8 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
@@ -15,14 +17,17 @@ internal partial class LicenceAppDocumentManager :
     private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
     private readonly IDocumentRepository _documentRepository;
+    private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
 
     public LicenceAppDocumentManager(
         ILicenceApplicationRepository licenceAppRepository,
+        IBizLicApplicationRepository bizLicApplicationRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
         IDocumentRepository documentUrlRepository)
     {
         _licenceAppRepository = licenceAppRepository;
+        _bizLicApplicationRepository = bizLicApplicationRepository;
         _tempFile = tempFile;
         _mapper = mapper;
         _documentRepository = documentUrlRepository;
@@ -30,12 +35,16 @@ internal partial class LicenceAppDocumentManager :
 
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateDocumentInTransientStoreCommand command, CancellationToken cancellationToken)
     {
+        BizLicApplicationResp? bizLicApplicationResp = null;
         DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
         DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
 
         LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, cancellationToken);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
+
+        if (app.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+            bizLicApplicationResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync(command.AppId, cancellationToken);
 
         Guid? contactId = app.ContactId;
         //put file to cache
@@ -60,6 +69,7 @@ internal partial class LicenceAppDocumentManager :
                 DocumentType2 = docType2,
                 SubmittedByApplicantId = contactId,
                 ApplicantId = contactId,
+                AccountId = bizLicApplicationResp?.BizId,
                 ToTransientBucket = true,
             }, cancellationToken);
             docResps.Add(docResp);
