@@ -41,7 +41,7 @@ export class CrrpRoutes {
 	public static INVITATION_ACCEPT = 'invitation-accept';
 	public static REPORTS = 'reports';
 	public static USERS = 'users';
-	public static FIRST_TIME_USER = 'first-time-user';
+	public static ORG_TERMS_AND_CONDITIONS = 'org-terms-and-conditions';
 
 	public static MODULE_PATH = 'crrp';
 
@@ -71,7 +71,7 @@ const routes: Routes = [
 			{ path: CrrpRoutes.TERMS_AND_CONDITIONS, component: TermsAndConditionsComponent },
 			{ path: CrrpRoutes.REPORTS, component: ReportsComponent },
 			{ path: CrrpRoutes.USERS, component: UsersComponent },
-			{ path: CrrpRoutes.FIRST_TIME_USER, component: CrrpFirstTimeTermsAndCondsComponent },
+			{ path: CrrpRoutes.ORG_TERMS_AND_CONDITIONS, component: CrrpFirstTimeTermsAndCondsComponent },
 			{ path: '', redirectTo: CrrpRoutes.path(CrrpRoutes.HOME), pathMatch: 'full' },
 		],
 	},
