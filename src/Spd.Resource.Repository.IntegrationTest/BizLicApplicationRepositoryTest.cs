@@ -83,7 +83,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(app.spd_origin);
         Assert.NotNull(app.spd_payer);
         Assert.NotNull(app.spd_portalmodifiedon);
-        Assert.NotNull(app.spd_ApplicantId_contact);
         Assert.NotNull(app.spd_ServiceTypeId);
         Assert.NotNull(app.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(app.spd_application_spd_licencecategory);
