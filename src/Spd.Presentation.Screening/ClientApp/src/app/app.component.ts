@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { filter, map } from 'rxjs';
+import { filter, forkJoin, map } from 'rxjs';
+import { ConfigService } from './core/services/config.service';
+import { OptionsService } from './core/services/options.service';
 
 @Component({
 	selector: 'app-root',
@@ -9,7 +11,9 @@ import { filter, map } from 'rxjs';
 			<ngx-spinner name="loaderSpinner" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
 			<app-header [title]="title"></app-header>
 
-			<router-outlet></router-outlet>
+			<ng-container *ngIf="configs$ | async">
+				<router-outlet></router-outlet>
+			</ng-container>
 
 			<footer class="mt-auto">
 				<app-footer></app-footer>
@@ -19,9 +23,10 @@ import { filter, map } from 'rxjs';
 	styles: [],
 })
 export class AppComponent {
+	configs$ = forkJoin([this.configService.getConfigs(), this.optionsService.loadMinistries()]);
 	title = '';
 
-	constructor(private router: Router) {
+	constructor(private configService: ConfigService, private optionsService: OptionsService, private router: Router) {
 		this.router.events
 			.pipe(
 				filter((event) => event instanceof NavigationEnd),
