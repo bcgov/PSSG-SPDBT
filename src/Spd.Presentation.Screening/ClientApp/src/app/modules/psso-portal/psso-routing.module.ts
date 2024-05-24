@@ -12,7 +12,7 @@ export class PssoRoutes {
 	public static SCREENING_STATUSES = 'screening-statuses';
 	public static IDENTITY_VERIFICATION = 'identity-verification';
 	public static MANUAL_SUBMISSIONS = 'manual-submissions';
-	public static TERMS_AND_CONDITIONS = 'terms-and-conditions';
+	public static ORG_TERMS_AND_CONDITIONS = 'org-terms-and-conditions';
 	public static MODULE_PATH = 'psso';
 
 	public static path(route: string | null = null): string {
@@ -33,7 +33,7 @@ const routes: Routes = [
 		],
 	},
 	{
-		path: PssoRoutes.TERMS_AND_CONDITIONS,
+		path: PssoRoutes.ORG_TERMS_AND_CONDITIONS,
 		component: PssoTermsAndCondsComponent,
 	},
 ];
