@@ -33,7 +33,7 @@ internal class BizControllingMemberEmployeeManager :
                 LicenceId = c.LicenceId,
                 ContactId = c.ContactId,
             });
-        controllingMembers.NonSwlControllingMembers = contacts.Where(c => c.ContactId != null && c.LicenceId != null)
+        controllingMembers.NonSwlControllingMembers = contacts.Where(c => c.ContactId == null && c.LicenceId == null)
             .Select(c => _mapper.Map<ContactInfo>(c));
         return controllingMembers;
     }
@@ -50,13 +50,34 @@ internal class BizControllingMemberEmployeeManager :
             });
     }
 
-    public async Task<Unit> Handle(UpsertBizControllerMembersCommand query, CancellationToken ct)
+    public async Task<Unit> Handle(UpsertBizControllerMembersCommand cmd, CancellationToken ct)
     {
+        var employees = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(cmd.BizId, cmd.ApplicationId, BizContactRoleEnum.Employee), ct);
+        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(cmd.ControllingMembers.NonSwlControllingMembers);
+        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(cmd.ControllingMembers.SwlControllingMembers));
+        contacts.AddRange(employees);
+        BizContactUpsertCmd upsertCmd = new(
+            cmd.BizId,
+            cmd.ApplicationId,
+            contacts);
+        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
         return default;
     }
 
-    public async Task<Unit> Handle(UpsertEmployeesCommand query, CancellationToken ct)
+    public async Task<Unit> Handle(UpsertEmployeesCommand cmd, CancellationToken ct)
     {
+        var cm = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(cmd.BizId, cmd.ApplicationId, BizContactRoleEnum.ControllingMember), ct);
+        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(cmd.Employees);
+        foreach (var contact in contacts)
+        {
+            contact.BizContactRoleCode = BizContactRoleEnum.Employee;
+        }
+        contacts.AddRange(cm);
+        BizContactUpsertCmd upsertCmd = new(
+            cmd.BizId,
+            cmd.ApplicationId,
+            contacts);
+        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
         return default;
 
     }

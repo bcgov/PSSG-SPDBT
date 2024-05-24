@@ -253,6 +253,15 @@ internal class Mappings : Profile
             .ReverseMap();
 
         CreateMap<BizContactResp, ContactInfo>()
+            .ReverseMap()
+            .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
+            ;
+
+        CreateMap<UpsertBizControllerMembersCommand, BizContactUpsertCmd>()
+            .ForMember(d => d.AppId, opt => opt.MapFrom(s => s.ApplicationId));
+
+        CreateMap<SwlContactInfo, BizContactResp>()
+            .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
             .ReverseMap();
     }
 

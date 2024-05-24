@@ -78,16 +78,14 @@ namespace Spd.Resource.Repository.BizContact
                         if (swlLic == null
                             || swlLic.statecode == DynamicsConstants.StateCode_Inactive
                             || swlLic._spd_licencetype_value != DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeEnum.SecurityWorkerLicence.ToString()])
-                        {
-                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid licence");
-                        }
+                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid licence {item.LicenceId}");
                         _context.SetLink(bizContact, nameof(bizContact.spd_SWLNumber), swlLic);
                     }
                     if (item.ContactId != null)
                     {
                         contact c = _context.contacts.Where(l => l.contactid == item.ContactId).FirstOrDefault();
                         if (c == null)
-                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid contact");
+                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
                         _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
                     }
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);

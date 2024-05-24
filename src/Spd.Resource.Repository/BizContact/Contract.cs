@@ -8,7 +8,7 @@ namespace Spd.Resource.Repository.BizContact
         Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct);
     }
     //command
-    public record BizContactUpsertCmd(Guid? BizId, Guid? AppId, IEnumerable<BizContactResp> Data);
+    public record BizContactUpsertCmd(Guid? BizId, Guid? AppId, List<BizContactResp> Data);
 
     //query
     public record BizContactQry(Guid? BizId, Guid? AppId, BizContactRoleEnum? RoleCode = null, bool IncludeInactive = false);
@@ -24,7 +24,7 @@ namespace Spd.Resource.Repository.BizContact
         public string? Surname { get; set; }
         public Guid? ContactId { get; set; }
         public Guid? LicenceId { get; set; }
-        public BizContactRoleEnum BizContactRoleCode { get; set; }
+        public BizContactRoleEnum BizContactRoleCode { get; set; } = BizContactRoleEnum.ControllingMember;
     }
 
     public enum BizContactRoleEnum
