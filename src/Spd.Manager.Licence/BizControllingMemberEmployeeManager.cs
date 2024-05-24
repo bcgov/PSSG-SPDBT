@@ -66,13 +66,13 @@ internal class BizControllingMemberEmployeeManager :
 
     public async Task<Unit> Handle(UpsertEmployeesCommand cmd, CancellationToken ct)
     {
-        var cm = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(cmd.BizId, cmd.ApplicationId, BizContactRoleEnum.ControllingMember), ct);
+        var controlMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(cmd.BizId, cmd.ApplicationId, BizContactRoleEnum.ControllingMember), ct);
         List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(cmd.Employees);
         foreach (var contact in contacts)
         {
             contact.BizContactRoleCode = BizContactRoleEnum.Employee;
         }
-        contacts.AddRange(cm);
+        contacts.AddRange(controlMembers);
         BizContactUpsertCmd upsertCmd = new(
             cmd.BizId,
             cmd.ApplicationId,

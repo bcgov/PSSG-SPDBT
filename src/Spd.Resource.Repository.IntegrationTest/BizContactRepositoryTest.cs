@@ -56,7 +56,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         spd_application app = await CreateApplicationAsync(biz);
         await _context.SaveChangesAsync(CancellationToken.None);
 
-        BizContactUpsertCmd cmd = new(biz.accountid, app.spd_applicationid, new List<BizContactResp>());
+        BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)app.spd_applicationid, new List<BizContactResp>());
 
         // Action
         var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
@@ -86,12 +86,12 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         await _context.SaveChangesAsync(CancellationToken.None);
         List<BizContactResp> requests = new()
         {
-            new BizContactResp{ BizContactId=bizContact.spd_businesscontactid, GivenName = "newFirstName1", EmailAddress="firstName1@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
+            new BizContactResp{ BizContactId = bizContact.spd_businesscontactid, GivenName = "newFirstName1", EmailAddress="firstName1@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
             new BizContactResp{ GivenName = "newFirstName3", EmailAddress="firstName3@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
             new BizContactResp{ ContactId = contact.contactid, LicenceId=lic.spd_licenceid, BizContactRoleCode=BizContactRoleEnum.ControllingMember},
             new BizContactResp{ ContactId = contact.contactid, LicenceId=lic.spd_licenceid, BizContactRoleCode=BizContactRoleEnum.Employee},
         };
-        BizContactUpsertCmd cmd = new(biz.accountid, app.spd_applicationid, requests);
+        BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)app.spd_applicationid, requests);
 
         // Action
         var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);

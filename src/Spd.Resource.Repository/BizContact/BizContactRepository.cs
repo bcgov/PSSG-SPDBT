@@ -4,6 +4,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.BizContact
 {
@@ -39,12 +40,11 @@ namespace Spd.Resource.Repository.BizContact
 
         public async Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct)
         {
-            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts;
-            if (cmd.BizId != null)
-                bizContacts = bizContacts.Where(a => a._spd_organizationid_value == cmd.BizId);
-            if (cmd.AppId != null)
-                bizContacts = bizContacts.Where(a => a._spd_application_value == cmd.AppId);
+            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Where(a => a._spd_organizationid_value == cmd.BizId)
+                .Where(a => a._spd_application_value == cmd.AppId);
             var list = bizContacts.ToList();
+
             //remove all not in cmd.Data
             var toRemove = list.Where(c => !cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid));
             foreach (var item in toRemove)
@@ -66,26 +66,26 @@ namespace Spd.Resource.Repository.BizContact
             var toAdd = cmd.Data.Where(d => d.BizContactId == null).ToList();
             if (toAdd.Count > 0)
             {
-                account? biz = _context.accounts.Where(a => a.accountid == cmd.BizId).FirstOrDefault();
-                spd_application? app = _context.spd_applications.Where(a => a.spd_applicationid == cmd.AppId).FirstOrDefault();
+                account? biz = await _context.GetOrgById(cmd.BizId, ct);
+                spd_application? app = await _context.GetApplicationById(cmd.AppId, ct);
                 foreach (var item in toAdd)
                 {
                     spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(item);
                     _context.AddTospd_businesscontacts(bizContact);
                     if (item.LicenceId != null)
                     {
-                        spd_licence swlLic = _context.spd_licences.Where(l => l.spd_licenceid == item.LicenceId).FirstOrDefault();
-                        if (swlLic == null
-                            || swlLic.statecode == DynamicsConstants.StateCode_Inactive
-                            || swlLic._spd_licencetype_value != DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeEnum.SecurityWorkerLicence.ToString()])
+                        spd_licence? swlLic = _context.spd_licences.Where(l => l.spd_licenceid == item.LicenceId && l.statecode == DynamicsConstants.StateCode_Active).FirstOrDefault();
+                        Guid swlServiceTypeId = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeEnum.SecurityWorkerLicence.ToString()];
+                        //only swl can be linked to.
+                        if (swlLic == null || swlLic._spd_licencetype_value != swlServiceTypeId)
                             throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid licence {item.LicenceId}");
                         _context.SetLink(bizContact, nameof(bizContact.spd_SWLNumber), swlLic);
                     }
                     if (item.ContactId != null)
                     {
-                        contact c = _context.contacts.Where(l => l.contactid == item.ContactId).FirstOrDefault();
+                        contact? c = await _context.GetContactById((Guid)item.ContactId, ct);
                         if (c == null)
-                            throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
+                            throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
                         _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
                     }
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
