@@ -42,6 +42,7 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+    public SwlContactInfo PrivateInvestigatorSwlInfo { get; set; } = new();
 }
 
 public record BizLicApplicationResp() : BizLicApplication
