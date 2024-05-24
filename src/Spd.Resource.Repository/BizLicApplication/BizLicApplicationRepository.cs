@@ -56,6 +56,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) 
             LinkExpiredLicence(cmd.ExpiredLicenceId, app);
         LinkOrganization(cmd.ApplicantId, app);
+        LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         await _context.SaveChangesAsync();
 
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
@@ -117,5 +118,29 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
         }
+    }
+
+    private void LinkPrivateInvestigator(SwlContactInfo privateInvestigatorInfo, spd_application app)
+    {
+        if (privateInvestigatorInfo.ContactId == null || privateInvestigatorInfo.LicenceId == null)
+            return;
+
+        contact? contact = _context.contacts
+            .Where(c => c.contactid == privateInvestigatorInfo.ContactId)
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+
+        if (contact != null)
+            throw new ArgumentException("investigator contact info not found");
+
+        spd_licence? licence = _context.spd_licences
+            .Where(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId)
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+
+        if (licence != null)
+            throw new ArgumentException("investigator licence info not found");
+
+        _context.SetLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
     }
 }
