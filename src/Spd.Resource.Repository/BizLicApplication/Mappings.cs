@@ -6,7 +6,7 @@ using Spd.Utilities.Dynamics;
 namespace Spd.Resource.Repository.BizLicApplication;
 internal class Mappings : Profile
 {
-    public Mappings() 
+    public Mappings()
     {
         _ = CreateMap<BizLicApplication, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -45,13 +45,13 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber));
 
         _ = CreateMap<SaveBizLicApplicationCmd, spd_application>()
-          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
-          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
-          .IncludeBase<BizLicApplication, spd_application>();
+         .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
+         .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
+         .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
-            .IncludeBase<spd_application, BizLicApplication>()
-            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid));
+         .IncludeBase<spd_application, BizLicApplication>()
+         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid));
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
