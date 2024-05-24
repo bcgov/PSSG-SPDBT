@@ -2,6 +2,8 @@
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.BizLicApplication;
 internal class BizLicApplicationRepository : IBizLicApplicationRepository
@@ -13,6 +15,20 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
+    }
+
+    public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
+    {
+        spd_application? app = await _context.spd_applications
+            .Expand(a => a.spd_ApplicantId_account)
+            .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
+            .Where(a => a.spd_applicationid == licenceApplicationId)
+            .FirstOrDefaultAsync(ct);
+
+        if (app == null) 
+            throw new ApiException(HttpStatusCode.NotFound);
+
+        return _mapper.Map<BizLicApplicationResp>(app);
     }
 
     public async Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct)
