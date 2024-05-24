@@ -5,6 +5,7 @@ namespace Spd.Resource.Repository.BizLicApplication;
 public partial interface IBizLicApplicationRepository
 {
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
+    public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
 }
 
 public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
@@ -41,4 +42,9 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+}
+
+public record BizLicApplicationResp() : BizLicApplication
+{
+    public Guid? BizId { get; set; }
 }
