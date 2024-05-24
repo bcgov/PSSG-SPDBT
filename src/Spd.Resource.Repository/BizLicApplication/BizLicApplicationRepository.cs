@@ -141,6 +141,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (licence == null)
             throw new ArgumentException("investigator licence info not found");
 
-        _context.SetLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
+        _context.AddLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
     }
 }
