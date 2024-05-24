@@ -50,8 +50,8 @@ internal class Mappings : Profile
           .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
-            .IncludeBase<BizLicApplication, spd_application>()
-            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account.accountid));
+            .IncludeBase<spd_application, BizLicApplication>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid));
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
