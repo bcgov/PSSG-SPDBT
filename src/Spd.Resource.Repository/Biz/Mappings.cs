@@ -84,6 +84,7 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.BranchEmailAddr, opt => opt.MapFrom(s => s.spd_branchemail));
 
             CreateMap<contact, spd_businesscontact>()
+            .ForMember(d => d._spd_contactid_value, opt => opt.MapFrom(s => s.contactid))
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.firstname))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.lastname))
             .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.spd_middlename1))
