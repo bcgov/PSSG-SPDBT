@@ -106,13 +106,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         }
     }
 
-    private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
-    {
-        Guid teamGuid = Guid.Parse(teamGuidStr);
-        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
-        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
-    }
-
     private void LinkOrganization(Guid? accountId, spd_application app)
     {
         if (accountId == null) return;
