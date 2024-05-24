@@ -5,6 +5,7 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -250,6 +251,17 @@ internal class Mappings : Profile
 
         CreateMap<AddressResp, BranchAddr>()
             .ReverseMap();
+
+        CreateMap<BizContactResp, ContactInfo>()
+            .ReverseMap()
+            .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
+
+        CreateMap<UpsertBizControllerMembersCommand, BizContactUpsertCmd>()
+            .ForMember(d => d.AppId, opt => opt.MapFrom(s => s.ApplicationId));
+
+        CreateMap<SwlContactInfo, BizContactResp>()
+            .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
+            .ReverseMap();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -451,7 +463,7 @@ internal class Mappings : Profile
         return branchInfos;
     }
 
-    private static List<BranchAddr> GetBranchAddr(IEnumerable<BranchInfo> branchInfos) 
+    private static List<BranchAddr> GetBranchAddr(IEnumerable<BranchInfo> branchInfos)
     {
         List<BranchAddr> branchAddrs = new();
 

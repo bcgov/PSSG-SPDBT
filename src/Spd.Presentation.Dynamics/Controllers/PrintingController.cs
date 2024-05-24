@@ -27,6 +27,12 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
         return TypedResults.Ok(createdJobId);
     }
 
+    /// <summary>
+    /// return the preview picture of personal licence.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     [HttpPost("api/printjobs/preview")]
     public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(PrintJobRequest request, CancellationToken ct)
     {

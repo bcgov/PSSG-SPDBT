@@ -84,16 +84,7 @@ public abstract record BizLicenceApp
     public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
 }
 
-public record ContactInfo
-{
-    public Guid? BizContactId { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? EmailAddress { get; set; }
-    public string? GivenName { get; set; }
-    public string? MiddleName1 { get; set; }
-    public string? MiddleName2 { get; set; }
-    public string? Surname { get; set; }
-}
+
 
 
 
