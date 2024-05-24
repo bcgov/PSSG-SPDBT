@@ -69,6 +69,9 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     public async Task SaveBizLicApplicationAsync_WithoutLicenceAppId_Run_Correctly()
     {
         // Arrange
+        Guid pInvestigatorLicenceId = Guid.NewGuid();
+        Guid pInvestigatorContactId = Guid.NewGuid();
+
         SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
             .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
             .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
@@ -85,6 +88,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
+            .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { ContactId = pInvestigatorContactId, LicenceId = pInvestigatorLicenceId })
             .Without(a => a.LicenceAppId)
             .Create();
 
@@ -92,6 +96,10 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.AddTospd_licences(expiredLicence);
         account account = new() { accountid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
         _context.AddToaccounts(account);
+        contact pInvestigatorContact = new() { contactid = pInvestigatorContactId };
+        _context.AddTocontacts(pInvestigatorContact);
+        spd_licence pInvestigatorLicence = new() { spd_licenceid = pInvestigatorLicenceId };
+        _context.AddTospd_licences(pInvestigatorLicence);
         await _context.SaveChangesAsync();
 
         // Action
@@ -100,6 +108,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .Expand(a => a.spd_CurrentExpiredLicenceId)
             .Expand(a => a.spd_ServiceTypeId)
             .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_application_spd_licence_manager)
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .FirstOrDefault();
@@ -128,12 +137,16 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(app.spd_ServiceTypeId);
         Assert.NotNull(app.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(app.spd_application_spd_licencecategory);
+        Assert.NotEmpty(app.spd_application_spd_licence_manager);
     }
 
     [Fact]
     public async Task SaveBizLicApplicationAsync_WithLicenceAppId_Run_Correctly()
     {
         // Arrange
+        Guid pInvestigatorLicenceId = Guid.NewGuid();
+        Guid pInvestigatorContactId = Guid.NewGuid();
+
         SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
             .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
             .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
@@ -150,6 +163,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
+            .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { ContactId = pInvestigatorContactId, LicenceId = pInvestigatorLicenceId })
             .Create();
 
         spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
@@ -158,6 +172,10 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.AddTospd_licences(expiredLicence);
         account account = new() { accountid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
         _context.AddToaccounts(account);
+        contact pInvestigatorContact = new() { contactid = pInvestigatorContactId };
+        _context.AddTocontacts(pInvestigatorContact);
+        spd_licence pInvestigatorLicence = new() { spd_licenceid = pInvestigatorLicenceId };
+        _context.AddTospd_licences(pInvestigatorLicence);
         await _context.SaveChangesAsync();
 
         // Action
@@ -166,6 +184,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .Expand(a => a.spd_CurrentExpiredLicenceId)
             .Expand(a => a.spd_ServiceTypeId)
             .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_application_spd_licence_manager)
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .FirstOrDefault();
@@ -194,6 +213,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(updatedApp.spd_ServiceTypeId);
         Assert.NotNull(updatedApp.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
+        Assert.NotEmpty(app.spd_application_spd_licence_manager);
     }
 
     [Fact]
