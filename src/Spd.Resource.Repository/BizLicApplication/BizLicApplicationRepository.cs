@@ -100,7 +100,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     private void LinkOrganization(Guid? accountId, spd_application app)
     {
         if (accountId == null) return;
-        var account = _context.accounts.Where(a => a.accountid == accountId).FirstOrDefault();
+        var account = _context.accounts
+            .Where(a => a.accountid == accountId)
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
         if (account != null)
         {
             _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
