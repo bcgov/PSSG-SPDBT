@@ -130,7 +130,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
             .FirstOrDefault();
 
-        if (contact != null)
+        if (contact == null)
             throw new ArgumentException("investigator contact info not found");
 
         spd_licence? licence = _context.spd_licences
@@ -138,7 +138,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
             .FirstOrDefault();
 
-        if (licence != null)
+        if (licence == null)
             throw new ArgumentException("investigator licence info not found");
 
         _context.SetLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
