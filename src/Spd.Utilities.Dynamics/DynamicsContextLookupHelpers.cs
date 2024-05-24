@@ -306,9 +306,20 @@ namespace Spd.Utilities.Dynamics
             .SingleOrDefaultAsync(ct);
 
         public static async Task<contact?> GetContactById(this DynamicsContext context, Guid contactId, CancellationToken ct)
-           => await context.contacts.Where(a => a.contactid == contactId)
-            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-            .SingleOrDefaultAsync(ct);
+        {
+            try
+            {
+                return await context.contacts.Where(a => a.contactid == contactId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+
+        }
 
         public static async Task<task?> GetTaskById(this DynamicsContext context, Guid taskId, CancellationToken ct)
            => await context.tasks.Where(a => a.activityid == taskId)
