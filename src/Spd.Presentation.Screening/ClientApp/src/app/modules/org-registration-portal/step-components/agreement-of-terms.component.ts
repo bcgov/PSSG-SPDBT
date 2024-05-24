@@ -20,54 +20,56 @@ export class AgreementOfTermsModel {
 					<div class="row">
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<div class="conditions px-3 pt-2 mb-3" (scroll)="onScrollTermsAndConditions($event)">
-								<strong>TERMS AND CONDITIONS FOR EMPLOYERS THAT ENROL IN THE CRRP ONLINE SERVICE</strong><br /><br />
+								<strong
+									>TERMS AND CONDITIONS FOR ORGANIZATIONS THAT ENROL IN THE CRIMINAL RECORDS REVIEW PROGRAM
+									(CRRP)</strong
+								><br /><br />
 								<ul>
 									<li>
-										Upon completion of the Authorized Contact Consent To A Criminal Record Check Form, the CRRP will
-										confirm enrollment of your organization in writing. If you have requested to enroll in the online
-										service, your organization will be provided a unique link and access code. The access code must be
-										provided to employees from an authorized contact.
+										Upon completion of the online organization registration form, the CRRP will confirm enrollment of
+										your organization via email and will provide your organization with an orientation package. It is
+										your organization’s responsibility to review the CRRP orientation package and to ensure that the
+										CRRP’s process requirements are met, notably as regards the verification and subsequent confirmation
+										of the identity of applicants who come through your organization.
 									</li>
 									<li>
-										If your organization has volunteers covered under the Criminal Records Review Act and employees, you
-										must enroll two separate profiles for the online service, one for “volunteers” and one for
-										“employees”.
+										If your organization has both volunteers and employees covered under the
+										<i>Criminal Records Review Act</i>, you must enroll two separate profiles with the CRRP, one for
+										"<strong>volunteers</strong>" and one for “<strong>employees</strong>”.
 									</li>
 									<li>
-										If you enroll to conduct checks and sharing requests for volunteers, you must not utilize your
-										unique link to the online service for employees and vice versa, if you enroll to conduct checks and
-										sharing requests for employees, you must not utilize your unique link to the online service for
-										volunteers.
+										If you enroll to conduct checks for both volunteers and employees, you will be provided with two
+										specific access codes: one for use by your <strong>employees</strong>, and a different access code
+										for use by your <strong>volunteers</strong>. When using this submission method, your organization’s
+										Authorized Contact must ensure that volunteers and employees are given the correct access code to
+										complete their online criminal record check.
 									</li>
 									<li>
-										Upon confirmation of enrollment into the online service, your organization will direct employees as
-										appropriate to the CRRP online service via the unique website link reserved for employees.
+										Upon confirmation of enrollment into the CRRP, your organization’s Authorized Contact will direct
+										employees and/or volunteers to the CRRP online criminal record check application using your
+										organization online platform, or by providing the applicant your organization’s unique access
+										code(s) and link(s) for employees or volunteers, as applicable.
 									</li>
 									<li>
-										The online service is offered to volunteers free of charge. For all other individuals, there is a
-										$28 processing fee which may be paid by credit card within the online service when submitting a
-										request for a criminal record check.
+										Criminal record checks completed for volunteers are free of charge. For all other applicants, there
+										is a $28 processing fee which may be paid by credit card online. Your organization determines who is
+										responsible for payment of the fee.
 									</li>
 									<li>
-										There is no fee for a volunteer or employee to request to share a criminal record check result.
+										There is no fee for a volunteer or employee to share the result of a previously conducted criminal
+										record check that meets the CRRP’s sharing requirements. Please refer to the CRRP orientation
+										package provided to your organization for additional information on the sharing of CRRP criminal
+										record checks.
 									</li>
 									<li>
-										Individuals may request to share their results between one or more organizations registered with the
-										CRRP.
+										Should the Authorized Contact leave your organization, please update the list of Authorized Contacts
+										in the organization online platform or have a new Authorized Contact complete the “Organizations
+										Account Information Update” process.
 									</li>
 									<li>
-										If the online service electronic identity verification fails for any reason, or the criminal record
-										check or sharing request cannot be completed online, the organization must re-confirm the ID of the
-										applicant in person (see ID verification requirements) and submit the paper consent form by fax,
-										email, or mail to the CRRP.
-									</li>
-									<li>
-										Should the Authorized Contact leave the organization, have a new Authorized Contact complete the
-										Organizations Account Information Update process.
-									</li>
-									<li>
-										Misuse of the CRRP online service or disregard for the terms and conditions may result in suspension
-										or cancellation of services.
+										Misuse of the CRRP online criminal record check service or of your organization online platform, or
+										disregard for any of the Terms and Conditions, as defined below, may result in suspension or
+										cancellation of any or all CRRP criminal record check services extended to your organization.
 									</li>
 								</ul>
 							</div>
@@ -84,9 +86,9 @@ export class AgreementOfTermsModel {
 						<div class="offset-md-2 col-md-8 col-sm-12">
 							<mat-checkbox formControlName="agreeToTermsAndConditions">
 								On behalf of the above noted organization, I hereby certify that I agree to the terms and conditions for
-								utilizing the CRRP to facilitate criminal record checks on our employees, contractors, or students
-								(working with children and/or vulnerable adults), including the attached terms and conditions for
-								enrolment in the CRRP online service, as applicable.
+								utilizing the CRRP to facilitate criminal record checks on our employees, volunteers, contractors, or
+								students (working with children and/or vulnerable adults), including specifically these terms and
+								conditions for enrolment in the CRRP online service, as applicable (Terms and Conditions).
 							</mat-checkbox>
 							<mat-error
 								class="mat-option-error"

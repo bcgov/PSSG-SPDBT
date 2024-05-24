@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { ApplicantApplicationResponse, PaymentResponse } from 'src/app/api/models';
-import { ApplicantService, PaymentService } from 'src/app/api/services';
+import { PaymentResponse } from 'src/app/api/models';
+import { PaymentService } from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -14,7 +13,6 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 	template: `
 		<app-payment-success
 			[payment]="payment"
-			[sendEmailTo]="sendEmailTo"
 			(backRoute)="onBackRoute()"
 			(downloadReceipt)="onDownloadReceipt()"
 		></app-payment-success>
@@ -23,14 +21,12 @@ import { SecurityScreeningRoutes } from '../security-screening-routing.module';
 })
 export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 	payment: PaymentResponse | null = null;
-	sendEmailTo: string | null = null;
 
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
 		private authUserService: AuthUserBcscService,
 		private paymentService: PaymentService,
-		private applicantService: ApplicantService,
 		private utilService: UtilService
 	) {}
 
@@ -52,18 +48,9 @@ export class SecurityScreeningPaymentSuccessComponent implements OnInit {
 
 		this.paymentService
 			.apiApplicantsScreeningsPaymentsPaymentIdGet({ paymentId: paymentId! })
-			.pipe(
-				switchMap((paymentResp: PaymentResponse) => {
-					this.payment = paymentResp;
-
-					return this.applicantService.apiApplicantsApplicantIdScreeningsApplicationIdGet({
-						applicantId: this.authUserService.bcscUserWhoamiProfile?.applicantId!,
-						applicationId: paymentResp.applicationId!,
-					});
-				})
-			)
-			.subscribe((resp: ApplicantApplicationResponse) => {
-				this.sendEmailTo = resp.emailAddress ?? null;
+			.pipe()
+			.subscribe((resp: PaymentResponse) => {
+				this.payment = resp;
 			});
 	}
 
