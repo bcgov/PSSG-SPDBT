@@ -115,13 +115,14 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.AddTospd_applications(app);
         spd_licence expiredLicence = new() { spd_licenceid = cmd.ExpiredLicenceId };
         _context.AddTospd_licences(expiredLicence);
+        account account = new() { accountid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
+        _context.AddToaccounts(account);
         await _context.SaveChangesAsync();
 
         // Action
         BizLicApplicationCmdResp? resp = await _bizLicAppRepository.SaveBizLicApplicationAsync(cmd, CancellationToken.None);
         spd_application? updatedApp = _context.spd_applications
             .Expand(a => a.spd_CurrentExpiredLicenceId)
-            .Expand(a => a.spd_ApplicantId_contact)
             .Expand(a => a.spd_ServiceTypeId)
             .Expand(a => a.spd_application_spd_licencecategory)
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
