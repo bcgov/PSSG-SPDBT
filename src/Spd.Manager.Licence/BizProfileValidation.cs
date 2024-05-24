@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Spd.Manager.Licence;
 public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpdateRequest>
@@ -21,5 +21,6 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.SoleProprietorSwlPhoneNumber)
             .NotEmpty()
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
+        //todo: add rule for branches
     }
 }

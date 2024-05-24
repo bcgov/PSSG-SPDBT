@@ -4,6 +4,7 @@ using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Delegates;
@@ -60,6 +61,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IOptionSetRepository, OptionSetRepository>();
             configurationServices.Services.AddTransient<IAddressRepository, AddressRepository>();
             configurationServices.Services.AddTransient<IWorkerLicenceCategoryRepository, WorkerLicenceCategoryRepository>();
+            configurationServices.Services.AddTransient<IBizContactRepository, BizContactRepository>();
         }
     }
 }
