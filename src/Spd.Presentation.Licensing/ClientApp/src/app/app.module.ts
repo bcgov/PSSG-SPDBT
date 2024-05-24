@@ -15,16 +15,6 @@ import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
 
-// export function appInitializer(configService: ConfigService) {
-// 	return () => {
-// 		return configService.getConfigs().pipe(
-// 			tap((configs) => {
-// 				console.debug('[appInitializer] configs', configs);
-// 			})
-// 		);
-// 	};
-// }
-
 @NgModule({
 	declarations: [AppComponent, LandingComponent],
 	imports: [
@@ -47,15 +37,7 @@ import { SharedModule } from './shared/shared.module';
 		ApiModule.forRoot({ rootUrl: '' }),
 		SharedModule,
 	],
-	providers: [
-		// {
-		// 	provide: APP_INITIALIZER,
-		// 	useFactory: appInitializer,
-		// 	deps: [ConfigService],
-		// 	multi: true,
-		// },
-		provideHotToastConfig(),
-	],
+	providers: [provideHotToastConfig()],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
