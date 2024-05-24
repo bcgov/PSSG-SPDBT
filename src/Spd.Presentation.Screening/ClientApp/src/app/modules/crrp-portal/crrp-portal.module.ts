@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { CommonTermsAndCondsComponent } from './common-terms-and-conds.component';
+import { CrrpTermsAndCondsComponent } from './crrp-terms-and-conds.component';
 import { ApplicationStatusesComponent } from './components/application-statuses.component';
 import { CriminalRecordChecksComponent } from './components/criminal-record-checks.component';
 import { CrrpHeaderComponent } from './components/crrp-header.component';
@@ -51,7 +51,7 @@ import { InvitationUserComponent } from './invitation-user.component';
 		CrrpPaymentManualComponent,
 		CrrpPaymentErrorComponent,
 		CrrpFirstTimeTermsAndCondsComponent,
-		CommonTermsAndCondsComponent,
+		CrrpTermsAndCondsComponent,
 		TermsAndConditionsComponent,
 		TermsTextComponent,
 	],
