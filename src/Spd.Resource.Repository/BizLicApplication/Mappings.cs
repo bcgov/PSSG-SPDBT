@@ -48,6 +48,10 @@ internal class Mappings : Profile
           .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
           .IncludeBase<BizLicApplication, spd_application>();
+
+        _ = CreateMap<spd_application, BizLicApplicationResp>()
+            .IncludeBase<BizLicApplication, spd_application>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account.accountid));
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
