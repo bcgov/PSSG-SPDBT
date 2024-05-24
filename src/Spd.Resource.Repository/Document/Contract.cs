@@ -37,6 +37,7 @@ namespace Spd.Resource.Repository.Document
         public DateOnly? ExpiryDate { get; set; }
         public Guid? ContactId { get; set; }
         public Guid? LicenceId { get; set; }
+        public Guid? AccountId { get; set; }
         public string? Folder { get; set; }
     }
 
