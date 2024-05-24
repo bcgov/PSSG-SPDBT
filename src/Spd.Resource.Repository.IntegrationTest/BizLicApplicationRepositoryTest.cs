@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetup>
@@ -21,6 +22,47 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         _bizLicAppRepository = testSetup.ServiceProvider.GetRequiredService<IBizLicApplicationRepository>();
         _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().CreateChangeOverwrite();
+    }
+
+    [Fact]
+    public async Task GetBizLicApplicationAsync_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        account biz = new();
+        biz.name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}";
+        biz.accountid = bizId;
+        _context.AddToaccounts(biz);
+
+        Guid licenceApplicationId = Guid.NewGuid();
+        spd_application app = new();
+        app.spd_firstname = "firstName";
+        app.spd_lastname = "lastName";
+        app.spd_middlename1 = "middleName1";
+        app.spd_middlename2 = "middleName2";
+        app.spd_applicationid = licenceApplicationId;
+        _context.AddTospd_applications(app);
+        _context.SetLink(app, nameof(app.spd_ApplicantId_account), biz);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _bizLicAppRepository.GetBizLicApplicationAsync(licenceApplicationId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<BizLicApplicationResp>(result);
+        Assert.Equal(bizId, result.BizId);
+        Assert.Equal(app.spd_firstname, result.GivenName);
+        Assert.Equal(app.spd_lastname, result.Surname);
+        Assert.Equal(app.spd_middlename1, result.MiddleName1);
+        Assert.Equal(app.spd_middlename2, result.MiddleName2);
+    }
+
+    [Fact]
+    public async Task GetBizLicApplicationAsync_BizNotFound_Throw_Exception()
+    {
+        // Act and Assert
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizLicAppRepository.GetBizLicApplicationAsync(Guid.NewGuid(), CancellationToken.None));
     }
 
     [Fact]
