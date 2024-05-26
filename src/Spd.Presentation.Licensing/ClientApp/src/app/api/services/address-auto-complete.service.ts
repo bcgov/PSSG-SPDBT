@@ -61,9 +61,9 @@ export class AddressAutoCompleteService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, AddressAutoCompleteService.ApiMetadataAddressGetPath, 'get');
     if (params) {
-      rb.query('search', params.search, {"style":"form"});
-      rb.query('country', params.country, {"style":"form"});
-      rb.query('lastId', params.lastId, {"style":"form"});
+      rb.query('search', params.search, {});
+      rb.query('country', params.country, {});
+      rb.query('lastId', params.lastId, {});
     }
 
     return this.http.request(rb.build({
@@ -142,7 +142,7 @@ export class AddressAutoCompleteService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, AddressAutoCompleteService.ApiMetadataAddressIdGetPath, 'get');
     if (params) {
-      rb.path('id', params.id, {"style":"simple"});
+      rb.path('id', params.id, {});
     }
 
     return this.http.request(rb.build({

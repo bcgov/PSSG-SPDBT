@@ -55,4 +55,17 @@ export class FormGroupValidators {
 			}
 		};
 	}
+
+	public static atleastonerequired(controlName1: string, controlName2: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control1 = controls.get(controlName1);
+			const control2 = controls.get(controlName2);
+
+			if (!control1?.value && !control2?.value) {
+				return { atleastonerequired: true };
+			} else {
+				return null;
+			}
+		};
+	}
 }

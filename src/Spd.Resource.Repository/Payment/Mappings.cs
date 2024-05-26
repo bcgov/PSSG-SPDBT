@@ -41,6 +41,7 @@ namespace Spd.Resource.Repository.Payment
                 .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_ApplicationId.spd_licenceapplicationtype)))
                 .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_ApplicationId.spd_name))
                 .ForMember(d => d.Refunded, opt => opt.MapFrom(s => s.statuscode == (int)PaymentStatusCodeOptionSet.Refunded))
+                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.spd_ApplicationId.spd_emailaddress1))
                 .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s.spd_ApplicationId._spd_servicetypeid_value)));
         }
 

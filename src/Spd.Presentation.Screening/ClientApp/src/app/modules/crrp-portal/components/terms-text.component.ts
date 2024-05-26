@@ -217,7 +217,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 				max-height: 400px;
 				overflow-y: auto;
 				box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-				font-size: smaller;
 			}
 		`,
 	],

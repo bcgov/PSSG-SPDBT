@@ -30,6 +30,7 @@ namespace Spd.Resource.Repository.Payment
         public PaymentTypeEnum? PaymentType { get; set; }
         public bool? Refunded { get; set; } = null;
         public ServiceTypeEnum? ServiceType { get; set; }
+        public string? Email { get; set; }
     }
 
     public abstract record PaymentCmd;

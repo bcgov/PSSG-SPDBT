@@ -50,7 +50,7 @@ export class ApplicantProfileService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantIdGetPath, 'get');
     if (params) {
-      rb.path('id', params.id, {"style":"simple"});
+      rb.path('id', params.id, {});
     }
 
     return this.http.request(rb.build({
@@ -183,7 +183,7 @@ export class ApplicantProfileService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantApplicantIdPutPath, 'put');
     if (params) {
-      rb.path('applicantId', params.applicantId, {"style":"simple"});
+      rb.path('applicantId', params.applicantId, {});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -309,8 +309,8 @@ export class ApplicantProfileService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantMergeOldApplicantIdNewApplicantIdGetPath, 'get');
     if (params) {
-      rb.path('oldApplicantId', params.oldApplicantId, {"style":"simple"});
-      rb.path('newApplicantId', params.newApplicantId, {"style":"simple"});
+      rb.path('oldApplicantId', params.oldApplicantId, {});
+      rb.path('newApplicantId', params.newApplicantId, {});
     }
 
     return this.http.request(rb.build({

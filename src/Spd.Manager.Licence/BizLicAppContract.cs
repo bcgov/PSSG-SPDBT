@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;

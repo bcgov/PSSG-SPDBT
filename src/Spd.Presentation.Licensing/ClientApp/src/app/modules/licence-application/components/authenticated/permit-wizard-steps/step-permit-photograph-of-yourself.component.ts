@@ -7,7 +7,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself',
 	template: `
-		<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New; else isRenewOrUpdate">
+		<ng-container *ngIf="applicationTypeCode === applicationTypeCodeNew; else isRenewOrUpdate">
 			<app-step-permit-photograph-of-yourself-new [form]="form"></app-step-permit-photograph-of-yourself-new>
 		</ng-container>
 
@@ -20,7 +20,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	styles: [],
 })
 export class StepPermitPhotographOfYourselfComponent implements LicenceChildStepperStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
+	applicationTypeCodeNew = ApplicationTypeCode.New;
 
 	form: FormGroup = this.permitApplicationService.photographOfYourselfFormGroup;
 

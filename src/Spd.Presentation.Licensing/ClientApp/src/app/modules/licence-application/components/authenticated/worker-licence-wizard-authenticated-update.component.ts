@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
@@ -8,7 +8,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
-import { distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { LicenceApplicationService } from '../../services/licence-application.service';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-steps/steps-worker-licence-review-authenticated.component';
@@ -23,6 +23,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 					linear
 					labelPosition="bottom"
 					[orientation]="orientation"
+					class="mat-stepper-disable-header-navigation"
 					(selectionChange)="onStepSelectionChange($event)"
 					#stepper
 				>
@@ -39,6 +40,9 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 					<mat-step completed="false">
 						<ng-template matStepLabel>Licence Updates</ng-template>
 						<app-steps-worker-licence-updates-authenticated
+							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+							[hasBcscNameChanged]="hasBcscNameChanged"
+							[hasGenderChanged]="hasGenderChanged"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -49,7 +53,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-worker-licence-review-authenticated
-							[applicationTypeCode]="applicationTypeCodeUpdate"
+							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onSubmitStep()"
@@ -68,9 +72,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit {
-	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
-
+export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
 	newLicenceCost = 0;
 
@@ -82,6 +84,13 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	stepsLicenceUpdatesComponent!: StepsWorkerLicenceUpdatesAuthenticatedComponent;
 	@ViewChild(StepsWorkerLicenceReviewAuthenticatedComponent)
 	stepsReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
+
+	applicationTypeCode!: ApplicationTypeCode;
+	showStepDogsAndRestraints = false;
+	hasBcscNameChanged = false;
+	hasGenderChanged = false;
+
+	private licenceModelChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -102,6 +111,30 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
+
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: boolean) => {
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				this.showStepDogsAndRestraints = this.licenceApplicationService.licenceModelFormGroup.get(
+					'categorySecurityGuardFormGroup.isInclude'
+				)?.value;
+
+				this.hasBcscNameChanged = this.licenceApplicationService.licenceModelFormGroup.get(
+					'personalInformationData.hasBcscNameChanged'
+				)?.value;
+
+				this.hasGenderChanged = this.licenceApplicationService.licenceModelFormGroup.get(
+					'personalInformationData.hasGenderChanged'
+				)?.value;
+			}
+		);
+	}
+
+	ngOnDestroy() {
+		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onGoToNextStep(): void {
@@ -145,7 +178,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 
 	onChildNextStep() {
 		this.stepsLicenceUpdatesComponent?.onGoToNextStep();
-		// this.updateCompleteStatus();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
