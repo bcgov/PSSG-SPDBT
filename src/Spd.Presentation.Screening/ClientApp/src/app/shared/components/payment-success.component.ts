@@ -72,24 +72,32 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</div>
 		</div>
 
-		<div
-			class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12"
-			*ngIf="isApplicationReceived; else noApplicationReceivedMessage"
-		>
-			<div class="lead fs-5 mt-4">
-				Thank you for submitting your application to the Criminal Records Review Program.
-			</div>
-			<div class="lead fs-5 my-4">
-				Your application will be reviewed shortly. We will contact you if further information is required.
+		<div class="row">
+			<div
+				class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12"
+				*ngIf="isApplicationReceived; else noApplicationReceivedMessage"
+			>
+				<div class="lead fs-5 mt-4">
+					Thank you for submitting your application to the Criminal Records Review Program. A confirmation email has
+					been sent to
+					<strong>{{ sendEmailTo }}</strong
+					>.
+				</div>
+				<div class="lead fs-5 my-4">
+					Your application will be reviewed shortly, and we will contact you if further information is required.
+				</div>
 			</div>
 		</div>
 
 		<ng-template #noApplicationReceivedMessage>
 			<div class="row" *ngIf="sendEmailTo; else successMessage">
-				<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+				<div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
 					<div class="lead fs-5 mb-4">
 						Your payment has been received and your application will be reviewed shortly. You will be contacted if it is
-						found to be incomplete or inaccurate. An email with a receipt has been sent to:
+						found to be incomplete or inaccurate.
+					</div>
+					<div class="lead fs-5 my-4">
+						An email with a receipt has been sent to:
 						<strong>{{ sendEmailTo }}</strong
 						>.
 					</div>
@@ -98,10 +106,10 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 			<ng-template #successMessage>
 				<div class="row">
-					<div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 col-sm-12">
+					<div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
 						<div class="lead fs-5 mb-4">
-							Thank you for your payment. This application will be reviewed shortly. We will contact the applicant if
-							further information is required.
+							Thank you for your payment. This application will be reviewed shortly, and we will contact you if further
+							information is required.
 						</div>
 					</div>
 				</div>
@@ -114,7 +122,6 @@ export class PaymentSuccessComponent implements OnInit {
 	isBackRoute = false;
 	appConstants = SPD_CONSTANTS;
 
-	@Input() sendEmailTo: string | null = null;
 	@Input() isApplicationReceived = false;
 
 	private _payment: PaymentResponse | null = null;
@@ -150,5 +157,9 @@ export class PaymentSuccessComponent implements OnInit {
 
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();
+	}
+
+	get sendEmailTo(): string | null {
+		return this.payment?.email ?? null;
 	}
 }

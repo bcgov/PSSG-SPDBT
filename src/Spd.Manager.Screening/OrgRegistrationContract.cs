@@ -49,7 +49,13 @@ namespace Spd.Manager.Screening
         public bool RequireDuplicateCheck { get; set; } = true;
     }
 
-
+    /// <summary>
+    /// for Anonymous OrgRegistration
+    /// </summary>
+    public class AnonymousOrgRegistrationCreateRequest : OrgRegistrationCreateRequest
+    {
+        public string Recaptcha { get; set; } = null!;
+    }
 
     public enum RegistrationTypeCode
     {
@@ -183,17 +189,26 @@ namespace Spd.Manager.Screening
 
             RuleFor(r => r.GenericEmail)
                 .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
+                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes && string.IsNullOrWhiteSpace(r.GenericPhoneNumber));
 
             RuleFor(r => r.GenericPhoneNumber)
                 .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes);
+                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes && string.IsNullOrWhiteSpace(r.GenericEmail));
 
             RuleFor(r => r.PortalUserIdentityTypeCode)
                 .IsInEnum()
                 .When(r => r.PortalUserIdentityTypeCode.HasValue);
         }
     }
+
+    public class AnonymousOrgRegistrationCreateRequestValidator : AbstractValidator<AnonymousOrgRegistrationCreateRequest>
+    {
+        public AnonymousOrgRegistrationCreateRequestValidator()
+        {
+            Include(new OrgRegistrationCreateRequestValidator());
+        }
+    }
+
     public class OrgRegistrationCreateResponse
     {
         public bool IsDuplicateCheckRequired { get; set; } = false;

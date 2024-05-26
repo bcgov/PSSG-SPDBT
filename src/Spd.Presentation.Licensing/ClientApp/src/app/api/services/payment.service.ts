@@ -54,7 +54,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiUnauthLicenceApplicationIdPaymentLinkPostPath, 'post');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -137,23 +137,23 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiUnauthLicencePaymentResultGetPath, 'get');
     if (params) {
-      rb.query('trnApproved', params.trnApproved, {"style":"form"});
-      rb.query('messageText', params.messageText, {"style":"form"});
-      rb.query('cardType', params.cardType, {"style":"form"});
-      rb.query('trnOrderId', params.trnOrderId, {"style":"form"});
-      rb.query('trnAmount', params.trnAmount, {"style":"form"});
-      rb.query('paymentMethod', params.paymentMethod, {"style":"form"});
-      rb.query('trnDate', params.trnDate, {"style":"form"});
-      rb.query('ref1', params.ref1, {"style":"form"});
-      rb.query('ref2', params.ref2, {"style":"form"});
-      rb.query('ref3', params.ref3, {"style":"form"});
-      rb.query('pbcTxnNumber', params.pbcTxnNumber, {"style":"form"});
-      rb.query('trnNumber', params.trnNumber, {"style":"form"});
-      rb.query('hashValue', params.hashValue, {"style":"form"});
-      rb.query('pbcRefNumber', params.pbcRefNumber, {"style":"form"});
-      rb.query('glDate', params.glDate, {"style":"form"});
-      rb.query('paymentAuthCode', params.paymentAuthCode, {"style":"form"});
-      rb.query('revenue', params.revenue, {"style":"form"});
+      rb.query('trnApproved', params.trnApproved, {});
+      rb.query('messageText', params.messageText, {});
+      rb.query('cardType', params.cardType, {});
+      rb.query('trnOrderId', params.trnOrderId, {});
+      rb.query('trnAmount', params.trnAmount, {});
+      rb.query('paymentMethod', params.paymentMethod, {});
+      rb.query('trnDate', params.trnDate, {});
+      rb.query('ref1', params.ref1, {});
+      rb.query('ref2', params.ref2, {});
+      rb.query('ref3', params.ref3, {});
+      rb.query('pbcTxnNumber', params.pbcTxnNumber, {});
+      rb.query('trnNumber', params.trnNumber, {});
+      rb.query('hashValue', params.hashValue, {});
+      rb.query('pbcRefNumber', params.pbcRefNumber, {});
+      rb.query('glDate', params.glDate, {});
+      rb.query('paymentAuthCode', params.paymentAuthCode, {});
+      rb.query('revenue', params.revenue, {});
     }
 
     return this.http.request(rb.build({
@@ -230,7 +230,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiUnauthLicencePaymentsPaymentIdGetPath, 'get');
     if (params) {
-      rb.path('paymentId', params.paymentId, {"style":"simple"});
+      rb.path('paymentId', params.paymentId, {});
     }
 
     return this.http.request(rb.build({
@@ -291,7 +291,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiUnauthLicenceApplicationIdPaymentAttemptsGetPath, 'get');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
     }
 
     return this.http.request(rb.build({
@@ -352,7 +352,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiUnauthLicenceApplicationIdPaymentReceiptGetPath, 'get');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
     }
 
     return this.http.request(rb.build({
@@ -413,7 +413,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiUnauthLicenceApplicationIdManualPaymentFormGetPath, 'get');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
     }
 
     return this.http.request(rb.build({
@@ -479,7 +479,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthLicenceApplicationIdPaymentLinkPostPath, 'post');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -562,23 +562,23 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthLicencePaymentResultGetPath, 'get');
     if (params) {
-      rb.query('trnApproved', params.trnApproved, {"style":"form"});
-      rb.query('messageText', params.messageText, {"style":"form"});
-      rb.query('cardType', params.cardType, {"style":"form"});
-      rb.query('trnOrderId', params.trnOrderId, {"style":"form"});
-      rb.query('trnAmount', params.trnAmount, {"style":"form"});
-      rb.query('paymentMethod', params.paymentMethod, {"style":"form"});
-      rb.query('trnDate', params.trnDate, {"style":"form"});
-      rb.query('ref1', params.ref1, {"style":"form"});
-      rb.query('ref2', params.ref2, {"style":"form"});
-      rb.query('ref3', params.ref3, {"style":"form"});
-      rb.query('pbcTxnNumber', params.pbcTxnNumber, {"style":"form"});
-      rb.query('trnNumber', params.trnNumber, {"style":"form"});
-      rb.query('hashValue', params.hashValue, {"style":"form"});
-      rb.query('pbcRefNumber', params.pbcRefNumber, {"style":"form"});
-      rb.query('glDate', params.glDate, {"style":"form"});
-      rb.query('paymentAuthCode', params.paymentAuthCode, {"style":"form"});
-      rb.query('revenue', params.revenue, {"style":"form"});
+      rb.query('trnApproved', params.trnApproved, {});
+      rb.query('messageText', params.messageText, {});
+      rb.query('cardType', params.cardType, {});
+      rb.query('trnOrderId', params.trnOrderId, {});
+      rb.query('trnAmount', params.trnAmount, {});
+      rb.query('paymentMethod', params.paymentMethod, {});
+      rb.query('trnDate', params.trnDate, {});
+      rb.query('ref1', params.ref1, {});
+      rb.query('ref2', params.ref2, {});
+      rb.query('ref3', params.ref3, {});
+      rb.query('pbcTxnNumber', params.pbcTxnNumber, {});
+      rb.query('trnNumber', params.trnNumber, {});
+      rb.query('hashValue', params.hashValue, {});
+      rb.query('pbcRefNumber', params.pbcRefNumber, {});
+      rb.query('glDate', params.glDate, {});
+      rb.query('paymentAuthCode', params.paymentAuthCode, {});
+      rb.query('revenue', params.revenue, {});
     }
 
     return this.http.request(rb.build({
@@ -655,7 +655,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthLicencePaymentsPaymentIdGetPath, 'get');
     if (params) {
-      rb.path('paymentId', params.paymentId, {"style":"simple"});
+      rb.path('paymentId', params.paymentId, {});
     }
 
     return this.http.request(rb.build({
@@ -716,7 +716,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthLicenceApplicationIdPaymentAttemptsGetPath, 'get');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
     }
 
     return this.http.request(rb.build({
@@ -777,7 +777,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthLicenceApplicationIdPaymentReceiptGetPath, 'get');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
     }
 
     return this.http.request(rb.build({
@@ -838,7 +838,7 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthLicenceApplicationIdManualPaymentFormGetPath, 'get');
     if (params) {
-      rb.path('applicationId', params.applicationId, {"style":"simple"});
+      rb.path('applicationId', params.applicationId, {});
     }
 
     return this.http.request(rb.build({
@@ -900,8 +900,8 @@ export class PaymentService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiLicensingPaymentSecureLinkGetPath, 'get');
     if (params) {
-      rb.query('encodedAppId', params.encodedAppId, {"style":"form"});
-      rb.query('encodedPaymentId', params.encodedPaymentId, {"style":"form"});
+      rb.query('encodedAppId', params.encodedAppId, {});
+      rb.query('encodedPaymentId', params.encodedPaymentId, {});
     }
 
     return this.http.request(rb.build({

@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { Subscription } from 'rxjs';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitContactInformationComponent } from './step-permit-contact-information.component';
 import { StepPermitMailingAddressComponent } from './step-permit-mailing-address.component';
@@ -59,19 +57,15 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsPermitContactComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	readonly STEP_RESIDENTIAL_ADDRESS = 1;
 	readonly STEP_MAILING_ADDRESS = 2;
 	readonly STEP_CONTACT_INFORMATION = 3;
 
-	private authenticationSubscription!: Subscription;
-	private licenceModelChangedSubscription!: Subscription;
-
-	showSaveAndExit = false;
-	isFormValid = false;
-	showMailingAddressStep!: boolean;
-
-	applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isFormValid = false;
+	@Input() showSaveAndExit = false;
+	@Input() showMailingAddressStep = false;
 
 	@ViewChild(StepPermitResidentialAddressComponent)
 	stepResidentialAddressComponent!: StepPermitResidentialAddressComponent;
@@ -79,40 +73,8 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent impleme
 	@ViewChild(StepPermitContactInformationComponent)
 	stepContactInformationComponent!: StepPermitContactInformationComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private permitApplicationService: PermitApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		// default it
-		this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
-			'residentialAddress.isMailingTheSameAsResidential'
-		)?.value;
-
-		this.licenceModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
-			(_resp: any) => {
-				// console.debug('permitModelValueChanges$', _resp);
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-
-				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
-					'residentialAddress.isMailingTheSameAsResidential'
-				)?.value;
-
-				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.authenticationSubscription) this.authenticationSubscription.unsubscribe();
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {

@@ -16,7 +16,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 
 						<p class="mb-4">Read, download, and accept the Terms of Use to continue.</p>
 
-						<app-common-terms-and-conds (isSuccess)="onIsSuccess()"></app-common-terms-and-conds>
+						<app-crrp-terms-and-conds (isSuccess)="onIsSuccess()"></app-crrp-terms-and-conds>
 					</div>
 				</div>
 			</section>

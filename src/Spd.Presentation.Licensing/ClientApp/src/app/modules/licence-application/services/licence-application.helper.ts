@@ -737,7 +737,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		let updatedList = [...WorkerCategoryTypes];
 
 		categoryList.forEach((item) => {
-			updatedList = updatedList.filter((cat) => !invalidCategories[item].includes(cat.code as WorkerCategoryTypeCode));
+			updatedList = updatedList.filter(
+				(cat) => !invalidCategories[item as WorkerCategoryTypeCode]?.includes(cat.code as WorkerCategoryTypeCode)
+			);
 		});
 
 		return [...updatedList];

@@ -18,7 +18,6 @@ import {
 } from 'src/app/api/models';
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/application-portal-statistics-type.model';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -477,7 +476,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 				.pipe(
 					tap((res: ApplicationStatisticsResponse) => {
 						const applicationStatistics = res.statistics ?? {};
-						this.count = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity];
+						this.count = applicationStatistics.VerifyIdentity ?? 0;
 					})
 				);
 		} else if (this.portal == PortalTypeCode.Psso) {
@@ -488,7 +487,7 @@ export class IdentifyVerificationCommonComponent implements OnInit {
 				.pipe(
 					tap((res: ApplicationStatisticsResponse) => {
 						const applicationStatistics = res.statistics ?? {};
-						this.count = applicationStatistics[ApplicationPortalStatisticsTypeCode.VerifyIdentity];
+						this.count = applicationStatistics.VerifyIdentity ?? 0;
 					})
 				);
 		}

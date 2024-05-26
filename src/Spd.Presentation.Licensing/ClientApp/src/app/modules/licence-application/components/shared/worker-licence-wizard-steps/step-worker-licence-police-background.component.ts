@@ -63,11 +63,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 									</div>
 								</div>
 
-								<app-alert
-									type="danger"
-									icon="error"
-									*ngIf="policeOfficerRoleCode.value === policeOfficerRoleCodes.PoliceOfficer"
-								>
+								<app-alert type="danger" icon="error" *ngIf="form.hasError('nopoliceofficer')">
 									A member of a police force may not hold a security worker licence. Your application for a security
 									worker licence will NOT be accepted.
 								</app-alert>

@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceAliasesComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-aliases.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
@@ -11,8 +10,6 @@ import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from '@app/mo
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicenceResidentialAddressComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-residential-address.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { StepWorkerLicenceReprintComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-reprint.component';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-worker-licence-personal-information-anonymous.component';
 
@@ -149,10 +146,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceIdentificationAnonymousComponent
-	extends BaseWizardStepComponent
-	implements OnInit, OnDestroy
-{
+export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWizardStepComponent {
 	readonly STEP_PERSONAL_INFORMATION = 0;
 	readonly STEP_ALIASES = 1;
 	readonly STEP_CITIZENSHIP = 2;
@@ -164,12 +158,15 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	readonly STEP_CONTACT_INFORMATION = 8;
 	readonly STEP_REPRINT = 9;
 
-	private licenceModelChangedSubscription!: Subscription;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isFormValid = false;
+	@Input() showMailingAddressStep!: boolean;
+	@Input() showCitizenshipStep!: boolean;
+	@Input() showPhotographOfYourself = true;
+	@Input() hasGenderChanged = false;
+	@Input() hasLegalNameChanged = false;
+	@Input() showReprint = false;
 
-	isFormValid = false;
-	showMailingAddressStep!: boolean;
-
-	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepWorkerLicencePersonalInformationAnonymousComponent)
@@ -192,36 +189,10 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 	stepLicenceReprintComponent!: StepWorkerLicenceReprintComponent;
 
 	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private licenceApplicationService: LicenceApplicationService
-	) {
+		override commonApplicationService: CommonApplicationService
+	) // private licenceApplicationService: LicenceApplicationService
+	{
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		// default it
-		this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
-			'residentialAddress.isMailingTheSameAsResidential'
-		)?.value;
-
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: boolean) => {
-				// console.debig('StepIdentificationAnonymousComponent licenceModelValueChanges$', _resp);
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-
-				this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
-					'residentialAddress.isMailingTheSameAsResidential'
-				)?.value;
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onGoToContactStep() {
@@ -256,43 +227,32 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent
 		return false;
 	}
 
-	get showCitizenshipStep(): boolean {
-		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			return false;
-		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
-			const form = this.licenceApplicationService.citizenshipFormGroup;
-			return form.value.isCanadianCitizen === BooleanTypeCode.No;
-		}
+	// get showPhotographOfYourself(): boolean {
+	// 	if (this.applicationTypeCode !== ApplicationTypeCode.Update) return true;
+	// 	return this.hasGenderChanged;
+	// }
 
-		return true;
-	}
+	// // for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	// get hasGenderChanged(): boolean {
+	// 	if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
 
-	get showPhotographOfYourself(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return true;
-		return this.hasGenderChanged;
-	}
+	// 	const form = this.licenceApplicationService.personalInformationFormGroup;
+	// 	return !!form.value.hasGenderChanged;
+	// }
 
-	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-	get hasGenderChanged(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
+	// // for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	// get hasLegalNameChanged(): boolean {
+	// 	if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
 
-		const form = this.licenceApplicationService.personalInformationFormGroup;
-		return !!form.value.hasGenderChanged;
-	}
+	// 	const form = this.licenceApplicationService.personalInformationFormGroup;
+	// 	return !!form.value.hasLegalNameChanged;
+	// }
 
-	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-	get hasLegalNameChanged(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
+	// // for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
+	// // and name change
+	// get showReprint(): boolean {
+	// 	if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
 
-		const form = this.licenceApplicationService.personalInformationFormGroup;
-		return !!form.value.hasLegalNameChanged;
-	}
-
-	// for Update flow: only show unauthenticated user option to upload a new photo if they changed their sex selection earlier in the application
-	// and name change
-	get showReprint(): boolean {
-		if (this.applicationTypeCode !== ApplicationTypeCode.Update) return false;
-
-		return this.hasGenderChanged || this.hasLegalNameChanged;
-	}
+	// 	return this.hasGenderChanged || this.hasLegalNameChanged;
+	// }
 }

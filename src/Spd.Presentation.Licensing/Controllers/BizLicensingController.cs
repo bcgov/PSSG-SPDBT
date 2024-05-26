@@ -40,7 +40,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
-            if (bizUpsertRequest.BizId == Guid.Empty)
+            if (bizUpsertRequest.LicenceAppId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have application");
             return await _mediator.Send(new BizLicAppUpsertCommand(bizUpsertRequest), ct);
         }
@@ -110,5 +110,67 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
+
+        /// <summary>
+        /// Get Biz Application controlling members, include swl and non-swl
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/{bizId}/{applicationId}/controlling-members")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<ControllingMembers> GetControllerMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
+        {
+            return await _mediator.Send(new GetBizControllerMembersQuery(bizId, applicationId), ct);
+        }
+
+        /// <summary>
+        /// Upsert Biz Application controlling members, include swl and non-swl
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/{bizId}/{applicationId}/controlling-members")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<ActionResult> UpsertControllerMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] ControllingMembers members, CancellationToken ct)
+        {
+            await _mediator.Send(new UpsertBizControllerMembersCommand(bizId, applicationId, members), ct);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Get Biz Application employees
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/{bizId}/{applicationId}/employees")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<IEnumerable<SwlContactInfo>> GetEmployees([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
+        {
+            return await _mediator.Send(new GetBizEmployeesQuery(bizId, applicationId), ct);
+        }
+
+        /// <summary>
+        /// Upsert Biz Application employees
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/{bizId}/{applicationId}/employees")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<ActionResult> UpsertEmployees([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] IEnumerable<SwlContactInfo> employees, CancellationToken ct)
+        {
+            await _mediator.Send(new UpsertEmployeesCommand(bizId, applicationId, employees), ct);
+            return Ok();
+        }
     }
 }

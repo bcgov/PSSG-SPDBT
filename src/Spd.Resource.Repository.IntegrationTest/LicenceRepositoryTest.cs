@@ -2,7 +2,6 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -40,6 +39,10 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         Assert.NotNull(response);
         Assert.Equal("newEmployerName", response.EmployerName);
+
+        // Annihilate
+        _context.DeleteObject(lic);
+        await _context.SaveChangesAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -65,6 +68,11 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         Assert.NotNull(response);
         Assert.Equal(p.firstname, response.Items.First().LicenceHolderFirstName);
+
+        // Annihilate
+        _context.DeleteObject(lic);
+        _context.DeleteObject(p);
+        await _context.SaveChangesAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -90,22 +98,40 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         Assert.NotNull(response);
         Assert.Equal(biz.name, response.Items.First().LicenceHolderFirstName);
+
+        // Annihilate
+        _context.DeleteObject(lic);
+        _context.DeleteObject(biz);
+        await _context.SaveChangesAsync(CancellationToken.None);
     }
 
     [Fact]
     public async Task GetAsync_Licence_Correctly()
     {
         // Arrange
-        Guid licenceId = Guid.NewGuid();
-        spd_licence licence = new() { spd_licenceid = licenceId };
-        _context.AddTospd_licences(licence);
+        contact p = new();
+        p.firstname = $"{IntegrationTestSetup.DataPrefix}{new Random().Next(1000)}";
+        p.contactid = Guid.NewGuid();
+        _context.AddTocontacts(p);
+        spd_licence lic = new();
+        lic.spd_licenceid = Guid.NewGuid();
+        lic.spd_licencenumber = $"{IntegrationTestSetup.DataPrefix}{new Random().Next(1000)}";
+        _context.AddTospd_licences(lic);
+        _context.SetLink(lic, nameof(lic.spd_LicenceHolder_contact), p);
+        _context.SetLink(lic, nameof(lic.spd_LicenceType), _context.LookupServiceType(ServiceTypeEnum.BodyArmourPermit.ToString()));
         await _context.SaveChangesAsync(CancellationToken.None);
 
         // Action
-        var response = await _licRepo.GetAsync(licenceId, CancellationToken.None);
+        var response = await _licRepo.GetAsync((Guid)lic.spd_licenceid, CancellationToken.None);
 
         // Assert
         Assert.NotNull(response);
+        Assert.Equal(p.firstname, response.LicenceHolderFirstName);
+
+        // Annihilate
+        _context.DeleteObject(lic);
+        _context.DeleteObject(p);
+        await _context.SaveChangesAsync(CancellationToken.None);
     }
 
     [Fact]

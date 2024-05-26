@@ -158,9 +158,10 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.isFormValid = _resp;
 
 				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
+
+				this.updateCompleteStatus();
 			}
 		);
-		this.updateCompleteStatus();
 	}
 
 	ngOnDestroy() {
@@ -235,8 +236,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	// }
 
 	onNextStepperStep(stepper: MatStepper): void {
-		// this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -255,8 +254,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onGoToReview() {
-		// this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
@@ -264,8 +261,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onChildNextStep() {
-		// this.updateCompleteStatus();
-
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_BUSINESS_INFORMATION:
 				this.stepsBusinessInformationComponent?.onGoToNextStep();
@@ -314,6 +309,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		this.step2Complete = this.businessApplicationService.isStepLicenceSelectionComplete();
 		this.step3Complete = this.businessApplicationService.isStepContactInformationComplete();
 		this.step4Complete = this.businessApplicationService.isStepControllingMembersAndEmployeesComplete();
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
+
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	}
 }

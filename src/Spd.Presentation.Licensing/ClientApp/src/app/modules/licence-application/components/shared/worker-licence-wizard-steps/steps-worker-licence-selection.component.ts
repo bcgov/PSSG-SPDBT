@@ -1,12 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { AuthenticationService } from '@app/core/services/authentication.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCategoryComponent } from './step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from './step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceExpiredComponent } from './step-worker-licence-expired.component';
@@ -148,7 +145,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent implements OnInit, OnDestroy {
+export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponent {
 	// If step ordering changes, crucial  to update this <- look for this comment below
 	readonly STEP_TERMS = 0;
 	readonly STEP_SOLE_PROPRIETOR = 1;
@@ -159,12 +156,12 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	readonly STEP_RESTRAINTS = 6;
 	readonly STEP_LICENCE_TERM = 7;
 
-	private licenceModelChangedSubscription!: Subscription;
+	@Input() isLoggedIn = false;
+	@Input() showSaveAndExit = false;
+	@Input() isFormValid = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() showStepDogsAndRestraints = false;
 
-	isLoggedIn = false;
-	showSaveAndExit = false;
-	isFormValid = false;
-	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepWorkerLicenceTermsOfUseComponent)
@@ -188,34 +185,8 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@ViewChild(StepWorkerLicenceTermComponent)
 	licenceTermComponent!: StepWorkerLicenceTermComponent;
 
-	showStepDogsAndRestraints = false;
-
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private router: Router,
-		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: boolean) => {
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-
-				this.showStepDogsAndRestraints =
-					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
-
-				this.isLoggedIn = this.authenticationService.isLoggedIn();
-			}
-		);
 	}
 
 	onFormDogsValidNextStep() {
@@ -249,10 +220,6 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 			),
 			{ state: { applicationTypeCode: this.applicationTypeCode } }
 		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onExpiredLicenceNextStep(): void {

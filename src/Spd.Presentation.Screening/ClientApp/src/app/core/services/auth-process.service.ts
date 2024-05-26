@@ -235,7 +235,7 @@ export class AuthProcessService {
 
 			// SPDBT-1535 - if this is the first time logging in, override the next route.
 			if (this.authUserIdirService.idirUserWhoamiProfile?.isFirstTimeLogin) {
-				nextRoute = PssoRoutes.path(PssoRoutes.TERMS_AND_CONDITIONS);
+				nextRoute = PssoRoutes.path(PssoRoutes.ORG_TERMS_AND_CONDITIONS);
 			}
 
 			return Promise.resolve(nextRoute);
