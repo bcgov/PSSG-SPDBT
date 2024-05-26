@@ -9,6 +9,7 @@ export interface PaymentResponse {
   applicationId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   caseNumber?: null | string;
+  email?: null | string;
   licenceTermCode?: LicenceTermCode;
   message?: null | string;
   paidSuccess?: boolean;

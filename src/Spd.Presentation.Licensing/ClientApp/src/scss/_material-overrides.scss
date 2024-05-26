@@ -72,8 +72,13 @@ a {
 	background-color: var(--color-primary-lightest) !important;
 }
 
+// global - do not allow navigation by clicking on step
+// .mat-step-header {
+// 	pointer-events: none;
+// }
+
 // do not allow navigation by clicking on step
-.mat-step-header {
+.mat-stepper-disable-header-navigation .mat-step-header {
 	pointer-events: none;
 }
 

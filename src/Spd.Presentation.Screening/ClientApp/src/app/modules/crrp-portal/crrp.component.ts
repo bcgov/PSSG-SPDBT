@@ -36,7 +36,7 @@ export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
 			<!-- Hide the lhs menu when displaying the 'first time user' terms and conditions -->
 			<div
 				#firstTimeUserLink="routerLinkActive"
-				[routerLink]="[crrpRoutes.path(crrpRoutes.FIRST_TIME_USER)]"
+				[routerLink]="[crrpRoutes.path(crrpRoutes.ORG_TERMS_AND_CONDITIONS)]"
 				routerLinkActive="d-none"
 			></div>
 
@@ -215,7 +215,7 @@ export class CrrpComponent implements OnInit {
 		// );
 
 		if (this.authUserService.bceidUserInfoProfile?.isFirstTimeLogin) {
-			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.FIRST_TIME_USER));
+			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.ORG_TERMS_AND_CONDITIONS));
 			this.isReadyToDisplay = true;
 			return;
 		}

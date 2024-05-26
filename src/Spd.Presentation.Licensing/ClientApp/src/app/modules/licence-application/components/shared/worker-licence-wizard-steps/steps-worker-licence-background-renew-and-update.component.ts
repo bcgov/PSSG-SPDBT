@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
 import { StepWorkerLicenceFingerprintsComponent } from './step-worker-licence-fingerprints.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './step-worker-licence-mental-health-conditions.component';
@@ -18,14 +17,12 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-police-background>
 
-				<ng-container *ngIf="policeOfficerRoleCode !== policeOfficerRoleCodes.PoliceOfficer">
-					<app-wizard-footer
-						[isFormValid]="isFormValid"
-						(previousStepperStep)="onStepPrevious()"
-						(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
-						(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
-					></app-wizard-footer>
-				</ng-container>
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onStepPrevious()"
+					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -69,10 +66,7 @@ import { StepWorkerLicencePoliceBackgroundComponent } from './step-worker-licenc
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
-	extends BaseWizardStepComponent
-	implements OnInit, OnDestroy
-{
+export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent extends BaseWizardStepComponent {
 	readonly STEP_POLICE_BACKGROUND = 1;
 	readonly STEP_MENTAL_HEALTH_CONDITIONS = 2;
 	readonly STEP_CRIMINAL_HISTORY = 3;
@@ -81,11 +75,10 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 
-	private licenceModelChangedSubscription!: Subscription;
+	@Input() isFormValid = false;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() policeOfficerRoleCode: string | null = null;
 
-	isFormValid = false;
-
-	applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@ViewChild(StepWorkerLicencePoliceBackgroundComponent)
@@ -101,23 +94,6 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: boolean) => {
-				// console.debug('licenceModelValueChanges$', _resp);
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {
@@ -143,10 +119,5 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent
 				return this.fingerprintsComponent.isFormValid();
 		}
 		return false;
-	}
-
-	get policeOfficerRoleCode(): string {
-		const form = this.licenceApplicationService.policeBackgroundFormGroup;
-		return form.value.policeOfficerRoleCode;
 	}
 }

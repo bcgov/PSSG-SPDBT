@@ -4,6 +4,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
@@ -25,8 +26,13 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			#stepper
 		>
 			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel> Licence Selection </ng-template>
+				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-worker-licence-selection
+					[isLoggedIn]="false"
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -37,6 +43,10 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Background</ng-template>
 				<app-steps-worker-licence-background
+					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[policeOfficerRoleCode]="policeOfficerRoleCode"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -48,6 +58,10 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Identification</ng-template>
 				<app-steps-worker-licence-identification-anonymous
+					[isFormValid]="isFormValid"
+					[applicationTypeCode]="applicationTypeCode"
+					[showMailingAddressStep]="showMailingAddressStep"
+					[showCitizenshipStep]="showCitizenshipStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -88,8 +102,6 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 	styles: [],
 })
 export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
-	applicationTypeCode = ApplicationTypeCode.New;
-
 	readonly STEP_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_BACKGROUND = 1;
 	readonly STEP_IDENTIFICATION = 2;
@@ -104,8 +116,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	reviewSwlLabel = 'Review & Confirm';
 	// isSoleProprietor = false;
 
-	private licenceModelChangedSubscription!: Subscription;
-
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
 
@@ -117,6 +127,16 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
 	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
+
+	applicationTypeCode!: ApplicationTypeCode;
+	showSaveAndExit = false;
+	isFormValid = false;
+	showStepDogsAndRestraints = false;
+	showMailingAddressStep = false;
+	showCitizenshipStep = false;
+	policeOfficerRoleCode: string | null = null;
+
+	private licenceModelChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -133,17 +153,44 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.updateCompleteStatus();
+		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+			(_resp: boolean) => {
+				this.isFormValid = _resp;
 
-		// this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-		// 	(_resp: boolean) => {
-		// 		this.isSoleProprietor =
-		// 			this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
-		// 			BooleanTypeCode.Yes;
+				// 		this.isSoleProprietor =
+				// 			this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
+				// 			BooleanTypeCode.Yes;
 
-		// 		this.reviewSwlLabel = this.isSoleProprietor ? 'Review Worker' : 'Review & Confirm';
-		// 	}
-		// );
+				// 		this.reviewSwlLabel = this.isSoleProprietor ? 'Review Worker' : 'Review & Confirm';
+
+				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'applicationTypeData.applicationTypeCode'
+				)?.value;
+
+				this.showStepDogsAndRestraints =
+					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+
+				this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
+					'residentialAddress.isMailingTheSameAsResidential'
+				)?.value;
+
+				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+					'citizenshipData.isCanadianCitizen'
+				)?.value;
+
+				this.showCitizenshipStep =
+					this.applicationTypeCode === ApplicationTypeCode.New ||
+					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+
+				this.policeOfficerRoleCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'policeBackgroundData.policeOfficerRoleCode'
+				)?.value;
+
+				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+
+				this.updateCompleteStatus();
+			}
+		);
 	}
 
 	ngOnDestroy() {
@@ -207,8 +254,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.updateCompleteStatus();
-
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
 	}
@@ -227,8 +272,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onGoToReview() {
-		this.updateCompleteStatus();
-
 		setTimeout(() => {
 			// hack... does not navigate without the timeout
 			this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -247,7 +290,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 				this.stepIdentificationComponent?.onGoToNextStep();
 				break;
 		}
-		this.updateCompleteStatus();
 	}
 
 	private updateCompleteStatus(): void {
@@ -255,7 +297,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
 		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
-		// console.debug('iscomplete', this.step1Complete, this.step2Complete, this.step3Complete);
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
 	private payNow(licenceAppId: string): void {

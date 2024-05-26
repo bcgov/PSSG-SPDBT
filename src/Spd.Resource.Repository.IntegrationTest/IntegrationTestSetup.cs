@@ -4,6 +4,7 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizLicApplication;
+using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
@@ -55,6 +56,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IAddressRepository, AddressRepository>();
         serviceCollection.AddTransient<ILicenceRepository, LicenceRepository>();
         serviceCollection.AddTransient<IBizLicApplicationRepository, BizLicApplicationRepository>();
+        serviceCollection.AddTransient<IBizContactRepository, BizContactRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }

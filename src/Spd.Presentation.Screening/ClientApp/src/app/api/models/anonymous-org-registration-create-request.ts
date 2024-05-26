@@ -9,10 +9,6 @@ import { PayerPreferenceTypeCode } from './payer-preference-type-code';
 import { RegistrationTypeCode } from './registration-type-code';
 import { ScreeningsCountTypeCode } from './screenings-count-type-code';
 import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
-
-/**
- * for Anonymous OrgRegistration
- */
 export interface AnonymousOrgRegistrationCreateRequest {
   agreeToTermsAndConditions?: null | boolean;
   contactEmail?: null | string;

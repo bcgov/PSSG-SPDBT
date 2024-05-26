@@ -376,4 +376,10 @@ namespace Spd.Utilities.Dynamics
         Screening = 100000000,
         Licensing = 100000001
     }
+
+    public enum BizContactRoleOptionSet
+    {
+        ControllingMember = 100000000,
+        Employee = 100000001
+    }
 }
