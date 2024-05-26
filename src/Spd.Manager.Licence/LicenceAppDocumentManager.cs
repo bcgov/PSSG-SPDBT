@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
