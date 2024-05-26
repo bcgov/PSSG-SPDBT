@@ -1,14 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-citizenship.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-physical-characteristics.component';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { Subscription } from 'rxjs';
 import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-licence-wizard-steps/step-worker-licence-fingerprints.component';
 
 @Component({
@@ -92,24 +89,17 @@ import { StepWorkerLicenceFingerprintsComponent } from '../../shared/worker-lice
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsWorkerLicenceIdentificationAuthenticatedComponent
-	extends BaseWizardStepComponent
-	implements OnInit, OnDestroy
-{
+export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 1;
 	readonly STEP_FINGERPRINTS = 2;
 	readonly STEP_BC_DRIVERS_LICENCE = 3;
 	readonly STEP_HEIGHT_AND_WEIGHT = 4;
 	readonly STEP_PHOTO = 5;
 
-	showCitizenshipStep = true;
-	showSaveAndExit = false;
-
-	applicationTypeCode: ApplicationTypeCode | null = null;
-
-	private licenceModelChangedSubscription!: Subscription;
-
-	isFormValid = false;
+	@Input() isFormValid = false;
+	@Input() showCitizenshipStep = true;
+	@Input() showSaveAndExit = false;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepWorkerLicenceCitizenshipComponent) citizenshipComponent!: StepWorkerLicenceCitizenshipComponent;
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
@@ -120,37 +110,8 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
 	photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private licenceApplicationService: LicenceApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
-	}
-
-	ngOnInit(): void {
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
-			(_resp: boolean) => {
-				this.isFormValid = _resp;
-
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-					'applicationTypeData.applicationTypeCode'
-				)?.value;
-
-				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.New ||
-					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
-
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.licenceModelChangedSubscription) this.licenceModelChangedSubscription.unsubscribe();
 	}
 
 	onFingerprintStepPrevious(): void {

@@ -116,7 +116,7 @@ export class BizLicensingService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceLicenceAppIdFilesPostPath, 'post');
     if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {"style":"simple"});
+      rb.path('licenceAppId', params.licenceAppId, {});
       rb.body(params.body, 'multipart/form-data');
     }
 
