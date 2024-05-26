@@ -190,7 +190,6 @@ public record SwlContactInfo
 
 public record ContactInfo
 {
-    public Guid? BizContactId { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
     public string? GivenName { get; set; }
