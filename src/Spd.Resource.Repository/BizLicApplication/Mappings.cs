@@ -50,8 +50,14 @@ internal class Mappings : Profile
          .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
-         .IncludeBase<spd_application, BizLicApplication>()
-         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid));
+         .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
+         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_CurrentExpiredLicenceId.spd_expirydate)))
+         .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
+         .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
+         .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
+         .ForMember(d => d.OriginalLicenceTermCode, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetLicenceTermEnum(s.spd_CurrentExpiredLicenceId.spd_licenceterm)))
+         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
+         .IncludeBase<spd_application, BizLicApplication>();
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
