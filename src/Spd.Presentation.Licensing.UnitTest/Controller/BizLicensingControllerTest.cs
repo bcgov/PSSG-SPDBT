@@ -6,6 +6,7 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
+using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
@@ -33,6 +34,8 @@ public class BizLicensingControllerTest
 
         mockDpProvider.Setup(m => m.CreateProtector(It.IsAny<string>()))
                 .Returns(new Mock<ITimeLimitedDataProtector>().Object);
+        mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppUpsertCommand>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
 
@@ -51,6 +54,25 @@ public class BizLicensingControllerTest
     }
 
     [Fact]
+    public async void Post_SaveBusinessLicenceApplication_Return_BizLicAppCommandResponse()
+    {
+        BizLicAppUpsertRequest request = new() { BizId = Guid.NewGuid() };
+
+        var result = await sut.SaveBusinessLicenceApplication(request, CancellationToken.None);
+
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_SaveBusinessLicenceApplication_With_Empty_Guid_Throw_Exception()
+    {
+        BizLicAppUpsertRequest request = new();
+
+        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SaveBusinessLicenceApplication(request, CancellationToken.None));
+    }
+
+    [Fact]
     public async void Post_UploadLicenceAppFiles_Return_LicenceAppDocumentResponse_List()
     {
         LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance);
@@ -60,5 +82,4 @@ public class BizLicensingControllerTest
         Assert.IsType<List<LicenceAppDocumentResponse>>(result);
         mockMediator.Verify();
     }
-
 }

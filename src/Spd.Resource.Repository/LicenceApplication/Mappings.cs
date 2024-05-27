@@ -128,7 +128,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_permitpurposeother, opt => opt.MapFrom(s => s.PermitOtherRequiredReason))
          .ForMember(d => d.spd_resideincanada, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsCanadianResident)))
          .ForMember(d => d.spd_permitpurpose, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeOptionSets(s.PermitPurposeEnums)))
-         .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
+         .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
          .ForMember(d => d.spd_criminalchargesconvictionsdetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .ReverseMap()
@@ -168,13 +168,13 @@ internal class Mappings : Profile
          .ForMember(d => d.HasPreviousName, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_haspreviousnames)))
          .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_policebackgroundrole)))
-         .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
+         .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => SharedMappingFuncs.GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => GetEmployerAddressData(s)))
          .ForMember(d => d.IsCanadianResident, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_resideincanada)))
          .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
-         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
+         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
          .ForMember(d => d.SupervisorEmailAddress, opt => opt.MapFrom(s => s.spd_employeremail))
          .ForMember(d => d.SupervisorPhoneNumber, opt => opt.MapFrom(s => s.spd_employerphonenumber))
          .ForMember(d => d.SupervisorName, opt => opt.MapFrom(s => s.spd_employercontactname))
@@ -444,30 +444,6 @@ internal class Mappings : Profile
         if (reasons.Any(s => s == str)) return true;
 
         return false;
-    }
-
-    private static WorkerCategoryTypeEnum[] GetWorkerCategoryTypeEnums(ICollection<spd_licencecategory> categories)
-    {
-        List<WorkerCategoryTypeEnum> codes = new() { };
-        foreach (spd_licencecategory cat in categories)
-        {
-            codes.Add(Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(cat.spd_licencecategoryid)));
-        }
-        return codes.ToArray();
-    }
-
-    private static string? GetUploadedDocumentOptionSets(IEnumerable<UploadedDocumentEnum>? uploadDocs)
-    {
-        if (uploadDocs == null) return null;
-        var result = String.Join(',', uploadDocs.Select(p => ((int)Enum.Parse<UploadedDocumentOptionSet>(p.ToString())).ToString()).ToArray());
-        return string.IsNullOrWhiteSpace(result) ? null : result;
-    }
-
-    private static IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(string? optionsetStr)
-    {
-        if (optionsetStr == null) return null;
-        string[] strs = optionsetStr.Split(',');
-        return strs.Select(s => Enum.Parse<UploadedDocumentEnum>(Enum.GetName(typeof(UploadedDocumentOptionSet), Int32.Parse(s)))).ToList();
     }
 }
 

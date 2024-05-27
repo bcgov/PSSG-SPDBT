@@ -180,6 +180,7 @@ public record Alias
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
 }
+
 public record SwlContactInfo
 {
     public Guid? BizContactId { get; set; }
@@ -189,7 +190,6 @@ public record SwlContactInfo
 
 public record ContactInfo
 {
-    public Guid? BizContactId { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
     public string? GivenName { get; set; }

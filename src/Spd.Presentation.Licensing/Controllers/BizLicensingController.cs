@@ -38,9 +38,11 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
-        public async Task<Unit> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
+        public async Task<BizLicAppCommandResponse> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
-            return default;
+            if (bizUpsertRequest.BizId == Guid.Empty)
+                throw new ApiException(HttpStatusCode.BadRequest, "must have business");
+            return await _mediator.Send(new BizLicAppUpsertCommand(bizUpsertRequest), ct);
         }
 
         /// <summary>
