@@ -70,7 +70,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     {
         // Arrange
         Guid pInvestigatorLicenceId = Guid.NewGuid();
-        Guid pInvestigatorContactId = Guid.NewGuid();
 
         SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
             .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
@@ -88,7 +87,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
-            .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { ContactId = pInvestigatorContactId, LicenceId = pInvestigatorLicenceId })
+            .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
             .Without(a => a.LicenceAppId)
             .Create();
 
@@ -96,8 +95,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.AddTospd_licences(expiredLicence);
         account account = new() { accountid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
         _context.AddToaccounts(account);
-        contact pInvestigatorContact = new() { contactid = pInvestigatorContactId };
-        _context.AddTocontacts(pInvestigatorContact);
         spd_licence pInvestigatorLicence = new() { spd_licenceid = pInvestigatorLicenceId };
         _context.AddTospd_licences(pInvestigatorLicence);
         await _context.SaveChangesAsync();
@@ -145,7 +142,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     {
         // Arrange
         Guid pInvestigatorLicenceId = Guid.NewGuid();
-        Guid pInvestigatorContactId = Guid.NewGuid();
 
         SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
             .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
@@ -163,7 +159,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
-            .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { ContactId = pInvestigatorContactId, LicenceId = pInvestigatorLicenceId })
+            .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
             .Create();
 
         spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
@@ -172,8 +168,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.AddTospd_licences(expiredLicence);
         account account = new() { accountid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
         _context.AddToaccounts(account);
-        contact pInvestigatorContact = new() { contactid = pInvestigatorContactId };
-        _context.AddTocontacts(pInvestigatorContact);
         spd_licence pInvestigatorLicence = new() { spd_licenceid = pInvestigatorLicenceId };
         _context.AddTospd_licences(pInvestigatorLicence);
         await _context.SaveChangesAsync();
