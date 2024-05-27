@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.TempFileStorage;
@@ -14,6 +15,7 @@ public class LicenceAppDocumentManagerTest
     private Mock<IMapper> mockMapper = new();
     private Mock<ITempFileStorageService> mockTempFileStorageService = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
+    private Mock<IBizLicApplicationRepository> mockBizLicApplicationRepository = new();
 
     private LicenceAppDocumentManager sut;
 
@@ -25,6 +27,7 @@ public class LicenceAppDocumentManagerTest
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
         sut = new LicenceAppDocumentManager(mockLicAppRepo.Object,
+            mockBizLicApplicationRepository.Object,
             mockMapper.Object,
             mockTempFileStorageService.Object,
             mockDocRepo.Object);
