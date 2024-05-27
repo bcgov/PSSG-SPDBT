@@ -27,7 +27,7 @@ public class LicenceControllerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        mockMediator.Setup(m => m.Send(It.IsAny<ApplicantLicenceListQuery>(), CancellationToken.None))
+        mockMediator.Setup(m => m.Send(It.IsAny<LicenceListQuery>(), CancellationToken.None))
                .ReturnsAsync(new List<LicenceBasicResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<LicencePhotoQuery>(), CancellationToken.None))
                .ReturnsAsync(new FileResponse());

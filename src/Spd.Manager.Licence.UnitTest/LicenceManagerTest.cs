@@ -190,7 +190,7 @@ public class LicenceManagerTest
             }
         };
 
-        ApplicantLicenceListQuery request = new(applicantId);
+        LicenceListQuery request = new(applicantId);
 
         var result = await sut.Handle(request, CancellationToken.None);
 

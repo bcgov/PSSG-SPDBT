@@ -28,6 +28,20 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary> 
+        /// Get licences for login biz , only return active and Expired ones. 
+        /// Example: http://localhost:5114/api/biz/xxxx/licences 
+        /// </summary> 
+        /// <param name="bizId"></param> 
+        /// <returns></returns> 
+        [Route("api/applicants/{bizId}/licences")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBceid")]
+        public async Task<IEnumerable<LicenceBasicResponse>> GetBizLicences([FromRoute][Required] Guid bizId)
+        {
+            return await _mediator.Send(new LicenceListQuery(null, bizId));
+        }
+
+        /// <summary> 
         /// Get licences for login user , only return active and Expired ones. 
         /// Example: http://localhost:5114/api/applicants/xxxx/licences 
         /// </summary> 
@@ -36,9 +50,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/applicants/{applicantId}/licences")]
         [HttpGet]
         [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceBasicResponse>> GetLicences([FromRoute][Required] Guid applicantId)
+        public async Task<IEnumerable<LicenceBasicResponse>> GetApplicantLicences([FromRoute][Required] Guid applicantId)
         {
-            return await _mediator.Send(new ApplicantLicenceListQuery(applicantId));
+            return await _mediator.Send(new LicenceListQuery(applicantId, null));
         }
 
         /// <summary>
