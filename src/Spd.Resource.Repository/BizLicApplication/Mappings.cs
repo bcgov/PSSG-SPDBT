@@ -29,7 +29,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_requestdogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.UseDogs)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.spd_submittedon, opt => opt.Ignore())
-         .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
+         .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .ForMember(d => d.spd_nologoorbranding, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.NoBranding)))
          .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
@@ -39,8 +39,8 @@ internal class Mappings : Profile
          .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_businesstype)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
          .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
-         .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
-         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
+         .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => SharedMappingFuncs.GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
+         .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber));
 
@@ -58,29 +58,5 @@ internal class Mappings : Profile
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
-    }
-
-    private static WorkerCategoryTypeEnum[] GetWorkerCategoryTypeEnums(ICollection<spd_licencecategory> categories)
-    {
-        List<WorkerCategoryTypeEnum> codes = new() { };
-        foreach (spd_licencecategory cat in categories)
-        {
-            codes.Add(Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(cat.spd_licencecategoryid)));
-        }
-        return codes.ToArray();
-    }
-
-    private static string? GetUploadedDocumentOptionSets(IEnumerable<UploadedDocumentEnum>? uploadDocs)
-    {
-        if (uploadDocs == null) return null;
-        var result = String.Join(',', uploadDocs.Select(p => ((int)Enum.Parse<UploadedDocumentOptionSet>(p.ToString())).ToString()).ToArray());
-        return string.IsNullOrWhiteSpace(result) ? null : result;
-    }
-
-    private static IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(string? optionsetStr)
-    {
-        if (optionsetStr == null) return null;
-        string[] strs = optionsetStr.Split(',');
-        return strs.Select(s => Enum.Parse<UploadedDocumentEnum>(Enum.GetName(typeof(UploadedDocumentOptionSet), Int32.Parse(s)))).ToList();
     }
 }
