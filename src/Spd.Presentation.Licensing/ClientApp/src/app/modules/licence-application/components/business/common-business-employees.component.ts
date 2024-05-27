@@ -17,7 +17,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 				<div class="col-12">
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="licenceHolderName">
-							<mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Full Name:</span>
 								{{ member.licenceHolderName | default }}
@@ -25,7 +25,9 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 						</ng-container>
 
 						<ng-container matColumnDef="licenceNumber">
-							<mat-header-cell *matHeaderCellDef>Security Worker Licence Number</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
+								Security Worker Licence Number
+							</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Security Worker Licence Number:</span>
 								{{ member.licenceNumber | default }}
@@ -33,7 +35,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 						</ng-container>
 
 						<ng-container matColumnDef="licenceStatusCode">
-							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Status</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Status:</span>
 								{{ member.licenceStatusCode | default }}
@@ -41,23 +43,15 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 						</ng-container>
 
 						<ng-container matColumnDef="expiryDate">
-							<mat-header-cell *matHeaderCellDef>Expiry Date</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Expiry Date</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Expiry Date:</span>
 								{{ member.expiryDate | formatDate | default }}
 							</mat-cell>
 						</ng-container>
 
-						<ng-container matColumnDef="clearanceStatus">
-							<mat-header-cell *matHeaderCellDef>Controlling Member Clearance</mat-header-cell>
-							<mat-cell *matCellDef="let member">
-								<span class="mobile-label">Controlling Member Clearance:</span>
-								{{ member.clearanceStatus | default }}
-							</mat-cell>
-						</ng-container>
-
 						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let member; let i = index">
 								<button
 									mat-flat-button
@@ -72,13 +66,13 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="col-xl-4 col-lg-6 col-md-12">
+				<div class="col-lg-6 col-md-12">
 					<button mat-flat-button color="primary" class="large mt-4 mb-2" (click)="onAddLicenceHolder()">
 						Add Employee
 					</button>
@@ -117,8 +111,6 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 	}
 
 	isFormValid(): boolean {
-		// this.form.markAllAsTouched();
-		// return this.form.valid;
 		return true;
 	}
 

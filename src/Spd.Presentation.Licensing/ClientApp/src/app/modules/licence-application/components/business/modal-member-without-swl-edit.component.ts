@@ -9,8 +9,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 @Component({
 	selector: 'app-modal-member-without-swl-edit',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
-		<mat-dialog-content>
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xl-6 col-lg-6 col-md-12">

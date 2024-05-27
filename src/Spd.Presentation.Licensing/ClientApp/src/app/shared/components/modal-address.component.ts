@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { AddressFindResponse } from '@app/api/models';
 
@@ -10,8 +10,8 @@ export interface AddressDialogData {
 @Component({
 	selector: 'app-modal-address',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
-		<mat-dialog-content>
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content">
 			<div class="row">
 				<div class="col-12">
 					<mat-table
@@ -22,7 +22,7 @@ export interface AddressDialogData {
 						style="max-height: 70vh;"
 					>
 						<ng-container matColumnDef="addrDescription">
-							<mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
 							<mat-cell *matCellDef="let addr">
 								<span class="mobile-label">Address: </span>
 								{{ addr.text }} {{ addr.description }}
@@ -30,7 +30,7 @@ export interface AddressDialogData {
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns" (click)="onRowClick(row)"></mat-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: columns" (click)="onRowClick(row)"></mat-row>
 					</mat-table>
 				</div>
 			</div>

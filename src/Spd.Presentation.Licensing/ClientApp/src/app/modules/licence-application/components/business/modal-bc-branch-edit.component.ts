@@ -13,8 +13,8 @@ export interface UserDialogData {
 @Component({
 	selector: 'app-modal-bc-branch-edit',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
-		<mat-dialog-content>
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-md-12">

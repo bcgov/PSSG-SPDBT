@@ -8,9 +8,14 @@ export interface DialogOopsOptions {
 @Component({
 	selector: 'app-spd-dialog-oops',
 	template: `
-		<mat-dialog-content>
+		<mat-dialog-content class="mat-dialog-content">
 			<div class="d-flex justify-content-center">
-				<img class="error-image" src="/assets/something-went-wrong.png" (error)="onHandleMissingImage($event)" alt="Something went wrong" />
+				<img
+					class="error-image"
+					src="/assets/something-went-wrong.png"
+					(error)="onHandleMissingImage($event)"
+					alt="Something went wrong"
+				/>
 			</div>
 			<h2 class="mt-2">Oops! Something went wrong</h2>
 			<p>Looks like something went wrong on our end. Please try again later.</p>

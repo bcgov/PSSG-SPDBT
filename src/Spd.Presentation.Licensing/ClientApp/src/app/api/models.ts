@@ -23,6 +23,7 @@ export { BranchInfo } from './models/branch-info';
 export { ConfigurationResponse } from './models/configuration-response';
 export { ContactInfo } from './models/contact-info';
 export { ContactRoleCode } from './models/contact-role-code';
+export { ControllingMembers } from './models/controlling-members';
 export { Document } from './models/document';
 export { DocumentExpiredInfo } from './models/document-expired-info';
 export { EyeColourCode } from './models/eye-colour-code';

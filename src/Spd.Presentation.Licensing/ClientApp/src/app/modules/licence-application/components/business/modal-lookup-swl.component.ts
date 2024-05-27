@@ -14,8 +14,8 @@ export interface LookupSwlDialogData {
 @Component({
 	selector: 'app-modal-lookup-swl',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
-		<mat-dialog-content class="pb-0">
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content" class="pb-0">
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
 				<div class="row">

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -20,7 +21,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								We recommend you do not finalize any branding, marketing or advertising until your licence is approved.
 							</app-alert>
 
-							<ng-container *ngIf="!isNoLogoOrBranding">
+							<div *ngIf="!isNoLogoOrBranding" @showHideTriggerSlideAnimation>
 								<div class="text-minor-heading mb-2">Upload examples</div>
 
 								<app-file-upload
@@ -43,9 +44,9 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								>
 
 								<mat-divider class="my-4"></mat-divider>
-							</ng-container>
+							</div>
 
-							<mat-checkbox formControlName="noLogoOrBranding"> I don’t have a logo or any branding </mat-checkbox>
+							<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
 						</div>
 					</div>
 				</form>
@@ -53,6 +54,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.companyBrandingFormGroup;

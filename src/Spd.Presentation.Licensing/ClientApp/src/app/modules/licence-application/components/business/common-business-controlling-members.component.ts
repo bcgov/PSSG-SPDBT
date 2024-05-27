@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { LicenceResponse } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -16,7 +17,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				<div class="col-12">
 					<mat-table [dataSource]="dataSource">
 						<ng-container matColumnDef="licenceHolderName">
-							<mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Full Name:</span>
 								{{ member.licenceHolderName | default }}
@@ -24,7 +25,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<ng-container matColumnDef="licenceNumber">
-							<mat-header-cell *matHeaderCellDef>Security Worker Licence Number</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
+								Security Worker Licence Number
+							</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Security Worker Licence Number:</span>
 								{{ member.licenceNumber | default }}
@@ -32,7 +35,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<ng-container matColumnDef="licenceStatusCode">
-							<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Status</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Status:</span>
 								{{ member.licenceStatusCode | default }}
@@ -40,7 +43,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<ng-container matColumnDef="expiryDate">
-							<mat-header-cell *matHeaderCellDef>Expiry Date</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Expiry Date</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Expiry Date:</span>
 								{{ member.expiryDate | formatDate | default }}
@@ -48,7 +51,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<ng-container matColumnDef="clearanceStatus">
-							<mat-header-cell *matHeaderCellDef>Controlling Member Clearance</mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
+								Controlling Member Clearance
+							</mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Controlling Member Clearance:</span>
 								{{ member.clearanceStatus | default }}
@@ -56,7 +61,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<ng-container matColumnDef="action1">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let member">
 								<button
 									mat-flat-button
@@ -72,7 +77,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<ng-container matColumnDef="action2">
-							<mat-header-cell *matHeaderCellDef></mat-header-cell>
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 							<mat-cell *matCellDef="let member; let i = index">
 								<button
 									mat-flat-button
@@ -87,7 +92,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-container>
 
 						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row *matRowDef="let row; columns: columns"></mat-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
 					</mat-table>
 				</div>
 			</div>
@@ -183,7 +188,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				const memberData = resp?.data;
+				const memberData: LicenceResponse = resp?.data;
 				if (memberData) {
 					this.membersArray.push(this.newMemberRow(memberData));
 
@@ -213,7 +218,9 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 					if (isCreate) {
 						this.membersArray.push(this.newMemberRow(memberData));
 					} else {
-						const memberIndex = this.membersArray.value.findIndex((item: any) => item.id == dialogOptions.id!);
+						const memberIndex = this.membersArray.value.findIndex(
+							(item: any) => item.bizContactId == dialogOptions.id!
+						);
 						this.patchMemberData(memberIndex, memberData);
 					}
 
@@ -223,14 +230,20 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 	}
 
 	private newMemberRow(memberData: any): FormGroup {
-		// TODO update once a controlling member class is defined
 		return this.formBuilder.group({
 			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
+			bizContactId: null,
 			givenName: [memberData.givenName],
+			middleName1: [memberData.middleName1],
+			middleName2: [memberData.middleName2],
 			surname: [memberData.surname],
 			emailAddress: [memberData.emailAddress],
+			noEmailAddress: [memberData.noEmailAddress],
+			phoneNumber: [memberData.phoneNumber],
+			licenceId: [memberData.licenceId],
 			licenceNumber: [memberData.licenceNumber],
 			licenceStatusCode: [memberData.licenceStatusCode],
+			licenceTermCode: [memberData.licenceTermCode],
 			expiryDate: [memberData.expiryDate],
 			clearanceStatus: [memberData.clearanceStatus],
 		});
@@ -243,11 +256,17 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 
 		this.membersArray.at(memberIndex).patchValue({
 			licenceHolderName: memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`,
+			bizContactId: memberData.bizContactId,
 			givenName: memberData.givenName,
+			middleName1: memberData.middleName1,
+			middleName2: memberData.middleName2,
 			surname: memberData.surname,
 			emailAddress: memberData.emailAddress,
+			noEmailAddress: memberData.noEmailAddress,
+			licenceId: memberData.licenceId,
 			licenceNumber: memberData.licenceNumber,
 			licenceStatusCode: memberData.licenceStatusCode,
+			licenceTermCode: memberData.licenceTermCode,
 			expiryDate: memberData.expiryDate,
 			clearanceStatus: memberData.clearanceStatus,
 		});

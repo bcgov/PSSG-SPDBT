@@ -66,7 +66,7 @@ import {
 							<div class="col-12">
 								<mat-table [dataSource]="applicationsDataSource" class="draft-table" [multiTemplateDataRows]="true">
 									<ng-container matColumnDef="serviceTypeCode">
-										<mat-header-cell *matHeaderCellDef>Licence Type</mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<span class="mobile-label">Licence Type:</span>
 											<span class="my-2">
@@ -76,7 +76,7 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="createdOn">
-										<mat-header-cell *matHeaderCellDef>Date Started</mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Started</mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<span class="mobile-label">Date Started:</span>
 											{{ application.createdOn | formatDate | default }}
@@ -84,7 +84,7 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="submittedOn">
-										<mat-header-cell *matHeaderCellDef>Date Submitted</mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Submitted</mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<span class="mobile-label">Date Submitted:</span>
 											{{ application.submittedOn | formatDate | default }}
@@ -92,7 +92,7 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="applicationTypeCode">
-										<mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Type</mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<span class="mobile-label">Type:</span>
 											{{ application.applicationTypeCode | options : 'ApplicationTypes' }}
@@ -100,7 +100,7 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="caseNumber">
-										<mat-header-cell *matHeaderCellDef>Case Number</mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Case Number</mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<span class="mobile-label">Case Number:</span>
 											{{ application.caseNumber }}
@@ -108,7 +108,7 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="applicationPortalStatusCode">
-										<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<span class="mobile-label">Status:</span>
 											<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
@@ -120,7 +120,7 @@ import {
 									</ng-container>
 
 									<ng-container matColumnDef="action1">
-										<mat-header-cell *matHeaderCellDef></mat-header-cell>
+										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 										<mat-cell *matCellDef="let application">
 											<button
 												mat-flat-button
@@ -135,7 +135,7 @@ import {
 									</ng-container>
 
 									<mat-header-row *matHeaderRowDef="applicationColumns; sticky: true"></mat-header-row>
-									<mat-row *matRowDef="let row; columns: applicationColumns"></mat-row>
+									<mat-row class="mat-data-row" *matRowDef="let row; columns: applicationColumns"></mat-row>
 								</mat-table>
 							</div>
 						</div>

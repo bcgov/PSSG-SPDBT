@@ -333,12 +333,14 @@ export abstract class BusinessApplicationHelper {
 
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
+			bizContactId: new FormControl(''),
 			givenName: new FormControl('', [FormControlValidators.required]),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
 			emailAddress: new FormControl('', [FormControlValidators.email]),
 			noEmailAddress: new FormControl(''),
+			phoneNumber: new FormControl(''),
 		},
 		{
 			validators: [

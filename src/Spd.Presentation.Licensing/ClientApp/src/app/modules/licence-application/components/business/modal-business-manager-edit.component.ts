@@ -12,8 +12,8 @@ export interface UserDialogData {
 @Component({
 	selector: 'app-modal-business-manager-edit',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
-		<mat-dialog-content>
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-lg-6 col-md-12">
