@@ -35,17 +35,21 @@ internal partial class LicenceAppDocumentManager :
     public async Task<IEnumerable<LicenceAppDocumentResponse>> Handle(CreateDocumentInTransientStoreCommand command, CancellationToken cancellationToken)
     {
         BizLicApplicationResp? bizLicApplicationResp = null;
-        DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
+        Guid? contactId = null;
+        DocumentTypeEnum ? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
         DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
 
         LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, cancellationToken);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
 
+        // For business licence, the contact info is pulled from account, thus accountId must be set in "CreateDocumentCmd"
+        // For others, the info is pulled from contact, thus contactId must be set in "CreateDocumentCmd"
         if (app.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
             bizLicApplicationResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync(command.AppId, cancellationToken);
+        else
+            contactId = app.ContactId;
 
-        Guid? contactId = app.ContactId;
         //put file to cache
         IList<DocumentResp> docResps = new List<DocumentResp>();
         foreach (var file in command.Request.Documents)
