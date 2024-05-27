@@ -81,16 +81,8 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private void LinkPrivateInvestigator(SwlContactInfo privateInvestigatorInfo, spd_application app)
     {
-        if (privateInvestigatorInfo.ContactId == null || privateInvestigatorInfo.LicenceId == null)
+        if (privateInvestigatorInfo.LicenceId == null)
             return;
-
-        contact? contact = _context.contacts
-            .Where(c => c.contactid == privateInvestigatorInfo.ContactId)
-            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-            .FirstOrDefault();
-
-        if (contact == null)
-            throw new ArgumentException("investigator contact info not found");
 
         spd_licence? licence = _context.spd_licences
             .Where(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId)
