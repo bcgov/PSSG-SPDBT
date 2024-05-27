@@ -41,6 +41,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         app.spd_middlename1 = "middleName1";
         app.spd_middlename2 = "middleName2";
         app.spd_applicationid = licenceApplicationId;
+        app.spd_name = "123";
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(app.spd_ApplicantId_account), biz);
         await _context.SaveChangesAsync();
@@ -56,6 +57,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(app.spd_lastname, result.Surname);
         Assert.Equal(app.spd_middlename1, result.MiddleName1);
         Assert.Equal(app.spd_middlename2, result.MiddleName2);
+        Assert.Equal(app.spd_name, result.CaseNumber);
+        Assert.Equal(app.spd_applicationid, result.LicenceAppId);
     }
 
     [Fact]
