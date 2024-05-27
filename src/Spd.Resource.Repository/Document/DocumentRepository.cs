@@ -142,6 +142,11 @@ internal class DocumentRepository : IDocumentRepository
             spd_licence? lic = await _context.spd_licences.Where(l => l.spd_licenceid == cmd.LicenceId).FirstOrDefaultAsync(ct);
             _context.SetLink(documenturl, nameof(documenturl.spd_LicenceId), lic);
         }
+        if (cmd.AccountId != null)
+        {
+            account? account = await _context.accounts.Where(a => a.accountid == cmd.AccountId).FirstOrDefaultAsync(ct);
+            _context.SetLink(documenturl, nameof(documenturl.bcgov_Customer_account), account);
+        }
 
         await UploadFileAsync(cmd.TempFile, cmd.ApplicationId, cmd.ApplicantId, documenturl.bcgov_documenturlid, null, ct, cmd.ToTransientBucket);
         await _context.SaveChangesAsync(ct);
