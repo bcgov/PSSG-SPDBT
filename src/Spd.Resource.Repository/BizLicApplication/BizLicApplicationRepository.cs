@@ -66,8 +66,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
 
-    
-
     private void LinkOrganization(Guid? accountId, spd_application app)
     {
         if (accountId == null) return;
