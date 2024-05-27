@@ -15,7 +15,7 @@ internal class LicenceManager :
         IRequestHandler<LicenceByIdQuery, LicenceResponse>,
         IRequestHandler<LicenceQuery, LicenceResponse>,
         IRequestHandler<LicencePhotoQuery, FileResponse>,
-        IRequestHandler<ApplicantLicenceListQuery, IEnumerable<LicenceBasicResponse>>,
+        IRequestHandler<LicenceListQuery, IEnumerable<LicenceBasicResponse>>,
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
@@ -75,12 +75,18 @@ internal class LicenceManager :
         return result;
     }
 
-    public async Task<IEnumerable<LicenceBasicResponse>> Handle(ApplicantLicenceListQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListQuery query, CancellationToken cancellationToken)
     {
+        if (query.ApplicantId == null && query.BizId == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Applicant and Biz Id cannot both are null");
+        if (query.ApplicantId != null && query.BizId != null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Applicant and Biz Id cannot both have value.");
+
         var response = await _licenceRepository.QueryAsync(
             new LicenceQry
             {
                 ContactId = query.ApplicantId,
+                AccountId = query.BizId,
                 IncludeInactive = true
             }, cancellationToken);
 

@@ -164,7 +164,7 @@ public class LicenceManagerTest
     }
 
     [Fact]
-    public async void Handle_ApplicantLicenceListQuery_Return_LicenceResponse_List()
+    public async void Handle_LicenceListQuery_Return_LicenceBasicResponse_List()
     {
         Guid applicantId = Guid.NewGuid();
 
@@ -190,7 +190,7 @@ public class LicenceManagerTest
             }
         };
 
-        ApplicantLicenceListQuery request = new(applicantId);
+        LicenceListQuery request = new(applicantId, null);
 
         var result = await sut.Handle(request, CancellationToken.None);
 
