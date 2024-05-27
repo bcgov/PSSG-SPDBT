@@ -48,4 +48,10 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
 public record BizLicApplicationResp() : BizLicApplication
 {
     public Guid? BizId { get; set; }
+    public Guid? LicenceAppId { get; set; }
+    public Guid? ContactId { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
+    public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
+    public string? CaseNumber { get; set; }
+    public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
 }
