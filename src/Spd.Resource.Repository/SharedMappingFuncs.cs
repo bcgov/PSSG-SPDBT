@@ -1,3 +1,4 @@
+using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Edm;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.LicenceApplication;
@@ -171,5 +172,29 @@ internal static class SharedMappingFuncs
     {
         if (optionset == null) return null;
         return Enum.Parse<E>(Enum.GetName(typeof(O), optionset));
+    }
+
+    internal static WorkerCategoryTypeEnum[] GetWorkerCategoryTypeEnums(ICollection<spd_licencecategory> categories)
+    {
+        List<WorkerCategoryTypeEnum> codes = new() { };
+        foreach (spd_licencecategory cat in categories)
+        {
+            codes.Add(Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(cat.spd_licencecategoryid)));
+        }
+        return codes.ToArray();
+    }
+
+    internal static string? GetUploadedDocumentOptionSets(IEnumerable<UploadedDocumentEnum>? uploadDocs)
+    {
+        if (uploadDocs == null) return null;
+        var result = String.Join(',', uploadDocs.Select(p => ((int)Enum.Parse<UploadedDocumentOptionSet>(p.ToString())).ToString()).ToArray());
+        return string.IsNullOrWhiteSpace(result) ? null : result;
+    }
+
+    internal static IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(string? optionsetStr)
+    {
+        if (optionsetStr == null) return null;
+        string[] strs = optionsetStr.Split(',');
+        return strs.Select(s => Enum.Parse<UploadedDocumentEnum>(Enum.GetName(typeof(UploadedDocumentOptionSet), Int32.Parse(s)))).ToList();
     }
 }
