@@ -4,10 +4,8 @@ using Spd.Resource.Repository.BizContact;
 
 namespace Spd.Manager.Licence;
 internal class BizControllingMemberEmployeeManager :
-        IRequestHandler<GetBizControllerMembersQuery, ControllingMembers>,
-        IRequestHandler<GetBizEmployeesQuery, IEnumerable<SwlContactInfo>>,
-        IRequestHandler<UpsertBizControllerMembersCommand, Unit>,
-        IRequestHandler<UpsertEmployeesCommand, Unit>,
+        IRequestHandler<GetBizMembersQuery, Members>,
+        IRequestHandler<UpsertBizMembersCommand, Unit>,
         IBizControllingMemberEmployeeManager
 {
 
@@ -22,39 +20,36 @@ internal class BizControllingMemberEmployeeManager :
         _bizContactRepository = bizContactRepository;
     }
 
-    public async Task<ControllingMembers> Handle(GetBizControllerMembersQuery qry, CancellationToken ct)
+    public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
     {
-        var contacts = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId, BizContactRoleEnum.ControllingMember), ct);
-        ControllingMembers controllingMembers = new();
-        controllingMembers.SwlControllingMembers = contacts.Where(c => c.ContactId != null && c.LicenceId != null)
+        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId), ct);
+        Members members = new();
+        members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
             .Select(c => new SwlContactInfo()
             {
                 BizContactId = c.BizContactId,
                 LicenceId = c.LicenceId,
                 ContactId = c.ContactId,
             });
-        controllingMembers.NonSwlControllingMembers = contacts.Where(c => c.ContactId == null && c.LicenceId == null)
+        members.NonSwlControllingMembers = bizMembers.Where(c => c.ContactId == null && c.LicenceId == null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
             .Select(c => _mapper.Map<ContactInfo>(c));
-        return controllingMembers;
+        members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
+            .Select(c => _mapper.Map<SwlContactInfo>(c));
+        return members;
     }
 
-    public async Task<IEnumerable<SwlContactInfo>> Handle(GetBizEmployeesQuery qry, CancellationToken ct)
+    public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
     {
-        var employees = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId, BizContactRoleEnum.Employee), ct);
-        return employees.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Select(c => new SwlContactInfo()
-            {
-                BizContactId = c.BizContactId,
-                LicenceId = c.LicenceId,
-                ContactId = c.ContactId,
-            });
-    }
-
-    public async Task<Unit> Handle(UpsertBizControllerMembersCommand cmd, CancellationToken ct)
-    {
-        var employees = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(cmd.BizId, cmd.ApplicationId, BizContactRoleEnum.Employee), ct);
-        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(cmd.ControllingMembers.NonSwlControllingMembers);
-        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(cmd.ControllingMembers.SwlControllingMembers));
+        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(cmd.Members.NonSwlControllingMembers);
+        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(cmd.Members.SwlControllingMembers));
+        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(cmd.Members.Employees);
+        foreach (var e in employees)
+        {
+            e.BizContactRoleCode = BizContactRoleEnum.Employee;
+        }
         contacts.AddRange(employees);
         BizContactUpsertCmd upsertCmd = new(
             cmd.BizId,
@@ -62,23 +57,5 @@ internal class BizControllingMemberEmployeeManager :
             contacts);
         await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
         return default;
-    }
-
-    public async Task<Unit> Handle(UpsertEmployeesCommand cmd, CancellationToken ct)
-    {
-        var controlMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(cmd.BizId, cmd.ApplicationId, BizContactRoleEnum.ControllingMember), ct);
-        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(cmd.Employees);
-        foreach (var contact in contacts)
-        {
-            contact.BizContactRoleCode = BizContactRoleEnum.Employee;
-        }
-        contacts.AddRange(controlMembers);
-        BizContactUpsertCmd upsertCmd = new(
-            cmd.BizId,
-            cmd.ApplicationId,
-            contacts);
-        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
-        return default;
-
     }
 }
