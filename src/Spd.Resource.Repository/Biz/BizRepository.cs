@@ -77,7 +77,6 @@ namespace Spd.Resource.Repository.Biz
             var response = _mapper.Map<BizResult>(biz);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
-            response.SoleProprietorSwlContactInfo.ContactId = contactId;
 
             return response;
         }
