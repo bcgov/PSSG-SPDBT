@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
-	ActionResult,
 	Address,
 	ApplicationTypeCode,
 	BizProfileResponse,
@@ -10,8 +9,8 @@ import {
 	BizTypeCode,
 	BranchInfo,
 	ContactInfo,
-	ControllingMembers,
 	LicenceResponse,
+	Members,
 	SwlContactInfo,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -224,7 +223,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	saveControllingMembersAndEmployees(): Observable<any> {
-		return forkJoin([this.saveControllingMembers(), this.saveEmployees()]);
+		const modelFormValue = this.businessModelFormGroup.getRawValue();
+		const bizId = modelFormValue.bizId;
+		const licenceAppId = modelFormValue.licenceAppId;
+
+		const body: Members = {
+			employees: this.saveEmployeesBody(),
+			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(),
+			swlControllingMembers: this.saveControllingMembersWithSwlBody(),
+		};
+
+		return this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdMembersPost({
+			bizId,
+			applicationId: licenceAppId,
+			body,
+		});
 	}
 
 	/**
@@ -341,53 +354,48 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		);
 
-		console.log('this.businessModelFormGroup', this.businessModelFormGroup.value);
-
-		return forkJoin([
-			this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdControllingMembersGet({
+		return this.bizLicensingService
+			.apiBusinessLicenceBizIdApplicationIdMembersGet({
 				bizId,
 				applicationId: licenceAppId,
-			}),
-			this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdEmployeesGet({ bizId, applicationId: licenceAppId }),
-		]).pipe(
-			switchMap((resps: any[]) => {
-				const members = resps[0] as ControllingMembers;
-				const employees = resps[1] as Array<SwlContactInfo>;
-
-				const apis: Observable<any>[] = [];
-
-				members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: item.licenceId!,
-						})
-					);
-				});
-
-				employees.forEach((item: SwlContactInfo) => {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: item.licenceId!,
-						})
-					);
-				});
-
-				return forkJoin(apis).pipe(
-					map((resps: Array<LicenceResponse>) => {
-						this.applyControllingMembers(members, resps);
-						this.applyEmployees(employees, resps);
-						return resps;
-					})
-				);
 			})
-		);
+			.pipe(
+				switchMap((resp: Members) => {
+					const apis: Observable<any>[] = [];
+
+					resp.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+						apis.push(
+							this.licenceService.apiLicencesLicenceIdGet({
+								licenceId: item.licenceId!,
+							})
+						);
+					});
+
+					resp.employees?.forEach((item: SwlContactInfo) => {
+						apis.push(
+							this.licenceService.apiLicencesLicenceIdGet({
+								licenceId: item.licenceId!,
+							})
+						);
+					});
+
+					return forkJoin(apis).pipe(
+						map((licenceResponses: Array<LicenceResponse>) => {
+							this.applyControllingMembersWithSwl(resp.swlControllingMembers ?? [], licenceResponses);
+							this.applyControllingMembersWithoutSwl(resp.nonSwlControllingMembers ?? [], licenceResponses);
+							this.applyEmployees(resp.employees ?? [], licenceResponses);
+
+							return licenceResponses;
+						})
+					);
+				})
+			);
 	}
 
-	private applyControllingMembers(members: ControllingMembers, licences: Array<LicenceResponse>) {
+	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
 		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
-		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
 
-		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+		members.forEach((item: SwlContactInfo) => {
 			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
 
 			controllingMembersWithSwlData.push({
@@ -398,11 +406,36 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceNumber: matchingLicence?.licenceNumber!,
 				licenceStatusCode: matchingLicence?.licenceStatusCode,
 				expiryDate: matchingLicence?.expiryDate,
-				clearanceStatus: '',
 			});
 		});
 
-		members.nonSwlControllingMembers?.forEach((item: ContactInfo) => {
+		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) => {
+			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
+		});
+
+		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithSwl'
+		) as FormArray;
+
+		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
+			controllingMembersWithSwlArray.push(
+				new FormGroup({
+					bizContactId: new FormControl(item.bizContactId),
+					contactId: new FormControl(item.contactId),
+					licenceId: new FormControl(item.licenceId),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					licenceNumber: new FormControl(item.licenceNumber),
+					licenceStatusCode: new FormControl(item.licenceStatusCode),
+					expiryDate: new FormControl(item.expiryDate),
+				})
+			);
+		});
+	}
+
+	private applyControllingMembersWithoutSwl(members: Array<ContactInfo>, licences: Array<LicenceResponse>) {
+		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
+
+		members.forEach((item: ContactInfo) => {
 			controllingMembersWithoutSwlData.push({
 				bizContactId: item.bizContactId,
 				emailAddress: item.emailAddress,
@@ -421,34 +454,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		});
 
-		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) => {
-			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
-		});
-
-		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithSwl'
-		) as FormArray;
-		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
-			controllingMembersWithSwlArray.push(
-				new FormGroup({
-					bizContactId: new FormControl(item.bizContactId),
-					contactId: new FormControl(item.contactId),
-					licenceId: new FormControl(item.licenceId),
-					licenceHolderName: new FormControl(item.licenceHolderName),
-					givenName: new FormControl(item.givenName),
-					middleName1: new FormControl(item.middleName1),
-					middleName2: new FormControl(item.middleName2),
-					surname: new FormControl(item.surname),
-					phoneNumber: new FormControl(item.phoneNumber),
-					emailAddress: new FormControl(item.emailAddress),
-					licenceNumber: new FormControl(item.licenceNumber),
-					licenceStatusCode: new FormControl(item.licenceStatusCode),
-					expiryDate: new FormControl(item.expiryDate),
-					clearanceStatus: new FormControl(item.clearanceStatus),
-				})
-			);
-		});
-
 		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) => {
 			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
 		});
@@ -461,7 +466,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
 					contactId: new FormControl(item.contactId),
-					licenceId: new FormControl(item.licenceId),
 					licenceHolderName: new FormControl(item.licenceHolderName),
 					givenName: new FormControl(item.givenName),
 					middleName1: new FormControl(item.middleName1),
@@ -469,9 +473,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					surname: new FormControl(item.surname),
 					phoneNumber: new FormControl(item.phoneNumber),
 					emailAddress: new FormControl(item.emailAddress),
-					licenceNumber: new FormControl(item.licenceNumber),
-					licenceStatusCode: new FormControl(item.licenceStatusCode),
-					expiryDate: new FormControl(item.expiryDate),
 					clearanceStatus: new FormControl(item.clearanceStatus),
 				})
 			);
@@ -766,21 +767,40 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private saveControllingMembers(): Observable<ActionResult> {
+	private saveControllingMembersWithSwlBody(): null | Array<SwlContactInfo> {
 		const modelFormValue = this.businessModelFormGroup.getRawValue();
-		const bizId = modelFormValue.bizId;
-		const licenceAppId = modelFormValue.licenceAppId;
+		const controllingMembersWithSwlArray = modelFormValue.controllingMembersData.membersWithSwl;
 
-		const controllingMembersArray = modelFormValue.controllingMembersData.members;
+		if (!controllingMembersWithSwlArray) {
+			return null;
+		}
 
-		console.log('modelFormValue', modelFormValue);
-		console.log('bizId', bizId);
-		console.log('licenceAppId', licenceAppId);
-		console.log('controllingMembersArray', controllingMembersArray);
+		const swlControllingMembers: null | Array<SwlContactInfo> = controllingMembersWithSwlArray.map(
+			(item: ControllingMemberContactInfo) => {
+				const contactInfo: SwlContactInfo = {
+					bizContactId: item.bizContactId,
+					contactId: item.contactId,
+					licenceId: item.licenceId,
+				};
+				return contactInfo;
+			}
+		);
 
-		const nonSwlControllingMembers: null | Array<ContactInfo> = controllingMembersArray
-			.filter((item: ControllingMemberContactInfo) => !item.licenceId)
-			.map((item: ControllingMemberContactInfo) => {
+		console.debug('saveControllingMembersWithSwlBody', swlControllingMembers);
+
+		return swlControllingMembers;
+	}
+
+	private saveControllingMembersWithoutSwlBody(): null | Array<ContactInfo> {
+		const modelFormValue = this.businessModelFormGroup.getRawValue();
+		const controllingMembersWithoutSwlArray = modelFormValue.controllingMembersData.membersWithoutSwl;
+
+		if (!controllingMembersWithoutSwlArray) {
+			return null;
+		}
+
+		const nonSwlControllingMembers: null | Array<ContactInfo> = controllingMembersWithoutSwlArray.map(
+			(item: ControllingMemberContactInfo) => {
 				const contactInfo: ContactInfo = {
 					bizContactId: item.bizContactId,
 					emailAddress: item.emailAddress,
@@ -791,49 +811,34 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					surname: item.surname,
 				};
 				return contactInfo;
-			});
+			}
+		);
 
-		const swlControllingMembers: null | Array<SwlContactInfo> = controllingMembersArray
-			.filter((item: ControllingMemberContactInfo) => !!item.licenceId)
-			.map((item: ControllingMemberContactInfo) => {
-				const contactInfo: SwlContactInfo = {
-					bizContactId: item.bizContactId,
-					contactId: item.contactId,
-					licenceId: item.licenceId,
-				};
-				return contactInfo;
-			});
+		console.debug('saveControllingMembersWithoutSwlBody', nonSwlControllingMembers);
 
-		console.log('nonSwlControllingMembers', nonSwlControllingMembers);
-		console.log('swlControllingMembers', swlControllingMembers);
-
-		const controllingMembers: ControllingMembers = { nonSwlControllingMembers, swlControllingMembers };
-
-		console.log('bizId', bizId);
-		console.log('licenceAppId', licenceAppId);
-		console.log('controllingMembers', controllingMembers);
-
-		return this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdControllingMembersPost({
-			bizId,
-			applicationId: licenceAppId,
-			body: controllingMembers,
-		});
+		return nonSwlControllingMembers;
 	}
 
-	private saveEmployees(): Observable<ActionResult> {
+	private saveEmployeesBody(): null | Array<SwlContactInfo> {
 		const modelFormValue = this.businessModelFormGroup.getRawValue();
-		const bizId = modelFormValue.bizId;
-		const licenceAppId = modelFormValue.licenceAppId;
-
 		const employeesArray = modelFormValue.employeesData.employees;
-		console.log('bizId', bizId);
-		console.log('licenceAppId', licenceAppId);
-		console.log('employeesArray', employeesArray);
-		return this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdEmployeesPost({
-			bizId,
-			applicationId: licenceAppId,
-			body: employeesArray,
+
+		if (!employeesArray) {
+			return null;
+		}
+
+		const employees: null | Array<SwlContactInfo> = employeesArray.map((item: ControllingMemberContactInfo) => {
+			const contactInfo: SwlContactInfo = {
+				bizContactId: item.bizContactId,
+				contactId: item.contactId,
+				licenceId: item.licenceId,
+			};
+			return contactInfo;
 		});
+
+		console.debug('saveEmployeesBody', employees);
+
+		return employees;
 	}
 
 	private isSoleProprietor(bizTypeCode: BizTypeCode): boolean {

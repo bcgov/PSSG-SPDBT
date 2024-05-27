@@ -13,10 +13,9 @@ import { ActionResult } from '../models/action-result';
 import { BizLicAppChangeRequest } from '../models/biz-lic-app-change-request';
 import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
 import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
-import { ControllingMembers } from '../models/controlling-members';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
-import { SwlContactInfo } from '../models/swl-contact-info';
+import { Members } from '../models/members';
 import { Unit } from '../models/unit';
 
 @Injectable({
@@ -233,29 +232,29 @@ export class BizLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiBusinessLicenceBizIdApplicationIdControllingMembersGet
+   * Path part for operation apiBusinessLicenceBizIdApplicationIdMembersGet
    */
-  static readonly ApiBusinessLicenceBizIdApplicationIdControllingMembersGetPath = '/api/business-licence/{bizId}/{applicationId}/controlling-members';
+  static readonly ApiBusinessLicenceBizIdApplicationIdMembersGetPath = '/api/business-licence/{bizId}/{applicationId}/members';
 
   /**
-   * Get Biz Application controlling members, include swl and non-swl.
+   * Get Biz Application controlling members and employees, controlling member includes swl and non-swl.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdControllingMembersGet()` instead.
+   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdMembersGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceBizIdApplicationIdControllingMembersGet$Response(params: {
+  apiBusinessLicenceBizIdApplicationIdMembersGet$Response(params: {
     bizId: string;
     applicationId: string;
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<ControllingMembers>> {
+): Observable<StrictHttpResponse<Members>> {
 
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdControllingMembersGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdMembersGetPath, 'get');
     if (params) {
       rb.path('bizId', params.bizId, {});
       rb.path('applicationId', params.applicationId, {});
@@ -268,59 +267,59 @@ export class BizLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ControllingMembers>;
+        return r as StrictHttpResponse<Members>;
       })
     );
   }
 
   /**
-   * Get Biz Application controlling members, include swl and non-swl.
+   * Get Biz Application controlling members and employees, controlling member includes swl and non-swl.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdControllingMembersGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdMembersGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceBizIdApplicationIdControllingMembersGet(params: {
+  apiBusinessLicenceBizIdApplicationIdMembersGet(params: {
     bizId: string;
     applicationId: string;
   },
   context?: HttpContext
 
-): Observable<ControllingMembers> {
+): Observable<Members> {
 
-    return this.apiBusinessLicenceBizIdApplicationIdControllingMembersGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ControllingMembers>) => r.body as ControllingMembers)
+    return this.apiBusinessLicenceBizIdApplicationIdMembersGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Members>) => r.body as Members)
     );
   }
 
   /**
-   * Path part for operation apiBusinessLicenceBizIdApplicationIdControllingMembersPost
+   * Path part for operation apiBusinessLicenceBizIdApplicationIdMembersPost
    */
-  static readonly ApiBusinessLicenceBizIdApplicationIdControllingMembersPostPath = '/api/business-licence/{bizId}/{applicationId}/controlling-members';
+  static readonly ApiBusinessLicenceBizIdApplicationIdMembersPostPath = '/api/business-licence/{bizId}/{applicationId}/members';
 
   /**
-   * Upsert Biz Application controlling members, include swl and non-swl.
+   * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdControllingMembersPost()` instead.
+   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdMembersPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceBizIdApplicationIdControllingMembersPost$Response(params: {
+  apiBusinessLicenceBizIdApplicationIdMembersPost$Response(params: {
     bizId: string;
     applicationId: string;
-    body?: ControllingMembers
+    body?: Members
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<ActionResult>> {
 
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdControllingMembersPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdMembersPostPath, 'post');
     if (params) {
       rb.path('bizId', params.bizId, {});
       rb.path('applicationId', params.applicationId, {});
@@ -340,156 +339,25 @@ export class BizLicensingService extends BaseService {
   }
 
   /**
-   * Upsert Biz Application controlling members, include swl and non-swl.
+   * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdControllingMembersPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdMembersPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceBizIdApplicationIdControllingMembersPost(params: {
+  apiBusinessLicenceBizIdApplicationIdMembersPost(params: {
     bizId: string;
     applicationId: string;
-    body?: ControllingMembers
+    body?: Members
   },
   context?: HttpContext
 
 ): Observable<ActionResult> {
 
-    return this.apiBusinessLicenceBizIdApplicationIdControllingMembersPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
-    );
-  }
-
-  /**
-   * Path part for operation apiBusinessLicenceBizIdApplicationIdEmployeesGet
-   */
-  static readonly ApiBusinessLicenceBizIdApplicationIdEmployeesGetPath = '/api/business-licence/{bizId}/{applicationId}/employees';
-
-  /**
-   * Get Biz Application employees.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdEmployeesGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBusinessLicenceBizIdApplicationIdEmployeesGet$Response(params: {
-    bizId: string;
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<SwlContactInfo>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdEmployeesGetPath, 'get');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-      rb.path('applicationId', params.applicationId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<SwlContactInfo>>;
-      })
-    );
-  }
-
-  /**
-   * Get Biz Application employees.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdEmployeesGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBusinessLicenceBizIdApplicationIdEmployeesGet(params: {
-    bizId: string;
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<Array<SwlContactInfo>> {
-
-    return this.apiBusinessLicenceBizIdApplicationIdEmployeesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<SwlContactInfo>>) => r.body as Array<SwlContactInfo>)
-    );
-  }
-
-  /**
-   * Path part for operation apiBusinessLicenceBizIdApplicationIdEmployeesPost
-   */
-  static readonly ApiBusinessLicenceBizIdApplicationIdEmployeesPostPath = '/api/business-licence/{bizId}/{applicationId}/employees';
-
-  /**
-   * Upsert Biz Application employees.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdEmployeesPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiBusinessLicenceBizIdApplicationIdEmployeesPost$Response(params: {
-    bizId: string;
-    applicationId: string;
-    body?: Array<SwlContactInfo>
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdEmployeesPostPath, 'post');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-      rb.path('applicationId', params.applicationId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
-  }
-
-  /**
-   * Upsert Biz Application employees.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdEmployeesPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiBusinessLicenceBizIdApplicationIdEmployeesPost(params: {
-    bizId: string;
-    applicationId: string;
-    body?: Array<SwlContactInfo>
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiBusinessLicenceBizIdApplicationIdEmployeesPost$Response(params,context).pipe(
+    return this.apiBusinessLicenceBizIdApplicationIdMembersPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }

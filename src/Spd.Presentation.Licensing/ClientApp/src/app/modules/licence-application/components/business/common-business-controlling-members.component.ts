@@ -272,6 +272,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 		return this.formBuilder.group({
 			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
 			bizContactId: null,
+			contactId: [memberData.licenceHolderId],
 			givenName: [memberData.givenName],
 			middleName1: [memberData.middleName1],
 			middleName2: [memberData.middleName2],

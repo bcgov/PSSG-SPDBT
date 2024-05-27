@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { LicenceResponse } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 
 @Component({
@@ -97,17 +96,13 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 
 	@Input() form!: FormGroup;
 
-	employeesList: Array<any> = [];
-
 	dataSource!: MatTableDataSource<any>;
 	columns: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
 
-	constructor(private dialog: MatDialog, private utilService: UtilService, private hotToastService: HotToastService) {}
+	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.employeesList = this.employeesArray.value;
-		this.dataSource = new MatTableDataSource(this.employeesList);
-		this.updateAndSortData();
+		this.dataSource = new MatTableDataSource(this.employeesList.value);
 	}
 
 	isFormValid(): boolean {
@@ -128,8 +123,8 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.employeesList.splice(index, 1);
-					this.dataSource = new MatTableDataSource(this.employeesList);
+					this.employeesList.removeAt(index);
+					this.dataSource = new MatTableDataSource(this.employeesList.value);
 				}
 			});
 	}
@@ -145,22 +140,28 @@ export class CommonBusinessEmployeesComponent implements OnInit, LicenceChildSte
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp) {
-					this.employeesList.push(resp.data);
-					this.hotToastService.success('Employee was successfully added');
-					this.updateAndSortData();
+				const memberData: LicenceResponse = resp?.data;
+				if (memberData) {
+					this.employeesList.push(this.newMemberRow(memberData));
+					this.dataSource.data = this.employeesList.value;
 				}
 			});
 	}
 
-	private updateAndSortData() {
-		this.employeesList = [...this.employeesList].sort((a, b) => {
-			return this.utilService.sortByDirection(a.licenceHolderName, b.licenceHolderName, 'asc');
+	private newMemberRow(memberData: any): FormGroup {
+		return this.formBuilder.group({
+			bizContactId: [memberData.bizContactId],
+			contactId: [memberData.licenceHolderId],
+			licenceId: [memberData.licenceId],
+			licenceHolderName: [memberData.licenceHolderName],
+			licenceNumber: [memberData.licenceNumber],
+			licenceStatusCode: [memberData.licenceStatusCode],
+			expiryDate: [memberData.expiryDate],
+			clearanceStatus: [memberData.clearanceStatus],
 		});
-		this.dataSource.data = this.employeesList;
 	}
 
-	get employeesArray(): FormArray {
+	get employeesList(): FormArray {
 		return <FormArray>this.form.get('employees');
 	}
 }
