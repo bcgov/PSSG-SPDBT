@@ -29,11 +29,11 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary> 
         /// Get licences for login biz , only return active and Expired ones. 
-        /// Example: http://localhost:5114/api/biz/xxxx/licences 
+        /// Example: http://localhost:5114/api/bizs/xxxx/licences 
         /// </summary> 
         /// <param name="bizId"></param> 
         /// <returns></returns> 
-        [Route("api/applicants/{bizId}/licences")]
+        [Route("api/bizs/{bizId}/licences")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid")]
         public async Task<IEnumerable<LicenceBasicResponse>> GetBizLicences([FromRoute][Required] Guid bizId)
