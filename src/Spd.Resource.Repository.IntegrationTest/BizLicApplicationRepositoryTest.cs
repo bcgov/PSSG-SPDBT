@@ -1,6 +1,8 @@
 ﻿using AutoFixture;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
@@ -28,6 +30,13 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     public async Task GetBizLicApplicationAsync_Run_Correctly()
     {
         // Arrange
+        Guid expiredLicenceId = Guid.NewGuid();
+        DateTimeOffset expireDate = DateTimeOffset.UtcNow;
+        spd_licence expiredLicence = new();
+        expiredLicence.spd_licenceid = expiredLicenceId;
+        expiredLicence.spd_expirydate = expireDate;
+        _context.AddTospd_licences(expiredLicence);
+
         Guid bizId = Guid.NewGuid();
         account biz = new();
         biz.name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}";
@@ -41,9 +50,11 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         app.spd_middlename1 = "middleName1";
         app.spd_middlename2 = "middleName2";
         app.spd_applicationid = licenceApplicationId;
-        app.spd_name = "123";
+        app.spd_licenceterm = 100000000;
+
         _context.AddTospd_applications(app);
         _context.SetLink(app, nameof(app.spd_ApplicantId_account), biz);
+        _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), expiredLicence);
         await _context.SaveChangesAsync();
 
         // Act
@@ -57,8 +68,9 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(app.spd_lastname, result.Surname);
         Assert.Equal(app.spd_middlename1, result.MiddleName1);
         Assert.Equal(app.spd_middlename2, result.MiddleName2);
-        Assert.Equal(app.spd_name, result.CaseNumber);
         Assert.Equal(app.spd_applicationid, result.LicenceAppId);
+        Assert.Equal(expiredLicenceId, result.ExpiredLicenceId);
+        Assert.Equal(LicenceTermEnum.NinetyDays, result.LicenceTermCode);
     }
 
     [Fact]
