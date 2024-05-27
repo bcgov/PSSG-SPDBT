@@ -60,8 +60,8 @@ public class BizLicenceAppManangerTest
             {
                 Items = new List<LicenceResp> { }
             });
-        mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
-            .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, bizId));
+        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.IsAny<SaveBizLicApplicationCmd>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationCmdResp(licAppId, bizId));
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
 
