@@ -300,7 +300,8 @@ export abstract class BusinessApplicationHelper {
 	});
 
 	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
-		members: this.formBuilder.array([]),
+		membersWithSwl: this.formBuilder.array([]),
+		membersWithoutSwl: this.formBuilder.array([]),
 	});
 
 	employeesFormGroup: FormGroup = this.formBuilder.group({

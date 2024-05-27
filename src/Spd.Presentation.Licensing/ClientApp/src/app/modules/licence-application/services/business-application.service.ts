@@ -384,12 +384,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private applyControllingMembers(members: ControllingMembers, licences: Array<LicenceResponse>) {
-		const controllingMembersData: Array<ControllingMemberContactInfo> = [];
+		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
+		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
 
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
 
-			controllingMembersData.push({
+			controllingMembersWithSwlData.push({
 				bizContactId: item.bizContactId,
 				contactId: matchingLicence?.licenceHolderId,
 				licenceId: matchingLicence?.licenceId,
@@ -402,7 +403,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 
 		members.nonSwlControllingMembers?.forEach((item: ContactInfo) => {
-			controllingMembersData.push({
+			controllingMembersWithoutSwlData.push({
 				bizContactId: item.bizContactId,
 				emailAddress: item.emailAddress,
 				givenName: item.givenName,
@@ -420,13 +421,43 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		});
 
-		const sortedControllingMembersData = controllingMembersData.sort((a, b) => {
+		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) => {
 			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
 		});
 
-		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
-		sortedControllingMembersData.forEach((item: ControllingMemberContactInfo) => {
-			controllingMembersArray.push(
+		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithSwl'
+		) as FormArray;
+		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
+			controllingMembersWithSwlArray.push(
+				new FormGroup({
+					bizContactId: new FormControl(item.bizContactId),
+					contactId: new FormControl(item.contactId),
+					licenceId: new FormControl(item.licenceId),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					givenName: new FormControl(item.givenName),
+					middleName1: new FormControl(item.middleName1),
+					middleName2: new FormControl(item.middleName2),
+					surname: new FormControl(item.surname),
+					phoneNumber: new FormControl(item.phoneNumber),
+					emailAddress: new FormControl(item.emailAddress),
+					licenceNumber: new FormControl(item.licenceNumber),
+					licenceStatusCode: new FormControl(item.licenceStatusCode),
+					expiryDate: new FormControl(item.expiryDate),
+					clearanceStatus: new FormControl(item.clearanceStatus),
+				})
+			);
+		});
+
+		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) => {
+			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
+		});
+
+		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithoutSwl'
+		) as FormArray;
+		sortedControllingMembersWithoutSwlData.forEach((item: ControllingMemberContactInfo) => {
+			controllingMembersWithoutSwlArray.push(
 				new FormGroup({
 					bizContactId: new FormControl(item.bizContactId),
 					contactId: new FormControl(item.contactId),
@@ -502,9 +533,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		while (bcBranchesArray.length) {
 			bcBranchesArray.removeAt(0);
 		}
-		const controllingMembersArray = this.businessModelFormGroup.get('controllingMembersData.members') as FormArray;
-		while (controllingMembersArray.length) {
-			controllingMembersArray.removeAt(0);
+		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithSwl'
+		) as FormArray;
+		while (controllingMembersWithSwlArray.length) {
+			controllingMembersWithSwlArray.removeAt(0);
+		}
+		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithoutSwl'
+		) as FormArray;
+		while (controllingMembersWithoutSwlArray.length) {
+			controllingMembersWithoutSwlArray.removeAt(0);
 		}
 		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
 		while (employeesArray.length) {

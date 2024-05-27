@@ -74,15 +74,16 @@ export class StepBusinessLicenceControllingMemberInvitesComponent implements Lic
 	isFormValid(): boolean {
 		return true;
 	}
-	get membersArray(): FormArray {
-		return <FormArray>this.controllingMembersFormGroup.get('members');
+
+	get membersWithoutSwlArray(): FormArray {
+		return <FormArray>this.controllingMembersFormGroup.get('membersWithoutSwl');
 	}
 	get membersWithoutSwlListWithEmail(): Array<any> {
-		const memberList = this.membersArray.value ?? [];
+		const memberList = this.membersWithoutSwlArray.value ?? [];
 		return memberList.filter((item: any) => !item.licenceNumber && !!item.emailAddress);
 	}
 	get membersWithoutSwlListWithoutEmail(): Array<any> {
-		const memberList = this.membersArray.value ?? [];
+		const memberList = this.membersWithoutSwlArray.value ?? [];
 		return memberList.filter((item: any) => !item.licenceNumber && !item.emailAddress);
 	}
 }

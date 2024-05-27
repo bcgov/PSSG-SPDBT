@@ -13,9 +13,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 	selector: 'app-common-business-controlling-members',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row mt-4" *ngIf="dataSource.data.length > 0">
+			<div class="row mt-4" *ngIf="dataSourceWithSWL.data.length > 0">
 				<div class="col-12">
-					<mat-table [dataSource]="dataSource">
+					<mat-table [dataSource]="dataSourceWithSWL">
 						<ng-container matColumnDef="licenceHolderName">
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
 							<mat-cell *matCellDef="let member">
@@ -47,6 +47,46 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							<mat-cell *matCellDef="let member">
 								<span class="mobile-label">Expiry Date:</span>
 								{{ member.expiryDate | formatDate | default }}
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="action1">
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+							<mat-cell *matCellDef="let member; let i = index">
+								<button
+									mat-flat-button
+									class="table-button w-auto"
+									style="color: var(--color-red);"
+									aria-label="Remove controlling member"
+									(click)="onRemoveMember(true, i)"
+								>
+									<mat-icon>delete_outline</mat-icon>Remove
+								</button>
+							</mat-cell>
+						</ng-container>
+
+						<mat-header-row *matHeaderRowDef="columnsWithSWL; sticky: true"></mat-header-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: columnsWithSWL"></mat-row>
+					</mat-table>
+				</div>
+			</div>
+
+			<div class="row mt-4">
+				<div class="col-xl-5 col-lg-6 col-md-12">
+					<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
+						Add Member with Security Worker Licence
+					</button>
+				</div>
+			</div>
+
+			<div class="row mt-4" *ngIf="dataSourceWithoutSWL.data.length > 0">
+				<div class="col-12">
+					<mat-table [dataSource]="dataSourceWithoutSWL">
+						<ng-container matColumnDef="licenceHolderName">
+							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
+							<mat-cell *matCellDef="let member">
+								<span class="mobile-label">Full Name:</span>
+								{{ member.licenceHolderName | default }}
 							</mat-cell>
 						</ng-container>
 
@@ -84,31 +124,28 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									class="table-button w-auto"
 									style="color: var(--color-red);"
 									aria-label="Remove controlling member"
-									(click)="onRemoveMember(i)"
+									(click)="onRemoveMember(false, i)"
 								>
 									<mat-icon>delete_outline</mat-icon>Remove
 								</button>
 							</mat-cell>
 						</ng-container>
 
-						<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-						<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
+						<mat-header-row *matHeaderRowDef="columnsWithoutSWL; sticky: true"></mat-header-row>
+						<mat-row class="mat-data-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 					</mat-table>
 				</div>
 			</div>
 
 			<div class="row mt-4">
-				<div class="col-lg-6 col-md-12">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
-						Add Member with Security Worker Licence
-					</button>
-				</div>
-				<div class="col-lg-6 col-md-12">
+				<div class="col-xl-5 col-lg-6 col-md-12">
 					<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithoutSWL()">
 						Add Member without Security Worker Licence
 					</button>
 				</div>
 			</div>
+
+			<div *ngIf="isDocumentNeeded">documentNeeded</div>
 		</form>
 	`,
 	styles: [
@@ -135,28 +172,26 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 
 	@Input() form!: FormGroup;
 
-	dataSource!: MatTableDataSource<any>;
-	columns: string[] = [
-		'licenceHolderName',
-		'licenceNumber',
-		'licenceStatusCode',
-		'expiryDate',
-		'clearanceStatus',
-		'action1',
-		'action2',
-	];
+	isDocumentNeeded = false;
+
+	dataSourceWithSWL!: MatTableDataSource<any>;
+	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
+
+	dataSourceWithoutSWL!: MatTableDataSource<any>;
+	columnsWithoutSWL: string[] = ['licenceHolderName', 'clearanceStatus', 'action1', 'action2'];
 
 	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
-		this.dataSource = new MatTableDataSource(this.membersArray.value);
+		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
+		this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
 	}
 
 	isFormValid(): boolean {
 		return true;
 	}
 
-	onRemoveMember(index: number) {
+	onRemoveMember(isWithSwl: boolean, index: number) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -170,8 +205,13 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.membersArray.removeAt(index);
-					this.dataSource = new MatTableDataSource(this.membersArray.value);
+					if (isWithSwl) {
+						this.membersWithSwlList.removeAt(index);
+						this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
+					} else {
+						this.membersWithoutSwlList.removeAt(index);
+						this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
+					}
 				}
 			});
 	}
@@ -190,9 +230,8 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			.subscribe((resp: any) => {
 				const memberData: LicenceResponse = resp?.data;
 				if (memberData) {
-					this.membersArray.push(this.newMemberRow(memberData));
-
-					this.dataSource.data = this.membersArray.value;
+					this.membersWithSwlList.push(this.newMemberRow(memberData));
+					this.dataSourceWithSWL.data = this.membersWithSwlList.value;
 				}
 			});
 	}
@@ -216,15 +255,15 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 				const memberData = resp?.data;
 				if (memberData) {
 					if (isCreate) {
-						this.membersArray.push(this.newMemberRow(memberData));
+						this.membersWithoutSwlList.push(this.newMemberRow(memberData));
 					} else {
-						const memberIndex = this.membersArray.value.findIndex(
+						const memberIndex = this.membersWithoutSwlList.value.findIndex(
 							(item: any) => item.bizContactId == dialogOptions.id!
 						);
 						this.patchMemberData(memberIndex, memberData);
 					}
 
-					this.dataSource.data = this.membersArray.value;
+					this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 				}
 			});
 	}
@@ -254,7 +293,7 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 			return;
 		}
 
-		this.membersArray.at(memberIndex).patchValue({
+		this.membersWithoutSwlList.at(memberIndex).patchValue({
 			licenceHolderName: memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`,
 			bizContactId: memberData.bizContactId,
 			givenName: memberData.givenName,
@@ -272,7 +311,10 @@ export class CommonBusinessControllingMembersComponent implements OnInit, Licenc
 		});
 	}
 
-	get membersArray(): FormArray {
-		return <FormArray>this.form.get('members');
+	get membersWithSwlList(): FormArray {
+		return <FormArray>this.form.get('membersWithSwl');
+	}
+	get membersWithoutSwlList(): FormArray {
+		return <FormArray>this.form.get('membersWithoutSwl');
 	}
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
@@ -129,15 +129,10 @@ export class StepBusinessLicenceControllingMemberConfirmationComponent implement
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
-	get membersArray(): FormArray {
-		return <FormArray>this.controllingMembersFormGroup.get('members');
-	}
 	get membersWithSwlList(): Array<any> {
-		const memberList = this.membersArray.value ?? [];
-		return memberList.filter((item: any) => !!item.licenceNumber);
+		return this.form.get('membersWithSwl')?.value ?? [];
 	}
 	get membersWithoutSwlList(): Array<any> {
-		const memberList = this.membersArray.value ?? [];
-		return memberList.filter((item: any) => !item.licenceNumber);
+		return this.form.get('membersWithoutSwl')?.value ?? [];
 	}
 }

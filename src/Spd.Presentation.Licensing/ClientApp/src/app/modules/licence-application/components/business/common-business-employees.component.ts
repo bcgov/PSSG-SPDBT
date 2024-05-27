@@ -72,7 +72,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 			</div>
 
 			<div class="row">
-				<div class="col-lg-6 col-md-12">
+				<div class="col-xl-5 col-lg-6 col-md-12">
 					<button mat-flat-button color="primary" class="large mt-4 mb-2" (click)="onAddLicenceHolder()">
 						Add Employee
 					</button>
