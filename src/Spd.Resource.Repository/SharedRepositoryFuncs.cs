@@ -5,7 +5,7 @@ using Spd.Utilities.Dynamics;
 namespace Spd.Resource.Repository;
 internal static class SharedRepositoryFuncs
 {
-    public static void ProcessCategories(this DynamicsContext _context, IEnumerable<WorkerCategoryTypeEnum> categories, spd_application app)
+    public static void ProcessCategories(DynamicsContext _context, IEnumerable<WorkerCategoryTypeEnum> categories, spd_application app)
     {
         foreach (var c in categories)
         {
@@ -26,7 +26,7 @@ internal static class SharedRepositoryFuncs
         }
     }
 
-    public static void LinkServiceType(this DynamicsContext _context, WorkerLicenceTypeEnum? licenceType, spd_application app)
+    public static void LinkServiceType(DynamicsContext _context, WorkerLicenceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
         spd_servicetype? servicetype = _context.LookupServiceType(licenceType.ToString());
@@ -36,7 +36,7 @@ internal static class SharedRepositoryFuncs
         }
     }
 
-    public static void LinkExpiredLicence(this DynamicsContext _context, Guid? expiredLicenceId, spd_application app)
+    public static void LinkExpiredLicence(DynamicsContext _context, Guid? expiredLicenceId, spd_application app)
     {
         if (expiredLicenceId == null) return;
         var licence = _context.spd_licences.Where(l => l.spd_licenceid == expiredLicenceId).FirstOrDefault();
