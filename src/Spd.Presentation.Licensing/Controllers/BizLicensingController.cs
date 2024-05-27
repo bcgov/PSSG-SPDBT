@@ -110,65 +110,36 @@ namespace Spd.Presentation.Licensing.Controllers
 
 
         /// <summary>
-        /// Get Biz Application controlling members, include swl and non-swl
+        /// Get Biz Application controlling members and employees, controlling member includes swl and non-swl
         /// </summary>
         /// <param name="bizId"></param>
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{bizId}/{applicationId}/controlling-members")]
+        [Route("api/business-licence/{bizId}/{applicationId}/members")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<ControllingMembers> GetControllerMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
+        public async Task<Members> GetMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
         {
-            return await _mediator.Send(new GetBizControllerMembersQuery(bizId, applicationId), ct);
+            return await _mediator.Send(new GetBizMembersQuery(bizId, applicationId), ct);
         }
 
         /// <summary>
-        /// Upsert Biz Application controlling members, include swl and non-swl
+        /// Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
         /// </summary>
         /// <param name="bizId"></param>
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{bizId}/{applicationId}/controlling-members")]
+        [Route("api/business-licence/{bizId}/{applicationId}/members")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<ActionResult> UpsertControllerMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] ControllingMembers members, CancellationToken ct)
+        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] Members members, CancellationToken ct)
         {
-            await _mediator.Send(new UpsertBizControllerMembersCommand(bizId, applicationId, members), ct);
+            await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members), ct);
             return Ok();
         }
 
-        /// <summary>
-        /// Get Biz Application employees
-        /// </summary>
-        /// <param name="bizId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence/{bizId}/{applicationId}/employees")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBceid")]
-        public async Task<IEnumerable<SwlContactInfo>> GetEmployees([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetBizEmployeesQuery(bizId, applicationId), ct);
-        }
 
-        /// <summary>
-        /// Upsert Biz Application employees
-        /// </summary>
-        /// <param name="bizId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence/{bizId}/{applicationId}/employees")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBceid")]
-        public async Task<ActionResult> UpsertEmployees([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] IEnumerable<SwlContactInfo> employees, CancellationToken ct)
-        {
-            await _mediator.Send(new UpsertEmployeesCommand(bizId, applicationId, employees), ct);
-            return Ok();
-        }
     }
 }
