@@ -24,12 +24,12 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
-        _context.LinkServiceType(cmd.WorkerLicenceTypeCode, app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
-            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) 
-                _context.LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+            if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
+                SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
             //for new, always create a new contact
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
@@ -49,7 +49,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
 
             if (cmd.OriginalLicenceId != null)
             {
-                _context.LinkExpiredLicence(cmd.OriginalLicenceId, app);
+                SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.OriginalLicenceId, app);
             }
             else
             {
@@ -63,7 +63,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         //then update category.
         if (cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
         {
-            _context.ProcessCategories(cmd.CategoryCodes, app);
+            SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         }
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
@@ -118,14 +118,14 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             }
         }
-        _context.LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) 
-            _context.LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
+            SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
         await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        _context.ProcessCategories(cmd.CategoryCodes, app);
+        SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
