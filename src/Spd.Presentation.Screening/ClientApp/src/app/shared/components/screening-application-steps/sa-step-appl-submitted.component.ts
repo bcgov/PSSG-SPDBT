@@ -1,5 +1,5 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 
 @Component({
@@ -7,7 +7,7 @@ import { MatStepper } from '@angular/material/stepper';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-sa-application-submitted></app-sa-application-submitted>
+				<app-sa-application-submitted [emailAddress]="emailAddress"></app-sa-application-submitted>
 
 				<div class="row mt-4">
 					<div class="col-xxl-3 col-lg-4 col-md-4 col-sm-12 mx-auto">
@@ -22,6 +22,8 @@ import { MatStepper } from '@angular/material/stepper';
 })
 export class SaStepApplSubmittedComponent {
 	@ViewChild('childstepper') childstepper!: MatStepper;
+
+	@Input() emailAddress: string | null = null;
 
 	@Output() previousStepperStep: EventEmitter<boolean> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<boolean> = new EventEmitter();

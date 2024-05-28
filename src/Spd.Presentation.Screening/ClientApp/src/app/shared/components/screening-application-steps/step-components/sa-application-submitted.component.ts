@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
 	selector: 'app-sa-application-submitted',
@@ -8,7 +8,9 @@ import { Component } from '@angular/core';
 
 			<div class="row">
 				<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
-					Thank you for submitting your application to the Criminal Records Review Program.
+					Thank you for submitting your application to the Criminal Records Review Program. A confirmation email has
+					been sent to <strong>{{ emailAddress }}</strong
+					>.
 				</div>
 			</div>
 
@@ -21,4 +23,6 @@ import { Component } from '@angular/core';
 	`,
 	styles: [],
 })
-export class SaApplicationSubmittedComponent {}
+export class SaApplicationSubmittedComponent {
+	@Input() emailAddress: string | null = null;
+}
