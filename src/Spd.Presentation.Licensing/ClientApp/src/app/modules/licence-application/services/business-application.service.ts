@@ -138,6 +138,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 	}
 
+	isBcBusinessAddress(): boolean {
+		return this.businessModelFormGroup.get('isBcBusinessAddress')?.value;
+	}
+
 	/**
 	 * Determine if the step data should be saved. If the data has changed and category data exists;
 	 * @returns
@@ -450,7 +454,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					item.middleName2,
 					item.surname
 				),
-				clearanceStatus: 'Submitted', // TODO removed hardcoded
+				clearanceStatus: 'todo', // TODO removed hardcoded
 			});
 		});
 
@@ -493,7 +497,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceNumber: matchingLicence?.licenceNumber!,
 				licenceStatusCode: matchingLicence?.licenceStatusCode,
 				expiryDate: matchingLicence?.expiryDate,
-				clearanceStatus: 'Submitted', // TODO removed hardcoded
+				clearanceStatus: 'todo', // TODO removed hardcoded
 			});
 		});
 

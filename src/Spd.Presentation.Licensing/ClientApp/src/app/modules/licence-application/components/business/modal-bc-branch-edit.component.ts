@@ -66,7 +66,10 @@ export interface UserDialogData {
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Apply</button>
+					<button mat-flat-button color="primary" class="large" (click)="onSave()">
+						<span *ngIf="!isEdit">Add</span>
+						<span *ngIf="isEdit">Update</span>
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>

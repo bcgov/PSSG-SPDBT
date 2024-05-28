@@ -108,7 +108,7 @@ export interface LookupSwlDialogData {
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isFoundValid">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
+					<button mat-flat-button color="primary" class="large" (click)="onSave()">Add</button>
 				</div>
 			</div>
 		</mat-dialog-actions>

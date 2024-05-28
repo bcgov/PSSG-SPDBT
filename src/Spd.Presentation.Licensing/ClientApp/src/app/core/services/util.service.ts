@@ -47,7 +47,7 @@ export class UtilService {
 			userNameArray.push(givenName);
 		}
 		if (surname) {
-			userNameArray.unshift(surname);
+			userNameArray.push(surname);
 		}
 		return userNameArray.join(' ');
 	}
@@ -69,7 +69,7 @@ export class UtilService {
 			userNameArray.push(middleName2);
 		}
 		if (surname) {
-			userNameArray.unshift(surname);
+			userNameArray.push(surname);
 		}
 		return userNameArray.join(' ');
 	}

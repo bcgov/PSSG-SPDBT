@@ -302,15 +302,16 @@ export abstract class BusinessApplicationHelper {
 	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
 		membersWithSwl: this.formBuilder.array([]),
 		membersWithoutSwl: this.formBuilder.array([]),
+		attachments: new FormControl([]),
 	});
 
 	employeesFormGroup: FormGroup = this.formBuilder.group({
 		employees: this.formBuilder.array([]),
 	});
 
-	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]),
-	});
+	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
+	// 	attachments: new FormControl([], [Validators.required]),
+	// });
 
 	branchInBcFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),

@@ -36,9 +36,6 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 
 						<div class="mt-3">
 							<div class="mb-3 text-primary-color">This is the address of the business's primary location</div>
-							<!-- <app-alert type="info" icon="" [showBorder]="false">
-								This is the address of the business's primary location
-							</app-alert> -->
 
 							<section>
 								<app-common-business-address
