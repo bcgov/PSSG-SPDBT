@@ -55,16 +55,16 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
         }
-        _context.LinkServiceType(cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null) 
-            _context.LinkExpiredLicence(cmd.ExpiredLicenceId, app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
+            SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
         LinkOrganization(cmd.ApplicantId, app);
         LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         await _context.SaveChangesAsync();
 
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        _context.ProcessCategories(cmd.CategoryCodes, app);
+        SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         await _context.SaveChangesAsync();
         return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
@@ -84,16 +84,8 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private void LinkPrivateInvestigator(SwlContactInfo privateInvestigatorInfo, spd_application app)
     {
-        if (privateInvestigatorInfo.ContactId == null || privateInvestigatorInfo.LicenceId == null)
+        if (privateInvestigatorInfo.LicenceId == null)
             return;
-
-        contact? contact = _context.contacts
-            .Where(c => c.contactid == privateInvestigatorInfo.ContactId)
-            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-            .FirstOrDefault();
-
-        if (contact == null)
-            throw new ArgumentException("investigator contact info not found");
 
         spd_licence? licence = _context.spd_licences
             .Where(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId)

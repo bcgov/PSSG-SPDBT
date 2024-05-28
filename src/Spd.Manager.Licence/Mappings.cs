@@ -198,9 +198,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ManagerMiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
             .ForMember(d => d.ManagerEmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
             .ForMember(d => d.ManagerPhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
-            .ForPath(d => d.PrivateInvestigatorSwlInfo.ContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.ContactId))
-            .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.LicenceId))
-            .ForPath(d => d.PrivateInvestigatorSwlInfo.BizContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.BizContactId));
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.LicenceId));
 
         CreateMap<UploadFileRequest, SpdTempFile>()
             .ForMember(d => d.TempFilePath, opt => opt.MapFrom(s => s.FilePath));
@@ -243,8 +241,6 @@ internal class Mappings : Profile
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
             .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => s.Email))
-            .ForPath(d => d.SoleProprietorSwlContactInfo.BizContactId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.BizContactId))
-            .ForPath(d => d.SoleProprietorSwlContactInfo.ContactId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.ContactId))
             .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId));
 
         CreateMap<PermitAppSubmitRequest, PermitLicence>()
@@ -281,7 +277,7 @@ internal class Mappings : Profile
             .ReverseMap()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
 
-        CreateMap<UpsertBizControllerMembersCommand, BizContactUpsertCmd>()
+        CreateMap<UpsertBizMembersCommand, BizContactUpsertCmd>()
             .ForMember(d => d.AppId, opt => opt.MapFrom(s => s.ApplicationId));
 
         CreateMap<SwlContactInfo, BizContactResp>()
