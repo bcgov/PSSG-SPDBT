@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-modal-fingerprint-tear-off',
 	template: `
-		<div mat-dialog-title>
+		<div mat-dialog-title class="mat-dialog-title">
 			Sample Tear-off Section
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<img class="image mt-4" src="/assets/fingerprint-tear-off.svg"  alt="Fingerprint tear off section"/>
+			<img class="image mt-4" src="/assets/fingerprint-tear-off.svg" alt="Fingerprint tear off section" />
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
