@@ -5,8 +5,8 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
-using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.BizContact;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -271,7 +271,7 @@ internal class Mappings : Profile
         CreateMap<AddressResp, BranchAddr>()
             .ReverseMap();
 
-        CreateMap<BizContactResp, ContactInfo>()
+        CreateMap<BizContactResp, NonSwlContactInfo>()
             .ReverseMap()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
 

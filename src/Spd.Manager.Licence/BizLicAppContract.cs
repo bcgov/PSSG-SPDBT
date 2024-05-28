@@ -11,6 +11,8 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand command, CancellationToken ct);
+    public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
+    public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
@@ -77,9 +79,7 @@ public abstract record BizLicenceApp
     public ContactInfo? BizManagerContactInfo { get; set; }
     public ContactInfo? ApplicantContactInfo { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
-    public IEnumerable<SwlContactInfo> SwlControllerMemberInfos { get; set; } = Enumerable.Empty<SwlContactInfo>();
-    public IEnumerable<NonSwlContactInfo> NonSwlControllerMemberInfos { get; set; } = Enumerable.Empty<NonSwlContactInfo>();
-    public IEnumerable<SwlContactInfo> Employees { get; set; } = Enumerable.Empty<SwlContactInfo>();
+    public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
 }
@@ -88,3 +88,17 @@ public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
 }
+
+public record GetBizMembersQuery(Guid BizId, Guid ApplicationId) : IRequest<Members>;
+
+public record Members
+{
+    public IEnumerable<SwlContactInfo> SwlControllingMembers { get; set; }
+    public IEnumerable<NonSwlContactInfo> NonSwlControllingMembers { get; set; }
+    public IEnumerable<SwlContactInfo> Employees { get; set; }
+};
+
+public record UpsertBizMembersCommand(
+    Guid BizId,
+    Guid ApplicationId,
+    Members Members) : IRequest<Unit>;
