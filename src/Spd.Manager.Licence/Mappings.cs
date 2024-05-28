@@ -221,6 +221,8 @@ internal class Mappings : Profile
             .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
             .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
+        CreateMap<BizLicApplicationResp, BizLicAppResponse>();
+
         CreateMap<PortalUserResp, BizUserLoginResponse>()
             .ForMember(d => d.BizUserId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.OrganizationId))
