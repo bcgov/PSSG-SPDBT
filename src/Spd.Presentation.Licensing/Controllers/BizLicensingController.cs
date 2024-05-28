@@ -120,7 +120,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence/{bizId}/{applicationId}/members")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
         {
             return await _mediator.Send(new GetBizMembersQuery(bizId, applicationId), ct);
@@ -135,7 +135,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence/{bizId}/{applicationId}/members")]
         [HttpPost]
-        //[Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] Members members, CancellationToken ct)
         {
             await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members), ct);
