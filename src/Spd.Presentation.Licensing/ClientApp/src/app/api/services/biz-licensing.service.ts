@@ -9,11 +9,13 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ActionResult } from '../models/action-result';
 import { BizLicAppChangeRequest } from '../models/biz-lic-app-change-request';
 import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
 import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
+import { Members } from '../models/members';
 import { Unit } from '../models/unit';
 
 @Injectable({
@@ -226,6 +228,137 @@ export class BizLicensingService extends BaseService {
 
     return this.apiBusinessLicenceChangePost$Response(params,context).pipe(
       map((r: StrictHttpResponse<BizLicAppCommandResponse>) => r.body as BizLicAppCommandResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiBusinessLicenceBizIdApplicationIdMembersGet
+   */
+  static readonly ApiBusinessLicenceBizIdApplicationIdMembersGetPath = '/api/business-licence/{bizId}/{applicationId}/members';
+
+  /**
+   * Get Biz Application controlling members and employees, controlling member includes swl and non-swl.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdMembersGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessLicenceBizIdApplicationIdMembersGet$Response(params: {
+    bizId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Members>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdMembersGetPath, 'get');
+    if (params) {
+      rb.path('bizId', params.bizId, {});
+      rb.path('applicationId', params.applicationId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Members>;
+      })
+    );
+  }
+
+  /**
+   * Get Biz Application controlling members and employees, controlling member includes swl and non-swl.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdMembersGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessLicenceBizIdApplicationIdMembersGet(params: {
+    bizId: string;
+    applicationId: string;
+  },
+  context?: HttpContext
+
+): Observable<Members> {
+
+    return this.apiBusinessLicenceBizIdApplicationIdMembersGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Members>) => r.body as Members)
+    );
+  }
+
+  /**
+   * Path part for operation apiBusinessLicenceBizIdApplicationIdMembersPost
+   */
+  static readonly ApiBusinessLicenceBizIdApplicationIdMembersPostPath = '/api/business-licence/{bizId}/{applicationId}/members';
+
+  /**
+   * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessLicenceBizIdApplicationIdMembersPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessLicenceBizIdApplicationIdMembersPost$Response(params: {
+    bizId: string;
+    applicationId: string;
+    body?: Members
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<ActionResult>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceBizIdApplicationIdMembersPostPath, 'post');
+    if (params) {
+      rb.path('bizId', params.bizId, {});
+      rb.path('applicationId', params.applicationId, {});
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ActionResult>;
+      })
+    );
+  }
+
+  /**
+   * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessLicenceBizIdApplicationIdMembersPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessLicenceBizIdApplicationIdMembersPost(params: {
+    bizId: string;
+    applicationId: string;
+    body?: Members
+  },
+  context?: HttpContext
+
+): Observable<ActionResult> {
+
+    return this.apiBusinessLicenceBizIdApplicationIdMembersPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 

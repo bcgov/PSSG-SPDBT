@@ -21,14 +21,14 @@ export enum DialogCloseCode {
 @Component({
 	selector: 'app-spd-dialog',
 	template: `
-		<h2 mat-dialog-title class="mt-4" *ngIf="data.icon || data.title">
+		<h2 mat-dialog-title class="mat-dialog-title" class="mt-4" *ngIf="data.icon || data.title">
 			<mat-icon *ngIf="data.icon" [color]="data.type">{{ data.icon }}</mat-icon>
 			<strong *ngIf="data.title" style="position: relative; top: -7px;">
 				{{ data.title }}
 			</strong>
 		</h2>
 
-		<mat-dialog-content>
+		<mat-dialog-content class="mat-dialog-content">
 			<p [ngStyle]="{ 'word-break': 'break-word' }" [innerHTML]="data.message"></p>
 			<ng-template appDialogContent></ng-template>
 		</mat-dialog-content>

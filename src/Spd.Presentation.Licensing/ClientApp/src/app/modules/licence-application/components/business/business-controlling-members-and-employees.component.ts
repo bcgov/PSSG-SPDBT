@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
+import { BusinessApplicationService } from '../../services/business-application.service';
 
 @Component({
 	selector: 'app-business-controlling-members-and-employees',
@@ -15,7 +17,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<button
+								<!-- <button TODO remove button?
 									mat-stroked-button
 									color="primary"
 									class="large w-auto mb-3"
@@ -23,7 +25,7 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 									(click)="onCancel()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back
-								</button>
+								</button> -->
 							</div>
 						</div>
 						<div class="col-12 mb-3">
@@ -34,30 +36,53 @@ import { LicenceApplicationRoutes } from '../../licence-application-routing.modu
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="fs-5 mb-2">Controlling Members Updates</div>
-					<app-alert type="info" icon="info">
+					<div class="fs-4 mb-2">Controlling Members Updates</div>
+					<div class="mb-3">
 						If your controlling members change during the business licence term, update their information here.
-					</app-alert>
+					</div>
 
 					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
 
 					<mat-divider class="mat-divider-primary my-4"></mat-divider>
 
-					<div class="fs-5 mb-2">Employee Updates</div>
-					<app-alert type="info" icon="info">
+					<div class="fs-4 mb-2">Employee Updates</div>
+					<div class="mb-3">
 						If your employees, who are licence holders for the business, change during the business licence term, update
 						their information here.
-					</app-alert>
+					</div>
 
 					<app-common-employees [defaultExpanded]="true"></app-common-employees>
 				</div>
 			</div>
 		</section>
+
+		<app-wizard-outside-footer
+			nextButtonLabel="Save"
+			(nextStepperStep)="onSave()"
+			(cancel)="onCancel()"
+		></app-wizard-outside-footer>
 	`,
 	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
-	constructor(private router: Router) {}
+	constructor(
+		private router: Router,
+		private hotToastService: HotToastService,
+		private businessApplicationService: BusinessApplicationService
+	) {}
+
+	onSave(): void {
+		this.businessApplicationService.saveControllingMembersAndEmployees().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your controlling members & employees has been successfully updated');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
