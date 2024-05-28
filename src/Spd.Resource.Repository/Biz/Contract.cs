@@ -35,6 +35,7 @@
         //sole proprietor properties
         public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } = new(); //for sole proprietor (registered or non-registered)
     }
+    
     public record BizResult : Biz
     {
         public int MaxContacts { get; } = 6;
@@ -43,11 +44,27 @@
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
     }
+    
     public record BranchAddr() : Addr
     {
         public Guid? BranchId { get; set; }
         public string? BranchManager { get; set; }
         public string? BranchPhoneNumber { get; set; }
         public string? BranchEmailAddr { get; set; }
+    }
+
+    public record NonSwlContactInfo() : ContactInfo
+    {
+        public Guid? BizContactId { get; set; }
+    }
+
+    public record ContactInfo
+    {
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
+        public string? EmailAddress { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

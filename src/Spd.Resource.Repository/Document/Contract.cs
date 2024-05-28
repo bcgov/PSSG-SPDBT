@@ -50,6 +50,7 @@ namespace Spd.Resource.Repository.Document
         public Guid? TaskId { get; set; }
         public Guid? SubmittedByApplicantId { get; set; }
         public Guid? LicenceId { get; set; }
+        public Guid? AccountId { get; set; }
         public DocumentTypeEnum? DocumentType { get; set; } //tag1
         public DocumentTypeEnum? DocumentType2 { get; set; } //tag2
         public DateOnly? ExpiryDate { get; set; }
