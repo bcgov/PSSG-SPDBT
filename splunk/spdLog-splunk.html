@@ -1,0 +1,59 @@
+﻿<form version="1.1" theme="light">
+    <label>SPD Logs</label>
+    <description>SPD Logs, include screening, licensing and dynamics helper</description>
+    <fieldset submitButton="false">
+        <input type="time" token="field1">
+            <label></label>
+            <default>
+                <earliest>-4h@m</earliest>
+                <latest>now</latest>
+            </default>
+        </input>
+        <input type="multiselect" token="index" searchWhenChanged="true">
+            <label>Select Index(s)</label>
+            <choice value="dev_sparc">DEV-Index</choice>
+            <choice value="test_sparc">TEST-Index</choice>
+            <choice value="prod_sparc">PROD-Index</choice>
+            <delimiter> </delimiter>
+            <default>dev_sparc</default>
+            <initialValue>dev_sparc</initialValue>
+        </input>
+        <input type="multiselect" token="application" searchWhenChanged="true">
+            <label>Application</label>
+            <choice value="Spd.Presentation.Dynamics">Dynamics Helper</choice>
+            <choice value="Spd.Presentation.Screening">Screening</choice>
+            <choice value="Spd.Presentation.Licensing">Licensing</choice>
+            <delimiter> </delimiter>
+            <default>Spd.Presentation.Screening</default>
+            <initialValue>Spd.Presentation.Screening</initialValue>
+        </input>
+        <input type="dropdown" token="level" searchWhenChanged="true">
+            <label>Level</label>
+            <choice value="Error">Error</choice>
+            <choice value="Warning">Warning</choice>
+            <choice value="Information">Information</choice>
+            <choice value="Debug">Debug</choice>
+            <choice value="*">All</choice>
+            <default>*</default>
+            <initialValue>*</initialValue>
+        </input>
+    </fieldset>
+    <row>
+        <panel>
+            <title>logs</title>
+            <event>
+                <search>
+                    <query>index=$index$ "Properties.service"=$application$ Level=$level$ | fields "_time", "Level",
+                        "Properties.RequestPath", "Properties.SourceContext", "RenderedMessage"</query>
+                    <earliest>$field1.earliest$</earliest>
+                    <latest>now</latest>
+                    <sampleRatio>1</sampleRatio>
+                </search>
+                <option name="count">5</option>
+                <option name="maxLines">10</option>
+                <option name="refresh.display">progressbar</option>
+                <option name="list.drilldown">none</option>
+            </event>
+        </panel>
+    </row>
+</form>
