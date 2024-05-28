@@ -30,11 +30,13 @@ public record BizLicApplication
     public string? ExpiredLicenceNumber { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? NoBranding { get; set; }
     public bool? UseDogs { get; set; }
     public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
+    public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
 }
 
 public record SaveBizLicApplicationCmd() : BizLicApplication
