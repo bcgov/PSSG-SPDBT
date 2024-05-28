@@ -47,6 +47,30 @@ public class BizLicenceAppManangerTest
     }
 
     [Fact]
+    public async void Handle_GetBizLicAppQuery_Return_BizLicAppResponse()
+    {
+        // Arrange
+        Guid licAppId = Guid.NewGuid();
+        mockBizLicAppRepo.Setup(m => m.GetBizLicApplicationAsync(It.Is<Guid>(q => q == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new BizLicApplicationResp()
+            {
+                LicenceAppId = licAppId,
+                BizId = Guid.NewGuid()
+            });
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp());
+
+        GetBizLicAppQuery query = new(licAppId);
+
+        // Act
+        var viewResult = await sut.Handle(new GetBizLicAppQuery(licAppId), CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizLicAppResponse>(viewResult);
+        Assert.Equal(licAppId, viewResult.LicenceAppId);
+    }
+
+    [Fact]
     public async void Handle_BizLicAppUpsertCommand_WithoutLicAppId_Return_BizLicAppCommandResponse()
     {
         //Arrange
