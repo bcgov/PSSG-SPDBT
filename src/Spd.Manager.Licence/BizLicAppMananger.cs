@@ -48,6 +48,10 @@ internal class BizLicAppMananger :
         BizLicAppResponse result = _mapper.Map<BizLicAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
+
+        if (result.BizId != null)
+            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, result.LicenceAppId), cancellationToken);
+        
         return result;
     }
 
