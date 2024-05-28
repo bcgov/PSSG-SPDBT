@@ -60,8 +60,6 @@ public class BizLicenceAppManangerTest
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
 
-        GetBizLicAppQuery query = new(licAppId);
-
         // Act
         var viewResult = await sut.Handle(new GetBizLicAppQuery(licAppId), CancellationToken.None);
 
