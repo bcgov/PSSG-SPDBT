@@ -413,9 +413,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		});
 
-		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) => {
-			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
-		});
+		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) =>
+			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
+		);
 
 		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
 			'controllingMembersData.membersWithSwl'
@@ -458,9 +458,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		});
 
-		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) => {
-			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
-		});
+		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) =>
+			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
+		);
 
 		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
 			'controllingMembersData.membersWithoutSwl'
@@ -501,9 +501,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		});
 
-		const sortedEmployeesData = employeesData.sort((a, b) => {
-			return this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase());
-		});
+		const sortedEmployeesData = employeesData.sort((a, b) =>
+			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
+		);
 
 		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
 		sortedEmployeesData.forEach((item: ControllingMemberContactInfo) => {
@@ -740,12 +740,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 
 		if (hasBranchesInBc) {
-			const branchList = [...profile.branches!].sort((a, b) => {
-				return this.utilService.sortByDirection(
-					a.branchAddress?.city?.toUpperCase(),
-					b.branchAddress?.city?.toUpperCase()
-				);
-			});
+			const branchList = [...profile.branches!].sort((a, b) =>
+				this.utilService.sortByDirection(a.branchAddress?.city?.toUpperCase(), b.branchAddress?.city?.toUpperCase())
+			);
 
 			const bcBranchesArray = this.businessModelFormGroup.get('branchesInBcData.branches') as FormArray;
 			branchList.forEach((branchInfo: BranchInfo) => {
