@@ -11,10 +11,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 					<div class="step-container__box dark">
 						<div class="badge p-2">Preferred Method</div>
 						<div class="step-container__box__title pt-3 pb-4">
-							<div class="mx-2">
-								Use the <span class="fw-bold">BC Services Card app</span> or <span class="fw-bold">BC Token</span> to
-								login
-							</div>
+							<div class="mx-2">Use your <span class="fw-bold">BC Services Card Login</span></div>
 						</div>
 						<div class="step-container__box__content pt-4 pe-4" style="padding-left: 4em!important;">
 							<table class="ml-5 mb-5" style="text-align: left;">
@@ -116,11 +113,11 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 					}
 
 					&__footer-psso {
-						padding-top: 4.5rem !important;
+						padding-top: 2.5rem !important;
 					}
 
 					&__footer-crrp {
-						padding-top: 7.7rem !important;
+						padding-top: 5.7rem !important;
 					}
 				}
 			}
