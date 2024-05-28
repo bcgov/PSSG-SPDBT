@@ -19,7 +19,7 @@ import { RegistrationFormStepComponent } from '../org-registration.component';
 				></app-step-title>
 				<form [formGroup]="form" novalidate>
 					<div class="row">
-						<div class="offset-md-4 col-md-4 col-sm-12">
+						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 							<mat-radio-group aria-label="Select an option" formControlName="hasPhoneOrEmail">
 								<mat-radio-button [value]="booleanTypeCodes.No">No</mat-radio-button>
 								<mat-divider class="my-3"></mat-divider>

@@ -79,8 +79,7 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			>
 				<div class="lead fs-5 mt-4">
 					Thank you for submitting your application to the Criminal Records Review Program. A confirmation email has
-					been sent to
-					<strong>{{ sendEmailTo }}</strong
+					been sent to <strong>{{ sendEmailTo }}</strong
 					>.
 				</div>
 				<div class="lead fs-5 my-4">
