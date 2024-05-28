@@ -97,6 +97,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 				<mat-step completed="false">
 					<ng-template matStepLabel>Application Submitted</ng-template>
 					<app-sa-step-appl-submitted
+						[emailAddress]="sendToEmailAddress"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-sa-step-appl-submitted>
@@ -109,6 +110,8 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 export class CrrpaComponent implements OnInit {
 	orgData: AppInviteOrgData | null = null;
 	portal = PortalTypeCode;
+
+	sendToEmailAddress: string | null = null;
 
 	orientation: StepperOrientation = 'vertical';
 	currentStateInfo: any = {};
@@ -338,6 +341,8 @@ export class CrrpaComponent implements OnInit {
 		body.genderCode = dataToSave.genderCode ? dataToSave.genderCode : null;
 		body.dateOfBirth = this.formatDatePipe.transform(body.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat);
 		console.debug('[onSaveStepperStep] dataToSave', body);
+
+		this.sendToEmailAddress = body.emailAddress ?? null;
 
 		if (this.authenticationService.isLoggedIn()) {
 			body.haveVerifiedIdentity = true;
