@@ -43,6 +43,7 @@ export { LicenceResponse } from './models/licence-response';
 export { LicenceStatusCode } from './models/licence-status-code';
 export { LicenceTermCode } from './models/licence-term-code';
 export { MailingAddress } from './models/mailing-address';
+export { Members } from './models/members';
 export { OidcConfiguration } from './models/oidc-configuration';
 export { PaymentLinkCreateRequest } from './models/payment-link-create-request';
 export { PaymentLinkResponse } from './models/payment-link-response';

@@ -170,7 +170,7 @@ export class CommonAliasListComponent implements OnInit {
 	}
 
 	get isAllowAliasAdd(): boolean {
-		return !this.isReadonly && this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
+		return !this.isReadonly && this.aliasesArray.length < SPD_CONSTANTS.maxCount.aliases;
 	}
 
 	get aliasesArray(): FormArray {

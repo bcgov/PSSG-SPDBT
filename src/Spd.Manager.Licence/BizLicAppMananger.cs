@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -18,9 +19,12 @@ internal class BizLicAppMananger :
         IRequestHandler<BizLicAppReplaceCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppRenewCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
+        IRequestHandler<GetBizMembersQuery, Members>,
+        IRequestHandler<UpsertBizMembersCommand, Unit>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
+    private readonly IBizContactRepository _bizContactRepository;
 
     public BizLicAppMananger(
         ILicenceRepository licenceRepository,
@@ -30,10 +34,12 @@ internal class BizLicAppMananger :
         ILicenceFeeRepository feeRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService,
+        IBizContactRepository bizContactRepository,
         IBizLicApplicationRepository bizApplicationRepository)
     : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
     {
         _bizLicApplicationRepository = bizApplicationRepository;
+        _bizContactRepository = bizContactRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -58,10 +64,15 @@ internal class BizLicAppMananger :
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.BizLicAppUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
         var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
-        
+
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
-        
+
+        await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
+            cmd.BizLicAppUpsertRequest.BizId,
+            (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
+            cancellationToken);
+
         await UpdateDocumentsAsync(
             (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
             (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
@@ -88,5 +99,47 @@ internal class BizLicAppMananger :
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand cmd, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
+    {
+        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId), ct);
+        Members members = new();
+        members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
+            .Select(c => new SwlContactInfo()
+            {
+                BizContactId = c.BizContactId,
+                LicenceId = c.LicenceId,
+                ContactId = c.ContactId,
+            });
+        members.NonSwlControllingMembers = bizMembers.Where(c => c.ContactId == null && c.LicenceId == null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
+            .Select(c => _mapper.Map<NonSwlContactInfo>(c));
+        members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
+            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
+            .Select(c => _mapper.Map<SwlContactInfo>(c));
+        return members;
+    }
+
+    public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
+    {
+        await UpdateMembersAsync(cmd.Members, cmd.BizId, cmd.ApplicationId, ct);
+        return default;
+    }
+
+    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid appId, CancellationToken ct)
+    {
+        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
+        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
+        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
+        foreach (var e in employees)
+        {
+            e.BizContactRoleCode = BizContactRoleEnum.Employee;
+        }
+        contacts.AddRange(employees);
+        BizContactUpsertCmd upsertCmd = new(bizId, appId, contacts);
+        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
+        return default;
     }
 }

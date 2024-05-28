@@ -41,18 +41,37 @@ export class UtilService {
 
 	//------------------------------------
 	// Generic
-	getFullName(firstName: string | null | undefined, lastName: string | null | undefined): string | null {
-		if (!firstName && !lastName) return null;
-		return `${firstName ?? ''} ${lastName ?? ''}`.trim();
+	getFullName(givenName: string | null | undefined, surname: string | null | undefined): string | null {
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
 	}
 
 	getFullNameWithMiddle(
-		firstName: string | null | undefined,
+		givenName: string | null | undefined,
 		middleName1: string | null | undefined,
 		middleName2: string | null | undefined,
-		lastName: string | null | undefined
+		surname: string | null | undefined
 	): string {
-		return `${firstName ?? ''} ${middleName1 ?? ''} ${middleName2 ?? ''} ${lastName ?? ''}`.trim();
+		const userNameArray: string[] = [];
+		if (givenName) {
+			userNameArray.push(givenName);
+		}
+		if (middleName1) {
+			userNameArray.push(middleName1);
+		}
+		if (middleName2) {
+			userNameArray.push(middleName2);
+		}
+		if (surname) {
+			userNameArray.push(surname);
+		}
+		return userNameArray.join(' ');
 	}
 
 	getBirthDateMax(): moment.Moment {

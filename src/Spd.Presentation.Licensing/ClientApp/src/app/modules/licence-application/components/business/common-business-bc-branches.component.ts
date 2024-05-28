@@ -50,12 +50,10 @@ export interface BranchResponse {
 			<div *ngIf="hasBranchesInBc.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 				<div class="row my-2">
 					<div class="col-12">
-						<app-alert type="info" icon="" [showBorder]="false">
-							Branches in B.C. where licenced employees work
-						</app-alert>
+						<div class="mt-3 text-primary-color">The branches in B.C. where licenced employees work</div>
 						<mat-table [dataSource]="dataSource">
 							<ng-container matColumnDef="addressLine1">
-								<mat-header-cell *matHeaderCellDef>Address Line 1</mat-header-cell>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Address Line 1</mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">Address Line 1:</span>
 									{{ branch.addressLine1 | default }}
@@ -63,7 +61,9 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="city">
-								<mat-header-cell *matHeaderCellDef sortActionDescription="Sort by city">City</mat-header-cell>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef sortActionDescription="Sort by city"
+									>City</mat-header-cell
+								>
 								<mat-cell *matCellDef="let branch">
 									<span class="mobile-label">City:</span>
 									{{ branch.city | default }}
@@ -71,7 +71,10 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="branchManager">
-								<mat-header-cell *matHeaderCellDef sortActionDescription="Sort by manager name"
+								<mat-header-cell
+									class="mat-table-header-cell"
+									*matHeaderCellDef
+									sortActionDescription="Sort by manager name"
 									>Manager</mat-header-cell
 								>
 								<mat-cell *matCellDef="let branch">
@@ -81,7 +84,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="action1">
-								<mat-header-cell *matHeaderCellDef></mat-header-cell>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 								<mat-cell *matCellDef="let branch">
 									<button
 										mat-flat-button
@@ -96,7 +99,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<ng-container matColumnDef="action2">
-								<mat-header-cell *matHeaderCellDef></mat-header-cell>
+								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 								<mat-cell *matCellDef="let branch; let i = index">
 									<button
 										mat-flat-button
@@ -111,7 +114,7 @@ export interface BranchResponse {
 							</ng-container>
 
 							<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-							<mat-row *matRowDef="let row; columns: columns"></mat-row>
+							<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
 						</mat-table>
 
 						<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
