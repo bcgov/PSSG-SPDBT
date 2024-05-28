@@ -35,9 +35,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false">
-								This is the address of the business's primary location
-							</app-alert>
+							<div class="mb-3 text-primary-color">This is the address of the business's primary location</div>
 
 							<section>
 								<app-common-business-address
@@ -83,9 +81,12 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false">
+							<div class="mb-3 text-primary-color">
 								Provide your mailing address, if different from your business address
-							</app-alert>
+							</div>
+							<!-- <app-alert type="info" icon="" [showBorder]="false">
+								Provide your mailing address, if different from your business address
+							</app-alert> -->
 
 							<ng-container *ngIf="isMailingTheSame; else mailingIsDifferentSection">
 								<div class="mb-3">

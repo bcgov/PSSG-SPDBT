@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
@@ -63,8 +63,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceControllingMemberInvitesComponent implements OnInit, LicenceChildStepperStepComponent {
-	memberList: Array<any> = [];
+export class StepBusinessLicenceControllingMemberInvitesComponent implements LicenceChildStepperStepComponent {
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
 	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
@@ -72,20 +71,19 @@ export class StepBusinessLicenceControllingMemberInvitesComponent implements OnI
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
-	ngOnInit(): void {
-		this.memberList = this.membersArray.value;
-	}
-
 	isFormValid(): boolean {
 		return true;
 	}
-	get membersArray(): FormArray {
-		return <FormArray>this.controllingMembersFormGroup.get('members');
+
+	get membersWithoutSwlArray(): FormArray {
+		return <FormArray>this.controllingMembersFormGroup.get('membersWithoutSwl');
 	}
 	get membersWithoutSwlListWithEmail(): Array<any> {
-		return this.memberList.filter((item) => !item.licenceNumber && !!item.emailAddress);
+		const memberList = this.membersWithoutSwlArray.value ?? [];
+		return memberList.filter((item: any) => !item.licenceNumber && !!item.emailAddress);
 	}
 	get membersWithoutSwlListWithoutEmail(): Array<any> {
-		return this.memberList.filter((item) => !item.licenceNumber && !item.emailAddress);
+		const memberList = this.membersWithoutSwlArray.value ?? [];
+		return memberList.filter((item: any) => !item.licenceNumber && !item.emailAddress);
 	}
 }

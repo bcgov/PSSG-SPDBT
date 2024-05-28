@@ -300,16 +300,18 @@ export abstract class BusinessApplicationHelper {
 	});
 
 	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
-		members: this.formBuilder.array([]),
+		membersWithSwl: this.formBuilder.array([]),
+		membersWithoutSwl: this.formBuilder.array([]),
+		attachments: new FormControl([]),
 	});
 
 	employeesFormGroup: FormGroup = this.formBuilder.group({
 		employees: this.formBuilder.array([]),
 	});
 
-	membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]),
-	});
+	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
+	// 	attachments: new FormControl([], [Validators.required]),
+	// });
 
 	branchInBcFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
@@ -333,12 +335,14 @@ export abstract class BusinessApplicationHelper {
 
 	memberWithoutSwlFormGroup: FormGroup = this.formBuilder.group(
 		{
+			bizContactId: new FormControl(''),
 			givenName: new FormControl('', [FormControlValidators.required]),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
 			emailAddress: new FormControl('', [FormControlValidators.email]),
 			noEmailAddress: new FormControl(''),
+			phoneNumber: new FormControl(''),
 		},
 		{
 			validators: [

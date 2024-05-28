@@ -535,10 +535,10 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	get membersWithSwlList(): Array<any> {
-		return this.businessModelData.controllingMembersData.members.filter((item: any) => !!item.licenceNumber);
+		return this.businessModelData.controllingMembersData.membersWithSwl;
 	}
 	get membersWithoutSwlList(): Array<any> {
-		return this.businessModelData.controllingMembersData.members.filter((item: any) => !item.licenceNumber);
+		return this.businessModelData.controllingMembersData.membersWithoutSwl;
 	}
 
 	get employeesList(): Array<any> {
