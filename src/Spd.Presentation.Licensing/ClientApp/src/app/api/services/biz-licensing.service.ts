@@ -16,7 +16,6 @@ import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { Members } from '../models/members';
-import { Unit } from '../models/unit';
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +48,7 @@ export class BizLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Unit>> {
+): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicencePostPath, 'post');
     if (params) {
@@ -63,7 +62,7 @@ export class BizLicensingService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Unit>;
+        return r as StrictHttpResponse<BizLicAppCommandResponse>;
       })
     );
   }
@@ -83,10 +82,10 @@ export class BizLicensingService extends BaseService {
   },
   context?: HttpContext
 
-): Observable<Unit> {
+): Observable<BizLicAppCommandResponse> {
 
     return this.apiBusinessLicencePost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Unit>) => r.body as Unit)
+      map((r: StrictHttpResponse<BizLicAppCommandResponse>) => r.body as BizLicAppCommandResponse)
     );
   }
 

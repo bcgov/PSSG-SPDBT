@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -235,9 +236,13 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	// 	this.commonApplicationService.payNow(licenceAppId, `Payment for Case ID: ${application.applicationNumber}`);
 	// }
 
+	// onNextStepperStep(stepper: MatStepper): void {
+	// 	if (stepper?.selected) stepper.selected.completed = true;
+	// 	stepper.next();
+	// }
+
 	onNextStepperStep(stepper: MatStepper): void {
-		if (stepper?.selected) stepper.selected.completed = true;
-		stepper.next();
+		this.saveStep(stepper);
 	}
 
 	onNextPayStep(): void {
@@ -261,6 +266,53 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onChildNextStep() {
+		this.saveStep();
+	}
+
+	private saveStep(stepper?: MatStepper): void {
+		console.log('saveStep isAutoSave', this.businessApplicationService.isAutoSave());
+
+		if (this.businessApplicationService.isAutoSave()) {
+			this.businessApplicationService.saveBusinessLicenceStep().subscribe({
+				next: (_resp: any) => {
+					this.businessApplicationService.hasValueChanged = false;
+
+					this.hotToastService.success('Business Licence information has been saved');
+
+					if (stepper) {
+						if (stepper?.selected) stepper.selected.completed = true;
+						stepper.next();
+					} else {
+						this.goToChildNextStep();
+					}
+
+					// switch (stepper.selectedIndex) {
+					// 	case this.STEP_LICENCE_SELECTION:
+					// 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
+					// 		break;
+					// 	case this.STEP_IDENTIFICATION:
+					// 		this.stepIdentificationComponent?.onGoToFirstStep();
+					// 		break;
+					// }
+				},
+				error: (error: HttpErrorResponse) => {
+					// only 403s will be here as an error
+					// if (error.status == 403) {
+					// 	this.handleDuplicateLicence();
+					// }
+				},
+			});
+		} else {
+			if (stepper) {
+				if (stepper?.selected) stepper.selected.completed = true;
+				stepper.next();
+			} else {
+				this.goToChildNextStep();
+			}
+		}
+	}
+
+	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_BUSINESS_INFORMATION:
 				this.stepsBusinessInformationComponent?.onGoToNextStep();
@@ -285,23 +337,23 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			return;
 		}
 
-		// this.businessApplicationService.saveLicenceStepAuthenticated().subscribe({
-		// 	next: (_resp: any) => {
-		// 		this.licenceApplicationService.hasValueChanged = false;
+		this.businessApplicationService.saveBusinessLicenceStep().subscribe({
+			next: (_resp: any) => {
+				this.businessApplicationService.hasValueChanged = false;
 
-		this.hotToastService.success(
-			'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
-		);
+				this.hotToastService.success(
+					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
+				);
 
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-		// 	},
-		// 	error: (error: HttpErrorResponse) => {
-		// 		// only 403s will be here as an error
-		// 		if (error.status == 403) {
-		// 			this.handleDuplicateLicence();
-		// 		}
-		// 	},
-		// });
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+			},
+			error: (error: HttpErrorResponse) => {
+				// only 403s will be here as an error
+				// if (error.status == 403) {
+				// 	this.handleDuplicateLicence();
+				// }
+			},
+		});
 	}
 
 	private updateCompleteStatus(): void {

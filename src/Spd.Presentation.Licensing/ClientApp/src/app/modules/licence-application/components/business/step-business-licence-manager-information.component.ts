@@ -88,29 +88,29 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="agivenName" [errorStateMatcher]="matcher" maxlength="40" />
+										<input matInput formControlName="applicantGivenName" [errorStateMatcher]="matcher" maxlength="40" />
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="amiddleName1" maxlength="40" />
+										<input matInput formControlName="applicantMiddleName1" maxlength="40" />
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="amiddleName2" maxlength="40" />
+										<input matInput formControlName="applicantMiddleName2" maxlength="40" />
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
-										<input matInput formControlName="asurname" [errorStateMatcher]="matcher" maxlength="40" />
-										<mat-error *ngIf="form.get('asurname')?.hasError('required')"> This is required </mat-error>
+										<input matInput formControlName="applicantSurname" [errorStateMatcher]="matcher" maxlength="40" />
+										<mat-error *ngIf="form.get('applicantSurname')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
 
@@ -119,13 +119,15 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										<mat-label>Email Address</mat-label>
 										<input
 											matInput
-											formControlName="aemailAddress"
+											formControlName="applicantEmailAddress"
 											[errorStateMatcher]="matcher"
 											placeholder="name@domain.com"
 											maxlength="75"
 										/>
-										<mat-error *ngIf="form.get('aemailAddress')?.hasError('required')"> This is required </mat-error>
-										<mat-error *ngIf="form.get('aemailAddress')?.hasError('email')">
+										<mat-error *ngIf="form.get('applicantEmailAddress')?.hasError('required')">
+											This is required
+										</mat-error>
+										<mat-error *ngIf="form.get('applicantEmailAddress')?.hasError('email')">
 											Must be a valid email address
 										</mat-error>
 									</mat-form-field>
@@ -134,9 +136,18 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Phone Number</mat-label>
-										<input matInput formControlName="aphoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
-										<mat-error *ngIf="form.get('aphoneNumber')?.hasError('required')">This is required</mat-error>
-										<mat-error *ngIf="form.get('aphoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
+										<input
+											matInput
+											formControlName="applicantPhoneNumber"
+											[errorStateMatcher]="matcher"
+											[mask]="phoneMask"
+										/>
+										<mat-error *ngIf="form.get('applicantPhoneNumber')?.hasError('required')"
+											>This is required</mat-error
+										>
+										<mat-error *ngIf="form.get('applicantPhoneNumber')?.hasError('mask')">
+											This must be 10 digits
+										</mat-error>
 									</mat-form-field>
 								</div>
 							</div>

@@ -516,22 +516,22 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessModelData.businessManagerData.isBusinessManager ?? '';
 	}
 	get yourContactGivenName(): string {
-		return this.businessModelData.businessManagerData.agivenName ?? '';
+		return this.businessModelData.businessManagerData.applicantGivenName ?? '';
 	}
 	get yourContactMiddleName1(): string {
-		return this.businessModelData.businessManagerData.amiddleName1 ?? '';
+		return this.businessModelData.businessManagerData.applicantMiddleName1 ?? '';
 	}
 	get yourContactMiddleName2(): string {
-		return this.businessModelData.businessManagerData.amiddleName2 ?? '';
+		return this.businessModelData.businessManagerData.applicantMiddleName2 ?? '';
 	}
 	get yourContactSurname(): string {
-		return this.businessModelData.businessManagerData.asurname ?? '';
+		return this.businessModelData.businessManagerData.applicantSurname ?? '';
 	}
 	get yourContactEmailAddress(): string {
-		return this.businessModelData.businessManagerData.aemailAddress ?? '';
+		return this.businessModelData.businessManagerData.applicantEmailAddress ?? '';
 	}
 	get yourContactPhoneNumber(): string {
-		return this.businessModelData.businessManagerData.aphoneNumber ?? '';
+		return this.businessModelData.businessManagerData.applicantPhoneNumber ?? '';
 	}
 
 	get membersWithSwlList(): Array<any> {

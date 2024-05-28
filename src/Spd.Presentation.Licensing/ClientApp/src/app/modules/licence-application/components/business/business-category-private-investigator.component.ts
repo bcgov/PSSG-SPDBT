@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { LicenceResponse } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
+import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
 
 @Component({
 	selector: 'app-business-category-private-investigator',
@@ -14,46 +19,53 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 						licence
 					</div>
 
-					<div class="row">
-						<div class="col-xl-6 col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Given Name <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-							</mat-form-field>
+					<div class="row mb-3">
+						<div class="col-md-6 col-sm-12 text-end">
+							<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupManager()">
+								Search for Manager
+							</button>
 						</div>
-						<div class="col-xl-6 col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="middleName1" maxlength="40" />
-							</mat-form-field>
-						</div>
-						<div class="col-xl-6 col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-								<input matInput formControlName="middleName2" maxlength="40" />
-							</mat-form-field>
-						</div>
-						<div class="col-xl-6 col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Surname</mat-label>
-								<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-								<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-xl-6 col-lg-6 col-md-12">
-							<mat-form-field>
-								<mat-label>Manager's Security Worker Licence Number</mat-label>
-								<input
-									matInput
-									type="search"
-									formControlName="managerLicenceNumber"
-									oninput="this.value = this.value.toUpperCase()"
-									[errorStateMatcher]="matcher"
-									maxlength="10"
-								/>
-								<mat-error *ngIf="form.get('managerLicenceNumber')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
+					</div>
+
+					<div class="my-2">
+						<ng-container *ngIf="managerLicenceId.value; else SearchForManager">
+							<app-alert type="success" icon="check_circle">
+								<div class="row">
+									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+										<div class="text-primary-color">Name</div>
+										<div class="text-primary-color fs-5">{{ managerLicenceHolderName.value }}</div>
+									</div>
+									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+										<div class="text-primary-color">Security Worker Licence Number</div>
+										<div class="text-primary-color fs-5">{{ managerLicenceNumber.value }}</div>
+									</div>
+									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+										<div class="text-primary-color">Expiry Date</div>
+										<div class="text-primary-color fs-5">
+											{{ managerLicenceExpiryDate.value | formatDate : formalDateFormat }}
+										</div>
+									</div>
+									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+										<div class="text-primary-color">Licence Status</div>
+										<div class="text-primary-color fs-5 fw-bold">{{ managerLicenceStatusCode.value }}</div>
+									</div>
+								</div>
+							</app-alert>
+						</ng-container>
+						<ng-template #SearchForManager>
+							<app-alert type="warning" icon=""> Search for your manager's security worker licence </app-alert>
+						</ng-template>
+
+						<mat-error
+							class="mat-option-error mb-4"
+							*ngIf="
+								(form.get('managerLicenceId')?.dirty || form.get('managerLicenceId')?.touched) &&
+								form.get('managerLicenceId')?.invalid &&
+								form.get('managerLicenceId')?.hasError('required')
+							"
+						>
+							A valid security worker licence must be selected
+						</mat-error>
 					</div>
 				</div>
 			</div>
@@ -62,14 +74,71 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	styles: ``,
 })
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	form = this.businessApplicationService.categoryPrivateInvestigatorFormGroup;
 
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private businessApplicationService: BusinessApplicationService) {}
+	constructor(private dialog: MatDialog, private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onLookupManager(): void {
+		const dialogOptions: LookupSwlDialogData = {
+			title: 'Add Manager with Security Worker Licence',
+		};
+		this.dialog
+			.open(ModalLookupSwlComponent, {
+				width: '800px',
+				data: dialogOptions,
+			})
+			.afterClosed()
+			.subscribe((resp: any) => {
+				const memberData: LicenceResponse = resp?.data;
+				if (memberData) {
+					this.form.patchValue(
+						{
+							managerContactId: memberData.licenceHolderId,
+							managerLicenceId: memberData.licenceId,
+							managerLicenceHolderName: memberData.licenceHolderName,
+							managerLicenceNumber: memberData.licenceNumber,
+							managerLicenceExpiryDate: memberData.expiryDate,
+							managerLicenceStatusCode: memberData.licenceStatusCode,
+						},
+						{ emitEvent: false }
+					);
+				} else {
+					this.form.patchValue(
+						{
+							managerContactId: null,
+							managerLicenceId: null,
+							managerLicenceHolderName: null,
+							managerLicenceNumber: null,
+							managerLicenceExpiryDate: null,
+							managerLicenceStatusCode: null,
+						},
+						{ emitEvent: false }
+					);
+				}
+			});
+	}
+
+	get managerLicenceId(): FormControl {
+		return this.form.get('managerLicenceId') as FormControl;
+	}
+	get managerLicenceHolderName(): FormControl {
+		return this.form.get('managerLicenceHolderName') as FormControl;
+	}
+	get managerLicenceNumber(): FormControl {
+		return this.form.get('managerLicenceNumber') as FormControl;
+	}
+	get managerLicenceExpiryDate(): FormControl {
+		return this.form.get('managerLicenceExpiryDate') as FormControl;
+	}
+	get managerLicenceStatusCode(): FormControl {
+		return this.form.get('managerLicenceStatusCode') as FormControl;
 	}
 }

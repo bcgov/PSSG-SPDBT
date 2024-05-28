@@ -4,6 +4,7 @@ import { ApplicationTypeCode } from './application-type-code';
 import { ContactInfo } from './contact-info';
 import { Document } from './document';
 import { LicenceTermCode } from './licence-term-code';
+import { NonSwlContactInfo } from './non-swl-contact-info';
 import { SwlContactInfo } from './swl-contact-info';
 import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
@@ -21,7 +22,7 @@ export interface BizLicAppUpsertRequest {
   licenceAppId?: null | string;
   licenceTermCode?: LicenceTermCode;
   noBranding?: null | boolean;
-  nonSwlControllerMemberInfos?: null | Array<ContactInfo>;
+  nonSwlControllerMemberInfos?: null | Array<NonSwlContactInfo>;
   privateInvestigatorSwlInfo?: SwlContactInfo;
   swlControllerMemberInfos?: null | Array<SwlContactInfo>;
   useDogs?: null | boolean;

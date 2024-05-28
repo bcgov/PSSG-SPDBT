@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -61,29 +63,32 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
-	constructor(private businessApplicationService: BusinessApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	onFileUploaded(_file: File): void {
-		// TODO upload file on partial save
-		this.businessApplicationService.hasValueChanged = true;
+	constructor(
+		private hotToastService: HotToastService,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
-		if (this.businessApplicationService.isAutoSave()) {
-			// this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.xxx, file).subscribe({
-			// 	next: (resp: any) => {
-			// 		const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-			// 		matchingFile.documentUrlId = resp.body[0].documentUrlId;
-			// 	},
-			// 	error: (error: any) => {
-			// 		console.log('An error occurred during file upload', error);
-			// 		this.hotToastService.error('An error occurred during the file upload. Please try again.');
-			// 		this.fileUploadComponent.removeFailedFile(file);
-			// 	},
-			// });
-		}
+	onFileUploaded(file: File): void {
+		// this.businessApplicationService.hasValueChanged = true;
+		// if (this.businessApplicationService.isAutoSave()) {
+		// 	this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.BizBranding, file).subscribe({
+		// 		next: (resp: any) => {
+		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during file upload', error);
+		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
+		// 			this.fileUploadComponent.removeFailedFile(file);
+		// 		},
+		// 	});
+		// }
 	}
 
 	onFileRemoved(): void {
-		// this.permitApplicationService.hasValueChanged = true;
+		this.businessApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

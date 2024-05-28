@@ -4,13 +4,16 @@ import { Router } from '@angular/router';
 import {
 	Address,
 	ApplicationTypeCode,
+	BizLicAppCommandResponse,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BizTypeCode,
 	BranchInfo,
-	ContactInfo,
+	LicenceAppDocumentResponse,
+	LicenceDocumentTypeCode,
 	LicenceResponse,
 	Members,
+	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -31,13 +34,15 @@ import {
 	map,
 	of,
 	switchMap,
+	take,
 	tap,
 } from 'rxjs';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService } from './common-application.service';
+import { LicenceDocument } from './licence-application.helper';
 
-export interface ControllingMemberContactInfo extends ContactInfo {
+export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
 	contactId?: string | null;
 	licenceHolderName: string;
@@ -57,8 +62,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
+		bizId: new FormControl(null),
 		licenceAppId: new FormControl(null),
-		bizId: new FormControl(null), // when authenticated, the biz id
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 
@@ -70,9 +75,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		liabilityData: this.liabilityFormGroup,
 
 		categoryData: this.categoryFormGroup,
-		categoryArmouredCarGuardData: this.categoryArmouredCarGuardFormGroup,
-		categoryPrivateInvestigatorData: this.categoryPrivateInvestigatorFormGroup,
-		categorySecurityGuardData: this.categorySecurityGuardFormGroup,
+		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
+		categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
+		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
 
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
@@ -91,15 +96,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
+		utilService: UtilService,
 		private router: Router,
-		private utilService: UtilService,
 		private licenceService: LicenceService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
 		private commonApplicationService: CommonApplicationService
 	) {
-		super(formBuilder, configService, formatDatePipe);
+		super(formBuilder, configService, formatDatePipe, utilService);
 
 		this.businessModelChangedSubscription = this.businessModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -152,6 +157,50 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		return this.hasValueChanged;
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
+	saveBusinessLicenceStep(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		console.log('saveBusinessLicenceStep businessModelFormValue', businessModelFormValue);
+		console.log('saveBusinessLicenceStep body', body);
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.bizLicensingService.apiBusinessLicencePost$Response({ body }).pipe(
+			take(1),
+			tap((res: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				const formValue = this.businessModelFormGroup.getRawValue();
+				if (!formValue.licenceAppId) {
+					this.businessModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+				}
+			})
+		);
+	}
+
+	/**
+	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	 * @param documentCode
+	 * @param document
+	 * @returns
+	 */
+	addUploadDocument(
+		documentCode: LicenceDocumentTypeCode,
+		document: File
+	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+		const doc: LicenceDocument = {
+			Documents: [document],
+			LicenceDocumentTypeCode: documentCode,
+		};
+
+		return this.bizLicensingService.apiBusinessLicenceLicenceAppIdFilesPost$Response({
+			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
+			body: doc,
+		});
 	}
 
 	/**
@@ -436,10 +485,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyControllingMembersWithoutSwl(members: Array<ContactInfo>) {
+	private applyControllingMembersWithoutSwl(members: Array<NonSwlContactInfo>) {
 		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
 
-		members.forEach((item: ContactInfo) => {
+		members.forEach((item: NonSwlContactInfo) => {
 			controllingMembersWithoutSwlData.push({
 				bizContactId: item.bizContactId,
 				emailAddress: item.emailAddress,
@@ -720,14 +769,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.businessModelFormGroup.patchValue(
 			{
 				bizId: 'bizId' in profile ? profile.bizId : null,
-				licenceAppId: relatedLicenceInformation?.licenceAppId,
+				// licenceAppId: relatedLicenceInformation?.licenceAppId,
+				licenceAppId: '0aac80d3-e692-4b15-9c1a-49533f9900a1',
 				workerLicenceTypeData,
 				applicationTypeData,
 				businessInformationData,
 				businessManagerData,
 
 				categoryData,
-				categoryPrivateInvestigatorData,
+				categoryPrivateInvestigatorFormGroup: categoryPrivateInvestigatorData,
 				isBcBusinessAddress,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
@@ -792,7 +842,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return swlControllingMembers;
 	}
 
-	private saveControllingMembersWithoutSwlBody(): null | Array<ContactInfo> {
+	private saveControllingMembersWithoutSwlBody(): null | Array<NonSwlContactInfo> {
 		const modelFormValue = this.businessModelFormGroup.getRawValue();
 		const controllingMembersWithoutSwlArray = modelFormValue.controllingMembersData.membersWithoutSwl;
 
@@ -800,9 +850,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			return null;
 		}
 
-		const nonSwlControllingMembers: null | Array<ContactInfo> = controllingMembersWithoutSwlArray.map(
+		const nonSwlControllingMembers: null | Array<NonSwlContactInfo> = controllingMembersWithoutSwlArray.map(
 			(item: ControllingMemberContactInfo) => {
-				const contactInfo: ContactInfo = {
+				const contactInfo: NonSwlContactInfo = {
 					bizContactId: item.bizContactId,
 					emailAddress: item.emailAddress,
 					givenName: item.givenName,
