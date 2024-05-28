@@ -386,7 +386,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					return forkJoin(apis).pipe(
 						map((licenceResponses: Array<LicenceResponse>) => {
 							this.applyControllingMembersWithSwl(resp.swlControllingMembers ?? [], licenceResponses);
-							this.applyControllingMembersWithoutSwl(resp.nonSwlControllingMembers ?? [], licenceResponses);
+							this.applyControllingMembersWithoutSwl(resp.nonSwlControllingMembers ?? []);
 							this.applyEmployees(resp.employees ?? [], licenceResponses);
 
 							return licenceResponses;
@@ -436,7 +436,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyControllingMembersWithoutSwl(members: Array<ContactInfo>, licences: Array<LicenceResponse>) {
+	private applyControllingMembersWithoutSwl(members: Array<ContactInfo>) {
 		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
 
 		members.forEach((item: ContactInfo) => {
