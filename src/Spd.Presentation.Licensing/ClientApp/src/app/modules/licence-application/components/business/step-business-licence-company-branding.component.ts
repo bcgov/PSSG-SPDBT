@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -20,7 +21,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								We recommend you do not finalize any branding, marketing or advertising until your licence is approved.
 							</app-alert>
 
-							<ng-container *ngIf="!isNoLogoOrBranding">
+							<div *ngIf="!isNoLogoOrBranding" @showHideTriggerSlideAnimation>
 								<div class="text-minor-heading mb-2">Upload examples</div>
 
 								<app-file-upload
@@ -43,9 +44,9 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								>
 
 								<mat-divider class="my-4"></mat-divider>
-							</ng-container>
+							</div>
 
-							<mat-checkbox formControlName="noLogoOrBranding"> I don’t have a logo or any branding </mat-checkbox>
+							<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
 						</div>
 					</div>
 				</form>
@@ -53,6 +54,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 		</section>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.companyBrandingFormGroup;
@@ -62,23 +64,22 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	onFileUploaded(_file: File): void {
-		// if (this.authenticationService.isLoggedIn()) {
-		// 	const proofTypeCode =
-		// 		this.isCanadianCitizen.value == BooleanTypeCode.Yes
-		// 			? this.canadianCitizenProofTypeCode.value
-		// 			: this.isCanadianResident.value;
-		// 	this.permitApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
-		// 		next: (resp: any) => {
-		// 			const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during file upload', error);
-		// 			this.hotToastService.error('An error occurred during the file upload. Please try again.');
-		// 			this.fileUploadComponent.removeFailedFile(file);
-		// 		},
-		// 	});
-		// }
+		// TODO upload file on partial save
+		this.businessApplicationService.hasValueChanged = true;
+
+		if (this.businessApplicationService.isAutoSave()) {
+			// this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.xxx, file).subscribe({
+			// 	next: (resp: any) => {
+			// 		const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+			// 		matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			// 	},
+			// 	error: (error: any) => {
+			// 		console.log('An error occurred during file upload', error);
+			// 		this.hotToastService.error('An error occurred during the file upload. Please try again.');
+			// 		this.fileUploadComponent.removeFailedFile(file);
+			// 	},
+			// });
+		}
 	}
 
 	onFileRemoved(): void {

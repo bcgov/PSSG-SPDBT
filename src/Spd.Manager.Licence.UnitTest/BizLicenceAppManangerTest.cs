@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Moq;
+using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
@@ -20,6 +21,7 @@ public class BizLicenceAppManangerTest
     private Mock<IMainFileStorageService> mockMainFileService = new();
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
     private Mock<IBizLicApplicationRepository> mockBizLicAppRepo = new();
+    private Mock<IBizContactRepository> mockBizContactRepo = new();
     private BizLicAppMananger sut;
 
     public BizLicenceAppManangerTest()
@@ -43,6 +45,7 @@ public class BizLicenceAppManangerTest
             mockLicFeeRepo.Object,
             mockMainFileService.Object,
             mockTransientFileStorageService.Object,
+            mockBizContactRepo.Object,
             mockBizLicAppRepo.Object);
     }
 
