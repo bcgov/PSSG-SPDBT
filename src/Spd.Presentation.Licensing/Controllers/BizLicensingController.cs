@@ -35,8 +35,8 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
-        [Route("api/permit-applications/{licenceAppId}")]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Route("api/business-licence/{licenceAppId}")]
+        [Authorize(Policy = "OnlyBceid")]
         [HttpGet]
         public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
