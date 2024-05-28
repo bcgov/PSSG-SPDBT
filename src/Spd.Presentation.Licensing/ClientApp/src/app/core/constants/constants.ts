@@ -51,12 +51,11 @@ export const SPD_CONSTANTS = {
 	payment: {
 		maxNumberOfAttempts: 10,
 	},
-	maxNumberOfAliases: 10,
-	// sessionStorage: {
-	// 	organizationRegStateKey: 'state',
-	// 	crcPortalStateKey: 'crc-state',
-	// 	bannerMessageKey: 'banner-message',
-	// },
+	maxCount: {
+		aliases: 10,
+		controllingMembers: 20,
+		employees: 20,
+	},
 	urls: {
 		contactSpdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',

@@ -19,7 +19,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 							your security business application.
 						</app-alert>
 
-						<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
+						<app-common-controlling-members [defaultExpanded]="true" [isWizard]="true"></app-common-controlling-members>
 					</div>
 				</div>
 			</div>

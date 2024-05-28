@@ -72,11 +72,6 @@ a {
 	background-color: var(--color-primary-lightest) !important;
 }
 
-// global - do not allow navigation by clicking on step
-// .mat-step-header {
-// 	pointer-events: none;
-// }
-
 // do not allow navigation by clicking on step
 .mat-stepper-disable-header-navigation .mat-step-header {
 	pointer-events: none;
@@ -116,11 +111,6 @@ a {
 .mat-step-header.cdk-program-focused,
 .mat-step-header.cdk-keyboard-focuses {
 	background-color: unset; // rgba(0, 0, 0, 0.04);
-}
-
-// CARD
-.mat-mdc-card-content {
-	text-align: center;
 }
 
 // FORM FIELDS
@@ -206,13 +196,10 @@ button.mat-red-button {
 }
 
 .mat-mdc-radio-button .mdc-form-field {
-	// padding: 0.5rem !important;
 	padding: 0.5rem 0.5rem 0.5rem 0 !important;
 }
 
 .mat-mdc-checkbox .mdc-form-field {
-	// padding: 0.5rem !important;
-	// padding: 0.5rem 0.5rem 0.5rem 0 !important;
 	padding: 0 !important;
 }
 
@@ -255,23 +242,16 @@ button.mat-red-button {
 	display: none;
 }
 
-.mat-mdc-header-cell {
+.mat-table-header-cell {
 	font-weight: 600 !important;
+	font-size: 1.05rem !important;
 }
 
 .mat-cell-email {
 	overflow-wrap: anywhere;
 }
 
-.mat-mdc-highlight-row {
-	background-color: var(--color-grey-lightest);
-}
-
-.mat-mdc-row-clickable {
-	cursor: pointer;
-}
-
-.mat-mdc-row:hover {
+.mat-data-row:hover {
 	background-color: var(--color-grey-lightest) !important;
 }
 
@@ -284,19 +264,17 @@ button.mat-red-button {
 	border: 2px solid var(--color-yellow);
 }
 
-// .mat-mdc-dialog-actions {
-//   padding: 0 8px 9px !important;
-// }
-
 .mat-mdc-dialog-surface {
 	overflow-y: hidden !important;
 }
 
-.mat-mdc-dialog-title {
-	font-weight: 600 !important;
+.mat-dialog-title {
+	font-size: 1.75rem !important;
+	margin-top: 0.5rem !important;
+	margin-bottom: 1.5rem !important;
 }
 
-.mat-mdc-dialog-content {
+.mat-dialog-content {
 	font-weight: 400 !important;
 	color: var(--color-grey-dark) !important;
 }

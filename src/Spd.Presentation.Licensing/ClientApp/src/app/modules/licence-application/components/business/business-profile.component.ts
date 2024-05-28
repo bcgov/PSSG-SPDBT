@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
 import { HotToastService } from '@ngneat/hot-toast';
-import { Subscription } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
@@ -67,18 +66,14 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 	`,
 	styles: [],
 })
-export class BusinessProfileComponent implements OnInit, OnDestroy {
+export class BusinessProfileComponent {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
 	mailingAddressFormGroup = this.businessApplicationService.mailingAddressFormGroup;
 	branchesInBcFormGroup = this.businessApplicationService.branchesInBcFormGroup;
 
-	isBcBusinessAddress = true;
-
 	isReadonly = true;
-
-	private businessModelChangedSubscription!: Subscription;
 
 	@ViewChild(CommonBusinessProfileComponent) businessProfileComponent!: CommonBusinessProfileComponent;
 
@@ -91,21 +86,6 @@ export class BusinessProfileComponent implements OnInit, OnDestroy {
 		// check if isReadonly was passed from 'BusinessUserApplicationsComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.isReadonly = state && state['isReadonly'];
-	}
-
-	ngOnInit() {
-		this.businessModelChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
-			(_resp: any) => {
-				this.isBcBusinessAddress =
-					this.businessApplicationService.businessModelFormGroup.get('isBcBusinessAddress')?.value ?? true;
-
-				//console.debug('************************ this.isBcBusinessAddress', this.isBcBusinessAddress);
-			}
-		);
-	}
-
-	ngOnDestroy() {
-		if (this.businessModelChangedSubscription) this.businessModelChangedSubscription.unsubscribe();
 	}
 
 	onCancel(): void {
@@ -130,5 +110,9 @@ export class BusinessProfileComponent implements OnInit, OnDestroy {
 				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
+	}
+
+	get isBcBusinessAddress(): boolean {
+		return this.businessApplicationService.isBcBusinessAddress();
 	}
 }

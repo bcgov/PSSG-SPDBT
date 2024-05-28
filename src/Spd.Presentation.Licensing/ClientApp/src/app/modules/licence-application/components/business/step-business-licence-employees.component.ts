@@ -13,7 +13,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 				<div class="row">
 					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-common-employees [defaultExpanded]="true"></app-common-employees>
+						<app-common-employees [defaultExpanded]="true" [isWizard]="true"></app-common-employees>
 					</div>
 				</div>
 			</div>
