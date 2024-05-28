@@ -23,6 +23,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             .Expand(a => a.spd_ApplicantId_account)
             .Expand(a => a.spd_ApplicantId_contact)
             .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_application_spd_licence_manager)
             .Expand(a => a.spd_CurrentExpiredLicenceId)
             .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
             .Where(a => a.spd_applicationid == licenceApplicationId)
