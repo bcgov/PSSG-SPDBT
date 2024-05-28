@@ -1,8 +1,6 @@
 ﻿using AutoFixture;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
-using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
