@@ -199,7 +199,7 @@ export class CommonAliasesComponent {
 	}
 
 	get isAllowAliasAdd(): boolean {
-		return this.aliasesArray.length < SPD_CONSTANTS.maxNumberOfAliases;
+		return this.aliasesArray.length < SPD_CONSTANTS.maxCount.aliases;
 	}
 
 	get aliasesArray(): FormArray {

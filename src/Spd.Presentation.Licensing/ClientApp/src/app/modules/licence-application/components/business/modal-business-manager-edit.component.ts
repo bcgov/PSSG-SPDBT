@@ -12,8 +12,8 @@ export interface UserDialogData {
 @Component({
 	selector: 'app-modal-business-manager-edit',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
-		<mat-dialog-content>
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content">
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-lg-6 col-md-12">
@@ -81,7 +81,10 @@ export interface UserDialogData {
 					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large" (click)="onSave()">Save</button>
+					<button mat-flat-button color="primary" class="large" (click)="onSave()">
+						<span *ngIf="!isEdit">Add</span>
+						<span *ngIf="isEdit">Update</span>
+					</button>
 				</div>
 			</div>
 		</mat-dialog-actions>

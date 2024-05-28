@@ -65,7 +65,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 						<div class="col-12">
 							<mat-table [dataSource]="dataSource">
 								<ng-container matColumnDef="status">
-									<mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Status:</span>
 										<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="manager.isActive; else notactive">
@@ -78,7 +78,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								</ng-container>
 
 								<ng-container matColumnDef="managerRoleCode">
-									<mat-header-cell *matHeaderCellDef>Authorization Type</mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Authorization Type</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Authorization Type:</span>
 										{{ manager.managerRoleCode }}
@@ -86,7 +86,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								</ng-container>
 
 								<ng-container matColumnDef="branchManager">
-									<mat-header-cell *matHeaderCellDef>Applicant Name</mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Applicant Name</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Applicant Name:</span>
 										{{ manager | fullname | default }}
@@ -94,7 +94,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								</ng-container>
 
 								<ng-container matColumnDef="emailAddress">
-									<mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
 									<mat-cell class="mat-cell-email" *matCellDef="let manager">
 										<span class="mobile-label">Email:</span>
 										{{ manager.emailAddress | default }}
@@ -102,7 +102,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								</ng-container>
 
 								<ng-container matColumnDef="phoneNumber">
-									<mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Phone Number</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Phone Number:</span>
 										{{ manager.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}
@@ -110,7 +110,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								</ng-container>
 
 								<ng-container matColumnDef="action1">
-									<mat-header-cell *matHeaderCellDef></mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<button
 											mat-flat-button
@@ -130,7 +130,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								-->
 
 								<ng-container matColumnDef="action2">
-									<mat-header-cell *matHeaderCellDef></mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<ng-container *ngIf="manager.isActive; else notactiveactions">
 											<button
@@ -158,7 +158,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 								</ng-container>
 
 								<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-								<mat-row *matRowDef="let row; columns: columns"></mat-row>
+								<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
 							</mat-table>
 						</div>
 					</div>

@@ -8,9 +8,9 @@ export interface BizSelectionDialogData {
 @Component({
 	selector: 'app-biz-selection-modal',
 	template: `
-		<div mat-dialog-title>{{ title }}</div>
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-divider></mat-divider>
-		<mat-dialog-content>
+		<mat-dialog-content class="mat-dialog-content">
 			<ng-container *ngFor="let bizItem of bizsList; let i = index">
 				<button mat-stroked-button color="primary" class="large my-2" (click)="onSelectBiz(bizItem)">
 					{{ bizItem.bizLegalName ?? bizItem.bizName }}
