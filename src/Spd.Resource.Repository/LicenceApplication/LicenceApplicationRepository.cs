@@ -135,16 +135,20 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Expand(a => a.spd_ApplicantId_contact)
             .Expand(a => a.spd_application_spd_licencecategory)
             .Expand(a => a.spd_CurrentExpiredLicenceId)
-            .Where(a => a.spd_applicationid == licenceApplicationId).SingleOrDefaultAsync(ct);
+            .Where(a => a.spd_applicationid == licenceApplicationId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");
-        if (app.spd_ApplicantId_contact == null || app.spd_ApplicantId_contact.contactid == null)
-            throw new ArgumentException("cannot find the applicant for this application");
-
-        var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
-        _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
-        appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
+
+        if (app.spd_ApplicantId_contact?.contactid != null)
+        {
+            var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
+            appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
+            _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
+        }
+
         return appResp;
     }
 
