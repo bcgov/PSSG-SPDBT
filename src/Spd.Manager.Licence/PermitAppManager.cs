@@ -75,7 +75,6 @@ internal class PermitAppManager :
         var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
-
         LicenceAppBase licAppBase = new()
         {
             WorkerLicenceTypeCode = cmd.PermitUpsertRequest.WorkerLicenceTypeCode,
