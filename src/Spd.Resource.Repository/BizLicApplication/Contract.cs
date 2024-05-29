@@ -30,11 +30,13 @@ public record BizLicApplication
     public string? ExpiredLicenceNumber { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? NoBranding { get; set; }
     public bool? UseDogs { get; set; }
     public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
+    public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
 }
 
 public record SaveBizLicApplicationCmd() : BizLicApplication
@@ -48,4 +50,10 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
 public record BizLicApplicationResp() : BizLicApplication
 {
     public Guid? BizId { get; set; }
+    public Guid? LicenceAppId { get; set; }
+    public Guid? ContactId { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
+    public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
+    public string? CaseNumber { get; set; }
+    public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
 }

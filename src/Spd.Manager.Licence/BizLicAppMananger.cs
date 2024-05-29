@@ -42,9 +42,17 @@ internal class BizLicAppMananger :
         _bizContactRepository = bizContactRepository;
     }
 
-    public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery cmd, CancellationToken cancellationToken)
+    public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var response = await _bizLicApplicationRepository.GetBizLicApplicationAsync(query.LicenceApplicationId, cancellationToken);
+        BizLicAppResponse result = _mapper.Map<BizLicAppResponse>(response);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
+
+        if (result.BizId != null)
+            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, result.LicenceAppId), cancellationToken);
+        
+        return result;
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
@@ -64,15 +72,17 @@ internal class BizLicAppMananger :
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
 
-        await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
-            cmd.BizLicAppUpsertRequest.BizId,
-            (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
-            cancellationToken);
+        if (cmd.BizLicAppUpsertRequest.Members != null && cmd.BizLicAppUpsertRequest.BizId != null)
+            await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
+                cmd.BizLicAppUpsertRequest.BizId,
+                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
+                cancellationToken);
 
-        await UpdateDocumentsAsync(
-            (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
-            (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
-            cancellationToken);
+        if (cmd.BizLicAppUpsertRequest.DocumentInfos != null && cmd.BizLicAppUpsertRequest.DocumentInfos.Any())
+            await UpdateDocumentsAsync(
+                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
+                (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
+                cancellationToken);
 
         return _mapper.Map<BizLicAppCommandResponse>(response);
     }

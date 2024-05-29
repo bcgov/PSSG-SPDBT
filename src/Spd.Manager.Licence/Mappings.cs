@@ -219,6 +219,21 @@ internal class Mappings : Profile
             .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
             .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
+        CreateMap<BizLicApplicationResp, BizLicAppResponse>()
+            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.ManagerGivenName))
+            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.ManagerSurname))
+            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.ManagerPhoneNumber))
+            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.ManagerEmailAddress))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.ManagerMiddleName1))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.ManagerMiddleName2))
+            .ForPath(d => d.ApplicantContactInfo.GivenName, opt => opt.MapFrom(s => s.GivenName))
+            .ForPath(d => d.ApplicantContactInfo.Surname, opt => opt.MapFrom(s => s.Surname))
+            .ForPath(d => d.ApplicantContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForPath(d => d.ApplicantContactInfo.EmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForPath(d => d.ApplicantContactInfo.MiddleName1, opt => opt.MapFrom(s => s.MiddleName1))
+            .ForPath(d => d.ApplicantContactInfo.MiddleName2, opt => opt.MapFrom(s => s.MiddleName2))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.LicenceId));
+
         CreateMap<PortalUserResp, BizUserLoginResponse>()
             .ForMember(d => d.BizUserId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.OrganizationId))
