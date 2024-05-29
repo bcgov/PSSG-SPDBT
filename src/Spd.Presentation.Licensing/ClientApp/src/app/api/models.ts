@@ -12,6 +12,7 @@ export { ApplicationTypeCode } from './models/application-type-code';
 export { ArmouredVehiclePermitReasonCode } from './models/armoured-vehicle-permit-reason-code';
 export { BizLicAppChangeRequest } from './models/biz-lic-app-change-request';
 export { BizLicAppCommandResponse } from './models/biz-lic-app-command-response';
+export { BizLicAppResponse } from './models/biz-lic-app-response';
 export { BizLicAppUpsertRequest } from './models/biz-lic-app-upsert-request';
 export { BizListResponse } from './models/biz-list-response';
 export { BizProfileResponse } from './models/biz-profile-response';

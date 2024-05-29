@@ -12,6 +12,7 @@ import { map, filter } from 'rxjs/operators';
 import { ActionResult } from '../models/action-result';
 import { BizLicAppChangeRequest } from '../models/biz-lic-app-change-request';
 import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
+import { BizLicAppResponse } from '../models/biz-lic-app-response';
 import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
@@ -26,6 +27,67 @@ export class BizLicensingService extends BaseService {
     http: HttpClient
   ) {
     super(config, http);
+  }
+
+  /**
+   * Path part for operation apiBusinessLicenceLicenceAppIdGet
+   */
+  static readonly ApiBusinessLicenceLicenceAppIdGetPath = '/api/business-licence/{licenceAppId}';
+
+  /**
+   * Get Business Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessLicenceLicenceAppIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessLicenceLicenceAppIdGet$Response(params: {
+    licenceAppId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<BizLicAppResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceLicenceAppIdGetPath, 'get');
+    if (params) {
+      rb.path('licenceAppId', params.licenceAppId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<BizLicAppResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get Business Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessLicenceLicenceAppIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessLicenceLicenceAppIdGet(params: {
+    licenceAppId: string;
+  },
+  context?: HttpContext
+
+): Observable<BizLicAppResponse> {
+
+    return this.apiBusinessLicenceLicenceAppIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<BizLicAppResponse>) => r.body as BizLicAppResponse)
+    );
   }
 
   /**

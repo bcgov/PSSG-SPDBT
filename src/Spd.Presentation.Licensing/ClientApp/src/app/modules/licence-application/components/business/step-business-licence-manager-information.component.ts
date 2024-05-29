@@ -81,7 +81,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 							</div>
 						</div>
 
-						<ng-container *ngIf="!isBusinessManager.value">
+						<ng-container *ngIf="isBusinessManager.value != true">
 							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 							<div class="summary-heading mb-2">Your Information</div>
 							<div class="row">

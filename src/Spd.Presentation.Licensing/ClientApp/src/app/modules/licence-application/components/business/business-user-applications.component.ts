@@ -25,6 +25,10 @@ import { Observable, take, tap } from 'rxjs';
 	selector: 'app-business-user-applications',
 	template: `
 		<section class="step-section">
+			<button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
+				<mat-icon>play_arrow</mat-icon>Resume
+			</button>
+
 			<!-- TODO  *ngIf="results$ | async" -->
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -131,7 +135,7 @@ import { Observable, take, tap } from 'rxjs';
 												mat-flat-button
 												color="primary"
 												class="large my-3 w-auto"
-												(click)="onResume(application)"
+												(click)="onResumex(application)"
 												*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
 											>
 												<mat-icon>play_arrow</mat-icon>Resume
@@ -518,7 +522,24 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		this.onRequestReplacement(appl);
 	}
 
-	onResume(_appl: LicenceAppListResponse): void {
+	onResume(): void {
+		const licenceAppId = '10007484-6a96-4650-8dc6-d6b7548e2dbb';
+
+		this.businessApplicationService
+			.getBusinessLicenceToResume(licenceAppId)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onResumex(_appl: LicenceAppListResponse): void {
 		// if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceNew(appl.licenceAppId!)

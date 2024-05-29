@@ -391,6 +391,10 @@ export abstract class BusinessApplicationHelper {
 		isActive: new FormControl(''),
 	});
 
+	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
+		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
+	});
+
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		check2: new FormControl(null, [Validators.requiredTrue]),
