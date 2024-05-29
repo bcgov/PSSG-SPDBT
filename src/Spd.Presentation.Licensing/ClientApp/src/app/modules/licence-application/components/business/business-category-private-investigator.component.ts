@@ -12,61 +12,58 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 	selector: 'app-business-category-private-investigator',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="col-12">
-					<div class="fs-5 lh-base my-3">
+			<div class="row mt-3">
+				<div class="col-lg-8 col-md-12 col-sm-12">
+					<div class="fs-5 lh-base">
 						To qualify for a private investigator business licence, you must have a manager with a valid security worker
 						licence
 					</div>
+				</div>
+				<div class="col-lg-4 col-md-12 col-sm-12 text-end">
+					<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupManager()">
+						Search for Manager
+					</button>
+				</div>
 
-					<div class="row mb-3">
-						<div class="col-md-6 col-sm-12 text-end">
-							<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupManager()">
-								Search for Manager
-							</button>
-						</div>
-					</div>
-
-					<div class="my-2">
-						<ng-container *ngIf="managerLicenceId.value; else SearchForManager">
-							<app-alert type="success" icon="check_circle">
-								<div class="row">
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Name</div>
-										<div class="text-primary-color fs-5">{{ managerLicenceHolderName.value }}</div>
-									</div>
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Security Worker Licence Number</div>
-										<div class="text-primary-color fs-5">{{ managerLicenceNumber.value }}</div>
-									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Expiry Date</div>
-										<div class="text-primary-color fs-5">
-											{{ managerLicenceExpiryDate.value | formatDate : formalDateFormat }}
-										</div>
-									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Licence Status</div>
-										<div class="text-primary-color fs-5 fw-bold">{{ managerLicenceStatusCode.value }}</div>
+				<div class="mt-4">
+					<ng-container *ngIf="managerLicenceId.value; else SearchForManager">
+						<app-alert type="success" icon="check_circle">
+							<div class="row">
+								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Name</div>
+									<div class="text-primary-color fs-5">{{ managerLicenceHolderName.value }}</div>
+								</div>
+								<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Security Worker Licence Number</div>
+									<div class="text-primary-color fs-5">{{ managerLicenceNumber.value }}</div>
+								</div>
+								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Expiry Date</div>
+									<div class="text-primary-color fs-5">
+										{{ managerLicenceExpiryDate.value | formatDate : formalDateFormat }}
 									</div>
 								</div>
-							</app-alert>
-						</ng-container>
-						<ng-template #SearchForManager>
-							<app-alert type="warning" icon=""> Search for your manager's security worker licence </app-alert>
-						</ng-template>
+								<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
+									<div class="text-primary-color">Licence Status</div>
+									<div class="text-primary-color fs-5 fw-bold">{{ managerLicenceStatusCode.value }}</div>
+								</div>
+							</div>
+						</app-alert>
+					</ng-container>
+					<ng-template #SearchForManager>
+						<app-alert type="warning" icon=""> Search for your manager's security worker licence </app-alert>
+					</ng-template>
 
-						<mat-error
-							class="mat-option-error mb-4"
-							*ngIf="
-								(form.get('managerLicenceId')?.dirty || form.get('managerLicenceId')?.touched) &&
-								form.get('managerLicenceId')?.invalid &&
-								form.get('managerLicenceId')?.hasError('required')
-							"
-						>
-							A valid security worker licence must be selected
-						</mat-error>
-					</div>
+					<mat-error
+						class="mat-option-error mb-4"
+						*ngIf="
+							(form.get('managerLicenceId')?.dirty || form.get('managerLicenceId')?.touched) &&
+							form.get('managerLicenceId')?.invalid &&
+							form.get('managerLicenceId')?.hasError('required')
+						"
+					>
+						A valid security worker licence must be selected
+					</mat-error>
 				</div>
 			</div>
 		</form>

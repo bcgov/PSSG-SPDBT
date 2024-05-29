@@ -193,32 +193,29 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-template>
 					</div>
 
-					<div *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
-						<div class="row mt-2">
-							<div class="col-12">
-								<mat-divider class="mat-divider-main my-3"></mat-divider>
-								<div class="text-minor-heading lh-base mb-2">
-									Upload a copy of the corporate registry documents for your business in the province in which you are
-									originally registered <span class="optional-label">(optional)</span>
-								</div>
-								<app-file-upload
-									(fileUploaded)="onFileUploaded($event)"
-									(fileRemoved)="onFileRemoved()"
-									[control]="attachments"
-									[maxNumberOfFiles]="10"
-									[files]="attachments.value"
-								></app-file-upload>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-										form.get('attachments')?.invalid &&
-										form.get('attachments')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
+					<div class="mt-2" *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
+						<mat-divider class="mat-divider-main my-3"></mat-divider>
+						<div class="text-minor-heading lh-base mb-2">
+							Upload a copy of the corporate registry documents for your business in the province in which you are
+							originally registered
+							<span *ngIf="!attachmentIsRequired.value" class="optional-label">(optional)</span>
 						</div>
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+						></app-file-upload>
+						<mat-error
+							class="mat-option-error d-block"
+							*ngIf="
+								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+								form.get('attachments')?.invalid &&
+								form.get('attachments')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
 					</div>
 				</form>
 			</mat-expansion-panel>
@@ -276,7 +273,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	isFormValid(): boolean {
-		return true;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 
 	onRemoveMember(isWithSwl: boolean, index: number) {
@@ -360,9 +358,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	private controllingMemberChanged(): void {
-		if (this.isBcBusinessAddress) return;
-
 		this.allowDocumentUpload = true;
+		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });
 	}
 
 	private memberDialogWithoutSWL(dialogOptions: any, isCreate: boolean): void {
@@ -436,6 +433,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get attachmentIsRequired(): FormControl {
+		return this.form.get('attachmentIsRequired') as FormControl;
 	}
 	get membersWithSwlList(): FormArray {
 		return <FormArray>this.form.get('membersWithSwl');

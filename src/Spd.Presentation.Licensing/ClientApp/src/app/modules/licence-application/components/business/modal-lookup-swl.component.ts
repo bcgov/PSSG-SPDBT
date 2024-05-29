@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { WorkerLicenceTypeCode } from '@app/api/models';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { CommonApplicationService, LicenceLookupResult } from '../../services/common-application.service';
 
@@ -39,7 +40,7 @@ export interface LookupSwlDialogData {
 
 				<ng-container *ngIf="isSearchPerformed">
 					<ng-container *ngIf="isFound; else IsNotFound">
-						<ng-container *ngIf="isFoundValid; else IsFoundInvalid">
+						<div *ngIf="isFoundValid" @showHideTriggerSlideAnimation>
 							<div class="my-3">
 								<app-alert type="info" icon="">
 									<div class="row">
@@ -62,9 +63,9 @@ export interface LookupSwlDialogData {
 									</div>
 								</app-alert>
 							</div>
-						</ng-container>
+						</div>
 
-						<ng-template #IsFoundInvalid>
+						<div *ngIf="!isFoundValid">
 							<div class="mt-3">
 								<app-alert type="warning" icon="">
 									<div class="fs-5 mb-2">This licence is not valid Security Worker licence</div>
@@ -86,12 +87,10 @@ export interface LookupSwlDialogData {
 									</div>
 									<div class="mt-2" *ngIf="notValidSwlMessage">
 										{{ notValidSwlMessage }}
-										<!-- 'Cancel' to exit this dialog and then add them as a member without a security worker licence to
-										proceed. -->
 									</div>
 								</app-alert>
 							</div>
-						</ng-template>
+						</div>
 					</ng-container>
 
 					<ng-template #IsNotFound>
@@ -114,6 +113,7 @@ export interface LookupSwlDialogData {
 		</mat-dialog-actions>
 	`,
 	styles: [],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class ModalLookupSwlComponent implements OnInit {
 	form = this.businessApplicationService.swlLookupLicenceFormGroup;

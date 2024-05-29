@@ -306,11 +306,22 @@ export abstract class BusinessApplicationHelper {
 		branches: this.formBuilder.array([]),
 	});
 
-	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
-		membersWithSwl: this.formBuilder.array([]),
-		membersWithoutSwl: this.formBuilder.array([]),
-		attachments: new FormControl([]),
-	});
+	controllingMembersFormGroup: FormGroup = this.formBuilder.group(
+		{
+			membersWithSwl: this.formBuilder.array([]),
+			membersWithoutSwl: this.formBuilder.array([]),
+			attachmentIsRequired: new FormControl(false),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('attachmentIsRequired')?.value
+				),
+			],
+		}
+	);
 
 	employeesFormGroup: FormGroup = this.formBuilder.group({
 		employees: this.formBuilder.array([]),
