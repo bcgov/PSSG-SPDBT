@@ -1,3 +1,5 @@
+using Spd.Manager.Shared;
+
 namespace Spd.Manager.Licence;
 
 public class UploadFileRequest
@@ -196,4 +198,12 @@ public record ContactInfo
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
+}
+
+public record LicenceAppBase
+{
+    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
+    public LicenceTermCode? LicenceTermCode { get; set; } //for biz licence term, only 1,2,3 year
 }
