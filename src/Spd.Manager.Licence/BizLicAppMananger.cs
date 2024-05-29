@@ -72,15 +72,17 @@ internal class BizLicAppMananger :
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
 
-        await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
-            cmd.BizLicAppUpsertRequest.BizId,
-            (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
-            cancellationToken);
+        if (cmd.BizLicAppUpsertRequest.Members != null && cmd.BizLicAppUpsertRequest.BizId != null)
+            await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
+                cmd.BizLicAppUpsertRequest.BizId,
+                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
+                cancellationToken);
 
-        await UpdateDocumentsAsync(
-            (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
-            (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
-            cancellationToken);
+        if (cmd.BizLicAppUpsertRequest.DocumentInfos != null && cmd.BizLicAppUpsertRequest.DocumentInfos.Any())
+            await UpdateDocumentsAsync(
+                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
+                (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
+                cancellationToken);
 
         return _mapper.Map<BizLicAppCommandResponse>(response);
     }
