@@ -55,6 +55,7 @@ public record BizLicAppCommandResponse : LicenceAppUpsertResponse
 };
 public record BizLicAppResponse : BizLicenceApp
 {
+    public Guid? BizId { get; set; }
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
     public string? CaseNumber { get; set; } //application number

@@ -38,11 +38,14 @@ internal class Mappings : Profile
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_businesstype)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
+         .ForMember(d => d.NoBranding, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_nologoorbranding)))
          .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
          .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => SharedMappingFuncs.GetWorkerCategoryTypeEnums(s.spd_application_spd_licencecategory)))
          .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentEnums(s.spd_uploadeddocuments)))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
-         .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber));
+         .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
+         .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
+         .ForMember(d => d.ApplicantIsBizManager, opt => opt.MapFrom(s => IsApplicantBizManager(s)));
 
         _ = CreateMap<SaveBizLicApplicationCmd, spd_application>()
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
@@ -50,13 +53,37 @@ internal class Mappings : Profile
          .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
-         .IncludeBase<spd_application, BizLicApplication>()
-         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid));
+         .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
+         .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_CurrentExpiredLicenceId.spd_expirydate)))
+         .ForMember(d => d.ApplicationPortalStatus, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()))
+         .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
+         .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
+         .ForMember(d => d.OriginalLicenceTermCode, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetLicenceTermEnum(s.spd_CurrentExpiredLicenceId.spd_licenceterm)))
+         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
+         .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => GetPrivateInvestigatorLicenceId(s.spd_application_spd_licence_manager)))
+         .IncludeBase<spd_application, BizLicApplication>();
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
+    }
+
+    private static Guid? GetPrivateInvestigatorLicenceId(IEnumerable<spd_licence> privateInvestigators)
+    {
+       return privateInvestigators.FirstOrDefault(i => i.statecode == DynamicsConstants.StateCode_Active)?.spd_licenceid;
+    }
+
+    private static bool IsApplicantBizManager(spd_application application)
+    {
+        if (application.spd_businessmanagerfirstname == application.spd_firstname &&
+            application.spd_businessmanagersurname == application.spd_lastname &&
+            application.spd_businessmanagermiddlename1 == application.spd_middlename1 &&
+            application.spd_businessmanagermiddlename2 == application.spd_middlename2 &&
+            application.spd_businessmanageremail == application.spd_emailaddress1)
+                return true;
+
+        return false;
     }
 }
