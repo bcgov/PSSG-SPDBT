@@ -1,12 +1,9 @@
-using Spd.Manager.Shared;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
 namespace Spd.Manager.Licence;
-public abstract record PersonalLicenceAppBase
+
+public record PersonalLicenceAppBase : LicenceAppBase
 {
-    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
-    public ApplicationTypeCode? ApplicationTypeCode { get; set; }
-    public BizTypeCode? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -17,7 +14,6 @@ public abstract record PersonalLicenceAppBase
     public string? ExpiredLicenceNumber { get; set; }
     public Guid? ExpiredLicenceId { get; set; } //for new application type, for renew, replace, update, it should be null.
     public bool? HasExpiredLicence { get; set; }  //for new application type
-    public LicenceTermCode? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
     public IEnumerable<Alias>? Aliases { get; set; }
@@ -52,5 +48,3 @@ public record LicenceAppUpsertResponse
 {
     public Guid? LicenceAppId { get; set; }
 }
-
-
