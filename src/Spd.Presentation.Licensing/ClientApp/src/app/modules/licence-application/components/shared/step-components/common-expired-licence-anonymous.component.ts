@@ -150,7 +150,6 @@ export class CommonExpiredLicenceAnonymousComponent implements OnInit {
 				this.messageInfo = null;
 				[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
 					resp.searchResult,
-					this.label,
 					this.workerLicenceTypeCode,
 					resp.isExpired,
 					resp.isInRenewalPeriod

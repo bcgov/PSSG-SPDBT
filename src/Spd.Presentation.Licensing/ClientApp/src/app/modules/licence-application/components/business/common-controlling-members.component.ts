@@ -2,14 +2,17 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceResponse } from '@app/api/models';
+import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
-import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
+import {
+	LookupByLicenceNumberDialogData,
+	ModalLookupByLicenceNumberComponent,
+} from './modal-lookup-by-licence-number.component';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -103,7 +106,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
 						<ng-container *ngIf="!controllingMembersWithSwlExist">
-							<div class="mb-2">No controlling members with a Security Worker Licence exist</div>
+							<div class="mt-2 mb-3">No controlling members with a Security Worker Licence exist</div>
 						</ng-container>
 						<div class="col-md-12" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
 							<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
@@ -175,7 +178,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 					<div class="row mt-3">
 						<ng-container *ngIf="!controllingMembersWithoutSwlExist">
-							<div class="mb-2">No controlling members without a Security Worker Licence exist</div>
+							<div class="mt-2 mb-3">No controlling members without a Security Worker Licence exist</div>
 						</ng-container>
 						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
 							<div class="col-12">
@@ -305,12 +308,14 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	onAddMemberWithSWL(): void {
-		const dialogOptions: LookupSwlDialogData = {
+		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Member with Security Worker Licence',
+			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
+			isExpiredLicenceSearch: false,
 		};
 		this.dialog
-			.open(ModalLookupSwlComponent, {
+			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

@@ -2,13 +2,16 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceResponse } from '@app/api/models';
+import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { BusinessApplicationService } from '../../services/business-application.service';
-import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
+import {
+	LookupByLicenceNumberDialogData,
+	ModalLookupByLicenceNumberComponent,
+} from './modal-lookup-by-licence-number.component';
 
 @Component({
 	selector: 'app-common-employees',
@@ -98,7 +101,7 @@ import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl
 
 					<div class="row mt-3">
 						<ng-container *ngIf="!employeesExist">
-							<div class="mb-2">No employees exist</div>
+							<div class="mt-2 mb-3">No employees exist</div>
 						</ng-container>
 
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">
@@ -189,11 +192,13 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 	}
 
 	onAddLicenceHolder(): void {
-		const dialogOptions: LookupSwlDialogData = {
+		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Member with Security Worker Licence',
+			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			isExpiredLicenceSearch: false,
 		};
 		this.dialog
-			.open(ModalLookupSwlComponent, {
+			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

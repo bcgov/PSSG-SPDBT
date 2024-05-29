@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
@@ -20,7 +20,6 @@ import { CommonExpiredLicenceComponent } from '../../shared/step-components/comm
 					<app-common-expired-licence
 						[form]="form"
 						[workerLicenceTypeCode]="workerLicenceTypeCode"
-						(validExpiredLicenceData)="onValidData()"
 					></app-common-expired-licence>
 				</ng-container>
 
@@ -28,7 +27,6 @@ import { CommonExpiredLicenceComponent } from '../../shared/step-components/comm
 					<app-common-expired-licence-anonymous
 						[form]="form"
 						[workerLicenceTypeCode]="workerLicenceTypeCode"
-						(validExpiredLicenceData)="onValidData()"
 					></app-common-expired-licence-anonymous>
 				</ng-template>
 			</div>
@@ -41,7 +39,6 @@ export class StepPermitExpiredComponent implements OnInit, PermitChildStepperSte
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	@Input() isLoggedIn!: boolean;
-	@Output() validExpiredLicenceData = new EventEmitter();
 
 	@ViewChild(CommonExpiredLicenceComponent)
 	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
@@ -57,20 +54,8 @@ export class StepPermitExpiredComponent implements OnInit, PermitChildStepperSte
 		)?.value;
 	}
 
-	onSearchAndValidate(): void {
-		if (this.isLoggedIn) {
-			this.commonExpiredLicenceComponent.onValidateAndSearch();
-		} else {
-			this.commonExpiredLicenceAnonymousComponent.onValidateAndSearch();
-		}
-	}
-
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onValidData(): void {
-		this.validExpiredLicenceData.emit();
 	}
 }

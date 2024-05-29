@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { LicenceResponse } from '@app/api/models';
+import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
-import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
+import {
+	LookupByLicenceNumberDialogData,
+	ModalLookupByLicenceNumberComponent,
+} from './modal-lookup-by-licence-number.component';
 
 @Component({
 	selector: 'app-business-category-private-investigator',
@@ -84,11 +87,13 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 	}
 
 	onLookupManager(): void {
-		const dialogOptions: LookupSwlDialogData = {
+		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Manager with Security Worker Licence',
+			isExpiredLicenceSearch: false,
+			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 		};
 		this.dialog
-			.open(ModalLookupSwlComponent, {
+			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

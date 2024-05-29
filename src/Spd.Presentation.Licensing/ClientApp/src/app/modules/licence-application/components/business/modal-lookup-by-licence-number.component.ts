@@ -1,0 +1,313 @@
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
+import {
+	CommonApplicationService,
+	LicenceLookupResult,
+} from '@app/modules/licence-application/services/common-application.service';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+
+export interface LookupByLicenceNumberDialogData {
+	title: string;
+	subtitle?: string;
+	notValidSwlMessage?: string;
+	lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode;
+	isExpiredLicenceSearch: boolean;
+}
+
+@Component({
+	selector: 'app-modal-lookup-by-licence-number',
+	template: `
+		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
+		<mat-dialog-content class="mat-dialog-content" class="pb-0">
+			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-12">
+						<mat-form-field>
+							<mat-label>Lookup a Licence Number</mat-label>
+							<input
+								matInput
+								type="search"
+								formControlName="licenceNumberLookup"
+								oninput="this.value = this.value.toUpperCase()"
+								maxlength="10"
+								(keydown.enter)="onSearchKeyDown()"
+							/>
+							<button
+								mat-button
+								matSuffix
+								mat-flat-button
+								aria-label="search"
+								(click)="onSearch()"
+								class="search-icon-button"
+							>
+								<mat-icon>search</mat-icon>
+							</button>
+							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')"> This is required </mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+				<ng-container *ngIf="isSearchPerformed">
+					<ng-container *ngIf="isFound; else IsNotFound">
+						<div *ngIf="isFoundValid" @showHideTriggerSlideAnimation>
+							<div class="my-3">
+								<app-alert type="success" icon="">
+									<div class="row">
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Name</div>
+											<div class="text-data">{{ searchResult.licenceHolderName }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">
+												{{ lookupWorkerLicenceTypeCode | options : 'WorkerLicenceTypes' }} Number
+											</div>
+											<div class="text-data">{{ searchResult.licenceNumber }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Expiry Date</div>
+											<div class="text-data">{{ searchResult.expiryDate }}</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="d-block text-muted mt-2">Licence Status</div>
+											<div class="text-data fw-bold">{{ searchResult.licenceStatusCode }}</div>
+										</div>
+									</div>
+								</app-alert>
+							</div>
+						</div>
+
+						<div *ngIf="!isFoundValid">
+							<ng-container *ngIf="isExpiredLicenceSearch; else LicenceSearchNotValid">
+								<div class="mt-3">
+									<app-alert type="info" icon="check_circle" *ngIf="messageInfo">
+										{{ messageInfo }}
+									</app-alert>
+									<app-alert type="warning" *ngIf="messageWarn">
+										<div [innerHTML]="messageWarn"></div>
+									</app-alert>
+									<app-alert type="danger" icon="error" *ngIf="messageError">
+										{{ messageError }}
+									</app-alert>
+								</div>
+							</ng-container>
+
+							<ng-template #LicenceSearchNotValid>
+								<div class="mt-3">
+									<app-alert type="warning" icon="">
+										<div class="fs-5 mb-2">
+											This licence is not valid {{ lookupWorkerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+										</div>
+
+										<div class="row">
+											<div class="col-md-5 col-sm-12">
+												<div class="d-block text-muted mt-2">
+													{{ searchResult.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} Number
+												</div>
+												<div class="text-data">{{ searchResult.licenceNumber }}</div>
+											</div>
+											<div class="col-md-3 col-sm-12">
+												<div class="d-block text-muted mt-2">Expiry Date</div>
+												<div class="text-data">{{ searchResult.expiryDate }}</div>
+											</div>
+											<div class="col-md-4 col-sm-12">
+												<div class="d-block text-muted mt-2">Licence Status</div>
+												<div class="text-data fw-bold">{{ searchResult.licenceStatusCode }}</div>
+											</div>
+										</div>
+										<div class="mt-2" *ngIf="notValidSwlMessage">
+											{{ notValidSwlMessage }}
+										</div>
+									</app-alert>
+								</div>
+							</ng-template>
+						</div>
+					</ng-container>
+
+					<ng-template #IsNotFound>
+						<app-alert type="danger" icon="error"> This licence number does not match any existing licences </app-alert>
+					</ng-template>
+				</ng-container>
+			</form>
+		</mat-dialog-content>
+		<mat-dialog-actions>
+			<div class="row m-0 w-100">
+				<div class="col-md-4 col-sm-12 mb-2">
+					<button mat-stroked-button mat-dialog-close class="large" color="primary">Cancel</button>
+				</div>
+				<div class="offset-md-4 col-md-4 col-sm-12 mb-2" *ngIf="isFoundValid">
+					<button mat-flat-button color="primary" class="large" (click)="onSave()">Add</button>
+				</div>
+			</div>
+		</mat-dialog-actions>
+	`,
+	styles: [],
+	animations: [showHideTriggerSlideAnimation],
+})
+export class ModalLookupByLicenceNumberComponent implements OnInit {
+	form = this.businessApplicationService.swlLookupLicenceFormGroup;
+
+	title = '';
+	subtitle: string | null = null;
+	notValidSwlMessage: string | null = null;
+
+	searchResult: any = null;
+	isSearchPerformed = false;
+	isFoundValid = false;
+	isFound = false;
+
+	messageInfo: string | null = '';
+	messageError: string | null = '';
+	messageWarn: string | null = '';
+	label = 'licenceTODO';
+
+	isExpiredLicenceSearch = false;
+	lookupWorkerLicenceTypeCode!: WorkerLicenceTypeCode;
+
+	constructor(
+		private dialogRef: MatDialogRef<ModalLookupByLicenceNumberComponent>,
+		private businessApplicationService: BusinessApplicationService,
+		private commonApplicationService: CommonApplicationService,
+		private formatDatePipe: FormatDatePipe,
+		@Inject(MAT_DIALOG_DATA) public dialogData: LookupByLicenceNumberDialogData
+	) {}
+
+	ngOnInit(): void {
+		this.form.reset();
+
+		this.title = this.dialogData.title;
+		this.subtitle = this.dialogData.subtitle ?? null;
+		this.notValidSwlMessage = this.dialogData.notValidSwlMessage ?? null;
+		this.isExpiredLicenceSearch = this.dialogData.isExpiredLicenceSearch ?? false;
+		this.lookupWorkerLicenceTypeCode = this.dialogData.lookupWorkerLicenceTypeCode;
+	}
+
+	onSearchKeyDown(): void {
+		this.onSearch();
+	}
+
+	onSearch(): void {
+		this.resetFlags();
+
+		this.form.markAllAsTouched();
+		if (!this.form.valid) return;
+
+		if (this.isExpiredLicenceSearch) {
+			this.performExpiredLicenceSearch(this.licenceNumberLookup.value);
+		} else {
+			this.performSearch(this.licenceNumberLookup.value);
+		}
+	}
+
+	private performSearch(licenceNumberLookup: string) {
+		this.commonApplicationService
+			.getLicenceNumberLookup(licenceNumberLookup)
+			.pipe()
+			.subscribe((resp: LicenceLookupResult) => {
+				this.isSearchPerformed = true;
+				this.isFound = resp.isFound;
+				this.isFoundValid = resp.isFoundValid;
+
+				if (resp.searchResult) {
+					if (resp.searchResult.workerLicenceTypeCode !== this.lookupWorkerLicenceTypeCode) {
+						this.isFoundValid = false;
+						// this.messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
+					}
+
+					this.searchResult = resp.searchResult;
+				}
+			});
+	}
+
+	private performExpiredLicenceSearch(licenceNumberLookup: string) {
+		this.commonApplicationService
+			.getLicenceNumberLookup(licenceNumberLookup)
+			.pipe()
+			.subscribe((resp: LicenceLookupResult) => {
+				this.messageInfo = null;
+				[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
+					resp.searchResult,
+					this.lookupWorkerLicenceTypeCode,
+					resp.isExpired,
+					resp.isInRenewalPeriod
+				);
+
+				this.isSearchPerformed = true;
+				this.isFound = resp.isFound;
+				this.searchResult = resp.searchResult;
+
+				console.log('this.isSearchPerformed', this.isSearchPerformed);
+				console.log('this.isFound', this.isFound);
+				console.log('this.isFoundValid', this.isFoundValid);
+				console.log('this.messageInfo', this.messageInfo);
+				console.log('this.messageWarn', this.messageWarn);
+				console.log('this.messageError', this.messageError);
+
+				if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
+					this.isFoundValid = true;
+					this.handleValidExpiredLicence(resp.searchResult);
+				} else {
+					this.isFoundValid = false;
+				}
+			});
+	}
+
+	private handleValidExpiredLicence(licence: LicenceResponse): void {
+		this.isFound = true;
+		this.isFoundValid = true;
+
+		const name = licence.licenceHolderName;
+
+		const formattedExpiryDate = this.formatDatePipe.transform(licence.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
+		this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
+
+		// const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} and with name "${name}" has been found. If this is correct then continue.`;
+		// console.log('message', message);
+		// const data: DialogOptions = {
+		// 	icon: 'warning',
+		// 	title: 'Confirmation',
+		// 	message: message,
+		// 	actionText: 'Continue',
+		// 	cancelText: 'Cancel',
+		// };
+
+		// this.dialog
+		// 	.open(DialogComponent, { data })
+		// 	.afterClosed()
+		// 	.subscribe((response: boolean) => {
+		// 		if (response) {
+		// 			this.form.patchValue({
+		// 				expiredLicenceId: licence.licenceId,
+		// 				expiredLicenceNumber: licence.licenceNumber,
+		// 				expiryDate: licence.expiryDate,
+		// 			});
+		// 			// this.validExpiredLicenceData.emit();
+		// 		}
+		// 	});
+	}
+
+	onSave(): void {
+		if (!this.isFoundValid) return;
+
+		this.dialogRef.close({
+			data: this.searchResult,
+		});
+	}
+
+	resetFlags(): void {
+		this.searchResult = null;
+
+		this.isSearchPerformed = false;
+		this.isFound = false;
+		this.isFoundValid = false;
+	}
+
+	get licenceNumberLookup(): FormControl {
+		return this.form.get('licenceNumberLookup') as FormControl;
+	}
+}

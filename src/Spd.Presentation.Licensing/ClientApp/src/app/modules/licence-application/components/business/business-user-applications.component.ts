@@ -25,10 +25,6 @@ import { Observable, take, tap } from 'rxjs';
 	selector: 'app-business-user-applications',
 	template: `
 		<section class="step-section">
-			<button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
-				<mat-icon>play_arrow</mat-icon>Resume
-			</button>
-
 			<!-- TODO  *ngIf="results$ | async" -->
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -63,6 +59,11 @@ import { Observable, take, tap } from 'rxjs';
 							<div [innerHTML]="msg"></div>
 						</app-alert>
 					</ng-container>
+
+					<button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
+						<mat-icon>play_arrow</mat-icon>Resume
+						<!-- TODO temp -->
+					</button>
 
 					<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 						<div class="section-title fs-5 py-3">Applications</div>

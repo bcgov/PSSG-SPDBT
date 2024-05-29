@@ -36,29 +36,16 @@ export abstract class BusinessApplicationHelper {
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceNumber: new FormControl(),
-			expiredLicenceId: new FormControl(),
-			expiryDate: new FormControl(),
-			captchaFormGroup: new FormGroup({
-				token: new FormControl(''),
-			}),
+			expiredLicenceId: new FormControl(''),
+			expiredLicenceHolderName: new FormControl(''),
+			expiredLicenceNumber: new FormControl(''),
+			expiredLicenceExpiryDate: new FormControl(''),
+			expiredLicenceStatusCode: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'captchaFormGroup.token',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 			],
