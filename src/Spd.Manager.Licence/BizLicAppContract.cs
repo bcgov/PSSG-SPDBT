@@ -16,7 +16,8 @@ public interface IBizLicAppManager
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
-public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
+public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) 
+    : BizLicAppUpsertCommand(BizLicAppUpsertRequest), IRequest<BizLicAppCommandResponse>;
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
 public record BizLicAppReplaceCommand(
     BizLicAppChangeRequest LicenceRequest,
