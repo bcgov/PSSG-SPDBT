@@ -123,7 +123,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-
         /// <summary>
         /// Get Biz Application controlling members and employees, controlling member includes swl and non-swl
         /// </summary>
@@ -154,7 +153,5 @@ namespace Spd.Presentation.Licensing.Controllers
             await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members), ct);
             return Ok();
         }
-
-
     }
 }
