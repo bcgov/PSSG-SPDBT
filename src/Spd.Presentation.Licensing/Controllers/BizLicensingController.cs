@@ -153,5 +153,18 @@ namespace Spd.Presentation.Licensing.Controllers
             await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members), ct);
             return Ok();
         }
+
+        /// <summary>
+        /// Submit Business Licence Application
+        /// </summary>
+        /// <param name="bizUpsertRequest"></param>
+        /// <returns></returns>
+        [Route("api/permit-applications/submit")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpPost]
+        public async Task<BizLicAppCommandResponse> SubmitBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
+        {
+            return await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
+        }
     }
 }
