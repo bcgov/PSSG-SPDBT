@@ -108,7 +108,14 @@ internal class PermitAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        LicenceAppBase licAppBase = new()
+        {
+            WorkerLicenceTypeCode = request.WorkerLicenceTypeCode,
+            ApplicationTypeCode = request.ApplicationTypeCode,
+            BizTypeCode = request.BizTypeCode,
+            LicenceTermCode = request.LicenceTermCode
+        };
+        decimal? cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -146,8 +153,14 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
+        LicenceAppBase licAppBase = new()
+        {
+            WorkerLicenceTypeCode = request.WorkerLicenceTypeCode,
+            ApplicationTypeCode = request.ApplicationTypeCode,
+            BizTypeCode = request.BizTypeCode,
+            LicenceTermCode = request.LicenceTermCode
+        };
+        decimal? cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -202,9 +215,14 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-
-        //return cost here.
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        LicenceAppBase licAppBase = new()
+        {
+            WorkerLicenceTypeCode = request.WorkerLicenceTypeCode,
+            ApplicationTypeCode = request.ApplicationTypeCode,
+            BizTypeCode = request.BizTypeCode,
+            LicenceTermCode = request.LicenceTermCode
+        };
+        decimal? cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -232,7 +250,14 @@ internal class PermitAppManager :
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
+            LicenceAppBase licAppBase = new()
+            {
+                WorkerLicenceTypeCode = request.WorkerLicenceTypeCode,
+                ApplicationTypeCode = request.ApplicationTypeCode,
+                BizTypeCode = request.BizTypeCode,
+                LicenceTermCode = request.LicenceTermCode
+            };
+            await CommitApplicationAsync(licAppBase, createLicResponse.LicenceAppId, cancellationToken);
         }
         else
         {
