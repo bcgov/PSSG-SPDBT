@@ -51,3 +51,11 @@ oc get sysdig-teams
 ```
 
 If both of these show, the sysdig-team custom resource is processed successfully. You can go back to Sysdig to see the new team scope and default dashboards.
+
+you can use
+
+```sh
+helm -n fe7e29-tools upgrade tools .
+```
+
+to upgrade sysdig teams.
