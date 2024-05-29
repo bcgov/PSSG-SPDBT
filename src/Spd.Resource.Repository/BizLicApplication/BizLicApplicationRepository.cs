@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -20,7 +19,12 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
         spd_application? app = await _context.spd_applications
+            .Expand(a => a.spd_ServiceTypeId)
             .Expand(a => a.spd_ApplicantId_account)
+            .Expand(a => a.spd_ApplicantId_contact)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_application_spd_licence_manager)
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
             .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
             .Where(a => a.spd_applicationid == licenceApplicationId)
             .FirstOrDefaultAsync(ct);
