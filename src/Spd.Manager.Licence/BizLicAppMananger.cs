@@ -89,7 +89,20 @@ internal class BizLicAppMananger :
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand cmd, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var response = await this.Handle((BizLicAppUpsertCommand)cmd, cancellationToken);
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.BizLicAppUpsertRequest.LicenceAppId, cancellationToken);
+
+        LicenceAppBase licAppBase = new()
+        {
+            WorkerLicenceTypeCode = cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode,
+            ApplicationTypeCode = cmd.BizLicAppUpsertRequest.ApplicationTypeCode,
+            BizTypeCode = cmd.BizLicAppUpsertRequest.BizTypeCode,
+            LicenceTermCode = cmd.BizLicAppUpsertRequest.LicenceTermCode
+        };
+
+        decimal? cost = await CommitApplicationAsync(licAppBase, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand cmd, CancellationToken cancellationToken)
