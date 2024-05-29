@@ -159,7 +159,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="bizUpsertRequest"></param>
         /// <returns></returns>
-        [Route("api/permit-applications/submit")]
+        [Route("api/business-licence/submit")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SubmitBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
