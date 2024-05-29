@@ -178,4 +178,55 @@ public class BizLicenceAppManangerTest
         //Assert
         await Assert.ThrowsAsync<ApiException>(act);
     }
+
+    [Fact]
+    public async void Handle_BizLicAppSubmitCommand_WithoutLicAppId_Return_BizLicAppCommandResponse()
+    {
+        //Arrange
+        //no duplicates; no licAppId: means create a brand new application.
+        Guid bizId = Guid.NewGuid();
+        Guid licAppId = Guid.NewGuid();
+        LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == bizId), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == bizId), CancellationToken.None)) //no dup lic
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { }
+            });
+        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.IsAny<SaveBizLicApplicationCmd>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationCmdResp(licAppId, bizId));
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp());
+        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+
+        var workPermit = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.WorkPermit)
+            .Create();
+
+        Members members = new()
+        {
+            SwlControllingMembers = new List<SwlContactInfo>(),
+            NonSwlControllingMembers = new List<NonSwlContactInfo>(),
+            Employees = new List<SwlContactInfo>()
+        };
+
+        BizLicAppUpsertRequest request = new()
+        {
+            LicenceAppId = null,
+            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            BizId = bizId,
+            DocumentInfos = new List<Document>() { workPermit },
+            Members = members
+        };
+
+        //Act
+        var viewResult = await sut.Handle(new BizLicAppSubmitCommand(request), CancellationToken.None);
+
+        //Assert
+        Assert.IsType<BizLicAppCommandResponse>(viewResult);
+        Assert.Equal(licAppId, viewResult.LicenceAppId);
+        Assert.Equal(licenceFeeResp.Amount, viewResult.Cost);
+    }
 }
