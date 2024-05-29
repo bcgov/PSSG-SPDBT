@@ -59,7 +59,7 @@ internal class Mappings : Profile
          .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
          .ForMember(d => d.OriginalLicenceTermCode, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetLicenceTermEnum(s.spd_CurrentExpiredLicenceId.spd_licenceterm)))
-         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
+         .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
          .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => GetPrivateInvestigatorLicenceId(s.spd_application_spd_licence_manager)))
          .IncludeBase<spd_application, BizLicApplication>();
     }
