@@ -82,7 +82,6 @@ internal class PermitAppManager :
             BizTypeCode = cmd.PermitUpsertRequest.BizTypeCode,
             LicenceTermCode = cmd.PermitUpsertRequest.LicenceTermCode
         };
-
         decimal? cost = await CommitApplicationAsync(licAppBase, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
