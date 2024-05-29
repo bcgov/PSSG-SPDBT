@@ -15,3 +15,7 @@ spec:
         role: ROLE_TEAM_STANDARD
       - name: ruben.araya@gov.bc.ca
         role: ROLE_TEAM_READ
+      - name: Jennifer.dowd@gov.bc.ca
+        role: ROLE_TEAM_READ
+      - name: alexander.aleshchenko@gov.bc.ca
+        role: ROLE_TEAM_READ
