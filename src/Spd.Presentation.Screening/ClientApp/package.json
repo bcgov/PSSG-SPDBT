@@ -27,8 +27,8 @@
     "@angular/platform-browser-dynamic": "^17.3.10",
     "@angular/router": "^17.3.10",
     "@bcgov/bc-sans": "^2.1.0",
-    "@ngneat/hot-toast": "^6.0.1",
-    "@ngneat/overview": "^5.1.0",
+    "@ngneat/hot-toast": "^7.0.0",
+    "@ngneat/overview": "^6.0.0",
     "@ngneat/until-destroy": "^10.0.0",
     "angular-oauth2-oidc": "^15.0.1",
     "bootstrap": "^5.2.3",
@@ -63,7 +63,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "ng-packagr": "^17.0.2",
+    "ng-packagr": "^17.3.0",
     "prettier": "^2.8.8",
     "typescript": "~5.2.2"
   }
