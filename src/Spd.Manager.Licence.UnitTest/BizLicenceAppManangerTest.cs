@@ -50,6 +50,28 @@ public class BizLicenceAppManangerTest
     }
 
     [Fact]
+    public async void Handle_GetBizLicAppQuery_Return_BizLicAppResponse()
+    {
+        // Arrange
+        Guid licAppId = Guid.NewGuid();
+        mockBizLicAppRepo.Setup(m => m.GetBizLicApplicationAsync(It.Is<Guid>(q => q == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new BizLicApplicationResp()
+            {
+                LicenceAppId = licAppId,
+                BizId = Guid.NewGuid()
+            });
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp());
+
+        // Act
+        var viewResult = await sut.Handle(new GetBizLicAppQuery(licAppId), CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizLicAppResponse>(viewResult);
+        Assert.Equal(licAppId, viewResult.LicenceAppId);
+    }
+
+    [Fact]
     public async void Handle_BizLicAppUpsertCommand_WithoutLicAppId_Return_BizLicAppCommandResponse()
     {
         //Arrange
@@ -72,12 +94,20 @@ public class BizLicenceAppManangerTest
             .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.WorkPermit)
             .Create();
 
+        Members members = new()
+        {
+            SwlControllingMembers = new List<SwlContactInfo>(),
+            NonSwlControllingMembers = new List<NonSwlContactInfo>(),
+            Employees = new List<SwlContactInfo>()
+        };
+
         BizLicAppUpsertRequest request = new()
         {
             LicenceAppId = null,
             WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
             BizId = bizId,
-            DocumentInfos = new List<Document>() { workPermit }
+            DocumentInfos = new List<Document>() { workPermit },
+            Members = members
         };
 
         //Act
