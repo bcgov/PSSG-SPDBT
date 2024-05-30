@@ -35,7 +35,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{licenceAppId}")]
+        [Route("api/business-licence-application/{licenceAppId}")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpGet]
         public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId)
@@ -48,7 +48,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="bizUpsertRequest"></param>
         /// <returns></returns>
-        [Route("api/business-licence")]
+        [Route("api/business-licence-application")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
@@ -65,7 +65,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{licenceAppId}/files")]
+        [Route("api/business-licence-application/{licenceAppId}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
         [Authorize(Policy = "OnlyBceid")]
@@ -83,7 +83,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="request">BizLicAppSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/change")]
+        [Route("api/business-licence-application/change")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse?> ChangeOnBizLicApp(BizLicAppChangeRequest request, CancellationToken ct)
@@ -130,7 +130,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{bizId}/{applicationId}/members")]
+        [Route("api/business-licence-application/{bizId}/{applicationId}/members")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
@@ -145,7 +145,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence/{bizId}/{applicationId}/members")]
+        [Route("api/business-licence-application/{bizId}/{applicationId}/members")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] Members members, CancellationToken ct)
@@ -159,7 +159,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="bizUpsertRequest"></param>
         /// <returns></returns>
-        [Route("api/business-licence/submit")]
+        [Route("api/business-licence-application/submit")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SubmitBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
