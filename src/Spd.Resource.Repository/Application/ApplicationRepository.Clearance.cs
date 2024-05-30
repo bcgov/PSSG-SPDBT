@@ -54,6 +54,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         {
             clearances = clearances.Where(c => c.spd_clearanceid == clearanceQry.ClearanceId);
         }
+
         if (clearanceQry.ServiceType != null)
         {
             var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(clearanceQry.ServiceType.ToString(), out Guid stGuid);
@@ -84,6 +85,46 @@ internal partial class ApplicationRepository : IApplicationRepository
             clearances = (bool)clearanceQry.Shareable ? clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.Yes) :
                 clearances.Where(c => c.spd_sharable == (int)YesNoOptionSet.No);
         }
+
+        //spdbt-2629
+        if (clearanceQry.IncludeServiceTypeEnum != null)
+        {
+            if (clearanceQry.IncludeServiceTypeEnum == ServiceTypeEnum.CRRP_EMPLOYEE || clearanceQry.IncludeServiceTypeEnum == ServiceTypeEnum.CRRP_VOLUNTEER)
+            {
+                DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_VOLUNTEER.ToString(), out Guid volunteerGuid);
+                DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_EMPLOYEE.ToString(), out Guid employeeGuid);
+                clearances = clearances.Where(c => c._spd_servicetype_value == volunteerGuid || c._spd_servicetype_value == employeeGuid);
+            }
+            else
+            {
+                var keyExisted = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(clearanceQry.IncludeServiceTypeEnum.ToString(), out Guid stGuid);
+                if (!keyExisted)
+                    throw new ArgumentException("invalid service type");
+                clearances = clearances.Where(c => c._spd_servicetype_value == stGuid);
+            }
+        }
+
+        if (clearanceQry.IncludeWorkWith != null)
+        {
+            if (clearanceQry.IncludeWorkWith == EmployeeInteractionTypeCode.Children) //work with children
+            {
+                int child = (int)Enum.Parse<WorksWithChildrenOptionSet>(EmployeeInteractionTypeCode.Children.ToString());
+                int childAdult = (int)Enum.Parse<WorksWithChildrenOptionSet>(EmployeeInteractionTypeCode.ChildrenAndAdults.ToString());
+                clearances = clearances.Where(c => c.spd_workswith == child || c.spd_workswith == childAdult);
+            }
+            else if (clearanceQry.IncludeWorkWith == EmployeeInteractionTypeCode.Adults) //work with adult
+            {
+                int adult = (int)Enum.Parse<WorksWithChildrenOptionSet>(EmployeeInteractionTypeCode.Adults.ToString());
+                int childAdult = (int)Enum.Parse<WorksWithChildrenOptionSet>(EmployeeInteractionTypeCode.ChildrenAndAdults.ToString());
+                clearances = clearances.Where(c => c.spd_workswith == adult || c.spd_workswith == childAdult);
+            }
+            else //work with children and adult
+            {
+                int childAdult = (int)Enum.Parse<WorksWithChildrenOptionSet>(EmployeeInteractionTypeCode.ChildrenAndAdults.ToString());
+                clearances = clearances.Where(c => c.spd_workswith == childAdult);
+            }
+        }
+        //spd
 
         resp.Clearances = _mapper.Map<IEnumerable<ClearanceResp>>(clearances);
         return resp;
