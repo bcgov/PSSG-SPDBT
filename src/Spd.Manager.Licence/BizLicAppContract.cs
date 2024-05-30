@@ -1,5 +1,4 @@
 using MediatR;
-using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
@@ -16,7 +15,8 @@ public interface IBizLicAppManager
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
-public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
+public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) 
+    : BizLicAppUpsertCommand(BizLicAppUpsertRequest), IRequest<BizLicAppCommandResponse>;
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
 public record BizLicAppReplaceCommand(
     BizLicAppChangeRequest LicenceRequest,
@@ -64,17 +64,14 @@ public record BizLicAppResponse : BizLicenceApp
     public IEnumerable<Document>? DocumentInfos { get; set; }
 }
 
-public abstract record BizLicenceApp
+public abstract record BizLicenceApp : LicenceAppBase
 {
-    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
-    public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
 
     //branding
     public bool? NoBranding { get; set; } //wait
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
-    public LicenceTermCode? LicenceTermCode { get; set; } //biz licence term, only 1,2,3 year
 
     //non sole proprietor properties
     public ContactInfo? BizManagerContactInfo { get; set; }
