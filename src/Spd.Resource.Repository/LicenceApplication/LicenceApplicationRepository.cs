@@ -90,7 +90,12 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         app.spd_portalmodifiedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
+
+        // For business application, return organization id, for all others, return applicant id
+        if (app._spd_organizationid_value != null)
+            return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_organizationid_value);
+        else
+            return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
     }
 
     //for auth, do not need to create contact.
