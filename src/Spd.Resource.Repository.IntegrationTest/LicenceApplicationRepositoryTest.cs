@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -27,7 +28,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
     [Fact]
     public async Task CreateLicenceApplicationAsync_Run_Correctly()
     {
-        //Arrange
+        // Arrange
         CreateLicenceApplicationCmd cmd = fixture.Build<CreateLicenceApplicationCmd>()
             .With(a => a.BcDriversLicenceNumber, "1234567")
             .With(a => a.ContactPhoneNumber, "1234567")
@@ -44,13 +45,44 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
             .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
             .Create();
 
-        //Action
+        // Action
         LicenceApplicationCmdResp? resp = await _licAppRepository.CreateLicenceApplicationAsync(cmd, CancellationToken.None);
 
-        //Assert
+        // Assert
         Assert.NotNull(resp);
         spd_application app = _context.spd_applications.Where(a => a.spd_applicationid == resp.LicenceAppId).FirstOrDefault();
         Assert.Equal("100000000,100000001", app.spd_uploadeddocuments);
         Assert.NotNull(app.spd_portalmodifiedon);
+    }
+
+    [Fact]
+    public async Task GetLicenceApplicationAsync_Run_Correctly()
+    {
+        // Arrange
+        Guid licenceApplicationId = Guid.NewGuid();
+        Guid contactId = Guid.NewGuid();
+        spd_application application = new() { spd_applicationid = licenceApplicationId };
+        _context.AddTospd_applications(application);
+        contact contact = new() { contactid = contactId, firstname = "test", emailaddress1 = "test@test.com" };
+        _context.AddTocontacts(contact);
+        _context.SetLink(application, nameof(spd_application.spd_ApplicantId_contact), contact);
+        await _context.SaveChangesAsync();
+
+        // Action
+        LicenceApplicationResp resp = await _licAppRepository.GetLicenceApplicationAsync(licenceApplicationId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(resp);
+        Assert.Equal(licenceApplicationId, resp.LicenceAppId);
+        Assert.Equal(contactId, resp.ContactId);
+        Assert.Equal(contact.firstname, resp.GivenName);
+        Assert.Equal(contact.emailaddress1, resp.ContactEmailAddress);
+    }
+
+    [Fact]
+    public async Task GetLicenceApplicationAsync_ApplicationNotFound_Throw_Exception()
+    {
+        // Act and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _licAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
     }
 }

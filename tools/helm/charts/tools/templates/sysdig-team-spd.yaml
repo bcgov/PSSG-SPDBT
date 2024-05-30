@@ -1,0 +1,21 @@
+apiVersion: ops.gov.bc.ca/v1alpha1
+kind: SysdigTeam
+metadata:
+  name: fe7e29-sysdigteam
+  namespace: fe7e29-tools
+spec:
+  team:
+    description: The Sysdig Team for the OpenShift Project Set SPD (fe7e29)
+    users:
+      - name: Yossi.1.Tamari@gov.bc.ca
+        role: ROLE_TEAM_EDIT
+      - name: peggy.zhang@gov.bc.ca
+        role: ROLE_TEAM_EDIT
+      - name: carol.carpenter@gov.bc.ca
+        role: ROLE_TEAM_STANDARD
+      - name: ruben.araya@gov.bc.ca
+        role: ROLE_TEAM_READ
+      - name: Jennifer.dowd@gov.bc.ca
+        role: ROLE_TEAM_READ
+      - name: alexander.aleshchenko@gov.bc.ca
+        role: ROLE_TEAM_READ
