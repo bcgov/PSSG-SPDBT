@@ -558,4 +558,24 @@ export class CommonApplicationService {
 
 		return daysBetween > renewPeriodDays ? false : true;
 	}
+
+	handleDuplicateLicence(): void {
+		const data: DialogOptions = {
+			icon: 'error',
+			title: 'Confirmation',
+			message:
+				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
+			actionText: 'Edit',
+			cancelText: 'Go back',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (!response) {
+					this.onGoToHome();
+				}
+			});
+	}
 }

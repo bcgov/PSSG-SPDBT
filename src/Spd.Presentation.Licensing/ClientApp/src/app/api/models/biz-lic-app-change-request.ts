@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { ApplicationTypeCode } from './application-type-code';
+import { BizTypeCode } from './biz-type-code';
 import { ContactInfo } from './contact-info';
 import { LicenceTermCode } from './licence-term-code';
 import { Members } from './members';
@@ -12,6 +13,7 @@ export interface BizLicAppChangeRequest {
   applicantIsBizManager?: null | boolean;
   applicationTypeCode?: ApplicationTypeCode;
   bizManagerContactInfo?: ContactInfo;
+  bizTypeCode?: BizTypeCode;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   documentKeyCodes?: null | Array<string>;
   expiredLicenceId?: null | string;

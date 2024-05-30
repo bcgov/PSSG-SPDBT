@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -242,10 +241,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					}
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -284,10 +280,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {
-				// only 403s will be here as an error
-				if (error.status == 403) {
-					this.handleDuplicateLicence();
-				}
+				this.handlePartialSaveError(error);
 			},
 		});
 	}
@@ -302,10 +295,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -320,10 +310,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					this.goToChildNextStep();
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -343,24 +330,11 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		// console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
-	private handleDuplicateLicence(): void {
-		const data: DialogOptions = {
-			icon: 'error',
-			title: 'Confirmation',
-			message:
-				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
-			actionText: 'Edit',
-			cancelText: 'Go back',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (!response) {
-					this.router.navigate([LicenceApplicationRoutes.pathUserApplications()]);
-				}
-			});
+	private handlePartialSaveError(error: HttpErrorResponse): void {
+		// only 403s will be here as an error // TODO business licence has duplicates?
+		if (error.status == 403) {
+			this.commonApplicationService.handleDuplicateLicence();
+		}
 	}
 
 	private goToChildNextStep() {

@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { ApplicationPortalStatusCode } from './application-portal-status-code';
 import { ApplicationTypeCode } from './application-type-code';
+import { BizTypeCode } from './biz-type-code';
 import { ContactInfo } from './contact-info';
 import { Document } from './document';
 import { LicenceTermCode } from './licence-term-code';
@@ -16,6 +17,7 @@ export interface BizLicAppResponse {
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: null | string;
   bizManagerContactInfo?: ContactInfo;
+  bizTypeCode?: BizTypeCode;
   caseNumber?: null | string;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   documentInfos?: null | Array<Document>;

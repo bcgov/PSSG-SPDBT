@@ -6,10 +6,10 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { BizTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsBusinessLicenceContactInformationNewComponent } from './steps-business-licence-contact-information-new.component';
 import { StepsBusinessLicenceControllingMembersNewComponent } from './steps-business-licence-controlling-members-new.component';
 import { StepsBusinessLicenceInformationNewComponent } from './steps-business-licence-information-new.component';
@@ -135,7 +135,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);
@@ -352,11 +352,10 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
-		console.debug('handlePartialSaveError', error);
 		// only 403s will be here as an error // TODO business licence has duplicates?
-		// if (error.status == 403) {
-		// 	this.handleDuplicateLicence();
-		// }
+		if (error.status == 403) {
+			this.commonApplicationService.handleDuplicateLicence();
+		}
 	}
 
 	private updateCompleteStatus(): void {

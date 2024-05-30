@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { ApplicationTypeCode } from './application-type-code';
+import { BizTypeCode } from './biz-type-code';
 import { ContactInfo } from './contact-info';
 import { Document } from './document';
 import { LicenceTermCode } from './licence-term-code';
@@ -14,6 +15,7 @@ export interface BizLicAppUpsertRequest {
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: string;
   bizManagerContactInfo?: ContactInfo;
+  bizTypeCode?: BizTypeCode;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   documentInfos?: null | Array<Document>;
   expiredLicenceId?: null | string;

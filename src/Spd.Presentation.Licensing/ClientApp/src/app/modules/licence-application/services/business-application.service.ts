@@ -171,7 +171,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
 
-		return this.bizLicensingService.apiBusinessLicencePost$Response({ body }).pipe(
+		return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
 			take(1),
 			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hasValueChanged = false;
@@ -206,7 +206,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.bizLicensingService.apiBusinessLicenceLicenceAppIdFilesPost$Response({
+		return this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response({
 			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -295,7 +295,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			swlControllingMembers: this.saveControllingMembersWithSwlBody(modelFormValue),
 		};
 
-		return this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdMembersPost({
+		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
 			bizId,
 			applicationId: licenceAppId,
 			body,
@@ -424,11 +424,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-		const licenceAppId = '10007484-6a96-4650-8dc6-d6b7548e2dbb';
+		const licenceAppId = '0e9a5a25-eb73-40d5-976a-45a55106dcd9';
 
 		return forkJoin([
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdMembersGet({
+			this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersGet({
 				bizId,
 				applicationId: licenceAppId,
 			}),
@@ -593,7 +593,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return forkJoin([
-			this.bizLicensingService.apiBusinessLicenceLicenceAppIdGet({ licenceAppId }),
+			this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({ licenceAppId }),
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
 		]).pipe(
 			switchMap((resps: any[]) => {
@@ -933,7 +933,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			{
 				bizId: businessProfile.bizId,
 				// bizId: 'bizId' in profile ? profile.bizId : null,
-				licenceAppId: soleProprietorSwlLicence?.licenceAppId ?? '10007484-6a96-4650-8dc6-d6b7548e2dbb',
+				licenceAppId: soleProprietorSwlLicence?.licenceAppId ?? '0e9a5a25-eb73-40d5-976a-45a55106dcd9',
 				// licenceAppId: '0aac80d3-e692-4b15-9c1a-49533f9900a1',
 				// workerLicenceTypeData,
 				// applicationTypeData,

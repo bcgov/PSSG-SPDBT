@@ -526,7 +526,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onResume(): void {
-		const licenceAppId = '10007484-6a96-4650-8dc6-d6b7548e2dbb';
+		const licenceAppId = '0e9a5a25-eb73-40d5-976a-45a55106dcd9';
 
 		this.businessApplicationService
 			.getBusinessLicenceToResume(licenceAppId)
