@@ -51,7 +51,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         app.spd_licenceterm = 100000000;
 
         _context.AddTospd_applications(app);
-        _context.SetLink(app, nameof(app.spd_ApplicantId_account), biz);
+        _context.SetLink(app, nameof(app.spd_OrganizationId), biz);
         _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), expiredLicence);
         await _context.SaveChangesAsync();
 
