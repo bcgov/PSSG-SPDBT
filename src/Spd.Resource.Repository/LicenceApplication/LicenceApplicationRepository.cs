@@ -136,7 +136,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Expand(a => a.spd_application_spd_licencecategory)
             .Expand(a => a.spd_CurrentExpiredLicenceId)
             .Where(a => a.spd_applicationid == licenceApplicationId)
-            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");
