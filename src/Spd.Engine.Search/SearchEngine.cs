@@ -44,8 +44,8 @@ namespace Spd.Engine.Search
                 ContactId: contact.ContactId,
                 FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.ShareableClearanceExpiredDateBufferInMonths),
                 Shareable: true,
-                WorkWith: org.OrgResult.EmployeeInteractionType,
-                ServiceType: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
+                IncludeWorkWith: org.OrgResult.EmployeeInteractionType,
+                IncludeServiceTypeEnum: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
             );
             var results = await _appRepo.QueryAsync(qry, ct);
             response.Items = _mapper.Map<IEnumerable<ShareableClearance>>(results.Clearances);

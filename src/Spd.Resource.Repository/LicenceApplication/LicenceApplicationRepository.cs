@@ -90,7 +90,12 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         app.spd_portalmodifiedon = DateTimeOffset.Now;
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
+
+        // For business application, return organization id, for all others, return applicant id
+        if (app._spd_organizationid_value != null)
+            return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_organizationid_value);
+        else
+            return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
     }
 
     //for auth, do not need to create contact.
@@ -136,7 +141,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             .Expand(a => a.spd_application_spd_licencecategory)
             .Expand(a => a.spd_CurrentExpiredLicenceId)
             .Where(a => a.spd_applicationid == licenceApplicationId)
-            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .SingleOrDefaultAsync(ct);
         if (app == null)
             throw new ArgumentException("invalid app id");

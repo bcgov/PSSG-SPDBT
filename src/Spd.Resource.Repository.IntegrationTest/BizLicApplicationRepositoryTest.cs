@@ -69,6 +69,12 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(app.spd_applicationid, result.LicenceAppId);
         Assert.Equal(expiredLicenceId, result.ExpiredLicenceId);
         Assert.Equal(LicenceTermEnum.NinetyDays, result.LicenceTermCode);
+
+        // Annihilate
+        _context.DeleteObject(expiredLicence);
+        _context.DeleteObject(biz);
+        _context.DeleteObject(app);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
