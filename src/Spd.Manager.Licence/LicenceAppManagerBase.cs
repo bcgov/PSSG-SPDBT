@@ -38,7 +38,7 @@ internal abstract class LicenceAppManagerBase
         _transientFileService = transientFileService;
     }
 
-    protected async Task<decimal?> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -53,7 +53,7 @@ internal abstract class LicenceAppManagerBase
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
         else
             await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
-        return price?.LicenceFees.FirstOrDefault()?.Amount;
+        return price?.LicenceFees.FirstOrDefault()?.Amount ?? 0;
     }
 
     //upload file from cache to main bucket
