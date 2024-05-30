@@ -2,9 +2,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
-using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.BizContact;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceApplication;
@@ -57,6 +58,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<ILicenceRepository, LicenceRepository>();
         serviceCollection.AddTransient<IBizLicApplicationRepository, BizLicApplicationRepository>();
         serviceCollection.AddTransient<IBizContactRepository, BizContactRepository>();
+        serviceCollection.AddTransient<IApplicationRepository, ApplicationRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }
