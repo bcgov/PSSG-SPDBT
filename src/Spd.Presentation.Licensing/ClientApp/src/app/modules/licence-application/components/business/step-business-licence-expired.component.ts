@@ -17,6 +17,7 @@ import { CommonExpiredLicenceComponent } from '../shared/step-components/common-
 
 				<app-common-expired-licence
 					[form]="form"
+					[isLoggedIn]="true"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 				></app-common-expired-licence>
 			</div>

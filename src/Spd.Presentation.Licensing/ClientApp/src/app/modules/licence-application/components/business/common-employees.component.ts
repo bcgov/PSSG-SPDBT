@@ -196,6 +196,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 			title: 'Add Member with Security Worker Licence',
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
+			isLoggedIn: true,
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {

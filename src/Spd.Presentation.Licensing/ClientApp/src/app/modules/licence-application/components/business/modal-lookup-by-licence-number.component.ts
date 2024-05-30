@@ -1,15 +1,17 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import {
 	CommonApplicationService,
 	LicenceLookupResult,
 } from '@app/modules/licence-application/services/common-application.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { Subject } from 'rxjs';
 
 export interface LookupByLicenceNumberDialogData {
 	title: string;
@@ -17,6 +19,7 @@ export interface LookupByLicenceNumberDialogData {
 	notValidSwlMessage?: string;
 	lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode;
 	isExpiredLicenceSearch: boolean;
+	isLoggedIn: boolean;
 }
 
 @Component({
@@ -27,9 +30,9 @@ export interface LookupByLicenceNumberDialogData {
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-12">
+					<div class="col-lg-6 col-md-12">
 						<mat-form-field>
-							<mat-label>Lookup a Licence Number</mat-label>
+							<mat-label>Licence Number</mat-label>
 							<input
 								matInput
 								type="search"
@@ -50,6 +53,23 @@ export interface LookupByLicenceNumberDialogData {
 							</button>
 							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xl-6 col-lg-12 mt-2" *ngIf="!isLoggedIn">
+						<div formGroupName="captchaFormGroup" class="mb-3">
+							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+									captchaFormGroup.get('token')?.invalid &&
+									captchaFormGroup.get('token')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
+						</div>
 					</div>
 				</div>
 
@@ -152,6 +172,11 @@ export interface LookupByLicenceNumberDialogData {
 export class ModalLookupByLicenceNumberComponent implements OnInit {
 	form = this.businessApplicationService.swlLookupLicenceFormGroup;
 
+	captchaFormGroup = new FormGroup({
+		token: new FormControl('', FormControlValidators.required),
+	});
+	resetRecaptcha: Subject<void> = new Subject<void>();
+
 	title = '';
 	subtitle: string | null = null;
 	notValidSwlMessage: string | null = null;
@@ -167,6 +192,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	label = 'licenceTODO';
 
 	isExpiredLicenceSearch = false;
+	isLoggedIn = false;
 	lookupWorkerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	constructor(
@@ -185,6 +211,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.notValidSwlMessage = this.dialogData.notValidSwlMessage ?? null;
 		this.isExpiredLicenceSearch = this.dialogData.isExpiredLicenceSearch ?? false;
 		this.lookupWorkerLicenceTypeCode = this.dialogData.lookupWorkerLicenceTypeCode;
+		this.isLoggedIn = this.dialogData.isLoggedIn;
 	}
 
 	onSearchKeyDown(): void {
@@ -195,100 +222,99 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.resetFlags();
 
 		this.form.markAllAsTouched();
-		if (!this.form.valid) return;
+		const isValidForm = this.form.valid;
 
-		if (this.isExpiredLicenceSearch) {
-			this.performExpiredLicenceSearch(this.licenceNumberLookup.value);
+		let isValidRecaptcha = true;
+		if (!this.isLoggedIn) {
+			this.captchaFormGroup.markAllAsTouched();
+			isValidRecaptcha = this.captchaFormGroup.valid;
+		}
+
+		if (!isValidForm || !isValidRecaptcha) return;
+
+		let recaptchaCode: string | null = null;
+		if (!this.isLoggedIn) {
+			recaptchaCode = this.captchaFormGroup.get('token')?.value ?? null;
+		}
+
+		this.performSearch(this.licenceNumberLookup.value, recaptchaCode);
+	}
+
+	private performSearch(licenceNumberLookup: string, recaptchaCode: string | null) {
+		if (recaptchaCode) {
+			this.commonApplicationService
+				.getLicenceNumberLookupAnonymous(licenceNumberLookup, recaptchaCode)
+				.pipe()
+				.subscribe((resp: LicenceLookupResult) => {
+					if (this.isExpiredLicenceSearch) {
+						this.handlexpiredLicenceSearchResults(resp);
+					} else {
+						this.handleSearchResults(resp);
+					}
+				});
 		} else {
-			this.performSearch(this.licenceNumberLookup.value);
+			this.commonApplicationService
+				.getLicenceNumberLookup(licenceNumberLookup)
+				.pipe()
+				.subscribe((resp: LicenceLookupResult) => {
+					if (this.isExpiredLicenceSearch) {
+						this.handlexpiredLicenceSearchResults(resp);
+					} else {
+						this.handleSearchResults(resp);
+					}
+				});
 		}
 	}
 
-	private performSearch(licenceNumberLookup: string) {
-		this.commonApplicationService
-			.getLicenceNumberLookup(licenceNumberLookup)
-			.pipe()
-			.subscribe((resp: LicenceLookupResult) => {
-				this.isSearchPerformed = true;
-				this.isFound = resp.isFound;
-				this.isFoundValid = resp.isFoundValid;
+	private handleSearchResults(resp: LicenceLookupResult) {
+		this.isSearchPerformed = true;
+		this.isFound = resp.isFound;
+		this.isFoundValid = resp.isFoundValid;
 
-				if (resp.searchResult) {
-					if (resp.searchResult.workerLicenceTypeCode !== this.lookupWorkerLicenceTypeCode) {
-						this.isFoundValid = false;
-						// this.messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
-					}
+		if (resp.searchResult) {
+			if (resp.searchResult.workerLicenceTypeCode !== this.lookupWorkerLicenceTypeCode) {
+				this.isFoundValid = false;
+				// this.messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
+			}
 
-					this.searchResult = resp.searchResult;
-				}
-			});
+			this.searchResult = resp.searchResult;
+		}
 	}
 
-	private performExpiredLicenceSearch(licenceNumberLookup: string) {
-		this.commonApplicationService
-			.getLicenceNumberLookup(licenceNumberLookup)
-			.pipe()
-			.subscribe((resp: LicenceLookupResult) => {
-				this.messageInfo = null;
-				[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
-					resp.searchResult,
-					this.lookupWorkerLicenceTypeCode,
-					resp.isExpired,
-					resp.isInRenewalPeriod
-				);
+	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
+		this.messageInfo = null;
+		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
+			resp.searchResult,
+			this.lookupWorkerLicenceTypeCode,
+			resp.isExpired,
+			resp.isInRenewalPeriod
+		);
 
-				this.isSearchPerformed = true;
-				this.isFound = resp.isFound;
-				this.searchResult = resp.searchResult;
+		this.isSearchPerformed = true;
+		this.isFound = resp.isFound;
+		this.searchResult = resp.searchResult;
 
-				console.log('this.isSearchPerformed', this.isSearchPerformed);
-				console.log('this.isFound', this.isFound);
-				console.log('this.isFoundValid', this.isFoundValid);
-				console.log('this.messageInfo', this.messageInfo);
-				console.log('this.messageWarn', this.messageWarn);
-				console.log('this.messageError', this.messageError);
+		console.log('this.isSearchPerformed', this.isSearchPerformed);
+		console.log('this.isFound', this.isFound);
+		console.log('this.isFoundValid', this.isFoundValid);
+		console.log('this.messageInfo', this.messageInfo);
+		console.log('this.messageWarn', this.messageWarn);
+		console.log('this.messageError', this.messageError);
 
-				if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
-					this.isFoundValid = true;
-					this.handleValidExpiredLicence(resp.searchResult);
-				} else {
-					this.isFoundValid = false;
-				}
-			});
+		if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
+			this.isFoundValid = true;
+			this.handleValidExpiredLicence(resp.searchResult);
+		} else {
+			this.isFoundValid = false;
+		}
 	}
 
 	private handleValidExpiredLicence(licence: LicenceResponse): void {
 		this.isFound = true;
 		this.isFoundValid = true;
 
-		const name = licence.licenceHolderName;
-
 		const formattedExpiryDate = this.formatDatePipe.transform(licence.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
 		this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
-
-		// const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} and with name "${name}" has been found. If this is correct then continue.`;
-		// console.log('message', message);
-		// const data: DialogOptions = {
-		// 	icon: 'warning',
-		// 	title: 'Confirmation',
-		// 	message: message,
-		// 	actionText: 'Continue',
-		// 	cancelText: 'Cancel',
-		// };
-
-		// this.dialog
-		// 	.open(DialogComponent, { data })
-		// 	.afterClosed()
-		// 	.subscribe((response: boolean) => {
-		// 		if (response) {
-		// 			this.form.patchValue({
-		// 				expiredLicenceId: licence.licenceId,
-		// 				expiredLicenceNumber: licence.licenceNumber,
-		// 				expiryDate: licence.expiryDate,
-		// 			});
-		// 			// this.validExpiredLicenceData.emit();
-		// 		}
-		// 	});
 	}
 
 	onSave(): void {

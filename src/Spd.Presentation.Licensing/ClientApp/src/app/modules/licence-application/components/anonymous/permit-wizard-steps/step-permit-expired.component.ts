@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { CommonExpiredLicenceAnonymousComponent } from '../../shared/step-components/common-expired-licence-anonymous.component';
 import { CommonExpiredLicenceComponent } from '../../shared/step-components/common-expired-licence.component';
 
 @Component({
@@ -16,19 +15,11 @@ import { CommonExpiredLicenceComponent } from '../../shared/step-components/comm
 					subtitle="Processing time will be reduced if you provide info from your past permit"
 				></app-step-title>
 
-				<ng-container *ngIf="isLoggedIn; else isAnonymous">
-					<app-common-expired-licence
-						[form]="form"
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
-					></app-common-expired-licence>
-				</ng-container>
-
-				<ng-template #isAnonymous>
-					<app-common-expired-licence-anonymous
-						[form]="form"
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
-					></app-common-expired-licence-anonymous>
-				</ng-template>
+				<app-common-expired-licence
+					[form]="form"
+					[isLoggedIn]="isLoggedIn"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+				></app-common-expired-licence>
 			</div>
 		</section>
 	`,
@@ -42,9 +33,6 @@ export class StepPermitExpiredComponent implements OnInit, PermitChildStepperSte
 
 	@ViewChild(CommonExpiredLicenceComponent)
 	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
-
-	@ViewChild(CommonExpiredLicenceAnonymousComponent)
-	commonExpiredLicenceAnonymousComponent!: CommonExpiredLicenceAnonymousComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 

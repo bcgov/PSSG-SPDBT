@@ -1,12 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 import {
@@ -262,9 +264,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	dataSourceWithoutSWL!: MatTableDataSource<any>;
 	columnsWithoutSWL: string[] = ['licenceHolderName', 'clearanceStatus', 'action1', 'action2'];
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
@@ -313,6 +318,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
 			isExpiredLicenceSearch: false,
+			isLoggedIn: true,
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {
@@ -339,22 +345,21 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.memberDialogWithoutSWL({}, true);
 	}
 
-	onFileUploaded(_file: File): void {
-		// TODO upload file on partial save
+	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
-
 		if (this.businessApplicationService.isAutoSave()) {
-			// this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.xxx, file).subscribe({
-			// 	next: (resp: any) => {
-			// 		const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-			// 		matchingFile.documentUrlId = resp.body[0].documentUrlId;
-			// 	},
-			// 	error: (error: any) => {
-			// 		console.log('An error occurred during file upload', error);
-			// 		this.hotToastService.error('An error occurred during the file upload. Please try again.');
-			// 		this.fileUploadComponent.removeFailedFile(file);
-			// 	},
-			// });
+			// TODO use LicenceDocumentTypeCode.BizBcReport??
+			this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.BizBcReport, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
 		}
 	}
 

@@ -14,19 +14,11 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					subtitle="Processing time will be reduced if you provide info from your past licence"
 				></app-step-title>
 
-				<ng-container *ngIf="isLoggedIn; else isAnonymous">
-					<app-common-expired-licence
-						[form]="form"
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
-					></app-common-expired-licence>
-				</ng-container>
-
-				<ng-template #isAnonymous>
-					<app-common-expired-licence-anonymous
-						[form]="form"
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
-					></app-common-expired-licence-anonymous>
-				</ng-template>
+				<app-common-expired-licence
+					[form]="form"
+					[isLoggedIn]="isLoggedIn"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+				></app-common-expired-licence>
 			</div>
 		</section>
 	`,

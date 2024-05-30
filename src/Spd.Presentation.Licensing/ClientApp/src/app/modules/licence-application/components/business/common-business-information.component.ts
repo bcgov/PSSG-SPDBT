@@ -185,6 +185,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 			subtitle: 'A sole proprietor must have a valid security worker licence',
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
 			isExpiredLicenceSearch: false,
+			isLoggedIn: true,
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {

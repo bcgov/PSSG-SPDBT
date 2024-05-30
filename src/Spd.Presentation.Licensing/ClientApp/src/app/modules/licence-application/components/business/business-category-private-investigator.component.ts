@@ -91,6 +91,7 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 			title: 'Add Manager with Security Worker Licence',
 			isExpiredLicenceSearch: false,
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			isLoggedIn: true,
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {

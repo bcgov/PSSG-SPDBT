@@ -638,6 +638,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const membersResponse = resps[2];
 
 				const apis: Observable<any>[] = [];
+				if (businessLicenceResponse.expiredLicenceId) {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: businessLicenceResponse.expiredLicenceId,
+						})
+					);
+				}
 				if (businessLicenceResponse.privateInvestigatorSwlInfo?.licenceId) {
 					apis.push(
 						this.licenceService.apiLicencesLicenceIdGet({
@@ -675,7 +682,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							this.applyControllingMembersWithSwl(membersResponse.swlControllingMembers ?? [], licenceResponses);
 							this.applyEmployees(membersResponse.employees ?? [], licenceResponses);
 
-							return this.applyLicenceAndProfileIntoModel(businessLicenceResponse, profileResponse);
+							let expiredLicence: LicenceResponse | undefined = undefined;
+							if (businessLicenceResponse.expiredLicenceId) {
+								expiredLicence = licenceResponses.find(
+									(item: LicenceResponse) => item.licenceId === businessLicenceResponse.expiredLicenceId
+								);
+							}
+
+							return this.applyLicenceAndProfileIntoModel(businessLicenceResponse, profileResponse, expiredLicence);
 						})
 					);
 				}
@@ -691,14 +705,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	private applyLicenceAndProfileIntoModel(
 		businessLicence: BizLicAppResponse,
-		businessProfile: BizProfileResponse
+		businessProfile: BizProfileResponse,
+		expiredLicence?: LicenceResponse
 	): Observable<any> {
 		return this.applyLicenceProfileIntoModel(
 			businessProfile // ?? businessLicenceResponse,
 			// businessLicenceResponse.applicationTypeCode,
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(businessLicence);
+				return this.applyLicenceIntoModel(businessLicence, expiredLicence);
 			})
 		);
 	}
@@ -707,15 +722,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the licence into the business model
 	 * @returns
 	 */
-	private applyLicenceIntoModel(resp: BizLicAppResponse): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
+	private applyLicenceIntoModel(
+		businessLicenceAppl: BizLicAppResponse,
+		expiredLicenceInfo?: LicenceResponse
+	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: businessLicenceAppl.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
 
 		const expiredLicenceData = {
-			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
-			// expiredLicenceNumber: resp.expiredLicenceNumber, // TODO  expiredLicenceNumber
-			expiryDate: resp.expiryDate,
-			expiredLicenceId: resp.expiredLicenceId,
+			hasExpiredLicence: this.utilService.booleanToBooleanType(businessLicenceAppl.hasExpiredLicence),
+			expiredLicenceId: expiredLicenceInfo?.licenceId,
+			expiredLicenceHolderName: expiredLicenceInfo?.licenceHolderName,
+			expiredLicenceNumber: expiredLicenceInfo?.licenceNumber,
+			expiredLicenceExpiryDate: expiredLicenceInfo?.expiryDate,
+			expiredLicenceStatusCode: expiredLicenceInfo?.licenceStatusCode,
 		};
 
 		const companyBrandingAttachments: Array<File> = [];
@@ -727,7 +747,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
 		let categorySecurityGuardFormGroup: any = { isInclude: false };
 
-		resp.documentInfos?.forEach((doc: Document) => {
+		businessLicenceAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.BizSecurityDogCertificate: {
 					const aFile = this.fileUtilService.dummyFile(doc);
@@ -755,7 +775,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 
 		const companyBrandingData = {
-			noLogoOrBranding: resp.noBranding,
+			noLogoOrBranding: businessLicenceAppl.noBranding,
 			attachments: companyBrandingAttachments,
 		};
 
@@ -764,23 +784,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		};
 
 		const licenceTermData = {
-			licenceTermCode: resp.licenceTermCode,
+			licenceTermCode: businessLicenceAppl.licenceTermCode,
 		};
 
 		const businessManagerData = {
-			givenName: resp.bizManagerContactInfo?.givenName,
-			middleName1: resp.bizManagerContactInfo?.middleName1,
-			middleName2: resp.bizManagerContactInfo?.middleName2,
-			surname: resp.bizManagerContactInfo?.surname,
-			emailAddress: resp.bizManagerContactInfo?.emailAddress,
-			phoneNumber: resp.bizManagerContactInfo?.phoneNumber,
-			isBusinessManager: resp.applicantIsBizManager,
-			applicantGivenName: resp.applicantContactInfo?.givenName,
-			applicantMiddleName1: resp.applicantContactInfo?.middleName1,
-			applicantMiddleName2: resp.applicantContactInfo?.middleName2,
-			applicantSurname: resp.applicantContactInfo?.surname,
-			applicantEmailAddress: resp.applicantContactInfo?.emailAddress,
-			applicantPhoneNumber: resp.applicantContactInfo?.phoneNumber,
+			givenName: businessLicenceAppl.bizManagerContactInfo?.givenName,
+			middleName1: businessLicenceAppl.bizManagerContactInfo?.middleName1,
+			middleName2: businessLicenceAppl.bizManagerContactInfo?.middleName2,
+			surname: businessLicenceAppl.bizManagerContactInfo?.surname,
+			emailAddress: businessLicenceAppl.bizManagerContactInfo?.emailAddress,
+			phoneNumber: businessLicenceAppl.bizManagerContactInfo?.phoneNumber,
+			isBusinessManager: businessLicenceAppl.applicantIsBizManager,
+			applicantGivenName: businessLicenceAppl.applicantContactInfo?.givenName,
+			applicantMiddleName1: businessLicenceAppl.applicantContactInfo?.middleName1,
+			applicantMiddleName2: businessLicenceAppl.applicantContactInfo?.middleName2,
+			applicantSurname: businessLicenceAppl.applicantContactInfo?.surname,
+			applicantEmailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress,
+			applicantPhoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber,
 		};
 
 		const categoryData: any = {};
@@ -792,15 +812,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 
 		// mark the appropriate category types as true
-		resp.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
+		businessLicenceAppl.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
 			categoryData[item as string] = true;
 		});
 
 		if (categoryData.PrivateInvestigator) {
 			categoryPrivateInvestigatorFormGroup = {
 				isInclude: true,
-				managerContactId: resp.privateInvestigatorSwlInfo?.contactId,
-				managerLicenceId: resp.privateInvestigatorSwlInfo?.licenceId,
+				managerContactId: businessLicenceAppl.privateInvestigatorSwlInfo?.contactId,
+				managerLicenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
 				managerLicenceHolderName: '',
 				managerLicenceNumber: '',
 				managerLicenceExpiryDate: '',
@@ -822,7 +842,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.businessModelFormGroup.patchValue(
 			{
-				licenceAppId: resp.licenceAppId,
+				licenceAppId: businessLicenceAppl.licenceAppId,
 				workerLicenceTypeData,
 				applicationTypeData,
 

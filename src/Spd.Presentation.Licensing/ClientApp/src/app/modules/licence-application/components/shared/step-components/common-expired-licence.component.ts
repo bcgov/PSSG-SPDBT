@@ -51,23 +51,23 @@ import {
 						<ng-container *ngIf="expiredLicenceId.value; else SearchForLicence">
 							<app-alert type="success" icon="check_circle">
 								<div class="row">
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Name</div>
-										<div class="text-primary-color fs-5">{{ expiredLicenceHolderName.value }}</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">Name</div>
+										<div class="text-data">{{ expiredLicenceHolderName.value }}</div>
 									</div>
-									<div class="col-lg-4 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Security Worker Licence Number</div>
-										<div class="text-primary-color fs-5">{{ expiredLicenceNumber.value }}</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">{{ titleLabel }} Number</div>
+										<div class="text-data">{{ expiredLicenceNumber.value }}</div>
 									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Expiry Date</div>
-										<div class="text-primary-color fs-5">
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">Expiry Date</div>
+										<div class="text-data">
 											{{ expiredLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
 										</div>
 									</div>
-									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
-										<div class="text-primary-color">Licence Status</div>
-										<div class="text-primary-color fs-5 fw-bold">{{ expiredLicenceStatusCode.value }}</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">Licence Status</div>
+										<div class="text-data fw-bold">{{ expiredLicenceStatusCode.value }}</div>
 									</div>
 								</div>
 							</app-alert>
@@ -99,7 +99,6 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
 	titleLabel!: string;
-	label!: string;
 
 	messageInfo: string | null = null;
 	messageWarn: string | null = null;
@@ -107,6 +106,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 	matcher = new FormErrorStateMatcher();
 
+	@Input() isLoggedIn!: boolean;
 	@Input() form!: FormGroup;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
@@ -114,14 +114,14 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.titleLabel = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-		this.label = this.titleLabel.toLowerCase();
 	}
 
 	onLookup(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
-			title: 'Search for a Licence Number',
+			title: `Search for a ${this.titleLabel}`,
 			isExpiredLicenceSearch: true,
 			lookupWorkerLicenceTypeCode: this.workerLicenceTypeCode,
+			isLoggedIn: this.isLoggedIn,
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {

@@ -144,7 +144,6 @@ import { CommonBusinessAddressComponent } from './components/shared/step-compone
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
-import { CommonExpiredLicenceAnonymousComponent } from './components/shared/step-components/common-expired-licence-anonymous.component';
 import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
@@ -232,7 +231,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonControllingMembersComponent,
 		CommonEmployeesComponent,
 		CommonCriminalHistoryComponent,
-		CommonExpiredLicenceAnonymousComponent,
 		CommonExpiredLicenceComponent,
 		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,
