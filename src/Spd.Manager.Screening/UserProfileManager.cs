@@ -175,7 +175,6 @@ namespace Spd.Manager.Screening
                 RequesterAccountType = RequesterAccountTypeEnum.Internal,
                 UserGuid = cmd.IdirUserIdentity.UserGuid
             });
-            _logger.LogDebug($"userGuid = {cmd.IdirUserIdentity.UserGuid}");
             _logger.LogDebug($"from webservice orgCode = {idirDetail.MinistryCode}");
 
             OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
