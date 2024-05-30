@@ -54,7 +54,6 @@ public class ApplicationRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.SetLink(clearance, nameof(clearance.spd_ContactID), contact);
         await _context.SaveChangesAsync();
 
-
         // Action
         ClearanceQry qry = new(
             ContactId: contact.contactid,
@@ -74,6 +73,4 @@ public class ApplicationRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.DeleteObject(contact);
         await _context.SaveChangesAsync();
     }
-
-
 }
