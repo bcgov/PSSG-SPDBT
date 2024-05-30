@@ -20,6 +20,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     {
         spd_application? app = await _context.spd_applications
             .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_ApplicantId_account)
             .Expand(a => a.spd_ApplicantId_contact)
             .Expand(a => a.spd_application_spd_licencecategory)
             .Expand(a => a.spd_application_spd_licence_manager)
