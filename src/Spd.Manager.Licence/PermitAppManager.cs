@@ -82,7 +82,7 @@ internal class PermitAppManager :
             BizTypeCode = cmd.PermitUpsertRequest.BizTypeCode,
             LicenceTermCode = cmd.PermitUpsertRequest.LicenceTermCode
         };
-        decimal? cost = await CommitApplicationAsync(licAppBase, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(licAppBase, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -115,7 +115,7 @@ internal class PermitAppManager :
             BizTypeCode = request.BizTypeCode,
             LicenceTermCode = request.LicenceTermCode
         };
-        decimal? cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -160,7 +160,7 @@ internal class PermitAppManager :
             BizTypeCode = request.BizTypeCode,
             LicenceTermCode = request.LicenceTermCode
         };
-        decimal? cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -222,7 +222,7 @@ internal class PermitAppManager :
             BizTypeCode = request.BizTypeCode,
             LicenceTermCode = request.LicenceTermCode
         };
-        decimal? cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(licAppBase, response.LicenceAppId, cancellationToken);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
