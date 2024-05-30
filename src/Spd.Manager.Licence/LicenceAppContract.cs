@@ -1,3 +1,4 @@
+using Spd.Manager.Shared;
 using GenderCode = Spd.Manager.Shared.GenderCode;
 
 namespace Spd.Manager.Licence;
@@ -47,4 +48,11 @@ public record DocumentExpiredInfo
 public record LicenceAppUpsertResponse
 {
     public Guid? LicenceAppId { get; set; }
+}
+public record LicenceAppBase
+{
+    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+    public BizTypeCode? BizTypeCode { get; set; }
+    public LicenceTermCode? LicenceTermCode { get; set; } //for biz licence term, only 1,2,3 year
 }
