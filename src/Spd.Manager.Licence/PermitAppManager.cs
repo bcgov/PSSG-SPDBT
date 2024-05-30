@@ -194,7 +194,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, (Guid)response.LicenceAppId, cancellationToken);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
