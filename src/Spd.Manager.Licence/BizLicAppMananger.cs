@@ -99,7 +99,7 @@ internal class BizLicAppMananger :
             BizTypeCode = cmd.BizLicAppUpsertRequest.BizTypeCode,
             LicenceTermCode = cmd.BizLicAppUpsertRequest.LicenceTermCode
         };
-        decimal? cost = await CommitApplicationAsync(licAppBase, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(licAppBase, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
