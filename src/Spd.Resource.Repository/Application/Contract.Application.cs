@@ -249,7 +249,9 @@ public record ClearanceQry(Guid? ContactId = null,
     DateTimeOffset? FromDate = null,
     ServiceTypeEnum? ServiceType = null,
     bool? Shareable = null,
-    Guid? ClearanceId = null);
+    Guid? ClearanceId = null,
+    ServiceTypeEnum? IncludeServiceTypeEnum = null,
+    EmployeeInteractionTypeCode? IncludeWorkWith = null);
 public record ClearanceResp
 {
     public Guid OrgId { get; set; }
