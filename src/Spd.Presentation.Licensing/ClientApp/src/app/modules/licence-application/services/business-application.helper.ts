@@ -6,6 +6,7 @@ import {
 	Document,
 	DocumentExpiredInfo,
 	LicenceDocumentTypeCode,
+	Members,
 	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
@@ -17,6 +18,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { ControllingMemberContactInfo } from './business-application.service';
 
 export abstract class BusinessApplicationHelper {
 	booleanTypeCodes = BooleanTypeCode;
@@ -199,7 +201,7 @@ export abstract class BusinessApplicationHelper {
 			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			isBusinessManager: new FormControl(),
-			applicantGivenName: new FormControl(''), // TODO applicant info - rename later
+			applicantGivenName: new FormControl(''),
 			applicantMiddleName1: new FormControl(''),
 			applicantMiddleName2: new FormControl(''),
 			applicantSurname: new FormControl(''),
@@ -401,8 +403,6 @@ export abstract class BusinessApplicationHelper {
 	) {}
 
 	getSaveBodyBase(businessModelFormValue: any): BizLicAppUpsertRequest {
-		console.log('getSaveBodyBase', businessModelFormValue);
-
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const workerLicenceTypeData = { ...businessModelFormValue.workerLicenceTypeData };
@@ -412,13 +412,6 @@ export abstract class BusinessApplicationHelper {
 		const liabilityData = { ...businessModelFormValue.liabilityData };
 		const businessManagerData = { ...businessModelFormValue.businessManagerData };
 		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
-		const employeesData = { ...businessModelFormValue.employeesData };
-
-		const isBcBusinessAddress = businessModelFormValue.isBcBusinessAddress;
-
-		const employees: Array<SwlContactInfo> = [];
-		const nonSwlControllerMemberInfos: Array<NonSwlContactInfo> = [];
-		const swlControllerMemberInfos: Array<SwlContactInfo> = [];
 
 		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
 		const documentInfos: Array<Document> = [];
@@ -434,12 +427,12 @@ export abstract class BusinessApplicationHelper {
 			});
 		}
 
-		liabilityData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
-			});
-		});
+		// liabilityData.attachments?.forEach((doc: any) => {
+		// 	documentInfos.push({
+		// 		documentUrlId: doc.documentUrlId,
+		// 		licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+		// 	});
+		// });
 
 		let applicantContactInfo: ContactInfo | undefined = undefined;
 		const applicantIsBizManager = businessManagerData.isBusinessManager;
@@ -532,27 +525,22 @@ export abstract class BusinessApplicationHelper {
 			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
 			: null;
 
-		controllingMembersData.membersWithSwl?.forEach((item: any) => {
-			swlControllerMemberInfos.push({
-				bizContactId: item.bizContactId,
-				contactId: item.contactId,
-				licenceId: item.licenceId,
-			});
-		});
+		// Only save members if business is not a sole proprietor
+		let members: Members = {
+			employees: [],
+			nonSwlControllingMembers: [],
+			swlControllingMembers: [],
+		};
+		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
+		if (!this.isSoleProprietor(bizTypeCode)) {
+			members = {
+				employees: this.saveEmployeesBody(businessModelFormValue),
+				nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(businessModelFormValue),
+				swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue),
+			};
+		}
 
-		controllingMembersData.membersWithoutSwl?.forEach((item: any) => {
-			nonSwlControllerMemberInfos.push({
-				bizContactId: item.bizContactId,
-				emailAddress: item.noEmailAddress ? null : item.emailAddress,
-				givenName: item.givenName,
-				middleName1: item.middleName1,
-				middleName2: item.middleName2,
-				phoneNumber: item.phoneNumber,
-				surname: item.surname,
-			});
-		});
-
-		if (!isBcBusinessAddress && controllingMembersData.attachments) {
+		if (controllingMembersData.attachments) {
 			controllingMembersData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
@@ -560,14 +548,6 @@ export abstract class BusinessApplicationHelper {
 				});
 			});
 		}
-
-		employeesData.employees?.forEach((item: any) => {
-			employees.push({
-				bizContactId: item.bizContactId,
-				contactId: item.contactId,
-				licenceId: item.licenceId,
-			});
-		});
 
 		const body = {
 			bizId,
@@ -588,9 +568,7 @@ export abstract class BusinessApplicationHelper {
 				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
 			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
 			//-----------------------------------
-			employees: [...employees],
-			nonSwlControllerMemberInfos: [...nonSwlControllerMemberInfos],
-			swlControllerMemberInfos: [...swlControllerMemberInfos],
+			members,
 			//-----------------------------------
 			categoryCodes: [...categoryCodes],
 			documentExpiredInfos: [...documentExpiredInfos],
@@ -647,5 +625,79 @@ export abstract class BusinessApplicationHelper {
 		});
 
 		return documents;
+	}
+
+	saveControllingMembersWithSwlBody(businessModelFormValue: any): null | Array<SwlContactInfo> {
+		const controllingMembersWithSwlArray = businessModelFormValue.controllingMembersData.membersWithSwl;
+
+		if (!controllingMembersWithSwlArray) {
+			return null;
+		}
+
+		const swlControllingMembers: null | Array<SwlContactInfo> = controllingMembersWithSwlArray.map(
+			(item: ControllingMemberContactInfo) => {
+				const contactInfo: SwlContactInfo = {
+					bizContactId: item.bizContactId,
+					contactId: item.contactId,
+					licenceId: item.licenceId,
+				};
+				return contactInfo;
+			}
+		);
+
+		console.debug('saveControllingMembersWithSwlBody', swlControllingMembers);
+		return swlControllingMembers;
+	}
+
+	saveControllingMembersWithoutSwlBody(businessModelFormValue: any): null | Array<NonSwlContactInfo> {
+		const controllingMembersWithoutSwlArray = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+
+		if (!controllingMembersWithoutSwlArray) {
+			return null;
+		}
+
+		const nonSwlControllingMembers: null | Array<NonSwlContactInfo> = controllingMembersWithoutSwlArray.map(
+			(item: ControllingMemberContactInfo) => {
+				const contactInfo: NonSwlContactInfo = {
+					bizContactId: item.bizContactId,
+					emailAddress: item.emailAddress,
+					givenName: item.givenName,
+					middleName1: item.middleName1,
+					middleName2: item.middleName2,
+					phoneNumber: item.phoneNumber,
+					surname: item.surname,
+				};
+				return contactInfo;
+			}
+		);
+
+		console.debug('saveControllingMembersWithoutSwlBody', nonSwlControllingMembers);
+		return nonSwlControllingMembers;
+	}
+
+	saveEmployeesBody(businessModelFormValue: any): null | Array<SwlContactInfo> {
+		const employeesArray = businessModelFormValue.employeesData.employees;
+
+		if (!employeesArray) {
+			return null;
+		}
+
+		const employees: null | Array<SwlContactInfo> = employeesArray.map((item: ControllingMemberContactInfo) => {
+			const contactInfo: SwlContactInfo = {
+				bizContactId: item.bizContactId,
+				contactId: item.contactId,
+				licenceId: item.licenceId,
+			};
+			return contactInfo;
+		});
+
+		console.debug('saveEmployeesBody', employees);
+		return employees;
+	}
+
+	isSoleProprietor(bizTypeCode: BizTypeCode): boolean {
+		return (
+			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
+		);
 	}
 }

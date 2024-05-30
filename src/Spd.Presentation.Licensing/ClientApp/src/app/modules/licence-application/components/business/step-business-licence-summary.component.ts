@@ -425,7 +425,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
-		console.log('onUpdateData', this.businessModelData);
 	}
 
 	get hasExpiredLicence(): string {

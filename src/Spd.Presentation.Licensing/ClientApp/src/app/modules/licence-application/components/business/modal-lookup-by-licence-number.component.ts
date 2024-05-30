@@ -294,13 +294,6 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.isFound = resp.isFound;
 		this.searchResult = resp.searchResult;
 
-		console.log('this.isSearchPerformed', this.isSearchPerformed);
-		console.log('this.isFound', this.isFound);
-		console.log('this.isFoundValid', this.isFoundValid);
-		console.log('this.messageInfo', this.messageInfo);
-		console.log('this.messageWarn', this.messageWarn);
-		console.log('this.messageError', this.messageError);
-
 		if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
 			this.isFoundValid = true;
 			this.handleValidExpiredLicence(resp.searchResult);

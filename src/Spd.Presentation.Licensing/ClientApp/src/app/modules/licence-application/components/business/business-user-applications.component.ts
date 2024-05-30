@@ -223,7 +223,7 @@ import { Observable, take, tap } from 'rxjs';
 										</div>
 										<div class="col-lg-5">
 											<div class="d-block text-muted mt-2 mt-md-0"></div>
-											<div>
+											<div *ngIf="isNotSoleProprietor">
 												<a
 													class="large"
 													tabindex="0"
@@ -407,6 +407,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	lostLicenceDaysText: string | null = null;
 
 	activeLicenceExist = false;
+
+	isNotSoleProprietor = true; // TODO  Only display if NOT sole proprietor
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
