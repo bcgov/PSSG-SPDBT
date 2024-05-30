@@ -67,7 +67,9 @@ namespace Spd.Resource.Repository.BizContact
             if (toAdd.Count > 0)
             {
                 account? biz = await _context.GetOrgById(cmd.BizId, ct);
+                if (biz == null) throw new ApiException(HttpStatusCode.BadRequest, $"account {cmd.BizId} does not exist.");
                 spd_application? app = await _context.GetApplicationById(cmd.AppId, ct);
+                if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
                 foreach (var item in toAdd)
                 {
                     spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(item);
