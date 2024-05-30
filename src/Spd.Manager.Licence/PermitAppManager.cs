@@ -75,7 +75,7 @@ internal class PermitAppManager :
         var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
-        decimal? cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -101,7 +101,7 @@ internal class PermitAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -139,8 +139,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -195,9 +194,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-
-        //return cost here.
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, (Guid)response.LicenceAppId, cancellationToken);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }

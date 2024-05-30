@@ -93,4 +93,15 @@ public class BizLicensingControllerTest
         Assert.IsType<List<LicenceAppDocumentResponse>>(result);
         mockMediator.Verify();
     }
+
+    [Fact]
+    public async void Post_SubmitBusinessLicenceApplication_Return_BizLicAppCommandResponse()
+    {
+        BizLicAppUpsertRequest request = new() { BizId = Guid.NewGuid() };
+
+        var result = await sut.SubmitBusinessLicenceApplication(request, CancellationToken.None);
+
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        mockMediator.Verify();
+    }
 }
