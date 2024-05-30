@@ -2,6 +2,7 @@ using AutoFixture;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.LicenceApplication;
 using Spd.Utilities.Dynamics;
 
@@ -52,5 +53,59 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
         spd_application app = _context.spd_applications.Where(a => a.spd_applicationid == resp.LicenceAppId).FirstOrDefault();
         Assert.Equal("100000000,100000001", app.spd_uploadeddocuments);
         Assert.NotNull(app.spd_portalmodifiedon);
+    }
+
+    [Fact]
+    public async Task CommitLicenceApplicationAsync_ForApplicant_Run_Correctly()
+    {
+        // Arrange
+        Guid appId = Guid.NewGuid();
+        Guid contactId = Guid.NewGuid();
+        spd_application app = new() { spd_applicationid = appId };
+        _context.AddTospd_applications(app);
+        contact contact = new() { contactid = contactId };
+        _context.AddTocontacts(contact);
+        _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+        await _context.SaveChangesAsync();
+
+        // Action
+        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
+
+        //Assert
+        Assert.NotNull(resp);
+        Assert.Equal(appId, resp.LicenceAppId);
+        Assert.Equal(contactId, resp.ContactId);
+
+        // Annihilate
+        _context.DeleteObject(app);
+        _context.DeleteObject(contact);
+        await _context.SaveChangesAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task CommitLicenceApplicationAsync_ForBusiness_Run_Correctly()
+    {
+        // Arrange
+        Guid appId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        spd_application app = new() { spd_applicationid = appId };
+        _context.AddTospd_applications(app);
+        account account = new() { accountid = bizId };
+        _context.AddToaccounts(account);
+        _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+        await _context.SaveChangesAsync();
+
+        // Action
+        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
+
+        //Assert
+        Assert.NotNull(resp);
+        Assert.Equal(appId, resp.LicenceAppId);
+        Assert.Equal(bizId, resp.ContactId);
+
+        // Annihilate
+        _context.DeleteObject(app);
+        _context.DeleteObject(account);
+        await _context.SaveChangesAsync(CancellationToken.None);
     }
 }
