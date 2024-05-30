@@ -27,6 +27,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
 	BehaviorSubject,
@@ -128,7 +129,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private domSanitizer: DomSanitizer
+		private domSanitizer: DomSanitizer,
+		private hotToastService: HotToastService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
@@ -344,7 +346,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Partial Save - Save the permit data as is.
 	 * @returns StrictHttpResponse<PermitAppCommandResponse>
 	 */
-	savePermitStepAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+	partialSavePermitStepAuthenticated(
+		isSaveAndExit?: boolean
+	): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
 
@@ -353,8 +357,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
-				const formValue = this.permitModelFormGroup.getRawValue();
-				if (!formValue.licenceAppId) {
+				this.hasValueChanged = false;
+
+				let msg = 'Permit information has been saved';
+				if (isSaveAndExit) {
+					msg =
+						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!permitModelFormValue.licenceAppId) {
 					this.permitModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})

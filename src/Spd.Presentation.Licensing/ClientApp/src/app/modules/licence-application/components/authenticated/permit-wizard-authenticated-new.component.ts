@@ -224,12 +224,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+			this.permitApplicationService.partialSavePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Permit information has been saved');
-
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
@@ -283,14 +279,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			return;
 		}
 
-		this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+		this.permitApplicationService.partialSavePermitStepAuthenticated(true).subscribe({
 			next: (_resp: any) => {
-				this.permitApplicationService.hasValueChanged = false;
-
-				this.hotToastService.success(
-					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
-				);
-
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {
@@ -304,12 +294,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onGoToReview() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+			this.permitApplicationService.partialSavePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Licence information has been saved');
-
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
 						this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -329,10 +315,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onChildNextStep() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+			this.permitApplicationService.partialSavePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();
 				},
 				error: (error: HttpErrorResponse) => {

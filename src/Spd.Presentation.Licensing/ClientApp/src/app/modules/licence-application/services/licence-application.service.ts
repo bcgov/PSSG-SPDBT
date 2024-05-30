@@ -26,6 +26,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
 	BehaviorSubject,
@@ -143,7 +144,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private domSanitizer: DomSanitizer
+		private domSanitizer: DomSanitizer,
+		private hotToastService: HotToastService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
@@ -416,7 +418,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	partialSaveLicenceStepAuthenticated(
+		isSaveAndExit?: boolean
+	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
@@ -425,8 +429,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				const formValue = this.licenceModelFormGroup.getRawValue();
-				if (!formValue.licenceAppId) {
+				this.hasValueChanged = false;
+
+				let msg = 'Licence information has been saved';
+				if (isSaveAndExit) {
+					msg =
+						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!licenceModelFormValue.licenceAppId) {
 					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})

@@ -183,7 +183,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Sole Proprietor',
 			subtitle: 'A sole proprietor must have a valid security worker licence',
-			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
+			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,
 		};

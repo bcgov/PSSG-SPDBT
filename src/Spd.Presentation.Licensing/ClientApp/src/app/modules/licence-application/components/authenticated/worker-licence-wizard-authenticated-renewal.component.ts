@@ -199,12 +199,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	onGoToReview() {
 		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.licenceApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Licence information has been saved');
-
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
 						this.stepper.selectedIndex = this.STEP_REVIEW;

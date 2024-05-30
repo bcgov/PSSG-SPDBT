@@ -108,6 +108,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -190,6 +191,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				}
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
 				break;
 		}
@@ -214,6 +216,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsControllingMembersComponent?.onGoToLastStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToLastStep();
 				break;
 		}
@@ -259,10 +262,21 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onGoToReview() {
-		setTimeout(() => {
-			// hack... does not navigate without the timeout
-			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-		}, 250);
+		if (this.businessApplicationService.isAutoSave()) {
+			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
+				next: (_resp: any) => {
+					setTimeout(() => {
+						// hack... does not navigate without the timeout
+						this.goToReviewStep();
+					}, 250);
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else {
+			this.goToReviewStep();
+		}
 	}
 
 	onChildNextStep() {
@@ -270,36 +284,18 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	private saveStep(stepper?: MatStepper): void {
-		console.log('saveStep isAutoSave', this.businessApplicationService.isAutoSave());
-
 		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.saveBusinessLicenceStep().subscribe({
+			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
 				next: (_resp: any) => {
-					this.businessApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Business Licence information has been saved');
-
 					if (stepper) {
 						if (stepper?.selected) stepper.selected.completed = true;
 						stepper.next();
 					} else {
 						this.goToChildNextStep();
 					}
-
-					// switch (stepper.selectedIndex) {
-					// 	case this.STEP_LICENCE_SELECTION:
-					// 		this.stepLicenceSelectionComponent?.onGoToFirstStep();
-					// 		break;
-					// 	case this.STEP_IDENTIFICATION:
-					// 		this.stepIdentificationComponent?.onGoToFirstStep();
-					// 		break;
-					// }
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					// if (error.status == 403) {
-					// 	this.handleDuplicateLicence();
-					// }
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -337,23 +333,30 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			return;
 		}
 
-		this.businessApplicationService.saveBusinessLicenceStep().subscribe({
+		this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
 			next: (_resp: any) => {
-				this.businessApplicationService.hasValueChanged = false;
-
-				this.hotToastService.success(
-					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
-				);
-
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 			},
 			error: (error: HttpErrorResponse) => {
-				// only 403s will be here as an error
-				// if (error.status == 403) {
-				// 	this.handleDuplicateLicence();
-				// }
+				this.handlePartialSaveError(error);
 			},
 		});
+	}
+
+	private goToReviewStep(): void {
+		if (this.isBusinessLicenceSoleProprietor) {
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR;
+		} else {
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		}
+	}
+
+	private handlePartialSaveError(error: HttpErrorResponse): void {
+		console.debug('handlePartialSaveError', error);
+		// only 403s will be here as an error // TODO business licence has duplicates?
+		// if (error.status == 403) {
+		// 	this.handleDuplicateLicence();
+		// }
 	}
 
 	private updateCompleteStatus(): void {
