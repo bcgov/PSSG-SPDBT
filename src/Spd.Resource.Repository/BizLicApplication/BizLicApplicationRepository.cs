@@ -79,7 +79,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             .FirstOrDefault();
         if (account != null)
         {
-            _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+            _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), account);
         }
     }
 
