@@ -28,7 +28,7 @@ internal class BizLicAppMananger :
 
     public BizLicAppMananger(
         ILicenceRepository licenceRepository,
-        ILicenceApplicationRepository licenceAppRepository,
+        IPersonLicApplicationRepository personLicAppRepository,
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
@@ -36,7 +36,7 @@ internal class BizLicAppMananger :
         ITransientFileStorageService transientFileStorageService,
         IBizContactRepository bizContactRepository,
         IBizLicApplicationRepository bizApplicationRepository)
-    : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
+    : base(mapper, documentUrlRepository, feeRepository, licenceRepository, personLicAppRepository, mainFileStorageService, transientFileStorageService)
     {
         _bizLicApplicationRepository = bizApplicationRepository;
         _bizContactRepository = bizContactRepository;

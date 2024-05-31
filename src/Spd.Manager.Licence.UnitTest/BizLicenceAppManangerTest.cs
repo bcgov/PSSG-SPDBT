@@ -15,7 +15,7 @@ public class BizLicenceAppManangerTest
 {
     private readonly IFixture fixture;
     private Mock<ILicenceRepository> mockLicRepo = new();
-    private Mock<ILicenceApplicationRepository> mockLicAppRepo = new();
+    private Mock<IPersonLicApplicationRepository> mockLicAppRepo = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<ILicenceFeeRepository> mockLicFeeRepo = new();
     private Mock<IMainFileStorageService> mockMainFileService = new();
