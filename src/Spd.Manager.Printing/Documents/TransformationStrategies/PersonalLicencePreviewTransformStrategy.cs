@@ -18,7 +18,7 @@ using System.Text.Json.Serialization;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies;
 
-internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationRepository licAppRepository,
+internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepository personLicAppRepository,
     ILicenceRepository licRepository,
     IServiceTypeRepository serviceTypeRepository,
     IDocumentRepository documentRepository,
@@ -40,7 +40,7 @@ internal class PersonalLicencePreviewTransformStrategy(ILicenceApplicationReposi
                 new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), cancellationToken);
         preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
 
-        LicenceApplicationResp app = await licAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);
+        LicenceApplicationResp app = await personLicAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);
         if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
             preview.LicenceCategories = await GetCategoryNamesAsync(app.CategoryCodes, cancellationToken);
         mapper.Map(app, preview);
