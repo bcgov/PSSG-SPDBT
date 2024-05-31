@@ -28,7 +28,7 @@ namespace Spd.Manager.Licence
         private readonly IMapper _mapper;
         private readonly ILogger<IApplicantProfileManager> _logger;
         private readonly IDocumentRepository _documentRepository;
-        private readonly ILicenceApplicationRepository _licAppRepository;
+        private readonly IPersonLicApplicationRepository _personLicAppRepository;
 
         public ApplicantProfileManager(
             IIdentityRepository idRepository,
@@ -37,7 +37,7 @@ namespace Spd.Manager.Licence
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
             IDocumentRepository documentRepository,
-            ILicenceApplicationRepository licAppRepository)
+            IPersonLicApplicationRepository personLicAppRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
@@ -45,7 +45,7 @@ namespace Spd.Manager.Licence
             _contactRepository = contactRepository;
             _documentRepository = documentRepository;
             _aliasRepository = aliasRepository;
-            _licAppRepository = licAppRepository;
+            _personLicAppRepository = personLicAppRepository;
         }
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
@@ -149,7 +149,7 @@ namespace Spd.Manager.Licence
                     ApplicationPortalStatusEnum.VerifyIdentity
                 }
             );
-            var response = await _licAppRepository.QueryAsync(q, ct);
+            var response = await _personLicAppRepository.QueryAsync(q, ct);
             if (response.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "There is some application in progress, you cannot update your profile.");
 
