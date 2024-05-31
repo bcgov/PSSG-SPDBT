@@ -11,7 +11,7 @@ namespace Spd.Manager.Licence.UnitTest;
 public class LicenceAppDocumentManagerTest
 {
     private readonly IFixture fixture;
-    private Mock<ILicenceApplicationRepository> mockLicAppRepo = new();
+    private Mock<IPersonLicApplicationRepository> mockPersonLicAppRepo = new();
     private Mock<IMapper> mockMapper = new();
     private Mock<ITempFileStorageService> mockTempFileStorageService = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
@@ -26,7 +26,7 @@ public class LicenceAppDocumentManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        sut = new LicenceAppDocumentManager(mockLicAppRepo.Object,
+        sut = new LicenceAppDocumentManager(mockPersonLicAppRepo.Object,
             mockBizLicApplicationRepository.Object,
             mockMapper.Object,
             mockTempFileStorageService.Object,
@@ -46,7 +46,7 @@ public class LicenceAppDocumentManagerTest
         LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
         CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
 
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+        mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationResp());
         mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
             .ReturnsAsync(new DocumentResp());
@@ -74,7 +74,7 @@ public class LicenceAppDocumentManagerTest
         LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding);
         CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
 
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+        mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationResp());
         mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
             .ReturnsAsync(new DocumentResp());
@@ -102,7 +102,7 @@ public class LicenceAppDocumentManagerTest
         LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance);
         CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
 
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+        mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationResp());
         mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
             .ReturnsAsync(new DocumentResp());
@@ -130,7 +130,7 @@ public class LicenceAppDocumentManagerTest
         LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.ArmourCarGuardRegistrar);
         CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
 
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+        mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationResp());
         mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
             .ReturnsAsync(new DocumentResp());
@@ -158,7 +158,7 @@ public class LicenceAppDocumentManagerTest
         LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizSecurityDogCertificate);
         CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
 
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+        mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationResp());
         mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
             .ReturnsAsync(new DocumentResp());
@@ -186,7 +186,7 @@ public class LicenceAppDocumentManagerTest
         LicenceAppDocumentUploadRequest request = new(Documents: new List<IFormFile> { document }, LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizBCReport);
         CreateDocumentInTransientStoreCommand cmd = new(request, null, Guid.NewGuid());
 
-        mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
+        mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(cmd.AppId)), CancellationToken.None))
             .ReturnsAsync(new LicenceApplicationResp());
         mockDocRepo.Setup(m => m.ManageAsync(It.Is<CreateDocumentCmd>(m => m.ApplicantId == cmd.AppId), CancellationToken.None))
             .ReturnsAsync(new DocumentResp());

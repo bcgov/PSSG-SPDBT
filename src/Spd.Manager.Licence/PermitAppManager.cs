@@ -30,7 +30,7 @@ internal class PermitAppManager :
 
     public PermitAppManager(
         ILicenceRepository licenceRepository,
-        ILicenceApplicationRepository licenceAppRepository,
+        IPersonLicApplicationRepository personLicAppRepository,
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
@@ -38,7 +38,7 @@ internal class PermitAppManager :
         ITaskRepository taskRepository,
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService)
-        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, licenceAppRepository, mainFileStorageService, transientFileStorageService)
+        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, personLicAppRepository, mainFileStorageService, transientFileStorageService)
     {
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
@@ -60,7 +60,7 @@ internal class PermitAppManager :
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.PermitUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.PermitUpsertRequest.DocumentInfos);
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        var response = await _personLicAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
         if (cmd.PermitUpsertRequest.LicenceAppId == null)
             cmd.PermitUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
@@ -85,7 +85,7 @@ internal class PermitAppManager :
 
     public async Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
     {
-        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
+        var response = await _personLicAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
         PermitLicenceAppResponse result = _mapper.Map<PermitLicenceAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();  // Exclude licence document type code that are not defined in the related dictionary
@@ -99,7 +99,7 @@ internal class PermitAppManager :
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -119,7 +119,7 @@ internal class PermitAppManager :
             throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         //add photo file copying here.
         if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
@@ -172,7 +172,7 @@ internal class PermitAppManager :
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
@@ -221,7 +221,7 @@ internal class PermitAppManager :
         {
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
-            createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+            createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
             await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
         }
         else
