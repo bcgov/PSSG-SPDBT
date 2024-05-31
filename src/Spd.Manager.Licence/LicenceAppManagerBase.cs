@@ -17,7 +17,7 @@ internal abstract class LicenceAppManagerBase
     protected readonly IDocumentRepository _documentRepository;
     protected readonly ILicenceFeeRepository _feeRepository;
     protected readonly ILicenceRepository _licenceRepository;
-    protected readonly ILicenceApplicationRepository _licenceAppRepository;
+    protected readonly IPersonLicApplicationRepository _personLicAppRepository;
     protected readonly IMainFileStorageService _mainFileService;
     protected readonly ITransientFileStorageService _transientFileService;
 
@@ -25,7 +25,7 @@ internal abstract class LicenceAppManagerBase
         IDocumentRepository documentRepository,
         ILicenceFeeRepository feeRepository,
         ILicenceRepository licenceRepository,
-        ILicenceApplicationRepository licenceAppRepository,
+        IPersonLicApplicationRepository personLicAppRepository,
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService)
     {
@@ -33,7 +33,7 @@ internal abstract class LicenceAppManagerBase
         _documentRepository = documentRepository;
         _feeRepository = feeRepository;
         _licenceRepository = licenceRepository;
-        _licenceAppRepository = licenceAppRepository;
+        _personLicAppRepository = personLicAppRepository;
         _mainFileService = mainFileService;
         _transientFileService = transientFileService;
     }
@@ -50,9 +50,9 @@ internal abstract class LicenceAppManagerBase
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+            await _personLicAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
         else
-            await _licenceAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+            await _personLicAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
         return price?.LicenceFees.FirstOrDefault()?.Amount ?? 0;
     }
 
@@ -182,7 +182,7 @@ internal abstract class LicenceAppManagerBase
                 ApplicationPortalStatusEnum.VerifyIdentity,
             }
         );
-        var response = await _licenceAppRepository.QueryAsync(q, ct);
+        var response = await _personLicAppRepository.QueryAsync(q, ct);
         if (response.Any())
         {
             if (existingLicAppId != null)
