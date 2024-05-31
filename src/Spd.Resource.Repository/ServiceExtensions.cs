@@ -45,7 +45,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IDocumentTemplateRepository, DocumentTemplateRepository>();
             configurationServices.Services.AddTransient<IPortalUserRepository, PortalUserRepository>();
             configurationServices.Services.AddTransient<ILicenceRepository, LicenceRepository>();
-            configurationServices.Services.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
+            configurationServices.Services.AddTransient<IPersonLicApplicationRepository, PersonLicApplicationRepository>();
             configurationServices.Services.AddTransient<ILicenceFeeRepository, LicenceFeeRepository>();
             configurationServices.Services.AddTransient<IContactRepository, ContactRepository>();
             configurationServices.Services.AddTransient<ITaskRepository, TaskRepository>();
