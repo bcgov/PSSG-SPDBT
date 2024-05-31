@@ -3,7 +3,7 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
 using Spd.Resource.Repository.WorkerLicenceCategory;
 using Spd.Utilities.FileStorage;
