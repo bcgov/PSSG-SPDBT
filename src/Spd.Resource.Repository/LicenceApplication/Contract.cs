@@ -2,7 +2,7 @@ using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 
 namespace Spd.Resource.Repository.LicenceApplication;
-public partial interface ILicenceApplicationRepository
+public partial interface IPersonLicApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
