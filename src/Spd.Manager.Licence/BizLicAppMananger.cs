@@ -4,7 +4,7 @@ using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;

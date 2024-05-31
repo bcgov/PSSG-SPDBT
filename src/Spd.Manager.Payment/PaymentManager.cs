@@ -13,7 +13,7 @@ using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
 using Spd.Resource.Repository.Invoice;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.ServiceTypes;

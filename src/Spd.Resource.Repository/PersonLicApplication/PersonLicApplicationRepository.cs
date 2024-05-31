@@ -6,7 +6,7 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
-namespace Spd.Resource.Repository.LicenceApplication;
+namespace Spd.Resource.Repository.PersonLicApplication;
 internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 {
     private readonly DynamicsContext _context;

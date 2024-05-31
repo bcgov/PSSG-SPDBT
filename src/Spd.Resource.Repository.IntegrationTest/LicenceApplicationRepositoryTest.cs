@@ -3,15 +3,14 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
 public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSetup>
 {
-    private readonly ILicenceApplicationRepository _licAppRepository;
+    private readonly IPersonLicApplicationRepository _personLicAppRepository;
     private DynamicsContext _context;
     private readonly IFixture fixture;
 
@@ -22,7 +21,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
 
-        _licAppRepository = testSetup.ServiceProvider.GetRequiredService<ILicenceApplicationRepository>();
+        _personLicAppRepository = testSetup.ServiceProvider.GetRequiredService<IPersonLicApplicationRepository>();
         _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().CreateChangeOverwrite();
     }
 
@@ -47,7 +46,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
             .Create();
 
         // Action
-        LicenceApplicationCmdResp? resp = await _licAppRepository.CreateLicenceApplicationAsync(cmd, CancellationToken.None);
+        LicenceApplicationCmdResp? resp = await _personLicAppRepository.CreateLicenceApplicationAsync(cmd, CancellationToken.None);
 
         // Assert
         Assert.NotNull(resp);
@@ -70,7 +69,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
         await _context.SaveChangesAsync();
 
         // Action
-        LicenceApplicationResp resp = await _licAppRepository.GetLicenceApplicationAsync(licenceApplicationId, CancellationToken.None);
+        LicenceApplicationResp resp = await _personLicAppRepository.GetLicenceApplicationAsync(licenceApplicationId, CancellationToken.None);
 
         // Assert
         Assert.NotNull(resp);
@@ -84,7 +83,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
     public async Task GetLicenceApplicationAsync_ApplicationNotFound_Throw_Exception()
     {
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _licAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _personLicAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
     }
 
     [Fact]
@@ -101,7 +100,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
         await _context.SaveChangesAsync();
 
         // Action
-        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
+        LicenceApplicationCmdResp? resp = await _personLicAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
 
         //Assert
         Assert.NotNull(resp);
@@ -128,7 +127,7 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
         await _context.SaveChangesAsync();
 
         // Action
-        LicenceApplicationCmdResp? resp = await _licAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
+        LicenceApplicationCmdResp? resp = await _personLicAppRepository.CommitLicenceApplicationAsync(appId, ApplicationStatusEnum.Submitted, CancellationToken.None);
 
         //Assert
         Assert.NotNull(resp);
