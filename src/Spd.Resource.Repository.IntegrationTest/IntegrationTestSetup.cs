@@ -50,7 +50,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IContactRepository, ContactRepository>();
         serviceCollection.AddTransient<IAliasRepository, AliasRepository>();
         serviceCollection.AddTransient<IBizRepository, BizRepository>();
-        serviceCollection.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
+        serviceCollection.AddTransient<IPersonLicApplicationRepository, PersonLicApplicationRepository>();
         serviceCollection.AddTransient<IOrgRepository, OrgRepository>();
         serviceCollection.AddTransient<IPortalUserRepository, PortalUserRepository>();
         serviceCollection.AddTransient<IOptionSetRepository, OptionSetRepository>();
