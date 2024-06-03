@@ -130,6 +130,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
         else
         {
+            // * This just doesn't work
             //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), app.spd_CurrentExpiredLicenceId);
             //_context.UpdateObject(app);
 
@@ -137,8 +138,9 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
                 .Where(l => l.spd_licenceid == app._spd_currentexpiredlicenceid_value)
                 .FirstOrDefault();
 
-            _context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
-            _context.UpdateObject(licence);
+            // * This throws error ("AddLink and DeleteLink methods only work when the sourceProperty is a collection.")
+            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
+            //_context.UpdateObject(licence);
             await _context.SaveChangesAsync(ct);
 
             //SharedRepositoryFuncs.DeleteExpiredLicenceLink(_context, app);
