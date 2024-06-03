@@ -23,7 +23,25 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.LicenceTermCode).NotEmpty();
 
         RuleFor(r => r.CategoryCodes)
-            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmInstaller) && r.Contains(WorkerCategoryTypeCode.SecurityAlarmSales))
+            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmSales) && 
+                r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) && 
+                r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse) && 
+                r.Contains(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller) && 
+                r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmInstaller));
+
+        RuleFor(r => r.CategoryCodes)
+            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
+                r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
+            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmResponse));
+
+        RuleFor(r => r.CategoryCodes)
+            .Must(r => r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
+            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.Locksmith));
+
+        RuleFor(r => r.CategoryCodes)
+            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
+                r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
+            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityGuard));
     }
 }
