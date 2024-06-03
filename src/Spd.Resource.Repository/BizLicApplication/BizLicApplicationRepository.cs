@@ -42,6 +42,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId)
                 .FirstOrDefault();
@@ -59,6 +60,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+        else
+            _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
         LinkOrganization(cmd.ApplicantId, app);
         LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         await _context.SaveChangesAsync();
