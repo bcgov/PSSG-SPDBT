@@ -128,25 +128,8 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
         else
-        {
-            // * This just doesn't work
-            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), app.spd_CurrentExpiredLicenceId);
-            // I also tried
-            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
-            //_context.UpdateObject(app);
+            _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
-            spd_licence? licence = _context.spd_licences
-                .Where(l => l.spd_licenceid == app._spd_currentexpiredlicenceid_value)
-                .FirstOrDefault();
-
-            // * This throws error ("AddLink and DeleteLink methods only work when the sourceProperty is a collection.")
-            //_context.DeleteLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
-            //_context.UpdateObject(licence);
-            await _context.SaveChangesAsync(ct);
-
-            //SharedRepositoryFuncs.DeleteExpiredLicenceLink(_context, app);
-        }
-        
         await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
