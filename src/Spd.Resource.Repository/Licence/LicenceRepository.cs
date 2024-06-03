@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -15,17 +16,25 @@ internal class LicenceRepository : ILicenceRepository
         _mapper = mapper;
     }
 
-    public async Task<LicenceResp> GetAsync(Guid licenceId, CancellationToken ct)
+    public async Task<LicenceResp?> GetAsync(Guid licenceId, CancellationToken ct)
     {
-        spd_licence? licence = await _context.spd_licences
-            .Expand(i => i.spd_LicenceHolder_contact)
-            .Expand(i => i.spd_LicenceHolder_account)
-            .Expand(i => i.spd_CaseId)
-            .Where(l => l.spd_licenceid == licenceId)
-            .FirstOrDefaultAsync(ct);
-
-        if (licence == null)
-            throw new ArgumentException($"cannot find the licence with licenceId : {licenceId}");
+        spd_licence? licence;
+        try
+        {
+            licence = await _context.spd_licences
+                .Expand(i => i.spd_LicenceHolder_contact)
+                .Expand(i => i.spd_LicenceHolder_account)
+                .Expand(i => i.spd_CaseId)
+                .Where(l => l.spd_licenceid == licenceId)
+                .FirstOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                return null;
+            else
+                throw;
+        }
 
         return _mapper.Map<LicenceResp>(licence);
     }
