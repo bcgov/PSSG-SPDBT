@@ -107,6 +107,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
@@ -127,6 +128,22 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+        else
+        {
+            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), app.spd_CurrentExpiredLicenceId);
+            //_context.UpdateObject(app);
+
+            spd_licence? licence = _context.spd_licences
+                .Where(l => l.spd_licenceid == app._spd_currentexpiredlicenceid_value)
+                .FirstOrDefault();
+
+            _context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
+            _context.UpdateObject(licence);
+            await _context.SaveChangesAsync(ct);
+
+            //SharedRepositoryFuncs.DeleteExpiredLicenceLink(_context, app);
+        }
+        
         await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
