@@ -5,6 +5,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
 {
     public BizLicAppSubmitRequestValidator()
     {
+        // General validations
         RuleFor(r => r.BizId).NotEqual(Guid.Empty);
         RuleFor(r => r.HasExpiredLicence).NotEmpty();
         RuleFor(r => r.ExpiredLicenceId)
@@ -22,6 +23,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.BizTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode).NotEmpty();
 
+        // Categories according to selected licence
         RuleFor(r => r.CategoryCodes)
             .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmSales) && 
                 r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) && 
