@@ -38,9 +38,11 @@ export abstract class CommonApplicationHelper {
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceNumber: new FormControl(),
-			expiredLicenceId: new FormControl(),
-			expiryDate: new FormControl(),
+			expiredLicenceId: new FormControl(''),
+			expiredLicenceHolderName: new FormControl(''),
+			expiredLicenceNumber: new FormControl(''),
+			expiredLicenceExpiryDate: new FormControl(''),
+			expiredLicenceStatusCode: new FormControl(''),
 			captchaFormGroup: new FormGroup(
 				{
 					displayCaptcha: new FormControl(false),
@@ -58,16 +60,8 @@ export abstract class CommonApplicationHelper {
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 			],

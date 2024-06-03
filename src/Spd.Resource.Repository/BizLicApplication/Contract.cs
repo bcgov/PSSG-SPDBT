@@ -1,5 +1,5 @@
 ﻿using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.BizLicApplication;
 public partial interface IBizLicApplicationRepository
