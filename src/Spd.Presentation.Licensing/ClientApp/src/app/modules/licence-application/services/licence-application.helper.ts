@@ -1024,6 +1024,17 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 				? criminalHistoryData.criminalChargeDescription
 				: '';
 
+		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		let expiredLicenceNumber: string | null = null;
+		let expiredLicenceId: string | null = null;
+		let expiryDate: string | null = null;
+
+		if (hasExpiredLicence) {
+			expiredLicenceNumber = expiredLicenceData.expiredLicenceNumber;
+			expiredLicenceId = expiredLicenceData.expiredLicenceId;
+			expiryDate = expiredLicenceExpiryDate;
+		}
+
 		const body = {
 			licenceAppId,
 			originalApplicationId,
@@ -1048,12 +1059,10 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			...contactInformationData,
 			//-----------------------------------
-			hasExpiredLicence: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes,
-			expiredLicenceNumber:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
-			expiredLicenceId:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
+			hasExpiredLicence,
+			expiredLicenceNumber,
+			expiredLicenceId,
+			expiryDate,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------
