@@ -31,19 +31,36 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
                 r.Contains(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller) && 
                 r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmInstaller));
-
         RuleFor(r => r.CategoryCodes)
             .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
                 r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmResponse));
-
         RuleFor(r => r.CategoryCodes)
             .Must(r => r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.Locksmith));
-
         RuleFor(r => r.CategoryCodes)
             .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
                 r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityGuard));
+        
+        // Documents required for branding
+        RuleFor(r => r)
+            .Must(r => r.DocumentInfos != null && 
+                r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) &&
+                r.DocumentInfos.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
+            .When(r => r.NoBranding == false)
+            .WithMessage("Missing business branding document.");
+        RuleFor(r => r)
+            .Must(r => r.DocumentInfos != null &&
+                r.DocumentInfos.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
+            .When(r => r.NoBranding == false)
+            .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
+
+        // Document required for business insurance
+        RuleFor(r => r)
+            .Must(r => r.DocumentInfos != null &&
+                r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+            .WithMessage("Missing business insurance document.");
+
     }
 }
