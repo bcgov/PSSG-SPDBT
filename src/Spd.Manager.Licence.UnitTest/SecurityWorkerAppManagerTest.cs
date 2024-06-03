@@ -6,7 +6,7 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Tests.Fixtures;
@@ -20,7 +20,7 @@ namespace Spd.Manager.Licence.UnitTest
         private readonly IFixture fixture;
         private WorkerLicenceFixture workerLicenceFixture;
         private Mock<ILicenceRepository> mockLicRepo = new();
-        private Mock<ILicenceApplicationRepository> mockLicAppRepo = new();
+        private Mock<IPersonLicApplicationRepository> mockPersonLicAppRepo = new();
         private Mock<IDocumentRepository> mockDocRepo = new();
         private Mock<ITaskRepository> mockTaskAppRepo = new();
         private Mock<ILicenceFeeRepository> mockLicFeeRepo = new();
@@ -38,7 +38,7 @@ namespace Spd.Manager.Licence.UnitTest
             workerLicenceFixture = new WorkerLicenceFixture();
 
             sut = new SecurityWorkerAppManager(mockLicRepo.Object,
-                mockLicAppRepo.Object,
+                mockPersonLicAppRepo.Object,
                 mockMapper.Object,
                 mockDocRepo.Object,
                 mockTaskAppRepo.Object,
@@ -55,7 +55,7 @@ namespace Spd.Manager.Licence.UnitTest
             //have licAppId in the upsert request and there is duplicated same type active application.
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
-            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                 .ReturnsAsync(new List<LicenceAppListResp> {
                     new() { LicenceAppId = licAppId },
                     new() { LicenceAppId = Guid.NewGuid() } });
@@ -80,14 +80,14 @@ namespace Spd.Manager.Licence.UnitTest
             //no duplicates; 
             Guid applicantId = Guid.NewGuid();
             Guid licAppId = Guid.NewGuid();
-            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                 .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
             mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None)) //no dup lic
                 .ReturnsAsync(new LicenceListResp()
                 {
                     Items = new List<LicenceResp> { }
                 });
-            mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppUpsertRequest>()))
                 .Returns(new SaveLicenceApplicationCmd());
@@ -128,7 +128,7 @@ namespace Spd.Manager.Licence.UnitTest
             //have licAppId in the upsert request and there is duplicated same type active licence.
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
-            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                 .ReturnsAsync(new List<LicenceAppListResp> {
                     new() { LicenceAppId = licAppId }
                 });
@@ -162,14 +162,14 @@ namespace Spd.Manager.Licence.UnitTest
             //no duplicates; no licAppId: means create a brand new application.
             Guid applicantId = Guid.NewGuid();
             Guid licAppId = Guid.NewGuid();
-            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                 .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
             mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None)) //no dup lic
                 .ReturnsAsync(new LicenceListResp()
                 {
                     Items = new List<LicenceResp> { }
                 });
-            mockLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(a => a.SaveLicenceApplicationAsync(It.IsAny<SaveLicenceApplicationCmd>(), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockMapper.Setup(m => m.Map<SaveLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppUpsertRequest>()))
                 .Returns(new SaveLicenceApplicationCmd());
@@ -211,7 +211,7 @@ namespace Spd.Manager.Licence.UnitTest
                 });
             mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new DocumentListResp());
@@ -297,7 +297,7 @@ namespace Spd.Manager.Licence.UnitTest
                 });
             mockMapper.Setup(m => m.Map<CreateLicenceApplicationCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
 
             var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
@@ -331,7 +331,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
@@ -372,7 +372,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
@@ -413,7 +413,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .Returns(new CreateLicenceApplicationCmd() { OriginalApplicationId = licAppId });
             mockMapper.Setup(m => m.Map<CreateDocumentCmd>(It.IsAny<LicAppFileInfo>()))
                 .Returns(new CreateDocumentCmd());
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
@@ -507,12 +507,12 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .With(r => r.LicenceAppId, licAppId)
                 .Create();
-            mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
                 .ReturnsAsync(originalApp);
 
             mockTaskAppRepo.Setup(m => m.ManageAsync(It.IsAny<CreateTaskCmd>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TaskResp());
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new UpdateContactCmd());
@@ -560,12 +560,12 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .With(r => r.LicenceAppId, licAppId)
                 .Create();
-            mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
                 .ReturnsAsync(originalApp);
 
             mockTaskAppRepo.Setup(m => m.ManageAsync(It.IsAny<CreateTaskCmd>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TaskResp());
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new UpdateContactCmd());
@@ -612,12 +612,12 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .With(r => r.LicenceAppId, licAppId)
                 .Create();
-            mockLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
+            mockPersonLicAppRepo.Setup(m => m.GetLicenceApplicationAsync(It.Is<Guid>(g => g.Equals(licAppId)), CancellationToken.None))
                 .ReturnsAsync(originalApp);
 
             mockTaskAppRepo.Setup(m => m.ManageAsync(It.IsAny<CreateTaskCmd>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TaskResp());
-            mockLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
+            mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockMapper.Setup(m => m.Map<UpdateContactCmd>(It.IsAny<WorkerLicenceAppSubmitRequest>()))
                 .Returns(new UpdateContactCmd());

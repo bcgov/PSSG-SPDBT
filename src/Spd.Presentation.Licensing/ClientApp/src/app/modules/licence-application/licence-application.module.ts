@@ -98,7 +98,7 @@ import { CommonControllingMembersComponent } from './components/business/common-
 import { CommonEmployeesComponent } from './components/business/common-employees.component';
 import { ModalBcBranchEditComponent } from './components/business/modal-bc-branch-edit.component';
 import { ModalBusinessManagerEditComponent } from './components/business/modal-business-manager-edit.component';
-import { ModalLookupSwlComponent } from './components/business/modal-lookup-swl.component';
+import { ModalLookupByLicenceNumberComponent } from './components/business/modal-lookup-by-licence-number.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/business/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/business/step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceCategoryComponent } from './components/business/step-business-licence-category.component';
@@ -144,7 +144,6 @@ import { CommonBusinessAddressComponent } from './components/shared/step-compone
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
-import { CommonExpiredLicenceAnonymousComponent } from './components/shared/step-components/common-expired-licence-anonymous.component';
 import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
@@ -232,7 +231,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonControllingMembersComponent,
 		CommonEmployeesComponent,
 		CommonCriminalHistoryComponent,
-		CommonExpiredLicenceAnonymousComponent,
 		CommonExpiredLicenceComponent,
 		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,
@@ -276,7 +274,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
-		ModalLookupSwlComponent,
+		ModalLookupByLicenceNumberComponent,
 		ModalMemberWithoutSwlEditComponent,
 		PermitApplicationBaseAnonymousComponent,
 		PermitUpdateReceivedSuccessComponent,

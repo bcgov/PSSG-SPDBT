@@ -1,19 +1,18 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
-namespace Spd.Resource.Repository.LicenceApplication;
-internal class LicenceApplicationRepository : ILicenceApplicationRepository
+namespace Spd.Resource.Repository.PersonLicApplication;
+internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
 
-    public LicenceApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper)
+    public PersonLicApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper)
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
@@ -107,7 +106,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
@@ -128,26 +126,6 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
-        else
-        {
-            // * This just doesn't work
-            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), app.spd_CurrentExpiredLicenceId);
-            // I also tried
-            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
-            //_context.UpdateObject(app);
-
-            spd_licence? licence = _context.spd_licences
-                .Where(l => l.spd_licenceid == app._spd_currentexpiredlicenceid_value)
-                .FirstOrDefault();
-
-            // * This throws error ("AddLink and DeleteLink methods only work when the sourceProperty is a collection.")
-            //_context.DeleteLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
-            //_context.UpdateObject(licence);
-            await _context.SaveChangesAsync(ct);
-
-            //SharedRepositoryFuncs.DeleteExpiredLicenceLink(_context, app);
-        }
-        
         await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
@@ -156,26 +134,16 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
-    public async Task<LicenceApplicationResp?> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
+    public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
-        spd_application? app;
-        try
-        {
-            app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
-                .Expand(a => a.spd_ApplicantId_contact)
-                .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_CurrentExpiredLicenceId)
-                .Where(a => a.spd_applicationid == licenceApplicationId)
-                .SingleOrDefaultAsync(ct);
-        }
-        catch (DataServiceQueryException ex)
-        {
-            if (ex.Response.StatusCode == 404)
-                return null;
-            else
-                throw;
-        }
-        
+        var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_ApplicantId_contact)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Where(a => a.spd_applicationid == licenceApplicationId)
+            .SingleOrDefaultAsync(ct);
+        if (app == null)
+            throw new ArgumentException("invalid app id");
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
 
         if (app.spd_ApplicantId_contact?.contactid != null)

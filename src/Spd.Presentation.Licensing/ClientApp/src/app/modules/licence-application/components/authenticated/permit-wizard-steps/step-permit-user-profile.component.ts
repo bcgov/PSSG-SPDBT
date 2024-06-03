@@ -117,8 +117,8 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	) {
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
-		this.applicationTypeCode = state && state['applicationTypeCode'];
+		this.workerLicenceTypeCode = state ? state['workerLicenceTypeCode'] : null;
+		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
