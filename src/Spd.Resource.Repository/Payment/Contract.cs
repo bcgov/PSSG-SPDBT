@@ -1,4 +1,4 @@
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.Payment
 {
