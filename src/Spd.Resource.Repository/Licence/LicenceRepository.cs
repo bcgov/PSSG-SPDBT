@@ -9,6 +9,7 @@ internal class LicenceRepository : ILicenceRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
+
     public LicenceRepository(IDynamicsContextFactory ctx,
         IMapper mapper)
     {
@@ -72,7 +73,7 @@ internal class LicenceRepository : ILicenceRepository
         }
         if (qry.Type != null)
         {
-            Guid? serviceTypeId = _context.LookupServiceType(qry.Type.ToString()).spd_servicetypeid;
+            Guid? serviceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(qry.Type.ToString());
             lics = lics.Where(l => l._spd_licencetype_value == serviceTypeId);
         }
         if (qry.IsExpired != null)

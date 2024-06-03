@@ -156,7 +156,7 @@ namespace Spd.Resource.Repository.Biz
 
             foreach (ServiceTypeEnum serviceType in createBizCmd.ServiceTypes)
             {
-                spd_servicetype? st = _context.LookupServiceType(serviceType.ToString());
+                spd_servicetype? st = await _dynamicsLookup.LookupServiceType(_context, serviceType.ToString());
                 _context.AddLink(account, nameof(account.spd_account_spd_servicetype), st);
             }
 
@@ -167,7 +167,7 @@ namespace Spd.Resource.Repository.Biz
 
         private async Task<BizResult?> AddBizServiceTypeAsync(AddBizServiceTypeCmd addBizServiceTypeCmd, CancellationToken ct)
         {
-            spd_servicetype? st = _context.LookupServiceType(addBizServiceTypeCmd.ServiceTypeEnum.ToString());
+            spd_servicetype? st = await _dynamicsLookup.LookupServiceType(_context, addBizServiceTypeCmd.ServiceTypeEnum.ToString());
             IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
