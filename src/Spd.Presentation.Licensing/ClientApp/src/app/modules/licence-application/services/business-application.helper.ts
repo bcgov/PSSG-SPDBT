@@ -427,12 +427,12 @@ export abstract class BusinessApplicationHelper {
 			});
 		}
 
-		// liabilityData.attachments?.forEach((doc: any) => {
-		// 	documentInfos.push({
-		// 		documentUrlId: doc.documentUrlId,
-		// 		licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
-		// 	});
-		// });
+		liabilityData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+			});
+		});
 
 		let applicantContactInfo: ContactInfo | undefined = undefined;
 		const applicantIsBizManager = businessManagerData.isBusinessManager;

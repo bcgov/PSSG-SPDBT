@@ -413,6 +413,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
+	licenceAppId = '404a6472-faa0-4206-96b2-d9aaf5bc0694'; // TODO Remove
+
 	activeLicences: Array<UserLicenceResponse> = [];
 	expiredLicences: Array<UserLicenceResponse> = [];
 
@@ -481,7 +483,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembersAndEmployees(): void {
 		this.businessApplicationService
-			.getMembersAndEmployees()
+			.getMembersAndEmployees(this.licenceAppId)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -526,10 +528,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onResume(): void {
-		const licenceAppId = '0e9a5a25-eb73-40d5-976a-45a55106dcd9';
-
 		this.businessApplicationService
-			.getBusinessLicenceToResume(licenceAppId)
+			.getBusinessLicenceToResume(this.licenceAppId)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

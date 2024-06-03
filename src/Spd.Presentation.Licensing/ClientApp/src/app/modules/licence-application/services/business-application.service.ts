@@ -420,11 +420,32 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(): Observable<any> {
+	/**
+	 * Load an existing licence application with an id for the provided application type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	// 	getBusinessLicenceWithSelection(
+	// 		licenceAppId: string,
+	// 		applicationTypeCode: ApplicationTypeCode
+	// 	): Observable<BizLicAppResponse> {
+	// 		return this.loadExistingLicenceWithId(licenceAppId).pipe(
+	// 			tap((_resp: any) => {
+	// 				this.initialized = true;
+	// // see getLicenceOfTypeAuthenticated
+	// 				this.commonApplicationService.setApplicationTitle(
+	// 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+	// 					_resp.applicationTypeData.applicationTypeCode,
+	// 					_resp.originalLicenceNumber
+	// 				);
+	// 			})
+	// 		);
+	// 	}
+
+	getMembersAndEmployees(licenceAppId: string): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-		const licenceAppId = '0e9a5a25-eb73-40d5-976a-45a55106dcd9';
 
 		return forkJoin([
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
@@ -574,13 +595,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private createEmptyLicence(
-		profile: BizProfileResponse,
-		// applicationTypeCode: ApplicationTypeCode | undefined,
+		businessProfile: BizProfileResponse,
 		soleProprietorSwlLicence?: LicenceResponse
 	): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel(profile, soleProprietorSwlLicence); //, applicationTypeCode
+		return this.applyLicenceProfileIntoModel({
+			businessProfile,
+			applicationTypeCode: ApplicationTypeCode.New,
+			soleProprietorSwlLicence,
+		});
 	}
 
 	/**
@@ -693,10 +717,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedExpiredLicence?: LicenceResponse,
 		soleProprietorSwlLicence?: LicenceResponse
 	): Observable<any> {
-		return this.applyLicenceProfileIntoModel(
+		return this.applyLicenceProfileIntoModel({
 			businessProfile, // ?? businessLicenceResponse,
-			soleProprietorSwlLicence
-		).pipe(
+			soleProprietorSwlLicence,
+		}).pipe(
 			switchMap((_resp: any) => {
 				return this.applyLicenceIntoModel(businessLicenceAppl, associatedExpiredLicence);
 			})
@@ -864,13 +888,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the profile into the business model
 	 * @returns
 	 */
-	private applyLicenceProfileIntoModel(
-		businessProfile: BizProfileResponse,
-		// applicationTypeCode: ApplicationTypeCode | undefined,
-		soleProprietorSwlLicence?: LicenceResponse
-	): Observable<any> {
-		// const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
-		// const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+	private applyLicenceProfileIntoModel({
+		businessProfile,
+		applicationTypeCode,
+		soleProprietorSwlLicence,
+	}: {
+		businessProfile: BizProfileResponse;
+		applicationTypeCode?: ApplicationTypeCode | undefined;
+		soleProprietorSwlLicence?: LicenceResponse;
+	}): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
+		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 		const businessInformationData = {
 			bizTypeCode: businessProfile.bizTypeCode,
 			legalBusinessName: businessProfile.bizLegalName,
@@ -932,11 +960,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.businessModelFormGroup.patchValue(
 			{
 				bizId: businessProfile.bizId,
-				// bizId: 'bizId' in profile ? profile.bizId : null,
-				licenceAppId: soleProprietorSwlLicence?.licenceAppId ?? '0e9a5a25-eb73-40d5-976a-45a55106dcd9',
-				// licenceAppId: '0aac80d3-e692-4b15-9c1a-49533f9900a1',
-				// workerLicenceTypeData,
-				// applicationTypeData,
+
+				workerLicenceTypeData,
+				applicationTypeData,
 				businessInformationData,
 				businessManagerData,
 
