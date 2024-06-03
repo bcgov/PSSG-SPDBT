@@ -106,6 +106,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId).FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
@@ -126,6 +127,9 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+        else
+            _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
         await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
