@@ -50,7 +50,7 @@ export interface BranchResponse {
 			<div *ngIf="hasBranchesInBc.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 				<div class="row my-2">
 					<div class="col-12">
-						<div class="mt-3 text-primary-color">The branches in B.C. where licenced employees work</div>
+						<div class="mt-3 text-primary-color">The branches in B.C. where licenced employees work:</div>
 						<mat-table [dataSource]="dataSource">
 							<ng-container matColumnDef="addressLine1">
 								<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Address Line 1</mat-header-cell>
