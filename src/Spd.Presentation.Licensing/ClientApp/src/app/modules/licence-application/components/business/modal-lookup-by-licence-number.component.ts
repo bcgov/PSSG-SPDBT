@@ -274,7 +274,6 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		if (resp.searchResult) {
 			if (resp.searchResult.workerLicenceTypeCode !== this.lookupWorkerLicenceTypeCode) {
 				this.isFoundValid = false;
-				// this.messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
 			}
 
 			this.searchResult = resp.searchResult;

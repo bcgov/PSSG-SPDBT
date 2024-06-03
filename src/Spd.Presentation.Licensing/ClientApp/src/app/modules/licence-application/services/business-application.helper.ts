@@ -409,30 +409,13 @@ export abstract class BusinessApplicationHelper {
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
-		const liabilityData = { ...businessModelFormValue.liabilityData };
 		const businessManagerData = { ...businessModelFormValue.businessManagerData };
-		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
 
-		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
-		const documentInfos: Array<Document> = [];
 		const privateInvestigatorSwlInfo: SwlContactInfo | undefined = undefined; // TODO fix setting of PI info
 		let useDogs = false;
 
-		if (!companyBrandingData.noLogoOrBranding) {
-			companyBrandingData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
-				});
-			});
-		}
-
-		liabilityData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
-			});
-		});
+		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
+		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
 
 		let applicantContactInfo: ContactInfo | undefined = undefined;
 		const applicantIsBizManager = businessManagerData.isBusinessManager;
@@ -458,57 +441,8 @@ export abstract class BusinessApplicationHelper {
 
 		const categoryData = { ...businessModelFormValue.categoryData };
 
-		if (categoryData.ArmouredCarGuard) {
-			categoryCodes.push(WorkerCategoryTypeCode.ArmouredCarGuard);
-			documentInfos.push(...this.getCategoryArmouredCarGuard(businessModelFormValue.categoryArmouredCarGuardFormGroup));
-		}
-
-		if (categoryData.BodyArmourSales) {
-			categoryCodes.push(WorkerCategoryTypeCode.BodyArmourSales);
-		}
-
-		if (categoryData.ClosedCircuitTelevisionInstaller) {
-			categoryCodes.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-		}
-
-		if (categoryData.ElectronicLockingDeviceInstaller) {
-			categoryCodes.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-		}
-
-		if (categoryData.Locksmith) {
-			categoryCodes.push(WorkerCategoryTypeCode.Locksmith);
-		}
-
-		if (categoryData.PrivateInvestigator) {
-			categoryCodes.push(WorkerCategoryTypeCode.PrivateInvestigator);
-		}
-
 		if (categoryData.SecurityGuard) {
-			categoryCodes.push(WorkerCategoryTypeCode.SecurityGuard);
 			useDogs = businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
-			if (useDogs) {
-				documentInfos.push(...this.getCategorySecurityGuard(businessModelFormValue.categorySecurityGuardFormGroup));
-			}
-		}
-
-		if (categoryData.SecurityAlarmInstaller) {
-			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
-		}
-
-		if (categoryData.SecurityAlarmMonitor) {
-			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-		}
-
-		if (categoryData.SecurityAlarmResponse) {
-			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
-		}
-
-		if (categoryData.SecurityAlarmSales) {
-			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmSales);
-		}
-
-		if (categoryData.SecurityConsultant) {
-			categoryCodes.push(WorkerCategoryTypeCode.SecurityConsultant);
 		}
 
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
@@ -538,15 +472,6 @@ export abstract class BusinessApplicationHelper {
 				nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(businessModelFormValue),
 				swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue),
 			};
-		}
-
-		if (controllingMembersData.attachments) {
-			controllingMembersData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance, // TODO what is the correct type to use?
-				});
-			});
 		}
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
@@ -588,6 +513,119 @@ export abstract class BusinessApplicationHelper {
 
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
+	}
+
+	getSaveBodyCategoryCodes(categoryData: any): Array<WorkerCategoryTypeCode> {
+		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
+
+		if (categoryData.ArmouredCarGuard) {
+			categoryCodes.push(WorkerCategoryTypeCode.ArmouredCarGuard);
+		}
+
+		if (categoryData.BodyArmourSales) {
+			categoryCodes.push(WorkerCategoryTypeCode.BodyArmourSales);
+		}
+
+		if (categoryData.ClosedCircuitTelevisionInstaller) {
+			categoryCodes.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+		}
+
+		if (categoryData.ElectronicLockingDeviceInstaller) {
+			categoryCodes.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+		}
+
+		if (categoryData.Locksmith) {
+			categoryCodes.push(WorkerCategoryTypeCode.Locksmith);
+		}
+
+		if (categoryData.PrivateInvestigator) {
+			categoryCodes.push(WorkerCategoryTypeCode.PrivateInvestigator);
+		}
+
+		if (categoryData.SecurityGuard) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityGuard);
+		}
+
+		if (categoryData.SecurityAlarmInstaller) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+		}
+
+		if (categoryData.SecurityAlarmMonitor) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+		}
+
+		if (categoryData.SecurityAlarmResponse) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
+		}
+
+		if (categoryData.SecurityAlarmSales) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmSales);
+		}
+
+		if (categoryData.SecurityConsultant) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityConsultant);
+		}
+
+		return categoryCodes;
+	}
+
+	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<Document> {
+		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
+		const liabilityData = { ...businessModelFormValue.liabilityData };
+		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
+
+		const documentInfos: Array<Document> = [];
+
+		if (!companyBrandingData.noLogoOrBranding) {
+			companyBrandingData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
+				});
+			});
+		}
+
+		liabilityData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+			});
+		});
+
+		const categoryData = { ...businessModelFormValue.categoryData };
+
+		if (categoryData.ArmouredCarGuard) {
+			documentInfos.push(...this.getCategoryArmouredCarGuard(businessModelFormValue.categoryArmouredCarGuardFormGroup));
+		}
+
+		if (categoryData.SecurityGuard) {
+			const useDogs =
+				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
+			if (useDogs) {
+				documentInfos.push(...this.getCategorySecurityGuard(businessModelFormValue.categorySecurityGuardFormGroup));
+			}
+		}
+
+		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+			documentInfos
+				.filter((doc) => doc.expiryDate)
+				.map((doc: Document) => {
+					return {
+						expiryDate: doc.expiryDate,
+						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+					} as DocumentExpiredInfo;
+				}) ?? [];
+
+		if (controllingMembersData.attachments) {
+			controllingMembersData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance, // TODO what is the correct type to use?
+				});
+			});
+		}
+
+		return documentInfos;
 	}
 
 	/**
