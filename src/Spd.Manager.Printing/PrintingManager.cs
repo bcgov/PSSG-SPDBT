@@ -14,15 +14,19 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
 {
     public async Task<string> Handle(StartPrintJobCommand request, CancellationToken cancellationToken)
     {
-        var transformResponse = await _documentTransformationEngine.Transform(
-            CreateDocumentTransformRequest(request.PrintJob),
-            cancellationToken);
-        return transformResponse switch
-        {
-            BcMailPlusTransformResponse bcmailplusResponse => await PrintViaBcMailPlus(bcmailplusResponse, cancellationToken),
+        //get transform Response
 
-            _ => throw new NotImplementedException()
-        };
+        //
+        //var transformResponse = await _documentTransformationEngine.Transform(
+        //    CreateDocumentTransformRequest(request.PrintJob),
+        //    cancellationToken);
+        //return transformResponse switch
+        //{
+        //    BcMailPlusTransformResponse bcmailplusResponse => await PrintViaBcMailPlus(bcmailplusResponse, cancellationToken),
+
+        //    _ => throw new NotImplementedException()
+        //};
+        return string.Empty;
     }
 
     public async Task<PrintJobStatusResp> Handle(PrintJobStatusQuery request, CancellationToken cancellationToken)

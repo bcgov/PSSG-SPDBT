@@ -30,4 +30,8 @@
     <ItemGroup>
 	    <InternalsVisibleTo Include="Spd.Resource.Repository.IntegrationTest" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Event\" />
+    </ItemGroup>
 </Project>

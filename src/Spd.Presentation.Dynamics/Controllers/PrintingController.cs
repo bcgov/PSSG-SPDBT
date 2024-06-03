@@ -14,16 +14,17 @@ namespace Spd.Presentation.Dynamics.Controllers;
 public class PrintingController(IMediator mediator, IMapper mapper) : SpdControllerBase
 {
     /// <summary>
-    /// Set applicationId, this endpoint will print out paper for mailing to applicant. Set jobId to null.
+    ///  a GET request that takes an event id. It should be like
+    ///    GET /api/printjobs/{eventid}
+    /// where eventid is the GUID for spd_eventqueue record.
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="eventId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpPost("api/printjobs")]
-    public async Task<Results<Ok<string>, BadRequest>> PostPrintJob([FromBody] PrintJobRequest request, CancellationToken ct)
+    [HttpGet("api/printjobs/{eventId}/exe")]
+    public async Task<Results<Ok<string>, BadRequest>> PostPrintJob([FromRoute] Guid eventId, CancellationToken ct)
     {
-        var printJob = mapper.Map<PrintJob>(request);
-        var createdJobId = await mediator.Send(new StartPrintJobCommand(printJob), ct);
+        var createdJobId = await mediator.Send(new StartPrintJobCommand(eventId), ct);
         return TypedResults.Ok(createdJobId);
     }
 
