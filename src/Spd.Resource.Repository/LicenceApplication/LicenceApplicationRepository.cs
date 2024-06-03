@@ -132,6 +132,8 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         {
             // * This just doesn't work
             //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), app.spd_CurrentExpiredLicenceId);
+            // I also tried
+            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
             //_context.UpdateObject(app);
 
             spd_licence? licence = _context.spd_licences
@@ -139,7 +141,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
                 .FirstOrDefault();
 
             // * This throws error ("AddLink and DeleteLink methods only work when the sourceProperty is a collection.")
-            //_context.DetachLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
+            //_context.DeleteLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
             //_context.UpdateObject(licence);
             await _context.SaveChangesAsync(ct);
 
