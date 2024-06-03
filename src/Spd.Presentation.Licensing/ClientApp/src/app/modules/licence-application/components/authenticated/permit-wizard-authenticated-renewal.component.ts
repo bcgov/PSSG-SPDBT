@@ -1,14 +1,11 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -129,7 +126,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -219,39 +215,8 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Permit information has been saved');
-
-					if (stepper?.selected) stepper.selected.completed = true;
-					stepper.next();
-
-					switch (stepper.selectedIndex) {
-						case this.STEP_PERMIT_DETAILS:
-							this.stepPermitDetailsComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_PURPOSE_AND_RATIONALE:
-							this.stepPurposeComponent?.onGoToFirstStep();
-							break;
-						case this.STEP_IDENTIFICATION:
-							this.stepIdentificationComponent?.onGoToFirstStep();
-							break;
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
-				},
-			});
-		} else {
-			if (stepper?.selected) stepper.selected.completed = true;
-			stepper.next();
-		}
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
 	}
 
 	onNextPayStep(): void {
@@ -279,48 +244,11 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	onGoToReview() {
-		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Licence information has been saved');
-
-					setTimeout(() => {
-						// hack... does not navigate without the timeout
-						this.stepper.selectedIndex = this.STEP_REVIEW;
-					}, 250);
-				},
-				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
-				},
-			});
-		} else {
-			this.stepper.selectedIndex = this.STEP_REVIEW;
-		}
+		this.stepper.selectedIndex = this.STEP_REVIEW;
 	}
 
 	onChildNextStep() {
-		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
-				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-					this.hotToastService.success('Licence information has been saved');
-					this.goToChildNextStep();
-				},
-				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
-				},
-			});
-		} else {
-			this.goToChildNextStep();
-		}
+		this.goToChildNextStep();
 	}
 
 	private updateCompleteStatus(): void {
@@ -329,26 +257,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		this.step3Complete = this.permitApplicationService.isStepIdentificationComplete();
 
 		// console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
-	}
-
-	private handleDuplicateLicence(): void {
-		const data: DialogOptions = {
-			icon: 'error',
-			title: 'Confirmation',
-			message:
-				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
-			actionText: 'Edit',
-			cancelText: 'Go back',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (!response) {
-					this.router.navigate([LicenceApplicationRoutes.pathUserApplications()]);
-				}
-			});
 	}
 
 	private goToChildNextStep() {

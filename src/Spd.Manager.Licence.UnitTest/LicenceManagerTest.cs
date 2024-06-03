@@ -4,7 +4,7 @@ using Moq;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 

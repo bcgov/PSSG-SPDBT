@@ -15,7 +15,7 @@ using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Invoice;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
@@ -45,7 +45,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IDocumentTemplateRepository, DocumentTemplateRepository>();
             configurationServices.Services.AddTransient<IPortalUserRepository, PortalUserRepository>();
             configurationServices.Services.AddTransient<ILicenceRepository, LicenceRepository>();
-            configurationServices.Services.AddTransient<ILicenceApplicationRepository, LicenceApplicationRepository>();
+            configurationServices.Services.AddTransient<IPersonLicApplicationRepository, PersonLicApplicationRepository>();
             configurationServices.Services.AddTransient<ILicenceFeeRepository, LicenceFeeRepository>();
             configurationServices.Services.AddTransient<IContactRepository, ContactRepository>();
             configurationServices.Services.AddTransient<ITaskRepository, TaskRepository>();

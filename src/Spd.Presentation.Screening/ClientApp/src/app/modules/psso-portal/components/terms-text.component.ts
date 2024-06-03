@@ -53,18 +53,17 @@ import { Component, EventEmitter, Output } from '@angular/core';
 						</li>
 						<strong class="terms-subtitle">Information Collection:</strong>
 						<li>
-							When you visit the Site or use the Services, certain types of information are automatically collected from
-							you, by audit logs or cookies. This information is collected, used and disclosed in accordance with the
-							Province’s
+							When you access or use the Site, certain types of information are automatically collected from you, by
+							audit logs or cookies. This information is collected, used and disclosed in accordance with the Province’s
 							<a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy Policy</a>.
 						</li>
 						<li>
 							The date and time of your acceptance of these Terms of Use will be logged. This will enable you to skip
 							this step on future visits. However, if these Terms of Use are modified, they will be presented to you
 							upon your next following visit, and you will need to accept the modified terms to continue to access the
-							Services. Notwithstanding the foregoing, you are responsible for reviewing these Terms of Use on a regular
+							Site. Notwithstanding the foregoing, you are responsible for reviewing these Terms of Use on a regular
 							basis to ensure that you are aware of any modifications that may have been made and your continued use of
-							the Services constitutes your acceptance of any such modified Terms of Use.
+							the Site constitutes your acceptance of any such modified Terms of Use.
 						</li>
 						<li>
 							The information that you input on the Site may also be logged and attributed to you for verification
@@ -123,9 +122,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							You will not remove or alter any proprietary symbol or notice, including any copyright notice, trademark
 							or logo displayed in connection with the Site.
 						</li>
-						<strong class="terms-subtitle">Suspension or Cancellation of Services:</strong>
+						<strong class="terms-subtitle">Suspension or Cancellation of Use of the Site:</strong>
 						<li>
-							Your use of any of the Services may be suspended or cancelled at any time if:
+							Your use of the Site may be suspended or cancelled at any time if:
 							<ol type="a">
 								<li>the Province deems such suspension or cancellation necessary for any good and valid reason; or</li>
 								<li>
@@ -181,10 +180,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	`,
 	styles: [
 		`
-			li:not(:last-child) {
-				margin-bottom: 1em;
-			}
-
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				max-height: 400px;

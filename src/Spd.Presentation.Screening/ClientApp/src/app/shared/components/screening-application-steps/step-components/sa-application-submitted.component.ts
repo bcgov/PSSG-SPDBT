@@ -16,7 +16,7 @@ import { Component, Input } from '@angular/core';
 
 			<div class="row my-4">
 				<div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12">
-					Your application will be reviewed shortly. We will contact you if further information is required.
+					Your application will be reviewed shortly, and we will contact you if further information is required.
 				</div>
 			</div>
 		</section>

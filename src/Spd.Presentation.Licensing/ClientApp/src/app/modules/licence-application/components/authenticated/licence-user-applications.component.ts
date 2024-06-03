@@ -142,9 +142,8 @@ import {
 					</div>
 
 					<div class="mb-3">
-						<div class="section-title fs-5 py-3">Active Licences/Permits</div>
-
 						<ng-container *ngIf="activeLicences.length > 0">
+							<div class="section-title fs-5 py-3">Active Licences/Permits</div>
 							<div
 								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
 								*ngFor="let appl of activeLicences; let i = index"

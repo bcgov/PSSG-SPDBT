@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonControllingMembersComponent } from './common-controlling-members.component';
+import { CommonEmployeesComponent } from './common-employees.component';
 
 @Component({
 	selector: 'app-business-controlling-members-and-employees',
@@ -65,6 +67,9 @@ import { BusinessApplicationService } from '../../services/business-application.
 	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
+	@ViewChild(CommonControllingMembersComponent) controllingMembersComponent!: CommonControllingMembersComponent;
+	@ViewChild(CommonEmployeesComponent) employeesComponent!: CommonEmployeesComponent;
+
 	constructor(
 		private router: Router,
 		private hotToastService: HotToastService,
@@ -72,6 +77,10 @@ export class BusinessControllingMembersAndEmployeesComponent {
 	) {}
 
 	onSave(): void {
+		const valid1 = this.controllingMembersComponent.isFormValid();
+		const valid2 = this.employeesComponent.isFormValid();
+		if (!valid1 || !valid2) return;
+
 		this.businessApplicationService.saveControllingMembersAndEmployees().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your controlling members & employees has been successfully updated');

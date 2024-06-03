@@ -208,10 +208,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 	`,
 	styles: [
 		`
-			li:not(:last-child) {
-				margin-bottom: 1em;
-			}
-
 			.conditions {
 				border: 1px solid var(--color-grey-light);
 				max-height: 400px;

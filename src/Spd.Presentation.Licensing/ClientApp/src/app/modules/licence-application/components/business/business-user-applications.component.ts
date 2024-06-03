@@ -60,6 +60,11 @@ import { Observable, take, tap } from 'rxjs';
 						</app-alert>
 					</ng-container>
 
+					<button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
+						<mat-icon>play_arrow</mat-icon>Resume
+						<!-- TODO temp -->
+					</button>
+
 					<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 						<div class="section-title fs-5 py-3">Applications</div>
 
@@ -131,7 +136,7 @@ import { Observable, take, tap } from 'rxjs';
 												mat-flat-button
 												color="primary"
 												class="large my-3 w-auto"
-												(click)="onResume(application)"
+												(click)="onResumex(application)"
 												*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
 											>
 												<mat-icon>play_arrow</mat-icon>Resume
@@ -218,7 +223,7 @@ import { Observable, take, tap } from 'rxjs';
 										</div>
 										<div class="col-lg-5">
 											<div class="d-block text-muted mt-2 mt-md-0"></div>
-											<div>
+											<div *ngIf="isNotSoleProprietor">
 												<a
 													class="large"
 													tabindex="0"
@@ -403,8 +408,12 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	activeLicenceExist = false;
 
+	isNotSoleProprietor = true; // TODO  Only display if NOT sole proprietor
+
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 	applicationPortalStatusCodes = ApplicationPortalStatusCode;
+
+	licenceAppId = '404a6472-faa0-4206-96b2-d9aaf5bc0694'; // TODO Remove
 
 	activeLicences: Array<UserLicenceResponse> = [];
 	expiredLicences: Array<UserLicenceResponse> = [];
@@ -474,7 +483,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembersAndEmployees(): void {
 		this.businessApplicationService
-			.getMembersAndEmployees()
+			.getMembersAndEmployees(this.licenceAppId)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -518,7 +527,22 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		this.onRequestReplacement(appl);
 	}
 
-	onResume(_appl: LicenceAppListResponse): void {
+	onResume(): void {
+		this.businessApplicationService
+			.getBusinessLicenceToResume(this.licenceAppId)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onResumex(_appl: LicenceAppListResponse): void {
 		// if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
 		// 	this.licenceApplicationService
 		// 		.getLicenceNew(appl.licenceAppId!)

@@ -217,12 +217,6 @@ import { Component } from '@angular/core';
 			</li>
 		</ol>
 	`,
-	styles: [
-		`
-			li:not(:last-child) {
-				margin-bottom: 1em;
-			}
-		`,
-	],
+	styles: [],
 })
 export class SaAgreementOfTermsCrrpaComponent {}

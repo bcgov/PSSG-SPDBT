@@ -27,7 +27,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onExpiredLicenceNextStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -83,10 +83,6 @@ export class StepsBusinessLicenceInformationNewComponent extends BaseWizardStepC
 		this.router.navigateByUrl(
 			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE)
 		);
-	}
-
-	onExpiredLicenceNextStep(): void {
-		this.stepExpiredComponent.onSearchAndValidate();
 	}
 
 	onValidExpiredLicence(): void {

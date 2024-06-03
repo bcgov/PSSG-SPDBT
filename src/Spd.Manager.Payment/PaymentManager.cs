@@ -13,7 +13,7 @@ using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
 using Spd.Resource.Repository.Invoice;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.ServiceTypes;
@@ -51,7 +51,7 @@ namespace Spd.Manager.Payment
         private readonly IMainFileStorageService _fileStorageService;
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly ILicenceFeeRepository _licFeeRepository;
-        private readonly ILicenceApplicationRepository _licAppRepository;
+        private readonly IPersonLicApplicationRepository _personLicAppRepository;
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ILogger<IPaymentManager> _logger;
         private readonly ITimeLimitedDataProtector _dataProtector;
@@ -68,7 +68,7 @@ namespace Spd.Manager.Payment
             IMainFileStorageService fileStorageService,
             IInvoiceRepository invoiceRepository,
             ILicenceFeeRepository licFeeRepository,
-            ILicenceApplicationRepository licAppRepository,
+            IPersonLicApplicationRepository personLicAppRepository,
             IServiceTypeRepository serviceTypeRepository,
             ILogger<IPaymentManager> logger)
         {
@@ -83,7 +83,7 @@ namespace Spd.Manager.Payment
             _fileStorageService = fileStorageService;
             _invoiceRepository = invoiceRepository;
             _licFeeRepository = licFeeRepository;
-            _licAppRepository = licAppRepository;
+            _personLicAppRepository = personLicAppRepository;
             _serviceTypeRepository = serviceTypeRepository;
             _logger = logger;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
@@ -412,7 +412,7 @@ namespace Spd.Manager.Payment
                 if (PaybcRevenueAccountLicConfig == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account licensing correctly.");
 
-                var licApp = await _licAppRepository.GetLicenceApplicationAsync(app.Id, ct);
+                var licApp = await _personLicAppRepository.GetLicenceApplicationAsync(app.Id, ct);
                 LicenceFeeListResp feeList = await _licFeeRepository.QueryAsync(
                     new LicenceFeeQry
                     {

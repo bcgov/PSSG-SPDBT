@@ -11,7 +11,7 @@ import { CrrpRoutes } from './crrp-routing.module';
 		<div class="container">
 			<section class="step-section my-4">
 				<div class="row m-4">
-					<div class="col-lg-8 mx-auto">
+					<div class="col-lg-10 mx-auto">
 						<h2>Terms and Conditions</h2>
 
 						<p class="mb-4">Read, download, and accept the Terms of Use to continue.</p>

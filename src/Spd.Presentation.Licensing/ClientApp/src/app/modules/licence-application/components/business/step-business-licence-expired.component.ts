@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -17,41 +17,25 @@ import { CommonExpiredLicenceComponent } from '../shared/step-components/common-
 
 				<app-common-expired-licence
 					[form]="form"
+					[isLoggedIn]="true"
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					(validExpiredLicenceData)="onValidData()"
 				></app-common-expired-licence>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceExpiredComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.expiredLicenceFormGroup;
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
-
-	@Output() validExpiredLicenceData = new EventEmitter();
+	workerLicenceTypeCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
 
 	@ViewChild(CommonExpiredLicenceComponent)
 	expiredLicenceComponent!: CommonExpiredLicenceComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
-	ngOnInit(): void {
-		this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
-	}
-
-	onSearchAndValidate(): void {
-		this.expiredLicenceComponent.onValidateAndSearch();
-	}
-
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	onValidData(): void {
-		this.validExpiredLicenceData.emit();
 	}
 }

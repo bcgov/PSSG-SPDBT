@@ -3,8 +3,8 @@
 @use '@angular/material' as mat;
 
 $spd-blue: (
-  50: #e0e7ed,
-  100: #b3c2d1,
+	50: #e0e7ed,
+	100: #b3c2d1,
   200: #8099b3,
   300: #4d7094,
   400: #26527d,
@@ -12,22 +12,22 @@ $spd-blue: (
   600: #002e5e,
   700: #002753,
   800: #002049,
-  900: #001438,
-  A100: #6e93ff,
-  A200: #3b6cff,
-  A400: #0846ff,
-  A700: #003bee,
-  contrast: (
-      50: #000000,
-      100: #000000,
-      200: #000000,
-      300: #ffffff,
-      400: #ffffff,
-      500: #ffffff,
-      600: #ffffff,
-      700: #ffffff,
-      800: #ffffff,
-      900: #ffffff,
+	900: #001438,
+	A100: #6e93ff,
+	A200: #3b6cff,
+	A400: #0846ff,
+	A700: #003bee,
+	contrast: (
+		50: #000000,
+		100: #000000,
+		200: #000000,
+		300: #ffffff,
+		400: #ffffff,
+		500: #ffffff,
+		600: #ffffff,
+		700: #ffffff,
+		800: #ffffff,
+		900: #ffffff,
       A100: #000000,
       A200: #ffffff,
       A400: #ffffff,
@@ -36,8 +36,8 @@ $spd-blue: (
 );
 
 $spd-yellow: (
-  50: #fff7e3,
-  100: #feeaba,
+	50: #fff7e3,
+	100: #feeaba,
   200: #fedd8c,
   300: #fdcf5e,
   400: #fcc43c,
@@ -45,22 +45,22 @@ $spd-yellow: (
   600: #fcb316,
   700: #fbab12,
   800: #fba30e,
-  900: #fa9408,
-  A100: #ffffff,
-  A200: #fff8ef,
-  A400: #ffe0bc,
-  A700: #ffd4a2,
-  contrast: (
-      50: #000000,
-      100: #000000,
-      200: #000000,
-      300: #000000,
-      400: #000000,
-      500: #000000,
-      600: #000000,
-      700: #000000,
-      800: #000000,
-      900: #000000,
+	900: #fa9408,
+	A100: #ffffff,
+	A200: #fff8ef,
+	A400: #ffe0bc,
+	A700: #ffd4a2,
+	contrast: (
+		50: #000000,
+		100: #000000,
+		200: #000000,
+		300: #000000,
+		400: #000000,
+		500: #000000,
+		600: #000000,
+		700: #000000,
+		800: #000000,
+		900: #000000,
       A100: #000000,
       A200: #000000,
       A400: #000000,
@@ -74,19 +74,19 @@ $font-family-sans-serif: "BC Sans", "Noto Sans", "Verdana", "Arial", "sans serif
 
 $spd-body-1: mat.define-typography-level(
   $font-family: $font-family-sans-serif,
-  $font-weight: 400,
-  $font-size: 16px,
-  $line-height: 1,
-  $letter-spacing: normal,
+	$font-weight: 400,
+	$font-size: 16px,
+	$line-height: 1,
+	$letter-spacing: normal,
 );
 
 $spd-typography: mat.define-typography-config(
-  $font-family: $font-family-sans-serif,
-  $body-1: mat.define-typography-level(16px, 24px, 400),
-  $body-2: mat.define-typography-level(16px, 24px, 400),
+	$font-family: $font-family-sans-serif,
+	$body-1: mat.define-typography-level(16px, 24px, 400),
+	$body-2: mat.define-typography-level(16px, 24px, 400),
 );
 
-@include mat.core(); 
+@include mat.core();
 @include mat.all-component-typographies($spd-typography);
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
@@ -133,10 +133,10 @@ $spd-theme: mat.define-light-theme((
   
   --color-grey-lightest: #eeeeee;
   --color-grey-lighter: #e1e1e1;
-  --color-grey-light: #bdbdbd; // divider colour
-  --color-grey-inactive: #919191;
-  --color-grey: #606060; // secondary text colour
-  --color-grey-dark: #212121; // primary text colour
+	--color-grey-light: #bdbdbd; // divider colour
+	--color-grey-inactive: #919191;
+	--color-grey: #606060; // secondary text colour
+	--color-grey-dark: #212121; // primary text colour
 
 	--size-1: 8px;
 	--size-quarter: calc(var(--size-1) / 4);
@@ -155,43 +155,43 @@ body {
 }
 
 @media (max-width: 991px) {
-  body { 
-    background-color: transparent;
-  }
+	body {
+		background-color: transparent;
+	}
 }
 
 .step {
-  width: 100%;
-  align-items: center;
-  border: none;
-  box-shadow: none;
+	width: 100%;
+	align-items: center;
+	border: none;
+	box-shadow: none;
 }
 
 .title {
-  font-size: 1.7em;
-  font-weight: 400;
-  text-align: center;
-  color: var(--color-primary);
+	font-size: 1.7em;
+	font-weight: 400;
+	text-align: center;
+	color: var(--color-primary);
 
-  &__sub-title {
-    font-size: small;
-    font-weight: 500;
-  }
+	&__sub-title {
+		font-size: small;
+		font-weight: 500;
+	}
 }
 
 .terms-subtitle {
-  margin-left: -30px;
+	margin-left: -30px;
 }
 
 .child-stepper {
-  .mat-horizontal-stepper-header-container {
-    display: none;
-  }
+	.mat-horizontal-stepper-header-container {
+		display: none;
+	}
 }
 
 .mat-divider-main {
-  border-top-width: 2px !important;
-  border-top-color: var(--color-yellow) !important;
+	border-top-width: 2px !important;
+	border-top-color: var(--color-yellow) !important;
 }
 
 .alert {
@@ -199,39 +199,39 @@ body {
 }
 
 .alert-info {
-  color: #0c5460;
-  background-color: #eef8fa;
-  border-color: #eef8fa;
-  border-left: 3px solid #0c5460;
-  border-radius: 0;
+	color: #0c5460;
+	background-color: #eef8fa;
+	border-color: #eef8fa;
+	border-left: 3px solid #0c5460;
+	border-radius: 0;
 
-  .content {
-    color: #333333;
-  }
+	.content {
+		color: #333333;
+	}
 }
 
 .alert-success {
-  color: #155724;
-  background-color: #e8f5eb;
-  border-color: #e8f5eb;
-  border-left: 3px solid #155724;
-  border-radius: 0;
+	color: #155724;
+	background-color: #e8f5eb;
+	border-color: #e8f5eb;
+	border-left: 3px solid #155724;
+	border-radius: 0;
 }
 
 .alert-warning {
-  color: #856404;
-  background-color: #fff9e5;
-  border-color: #fff9e5;
-  border-left: 3px solid #856404;
-  border-radius: 0;
+	color: #856404;
+	background-color: #fff9e5;
+	border-color: #fff9e5;
+	border-left: 3px solid #856404;
+	border-radius: 0;
 }
 
 .alert-danger {
-  color: #721c24;
-  background-color: #fceded;
-  border-color: #fceded;
-  border-left: 3px solid #721c24;
-  border-radius: 0;
+	color: #721c24;
+	background-color: #fceded;
+	border-color: #fceded;
+	border-left: 3px solid #721c24;
+	border-radius: 0;
 }
 
 .fs-7 {
@@ -239,11 +239,11 @@ body {
 }
 
 .mat-mdc-card-content {  
-  text-align: center;
+	text-align: center;
 }
 
 .multi-select-filter .mdc-text-field {
-  background-color: transparent;
+	background-color: transparent;
 }
 .multi-select-filter .mat-mdc-form-field-focus-overlay {
   background-color: transparent;
@@ -252,16 +252,16 @@ body {
 
 .search-icon-button {
   color: var(--color-white) !important;
-  background-color: var(--color-primary) !important; 
-  padding: 2.1em 0 !important; 
-  border-radius: unset !important;
+	background-color: var(--color-primary) !important;
+	padding: 2.1em 0 !important;
+	border-radius: unset !important;
 
-  .mat-icon {
-    top: 8px !important;
-    font-size: 2.2em !important;
-    width: 40px !important;
-    height: 40px !important;
-    left: 8px !important;
+	.mat-icon {
+		top: 8px !important;
+		font-size: 2.2em !important;
+		width: 40px !important;
+		height: 40px !important;
+		left: 8px !important;
   }
 }
 
@@ -274,9 +274,9 @@ body {
 }
 
 @media (max-width: 1199px) {
-  .table-button {
-    width: unset !important;
-  }
+	.table-button {
+		width: unset !important;
+	}
 }
 
 .area-green {
@@ -290,56 +290,56 @@ body {
 }
 
 .area-blue {
-  background-color: rgba(211, 220, 229, 1) !important;
-    color: #013365 !important;
+	background-color: rgba(211, 220, 229, 1) !important;
+	color: #013365 !important;
 }
 
 .area-grey {
-  background-color: rgba(215, 215, 215, 1) !important;
-    color: #333333 !important;
+	background-color: rgba(215, 215, 215, 1) !important;
+	color: #333333 !important;
 }
 
 .area-red {
-  background-color: rgba(242, 222, 223, 1) !important;
-    color: #910012 !important;
+	background-color: rgba(242, 222, 223, 1) !important;
+	color: #910012 !important;
 }
 
 .icon-size {
-  max-width: 2em;
-  margin: 6px;
+	max-width: 2em;
+	margin: 6px;
 }
 
-a {  
-  cursor: pointer;
-  text-decoration: none;
+a {
+	cursor: pointer;
+	text-decoration: none;
 }
 
 .optional-label {
-  font-size: 0.8em;
+	font-size: 0.8em;
 }
 
 .text-label {
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.8);
+	font-size: 0.9rem;
+	color: rgba(0, 0, 0, 0.8);
 }
 
 .step-section {
-  border-radius: 4px;
-  background-color: #fff;
-  border: 1px solid var(--color-grey-lighter);
-  box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+	border-radius: 4px;
+	background-color: #fff;
+	border: 1px solid var(--color-grey-lighter);
+	box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
 }
 
 @media (max-width: 991px) {
-  .step-section {
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-  }
+	.step-section {
+		border-radius: 0;
+		border: none;
+		box-shadow: none;
+	}
 }
 
 ngx-dropzone-remove-badge {
-  opacity: 1 !important;
+	opacity: 1 !important;
 }
 
 .active-selection-main {
@@ -349,8 +349,8 @@ ngx-dropzone-remove-badge {
 }
 
 .active-selection-border {
-  border: 2px solid var(--color-yellow) !important;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+	border: 2px solid var(--color-yellow) !important;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
 }
 
 .active-selection-whole {
@@ -360,68 +360,68 @@ ngx-dropzone-remove-badge {
 
   mat-icon {
     color: var(--color-white) !important;
-  }
+	}
 }
 
 .larger-icon {
-  color: var(--color-grey-light);
-  font-size: 30px !important;
-  height: 30px !important;
-  width: 30px !important;
+	color: var(--color-grey-light);
+	font-size: 30px !important;
+	height: 30px !important;
+	width: 30px !important;
 }
 
 .smaller-icon {
-  color: var(--color-grey-light);
-  font-size: 20px !important;
-  height: 20px !important;
-  width: 20px !important;
+	color: var(--color-grey-light);
+	font-size: 20px !important;
+	height: 20px !important;
+	width: 20px !important;
 }
 
 .step-container {
-  cursor: pointer;
+	cursor: pointer;
 
-  &__box {
-    height: 100%;
-    border-radius: 4px;
-    border: 1px solid grey;
-    box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
-    text-align: center;
+	&__box {
+		height: 100%;
+		border-radius: 4px;
+		border: 1px solid grey;
+		box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+		text-align: center;
 
-    &__info {
-      padding: 4px;
-      display: grid;
-      justify-content: end;
-    }
+		&__info {
+			padding: 4px;
+			display: grid;
+			justify-content: end;
+		}
 
-    &__title {
-      font-size: 1.3em;
-      font-weight: 500;
-      text-align: center;
-  
-      &__icon {
-        color: var(--color-primary);
-        font-size: 100px !important;
-        height: 100px !important;
-        width: 100px !important;
-      }
-    }
+		&__title {
+			font-size: 1.3em;
+			font-weight: 500;
+			text-align: center;
 
-    &__help-wrapper {
-      text-align: left;
-    }
-  
-    &__help-title {
-      font-size: 1.3em;
-    }
-  }
+			&__icon {
+				color: var(--color-primary);
+				font-size: 100px !important;
+				height: 100px !important;
+				width: 100px !important;
+			}
+		}
 
-  &__box:hover {
-    color: var(--color-primary-light);
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+		&__help-wrapper {
+			text-align: left;
+		}
 
-    mat-icon {
-      color: var(--color-primary-light);
-    }
+		&__help-title {
+			font-size: 1.3em;
+		}
+	}
+
+	&__box:hover {
+		color: var(--color-primary-light);
+		box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+
+		mat-icon {
+			color: var(--color-primary-light);
+		}
   }
 }
 
@@ -429,18 +429,22 @@ ngx-dropzone-remove-badge {
   &__image {
     max-height: 8em;
     border-radius: 50%;
-    width: 400px;
-    background: var(--color-grey-lighter);
-    font: 32px Arial, sans-serif;
+		width: 400px;
+		background: var(--color-grey-lighter);
+		font: 32px Arial, sans-serif;
 
-    &__item {
-      margin-top: 15px;
-      height: 5em;
-    }
-  }
+		&__item {
+			margin-top: 15px;
+			height: 5em;
+		}
+	}
 
-  &__text {
-    font-weight: 700;
-    line-height: 1.5em;
-  }
+	&__text {
+		font-weight: 700;
+		line-height: 1.5em;
+	}
+}
+
+ol li:not(:last-child) {
+	margin-bottom: 0.5em;
 }

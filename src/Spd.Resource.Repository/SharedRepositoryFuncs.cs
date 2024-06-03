@@ -1,5 +1,5 @@
 ﻿using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository;

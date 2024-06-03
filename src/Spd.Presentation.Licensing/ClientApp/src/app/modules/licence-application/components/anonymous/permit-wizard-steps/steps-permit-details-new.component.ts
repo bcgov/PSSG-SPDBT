@@ -35,14 +35,11 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-expired
-					(validExpiredLicenceData)="onValidExpiredLicence()"
-					[isLoggedIn]="isLoggedIn"
-				></app-step-permit-expired>
+				<app-step-permit-expired [isLoggedIn]="isLoggedIn"></app-step-permit-expired>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onExpiredLicenceNextStep()"
+					(nextStepperStep)="onStepNext(STEP_PERMIT_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -63,14 +60,6 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 
 	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
 		super(commonApplicationService);
-	}
-
-	onExpiredLicenceNextStep(): void {
-		this.permitExpiredComponent.onSearchAndValidate();
-	}
-
-	onValidExpiredLicence(): void {
-		this.nextStepperStep.emit(true);
 	}
 
 	onGotoUserProfile(): void {

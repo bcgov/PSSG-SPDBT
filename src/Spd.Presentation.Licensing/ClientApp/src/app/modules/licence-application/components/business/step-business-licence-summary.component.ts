@@ -295,46 +295,55 @@ import { BusinessApplicationService } from '../../services/business-application.
 										<div class="panel-body">
 											<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
 											<div class="row mt-0">
-												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">
-															Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
+												<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
+													<ng-container *ngFor="let member of membersWithSwlList; let i = index">
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted">
+																Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
+															</div>
+															<div class="summary-text-data">
+																{{ member.licenceHolderName }} - {{ member.licenceNumber }}
+															</div>
 														</div>
-														<div class="summary-text-data">
-															{{ member.licenceHolderName }} - {{ member.licenceNumber }}
-														</div>
-													</div>
+													</ng-container>
 												</ng-container>
+												<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
 											</div>
 
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<div class="text-minor-heading">Members who require Criminal Record Checks</div>
 											<div class="row mt-0">
-												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">
-															Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
+												<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
+													<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted">
+																Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
+															</div>
+															<div class="summary-text-data">
+																{{ member.licenceHolderName }}
+															</div>
 														</div>
-														<div class="summary-text-data">
-															{{ member.licenceHolderName }}
-														</div>
-													</div>
+													</ng-container>
 												</ng-container>
+												<ng-template #NoMembersWithoutSwlList> <div class="col-12">None</div></ng-template>
 											</div>
 
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 											<div class="text-minor-heading">Employees</div>
 											<div class="row mt-0">
-												<ng-container *ngFor="let employee of employeesList; let i = index">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">
-															Employee <span *ngIf="employeesList.length > 1"> #{{ i + 1 }}</span>
+												<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
+													<ng-container *ngFor="let employee of employeesList; let i = index">
+														<div class="col-lg-4 col-md-12">
+															<div class="text-label d-block text-muted">
+																Employee <span *ngIf="employeesList.length > 1"> #{{ i + 1 }}</span>
+															</div>
+															<div class="summary-text-data">
+																{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}
+															</div>
 														</div>
-														<div class="summary-text-data">
-															{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}
-														</div>
-													</div>
+													</ng-container>
 												</ng-container>
+												<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
 											</div>
 										</div>
 									</mat-expansion-panel>
@@ -416,7 +425,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
-		console.log('onUpdateData', this.businessModelData);
 	}
 
 	get hasExpiredLicence(): string {
@@ -516,22 +524,22 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessModelData.businessManagerData.isBusinessManager ?? '';
 	}
 	get yourContactGivenName(): string {
-		return this.businessModelData.businessManagerData.agivenName ?? '';
+		return this.businessModelData.businessManagerData.applicantGivenName ?? '';
 	}
 	get yourContactMiddleName1(): string {
-		return this.businessModelData.businessManagerData.amiddleName1 ?? '';
+		return this.businessModelData.businessManagerData.applicantMiddleName1 ?? '';
 	}
 	get yourContactMiddleName2(): string {
-		return this.businessModelData.businessManagerData.amiddleName2 ?? '';
+		return this.businessModelData.businessManagerData.applicantMiddleName2 ?? '';
 	}
 	get yourContactSurname(): string {
-		return this.businessModelData.businessManagerData.asurname ?? '';
+		return this.businessModelData.businessManagerData.applicantSurname ?? '';
 	}
 	get yourContactEmailAddress(): string {
-		return this.businessModelData.businessManagerData.aemailAddress ?? '';
+		return this.businessModelData.businessManagerData.applicantEmailAddress ?? '';
 	}
 	get yourContactPhoneNumber(): string {
-		return this.businessModelData.businessManagerData.aphoneNumber ?? '';
+		return this.businessModelData.businessManagerData.applicantPhoneNumber ?? '';
 	}
 
 	get membersWithSwlList(): Array<any> {

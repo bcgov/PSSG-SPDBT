@@ -1,14 +1,15 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { BizTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsBusinessLicenceContactInformationNewComponent } from './steps-business-licence-contact-information-new.component';
 import { StepsBusinessLicenceControllingMembersNewComponent } from './steps-business-licence-controlling-members-new.component';
 import { StepsBusinessLicenceInformationNewComponent } from './steps-business-licence-information-new.component';
@@ -107,6 +108,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -133,7 +135,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);
@@ -189,6 +191,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				}
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
 				break;
 		}
@@ -213,6 +216,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsControllingMembersComponent?.onGoToLastStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToLastStep();
 				break;
 		}
@@ -235,9 +239,13 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	// 	this.commonApplicationService.payNow(licenceAppId, `Payment for Case ID: ${application.applicationNumber}`);
 	// }
 
+	// onNextStepperStep(stepper: MatStepper): void {
+	// 	if (stepper?.selected) stepper.selected.completed = true;
+	// 	stepper.next();
+	// }
+
 	onNextStepperStep(stepper: MatStepper): void {
-		if (stepper?.selected) stepper.selected.completed = true;
-		stepper.next();
+		this.saveStep(stepper);
 	}
 
 	onNextPayStep(): void {
@@ -254,13 +262,51 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onGoToReview() {
-		setTimeout(() => {
-			// hack... does not navigate without the timeout
-			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-		}, 250);
+		if (this.businessApplicationService.isAutoSave()) {
+			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
+				next: (_resp: any) => {
+					setTimeout(() => {
+						// hack... does not navigate without the timeout
+						this.goToReviewStep();
+					}, 250);
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else {
+			this.goToReviewStep();
+		}
 	}
 
 	onChildNextStep() {
+		this.saveStep();
+	}
+
+	private saveStep(stepper?: MatStepper): void {
+		if (this.businessApplicationService.isAutoSave()) {
+			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
+				next: (_resp: any) => {
+					if (stepper) {
+						if (stepper?.selected) stepper.selected.completed = true;
+						stepper.next();
+					} else {
+						this.goToChildNextStep();
+					}
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else if (stepper) {
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
+		} else {
+			this.goToChildNextStep();
+		}
+	}
+
+	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_BUSINESS_INFORMATION:
 				this.stepsBusinessInformationComponent?.onGoToNextStep();
@@ -285,23 +331,29 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			return;
 		}
 
-		// this.businessApplicationService.saveLicenceStepAuthenticated().subscribe({
-		// 	next: (_resp: any) => {
-		// 		this.licenceApplicationService.hasValueChanged = false;
+		this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
+			next: (_resp: any) => {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+			},
+			error: (error: HttpErrorResponse) => {
+				this.handlePartialSaveError(error);
+			},
+		});
+	}
 
-		this.hotToastService.success(
-			'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
-		);
+	private goToReviewStep(): void {
+		if (this.isBusinessLicenceSoleProprietor) {
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR;
+		} else {
+			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
+		}
+	}
 
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-		// 	},
-		// 	error: (error: HttpErrorResponse) => {
-		// 		// only 403s will be here as an error
-		// 		if (error.status == 403) {
-		// 			this.handleDuplicateLicence();
-		// 		}
-		// 	},
-		// });
+	private handlePartialSaveError(error: HttpErrorResponse): void {
+		// only 403s will be here as an error // TODO business licence has duplicates?
+		if (error.status == 403) {
+			this.commonApplicationService.handleDuplicateLicence();
+		}
 	}
 
 	private updateCompleteStatus(): void {

@@ -1,15 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceResponse } from '@app/api/models';
+import { LicenceDocumentTypeCode, LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
-import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
+import {
+	LookupByLicenceNumberDialogData,
+	ModalLookupByLicenceNumberComponent,
+} from './modal-lookup-by-licence-number.component';
 import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-edit.component';
 
 @Component({
@@ -103,7 +108,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
 						<ng-container *ngIf="!controllingMembersWithSwlExist">
-							<div class="mb-2">No controlling members with a Security Worker Licence exist</div>
+							<div class="mt-2 mb-3">No controlling members with a Security Worker Licence exist</div>
 						</ng-container>
 						<div class="col-md-12" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
 							<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
@@ -175,7 +180,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 					<div class="row mt-3">
 						<ng-container *ngIf="!controllingMembersWithoutSwlExist">
-							<div class="mb-2">No controlling members without a Security Worker Licence exist</div>
+							<div class="mt-2 mb-3">No controlling members without a Security Worker Licence exist</div>
 						</ng-container>
 						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
 							<div class="col-12">
@@ -193,32 +198,29 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</ng-template>
 					</div>
 
-					<div *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
-						<div class="row mt-2">
-							<div class="col-12">
-								<mat-divider class="mat-divider-main my-3"></mat-divider>
-								<div class="text-minor-heading lh-base mb-2">
-									Upload a copy of the corporate registry documents for your business in the province in which you are
-									originally registered <span class="optional-label">(optional)</span>
-								</div>
-								<app-file-upload
-									(fileUploaded)="onFileUploaded($event)"
-									(fileRemoved)="onFileRemoved()"
-									[control]="attachments"
-									[maxNumberOfFiles]="10"
-									[files]="attachments.value"
-								></app-file-upload>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-										form.get('attachments')?.invalid &&
-										form.get('attachments')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
+					<div class="mt-2" *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
+						<mat-divider class="mat-divider-main my-3"></mat-divider>
+						<div class="text-minor-heading lh-base mb-2">
+							Upload a copy of the corporate registry documents for your business in the province in which you are
+							originally registered
+							<span *ngIf="!attachmentIsRequired.value" class="optional-label">(optional)</span>
 						</div>
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+						></app-file-upload>
+						<mat-error
+							class="mat-option-error d-block"
+							*ngIf="
+								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+								form.get('attachments')?.invalid &&
+								form.get('attachments')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
 					</div>
 				</form>
 			</mat-expansion-panel>
@@ -262,9 +264,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	dataSourceWithoutSWL!: MatTableDataSource<any>;
 	columnsWithoutSWL: string[] = ['licenceHolderName', 'clearanceStatus', 'action1', 'action2'];
 
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
@@ -276,7 +281,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	isFormValid(): boolean {
-		return true;
+		this.form.markAllAsTouched();
+		return this.form.valid;
 	}
 
 	onRemoveMember(isWithSwl: boolean, index: number) {
@@ -307,12 +313,15 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	onAddMemberWithSWL(): void {
-		const dialogOptions: LookupSwlDialogData = {
+		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Member with Security Worker Licence',
+			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
+			isExpiredLicenceSearch: false,
+			isLoggedIn: true,
 		};
 		this.dialog
-			.open(ModalLookupSwlComponent, {
+			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})
@@ -336,22 +345,21 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.memberDialogWithoutSWL({}, true);
 	}
 
-	onFileUploaded(_file: File): void {
-		// TODO upload file on partial save
+	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
-
 		if (this.businessApplicationService.isAutoSave()) {
-			// this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.xxx, file).subscribe({
-			// 	next: (resp: any) => {
-			// 		const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-			// 		matchingFile.documentUrlId = resp.body[0].documentUrlId;
-			// 	},
-			// 	error: (error: any) => {
-			// 		console.log('An error occurred during file upload', error);
-			// 		this.hotToastService.error('An error occurred during the file upload. Please try again.');
-			// 		this.fileUploadComponent.removeFailedFile(file);
-			// 	},
-			// });
+			// TODO use LicenceDocumentTypeCode.BizBcReport??
+			this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.BizBcReport, file).subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.hotToastService.error('An error occurred during the file upload. Please try again.');
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
 		}
 	}
 
@@ -360,9 +368,8 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	private controllingMemberChanged(): void {
-		if (this.isBcBusinessAddress) return;
-
 		this.allowDocumentUpload = true;
+		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });
 	}
 
 	private memberDialogWithoutSWL(dialogOptions: any, isCreate: boolean): void {
@@ -436,6 +443,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get attachmentIsRequired(): FormControl {
+		return this.form.get('attachmentIsRequired') as FormControl;
 	}
 	get membersWithSwlList(): FormArray {
 		return <FormArray>this.form.get('membersWithSwl');

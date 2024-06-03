@@ -25,6 +25,69 @@ export class LicenceService extends BaseService {
   }
 
   /**
+   * Path part for operation apiBizsBizIdLicencesGet
+   */
+  static readonly ApiBizsBizIdLicencesGetPath = '/api/bizs/{bizId}/licences';
+
+  /**
+   * Get licences for login biz , only return active and Expired ones. 
+   * Example: http://localhost:5114/api/bizs/xxxx/licences.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBizsBizIdLicencesGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBizsBizIdLicencesGet$Response(params: {
+    bizId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiBizsBizIdLicencesGetPath, 'get');
+    if (params) {
+      rb.path('bizId', params.bizId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<LicenceBasicResponse>>;
+      })
+    );
+  }
+
+  /**
+   * Get licences for login biz , only return active and Expired ones. 
+   * Example: http://localhost:5114/api/bizs/xxxx/licences.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBizsBizIdLicencesGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBizsBizIdLicencesGet(params: {
+    bizId: string;
+  },
+  context?: HttpContext
+
+): Observable<Array<LicenceBasicResponse>> {
+
+    return this.apiBizsBizIdLicencesGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>) => r.body as Array<LicenceBasicResponse>)
+    );
+  }
+
+  /**
    * Path part for operation apiApplicantsApplicantIdLicencesGet
    */
   static readonly ApiApplicantsApplicantIdLicencesGetPath = '/api/applicants/{applicantId}/licences';

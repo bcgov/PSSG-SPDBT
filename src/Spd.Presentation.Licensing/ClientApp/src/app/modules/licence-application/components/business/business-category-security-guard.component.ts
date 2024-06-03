@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -65,29 +68,34 @@ export class BusinessCategorySecurityGuardComponent implements LicenceChildStepp
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
-	constructor(private businessApplicationService: BusinessApplicationService) {}
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(
+		private hotToastService: HotToastService,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
 	}
 
-	onFileUploaded(_file: File): void {
-		// TODO upload file on partial save
+	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
-
 		if (this.businessApplicationService.isAutoSave()) {
-			// this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.xxx, file).subscribe({
-			// 	next: (resp: any) => {
-			// 		const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-			// 		matchingFile.documentUrlId = resp.body[0].documentUrlId;
-			// 	},
-			// 	error: (error: any) => {
-			// 		console.log('An error occurred during file upload', error);
-			// 		this.hotToastService.error('An error occurred during the file upload. Please try again.');
-			// 		this.fileUploadComponent.removeFailedFile(file);
-			// 	},
-			// });
+			this.businessApplicationService
+				.addUploadDocument(LicenceDocumentTypeCode.BizSecurityDogCertificate, file)
+				.subscribe({
+					next: (resp: any) => {
+						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+						matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					},
+					error: (error: any) => {
+						console.log('An error occurred during file upload', error);
+						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+						this.fileUploadComponent.removeFailedFile(file);
+					},
+				});
 		}
 	}
 

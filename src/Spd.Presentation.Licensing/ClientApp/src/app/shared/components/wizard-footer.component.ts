@@ -9,7 +9,12 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 		<div class="row wizard-button-row">
 			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 				<ng-container *ngIf="showSaveAndExit; else showCancel">
-					<button *ngIf="isSaveAndExitObserved" mat-flat-button class="large bordered mb-2" (click)="onSaveAndExit()">
+					<button
+						*ngIf="isSaveAndExitObserved"
+						mat-flat-button
+						class="large button-small-caps bordered mb-2"
+						(click)="onSaveAndExit()"
+					>
 						Save & Exit
 					</button>
 				</ng-container>
@@ -61,7 +66,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 					*ngIf="isNextReviewStepperStepObserved"
 					mat-stroked-button
 					color="primary"
-					class="large next-review-step mb-2"
+					class="large button-small-caps mb-2"
 					(click)="onReview()"
 				>
 					Next: Review
@@ -69,7 +74,13 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			</div>
 		</div>
 	`,
-	styles: [],
+	styles: [
+		`
+			.button-small-caps {
+				font-variant: small-caps;
+			}
+		`,
+	],
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;

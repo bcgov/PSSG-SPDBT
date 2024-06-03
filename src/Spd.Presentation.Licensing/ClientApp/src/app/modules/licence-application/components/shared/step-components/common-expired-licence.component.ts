@@ -1,18 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import {
-	CommonApplicationService,
-	LicenceLookupResult,
-} from '@app/modules/licence-application/services/common-application.service';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import {
+	LookupByLicenceNumberDialogData,
+	ModalLookupByLicenceNumberComponent,
+} from '../../business/modal-lookup-by-licence-number.component';
 
 @Component({
 	selector: 'app-common-expired-licence',
@@ -41,31 +39,53 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				<div class="col-xxl-8 col-xl-10 col-lg-8 col-md-8 col-sm-12 mx-auto">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-					<div class="row">
-						<div class="col-xl-6 col-lg-12 mt-2 mx-auto">
-							<mat-form-field>
-								<mat-label>Expired {{ titleLabel }} Number</mat-label>
-								<input
-									matInput
-									type="search"
-									formControlName="expiredLicenceNumber"
-									oninput="this.value = this.value.toUpperCase()"
-									[errorStateMatcher]="matcher"
-									maxlength="10"
-								/>
-								<mat-error *ngIf="form.get('expiredLicenceNumber')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
+					<div class="row mb-3">
+						<div class="col-md-6 col-sm-12 mx-auto">
+							<button mat-flat-button color="primary" class="large w-auto" (click)="onLookup()">
+								Search for your Expired Licence
+							</button>
 						</div>
+					</div>
 
-						<app-alert type="info" icon="check_circle" *ngIf="messageInfo">
-							{{ messageInfo }}
-						</app-alert>
-						<app-alert type="warning" *ngIf="messageWarn">
-							<div [innerHTML]="messageWarn"></div>
-						</app-alert>
-						<app-alert type="danger" icon="error" *ngIf="messageError">
-							{{ messageError }}
-						</app-alert>
+					<div class="my-2">
+						<ng-container *ngIf="expiredLicenceId.value; else SearchForLicence">
+							<app-alert type="success" icon="check_circle">
+								<div class="row">
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">Name</div>
+										<div class="text-data">{{ expiredLicenceHolderName.value }}</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">{{ titleLabel }} Number</div>
+										<div class="text-data">{{ expiredLicenceNumber.value }}</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">Expiry Date</div>
+										<div class="text-data">
+											{{ expiredLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
+										</div>
+									</div>
+									<div class="col-md-6 col-sm-12">
+										<div class="d-block text-muted mt-2">Licence Status</div>
+										<div class="text-data fw-bold">{{ expiredLicenceStatusCode.value }}</div>
+									</div>
+								</div>
+							</app-alert>
+						</ng-container>
+						<ng-template #SearchForLicence>
+							<app-alert type="warning" icon=""> Search for the associated expired licence </app-alert>
+						</ng-template>
+
+						<mat-error
+							class="mat-option-error mb-4"
+							*ngIf="
+								(form.get('expiredLicenceId')?.dirty || form.get('expiredLicenceId')?.touched) &&
+								form.get('expiredLicenceId')?.invalid &&
+								form.get('expiredLicenceId')?.hasError('required')
+							"
+						>
+							An expired licence must be selected
+						</mat-error>
 					</div>
 				</div>
 			</div>
@@ -79,7 +99,6 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
 	titleLabel!: string;
-	label!: string;
 
 	messageInfo: string | null = null;
 	messageWarn: string | null = null;
@@ -87,85 +106,52 @@ export class CommonExpiredLicenceComponent implements OnInit {
 
 	matcher = new FormErrorStateMatcher();
 
+	@Input() isLoggedIn!: boolean;
 	@Input() form!: FormGroup;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
-	@Output() validExpiredLicenceData = new EventEmitter();
-
-	constructor(
-		private dialog: MatDialog,
-		private optionsPipe: OptionsPipe,
-		private formatDatePipe: FormatDatePipe,
-		private commonApplicationService: CommonApplicationService
-	) {}
+	constructor(private dialog: MatDialog, private optionsPipe: OptionsPipe) {}
 
 	ngOnInit(): void {
 		this.titleLabel = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-		this.label = this.titleLabel.toLowerCase();
 	}
 
-	onValidateAndSearch(): void {
-		if (this.hasExpiredLicence.value === BooleanTypeCode.No) {
-			this.validExpiredLicenceData.emit();
-			return;
-		}
-
-		this.performSearch(this.expiredLicenceNumber.value);
-	}
-
-	private performSearch(licenceNumber: string) {
-		this.form.markAllAsTouched();
-
-		this.form.patchValue({ expiredLicenceId: null, expiryDate: null });
-
-		if (!licenceNumber || licenceNumber.trim().length == 0) return;
-
-		this.commonApplicationService
-			.getLicenceNumberLookup(licenceNumber)
-			.pipe()
-			.subscribe((resp: LicenceLookupResult) => {
-				this.messageInfo = null;
-				[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
-					resp.searchResult,
-					this.label,
-					this.workerLicenceTypeCode,
-					resp.isExpired,
-					resp.isInRenewalPeriod
-				);
-
-				if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
-					this.handleValidExpiredLicence(resp.searchResult);
-				}
-			});
-	}
-
-	private handleValidExpiredLicence(licence: LicenceResponse): void {
-		const name = licence.licenceHolderName;
-
-		const formattedExpiryDate = this.formatDatePipe.transform(licence.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
-		this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
-
-		const message = `A valid expired ${this.label} with an expiry date of ${formattedExpiryDate} and with name "${name}" has been found. If this is correct then continue.`;
-
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: message,
-			actionText: 'Continue',
-			cancelText: 'Cancel',
+	onLookup(): void {
+		const dialogOptions: LookupByLicenceNumberDialogData = {
+			title: `Search for a ${this.titleLabel}`,
+			isExpiredLicenceSearch: true,
+			lookupWorkerLicenceTypeCode: this.workerLicenceTypeCode,
+			isLoggedIn: this.isLoggedIn,
 		};
-
 		this.dialog
-			.open(DialogComponent, { data })
+			.open(ModalLookupByLicenceNumberComponent, {
+				width: '800px',
+				data: dialogOptions,
+			})
 			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					this.form.patchValue({
-						expiredLicenceId: licence.licenceId,
-						expiredLicenceNumber: licence.licenceNumber,
-						expiryDate: licence.expiryDate,
-					});
-					this.validExpiredLicenceData.emit();
+			.subscribe((resp: any) => {
+				if (resp?.data) {
+					this.form.patchValue(
+						{
+							expiredLicenceId: resp.data.licenceId,
+							expiredLicenceHolderName: resp.data.licenceHolderName,
+							expiredLicenceNumber: resp.data.licenceNumber,
+							expiredLicenceExpiryDate: resp.data.expiryDate,
+							expiredLicenceStatusCode: resp.data.licenceStatusCode,
+						},
+						{ emitEvent: false }
+					);
+				} else {
+					this.form.patchValue(
+						{
+							expiredLicenceId: null,
+							expiredLicenceHolderName: null,
+							expiredLicenceNumber: null,
+							expiredLicenceExpiryDate: null,
+							expiredLicenceStatusCode: null,
+						},
+						{ emitEvent: false }
+					);
 				}
 			});
 	}
@@ -173,13 +159,19 @@ export class CommonExpiredLicenceComponent implements OnInit {
 	get hasExpiredLicence(): FormControl {
 		return this.form.get('hasExpiredLicence') as FormControl;
 	}
-	get expiredLicenceNumber(): FormControl {
-		return this.form.get('expiredLicenceNumber') as FormControl;
-	}
 	get expiredLicenceId(): FormControl {
 		return this.form.get('expiredLicenceId') as FormControl;
 	}
-	get expiryDate(): FormControl {
-		return this.form.get('expiryDate') as FormControl;
+	get expiredLicenceHolderName(): FormControl {
+		return this.form.get('expiredLicenceHolderName') as FormControl;
+	}
+	get expiredLicenceNumber(): FormControl {
+		return this.form.get('expiredLicenceNumber') as FormControl;
+	}
+	get expiredLicenceExpiryDate(): FormControl {
+		return this.form.get('expiredLicenceExpiryDate') as FormControl;
+	}
+	get expiredLicenceStatusCode(): FormControl {
+		return this.form.get('expiredLicenceStatusCode') as FormControl;
 	}
 }
