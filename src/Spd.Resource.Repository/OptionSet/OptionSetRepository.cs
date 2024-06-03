@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Cache;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
