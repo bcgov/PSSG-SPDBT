@@ -122,9 +122,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 							You will not remove or alter any proprietary symbol or notice, including any copyright notice, trademark
 							or logo displayed in connection with the Site.
 						</li>
-						<strong class="terms-subtitle">Suspension or Cancellation of Services:</strong>
+						<strong class="terms-subtitle">Suspension or Cancellation of Use of the Site:</strong>
 						<li>
-							Your use of any of the Services may be suspended or cancelled at any time if:
+							Your use of the Site may be suspended or cancelled at any time if:
 							<ol type="a">
 								<li>the Province deems such suspension or cancellation necessary for any good and valid reason; or</li>
 								<li>
