@@ -13,19 +13,22 @@ namespace Spd.Resource.Repository.Biz
         private readonly DynamicsContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<BizRepository> _logger;
-        private readonly List<BizTypeEnum> soleProprietorTypes = new() 
-        { 
+        private readonly IDynamicsLookupHelpers _dynamicsLookup;
+        private readonly List<BizTypeEnum> soleProprietorTypes = new()
+        {
             BizTypeEnum.RegisteredSoleProprietor,
-            BizTypeEnum.NonRegisteredSoleProprietor 
+            BizTypeEnum.NonRegisteredSoleProprietor
         };
 
-        public BizRepository(IDynamicsContextFactory ctx, 
-            IMapper mapper, 
-            ILogger<BizRepository> logger)
+        public BizRepository(IDynamicsContextFactory ctx,
+            IMapper mapper,
+            ILogger<BizRepository> logger,
+            IDynamicsLookupHelpers dynamicsLookup)
         {
             _context = ctx.CreateChangeOverwrite();
             _mapper = mapper;
             _logger = logger;
+            _dynamicsLookup = dynamicsLookup;
         }
 
         public async Task<IEnumerable<BizResult>> QueryBizAsync(BizsQry qry, CancellationToken ct)
@@ -58,7 +61,7 @@ namespace Spd.Resource.Repository.Biz
                 .Where(a => a.accountid == accountId);
 
             account? biz = await accounts.FirstOrDefaultAsync(ct);
-            
+
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
@@ -75,7 +78,7 @@ namespace Spd.Resource.Repository.Biz
                 .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)?._spd_licenceholder_value;
 
             var response = _mapper.Map<BizResult>(biz);
-            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
+            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
 
             return response;
@@ -104,7 +107,7 @@ namespace Spd.Resource.Repository.Biz
             account? biz = await accounts.FirstOrDefaultAsync(ct);
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
-            
+
             _mapper.Map(updateBizCmd, biz);
 
             if (!IsSoleProprietor(updateBizCmd.BizType))
@@ -122,7 +125,7 @@ namespace Spd.Resource.Repository.Biz
 
         private async Task<BizResult?> UpdateBizServiceTypeAsync(UpdateBizServiceTypeCmd updateBizServiceTypeCmd, CancellationToken ct)
         {
-            spd_servicetype? st = _context.LookupServiceType(updateBizServiceTypeCmd.ServiceTypeEnum.ToString());
+            spd_servicetype? st = await _dynamicsLookup.LookupServiceType(_context, updateBizServiceTypeCmd.ServiceTypeEnum.ToString());
             IQueryable<account> accounts = _context.accounts
                 .Expand(a => a.spd_account_spd_servicetype)
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
@@ -137,11 +140,11 @@ namespace Spd.Resource.Repository.Biz
 
             foreach (spd_servicetype serviceType in biz.spd_account_spd_servicetype)
             {
-                var serviceTypeCode = DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceType.spd_servicetypeid);
+                var serviceTypeCode = DynamicsContextLookupHelpers.GetServiceTypeName(serviceType.spd_servicetypeid);
                 if (updateBizServiceTypeCmd.ServiceTypeEnum.ToString() != serviceTypeCode)
                     _context.DeleteLink(biz, nameof(biz.spd_account_spd_servicetype), serviceType);
             }
-            
+
             await _context.SaveChangesAsync(ct);
             return await GetBizAsync(updateBizServiceTypeCmd.BizId, ct);
         }
@@ -156,7 +159,7 @@ namespace Spd.Resource.Repository.Biz
                 spd_servicetype? st = _context.LookupServiceType(serviceType.ToString());
                 _context.AddLink(account, nameof(account.spd_account_spd_servicetype), st);
             }
-            
+
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);

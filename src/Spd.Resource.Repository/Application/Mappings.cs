@@ -120,7 +120,7 @@ namespace Spd.Resource.Repository.Application
             .ForMember(d => d.GrantedDate, opt => opt.MapFrom(s => s.spd_dategranted))
             .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.spd_expirydate))
             .ForMember(d => d.WorkWith, opt => opt.MapFrom(s => s.spd_workswith))
-            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.LookupServiceTypeKey(s._spd_servicetype_value)))
+            .ForMember(d => d.ServiceType, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetServiceTypeName(s._spd_servicetype_value)))
             .ForMember(d => d.ClearanceId, opt => opt.MapFrom(s => s.spd_clearanceid));
         }
 
@@ -133,7 +133,7 @@ namespace Spd.Resource.Repository.Application
         private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
         {
             if (serviceTypeGuid == null) return null;
-            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
+            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(serviceTypeGuid));
         }
 
         private static CaseSubStatusEnum? GetSubStatusEnum(string str)

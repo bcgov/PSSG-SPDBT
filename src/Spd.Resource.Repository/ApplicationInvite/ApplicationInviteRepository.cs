@@ -15,11 +15,17 @@ namespace Spd.Resource.Repository.ApplicationInvite
         private readonly DynamicsContext _dynaContext;
         private readonly IMapper _mapper;
         private readonly ITimeLimitedDataProtector _dataProtector;
-        public ApplicationInviteRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<ApplicationInviteRepository> logger, IDataProtectionProvider dpProvider)
+        private readonly IDynamicsLookupHelpers _dynamicsLookup;
+        public ApplicationInviteRepository(IDynamicsContextFactory ctx,
+            IMapper mapper,
+            ILogger<ApplicationInviteRepository> logger,
+            IDataProtectionProvider dpProvider,
+            IDynamicsLookupHelpers dynamicsLookup)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
             _mapper = mapper;
             _dataProtector = dpProvider.CreateProtector(nameof(ApplicationInvitesCreateCmd)).ToTimeLimitedDataProtector();
+            _dynamicsLookup = dynamicsLookup;
         }
 
         public async Task<ApplicationInviteListResp> QueryAsync(ApplicationInviteQuery query, CancellationToken cancellationToken)
@@ -98,7 +104,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
                     _dynaContext.AddTospd_portalinvitations(invitation);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
-                    spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
+                    spd_servicetype? servicetype = await _dynamicsLookup.LookupServiceType(_dynaContext, item.ServiceType.ToString());
                     if (servicetype != null)
                     {
                         _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);
@@ -126,7 +132,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
                     _dynaContext.AddTospd_portalinvitations(invitation);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
                     _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
-                    spd_servicetype? servicetype = _dynaContext.LookupServiceType(item.ServiceType.ToString());
+                    spd_servicetype? servicetype = await _dynamicsLookup.LookupServiceType(_dynaContext, item.ServiceType.ToString());
                     if (servicetype != null)
                     {
                         _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);

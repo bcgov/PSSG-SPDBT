@@ -111,7 +111,9 @@ internal partial class ApplicationRepository : IApplicationRepository
             .Where(r => r._spd_applicantid_value == query.ApplicantId)
             .OrderByDescending(i => i.createdon);
 
-        List<Guid?> serviceTypeGuid = IApplicationRepository.ScreeningServiceTypes.Select(c => _context.LookupServiceType(c.ToString()).spd_servicetypeid).ToList();
+        List<Guid?> serviceTypeGuid = IApplicationRepository.ScreeningServiceTypes
+            .Select(c => DynamicsContextLookupHelpers.GetServiceTypeGuid(c.ToString()))
+            .ToList();
 
         var result = applications.ToList().Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value));
         var response = new ApplicantApplicationListResp();

@@ -212,9 +212,17 @@ namespace Spd.Utilities.Dynamics
                 .FirstOrDefault();
         }
 
-        public static string LookupServiceTypeKey(Guid? serviceTypeId)
+        public static string GetServiceTypeName(Guid? serviceTypeId)
         {
             return ServiceTypeGuidDictionary.FirstOrDefault(s => s.Value == serviceTypeId).Key;
+        }
+
+        public static Guid? GetServiceTypeGuid(string serviceTypeName)
+        {
+            if (ServiceTypeGuidDictionary.TryGetValue(serviceTypeName, out Guid guid))
+                return guid;
+            else
+                return null;
         }
         #endregion
 
