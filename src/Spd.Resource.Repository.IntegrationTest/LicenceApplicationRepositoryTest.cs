@@ -82,8 +82,11 @@ public class LicenceApplicationRepositoryTest : IClassFixture<IntegrationTestSet
     [Fact]
     public async Task GetLicenceApplicationAsync_ApplicationNotFound_Throw_Exception()
     {
-        // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _personLicAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
+        // Action
+        var response = await _licAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None);
+
+        // Assert
+        Assert.Null(response);
     }
 
     [Fact]
