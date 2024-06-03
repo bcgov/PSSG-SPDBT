@@ -16,7 +16,7 @@ internal class LicenceRepository : ILicenceRepository
         _mapper = mapper;
     }
 
-    public async Task<LicenceResp> GetAsync(Guid licenceId, CancellationToken ct)
+    public async Task<LicenceResp?> GetAsync(Guid licenceId, CancellationToken ct)
     {
         spd_licence? licence;
         try
@@ -31,7 +31,7 @@ internal class LicenceRepository : ILicenceRepository
         catch (DataServiceQueryException ex)
         {
             if (ex.Response.StatusCode == 404)
-                throw new ArgumentException($"cannot find the licence with licence Id : {licenceId}");
+                return null;
             else
                 throw;
         }
