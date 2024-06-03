@@ -6,7 +6,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
@@ -32,7 +32,7 @@ internal class SecurityWorkerAppManager :
 
     public SecurityWorkerAppManager(
         ILicenceRepository licenceRepository,
-        ILicenceApplicationRepository licenceAppRepository,
+        IPersonLicApplicationRepository personLicAppRepository,
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ITaskRepository taskRepository,
@@ -44,7 +44,7 @@ internal class SecurityWorkerAppManager :
             documentUrlRepository,
             feeRepository,
             licenceRepository,
-            licenceAppRepository,
+            personLicAppRepository,
             mainFileStorageService,
             transientFileStorageService)
     {
@@ -68,7 +68,7 @@ internal class SecurityWorkerAppManager :
 
         SaveLicenceApplicationCmd saveCmd = _mapper.Map<SaveLicenceApplicationCmd>(cmd.LicenceUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.LicenceUpsertRequest.DocumentInfos);
-        var response = await _licenceAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
+        var response = await _personLicAppRepository.SaveLicenceApplicationAsync(saveCmd, cancellationToken);
         if (cmd.LicenceUpsertRequest.LicenceAppId == null)
             cmd.LicenceUpsertRequest.LicenceAppId = response.LicenceAppId;
         await UpdateDocumentsAsync(
@@ -110,7 +110,7 @@ internal class SecurityWorkerAppManager :
                 ApplicationPortalStatusEnum.VerifyIdentity
             }
         );
-        var response = await _licenceAppRepository.QueryAsync(q, cancellationToken);
+        var response = await _personLicAppRepository.QueryAsync(q, cancellationToken);
         return _mapper.Map<IEnumerable<LicenceAppListResponse>>(response);
     }
 
@@ -118,7 +118,7 @@ internal class SecurityWorkerAppManager :
 
     public async Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken cancellationToken)
     {
-        var response = await _licenceAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
+        var response = await _personLicAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
         WorkerLicenceAppResponse result = _mapper.Map<WorkerLicenceAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList(); // Exclude licence document type code that are not defined in the related dictionary
@@ -135,7 +135,7 @@ internal class SecurityWorkerAppManager :
         //save the application
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
 
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
@@ -156,7 +156,7 @@ internal class SecurityWorkerAppManager :
             throw new ArgumentException("the licence cannot be replaced because it will expired soon or already expired");
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         //add photo file copying here.
         if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
@@ -222,7 +222,7 @@ internal class SecurityWorkerAppManager :
 
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
-        var response = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
@@ -290,7 +290,7 @@ internal class SecurityWorkerAppManager :
             cmd.IsAuthenticated,
             cancellationToken);
 
-        LicenceApplicationResp originalApp = await _licenceAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
+        LicenceApplicationResp originalApp = await _personLicAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
         ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;
@@ -299,7 +299,7 @@ internal class SecurityWorkerAppManager :
         {
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
-            createLicResponse = await _licenceAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+            createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
             cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false);
         }
         else

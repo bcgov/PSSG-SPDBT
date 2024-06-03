@@ -3,7 +3,7 @@ using MediatR;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
-using Spd.Resource.Repository.LicenceApplication;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Manager.Licence;
@@ -12,20 +12,20 @@ internal partial class LicenceAppDocumentManager :
         IRequestHandler<CreateDocumentInTransientStoreCommand, IEnumerable<LicenceAppDocumentResponse>>,
         ILicenceAppDocumentManager
 {
-    private readonly ILicenceApplicationRepository _licenceAppRepository;
+    private readonly IPersonLicApplicationRepository _personlicAppRepository;
     private readonly IMapper _mapper;
     private readonly ITempFileStorageService _tempFile;
     private readonly IDocumentRepository _documentRepository;
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
 
     public LicenceAppDocumentManager(
-        ILicenceApplicationRepository licenceAppRepository,
+        IPersonLicApplicationRepository personLicAppRepository,
         IBizLicApplicationRepository bizLicApplicationRepository,
         IMapper mapper,
         ITempFileStorageService tempFile,
         IDocumentRepository documentUrlRepository)
     {
-        _licenceAppRepository = licenceAppRepository;
+        _personlicAppRepository = personLicAppRepository;
         _bizLicApplicationRepository = bizLicApplicationRepository;
         _tempFile = tempFile;
         _mapper = mapper;
@@ -39,7 +39,7 @@ internal partial class LicenceAppDocumentManager :
         DocumentTypeEnum ? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
         DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
 
-        LicenceApplicationResp app = await _licenceAppRepository.GetLicenceApplicationAsync(command.AppId, cancellationToken);
+        LicenceApplicationResp app = await _personlicAppRepository.GetLicenceApplicationAsync(command.AppId, cancellationToken);
         if (app == null)
             throw new ArgumentException("Invalid application Id");
 

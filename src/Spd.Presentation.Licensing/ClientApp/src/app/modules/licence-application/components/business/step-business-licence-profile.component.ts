@@ -17,11 +17,9 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 							<h2 class="fs-3">Business Profile</h2>
 						</div>
 					</div>
-					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<!-- <ng-container *ngIf="!isReadonly">
-	<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
-</ng-container> -->
+					<mat-divider class="mat-divider-main mb-3"></mat-divider>
+					<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
 
 					<app-common-business-profile
 						[businessInformationFormGroup]="businessInformationFormGroup"
@@ -32,10 +30,27 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[isReadonly]="false"
 					></app-common-business-profile>
 
-					<div class="row mt-3">
-						<div class="col-12">
-							<app-collection-notice></app-collection-notice>
-						</div>
+					<section *ngIf="showConfirmation">
+						<form [formGroup]="form" novalidate>
+							<div class="text-minor-heading py-2">Confirmation</div>
+							<mat-checkbox formControlName="isProfileUpToDate">
+								I confirm that this information is up-to-date
+							</mat-checkbox>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
+									form.get('isProfileUpToDate')?.invalid &&
+									form.get('isProfileUpToDate')?.hasError('required')
+								"
+							>
+								This is required
+							</mat-error>
+						</form>
+					</section>
+
+					<div class="mt-3">
+						<app-collection-notice></app-collection-notice>
 					</div>
 				</div>
 			</div>
@@ -48,8 +63,11 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 export class StepBusinessLicenceProfileComponent implements OnInit {
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
+	alertText = '';
 	saveAndContinueLabel = 'Save & Continue to Application';
+	showConfirmation = false;
 
+	form = this.businessApplicationService.profileConfirmationFormGroup;
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
@@ -65,6 +83,32 @@ export class StepBusinessLicenceProfileComponent implements OnInit {
 	) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
+
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				this.alertText = 'Make sure your address information is up-to-date before replacing your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Replacement';
+				this.showConfirmation = true;
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.alertText = 'Make sure your profile information is up-to-date before renewing your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Renewal';
+				this.showConfirmation = true;
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.alertText = 'Make sure your profile information is up-to-date before updating your licence.';
+				this.saveAndContinueLabel = 'Save & Proceed to Update';
+				this.showConfirmation = true;
+				break;
+			}
+			default: {
+				this.alertText =
+					'Make sure your profile information is up-to-date before renewing or updating your licence, or starting a new application.';
+				break;
+			}
+		}
 	}
 
 	ngOnInit(): void {
