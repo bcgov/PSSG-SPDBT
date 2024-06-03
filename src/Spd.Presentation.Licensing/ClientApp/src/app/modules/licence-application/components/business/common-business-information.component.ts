@@ -1,14 +1,17 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BizTypeCode } from '@app/api/models';
+import { BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
-import { LookupSwlDialogData, ModalLookupSwlComponent } from './modal-lookup-swl.component';
+import {
+	LookupByLicenceNumberDialogData,
+	ModalLookupByLicenceNumberComponent,
+} from './modal-lookup-by-licence-number.component';
 
 @Component({
 	selector: 'app-common-business-information',
@@ -177,12 +180,15 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 	}
 
 	onLookupSoleProprietor(): void {
-		const dialogOptions: LookupSwlDialogData = {
+		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Sole Proprietor',
 			subtitle: 'A sole proprietor must have a valid security worker licence',
+			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			isExpiredLicenceSearch: false,
+			isLoggedIn: true,
 		};
 		this.dialog
-			.open(ModalLookupSwlComponent, {
+			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
 			})

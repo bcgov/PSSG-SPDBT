@@ -26,6 +26,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
 	BehaviorSubject,
@@ -143,7 +144,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private domSanitizer: DomSanitizer
+		private domSanitizer: DomSanitizer,
+		private hotToastService: HotToastService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
@@ -416,7 +418,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	saveLicenceStepAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	partialSaveLicenceStepAuthenticated(
+		isSaveAndExit?: boolean
+	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
@@ -425,8 +429,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				const formValue = this.licenceModelFormGroup.getRawValue();
-				if (!formValue.licenceAppId) {
+				this.hasValueChanged = false;
+
+				let msg = 'Licence information has been saved';
+				if (isSaveAndExit) {
+					msg =
+						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!licenceModelFormValue.licenceAppId) {
 					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})
@@ -750,20 +762,37 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private loadExistingLicenceWithIdAuthenticated(
 		licenceAppId: string,
 		userLicenceInformation?: UserLicenceResponse
-	): Observable<WorkerLicenceAppResponse> {
+	): Observable<any> {
 		this.reset();
 
-		return forkJoin([
+		const apis: Observable<any>[] = [
 			this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }),
 			this.applicantProfileService.apiApplicantIdGet({
 				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			}),
-		]).pipe(
+		];
+
+		return forkJoin(apis).pipe(
 			switchMap((resps: any[]) => {
 				const workerLicenceResponse = resps[0];
-				const profile = resps[1];
+				const profileResponse = resps[1];
 
-				return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profile, userLicenceInformation);
+				if (workerLicenceResponse.expiredLicenceId) {
+					return this.licenceService
+						.apiLicencesLicenceIdGet({ licenceId: workerLicenceResponse.expiredLicenceId })
+						.pipe(
+							switchMap((licenceResponse: LicenceResponse) => {
+								return this.applyLicenceAndProfileIntoModel(
+									workerLicenceResponse,
+									profileResponse,
+									userLicenceInformation,
+									licenceResponse
+								);
+							})
+						);
+				} else {
+					return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profileResponse, userLicenceInformation);
+				}
 			})
 		);
 	}
@@ -771,7 +800,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private applyLicenceAndProfileIntoModel(
 		workerLicenceApplication: WorkerLicenceAppResponse,
 		profile: ApplicantProfileResponse | null | undefined,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation?: UserLicenceResponse,
+		expiredLicenceInformation?: LicenceResponse
 	): Observable<any> {
 		return this.applyLicenceProfileIntoModel(
 			profile ?? workerLicenceApplication,
@@ -779,7 +809,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			userLicenceInformation
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(workerLicenceApplication);
+				return this.applyLicenceIntoModel(workerLicenceApplication, expiredLicenceInformation);
 			})
 		);
 	}
@@ -1247,46 +1277,55 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private applyLicenceIntoModel(resp: WorkerLicenceAppResponse): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeCode };
-		const applicationTypeData = { applicationTypeCode: resp.applicationTypeCode };
+	private applyLicenceIntoModel(
+		workerLicenceAppl: WorkerLicenceAppResponse,
+		expiredLicenceInfo?: LicenceResponse
+	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceAppl.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
 		const soleProprietorData = {
-			isSoleProprietor: resp.bizTypeCode === BizTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
-			bizTypeCode: resp.bizTypeCode,
+			isSoleProprietor: workerLicenceAppl.bizTypeCode === BizTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
+			bizTypeCode: workerLicenceAppl.bizTypeCode,
 		};
 
 		const expiredLicenceData = {
-			hasExpiredLicence: this.utilService.booleanToBooleanType(resp.hasExpiredLicence),
-			expiredLicenceNumber: resp.expiredLicenceNumber,
-			expiryDate: resp.expiryDate,
-			expiredLicenceId: resp.expiredLicenceId,
+			hasExpiredLicence: this.utilService.booleanToBooleanType(workerLicenceAppl.hasExpiredLicence),
+			expiredLicenceId: expiredLicenceInfo?.licenceId,
+			expiredLicenceHolderName: expiredLicenceInfo?.licenceHolderName,
+			expiredLicenceNumber: expiredLicenceInfo?.licenceNumber,
+			expiredLicenceExpiryDate: expiredLicenceInfo?.expiryDate,
+			expiredLicenceStatusCode: expiredLicenceInfo?.licenceStatusCode,
 		};
 
 		const licenceTermData = {
-			licenceTermCode: resp.licenceTermCode,
+			licenceTermCode: workerLicenceAppl.licenceTermCode,
 		};
 
 		const bcDriversLicenceData = {
-			hasBcDriversLicence: this.utilService.booleanToBooleanType(resp.hasBcDriversLicence),
-			bcDriversLicenceNumber: resp.bcDriversLicenceNumber,
+			hasBcDriversLicence: this.utilService.booleanToBooleanType(workerLicenceAppl.hasBcDriversLicence),
+			bcDriversLicenceNumber: workerLicenceAppl.bcDriversLicenceNumber,
 		};
 
-		let height = resp.height ? resp.height + '' : null;
+		let height = workerLicenceAppl.height ? workerLicenceAppl.height + '' : null;
 		let heightInches = '';
-		if (resp.heightUnitCode == HeightUnitCode.Inches && resp.height && resp.height > 0) {
-			height = Math.trunc(resp.height / 12) + '';
-			heightInches = (resp.height % 12) + '';
+		if (
+			workerLicenceAppl.heightUnitCode == HeightUnitCode.Inches &&
+			workerLicenceAppl.height &&
+			workerLicenceAppl.height > 0
+		) {
+			height = Math.trunc(workerLicenceAppl.height / 12) + '';
+			heightInches = (workerLicenceAppl.height % 12) + '';
 		}
 
 		const characteristicsData = {
-			hairColourCode: resp.hairColourCode,
-			eyeColourCode: resp.eyeColourCode,
+			hairColourCode: workerLicenceAppl.hairColourCode,
+			eyeColourCode: workerLicenceAppl.eyeColourCode,
 			height,
-			heightUnitCode: resp.heightUnitCode,
+			heightUnitCode: workerLicenceAppl.heightUnitCode,
 			heightInches,
-			weight: resp.weight ? resp.weight + '' : null,
-			weightUnitCode: resp.weightUnitCode,
+			weight: workerLicenceAppl.weight ? workerLicenceAppl.weight + '' : null,
+			weightUnitCode: workerLicenceAppl.weightUnitCode,
 		};
 
 		let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
@@ -1320,7 +1359,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
 		const categorySecurityConsultantFormGroup: any = { isInclude: false };
 
-		resp.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
+		workerLicenceAppl.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
 			switch (category) {
 				case WorkerCategoryTypeCode.BodyArmourSales:
 					categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
@@ -1393,7 +1432,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const attachments2SecurityConsultant: Array<File> = [];
 		const attachmentsArmouredCarGuard: Array<File> = [];
 
-		resp.documentInfos?.forEach((doc: Document) => {
+		workerLicenceAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.Bcid:
 				case LicenceDocumentTypeCode.BcServicesCard:
@@ -1429,9 +1468,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					citizenshipDataAttachments.push(aFile);
 
-					citizenshipData.isCanadianCitizen = this.utilService.booleanToBooleanType(resp.isCanadianCitizen);
-					citizenshipData.canadianCitizenProofTypeCode = resp.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
-					citizenshipData.notCanadianCitizenProofTypeCode = resp.isCanadianCitizen ? null : doc.licenceDocumentTypeCode;
+					citizenshipData.isCanadianCitizen = this.utilService.booleanToBooleanType(
+						workerLicenceAppl.isCanadianCitizen
+					);
+					citizenshipData.canadianCitizenProofTypeCode = workerLicenceAppl.isCanadianCitizen
+						? doc.licenceDocumentTypeCode
+						: null;
+					citizenshipData.notCanadianCitizenProofTypeCode = workerLicenceAppl.isCanadianCitizen
+						? null
+						: doc.licenceDocumentTypeCode;
 					citizenshipData.expiryDate = doc.expiryDate ?? null;
 					citizenshipData.attachments = citizenshipDataAttachments;
 
@@ -1571,9 +1616,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					dogsAuthorizationData = {
 						useDogs: BooleanTypeCode.Yes,
 						dogsPurposeFormGroup: {
-							isDogsPurposeDetectionDrugs: resp.isDogsPurposeDetectionDrugs,
-							isDogsPurposeDetectionExplosives: resp.isDogsPurposeDetectionExplosives,
-							isDogsPurposeProtection: resp.isDogsPurposeProtection,
+							isDogsPurposeDetectionDrugs: workerLicenceAppl.isDogsPurposeDetectionDrugs,
+							isDogsPurposeDetectionExplosives: workerLicenceAppl.isDogsPurposeDetectionExplosives,
+							isDogsPurposeProtection: workerLicenceAppl.isDogsPurposeProtection,
 						},
 						attachments: attachmentsDogs,
 					};
@@ -1621,10 +1666,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		this.licenceModelFormGroup.patchValue(
 			{
-				licenceAppId: resp.licenceAppId,
-				caseNumber: resp.caseNumber,
+				licenceAppId: workerLicenceAppl.licenceAppId,
+				caseNumber: workerLicenceAppl.caseNumber,
 				originalBizTypeCode: soleProprietorData.bizTypeCode,
-				applicationPortalStatus: resp.applicationPortalStatus,
+				applicationPortalStatus: workerLicenceAppl.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
 				soleProprietorData,

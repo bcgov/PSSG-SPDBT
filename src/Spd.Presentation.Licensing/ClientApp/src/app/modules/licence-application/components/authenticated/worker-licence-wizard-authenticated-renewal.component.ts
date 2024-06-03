@@ -2,7 +2,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
@@ -12,7 +11,6 @@ import { BaseWizardComponent } from '@app/core/components/base-wizard.component'
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/steps-worker-licence-selection.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -109,7 +107,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private licenceApplicationService: LicenceApplicationService
@@ -199,12 +196,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 
 	onGoToReview() {
 		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.saveLicenceStepAuthenticated().subscribe({
+			this.licenceApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.licenceApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Licence information has been saved');
-
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
 						this.stepper.selectedIndex = this.STEP_REVIEW;
@@ -213,7 +206,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				error: (error: HttpErrorResponse) => {
 					// only 403s will be here as an error
 					if (error.status == 403) {
-						this.handleDuplicateLicence();
+						this.commonApplicationService.handleDuplicateLicence();
 					}
 				},
 			});
@@ -248,26 +241,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.step2Complete = this.licenceApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete);
-	}
-
-	private handleDuplicateLicence(): void {
-		const data: DialogOptions = {
-			icon: 'error',
-			title: 'Confirmation',
-			message:
-				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
-			actionText: 'Edit',
-			cancelText: 'Go back',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (!response) {
-					this.router.navigate([LicenceApplicationRoutes.pathUserApplications()]);
-				}
-			});
 	}
 
 	private goToChildNextStep() {

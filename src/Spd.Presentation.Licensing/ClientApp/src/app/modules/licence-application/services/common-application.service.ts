@@ -514,7 +514,6 @@ export class CommonApplicationService {
 
 	setExpiredLicenceLookupMessage(
 		licence: LicenceResponse | null,
-		label: string,
 		workerLicenceTypeCode: WorkerLicenceTypeCode,
 		isExpired: boolean,
 		isInRenewalPeriod: boolean
@@ -522,22 +521,22 @@ export class CommonApplicationService {
 		let messageWarn = null;
 		let messageError = null;
 
+		const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
 		if (licence) {
 			if (licence.workerLicenceTypeCode !== workerLicenceTypeCode) {
 				//   WorkerLicenceType does not match
-				const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
 				messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
 			} else {
 				if (!isExpired) {
 					if (isInRenewalPeriod) {
-						messageWarn = `Your ${label} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${label}</a>.`;
+						messageWarn = `Your ${selWorkerLicenceTypeDesc} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${selWorkerLicenceTypeDesc}</a>.`;
 					} else {
-						messageWarn = `This ${label} is still valid. Please renew it when you get your renewal notice in the mail.`;
+						messageWarn = `This ${selWorkerLicenceTypeDesc} is still valid. Please renew it when you get your renewal notice in the mail.`;
 					}
 				}
 			}
 		} else {
-			messageError = `This ${label} number does not match any existing ${label}s.`;
+			messageError = `This ${selWorkerLicenceTypeDesc} number does not match any existing ${selWorkerLicenceTypeDesc}s.`;
 		}
 
 		return [messageWarn, messageError];
@@ -558,5 +557,25 @@ export class CommonApplicationService {
 		}
 
 		return daysBetween > renewPeriodDays ? false : true;
+	}
+
+	handleDuplicateLicence(): void {
+		const data: DialogOptions = {
+			icon: 'error',
+			title: 'Confirmation',
+			message:
+				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
+			actionText: 'Edit',
+			cancelText: 'Go back',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (!response) {
+					this.onGoToHome();
+				}
+			});
 	}
 }
