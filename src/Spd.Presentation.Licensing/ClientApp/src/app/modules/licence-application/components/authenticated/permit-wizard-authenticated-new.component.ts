@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -224,12 +223,8 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+			this.permitApplicationService.partialSavePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Permit information has been saved');
-
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
 
@@ -246,10 +241,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 					}
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -283,43 +275,27 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			return;
 		}
 
-		this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+		this.permitApplicationService.partialSavePermitStepAuthenticated(true).subscribe({
 			next: (_resp: any) => {
-				this.permitApplicationService.hasValueChanged = false;
-
-				this.hotToastService.success(
-					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days'
-				);
-
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
 			},
 			error: (error: HttpErrorResponse) => {
-				// only 403s will be here as an error
-				if (error.status == 403) {
-					this.handleDuplicateLicence();
-				}
+				this.handlePartialSaveError(error);
 			},
 		});
 	}
 
 	onGoToReview() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+			this.permitApplicationService.partialSavePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-
-					this.hotToastService.success('Licence information has been saved');
-
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
 						this.stepper.selectedIndex = this.STEP_REVIEW;
 					}, 250);
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -329,17 +305,12 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 	onChildNextStep() {
 		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.savePermitStepAuthenticated().subscribe({
+			this.permitApplicationService.partialSavePermitStepAuthenticated().subscribe({
 				next: (_resp: any) => {
-					this.permitApplicationService.hasValueChanged = false;
-					this.hotToastService.success('Licence information has been saved');
 					this.goToChildNextStep();
 				},
 				error: (error: HttpErrorResponse) => {
-					// only 403s will be here as an error
-					if (error.status == 403) {
-						this.handleDuplicateLicence();
-					}
+					this.handlePartialSaveError(error);
 				},
 			});
 		} else {
@@ -359,24 +330,11 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		// console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}
 
-	private handleDuplicateLicence(): void {
-		const data: DialogOptions = {
-			icon: 'error',
-			title: 'Confirmation',
-			message:
-				'You already have the same kind of licence or licence application. Do you want to edit this licence information or return to your list?',
-			actionText: 'Edit',
-			cancelText: 'Go back',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (!response) {
-					this.router.navigate([LicenceApplicationRoutes.pathUserApplications()]);
-				}
-			});
+	private handlePartialSaveError(error: HttpErrorResponse): void {
+		// only 403s will be here as an error // TODO business licence has duplicates?
+		if (error.status == 403) {
+			this.commonApplicationService.handleDuplicateLicence();
+		}
 	}
 
 	private goToChildNextStep() {

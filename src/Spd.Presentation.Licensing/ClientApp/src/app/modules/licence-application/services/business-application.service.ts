@@ -4,14 +4,19 @@ import { Router } from '@angular/router';
 import {
 	Address,
 	ApplicationTypeCode,
+	BizLicAppCommandResponse,
+	BizLicAppResponse,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
-	BizTypeCode,
 	BranchInfo,
-	ContactInfo,
+	Document,
+	LicenceAppDocumentResponse,
+	LicenceDocumentTypeCode,
 	LicenceResponse,
 	Members,
+	NonSwlContactInfo,
 	SwlContactInfo,
+	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BizLicensingService, BizProfileService, LicenceService } from '@app/api/services';
@@ -19,8 +24,10 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
+import { FileUtilService } from '@app/core/services/file-util.service';
 import { UtilService } from '@app/core/services/util.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { HotToastService } from '@ngneat/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,
@@ -31,13 +38,15 @@ import {
 	map,
 	of,
 	switchMap,
+	take,
 	tap,
 } from 'rxjs';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService } from './common-application.service';
+import { LicenceDocument } from './licence-application.helper';
 
-export interface ControllingMemberContactInfo extends ContactInfo {
+export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
 	contactId?: string | null;
 	licenceHolderName: string;
@@ -57,8 +66,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
+		bizId: new FormControl(null),
 		licenceAppId: new FormControl(null),
-		bizId: new FormControl(null), // when authenticated, the biz id
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 
@@ -70,9 +79,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		liabilityData: this.liabilityFormGroup,
 
 		categoryData: this.categoryFormGroup,
-		categoryArmouredCarGuardData: this.categoryArmouredCarGuardFormGroup,
-		categoryPrivateInvestigatorData: this.categoryPrivateInvestigatorFormGroup,
-		categorySecurityGuardData: this.categorySecurityGuardFormGroup,
+		categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
+		categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
+		categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
 
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
@@ -91,15 +100,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		formBuilder: FormBuilder,
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
+		utilService: UtilService,
 		private router: Router,
-		private utilService: UtilService,
 		private licenceService: LicenceService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: CommonApplicationService,
+		private fileUtilService: FileUtilService,
+		private hotToastService: HotToastService
 	) {
-		super(formBuilder, configService, formatDatePipe);
+		super(formBuilder, configService, formatDatePipe, utilService);
 
 		this.businessModelChangedSubscription = this.businessModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -114,9 +125,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					this.businessModelFormGroup.patchValue({ isBcBusinessAddress }, { emitEvent: false });
 
-					const isSoleProprietor =
-						bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor ||
-						bizTypeCode === BizTypeCode.RegisteredSoleProprietor;
+					const isSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
 					const step1Complete = this.isStepBackgroundInformationComplete();
 					const step2Complete = this.isStepLicenceSelectionComplete();
@@ -152,6 +161,55 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		return this.hasValueChanged;
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<BizLicAppCommandResponse>
+	 */
+	partialSaveBusinessLicenceStep(isSaveAndExit?: boolean): Observable<any> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
+			take(1),
+			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.hasValueChanged = false;
+
+				let msg = 'Business Licence information has been saved';
+				if (isSaveAndExit) {
+					msg =
+						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!businessModelFormValue.licenceAppId) {
+					this.businessModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId! }, { emitEvent: false });
+				}
+				return resp;
+			})
+		);
+	}
+
+	/**
+	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	 * @param documentCode
+	 * @param document
+	 * @returns
+	 */
+	addUploadDocument(
+		documentCode: LicenceDocumentTypeCode,
+		documentFile: File
+	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+		const doc: LicenceDocument = {
+			Documents: [documentFile],
+			LicenceDocumentTypeCode: documentCode,
+		};
+
+		return this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response({
+			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
+			body: doc,
+		});
 	}
 
 	/**
@@ -232,12 +290,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const licenceAppId = modelFormValue.licenceAppId;
 
 		const body: Members = {
-			employees: this.saveEmployeesBody(),
-			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(),
-			swlControllingMembers: this.saveControllingMembersWithSwlBody(),
+			employees: this.saveEmployeesBody(modelFormValue),
+			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(modelFormValue),
+			swlControllingMembers: this.saveControllingMembersWithSwlBody(modelFormValue),
 		};
 
-		return this.bizLicensingService.apiBusinessLicenceBizIdApplicationIdMembersPost({
+		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
 			bizId,
 			applicationId: licenceAppId,
 			body,
@@ -302,19 +360,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Create an empty anonymous licence
+	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode | undefined): Observable<any> {
-		return this.bizProfileService.apiBizIdGet({ id: this.authUserBceidService.bceidUserProfile?.bizId! }).pipe(
+	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode): Observable<any> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
 			switchMap((profile: BizProfileResponse) => {
 				// If the profile is a sole proprietor, then we need to get the associated licence info
 				if (profile.soleProprietorSwlContactInfo?.licenceId) {
 					return this.licenceService
 						.apiLicencesLicenceIdGet({ licenceId: profile.soleProprietorSwlContactInfo?.licenceId })
 						.pipe(
-							switchMap((licence: LicenceResponse) => {
-								return this.createEmptyLicenceAuthenticated(profile, applicationTypeCode, licence).pipe(
+							switchMap((soleProprietorSwlLicence: LicenceResponse) => {
+								return this.createEmptyLicence(profile, soleProprietorSwlLicence).pipe(
 									tap((_resp: any) => {
 										this.initialized = true;
 
@@ -328,7 +388,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						);
 				}
 
-				return this.createEmptyLicenceAuthenticated(profile, applicationTypeCode).pipe(
+				return this.createEmptyLicence(profile).pipe(
 					tap((_resp: any) => {
 						this.initialized = true;
 
@@ -342,184 +402,93 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(): Observable<any> {
+	/**
+	 * Load an existing licence application
+	 * @param licenceAppId
+	 * @returns
+	 */
+	getBusinessLicenceToResume(licenceAppId: string): Observable<BizLicAppResponse> {
+		return this.loadExistingLicenceWithId(licenceAppId).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with an id for the provided application type
+	 * @param licenceAppId
+	 * @returns
+	 */
+	// 	getBusinessLicenceWithSelection(
+	// 		licenceAppId: string,
+	// 		applicationTypeCode: ApplicationTypeCode
+	// 	): Observable<BizLicAppResponse> {
+	// 		return this.loadExistingLicenceWithId(licenceAppId).pipe(
+	// 			tap((_resp: any) => {
+	// 				this.initialized = true;
+	// // see getLicenceOfTypeAuthenticated
+	// 				this.commonApplicationService.setApplicationTitle(
+	// 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+	// 					_resp.applicationTypeData.applicationTypeCode,
+	// 					_resp.originalLicenceNumber
+	// 				);
+	// 			})
+	// 		);
+	// 	}
+
+	getMembersAndEmployees(licenceAppId: string): Observable<any> {
 		this.reset();
 
-		const bizId = '34289094-0c0f-4564-b555-83186a5be74a';
-		const licenceAppId = '10007484-6a96-4650-8dc6-d6b7548e2dbb';
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		this.businessModelFormGroup.patchValue(
-			{
-				bizId,
-				licenceAppId,
-			},
-			{
-				emitEvent: false,
-			}
-		);
-
-		return this.bizLicensingService
-			.apiBusinessLicenceBizIdApplicationIdMembersGet({
+		return forkJoin([
+			this.bizProfileService.apiBizIdGet({ id: bizId }),
+			this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersGet({
 				bizId,
 				applicationId: licenceAppId,
-			})
-			.pipe(
-				switchMap((resp: Members) => {
-					const apis: Observable<any>[] = [];
+			}),
+		]).pipe(
+			switchMap((resps: any[]) => {
+				const profileResponse = resps[0];
+				const membersResponse = resps[1];
 
-					resp.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-						apis.push(
-							this.licenceService.apiLicencesLicenceIdGet({
-								licenceId: item.licenceId!,
-							})
-						);
-					});
-
-					resp.employees?.forEach((item: SwlContactInfo) => {
-						apis.push(
-							this.licenceService.apiLicencesLicenceIdGet({
-								licenceId: item.licenceId!,
-							})
-						);
-					});
-
-					return forkJoin(apis).pipe(
-						map((licenceResponses: Array<LicenceResponse>) => {
-							this.applyControllingMembersWithSwl(resp.swlControllingMembers ?? [], licenceResponses);
-							this.applyControllingMembersWithoutSwl(resp.nonSwlControllingMembers ?? []);
-							this.applyEmployees(resp.employees ?? [], licenceResponses);
-
-							return licenceResponses;
+				const apis: Observable<any>[] = [];
+				membersResponse.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
 						})
 					);
-				})
-			);
-	}
+				});
+				membersResponse.employees?.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
+						})
+					);
+				});
 
-	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
-		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
+				if (apis.length > 0) {
+					return forkJoin(apis).pipe(
+						map((licenceResponses: Array<LicenceResponse>) => {
+							this.applyControllingMembersWithSwl(membersResponse.swlControllingMembers ?? [], licenceResponses);
+							this.applyControllingMembersWithoutSwl(membersResponse.nonSwlControllingMembers ?? []);
+							this.applyEmployees(membersResponse.employees ?? [], licenceResponses);
 
-		members.forEach((item: SwlContactInfo) => {
-			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
-
-			controllingMembersWithSwlData.push({
-				bizContactId: item.bizContactId,
-				contactId: matchingLicence?.licenceHolderId,
-				licenceId: matchingLicence?.licenceId,
-				licenceHolderName: matchingLicence?.licenceHolderName!,
-				licenceNumber: matchingLicence?.licenceNumber!,
-				licenceStatusCode: matchingLicence?.licenceStatusCode,
-				expiryDate: matchingLicence?.expiryDate,
-			});
-		});
-
-		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) =>
-			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
+							return this.applyLicenceProfileIntoModel(profileResponse);
+						})
+					);
+				} else {
+					return this.applyLicenceProfileIntoModel(profileResponse);
+				}
+			})
 		);
-
-		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithSwl'
-		) as FormArray;
-
-		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
-			controllingMembersWithSwlArray.push(
-				new FormGroup({
-					bizContactId: new FormControl(item.bizContactId),
-					contactId: new FormControl(item.contactId),
-					licenceId: new FormControl(item.licenceId),
-					licenceHolderName: new FormControl(item.licenceHolderName),
-					licenceNumber: new FormControl(item.licenceNumber),
-					licenceStatusCode: new FormControl(item.licenceStatusCode),
-					expiryDate: new FormControl(item.expiryDate),
-				})
-			);
-		});
-	}
-
-	private applyControllingMembersWithoutSwl(members: Array<ContactInfo>) {
-		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
-
-		members.forEach((item: ContactInfo) => {
-			controllingMembersWithoutSwlData.push({
-				bizContactId: item.bizContactId,
-				emailAddress: item.emailAddress,
-				givenName: item.givenName,
-				middleName1: item.middleName1,
-				middleName2: item.middleName2,
-				phoneNumber: item.phoneNumber,
-				surname: item.surname,
-				licenceHolderName: this.utilService.getFullNameWithMiddle(
-					item.givenName,
-					item.middleName1,
-					item.middleName2,
-					item.surname
-				),
-				clearanceStatus: 'todo', // TODO removed hardcoded
-			});
-		});
-
-		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) =>
-			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
-		);
-
-		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
-			'controllingMembersData.membersWithoutSwl'
-		) as FormArray;
-		sortedControllingMembersWithoutSwlData.forEach((item: ControllingMemberContactInfo) => {
-			controllingMembersWithoutSwlArray.push(
-				new FormGroup({
-					bizContactId: new FormControl(item.bizContactId),
-					contactId: new FormControl(item.contactId),
-					licenceHolderName: new FormControl(item.licenceHolderName),
-					givenName: new FormControl(item.givenName),
-					middleName1: new FormControl(item.middleName1),
-					middleName2: new FormControl(item.middleName2),
-					surname: new FormControl(item.surname),
-					phoneNumber: new FormControl(item.phoneNumber),
-					emailAddress: new FormControl(item.emailAddress),
-					clearanceStatus: new FormControl(item.clearanceStatus),
-				})
-			);
-		});
-	}
-
-	private applyEmployees(employees: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
-		const employeesData: Array<ControllingMemberContactInfo> = [];
-
-		employees.forEach((item: SwlContactInfo) => {
-			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
-
-			employeesData.push({
-				bizContactId: item.bizContactId,
-				contactId: item.contactId!,
-				licenceId: item.licenceId!,
-				licenceHolderName: matchingLicence?.licenceHolderName!,
-				licenceNumber: matchingLicence?.licenceNumber!,
-				licenceStatusCode: matchingLicence?.licenceStatusCode,
-				expiryDate: matchingLicence?.expiryDate,
-				clearanceStatus: 'todo', // TODO removed hardcoded
-			});
-		});
-
-		const sortedEmployeesData = employeesData.sort((a, b) =>
-			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
-		);
-
-		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
-		sortedEmployeesData.forEach((item: ControllingMemberContactInfo) => {
-			employeesArray.push(
-				new FormGroup({
-					bizContactId: new FormControl(item.bizContactId),
-					contactId: new FormControl(item.contactId),
-					licenceId: new FormControl(item.licenceId),
-					licenceHolderName: new FormControl(item.licenceHolderName),
-					licenceNumber: new FormControl(item.licenceNumber),
-					licenceStatusCode: new FormControl(item.licenceStatusCode),
-					expiryDate: new FormControl(item.expiryDate),
-					clearanceStatus: new FormControl(item.clearanceStatus),
-				})
-			);
-		});
 	}
 
 	/**
@@ -625,39 +594,327 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private createEmptyLicenceAuthenticated(
-		profile: BizProfileResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined,
-		relatedLicenceInformation?: LicenceResponse
+	private createEmptyLicence(
+		businessProfile: BizProfileResponse,
+		soleProprietorSwlLicence?: LicenceResponse
 	): Observable<any> {
 		this.reset();
 
-		return this.applyLicenceProfileIntoModel(profile, applicationTypeCode, relatedLicenceInformation);
+		return this.applyLicenceProfileIntoModel({
+			businessProfile,
+			applicationTypeCode: ApplicationTypeCode.New,
+			soleProprietorSwlLicence,
+		});
 	}
 
-	private applyLicenceProfileIntoModel(
-		profile: BizProfileResponse, // | WorkerLicenceAppResponse,
-		applicationTypeCode: ApplicationTypeCode | undefined,
-		relatedLicenceInformation?: LicenceResponse
+	/**
+	 * Loads the current profile and a licence
+	 * @returns
+	 */
+	private loadExistingLicenceWithId(licenceAppId: string): Observable<any> {
+		this.reset();
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return forkJoin([
+			this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({ licenceAppId }),
+			this.bizProfileService.apiBizIdGet({ id: bizId }),
+		]).pipe(
+			switchMap((resps: any[]) => {
+				const businessLicenceApplResponse = resps[0];
+				const profileResponse = resps[1];
+
+				const apis: Observable<any>[] = [];
+				if (businessLicenceApplResponse.expiredLicenceId) {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: businessLicenceApplResponse.expiredLicenceId,
+						})
+					);
+				}
+				if (businessLicenceApplResponse.privateInvestigatorSwlInfo?.licenceId) {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: businessLicenceApplResponse.privateInvestigatorSwlInfo?.licenceId,
+						})
+					);
+				}
+				if (profileResponse.soleProprietorSwlContactInfo?.licenceId) {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: profileResponse.soleProprietorSwlContactInfo?.licenceId,
+						})
+					);
+				}
+
+				if (businessLicenceApplResponse.members) {
+					// TODO can remove this check once bug is fixed in be.
+					businessLicenceApplResponse.members.employees?.forEach((item: SwlContactInfo) => {
+						apis.push(
+							this.licenceService.apiLicencesLicenceIdGet({
+								licenceId: item.licenceId!,
+							})
+						);
+					});
+					businessLicenceApplResponse.members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+						apis.push(
+							this.licenceService.apiLicencesLicenceIdGet({
+								licenceId: item.licenceId!,
+							})
+						);
+					});
+
+					this.applyControllingMembersWithoutSwl(businessLicenceApplResponse.members.nonSwlControllingMembers ?? []);
+				}
+
+				if (apis.length > 0) {
+					return forkJoin(apis).pipe(
+						switchMap((licenceResponses: Array<LicenceResponse>) => {
+							if (businessLicenceApplResponse.members) {
+								this.applyControllingMembersWithSwl(
+									businessLicenceApplResponse.members.swlControllingMembers ?? [],
+									licenceResponses
+								);
+								this.applyEmployees(businessLicenceApplResponse.members.employees ?? [], licenceResponses);
+							}
+
+							let expiredLicence: LicenceResponse | undefined = undefined;
+							if (businessLicenceApplResponse.expiredLicenceId) {
+								expiredLicence = licenceResponses.find(
+									(item: LicenceResponse) => item.licenceId === businessLicenceApplResponse.expiredLicenceId
+								);
+							}
+
+							let soleProprietorSwlLicence: LicenceResponse | undefined = undefined;
+							if (profileResponse.soleProprietorSwlContactInfo?.licenceId) {
+								soleProprietorSwlLicence = licenceResponses.find(
+									(item: LicenceResponse) => item.licenceId === profileResponse.soleProprietorSwlContactInfo?.licenceId
+								);
+							}
+
+							return this.applyLicenceAndProfileIntoModel(
+								businessLicenceApplResponse,
+								profileResponse,
+								expiredLicence,
+								soleProprietorSwlLicence
+							);
+						})
+					);
+				}
+
+				return this.applyLicenceAndProfileIntoModel(businessLicenceApplResponse, profileResponse);
+			})
+		);
+	}
+
+	/**
+	 * Applies the data in the profile and licence into the business model
+	 * @returns
+	 */
+	private applyLicenceAndProfileIntoModel(
+		businessLicenceAppl: BizLicAppResponse,
+		businessProfile: BizProfileResponse,
+		associatedExpiredLicence?: LicenceResponse,
+		soleProprietorSwlLicence?: LicenceResponse
 	): Observable<any> {
+		return this.applyLicenceProfileIntoModel({
+			businessProfile, // ?? businessLicenceResponse,
+			soleProprietorSwlLicence,
+		}).pipe(
+			switchMap((_resp: any) => {
+				return this.applyLicenceIntoModel(businessLicenceAppl, associatedExpiredLicence);
+			})
+		);
+	}
+
+	/**
+	 * Applies the data in the licence into the business model
+	 * @returns
+	 */
+	private applyLicenceIntoModel(
+		businessLicenceAppl: BizLicAppResponse,
+		associatedExpiredLicence?: LicenceResponse
+	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: businessLicenceAppl.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
+
+		const expiredLicenceData = {
+			hasExpiredLicence: this.utilService.booleanToBooleanType(businessLicenceAppl.hasExpiredLicence),
+			expiredLicenceId: associatedExpiredLicence?.licenceId,
+			expiredLicenceHolderName: associatedExpiredLicence?.licenceHolderName,
+			expiredLicenceNumber: associatedExpiredLicence?.licenceNumber,
+			expiredLicenceExpiryDate: associatedExpiredLicence?.expiryDate,
+			expiredLicenceStatusCode: associatedExpiredLicence?.licenceStatusCode,
+		};
+
+		const companyBrandingAttachments: Array<File> = [];
+		const liabilityAttachments: Array<File> = [];
+		const categoryArmouredCarGuardAttachments: Array<File> = [];
+		const dogAuthorizationAttachments: Array<File> = [];
+
+		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
+		const categoryArmouredCarGuardFormGroup: any = { isInclude: false }; // TODO apply armoured car guard data
+		const categorySecurityGuardFormGroup: any = { isInclude: false }; // TODO apply security guard data
+
+		businessLicenceAppl.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.BizSecurityDogCertificate: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					dogAuthorizationAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.ArmourCarGuardRegistrar: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					categoryArmouredCarGuardAttachments.push(aFile);
+
+					categoryArmouredCarGuardFormGroup.expiryDate = doc.expiryDate ?? null;
+					break;
+				}
+				case LicenceDocumentTypeCode.BizInsurance: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					liabilityAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.BizBranding: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					companyBrandingAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const companyBrandingData = {
+			noLogoOrBranding: businessLicenceAppl.noBranding,
+			attachments: companyBrandingAttachments,
+		};
+
+		const liabilityData = {
+			attachments: liabilityAttachments,
+		};
+
+		const licenceTermData = {
+			licenceTermCode: businessLicenceAppl.licenceTermCode,
+		};
+
+		const businessManagerData = {
+			givenName: businessLicenceAppl.bizManagerContactInfo?.givenName,
+			middleName1: businessLicenceAppl.bizManagerContactInfo?.middleName1,
+			middleName2: businessLicenceAppl.bizManagerContactInfo?.middleName2,
+			surname: businessLicenceAppl.bizManagerContactInfo?.surname,
+			emailAddress: businessLicenceAppl.bizManagerContactInfo?.emailAddress,
+			phoneNumber: businessLicenceAppl.bizManagerContactInfo?.phoneNumber,
+			isBusinessManager: businessLicenceAppl.applicantIsBizManager,
+			applicantGivenName: businessLicenceAppl.applicantContactInfo?.givenName,
+			applicantMiddleName1: businessLicenceAppl.applicantContactInfo?.middleName1,
+			applicantMiddleName2: businessLicenceAppl.applicantContactInfo?.middleName2,
+			applicantSurname: businessLicenceAppl.applicantContactInfo?.surname,
+			applicantEmailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress,
+			applicantPhoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber,
+		};
+
+		const categoryData: any = {};
+
+		// default object with all category types
+		const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
+		workerCategoryTypeCodes.forEach((item: string) => {
+			categoryData[item] = false;
+		});
+
+		// mark the appropriate category types as true
+		businessLicenceAppl.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
+			categoryData[item as string] = true;
+		});
+
+		if (categoryData.PrivateInvestigator) {
+			categoryPrivateInvestigatorFormGroup = {
+				isInclude: true,
+				managerContactId: businessLicenceAppl.privateInvestigatorSwlInfo?.contactId,
+				managerLicenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
+				managerLicenceHolderName: '',
+				managerLicenceNumber: '',
+				managerLicenceExpiryDate: '',
+				managerLicenceStatusCode: '',
+			};
+		}
+
+		if (categoryData.ArmouredCarGuard) {
+			categoryArmouredCarGuardFormGroup.isInclude = true;
+			categoryArmouredCarGuardFormGroup.attachments = categoryArmouredCarGuardAttachments;
+		}
+
+		if (categoryData.SecurityGuard) {
+			categorySecurityGuardFormGroup.isInclude = true;
+			categorySecurityGuardFormGroup.isRequestDogAuthorization =
+				dogAuthorizationAttachments.length > 0 ? BooleanTypeCode.Yes : BooleanTypeCode.No;
+			categorySecurityGuardFormGroup.attachments = dogAuthorizationAttachments;
+		}
+
+		this.businessModelFormGroup.patchValue(
+			{
+				licenceAppId: businessLicenceAppl.licenceAppId,
+				workerLicenceTypeData,
+				applicationTypeData,
+
+				expiredLicenceData,
+				licenceTermData,
+				companyBrandingData,
+				liabilityData,
+				businessManagerData,
+
+				categoryData,
+				categoryPrivateInvestigatorFormGroup,
+				categoryArmouredCarGuardFormGroup,
+				categorySecurityGuardFormGroup,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		console.debug('[applyLicenceIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
+		return of(this.businessModelFormGroup.value);
+	}
+
+	// private applyRenewalDataUpdatesToModel(resp: any): Observable<any> { // TODO renewal
+	// }
+
+	// private applyUpdateDataUpdatesToModel(resp: any): Observable<any> { // TODO update
+	// }
+
+	// private applyReplacementDataUpdatesToModel(resp: any): Observable<any> { // TODO replace
+	// }
+
+	/**
+	 * Applies the data in the profile into the business model
+	 * @returns
+	 */
+	private applyLicenceProfileIntoModel({
+		businessProfile,
+		applicationTypeCode,
+		soleProprietorSwlLicence,
+	}: {
+		businessProfile: BizProfileResponse;
+		applicationTypeCode?: ApplicationTypeCode;
+		soleProprietorSwlLicence?: LicenceResponse;
+	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 		const businessInformationData = {
-			bizTypeCode: profile.bizTypeCode,
-			legalBusinessName: profile.bizLegalName,
-			bizTradeName: profile.bizTradeName,
-			isBizTradeNameReadonly: !!profile.bizTradeName, // user cannot overwrite value from bceid
-			soleProprietorLicenceId: profile.soleProprietorSwlContactInfo?.licenceId,
-			soleProprietorLicenceHolderName: relatedLicenceInformation?.licenceHolderName,
-			soleProprietorLicenceNumber: relatedLicenceInformation?.licenceNumber,
-			soleProprietorLicenceExpiryDate: relatedLicenceInformation?.expiryDate,
-			soleProprietorLicenceStatusCode: relatedLicenceInformation?.licenceStatusCode,
-			soleProprietorSwlPhoneNumber: profile.soleProprietorSwlPhoneNumber,
-			soleProprietorSwlEmailAddress: profile.soleProprietorSwlEmailAddress,
+			bizTypeCode: businessProfile.bizTypeCode,
+			legalBusinessName: businessProfile.bizLegalName,
+			bizTradeName: businessProfile.bizTradeName,
+			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid
+			soleProprietorLicenceId: soleProprietorSwlLicence?.licenceId,
+			soleProprietorLicenceHolderName: soleProprietorSwlLicence?.licenceHolderName,
+			soleProprietorLicenceNumber: soleProprietorSwlLicence?.licenceNumber,
+			soleProprietorLicenceExpiryDate: soleProprietorSwlLicence?.expiryDate,
+			soleProprietorLicenceStatusCode: soleProprietorSwlLicence?.licenceStatusCode,
+			soleProprietorSwlPhoneNumber: businessProfile.soleProprietorSwlPhoneNumber,
+			soleProprietorSwlEmailAddress: businessProfile.soleProprietorSwlEmailAddress,
 		};
 		const businessManagerData = { isBusinessManager: true }; // default
 
-		const bizAddress = profile.bizAddress;
+		const bizAddress = businessProfile.bizAddress;
 		const businessAddressData = {
 			addressSelected: !!bizAddress?.addressLine1,
 			addressLine1: bizAddress?.addressLine1,
@@ -669,7 +926,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			isMailingTheSame: false,
 		};
 
-		const bizBCAddress = profile.bizBCAddress;
+		const bizBCAddress = businessProfile.bizBCAddress;
 		const bcBusinessAddressData = {
 			addressSelected: !!bizBCAddress?.addressLine1,
 			addressLine1: bizBCAddress?.addressLine1,
@@ -680,7 +937,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			country: bizBCAddress?.country,
 		};
 
-		const bizMailingAddress = profile.bizMailingAddress;
+		const bizMailingAddress = businessProfile.bizMailingAddress;
 		const mailingAddressData = {
 			addressSelected: !!bizMailingAddress?.addressLine1,
 			addressLine1: bizMailingAddress?.addressLine1,
@@ -691,43 +948,24 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			country: bizMailingAddress?.country,
 		};
 
-		const categoryData = {
-			PrivateInvestigator: true,
-			// SecurityAlarmInstaller: true,
-			// SecurityGuard: true,
-			// ElectronicLockingDeviceInstaller: true,
-			// SecurityAlarmMonitor: true,
-		}; // TODO remove hardcoded
-
-		const categoryPrivateInvestigatorData = {
-			isInclude: true,
-			givenName: '',
-			middleName1: '',
-			middleName2: '',
-			surname: 'invest',
-			managerLicenceNumber: '234234',
-		};
-
-		console.debug('[applyLicenceProfileIntoModel] profile', profile);
+		console.debug('[applyLicenceProfileIntoModel] profile', businessProfile);
 		console.debug('[applyLicenceProfileIntoModel] businessAddressData', businessAddressData);
 		console.debug('[applyLicenceProfileIntoModel] bcBusinessAddressData', bcBusinessAddressData);
 		console.debug('[applyLicenceProfileIntoModel] mailingAddressData', mailingAddressData);
 
-		const hasBranchesInBc = (profile.branches ?? []).length > 0;
+		const hasBranchesInBc = (businessProfile.branches ?? []).length > 0;
 		const branchesInBcData = { hasBranchesInBc: this.utilService.booleanToBooleanType(hasBranchesInBc) };
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
 
 		this.businessModelFormGroup.patchValue(
 			{
-				bizId: 'bizId' in profile ? profile.bizId : null,
-				licenceAppId: relatedLicenceInformation?.licenceAppId,
+				bizId: businessProfile.bizId,
+
 				workerLicenceTypeData,
 				applicationTypeData,
 				businessInformationData,
 				businessManagerData,
 
-				categoryData,
-				categoryPrivateInvestigatorData,
 				isBcBusinessAddress,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
@@ -740,7 +978,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 
 		if (hasBranchesInBc) {
-			const branchList = [...profile.branches!].sort((a, b) =>
+			const branchList = [...businessProfile.branches!].sort((a, b) =>
 				this.utilService.sortByDirection(a.branchAddress?.city?.toUpperCase(), b.branchAddress?.city?.toUpperCase())
 			);
 
@@ -768,83 +1006,129 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private saveControllingMembersWithSwlBody(): null | Array<SwlContactInfo> {
-		const modelFormValue = this.businessModelFormGroup.getRawValue();
-		const controllingMembersWithSwlArray = modelFormValue.controllingMembersData.membersWithSwl;
+	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
+		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
 
-		if (!controllingMembersWithSwlArray) {
-			return null;
-		}
+		members.forEach((item: SwlContactInfo) => {
+			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
 
-		const swlControllingMembers: null | Array<SwlContactInfo> = controllingMembersWithSwlArray.map(
-			(item: ControllingMemberContactInfo) => {
-				const contactInfo: SwlContactInfo = {
-					bizContactId: item.bizContactId,
-					contactId: item.contactId,
-					licenceId: item.licenceId,
-				};
-				return contactInfo;
-			}
-		);
-
-		console.debug('saveControllingMembersWithSwlBody', swlControllingMembers);
-
-		return swlControllingMembers;
-	}
-
-	private saveControllingMembersWithoutSwlBody(): null | Array<ContactInfo> {
-		const modelFormValue = this.businessModelFormGroup.getRawValue();
-		const controllingMembersWithoutSwlArray = modelFormValue.controllingMembersData.membersWithoutSwl;
-
-		if (!controllingMembersWithoutSwlArray) {
-			return null;
-		}
-
-		const nonSwlControllingMembers: null | Array<ContactInfo> = controllingMembersWithoutSwlArray.map(
-			(item: ControllingMemberContactInfo) => {
-				const contactInfo: ContactInfo = {
-					bizContactId: item.bizContactId,
-					emailAddress: item.emailAddress,
-					givenName: item.givenName,
-					middleName1: item.middleName1,
-					middleName2: item.middleName2,
-					phoneNumber: item.phoneNumber,
-					surname: item.surname,
-				};
-				return contactInfo;
-			}
-		);
-
-		console.debug('saveControllingMembersWithoutSwlBody', nonSwlControllingMembers);
-
-		return nonSwlControllingMembers;
-	}
-
-	private saveEmployeesBody(): null | Array<SwlContactInfo> {
-		const modelFormValue = this.businessModelFormGroup.getRawValue();
-		const employeesArray = modelFormValue.employeesData.employees;
-
-		if (!employeesArray) {
-			return null;
-		}
-
-		const employees: null | Array<SwlContactInfo> = employeesArray.map((item: ControllingMemberContactInfo) => {
-			const contactInfo: SwlContactInfo = {
+			controllingMembersWithSwlData.push({
 				bizContactId: item.bizContactId,
-				contactId: item.contactId,
-				licenceId: item.licenceId,
-			};
-			return contactInfo;
+				contactId: matchingLicence?.licenceHolderId,
+				licenceId: matchingLicence?.licenceId,
+				licenceHolderName: matchingLicence?.licenceHolderName!,
+				licenceNumber: matchingLicence?.licenceNumber!,
+				licenceStatusCode: matchingLicence?.licenceStatusCode,
+				expiryDate: matchingLicence?.expiryDate,
+			});
 		});
 
-		console.debug('saveEmployeesBody', employees);
+		const sortedControllingMembersWithSwlData = controllingMembersWithSwlData.sort((a, b) =>
+			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
+		);
 
-		return employees;
+		const controllingMembersWithSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithSwl'
+		) as FormArray;
+
+		sortedControllingMembersWithSwlData.forEach((item: ControllingMemberContactInfo) => {
+			controllingMembersWithSwlArray.push(
+				new FormGroup({
+					bizContactId: new FormControl(item.bizContactId),
+					contactId: new FormControl(item.contactId),
+					licenceId: new FormControl(item.licenceId),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					licenceNumber: new FormControl(item.licenceNumber),
+					licenceStatusCode: new FormControl(item.licenceStatusCode),
+					expiryDate: new FormControl(item.expiryDate),
+				})
+			);
+		});
 	}
 
-	private isSoleProprietor(bizTypeCode: BizTypeCode): boolean {
-		return (
-			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
+	private applyControllingMembersWithoutSwl(members: Array<NonSwlContactInfo>) {
+		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
+
+		members.forEach((item: NonSwlContactInfo) => {
+			controllingMembersWithoutSwlData.push({
+				bizContactId: item.bizContactId,
+				emailAddress: item.emailAddress,
+				givenName: item.givenName,
+				middleName1: item.middleName1,
+				middleName2: item.middleName2,
+				phoneNumber: item.phoneNumber,
+				surname: item.surname,
+				licenceHolderName: this.utilService.getFullNameWithMiddle(
+					item.givenName,
+					item.middleName1,
+					item.middleName2,
+					item.surname
+				),
+				clearanceStatus: 'todo', // TODO removed hardcoded
+			});
+		});
+
+		const sortedControllingMembersWithoutSwlData = controllingMembersWithoutSwlData.sort((a, b) =>
+			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
 		);
+
+		const controllingMembersWithoutSwlArray = this.businessModelFormGroup.get(
+			'controllingMembersData.membersWithoutSwl'
+		) as FormArray;
+		sortedControllingMembersWithoutSwlData.forEach((item: ControllingMemberContactInfo) => {
+			controllingMembersWithoutSwlArray.push(
+				new FormGroup({
+					bizContactId: new FormControl(item.bizContactId),
+					contactId: new FormControl(item.contactId),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					givenName: new FormControl(item.givenName),
+					middleName1: new FormControl(item.middleName1),
+					middleName2: new FormControl(item.middleName2),
+					surname: new FormControl(item.surname),
+					phoneNumber: new FormControl(item.phoneNumber),
+					emailAddress: new FormControl(item.emailAddress),
+					clearanceStatus: new FormControl(item.clearanceStatus),
+				})
+			);
+		});
+	}
+
+	private applyEmployees(employees: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
+		const employeesData: Array<ControllingMemberContactInfo> = [];
+
+		employees.forEach((item: SwlContactInfo) => {
+			const matchingLicence = licences.find((licence) => licence.licenceId === item.licenceId);
+
+			employeesData.push({
+				bizContactId: item.bizContactId,
+				contactId: item.contactId!,
+				licenceId: item.licenceId!,
+				licenceHolderName: matchingLicence?.licenceHolderName!,
+				licenceNumber: matchingLicence?.licenceNumber!,
+				licenceStatusCode: matchingLicence?.licenceStatusCode,
+				expiryDate: matchingLicence?.expiryDate,
+				clearanceStatus: 'todo', // TODO removed hardcoded
+			});
+		});
+
+		const sortedEmployeesData = employeesData.sort((a, b) =>
+			this.utilService.sortByDirection(a.licenceHolderName?.toUpperCase(), b.licenceHolderName?.toUpperCase())
+		);
+
+		const employeesArray = this.businessModelFormGroup.get('employeesData.employees') as FormArray;
+		sortedEmployeesData.forEach((item: ControllingMemberContactInfo) => {
+			employeesArray.push(
+				new FormGroup({
+					bizContactId: new FormControl(item.bizContactId),
+					contactId: new FormControl(item.contactId),
+					licenceId: new FormControl(item.licenceId),
+					licenceHolderName: new FormControl(item.licenceHolderName),
+					licenceNumber: new FormControl(item.licenceNumber),
+					licenceStatusCode: new FormControl(item.licenceStatusCode),
+					expiryDate: new FormControl(item.expiryDate),
+					clearanceStatus: new FormControl(item.clearanceStatus),
+				})
+			);
+		});
 	}
 }
