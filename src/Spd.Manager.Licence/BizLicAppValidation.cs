@@ -18,10 +18,12 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .NotEmpty()
             .When(r => r.ApplicantIsBizManager == false);
         RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
-
-
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.BizTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode).NotEmpty();
+
+        RuleFor(r => r.CategoryCodes)
+            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmInstaller) && r.Contains(WorkerCategoryTypeCode.SecurityAlarmSales))
+            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmInstaller));
     }
 }
