@@ -606,16 +606,6 @@ export abstract class BusinessApplicationHelper {
 			}
 		}
 
-		const documentExpiredInfos: Array<DocumentExpiredInfo> =
-			documentInfos
-				.filter((doc) => doc.expiryDate)
-				.map((doc: Document) => {
-					return {
-						expiryDate: doc.expiryDate,
-						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-					} as DocumentExpiredInfo;
-				}) ?? [];
-
 		if (controllingMembersData.attachments) {
 			controllingMembersData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
