@@ -28,7 +28,7 @@ namespace Spd.Utilities.Dynamics
                 ;
 
             services.AddSingleton<IDynamicsContextFactory, DynamicsContextFactory>();
-
+            services.AddSingleton<IDynamicsLookupHelpers, DynamicsLookupHelpers>();
             return services;
         }
     }

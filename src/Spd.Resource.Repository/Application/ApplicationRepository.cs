@@ -8,12 +8,14 @@ internal partial class ApplicationRepository : IApplicationRepository
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<IApplicationRepository> _logger;
+    private readonly IDynamicsLookupHelpers _dynamicsLookup;
 
-    public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<IApplicationRepository> logger)
+    public ApplicationRepository(IDynamicsContextFactory ctx, IMapper mapper, IDynamicsLookupHelpers dynamicsLookup, ILogger<IApplicationRepository> logger)
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
         _logger = logger;
+        _dynamicsLookup = dynamicsLookup;
     }
 }
 
