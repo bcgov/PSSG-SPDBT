@@ -1,10 +1,24 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BizTypeCode } from '@app/api/models';
+import {
+	BizLicAppUpsertRequest,
+	BizTypeCode,
+	ContactInfo,
+	Document,
+	DocumentExpiredInfo,
+	LicenceDocumentTypeCode,
+	Members,
+	NonSwlContactInfo,
+	SwlContactInfo,
+	WorkerCategoryTypeCode,
+} from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService } from '@app/core/services/config.service';
+import { UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
+import { ControllingMemberContactInfo } from './business-application.service';
 
 export abstract class BusinessApplicationHelper {
 	booleanTypeCodes = BooleanTypeCode;
@@ -24,29 +38,16 @@ export abstract class BusinessApplicationHelper {
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceNumber: new FormControl(),
-			expiredLicenceId: new FormControl(),
-			expiryDate: new FormControl(),
-			captchaFormGroup: new FormGroup({
-				token: new FormControl(''),
-			}),
+			expiredLicenceId: new FormControl(''),
+			expiredLicenceHolderName: new FormControl(''),
+			expiredLicenceNumber: new FormControl(''),
+			expiredLicenceExpiryDate: new FormControl(''),
+			expiredLicenceStatusCode: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'captchaFormGroup.token',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'expiredLicenceNumber',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
 					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
 				),
 			],
@@ -125,14 +126,9 @@ export abstract class BusinessApplicationHelper {
 			BodyArmourSales: new FormControl(false),
 			ClosedCircuitTelevisionInstaller: new FormControl(false),
 			ElectronicLockingDeviceInstaller: new FormControl(false),
-			FireInvestigator: new FormControl(false),
 			Locksmith: new FormControl(false),
-			LocksmithUnderSupervision: new FormControl(false),
 			PrivateInvestigator: new FormControl(false),
-			PrivateInvestigatorUnderSupervision: new FormControl(false),
 			SecurityGuard: new FormControl(false),
-			SecurityGuardUnderSupervision: new FormControl(false),
-			SecurityAlarmInstallerUnderSupervision: new FormControl(false),
 			SecurityAlarmInstaller: new FormControl(false),
 			SecurityAlarmMonitor: new FormControl(false),
 			SecurityAlarmResponse: new FormControl(false),
@@ -159,17 +155,17 @@ export abstract class BusinessApplicationHelper {
 	categoryPrivateInvestigatorFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			givenName: new FormControl(''),
-			middleName1: new FormControl(''),
-			middleName2: new FormControl(''),
-			surname: new FormControl(''),
+			managerContactId: new FormControl(''),
+			managerLicenceId: new FormControl(''),
+			managerLicenceHolderName: new FormControl(''),
 			managerLicenceNumber: new FormControl(''),
+			managerLicenceExpiryDate: new FormControl(''),
+			managerLicenceStatusCode: new FormControl(''),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator('surname', (form) => form.get('isInclude')?.value),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'managerLicenceNumber',
+					'managerLicenceId',
 					(form) => form.get('isInclude')?.value
 				),
 			],
@@ -205,25 +201,25 @@ export abstract class BusinessApplicationHelper {
 			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			isBusinessManager: new FormControl(),
-			agivenName: new FormControl(''), // TODO applicant info - rename later
-			amiddleName1: new FormControl(''),
-			amiddleName2: new FormControl(''),
-			asurname: new FormControl(''),
-			aemailAddress: new FormControl('', [FormControlValidators.email]),
-			aphoneNumber: new FormControl(''),
+			applicantGivenName: new FormControl(''),
+			applicantMiddleName1: new FormControl(''),
+			applicantMiddleName2: new FormControl(''),
+			applicantSurname: new FormControl(''),
+			applicantEmailAddress: new FormControl('', [FormControlValidators.email]),
+			applicantPhoneNumber: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'asurname',
+					'applicantSurname',
 					(form) => !form.get('isBusinessManager')?.value
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'aemailAddress',
+					'applicantEmailAddress',
 					(form) => !form.get('isBusinessManager')?.value
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'aphoneNumber',
+					'applicantPhoneNumber',
 					(form) => !form.get('isBusinessManager')?.value
 				),
 			],
@@ -299,11 +295,22 @@ export abstract class BusinessApplicationHelper {
 		branches: this.formBuilder.array([]),
 	});
 
-	controllingMembersFormGroup: FormGroup = this.formBuilder.group({
-		membersWithSwl: this.formBuilder.array([]),
-		membersWithoutSwl: this.formBuilder.array([]),
-		attachments: new FormControl([]),
-	});
+	controllingMembersFormGroup: FormGroup = this.formBuilder.group(
+		{
+			membersWithSwl: this.formBuilder.array([]),
+			membersWithoutSwl: this.formBuilder.array([]),
+			attachmentIsRequired: new FormControl(false),
+			attachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'attachments',
+					(form) => form.get('attachmentIsRequired')?.value
+				),
+			],
+		}
+	);
 
 	employeesFormGroup: FormGroup = this.formBuilder.group({
 		employees: this.formBuilder.array([]),
@@ -373,6 +380,10 @@ export abstract class BusinessApplicationHelper {
 		isActive: new FormControl(''),
 	});
 
+	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
+		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
+	});
+
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		check2: new FormControl(null, [Validators.requiredTrue]),
@@ -387,6 +398,343 @@ export abstract class BusinessApplicationHelper {
 	constructor(
 		protected formBuilder: FormBuilder,
 		protected configService: ConfigService,
-		protected formatDatePipe: FormatDatePipe
+		protected formatDatePipe: FormatDatePipe,
+		protected utilService: UtilService
 	) {}
+
+	getSaveBodyBase(businessModelFormValue: any): BizLicAppUpsertRequest {
+		const bizId = businessModelFormValue.bizId;
+		const licenceAppId = businessModelFormValue.licenceAppId;
+		const workerLicenceTypeData = { ...businessModelFormValue.workerLicenceTypeData };
+		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
+		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
+		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
+		const businessManagerData = { ...businessModelFormValue.businessManagerData };
+
+		const privateInvestigatorSwlInfo: SwlContactInfo | undefined = undefined; // TODO fix setting of PI info
+		let useDogs = false;
+
+		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
+		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
+
+		let applicantContactInfo: ContactInfo | undefined = undefined;
+		const applicantIsBizManager = businessManagerData.isBusinessManager;
+		const bizManagerContactInfo: ContactInfo = {
+			emailAddress: businessManagerData.emailAddress,
+			givenName: businessManagerData.givenName,
+			middleName1: businessManagerData.middleName1,
+			middleName2: businessManagerData.middleName2,
+			phoneNumber: businessManagerData.phoneNumber,
+			surname: businessManagerData.surname,
+		};
+
+		if (!applicantIsBizManager) {
+			applicantContactInfo = {
+				emailAddress: businessManagerData.applicantEmailAddress,
+				givenName: businessManagerData.applicantGivenName,
+				middleName1: businessManagerData.applicantMiddleName1,
+				middleName2: businessManagerData.applicantMiddleName2,
+				phoneNumber: businessManagerData.applicantPhoneNumber,
+				surname: businessManagerData.applicantSurname,
+			};
+		}
+
+		const categoryData = { ...businessModelFormValue.categoryData };
+
+		if (categoryData.SecurityGuard) {
+			useDogs = businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
+		}
+
+		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+			documentInfos
+				.filter((doc) => doc.expiryDate)
+				.map((doc: Document) => {
+					return {
+						expiryDate: doc.expiryDate,
+						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+					} as DocumentExpiredInfo;
+				}) ?? [];
+
+		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
+			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
+
+		// Only save members if business is not a sole proprietor
+		let members: Members = {
+			employees: [],
+			nonSwlControllingMembers: [],
+			swlControllingMembers: [],
+		};
+		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
+		if (!this.isSoleProprietor(bizTypeCode)) {
+			members = {
+				employees: this.saveEmployeesBody(businessModelFormValue),
+				nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(businessModelFormValue),
+				swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue),
+			};
+		}
+
+		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		let expiredLicenceNumber: string | null = null;
+		let expiredLicenceId: string | null = null;
+		let expiryDate: string | null = null;
+
+		if (hasExpiredLicence) {
+			expiredLicenceNumber = expiredLicenceData.expiredLicenceNumber;
+			expiredLicenceId = expiredLicenceData.expiredLicenceId;
+			expiryDate = expiredLicenceExpiryDate;
+		}
+
+		const body = {
+			bizId,
+			licenceAppId,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			licenceTermCode: businessModelFormValue.licenceTermData.licenceTermCode,
+			//-----------------------------------
+			noBranding: companyBrandingData.noLogoOrBranding,
+			applicantContactInfo,
+			applicantIsBizManager,
+			bizManagerContactInfo,
+			//-----------------------------------
+			hasExpiredLicence,
+			expiredLicenceNumber,
+			expiredLicenceId,
+			expiryDate,
+			//-----------------------------------
+			members,
+			//-----------------------------------
+			categoryCodes: [...categoryCodes],
+			documentExpiredInfos: [...documentExpiredInfos],
+			documentInfos: [...documentInfos],
+			privateInvestigatorSwlInfo,
+			useDogs,
+		};
+
+		console.debug('[getSaveBodyBase] body returned', body);
+		return body;
+	}
+
+	getSaveBodyCategoryCodes(categoryData: any): Array<WorkerCategoryTypeCode> {
+		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
+
+		if (categoryData.ArmouredCarGuard) {
+			categoryCodes.push(WorkerCategoryTypeCode.ArmouredCarGuard);
+		}
+
+		if (categoryData.BodyArmourSales) {
+			categoryCodes.push(WorkerCategoryTypeCode.BodyArmourSales);
+		}
+
+		if (categoryData.ClosedCircuitTelevisionInstaller) {
+			categoryCodes.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+		}
+
+		if (categoryData.ElectronicLockingDeviceInstaller) {
+			categoryCodes.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+		}
+
+		if (categoryData.Locksmith) {
+			categoryCodes.push(WorkerCategoryTypeCode.Locksmith);
+		}
+
+		if (categoryData.PrivateInvestigator) {
+			categoryCodes.push(WorkerCategoryTypeCode.PrivateInvestigator);
+		}
+
+		if (categoryData.SecurityGuard) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityGuard);
+		}
+
+		if (categoryData.SecurityAlarmInstaller) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+		}
+
+		if (categoryData.SecurityAlarmMonitor) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+		}
+
+		if (categoryData.SecurityAlarmResponse) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
+		}
+
+		if (categoryData.SecurityAlarmSales) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmSales);
+		}
+
+		if (categoryData.SecurityConsultant) {
+			categoryCodes.push(WorkerCategoryTypeCode.SecurityConsultant);
+		}
+
+		return categoryCodes;
+	}
+
+	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<Document> {
+		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
+		const liabilityData = { ...businessModelFormValue.liabilityData };
+		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
+
+		const documentInfos: Array<Document> = [];
+
+		if (!companyBrandingData.noLogoOrBranding) {
+			companyBrandingData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
+				});
+			});
+		}
+
+		liabilityData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+			});
+		});
+
+		const categoryData = { ...businessModelFormValue.categoryData };
+
+		if (categoryData.ArmouredCarGuard) {
+			documentInfos.push(...this.getCategoryArmouredCarGuard(businessModelFormValue.categoryArmouredCarGuardFormGroup));
+		}
+
+		if (categoryData.SecurityGuard) {
+			const useDogs =
+				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
+			if (useDogs) {
+				documentInfos.push(...this.getCategorySecurityGuard(businessModelFormValue.categorySecurityGuardFormGroup));
+			}
+		}
+
+		if (controllingMembersData.attachments) {
+			controllingMembersData.attachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance, // TODO what is the correct type to use?
+				});
+			});
+		}
+
+		return documentInfos;
+	}
+
+	/**
+	 * Get the category data formatted for saving
+	 * @param armouredCarGuardData
+	 * @returns
+	 */
+	private getCategoryArmouredCarGuard(armouredCarGuardData: any): Array<Document> {
+		const documents: Array<Document> = [];
+
+		const expiryDate = armouredCarGuardData.expiryDate
+			? this.formatDatePipe.transform(armouredCarGuardData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
+
+		armouredCarGuardData.attachments?.forEach((doc: any) => {
+			documents.push({
+				documentUrlId: doc.documentUrlId,
+				expiryDate,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.ArmourCarGuardRegistrar,
+			});
+		});
+
+		return documents;
+	}
+
+	/**
+	 * Get the category data formatted for saving
+	 * @param securityGuardData
+	 * @returns
+	 */
+	private getCategorySecurityGuard(securityGuardData: any): Array<Document> {
+		const documents: Array<Document> = [];
+
+		const expiryDate = securityGuardData.expiryDate
+			? this.formatDatePipe.transform(securityGuardData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
+
+		securityGuardData.attachments?.forEach((doc: any) => {
+			documents.push({
+				documentUrlId: doc.documentUrlId,
+				expiryDate,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizSecurityDogCertificate,
+			});
+		});
+
+		return documents;
+	}
+
+	saveControllingMembersWithSwlBody(businessModelFormValue: any): null | Array<SwlContactInfo> {
+		const controllingMembersWithSwlArray = businessModelFormValue.controllingMembersData.membersWithSwl;
+
+		if (!controllingMembersWithSwlArray) {
+			return null;
+		}
+
+		const swlControllingMembers: null | Array<SwlContactInfo> = controllingMembersWithSwlArray.map(
+			(item: ControllingMemberContactInfo) => {
+				const contactInfo: SwlContactInfo = {
+					bizContactId: item.bizContactId,
+					contactId: item.contactId,
+					licenceId: item.licenceId,
+				};
+				return contactInfo;
+			}
+		);
+
+		console.debug('saveControllingMembersWithSwlBody', swlControllingMembers);
+		return swlControllingMembers;
+	}
+
+	saveControllingMembersWithoutSwlBody(businessModelFormValue: any): null | Array<NonSwlContactInfo> {
+		const controllingMembersWithoutSwlArray = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+
+		if (!controllingMembersWithoutSwlArray) {
+			return null;
+		}
+
+		const nonSwlControllingMembers: null | Array<NonSwlContactInfo> = controllingMembersWithoutSwlArray.map(
+			(item: ControllingMemberContactInfo) => {
+				const contactInfo: NonSwlContactInfo = {
+					bizContactId: item.bizContactId,
+					emailAddress: item.emailAddress,
+					givenName: item.givenName,
+					middleName1: item.middleName1,
+					middleName2: item.middleName2,
+					phoneNumber: item.phoneNumber,
+					surname: item.surname,
+				};
+				return contactInfo;
+			}
+		);
+
+		console.debug('saveControllingMembersWithoutSwlBody', nonSwlControllingMembers);
+		return nonSwlControllingMembers;
+	}
+
+	saveEmployeesBody(businessModelFormValue: any): null | Array<SwlContactInfo> {
+		const employeesArray = businessModelFormValue.employeesData.employees;
+
+		if (!employeesArray) {
+			return null;
+		}
+
+		const employees: null | Array<SwlContactInfo> = employeesArray.map((item: ControllingMemberContactInfo) => {
+			const contactInfo: SwlContactInfo = {
+				bizContactId: item.bizContactId,
+				contactId: item.contactId,
+				licenceId: item.licenceId,
+			};
+			return contactInfo;
+		});
+
+		console.debug('saveEmployeesBody', employees);
+		return employees;
+	}
+
+	isSoleProprietor(bizTypeCode: BizTypeCode): boolean {
+		return (
+			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
+		);
+	}
 }
