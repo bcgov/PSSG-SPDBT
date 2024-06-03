@@ -135,7 +135,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         await _context.SaveChangesAsync();
         return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
-    public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
+    public async Task<LicenceApplicationResp?> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
         spd_application? app;
         try
@@ -150,7 +150,7 @@ internal class LicenceApplicationRepository : ILicenceApplicationRepository
         catch (DataServiceQueryException ex)
         {
             if (ex.Response.StatusCode == 404)
-                throw new ArgumentException($"cannot find application with Id : {licenceApplicationId}");
+                return null;
             else
                 throw;
         }
