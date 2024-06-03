@@ -415,7 +415,7 @@ export abstract class BusinessApplicationHelper {
 
 		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
 		const documentInfos: Array<Document> = [];
-		let privateInvestigatorSwlInfo: SwlContactInfo | undefined = undefined;
+		const privateInvestigatorSwlInfo: SwlContactInfo | undefined = undefined; // TODO fix setting of PI info
 		let useDogs = false;
 
 		if (!companyBrandingData.noLogoOrBranding) {

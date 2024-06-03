@@ -753,8 +753,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const dogAuthorizationAttachments: Array<File> = [];
 
 		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
-		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
-		let categorySecurityGuardFormGroup: any = { isInclude: false };
+		const categoryArmouredCarGuardFormGroup: any = { isInclude: false }; // TODO apply armoured car guard data
+		const categorySecurityGuardFormGroup: any = { isInclude: false }; // TODO apply security guard data
 
 		businessLicenceAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
