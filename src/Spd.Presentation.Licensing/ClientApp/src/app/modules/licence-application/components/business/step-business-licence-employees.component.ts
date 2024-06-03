@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { CommonEmployeesComponent } from './common-employees.component';
 
 @Component({
 	selector: 'app-step-business-licence-employees',
@@ -22,7 +23,9 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	styles: [],
 })
 export class StepBusinessLicenceEmployeesComponent implements LicenceChildStepperStepComponent {
+	@ViewChild(CommonEmployeesComponent) employeesComponent!: CommonEmployeesComponent;
+
 	isFormValid(): boolean {
-		return true;
+		return this.employeesComponent.isFormValid();
 	}
 }

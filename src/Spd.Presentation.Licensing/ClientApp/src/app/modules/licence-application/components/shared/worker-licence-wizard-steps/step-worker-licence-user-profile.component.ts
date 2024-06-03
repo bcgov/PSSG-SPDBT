@@ -124,7 +124,7 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.applicationTypeCode = state && state['applicationTypeCode'];
+		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {
