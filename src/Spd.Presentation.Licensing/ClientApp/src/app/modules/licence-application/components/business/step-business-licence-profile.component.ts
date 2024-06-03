@@ -82,8 +82,7 @@ export class StepBusinessLicenceProfileComponent implements OnInit {
 		private businessApplicationService: BusinessApplicationService
 	) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		// this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
-		this.applicationTypeCode = state && state['applicationTypeCode'];
+		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.Replacement: {

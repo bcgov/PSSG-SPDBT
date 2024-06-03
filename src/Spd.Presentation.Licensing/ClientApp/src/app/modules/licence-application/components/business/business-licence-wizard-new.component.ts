@@ -298,13 +298,11 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 					this.handlePartialSaveError(error);
 				},
 			});
+		} else if (stepper) {
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
 		} else {
-			if (stepper) {
-				if (stepper?.selected) stepper.selected.completed = true;
-				stepper.next();
-			} else {
-				this.goToChildNextStep();
-			}
+			this.goToChildNextStep();
 		}
 	}
 

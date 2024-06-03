@@ -549,6 +549,17 @@ export abstract class BusinessApplicationHelper {
 			});
 		}
 
+		let hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		let expiredLicenceNumber: string | null = null;
+		let expiredLicenceId: string | null = null;
+		let expiryDate: string | null = null;
+
+		if (hasExpiredLicence) {
+			expiredLicenceNumber = expiredLicenceData.expiredLicenceNumber;
+			expiredLicenceId = expiredLicenceData.expiredLicenceId;
+			expiryDate = expiredLicenceExpiryDate;
+		}
+
 		const body = {
 			bizId,
 			licenceAppId,
@@ -561,12 +572,10 @@ export abstract class BusinessApplicationHelper {
 			applicantIsBizManager,
 			bizManagerContactInfo,
 			//-----------------------------------
-			hasExpiredLicence: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes,
-			expiredLicenceNumber:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceNumber : null,
-			expiredLicenceId:
-				expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceData.expiredLicenceId : null,
-			expiryDate: expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes ? expiredLicenceExpiryDate : null,
+			hasExpiredLicence,
+			expiredLicenceNumber,
+			expiredLicenceId,
+			expiryDate,
 			//-----------------------------------
 			members,
 			//-----------------------------------

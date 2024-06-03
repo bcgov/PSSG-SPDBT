@@ -363,7 +363,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode | undefined): Observable<any> {
+	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
@@ -844,9 +844,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (categoryData.SecurityGuard) {
 			categorySecurityGuardFormGroup.isInclude = true;
-			(categorySecurityGuardFormGroup.isRequestDogAuthorization =
-				dogAuthorizationAttachments.length > 0 ? BooleanTypeCode.Yes : BooleanTypeCode.No),
-				(categorySecurityGuardFormGroup.attachments = dogAuthorizationAttachments);
+			categorySecurityGuardFormGroup.isRequestDogAuthorization =
+				dogAuthorizationAttachments.length > 0 ? BooleanTypeCode.Yes : BooleanTypeCode.No;
+			categorySecurityGuardFormGroup.attachments = dogAuthorizationAttachments;
 		}
 
 		this.businessModelFormGroup.patchValue(
@@ -894,7 +894,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		soleProprietorSwlLicence,
 	}: {
 		businessProfile: BizProfileResponse;
-		applicationTypeCode?: ApplicationTypeCode | undefined;
+		applicationTypeCode?: ApplicationTypeCode;
 		soleProprietorSwlLicence?: LicenceResponse;
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
