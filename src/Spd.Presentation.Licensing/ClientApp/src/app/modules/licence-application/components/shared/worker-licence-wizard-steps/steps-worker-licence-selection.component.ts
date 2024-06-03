@@ -72,14 +72,11 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.New">
-				<app-step-worker-licence-expired
-					(validExpiredLicenceData)="onValidExpiredLicence()"
-					[isLoggedIn]="isLoggedIn"
-				></app-step-worker-licence-expired>
+				<app-step-worker-licence-expired [isLoggedIn]="isLoggedIn"></app-step-worker-licence-expired>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onExpiredLicenceNextStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -220,14 +217,6 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 			),
 			{ state: { applicationTypeCode: this.applicationTypeCode } }
 		);
-	}
-
-	onExpiredLicenceNextStep(): void {
-		this.licenceExpiredComponent.onSearchAndValidate();
-	}
-
-	onValidExpiredLicence(): void {
-		this.childNextStep.emit(true);
 	}
 
 	isStepToSave(): boolean {
