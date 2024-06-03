@@ -638,7 +638,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 					} as DocumentExpiredInfo;
 				}) ?? [];
 
-		let hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		let expiredLicenceNumber: string | null = null;
 		let expiredLicenceId: string | null = null;
 		let expiryDate: string | null = null;

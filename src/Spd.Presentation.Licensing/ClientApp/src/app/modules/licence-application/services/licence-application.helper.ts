@@ -1024,7 +1024,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 				? criminalHistoryData.criminalChargeDescription
 				: '';
 
-		let hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		let expiredLicenceNumber: string | null = null;
 		let expiredLicenceId: string | null = null;
 		let expiryDate: string | null = null;
