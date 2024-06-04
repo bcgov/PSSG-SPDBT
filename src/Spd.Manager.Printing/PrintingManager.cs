@@ -28,18 +28,27 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
             //the returned RegardingObjectTypeName should be spd_application
             if (eventResp.RegardingObjectName != "spd_application")
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid Regarding Object type.");
-            PrintJob printJob = new(DocumentType.FingerprintLetter, eventResp.RegardingObjectId, null);
-            var transformResponse = await _documentTransformationEngine.Transform(
-                CreateDocumentTransformRequest(printJob),
-                cancellationToken);
-            if (transformResponse is BcMailPlusTransformResponse)
+
+            try
             {
-                BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
-                var printResponse = await _printer.Send(
-                    new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
+                PrintJob printJob = new(DocumentType.FingerprintLetter, eventResp.RegardingObjectId, null);
+                var transformResponse = await _documentTransformationEngine.Transform(
+                    CreateDocumentTransformRequest(printJob),
                     cancellationToken);
-                return await UpdateResultInEvent(printResponse, request.EventId, cancellationToken);
-            };
+                if (transformResponse is BcMailPlusTransformResponse)
+                {
+                    BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
+                    var printResponse = await _printer.Send(
+                        new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
+                        cancellationToken);
+                    return await UpdateResultInEvent(printResponse, request.EventId, cancellationToken);
+                };
+            }
+            catch (Exception ex)
+            {
+                SendResponse result = new(null, JobStatus.Failed, $"{ex.Message} {ex.InnerException?.Message}");
+                return await UpdateResultInEvent(result, request.EventId, cancellationToken);
+            }
         }
 
         return string.Empty;
