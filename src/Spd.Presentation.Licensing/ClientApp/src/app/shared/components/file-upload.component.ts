@@ -216,6 +216,19 @@ export class FileUploadComponent implements OnInit {
 			let dupFile: File | undefined = undefined;
 
 			const addedFile = evt.addedFiles[0];
+
+			// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
+			// for example: filename.gov.bc.ca.docx
+			// Block the uploading of these files for now. Hopefully newer version will fix this.
+			const numberOfPeriods = addedFile.name.match(/\./g)?.length ?? 0;
+
+			if (numberOfPeriods > 1) {
+				this.hotToastService.error(
+					'A file name cannot contain multiple periods. Please rename this file and try again.'
+				);
+				return;
+			}
+
 			dupFile = this.files ? this.files.find((item) => item.name == addedFile.name) : undefined;
 
 			if (dupFile) {
