@@ -12,7 +12,6 @@ public record PersonalLicenceAppBase : LicenceAppBase
     public DateOnly? DateOfBirth { get; set; }
     public GenderCode? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
-    public string? ExpiredLicenceNumber { get; set; }
     public Guid? ExpiredLicenceId { get; set; } //for new application type, for renew, replace, update, it should be null.
     public bool? HasExpiredLicence { get; set; }  //for new application type
     public bool? HasCriminalHistory { get; set; }

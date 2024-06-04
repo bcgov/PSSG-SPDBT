@@ -8,7 +8,7 @@ public interface IPrintingManager
     public Task<PrintJobStatusResp> Handle(PrintJobStatusQuery cmd, CancellationToken ct);
     public Task<PreviewDocumentResp> Handle(PreviewDocumentCommand request, CancellationToken ct);
 }
-public record StartPrintJobCommand(PrintJob PrintJob) : IRequest<string>;
+public record StartPrintJobCommand(Guid EventId) : IRequest<string>;
 public record PrintJobStatusQuery(string PrintJobId) : IRequest<PrintJobStatusResp>;
 public record PreviewDocumentCommand(PrintJob PrintJob) : IRequest<PreviewDocumentResp>;
 

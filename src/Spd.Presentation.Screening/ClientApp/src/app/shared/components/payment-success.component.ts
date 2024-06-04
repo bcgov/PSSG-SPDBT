@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { PaymentResponse } from 'src/app/api/models';
+import { PaymentResponse, ServiceTypeCode } from 'src/app/api/models';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
@@ -114,6 +114,12 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 				</div>
 			</ng-template>
 		</ng-template>
+
+		<div class="row mt-4">
+			<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+				<button mat-flat-button color="primary" class="large mb-2" (click)="onClose()">Close</button>
+			</div>
+		</div>
 	`,
 	styles: [],
 })
@@ -156,6 +162,25 @@ export class PaymentSuccessComponent implements OnInit {
 
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();
+	}
+
+	onClose(): void {
+		switch (this.payment?.serviceTypeCode) {
+			case ServiceTypeCode.Mcfd:
+				window.location.assign(SPD_CONSTANTS.closeRedirects.mcfdApplication);
+				break;
+			case ServiceTypeCode.PeCrc:
+			case ServiceTypeCode.PeCrcVs:
+				window.location.assign(SPD_CONSTANTS.closeRedirects.peCrcApplication);
+				break;
+			case ServiceTypeCode.Psso:
+			case ServiceTypeCode.PssoVs:
+				window.location.assign(SPD_CONSTANTS.closeRedirects.pssoCheck);
+				break;
+			default:
+				window.location.assign(SPD_CONSTANTS.closeRedirects.crrpApplication);
+				break;
+		}
 	}
 
 	get sendEmailTo(): string | null {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -42,6 +43,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_application_spd_licence_manager)
                 .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId)
                 .FirstOrDefault();
@@ -63,13 +65,18 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
         LinkOrganization(cmd.ApplicantId, app);
-        LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
-        await _context.SaveChangesAsync();
+
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        else
+            DeletePrivateInvestigatorLink(app.spd_application_spd_licence_manager?.FirstOrDefault(), app);
+
+        await _context.SaveChangesAsync(ct);
 
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
         return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
 
@@ -100,5 +107,11 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             throw new ArgumentException("investigator licence info not found");
 
         _context.AddLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
+    }
+
+    private void DeletePrivateInvestigatorLink(spd_licence? licence, spd_application app)
+    {
+        if (licence == null) return;
+        _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
     }
 }
