@@ -7,8 +7,6 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	LicenceAppListResponse,
-	LicenceStatusCode,
-	LicenceTermCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -24,8 +22,7 @@ import { Observable, take, tap } from 'rxjs';
 @Component({
 	selector: 'app-business-user-applications',
 	template: `
-		<section class="step-section">
-			<!-- TODO  *ngIf="results$ | async" -->
+		<section class="step-section" *ngIf="results$ | async">
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row">
@@ -177,23 +174,23 @@ import { Observable, take, tap } from 'rxjs';
 						<div class="section-title fs-5 py-3">Valid Licence</div>
 						<div
 							class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-							*ngFor="let appl of activeLicences; let i = index"
+							*ngFor="let licence of activeLicences; let i = index"
 						>
 							<div class="row">
 								<div class="col-lg-2">
 									<div class="fs-5" style="color: var(--color-primary);">
-										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+										{{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 									</div>
 								</div>
 								<div class="col-lg-10">
 									<div class="row">
 										<div class="col-lg-6">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
-											<div class="text-data">{{ appl.licenceNumber }}</div>
+											<div class="text-data">{{ licence.licenceNumber }}</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+											<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 										</div>
 										<div class="col-lg-3">
 											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -208,16 +205,16 @@ import { Observable, take, tap } from 'rxjs';
 										<div class="col-lg-3">
 											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
 											<div class="text-data">
-												{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+												{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 											</div>
 										</div>
 										<div class="col-lg-4">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 											<div class="text-data">
 												<ul class="m-0">
-													<li>Armoured Car Guard</li>
-													<li>Security Guard</li>
-													<li>Security Alarm Installer - Under Supervision</li>
+													<ng-container *ngFor="let catCode of licence.categoryCodes; let i = index">
+														<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
+													</ng-container>
 												</ul>
 											</div>
 										</div>
@@ -239,8 +236,8 @@ import { Observable, take, tap } from 'rxjs';
 
 									<div class="row mb-2">
 										<div class="col-lg-9">
-											The following updates have a $20 licence reprint fee:
-											<!-- TODO hardcoded payment cost -->
+											The following updates have a
+											{{ licence.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
 											<ul class="m-0">
 												<li>add or remove branch</li>
 												<li>change to business trade name</li>
@@ -258,7 +255,7 @@ import { Observable, take, tap } from 'rxjs';
 											<button mat-flat-button color="primary" class="large my-2">
 												<mat-icon>restore</mat-icon>Renew
 											</button>
-											<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(appl)">
+											<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(licence)">
 												<mat-icon>update</mat-icon>Update
 											</button>
 										</div>
@@ -266,7 +263,7 @@ import { Observable, take, tap } from 'rxjs';
 								</div>
 
 								<div class="row">
-									<ng-container *ngIf="appl.isRenewalPeriod && appl.isRenewalPeriod; else IsNotRenewalPeriod">
+									<ng-container *ngIf="licence.isRenewalPeriod && licence.isRenewalPeriod; else IsNotRenewalPeriod">
 										<div class="col-12">
 											<mat-divider class="my-2"></mat-divider>
 											<span class="fw-semibold">Lost your licence? </span>
@@ -283,8 +280,8 @@ import { Observable, take, tap } from 'rxjs';
 												*ngIf="!applicationIsInProgress"
 												class="large"
 												tabindex="0"
-												(click)="onRequestReplacement(appl)"
-												(keydown)="onKeydownRequestReplacement($event, appl)"
+												(click)="onRequestReplacement(licence)"
+												(keydown)="onKeydownRequestReplacement($event, licence)"
 												>Request a replacement</a
 											>
 											and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
@@ -397,11 +394,10 @@ import { Observable, take, tap } from 'rxjs';
 export class BusinessUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 
-	results$!: Observable<any>; // TODO implement
+	results$!: Observable<any>;
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	// results$!: Observable<any>;
 	applicationIsInProgress: boolean | null = null;
 	businessProfileLabel = '';
 	lostLicenceDaysText: string | null = null;
@@ -441,24 +437,31 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	ngOnInit(): void {
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? null;
 
-		this.activeLicences = [
-			{
-				licenceId: '1',
-				licenceNumber: 'TEST-NWQ3X7A',
-				licenceTermCode: LicenceTermCode.TwoYears,
-				workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
-				applicationTypeCode: ApplicationTypeCode.New,
-				licenceExpiryDate: '2025-02-13T19:43:25+00:00',
-				isRenewalPeriod: true,
-				isUpdatePeriod: true,
-				isReplacementPeriod: true,
-				hasBcscNameChanged: false,
-				licenceReprintFee: null,
-				licenceStatusCode: LicenceStatusCode.Active,
-				dogAuthorization: null,
-				restraintAuthorization: null,
-			},
-		];
+		this.results$ = this.commonApplicationService.userBusinessLicencesList().pipe(
+			tap((resps: any) => {
+				console.log('************* business licences', resps);
+				this.activeLicences = resps;
+			})
+		);
+
+		// this.activeLicences = [
+		// 	{
+		// 		licenceId: '1',
+		// 		licenceNumber: 'TEST-NWQ3X7A',
+		// 		licenceTermCode: LicenceTermCode.TwoYears,
+		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
+		// 		applicationTypeCode: ApplicationTypeCode.New,
+		// 		licenceExpiryDate: '2025-02-13T19:43:25+00:00',
+		// 		isRenewalPeriod: true,
+		// 		isUpdatePeriod: true,
+		// 		isReplacementPeriod: true,
+		// 		hasBcscNameChanged: false,
+		// 		licenceReprintFee: null,
+		// 		licenceStatusCode: LicenceStatusCode.Active,
+		// 		dogAuthorization: null,
+		// 		restraintAuthorization: null,
+		// 	},
+		// ];
 
 		this.applicationIsInProgress = false; // TODO remove hardcoded flag
 
