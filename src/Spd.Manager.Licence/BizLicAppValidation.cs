@@ -76,6 +76,14 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
             .WithMessage("Missing armour car guard registrar document.");
 
-        
+        // Prviate investigator
+        RuleFor(r => r.PrivateInvestigatorSwlInfo)
+            .NotEmpty()
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator) &&
+                (r.BizTypeCode == BizTypeCode.RegisteredPartnership ||
+                r.BizTypeCode == BizTypeCode.NonRegisteredPartnership ||
+                r.BizTypeCode == BizTypeCode.Corporation ||
+                r.BizTypeCode == BizTypeCode.None))
+            .WithMessage("Missing private investigator information.");
     }
 }
