@@ -100,6 +100,7 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 						[emailAddress]="sendToEmailAddress"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
+						[orgData]="orgData"
 					></app-sa-step-appl-submitted>
 				</mat-step>
 			</mat-stepper>
