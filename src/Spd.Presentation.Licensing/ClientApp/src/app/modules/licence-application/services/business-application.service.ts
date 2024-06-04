@@ -35,7 +35,6 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	map,
 	of,
 	switchMap,
 	take,
@@ -285,14 +284,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	saveControllingMembersAndEmployees(): Observable<any> {
-		const modelFormValue = this.businessModelFormGroup.getRawValue();
-		const bizId = modelFormValue.bizId;
-		const licenceAppId = modelFormValue.licenceAppId;
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const bizId = businessModelFormValue.bizId;
+		const licenceAppId = businessModelFormValue.licenceAppId;
+
+		// if (businessModelFormValue.controllingMembersData.attachments) {
+		// TODO save controllingMember attachments
+		// }
 
 		const body: Members = {
-			employees: this.saveEmployeesBody(modelFormValue),
-			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(modelFormValue),
-			swlControllingMembers: this.saveControllingMembersWithSwlBody(modelFormValue),
+			employees: this.saveEmployeesBody(businessModelFormValue.employeesData),
+			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(
+				businessModelFormValue.controllingMembersData
+			),
+			swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue.controllingMembersData),
 		};
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
@@ -455,37 +460,60 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}),
 		]).pipe(
 			switchMap((resps: any[]) => {
-				const profileResponse = resps[0];
-				const membersResponse = resps[1];
+				const businessProfile = resps[0];
+				const members = resps[1];
 
 				const apis: Observable<any>[] = [];
-				membersResponse.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+				members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 					apis.push(
 						this.licenceService.apiLicencesLicenceIdGet({
 							licenceId: item.licenceId!,
 						})
 					);
 				});
-				membersResponse.employees?.forEach((item: SwlContactInfo) => {
+				members.employees?.forEach((item: SwlContactInfo) => {
 					apis.push(
 						this.licenceService.apiLicencesLicenceIdGet({
 							licenceId: item.licenceId!,
 						})
 					);
 				});
+
+				// licenceAppId is used during the save
+				this.businessModelFormGroup.patchValue({ licenceAppId: licenceAppId }, { emitEvent: false });
 
 				if (apis.length > 0) {
 					return forkJoin(apis).pipe(
-						map((licenceResponses: Array<LicenceResponse>) => {
-							this.applyControllingMembersWithSwl(membersResponse.swlControllingMembers ?? [], licenceResponses);
-							this.applyControllingMembersWithoutSwl(membersResponse.nonSwlControllingMembers ?? []);
-							this.applyEmployees(membersResponse.employees ?? [], licenceResponses);
+						switchMap((licenceResponses: Array<LicenceResponse>) => {
+							this.applyControllingMembersWithSwl(members.swlControllingMembers ?? [], licenceResponses);
+							this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
+							this.applyEmployees(members.employees ?? [], licenceResponses);
 
-							return this.applyLicenceProfileIntoModel(profileResponse);
+							return this.applyLicenceProfileIntoModel({ businessProfile }).pipe(
+								tap((_resp: any) => {
+									this.initialized = true;
+
+									this.commonApplicationService.setApplicationTitle(
+										// TODO update header text?
+										_resp.workerLicenceTypeData.workerLicenceTypeCode,
+										_resp.applicationTypeData.applicationTypeCode
+									);
+								})
+							);
 						})
 					);
 				} else {
-					return this.applyLicenceProfileIntoModel(profileResponse);
+					return this.applyLicenceProfileIntoModel({ businessProfile }).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(
+								// TODO update header text?
+								_resp.workerLicenceTypeData.workerLicenceTypeCode,
+								_resp.applicationTypeData.applicationTypeCode
+							);
+						})
+					);
 				}
 			})
 		);
@@ -621,88 +649,94 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
 		]).pipe(
 			switchMap((resps: any[]) => {
-				const businessLicenceApplResponse = resps[0];
-				const profileResponse = resps[1];
+				const businessLicenceAppl = resps[0];
+				const businessProfile = resps[1];
 
 				const apis: Observable<any>[] = [];
-				if (businessLicenceApplResponse.expiredLicenceId) {
+				if (businessLicenceAppl.expiredLicenceId) {
 					apis.push(
 						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: businessLicenceApplResponse.expiredLicenceId,
+							licenceId: businessLicenceAppl.expiredLicenceId,
 						})
 					);
 				}
-				if (businessLicenceApplResponse.privateInvestigatorSwlInfo?.licenceId) {
+				if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
 					apis.push(
 						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: businessLicenceApplResponse.privateInvestigatorSwlInfo?.licenceId,
+							licenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
 						})
 					);
 				}
-				if (profileResponse.soleProprietorSwlContactInfo?.licenceId) {
+				if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
 					apis.push(
 						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: profileResponse.soleProprietorSwlContactInfo?.licenceId,
+							licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId,
 						})
 					);
 				}
 
-				if (businessLicenceApplResponse.members) {
-					// TODO can remove this check once bug is fixed in be.
-					businessLicenceApplResponse.members.employees?.forEach((item: SwlContactInfo) => {
-						apis.push(
-							this.licenceService.apiLicencesLicenceIdGet({
-								licenceId: item.licenceId!,
-							})
-						);
-					});
-					businessLicenceApplResponse.members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-						apis.push(
-							this.licenceService.apiLicencesLicenceIdGet({
-								licenceId: item.licenceId!,
-							})
-						);
-					});
+				businessLicenceAppl.members.employees?.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
+						})
+					);
+				});
+				businessLicenceAppl.members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+					apis.push(
+						this.licenceService.apiLicencesLicenceIdGet({
+							licenceId: item.licenceId!,
+						})
+					);
+				});
 
-					this.applyControllingMembersWithoutSwl(businessLicenceApplResponse.members.nonSwlControllingMembers ?? []);
-				}
+				this.applyControllingMembersWithoutSwl(businessLicenceAppl.members.nonSwlControllingMembers ?? []);
 
 				if (apis.length > 0) {
 					return forkJoin(apis).pipe(
 						switchMap((licenceResponses: Array<LicenceResponse>) => {
-							if (businessLicenceApplResponse.members) {
+							if (businessLicenceAppl.members) {
 								this.applyControllingMembersWithSwl(
-									businessLicenceApplResponse.members.swlControllingMembers ?? [],
+									businessLicenceAppl.members.swlControllingMembers ?? [],
 									licenceResponses
 								);
-								this.applyEmployees(businessLicenceApplResponse.members.employees ?? [], licenceResponses);
+								this.applyEmployees(businessLicenceAppl.members.employees ?? [], licenceResponses);
 							}
 
-							let expiredLicence: LicenceResponse | undefined = undefined;
-							if (businessLicenceApplResponse.expiredLicenceId) {
-								expiredLicence = licenceResponses.find(
-									(item: LicenceResponse) => item.licenceId === businessLicenceApplResponse.expiredLicenceId
+							let associatedExpiredLicence: LicenceResponse | undefined = undefined;
+							if (businessLicenceAppl.expiredLicenceId) {
+								associatedExpiredLicence = licenceResponses.find(
+									(item: LicenceResponse) => item.licenceId === businessLicenceAppl.expiredLicenceId
 								);
 							}
 
 							let soleProprietorSwlLicence: LicenceResponse | undefined = undefined;
-							if (profileResponse.soleProprietorSwlContactInfo?.licenceId) {
+							if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
 								soleProprietorSwlLicence = licenceResponses.find(
-									(item: LicenceResponse) => item.licenceId === profileResponse.soleProprietorSwlContactInfo?.licenceId
+									(item: LicenceResponse) => item.licenceId === businessProfile.soleProprietorSwlContactInfo?.licenceId
 								);
 							}
 
-							return this.applyLicenceAndProfileIntoModel(
-								businessLicenceApplResponse,
-								profileResponse,
-								expiredLicence,
-								soleProprietorSwlLicence
-							);
+							let privateInvestigatorSwlLicence: LicenceResponse | undefined = undefined;
+							if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
+								privateInvestigatorSwlLicence = licenceResponses.find(
+									(item: LicenceResponse) =>
+										item.licenceId === businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId
+								);
+							}
+
+							return this.applyLicenceAndProfileIntoModel({
+								businessLicenceAppl,
+								businessProfile,
+								associatedExpiredLicence,
+								soleProprietorSwlLicence,
+								privateInvestigatorSwlLicence,
+							});
 						})
 					);
 				}
 
-				return this.applyLicenceAndProfileIntoModel(businessLicenceApplResponse, profileResponse);
+				return this.applyLicenceAndProfileIntoModel({ businessLicenceAppl, businessProfile });
 			})
 		);
 	}
@@ -711,18 +745,29 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the profile and licence into the business model
 	 * @returns
 	 */
-	private applyLicenceAndProfileIntoModel(
-		businessLicenceAppl: BizLicAppResponse,
-		businessProfile: BizProfileResponse,
-		associatedExpiredLicence?: LicenceResponse,
-		soleProprietorSwlLicence?: LicenceResponse
-	): Observable<any> {
+	private applyLicenceAndProfileIntoModel({
+		businessLicenceAppl,
+		businessProfile,
+		associatedExpiredLicence,
+		soleProprietorSwlLicence,
+		privateInvestigatorSwlLicence,
+	}: {
+		businessLicenceAppl: BizLicAppResponse;
+		businessProfile: BizProfileResponse;
+		associatedExpiredLicence?: LicenceResponse;
+		soleProprietorSwlLicence?: LicenceResponse;
+		privateInvestigatorSwlLicence?: LicenceResponse;
+	}): Observable<any> {
 		return this.applyLicenceProfileIntoModel({
 			businessProfile, // ?? businessLicenceResponse,
 			soleProprietorSwlLicence,
 		}).pipe(
 			switchMap((_resp: any) => {
-				return this.applyLicenceIntoModel(businessLicenceAppl, associatedExpiredLicence);
+				return this.applyLicenceIntoModel({
+					businessLicenceAppl,
+					associatedExpiredLicence,
+					privateInvestigatorSwlLicence,
+				});
 			})
 		);
 	}
@@ -731,10 +776,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Applies the data in the licence into the business model
 	 * @returns
 	 */
-	private applyLicenceIntoModel(
-		businessLicenceAppl: BizLicAppResponse,
-		associatedExpiredLicence?: LicenceResponse
-	): Observable<any> {
+	private applyLicenceIntoModel({
+		businessLicenceAppl,
+		associatedExpiredLicence,
+		privateInvestigatorSwlLicence,
+	}: {
+		businessLicenceAppl: BizLicAppResponse;
+		associatedExpiredLicence?: LicenceResponse;
+		privateInvestigatorSwlLicence?: LicenceResponse;
+	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: businessLicenceAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
 
@@ -753,8 +803,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const dogAuthorizationAttachments: Array<File> = [];
 
 		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
-		const categoryArmouredCarGuardFormGroup: any = { isInclude: false }; // TODO apply armoured car guard data
-		const categorySecurityGuardFormGroup: any = { isInclude: false }; // TODO apply security guard data
+		const categoryArmouredCarGuardFormGroup: any = { isInclude: false };
+		const categorySecurityGuardFormGroup: any = { isInclude: false };
 
 		businessLicenceAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
@@ -825,15 +875,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			categoryData[item as string] = true;
 		});
 
-		if (categoryData.PrivateInvestigator) {
+		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
 			categoryPrivateInvestigatorFormGroup = {
 				isInclude: true,
 				managerContactId: businessLicenceAppl.privateInvestigatorSwlInfo?.contactId,
 				managerLicenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
-				managerLicenceHolderName: '',
-				managerLicenceNumber: '',
-				managerLicenceExpiryDate: '',
-				managerLicenceStatusCode: '',
+				managerLicenceHolderName: privateInvestigatorSwlLicence.licenceHolderName,
+				managerLicenceNumber: privateInvestigatorSwlLicence.licenceNumber,
+				managerLicenceExpiryDate: privateInvestigatorSwlLicence.expiryDate,
+				managerLicenceStatusCode: privateInvestigatorSwlLicence.licenceStatusCode,
 			};
 		}
 
@@ -948,11 +998,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			country: bizMailingAddress?.country,
 		};
 
-		console.debug('[applyLicenceProfileIntoModel] profile', businessProfile);
-		console.debug('[applyLicenceProfileIntoModel] businessAddressData', businessAddressData);
-		console.debug('[applyLicenceProfileIntoModel] bcBusinessAddressData', bcBusinessAddressData);
-		console.debug('[applyLicenceProfileIntoModel] mailingAddressData', mailingAddressData);
-
 		const hasBranchesInBc = (businessProfile.branches ?? []).length > 0;
 		const branchesInBcData = { hasBranchesInBc: this.utilService.booleanToBooleanType(hasBranchesInBc) };
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
@@ -1064,7 +1109,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					item.middleName2,
 					item.surname
 				),
-				clearanceStatus: 'todo', // TODO removed hardcoded
+				clearanceStatus: 'todo', // TODO removed hardcoded clearanceStatus
 			});
 		});
 
@@ -1107,7 +1152,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceNumber: matchingLicence?.licenceNumber!,
 				licenceStatusCode: matchingLicence?.licenceStatusCode,
 				expiryDate: matchingLicence?.expiryDate,
-				clearanceStatus: 'todo', // TODO removed hardcoded
+				clearanceStatus: 'todo', // TODO removed hardcoded clearanceStatus
 			});
 		});
 
