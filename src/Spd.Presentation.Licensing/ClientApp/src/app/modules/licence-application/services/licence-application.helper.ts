@@ -1013,10 +1013,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
-		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
-			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
 		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
 		const criminalChargeDescription =
 			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
@@ -1025,15 +1021,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 				: '';
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		let expiredLicenceNumber: string | null = null;
-		let expiredLicenceId: string | null = null;
-		let expiryDate: string | null = null;
-
-		if (hasExpiredLicence) {
-			expiredLicenceNumber = expiredLicenceData.expiredLicenceNumber;
-			expiredLicenceId = expiredLicenceData.expiredLicenceId;
-			expiryDate = expiredLicenceExpiryDate;
-		}
+		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
 
 		const body = {
 			licenceAppId,
@@ -1060,9 +1048,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			...contactInformationData,
 			//-----------------------------------
 			hasExpiredLicence,
-			expiredLicenceNumber,
 			expiredLicenceId,
-			expiryDate,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------

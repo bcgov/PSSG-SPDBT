@@ -19,7 +19,7 @@ import {
 				<div class="col-lg-8 col-md-12 col-sm-12">
 					<div class="fs-5 lh-base">
 						To qualify for a private investigator business licence, you must have a manager with a valid security worker
-						licence
+						licence.
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-12 col-sm-12 text-end">
@@ -102,17 +102,14 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 			.subscribe((resp: any) => {
 				const memberData: LicenceResponse = resp?.data;
 				if (memberData) {
-					this.form.patchValue(
-						{
-							managerContactId: memberData.licenceHolderId,
-							managerLicenceId: memberData.licenceId,
-							managerLicenceHolderName: memberData.licenceHolderName,
-							managerLicenceNumber: memberData.licenceNumber,
-							managerLicenceExpiryDate: memberData.expiryDate,
-							managerLicenceStatusCode: memberData.licenceStatusCode,
-						},
-						{ emitEvent: false }
-					);
+					this.form.patchValue({
+						managerContactId: memberData.licenceHolderId,
+						managerLicenceId: memberData.licenceId,
+						managerLicenceHolderName: memberData.licenceHolderName,
+						managerLicenceNumber: memberData.licenceNumber,
+						managerLicenceExpiryDate: memberData.expiryDate,
+						managerLicenceStatusCode: memberData.licenceStatusCode,
+					});
 				} else {
 					this.form.patchValue(
 						{

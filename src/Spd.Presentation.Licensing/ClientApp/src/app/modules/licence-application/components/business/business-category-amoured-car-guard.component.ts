@@ -80,7 +80,6 @@ export class BusinessCategoryAmouredCarGuardComponent implements OnInit, Licence
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
 		if (this.businessApplicationService.isAutoSave()) {
-			// TODO use LicenceDocumentTypeCode.ArmourCarGuardRegistrar??
 			this.businessApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.ArmourCarGuardRegistrar, file)
 				.subscribe({
