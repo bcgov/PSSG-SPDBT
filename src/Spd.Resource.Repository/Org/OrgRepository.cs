@@ -162,7 +162,7 @@ namespace Spd.Resource.Repository.Org
 
             account? org = await accounts.FirstOrDefaultAsync(ct);
 
-            if (org == null) throw new ApiException(HttpStatusCode.NotFound);
+            if (org == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find org for {query.OrgId.ToString() ?? query.AccessCode}");
 
             //tried with org expand, does not work. so have to make another call.
             List<spd_account_spd_servicetype> serviceTypes = _dynaContext.spd_account_spd_servicetypeset

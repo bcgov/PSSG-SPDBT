@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.BizLicApplication;
@@ -70,9 +69,12 @@ internal class Mappings : Profile
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
     }
 
-    private static Guid? GetPrivateInvestigatorLicenceId(IEnumerable<spd_licence> privateInvestigators)
+    private static Guid? GetPrivateInvestigatorLicenceId(IEnumerable<spd_licence>? privateInvestigators)
     {
-       return privateInvestigators.FirstOrDefault(i => i.statecode == DynamicsConstants.StateCode_Active)?.spd_licenceid;
+        if (privateInvestigators == null || privateInvestigators.Any() == false)
+            return null;
+
+        return privateInvestigators.FirstOrDefault(i => i.statecode == DynamicsConstants.StateCode_Active)?.spd_licenceid;
     }
 
     private static bool IsApplicantBizManager(spd_application application)
