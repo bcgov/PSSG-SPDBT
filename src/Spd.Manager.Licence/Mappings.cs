@@ -226,7 +226,7 @@ internal class Mappings : Profile
             .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.ManagerEmailAddress))
             .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.ManagerMiddleName1))
             .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.ManagerMiddleName2))
-            .ForPath(d => d.ApplicantContactInfo, opt => opt.MapFrom(s => GetApplicantInfo(s))
+            .ForMember(d => d.ApplicantContactInfo, opt => opt.MapFrom(s => GetApplicantInfo(s)))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.LicenceId));
 
         CreateMap<PortalUserResp, BizUserLoginResponse>()
