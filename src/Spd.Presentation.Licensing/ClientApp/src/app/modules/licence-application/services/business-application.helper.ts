@@ -479,15 +479,7 @@ export abstract class BusinessApplicationHelper {
 		}
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		let expiredLicenceNumber: string | null = null;
-		let expiredLicenceId: string | null = null;
-		let expiryDate: string | null = null;
-
-		if (hasExpiredLicence) {
-			expiredLicenceNumber = expiredLicenceData.expiredLicenceNumber;
-			expiredLicenceId = expiredLicenceData.expiredLicenceId;
-			expiryDate = expiredLicenceExpiryDate;
-		}
+		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
 
 		const body = {
 			bizId,
@@ -502,9 +494,7 @@ export abstract class BusinessApplicationHelper {
 			bizManagerContactInfo,
 			//-----------------------------------
 			hasExpiredLicence,
-			expiredLicenceNumber,
 			expiredLicenceId,
-			expiryDate,
 			//-----------------------------------
 			members,
 			//-----------------------------------

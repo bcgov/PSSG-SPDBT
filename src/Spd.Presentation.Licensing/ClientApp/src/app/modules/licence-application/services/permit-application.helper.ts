@@ -639,15 +639,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				}) ?? [];
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		let expiredLicenceNumber: string | null = null;
-		let expiredLicenceId: string | null = null;
-		let expiryDate: string | null = null;
-
-		if (hasExpiredLicence) {
-			expiredLicenceNumber = expiredLicenceData.expiredLicenceNumber;
-			expiredLicenceId = expiredLicenceData.expiredLicenceId;
-			expiryDate = expiredLicenceExpiryDate;
-		}
+		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
 
 		const body = {
 			licenceAppId,
@@ -673,9 +665,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			...contactInformationData,
 			//-----------------------------------
 			hasExpiredLicence,
-			expiredLicenceNumber,
 			expiredLicenceId,
-			expiryDate,
 			//-----------------------------------
 			...characteristicsData,
 			//-----------------------------------
