@@ -8,7 +8,6 @@ namespace Spd.Resource.Repository.Event
         public Task<Unit> ManageAsync(EventUpdateCmd cmd, CancellationToken ct);
     }
 
-
     public record EventResp()
     {
         public Guid Id { get; set; }

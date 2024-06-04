@@ -30,5 +30,3 @@ internal class EventRepository : IEventRepository
         return default;
     }
 }
-
-

@@ -34,7 +34,11 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
                 cancellationToken);
             if (transformResponse is BcMailPlusTransformResponse)
             {
-                return await PrintViaBcMailPlus((BcMailPlusTransformResponse)transformResponse, request.EventId, cancellationToken);
+                BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
+                var printResponse = await _printer.Send(
+                    new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
+                    cancellationToken);
+                return await UpdateResultInEvent(printResponse, request.EventId, cancellationToken);
             };
         }
 
@@ -80,33 +84,32 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
         };
     }
 
-    private async Task<string> PrintViaBcMailPlus(BcMailPlusTransformResponse bcmailplusResponse, Guid eventId, CancellationToken cancellationToken)
+    private async Task<string> UpdateResultInEvent(SendResponse sendResponse, Guid eventId, CancellationToken cancellationToken)
     {
-        var printResponse = await _printer.Send(new BCMailPlusPrintRequest(bcmailplusResponse.JobTemplateId, bcmailplusResponse.Document), cancellationToken);
         //update event queue
         DateTimeOffset exeTime = DateTimeOffset.UtcNow;
         EventUpdateCmd update = new();
         update.Id = eventId;
         update.LastExeTime = exeTime;
-        update.JobId = printResponse.PrintJobId;
+        update.JobId = sendResponse.PrintJobId;
         update.StateCode = DynamicsConstants.StateCode_Inactive;
-        if (printResponse.Status == JobStatus.Failed)
+        if (sendResponse.Status == JobStatus.Failed)
         {
             update.EventStatusReasonEnum = EventStatusReasonEnum.Fail;
-            update.ErrorDescription = printResponse.Error;
+            update.ErrorDescription = sendResponse.Error;
         }
-        if (printResponse.Status == JobStatus.Completed)
+        if (sendResponse.Status == JobStatus.Completed)
         {
             update.EventStatusReasonEnum = EventStatusReasonEnum.Success;
             update.ErrorDescription = string.Empty;
         }
-        if (printResponse.Status == JobStatus.InProgress)
+        if (sendResponse.Status == JobStatus.InProgress)
         {
             update.EventStatusReasonEnum = EventStatusReasonEnum.Processed;
             update.ErrorDescription = string.Empty;
         }
         await _eventRepo.ManageAsync(update, cancellationToken);
-        return printResponse.PrintJobId!;
+        return sendResponse.PrintJobId!;
     }
 
     private async Task<PreviewDocumentResp> PreviewViaBcMailPlus(BcMailPlusTransformResponse bcmailplusResponse, CancellationToken cancellationToken)
