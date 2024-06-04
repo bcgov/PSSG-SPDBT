@@ -14,14 +14,18 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.NoBranding).NotEmpty();
         RuleFor(r => r.UseDogs).NotEmpty();
         RuleFor(r => r.ApplicantIsBizManager).NotEmpty();
-        RuleFor(r => r.BizManagerContactInfo).NotEmpty();
+        RuleFor(r => r.BizManagerContactInfo)
+            .NotEmpty()
+            .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.ApplicantContactInfo)
             .NotEmpty()
             .When(r => r.ApplicantIsBizManager == false);
         RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.BizTypeCode).NotEmpty();
-        RuleFor(r => r.LicenceTermCode).NotEmpty();
+        RuleFor(r => r.LicenceTermCode)
+            .NotEmpty()
+            .Must(r => r == Shared.LicenceTermCode.OneYear || r == Shared.LicenceTermCode.TwoYears || r == Shared.LicenceTermCode.ThreeYears);
 
         // Parent/child categories
         RuleFor(r => r.CategoryCodes)
