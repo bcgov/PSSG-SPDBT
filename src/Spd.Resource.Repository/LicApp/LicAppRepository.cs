@@ -49,7 +49,14 @@ internal class LicAppRepository : ILicAppRepository
     public async Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken)
     {
         IQueryable<spd_application> apps = _context.spd_applications.Expand(a => a.spd_ServiceTypeId);
-        apps = apps.Where(a => a._spd_applicantid_value == qry.ApplicantId);
+        if (qry.ApplicantId != null)
+        {
+            apps = apps.Where(a => a._spd_applicantid_value == qry.ApplicantId);
+        }
+        if ((qry.BizId != null))
+        {
+            apps = apps.Where(a => a._spd_applicantid_value == qry.BizId);
+        }
         var applist = apps.ToList();
 
         if (qry.ValidWorkerLicenceTypeCodes != null && qry.ValidWorkerLicenceTypeCodes.Any())

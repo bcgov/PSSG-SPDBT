@@ -70,7 +70,7 @@ public class LicAppRepositoryTest : IClassFixture<IntegrationTestSetup>
         //Assert
         Assert.NotNull(resp);
         Assert.Equal(appId, resp.LicenceAppId);
-        Assert.Equal(bizId, resp.ContactId);
+        Assert.Equal(bizId, resp.BizId);
 
         // Annihilate
         _context.DeleteObject(app);
