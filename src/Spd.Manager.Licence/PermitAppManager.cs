@@ -3,9 +3,10 @@ using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
@@ -37,8 +38,17 @@ internal class PermitAppManager :
         IContactRepository contactRepository,
         ITaskRepository taskRepository,
         IMainFileStorageService mainFileStorageService,
-        ITransientFileStorageService transientFileStorageService)
-        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, personLicAppRepository, mainFileStorageService, transientFileStorageService)
+        ITransientFileStorageService transientFileStorageService,
+        ILicAppRepository licAppRepository)
+        : base(mapper,
+            documentUrlRepository,
+            feeRepository,
+            licenceRepository,
+            personLicAppRepository,
+            mainFileStorageService,
+            transientFileStorageService,
+            licAppRepository
+            )
     {
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
@@ -194,7 +204,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-        decimal cost = await CommitApplicationAsync(request, (Guid)response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }

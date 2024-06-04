@@ -5,9 +5,10 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Tasks;
 using Spd.Tests.Fixtures;
 using Spd.Utilities.FileStorage;
@@ -20,6 +21,7 @@ public class PermitAppManagerTest
     private PermitFixture permitFixture;
     private Mock<ILicenceRepository> mockLicRepo = new();
     private Mock<IPersonLicApplicationRepository> mockPersonLicAppRepo = new();
+    private Mock<ILicAppRepository> mockLicAppRepo = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<ITaskRepository> mockTaskAppRepo = new();
     private Mock<ILicenceFeeRepository> mockLicFeeRepo = new();
@@ -51,7 +53,8 @@ public class PermitAppManagerTest
             mockContactRepo.Object,
             mockTaskAppRepo.Object,
             mockMainFileService.Object,
-            mockTransientFileStorageService.Object);
+            mockTransientFileStorageService.Object,
+            mockLicAppRepo.Object);
     }
 
     [Fact]
@@ -61,7 +64,7 @@ public class PermitAppManagerTest
         //no duplicates; no licAppId: means create a brand new application.
         Guid applicantId = Guid.NewGuid();
         Guid licAppId = Guid.NewGuid();
-        mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
         mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == applicantId), CancellationToken.None)) //no dup lic
             .ReturnsAsync(new LicenceListResp()
@@ -100,7 +103,7 @@ public class PermitAppManagerTest
         //have licAppId in the upsert request and there is duplicated same type active licence.
         Guid licAppId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
-        mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp> {
                 new() { LicenceAppId = licAppId }
             });
@@ -134,7 +137,7 @@ public class PermitAppManagerTest
         //have licAppId in the upsert request and there is duplicated same type active application.
         Guid licAppId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
-        mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp> {
                     new() { LicenceAppId = licAppId },
                     new() { LicenceAppId = Guid.NewGuid() } });
@@ -274,7 +277,7 @@ public class PermitAppManagerTest
         //Arrange
         Guid licAppId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
-        mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == applicantId), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
         mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.ContactId == applicantId), CancellationToken.None)) //no dup lic
             .ReturnsAsync(new LicenceListResp()

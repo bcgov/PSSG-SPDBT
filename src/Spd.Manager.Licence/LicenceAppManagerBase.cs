@@ -2,9 +2,10 @@
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -19,6 +20,7 @@ internal abstract class LicenceAppManagerBase
     protected readonly IPersonLicApplicationRepository _personLicAppRepository;
     protected readonly IMainFileStorageService _mainFileService;
     protected readonly ITransientFileStorageService _transientFileService;
+    protected readonly ILicAppRepository _licAppRepository;
 
     public LicenceAppManagerBase(IMapper mapper,
         IDocumentRepository documentRepository,
@@ -26,7 +28,8 @@ internal abstract class LicenceAppManagerBase
         ILicenceRepository licenceRepository,
         IPersonLicApplicationRepository personLicAppRepository,
         IMainFileStorageService mainFileService,
-        ITransientFileStorageService transientFileService)
+        ITransientFileStorageService transientFileService,
+        ILicAppRepository licAppRepository)
     {
         _mapper = mapper;
         _documentRepository = documentRepository;
@@ -35,6 +38,7 @@ internal abstract class LicenceAppManagerBase
         _personLicAppRepository = personLicAppRepository;
         _mainFileService = mainFileService;
         _transientFileService = transientFileService;
+        _licAppRepository = licAppRepository;
     }
 
     protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
@@ -165,6 +169,7 @@ internal abstract class LicenceAppManagerBase
     {
         LicenceAppQuery q = new(
             applicantId,
+            null,
             new List<WorkerLicenceTypeEnum>
             {
                 workerLicenceType
@@ -181,7 +186,7 @@ internal abstract class LicenceAppManagerBase
                 ApplicationPortalStatusEnum.VerifyIdentity,
             }
         );
-        var response = await _personLicAppRepository.QueryAsync(q, ct);
+        var response = await _licAppRepository.QueryAsync(q, ct);
         if (response.Any())
         {
             if (existingLicAppId != null)

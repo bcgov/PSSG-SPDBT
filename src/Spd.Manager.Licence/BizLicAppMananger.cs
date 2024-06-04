@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -21,14 +23,14 @@ internal class BizLicAppMananger :
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
         IRequestHandler<GetBizMembersQuery, Members>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
+        IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
-
     public BizLicAppMananger(
         ILicenceRepository licenceRepository,
-        IPersonLicApplicationRepository personLicAppRepository,
+        ILicAppRepository licAppRepository,
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ILicenceFeeRepository feeRepository,
@@ -36,7 +38,14 @@ internal class BizLicAppMananger :
         ITransientFileStorageService transientFileStorageService,
         IBizContactRepository bizContactRepository,
         IBizLicApplicationRepository bizApplicationRepository)
-    : base(mapper, documentUrlRepository, feeRepository, licenceRepository, personLicAppRepository, mainFileStorageService, transientFileStorageService)
+    : base(mapper,
+        documentUrlRepository,
+        feeRepository,
+        licenceRepository,
+        null,
+        mainFileStorageService,
+        transientFileStorageService,
+        licAppRepository)
     {
         _bizLicApplicationRepository = bizApplicationRepository;
         _bizContactRepository = bizContactRepository;
@@ -51,7 +60,7 @@ internal class BizLicAppMananger :
 
         if (result.BizId != null)
             result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, result.LicenceAppId), cancellationToken);
-        
+
         return result;
     }
 
@@ -136,6 +145,31 @@ internal class BizLicAppMananger :
     {
         await UpdateMembersAsync(cmd.Members, cmd.BizId, cmd.ApplicationId, ct);
         return default;
+    }
+
+    public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery query, CancellationToken cancellationToken)
+    {
+        LicenceAppQuery q = new(
+            null,
+            query.BizId,
+            new List<WorkerLicenceTypeEnum>
+            {
+                WorkerLicenceTypeEnum.SecurityBusinessLicence,
+            },
+            new List<ApplicationPortalStatusEnum>
+            {
+                ApplicationPortalStatusEnum.Draft,
+                ApplicationPortalStatusEnum.AwaitingThirdParty,
+                ApplicationPortalStatusEnum.AwaitingPayment,
+                ApplicationPortalStatusEnum.Incomplete,
+                ApplicationPortalStatusEnum.InProgress,
+                ApplicationPortalStatusEnum.AwaitingApplicant,
+                ApplicationPortalStatusEnum.UnderAssessment,
+                ApplicationPortalStatusEnum.VerifyIdentity
+            }
+        );
+        var response = await _licAppRepository.QueryAsync(q, cancellationToken);
+        return _mapper.Map<IEnumerable<LicenceAppListResponse>>(response);
     }
 
     private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid appId, CancellationToken ct)

@@ -5,9 +5,10 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
@@ -33,6 +34,7 @@ internal class SecurityWorkerAppManager :
     public SecurityWorkerAppManager(
         ILicenceRepository licenceRepository,
         IPersonLicApplicationRepository personLicAppRepository,
+        ILicAppRepository licAppRepository,
         IMapper mapper,
         IDocumentRepository documentUrlRepository,
         ITaskRepository taskRepository,
@@ -46,7 +48,8 @@ internal class SecurityWorkerAppManager :
             licenceRepository,
             personLicAppRepository,
             mainFileStorageService,
-            transientFileStorageService)
+            transientFileStorageService,
+            licAppRepository)
     {
         _taskRepository = taskRepository;
         _contactRepository = contactRepository;
@@ -92,6 +95,7 @@ internal class SecurityWorkerAppManager :
     {
         LicenceAppQuery q = new(
             query.ApplicantId,
+            null,
             new List<WorkerLicenceTypeEnum>
             {
                 WorkerLicenceTypeEnum.ArmouredVehiclePermit,
@@ -110,7 +114,7 @@ internal class SecurityWorkerAppManager :
                 ApplicationPortalStatusEnum.VerifyIdentity
             }
         );
-        var response = await _personLicAppRepository.QueryAsync(q, cancellationToken);
+        var response = await _licAppRepository.QueryAsync(q, cancellationToken);
         return _mapper.Map<IEnumerable<LicenceAppListResponse>>(response);
     }
 
@@ -467,7 +471,6 @@ internal class SecurityWorkerAppManager :
                 }
             }
         }
-
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(WorkerLicenceAppSubmitRequest request,
