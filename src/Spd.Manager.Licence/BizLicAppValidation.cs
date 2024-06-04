@@ -23,7 +23,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.BizTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode).NotEmpty();
 
-        // Categories according to selected licence
+        // Parent/child categories
         RuleFor(r => r.CategoryCodes)
             .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmSales) && 
                 r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) && 
