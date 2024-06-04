@@ -2,6 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Subject } from 'rxjs';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-components/agreement-of-terms.component';
 
 @Component({
@@ -26,7 +27,7 @@ import { AgreementOfTermsComponent, AgreementOfTermsModel } from '../step-compon
 
 				<div class="row mt-4">
 					<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
-						<button mat-flat-button color="primary" class="large mb-2" [routerLink]="'/'">Close</button>
+						<button mat-flat-button color="primary" class="large mb-2" (click)="onClose()">Close</button>
 					</div>
 				</div>
 			</mat-step>
@@ -75,5 +76,9 @@ export class StepFourComponent {
 
 	clearStepData(): void {
 		this.agreementOfTermsComponent?.clearCurrentData();
+	}
+
+	onClose(): void {
+		window.location.assign(SPD_CONSTANTS.closeRedirects.crrpApplication);
 	}
 }

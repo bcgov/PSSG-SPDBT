@@ -51,4 +51,13 @@ export const SPD_CONSTANTS = {
 		peCrcOrPeCrcVsTerms: '/assets/files/Pe-crc-terms-and-conditions.pdf',
 		crrpTerms: '/assets/files/Crrp-terms-and-conditions.pdf',
 	},
+	closeRedirects: {
+		crrpApplication:
+			'https://www2.gov.bc.ca/gov/content/safety/crime-prevention/criminal-record-check/applicants/process',
+		peCrcApplication: 'https://www2.gov.bc.ca/gov/content/home',
+		mcfdApplication:
+			'https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/children-and-family-development',
+		pssoCheck:
+			'https://www2.gov.bc.ca/gov/content/careers-myhr/hiring-managers/process/extend-offer/security-screening/about',
+	},
 };

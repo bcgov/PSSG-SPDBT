@@ -48,6 +48,7 @@ public record WorkerLicenceAppResponse : WorkerLicenceAppBase
     public Guid LicenceAppId { get; set; }
     public DateOnly? ExpiryDate { get; set; }
     public string? CaseNumber { get; set; }
+    public string? ExpiredLicenceNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
 }
