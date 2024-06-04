@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.BizLicApplication;
