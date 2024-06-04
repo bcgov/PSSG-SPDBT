@@ -17,7 +17,6 @@ internal abstract class LicenceAppManagerBase
     protected readonly IDocumentRepository _documentRepository;
     protected readonly ILicenceFeeRepository _feeRepository;
     protected readonly ILicenceRepository _licenceRepository;
-    protected readonly IPersonLicApplicationRepository _personLicAppRepository;
     protected readonly IMainFileStorageService _mainFileService;
     protected readonly ITransientFileStorageService _transientFileService;
     protected readonly ILicAppRepository _licAppRepository;
@@ -26,7 +25,6 @@ internal abstract class LicenceAppManagerBase
         IDocumentRepository documentRepository,
         ILicenceFeeRepository feeRepository,
         ILicenceRepository licenceRepository,
-        IPersonLicApplicationRepository personLicAppRepository,
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         ILicAppRepository licAppRepository)
@@ -35,7 +33,6 @@ internal abstract class LicenceAppManagerBase
         _documentRepository = documentRepository;
         _feeRepository = feeRepository;
         _licenceRepository = licenceRepository;
-        _personLicAppRepository = personLicAppRepository;
         _mainFileService = mainFileService;
         _transientFileService = transientFileService;
         _licAppRepository = licAppRepository;
@@ -53,9 +50,9 @@ internal abstract class LicenceAppManagerBase
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
-            await _personLicAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
         else
-            await _personLicAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
         return price?.LicenceFees.FirstOrDefault()?.Amount ?? 0;
     }
 

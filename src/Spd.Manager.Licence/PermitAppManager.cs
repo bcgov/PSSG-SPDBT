@@ -26,6 +26,7 @@ internal class PermitAppManager :
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
 {
+    private readonly IPersonLicApplicationRepository _personLicAppRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -44,11 +45,11 @@ internal class PermitAppManager :
             documentUrlRepository,
             feeRepository,
             licenceRepository,
-            personLicAppRepository,
             mainFileStorageService,
             transientFileStorageService,
             licAppRepository)
     {
+        _personLicAppRepository = personLicAppRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
     }

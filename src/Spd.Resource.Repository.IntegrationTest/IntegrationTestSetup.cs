@@ -7,6 +7,7 @@ using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
@@ -51,6 +52,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IAliasRepository, AliasRepository>();
         serviceCollection.AddTransient<IBizRepository, BizRepository>();
         serviceCollection.AddTransient<IPersonLicApplicationRepository, PersonLicApplicationRepository>();
+        serviceCollection.AddTransient<ILicAppRepository, LicAppRepository>();
         serviceCollection.AddTransient<IOrgRepository, OrgRepository>();
         serviceCollection.AddTransient<IPortalUserRepository, PortalUserRepository>();
         serviceCollection.AddTransient<IOptionSetRepository, OptionSetRepository>();

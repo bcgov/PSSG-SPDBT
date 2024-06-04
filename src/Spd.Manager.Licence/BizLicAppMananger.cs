@@ -42,7 +42,6 @@ internal class BizLicAppMananger :
         documentUrlRepository,
         feeRepository,
         licenceRepository,
-        null,
         mainFileStorageService,
         transientFileStorageService,
         licAppRepository)

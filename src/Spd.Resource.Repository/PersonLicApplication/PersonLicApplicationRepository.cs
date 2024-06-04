@@ -2,10 +2,8 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.LicApp;
 using Spd.Utilities.Dynamics;
-using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
 internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
@@ -67,36 +65,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         }
         await _context.SaveChangesAsync(ct);
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
-    }
-
-    //for unauth, set applcation status to submitted.
-    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct)
-    {
-        spd_application? app = await _context.GetApplicationById(applicationId, ct);
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
-
-        if (status == ApplicationStatusEnum.Submitted)
-        {
-            app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-        }
-        else
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
-        }
-
-        app.spd_submittedon = DateTimeOffset.Now;
-        app.spd_portalmodifiedon = DateTimeOffset.Now;
-        _context.UpdateObject(app);
-        await _context.SaveChangesAsync(ct);
-
-        // For business application, return organization id, for all others, return applicant id
-        if (app._spd_organizationid_value != null)
-            return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_organizationid_value);
-        else
-            return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)app._spd_applicantid_value);
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid, null);
     }
 
     //for auth, do not need to create contact.
@@ -136,7 +105,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         //then update category.
         SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
+        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId, null);
     }
     public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
@@ -157,7 +126,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             else
                 throw;
         }
-        
+
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
 
         if (app.spd_ApplicantId_contact?.contactid != null)

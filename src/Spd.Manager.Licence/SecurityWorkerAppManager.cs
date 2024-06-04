@@ -28,6 +28,7 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceAppUpdateCommand, WorkerLicenceCommandResponse>,
         ISecurityWorkerAppManager
 {
+    private readonly IPersonLicApplicationRepository _personLicAppRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IContactRepository _contactRepository;
 
@@ -46,11 +47,11 @@ internal class SecurityWorkerAppManager :
             documentUrlRepository,
             feeRepository,
             licenceRepository,
-            personLicAppRepository,
             mainFileStorageService,
             transientFileStorageService,
             licAppRepository)
     {
+        _personLicAppRepository = personLicAppRepository;
         _taskRepository = taskRepository;
         _contactRepository = contactRepository;
     }

@@ -1,5 +1,6 @@
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.LicApp;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
 public partial interface IPersonLicApplicationRepository
@@ -7,11 +8,7 @@ public partial interface IPersonLicApplicationRepository
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
-    //connect spd_application with spd_contact and update application to correct status
-    public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct);
 }
-
-public record LicenceApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
 
 public record LicenceApplication
 {
