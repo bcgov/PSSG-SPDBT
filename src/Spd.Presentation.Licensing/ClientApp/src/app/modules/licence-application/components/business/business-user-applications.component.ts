@@ -57,10 +57,9 @@ import { Observable, take, tap } from 'rxjs';
 						</app-alert>
 					</ng-container>
 
-					<button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
+					<!-- <button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
 						<mat-icon>play_arrow</mat-icon>Resume
-						<!-- TODO temp -->
-					</button>
+					</button> -->
 
 					<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
 						<div class="section-title fs-5 py-3">Applications</div>
@@ -450,7 +449,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 		this.results$ = this.commonApplicationService.userBusinessLicencesList().pipe(
 			tap((resps: any) => {
-				console.log('************* business licences', resps);
+				console.debug('userBusinessLicencesList', resps);
 				this.activeLicences = resps;
 			})
 		);

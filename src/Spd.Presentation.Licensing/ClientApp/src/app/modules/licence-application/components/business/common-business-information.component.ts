@@ -117,7 +117,15 @@ import {
 						A valid security worker licence must be selected
 					</mat-error>
 
-					<div class="col-12" *ngIf="form.hasError('licencemustbeactive')">
+					<div
+						class="col-12"
+						*ngIf="
+							(form.dirty || form.touched) &&
+							form.invalid &&
+							!form.get('soleProprietorLicenceId')?.hasError('required') &&
+							form.hasError('licencemustbeactive')
+						"
+					>
 						<app-alert type="danger" icon="error">
 							<div>You must have a valid security worker licence to apply for a sole proprietor business licence.</div>
 							<div class="mt-2">

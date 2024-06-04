@@ -384,7 +384,7 @@ export class CommonApplicationService {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		return this.licenceService
 			.apiBizsBizIdLicencesGet({
-				bizId: '0326f9fd-7043-ee11-b845-00505683fbf4', // this.authUserBceidService.bceidUserProfile?.bizId!,
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!, //'0326f9fd-7043-ee11-b845-00505683fbf4', // this.authUserBceidService.bceidUserProfile?.bizId!,
 			})
 			.pipe(
 				switchMap((licenceResps: Array<LicenceBasicResponse>) => {
@@ -399,7 +399,7 @@ export class CommonApplicationService {
 					licenceResps.forEach((appl: LicenceBasicResponse) => {
 						apis.push(
 							this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({
-								licenceAppId: '404a6472-faa0-4206-96b2-d9aaf5bc0694', //'6982c6c3-ea36-4029-a697-2aeba9b34c7b', // appl.licenceAppId!,
+								licenceAppId: appl.licenceAppId!, //'404a6472-faa0-4206-96b2-d9aaf5bc0694', //'6982c6c3-ea36-4029-a697-2aeba9b34c7b', // appl.licenceAppId!,
 							})
 						);
 					});

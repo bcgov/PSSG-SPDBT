@@ -13,7 +13,6 @@ import {
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
-	LicenceStatusCode,
 	Members,
 	NonSwlContactInfo,
 	SwlContactInfo,
