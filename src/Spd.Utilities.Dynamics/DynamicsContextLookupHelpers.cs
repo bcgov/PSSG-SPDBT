@@ -369,7 +369,23 @@ namespace Spd.Utilities.Dynamics
                 else
                     throw;
             }
+        }
 
+        public static async Task<spd_eventqueue?> GetEventById(this DynamicsContext context, Guid eventId, CancellationToken ct)
+        {
+            try
+            {
+                return await context.spd_eventqueues
+                    .Where(l => l.spd_eventqueueid == eventId)
+                    .FirstOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
         }
     }
 }
