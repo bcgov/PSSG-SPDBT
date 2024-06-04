@@ -74,7 +74,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .Must(r => r.DocumentInfos != null &&
                 r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
-            .WithMessage("Missing armour car guard registrar document.");
+            .WithMessage("Missing security dog certificate document.");
 
         // Prviate investigator
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
