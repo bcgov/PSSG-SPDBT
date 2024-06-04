@@ -113,10 +113,5 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     {
         if (licence == null) return;
         _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
-
-        //foreach (var licence in licences)
-        //{
-        //    _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
-        //}
     }
 }
