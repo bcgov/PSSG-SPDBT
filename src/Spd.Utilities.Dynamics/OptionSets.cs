@@ -382,4 +382,24 @@ namespace Spd.Utilities.Dynamics
         ControllingMember = 100000000,
         Employee = 100000001
     }
+
+    public enum EventTypeOptionSet
+    {
+        BCMPScreeningFingerprintPrinting = 100000008,
+        BCMPSecurityWorkerLicencePrinting = 100000009,
+        BCMPArmouredVehiclePermitPrinting = 100000010,
+        BCMPBodyArmourPermitPrinting = 100000011,
+        BCMPBusinessLicencePrinting = 100000012,
+        BCMPMetalDealersPermitPrinting = 100000013
+    }
+
+    public enum EventStatusReasonOptionSet
+    {
+        Ready = 1, //Active state status reason
+        Error = 100000001, //Active state status reason
+        Processed = 2, //Inactive State status reason
+        Cancelled = 100000000, //Inactive State status reason
+        Success = 100000002, //Inactive State status reason
+        Fail = 100000003 //Inactive State status reason
+    }
 }

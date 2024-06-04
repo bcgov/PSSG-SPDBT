@@ -13,7 +13,7 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.GenderCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode).NotEmpty();
         RuleFor(r => r.HasExpiredLicence).NotEmpty();
-        RuleFor(r => r.ExpiredLicenceNumber).NotEmpty().When(r => r.HasExpiredLicence == true);
+        RuleFor(r => r.ExpiredLicenceId).NotEmpty().When(r => r.HasExpiredLicence == true);
         RuleFor(r => r.HasCriminalHistory).NotEmpty();
         RuleFor(r => r.HasBcDriversLicence).NotEmpty();
         RuleFor(r => r.HairColourCode).NotEmpty();
