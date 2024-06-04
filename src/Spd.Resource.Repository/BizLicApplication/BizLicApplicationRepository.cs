@@ -59,6 +59,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+        else
+            _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
         LinkOrganization(cmd.ApplicantId, app);
         LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         await _context.SaveChangesAsync();
