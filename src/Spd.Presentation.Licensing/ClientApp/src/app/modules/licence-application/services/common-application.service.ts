@@ -267,96 +267,11 @@ export class CommonApplicationService {
 						map((resps: Array<WorkerLicenceAppResponse | PermitLicenceAppResponse>) => {
 							const response: Array<UserLicenceResponse> = [];
 							resps.forEach((resp: WorkerLicenceAppResponse | PermitLicenceAppResponse) => {
-								const licence = resp as UserLicenceResponse;
-
-								const licenceReplacementPeriodPreventionDays =
-									SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
-								const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
-								const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
-								const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
-
-								licence.isRenewalPeriod = false;
-								licence.isUpdatePeriod = false;
-								licence.isReplacementPeriod = false;
-
 								const matchingLicence = licenceResps.find(
 									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 								);
 
-								if (matchingLicence) {
-									const today = moment().startOf('day');
-
-									licence.cardHolderName = matchingLicence.nameOnCard;
-									licence.licenceHolderName = matchingLicence.licenceHolderName;
-									licence.licenceStatusCode = matchingLicence.licenceStatusCode;
-									licence.licenceExpiryDate = matchingLicence.expiryDate;
-									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate)
-										.startOf('day')
-										.diff(today, 'days');
-									licence.licenceId = matchingLicence.licenceId;
-									licence.licenceNumber = matchingLicence.licenceNumber;
-									licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
-
-									if (licence.licenceExpiryNumberOfDays >= 0) {
-										if (
-											licence.licenceStatusCode === LicenceStatusCode.Active &&
-											today.isBefore(
-												moment(licence.licenceExpiryDate)
-													.startOf('day')
-													.subtract(licenceUpdatePeriodPreventionDays, 'days')
-											)
-										) {
-											licence.isUpdatePeriod = true;
-										}
-
-										if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
-											if (
-												today.isSameOrAfter(
-													moment(licence.licenceExpiryDate)
-														.startOf('day')
-														.subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
-												)
-											) {
-												licence.isRenewalPeriod = true;
-											}
-										} else {
-											if (
-												today.isSameOrAfter(
-													moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
-												)
-											) {
-												licence.isRenewalPeriod = true;
-											}
-										}
-
-										if (
-											today.isBefore(
-												moment(licence.licenceExpiryDate)
-													.startOf('day')
-													.subtract(licenceReplacementPeriodPreventionDays, 'days')
-											)
-										) {
-											licence.isReplacementPeriod = true;
-										}
-									}
-								}
-
-								// get Licence Reprint Fee
-								const fee = this.getLicenceTermsAndFees(
-									resp.workerLicenceTypeCode!,
-									ApplicationTypeCode.Replacement,
-									resp.bizTypeCode!,
-									resp.licenceTermCode
-								).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
-								licence.licenceReprintFee = fee?.amount ? fee.amount : null;
-
-								const hasDogAuthorization = resp.documentInfos?.find(
-									(item: Document) =>
-										item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
-								);
-								licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
-									? hasDogAuthorization.licenceDocumentTypeCode
-									: null;
+								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!) as UserLicenceResponse;
 
 								const hasRestraintAuthorization = resp.documentInfos?.find(
 									(item: Document) =>
@@ -414,96 +329,8 @@ export class CommonApplicationService {
 
 							const response: Array<BusinessLicenceResponse> = [];
 							applResps.forEach((resp: BizLicAppResponse) => {
-								const licence = resp as BusinessLicenceResponse;
-
-								const licenceReplacementPeriodPreventionDays =
-									SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
-								const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
-								const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
-								const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
-
-								licence.isRenewalPeriod = false;
-								licence.isUpdatePeriod = false;
-								licence.isReplacementPeriod = false;
-
-								// const matchingLicence = licenceResps.find(
-								// 	(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
-								// );
 								const matchingLicence = licenceResps[0];
-
-								if (matchingLicence) {
-									const today = moment().startOf('day');
-
-									licence.cardHolderName = matchingLicence.nameOnCard;
-									licence.licenceHolderName = matchingLicence.licenceHolderName;
-									licence.licenceStatusCode = matchingLicence.licenceStatusCode;
-									licence.licenceExpiryDate = matchingLicence.expiryDate;
-									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate)
-										.startOf('day')
-										.diff(today, 'days');
-									licence.licenceId = matchingLicence.licenceId;
-									licence.licenceNumber = matchingLicence.licenceNumber;
-									// licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
-
-									if (licence.licenceExpiryNumberOfDays >= 0) {
-										if (
-											licence.licenceStatusCode === LicenceStatusCode.Active &&
-											today.isBefore(
-												moment(licence.licenceExpiryDate)
-													.startOf('day')
-													.subtract(licenceUpdatePeriodPreventionDays, 'days')
-											)
-										) {
-											licence.isUpdatePeriod = true;
-										}
-
-										if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
-											if (
-												today.isSameOrAfter(
-													moment(licence.licenceExpiryDate)
-														.startOf('day')
-														.subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
-												)
-											) {
-												licence.isRenewalPeriod = true;
-											}
-										} else {
-											if (
-												today.isSameOrAfter(
-													moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
-												)
-											) {
-												licence.isRenewalPeriod = true;
-											}
-										}
-
-										if (
-											today.isBefore(
-												moment(licence.licenceExpiryDate)
-													.startOf('day')
-													.subtract(licenceReplacementPeriodPreventionDays, 'days')
-											)
-										) {
-											licence.isReplacementPeriod = true;
-										}
-									}
-								}
-
-								// get Licence Reprint Fee
-								const fee = this.getLicenceTermsAndFees(
-									resp.workerLicenceTypeCode!,
-									ApplicationTypeCode.Replacement,
-									profile.bizTypeCode,
-									resp.licenceTermCode
-								).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
-								licence.licenceReprintFee = fee?.amount ? fee.amount : null;
-
-								const hasDogAuthorization = resp.documentInfos?.find(
-									(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizSecurityDogCertificate
-								);
-								licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
-									? hasDogAuthorization.licenceDocumentTypeCode
-									: null;
+								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!) as BusinessLicenceResponse;
 
 								response.push(licence);
 							});
@@ -734,5 +561,90 @@ export class CommonApplicationService {
 					this.onGoToHome();
 				}
 			});
+	}
+
+	private getLicence(
+		resp: any,
+		bizTypeCode: BizTypeCode,
+		matchingLicence: LicenceBasicResponse
+	): UserLicenceResponse | BusinessLicenceResponse {
+		const licence = resp;
+
+		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
+		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
+		const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
+		const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
+
+		licence.isRenewalPeriod = false;
+		licence.isUpdatePeriod = false;
+		licence.isReplacementPeriod = false;
+
+		if (matchingLicence) {
+			const today = moment().startOf('day');
+
+			licence.cardHolderName = matchingLicence.nameOnCard;
+			licence.licenceHolderName = matchingLicence.licenceHolderName;
+			licence.licenceStatusCode = matchingLicence.licenceStatusCode;
+			licence.licenceExpiryDate = matchingLicence.expiryDate;
+			licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
+			licence.licenceId = matchingLicence.licenceId;
+			licence.licenceNumber = matchingLicence.licenceNumber;
+			licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
+
+			if (licence.licenceExpiryNumberOfDays >= 0) {
+				if (
+					licence.licenceStatusCode === LicenceStatusCode.Active &&
+					today.isBefore(
+						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days')
+					)
+				) {
+					licence.isUpdatePeriod = true;
+				}
+
+				if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
+					if (
+						today.isSameOrAfter(
+							moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
+						)
+					) {
+						licence.isRenewalPeriod = true;
+					}
+				} else {
+					if (
+						today.isSameOrAfter(
+							moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
+						)
+					) {
+						licence.isRenewalPeriod = true;
+					}
+				}
+
+				if (
+					today.isBefore(
+						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
+					)
+				) {
+					licence.isReplacementPeriod = true;
+				}
+			}
+		}
+
+		// get Licence Reprint Fee
+		const fee = this.getLicenceTermsAndFees(
+			resp.workerLicenceTypeCode!,
+			ApplicationTypeCode.Replacement,
+			bizTypeCode!,
+			resp.licenceTermCode
+		).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
+		licence.licenceReprintFee = fee?.amount ? fee.amount : null;
+
+		const hasDogAuthorization = resp.documentInfos?.find(
+			(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
+		);
+		licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
+			? hasDogAuthorization.licenceDocumentTypeCode
+			: null;
+
+		return licence;
 	}
 }
