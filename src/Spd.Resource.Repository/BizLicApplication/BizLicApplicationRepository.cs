@@ -70,7 +70,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         else
             DeletePrivateInvestigatorLink(app.spd_application_spd_licence_manager?.FirstOrDefault(), app);
-            //_context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), null);
 
         await _context.SaveChangesAsync(ct);
 
