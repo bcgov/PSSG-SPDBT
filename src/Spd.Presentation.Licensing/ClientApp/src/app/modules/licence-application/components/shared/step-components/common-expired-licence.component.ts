@@ -44,48 +44,43 @@ import {
 							<button mat-flat-button color="primary" class="large w-auto" (click)="onLookup()">
 								Search for your Expired Licence
 							</button>
+
+							<mat-error
+								class="mat-option-error mt-3"
+								*ngIf="
+									(form.get('expiredLicenceId')?.dirty || form.get('expiredLicenceId')?.touched) &&
+									form.get('expiredLicenceId')?.invalid &&
+									form.get('expiredLicenceId')?.hasError('required')
+								"
+							>
+								An expired licence must be selected
+							</mat-error>
 						</div>
 					</div>
 
-					<div class="my-2">
-						<ng-container *ngIf="expiredLicenceId.value; else SearchForLicence">
-							<app-alert type="success" icon="check_circle">
-								<div class="row">
-									<div class="col-md-6 col-sm-12">
-										<div class="d-block text-muted mt-2">Name</div>
-										<div class="text-data">{{ expiredLicenceHolderName.value }}</div>
-									</div>
-									<div class="col-md-6 col-sm-12">
-										<div class="d-block text-muted mt-2">{{ titleLabel }} Number</div>
-										<div class="text-data">{{ expiredLicenceNumber.value }}</div>
-									</div>
-									<div class="col-md-6 col-sm-12">
-										<div class="d-block text-muted mt-2">Expiry Date</div>
-										<div class="text-data">
-											{{ expiredLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
-										</div>
-									</div>
-									<div class="col-md-6 col-sm-12">
-										<div class="d-block text-muted mt-2">Licence Status</div>
-										<div class="text-data fw-bold">{{ expiredLicenceStatusCode.value }}</div>
+					<div class="my-2" *ngIf="expiredLicenceId.value">
+						<app-alert type="success" icon="check_circle">
+							<div class="row">
+								<div class="col-md-6 col-sm-12">
+									<div class="d-block text-muted mt-2">Name</div>
+									<div class="text-data">{{ expiredLicenceHolderName.value }}</div>
+								</div>
+								<div class="col-md-6 col-sm-12">
+									<div class="d-block text-muted mt-2">{{ titleLabel }} Number</div>
+									<div class="text-data">{{ expiredLicenceNumber.value }}</div>
+								</div>
+								<div class="col-md-6 col-sm-12">
+									<div class="d-block text-muted mt-2">Expiry Date</div>
+									<div class="text-data">
+										{{ expiredLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
 									</div>
 								</div>
-							</app-alert>
-						</ng-container>
-						<ng-template #SearchForLicence>
-							<app-alert type="warning" icon=""> Search for the associated expired licence </app-alert>
-						</ng-template>
-
-						<mat-error
-							class="mat-option-error mb-4"
-							*ngIf="
-								(form.get('expiredLicenceId')?.dirty || form.get('expiredLicenceId')?.touched) &&
-								form.get('expiredLicenceId')?.invalid &&
-								form.get('expiredLicenceId')?.hasError('required')
-							"
-						>
-							An expired licence must be selected
-						</mat-error>
+								<div class="col-md-6 col-sm-12">
+									<div class="d-block text-muted mt-2">Licence Status</div>
+									<div class="text-data fw-bold">{{ expiredLicenceStatusCode.value }}</div>
+								</div>
+							</div>
+						</app-alert>
 					</div>
 				</div>
 			</div>

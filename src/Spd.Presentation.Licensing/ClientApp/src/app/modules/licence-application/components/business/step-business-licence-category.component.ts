@@ -207,28 +207,26 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	setupCategories(): void {
 		const formValue = this.form.value;
 
+		// pass 'true' as 'preventDisable'
+		// checkboxes can be deselected that shouldn't be
 		if (formValue.SecurityAlarmInstaller) {
-			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmInstaller, true);
 		}
 
 		if (formValue.SecurityGuard) {
-			this.onCategoryChange(WorkerCategoryTypeCode.SecurityGuard);
+			this.onCategoryChange(WorkerCategoryTypeCode.SecurityGuard, true);
 		}
 
 		if (formValue.SecurityAlarmResponse) {
-			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmResponse);
+			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmResponse, true);
 		}
 
 		if (formValue.Locksmith) {
-			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith);
-		}
-
-		if (formValue.Locksmith) {
-			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith);
+			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith, true);
 		}
 	}
 
-	onCategoryChange(changedItem: string): void {
+	onCategoryChange(changedItem: string, preventDisable: boolean = false): void {
 		const formValue = this.form.value;
 
 		type CategoryKey = keyof typeof this.businessApplicationService.categoryFormGroup;
@@ -248,7 +246,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				this.showLocksmithMessage = locksmith;
 				if (locksmith) {
 					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				} else {
+				} else if (!preventDisable) {
 					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 				}
 				break;
@@ -258,7 +256,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 					this.showSecurityAlarmResponseMessage = false;
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-				} else {
+				} else if (!preventDisable) {
 					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
 				}
@@ -274,7 +272,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
 					this.setAndDisable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				} else {
+				} else if (!preventDisable) {
 					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmSales);
 					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
@@ -286,7 +284,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				this.showSecurityAlarmResponseMessage = securityAlarmResponse;
 				if (securityAlarmResponse) {
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-				} else {
+				} else if (!preventDisable) {
 					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 				}
 				break;
