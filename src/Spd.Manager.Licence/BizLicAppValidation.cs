@@ -1,10 +1,14 @@
 ﻿using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsertRequest>
 {
     public BizLicAppSubmitRequestValidator()
     {
+        Regex emailRegex = new(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+
         // General validations
         RuleFor(r => r.BizId).NotEqual(Guid.Empty);
         RuleFor(r => r.HasExpiredLicence).NotEmpty();
@@ -88,5 +92,19 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor))
             .WithMessage("Missing private investigator information.");
 
+        // Controlling members
+        RuleFor(r => r.Members.SwlControllingMembers)
+            .Must(r => r.Count() <= 20)
+            .ForEach(r => r
+                .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
+            .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
+            .WithMessage("No more than 20 Controlling members (SWL) are allowed");
+        RuleFor(r => r.Members.NonSwlControllingMembers)
+            .Must(r => r.Count() <= 20)
+            .ForEach(r => r
+                .Must(m => m.Surname.IsNullOrEmpty() != true)
+                .Must(m => m.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(m.EmailAddress)))
+            .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null)
+            .WithMessage("No more than 20 Controlling members (not SWL) are allowed");
     }
 }
