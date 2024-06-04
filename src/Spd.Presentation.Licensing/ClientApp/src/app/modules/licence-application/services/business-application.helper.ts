@@ -316,7 +316,7 @@ export abstract class BusinessApplicationHelper {
 		employees: this.formBuilder.array([]),
 	});
 
-	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({
+	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({ // TODO needed?
 	// 	attachments: new FormControl([], [Validators.required]),
 	// });
 
@@ -360,12 +360,6 @@ export abstract class BusinessApplicationHelper {
 			],
 		}
 	);
-
-	// employeesFormGroup: FormGroup = this.formBuilder.group({
-	// 	hasEmployees: new FormControl(''),
-	// 	licenceNumberLookup: new FormControl(''),
-	// 	employees: this.formBuilder.array([]),
-	// });
 
 	managerFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
@@ -411,13 +405,13 @@ export abstract class BusinessApplicationHelper {
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
 		const businessManagerData = { ...businessModelFormValue.businessManagerData };
 
-		const privateInvestigatorSwlInfo: SwlContactInfo | undefined = undefined; // TODO fix setting of PI info
+		let privateInvestigatorSwlInfo: SwlContactInfo = {};
 		let useDogs = false;
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
 
-		let applicantContactInfo: ContactInfo | undefined = undefined;
+		let applicantContactInfo: ContactInfo = {};
 		const applicantIsBizManager = businessManagerData.isBusinessManager;
 		const bizManagerContactInfo: ContactInfo = {
 			emailAddress: businessManagerData.emailAddress,
@@ -445,6 +439,14 @@ export abstract class BusinessApplicationHelper {
 			useDogs = businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
 		}
 
+		if (categoryData.PrivateInvestigator) {
+			const privateInvestigatorData = businessModelFormValue.categoryPrivateInvestigatorFormGroup;
+			privateInvestigatorSwlInfo = {
+				contactId: privateInvestigatorData.managerContactId,
+				licenceId: privateInvestigatorData.managerLicenceId,
+			};
+		}
+
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
 			documentInfos
 				.filter((doc) => doc.expiryDate)
@@ -468,9 +470,11 @@ export abstract class BusinessApplicationHelper {
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 		if (!this.isSoleProprietor(bizTypeCode)) {
 			members = {
-				employees: this.saveEmployeesBody(businessModelFormValue),
-				nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(businessModelFormValue),
-				swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue),
+				employees: this.saveEmployeesBody(businessModelFormValue.employeesData),
+				nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(
+					businessModelFormValue.controllingMembersData
+				),
+				swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue.controllingMembersData),
 			};
 		}
 
@@ -664,8 +668,8 @@ export abstract class BusinessApplicationHelper {
 		return documents;
 	}
 
-	saveControllingMembersWithSwlBody(businessModelFormValue: any): null | Array<SwlContactInfo> {
-		const controllingMembersWithSwlArray = businessModelFormValue.controllingMembersData.membersWithSwl;
+	saveControllingMembersWithSwlBody(controllingMembersData: any): null | Array<SwlContactInfo> {
+		const controllingMembersWithSwlArray = controllingMembersData.membersWithSwl;
 
 		if (!controllingMembersWithSwlArray) {
 			return null;
@@ -686,8 +690,8 @@ export abstract class BusinessApplicationHelper {
 		return swlControllingMembers;
 	}
 
-	saveControllingMembersWithoutSwlBody(businessModelFormValue: any): null | Array<NonSwlContactInfo> {
-		const controllingMembersWithoutSwlArray = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+	saveControllingMembersWithoutSwlBody(controllingMembersData: any): null | Array<NonSwlContactInfo> {
+		const controllingMembersWithoutSwlArray = controllingMembersData.membersWithoutSwl;
 
 		if (!controllingMembersWithoutSwlArray) {
 			return null;
@@ -712,8 +716,8 @@ export abstract class BusinessApplicationHelper {
 		return nonSwlControllingMembers;
 	}
 
-	saveEmployeesBody(businessModelFormValue: any): null | Array<SwlContactInfo> {
-		const employeesArray = businessModelFormValue.employeesData.employees;
+	saveEmployeesBody(employeesData: any): null | Array<SwlContactInfo> {
+		const employeesArray = employeesData.employees;
 
 		if (!employeesArray) {
 			return null;
