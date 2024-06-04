@@ -184,15 +184,15 @@ import { Observable, take, tap } from 'rxjs';
 								</div>
 								<div class="col-lg-10">
 									<div class="row">
-										<div class="col-lg-6">
+										<div class="col-lg-5">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
 											<div class="text-data">{{ licence.licenceNumber }}</div>
 										</div>
-										<div class="col-lg-3">
+										<div class="col-lg-4">
 											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
 											<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 										</div>
-										<div class="col-lg-3">
+										<div class="col-lg-3 text-end">
 											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
 												<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
 												<span class="appl-chip-option-item ms-2 fs-5">Active</span>
@@ -218,6 +218,17 @@ import { Observable, take, tap } from 'rxjs';
 												</ul>
 											</div>
 										</div>
+										<div class="col-lg-5" *ngIf="licence.dogAuthorization">
+											<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
+											<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
+										</div>
+
+										<!-- 
+										<app-alert type="info" icon="">
+											You can update your controlling members and employees when you renew your business licence // TODO prevent update of members
+										</app-alert>										
+										-->
+
 										<div class="col-lg-5">
 											<div class="d-block text-muted mt-2 mt-md-0"></div>
 											<div *ngIf="isNotSoleProprietor">
@@ -443,25 +454,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				this.activeLicences = resps;
 			})
 		);
-
-		// this.activeLicences = [
-		// 	{
-		// 		licenceId: '1',
-		// 		licenceNumber: 'TEST-NWQ3X7A',
-		// 		licenceTermCode: LicenceTermCode.TwoYears,
-		// 		workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence,
-		// 		applicationTypeCode: ApplicationTypeCode.New,
-		// 		licenceExpiryDate: '2025-02-13T19:43:25+00:00',
-		// 		isRenewalPeriod: true,
-		// 		isUpdatePeriod: true,
-		// 		isReplacementPeriod: true,
-		// 		hasBcscNameChanged: false,
-		// 		licenceReprintFee: null,
-		// 		licenceStatusCode: LicenceStatusCode.Active,
-		// 		dogAuthorization: null,
-		// 		restraintAuthorization: null,
-		// 	},
-		// ];
 
 		this.applicationIsInProgress = false; // TODO remove hardcoded flag
 

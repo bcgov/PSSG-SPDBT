@@ -499,8 +499,7 @@ export class CommonApplicationService {
 								licence.licenceReprintFee = fee?.amount ? fee.amount : null;
 
 								const hasDogAuthorization = resp.documentInfos?.find(
-									(item: Document) =>
-										item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
+									(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizSecurityDogCertificate
 								);
 								licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
 									? hasDogAuthorization.licenceDocumentTypeCode

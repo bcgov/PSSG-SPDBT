@@ -6,6 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { BizTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -88,7 +89,6 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 				<app-steps-business-licence-review
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
@@ -135,6 +135,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -222,34 +223,22 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		}
 	}
 
-	// onNextPayStep(): void {
-	// 	this.permitApplicationService.submitPermit().subscribe({
-	// 		next: (_resp: any) => {
-	// 			this.hotToastService.success('Your licence has been successfully submitted');
-	// 			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAnonymous());
-	// 		},
-	// 		error: (error: any) => {
-	// 			console.log('An error occurred during save', error);
-	// 			this.hotToastService.error('An error occurred during the save. Please try again.');
-	// 		},
-	// 	});
-	// }
-
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNow(licenceAppId, `Payment for Case ID: ${application.applicationNumber}`);
-	// }
-
-	// onNextStepperStep(stepper: MatStepper): void {
-	// 	if (stepper?.selected) stepper.selected.completed = true;
-	// 	stepper.next();
-	// }
+	onNextPayStep(): void {
+		this.businessApplicationService.submitBusinessLicenceNew().subscribe({
+			next: (_resp: any) => {
+				this.hotToastService.success('Your business licence has been successfully submitted');
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+				// this.payNow(_resp.body.licenceAppId!); // TODO handle payment
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.saveStep(stepper);
-	}
-
-	onNextPayStep(): void {
-		// TODO empty function
 	}
 
 	onGoToStep(step: number) {
@@ -281,6 +270,21 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 	onChildNextStep() {
 		this.saveStep();
+	}
+
+	onSaveAndExit(): void {
+		if (!this.businessApplicationService.isSaveAndExit()) {
+			return;
+		}
+
+		this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
+			next: (_resp: any) => {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
+			},
+			error: (error: HttpErrorResponse) => {
+				this.handlePartialSaveError(error);
+			},
+		});
 	}
 
 	private saveStep(stepper?: MatStepper): void {
@@ -326,19 +330,8 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		}
 	}
 
-	onSaveAndExit(): void {
-		if (!this.businessApplicationService.isSaveAndExit()) {
-			return;
-		}
-
-		this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
-			next: (_resp: any) => {
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				this.handlePartialSaveError(error);
-			},
-		});
+	private payNow(licenceAppId: string): void {
+		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for new Business Licence application');
 	}
 
 	private goToReviewStep(): void {

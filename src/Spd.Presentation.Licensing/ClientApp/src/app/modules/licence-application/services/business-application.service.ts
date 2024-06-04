@@ -13,6 +13,7 @@ import {
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
+	LicenceStatusCode,
 	Members,
 	NonSwlContactInfo,
 	SwlContactInfo,
@@ -188,6 +189,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				return resp;
 			})
 		);
+	}
+
+	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		console.log('body', body); // TODO fix body for submit
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
 	/**
