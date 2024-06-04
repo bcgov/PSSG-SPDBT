@@ -21,8 +21,8 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     /// <param name="eventId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpGet("api/printjobs/{eventId}/exe")]
-    public async Task<Results<Ok<string>, BadRequest>> PostPrintJob([FromRoute] Guid eventId, CancellationToken ct)
+    [HttpGet("api/printjobs/{eventId}")]
+    public async Task<Results<Ok<string>, BadRequest>> GetPrintJob([FromRoute] Guid eventId, CancellationToken ct)
     {
         var createdJobId = await mediator.Send(new StartPrintJobCommand(eventId), ct);
         return TypedResults.Ok(createdJobId);
