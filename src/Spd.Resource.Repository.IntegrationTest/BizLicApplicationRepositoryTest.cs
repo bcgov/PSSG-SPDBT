@@ -107,6 +107,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
             .Without(a => a.LicenceAppId)
             .Create();
 
@@ -179,6 +180,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
             .Create();
 
         spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
