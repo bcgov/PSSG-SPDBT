@@ -47,8 +47,7 @@ internal class PermitAppManager :
             personLicAppRepository,
             mainFileStorageService,
             transientFileStorageService,
-            licAppRepository
-            )
+            licAppRepository)
     {
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
