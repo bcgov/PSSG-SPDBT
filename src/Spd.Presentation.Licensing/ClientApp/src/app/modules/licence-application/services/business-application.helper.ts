@@ -457,10 +457,6 @@ export abstract class BusinessApplicationHelper {
 					} as DocumentExpiredInfo;
 				}) ?? [];
 
-		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
-			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
 		// Only save members if business is not a sole proprietor
 		let members: Members = {
 			employees: [],

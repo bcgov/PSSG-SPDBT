@@ -532,10 +532,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
-		const expiredLicenceExpiryDate = expiredLicenceData.expiryDate
-			? this.formatDatePipe.transform(expiredLicenceData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
 		const armouredVehiclePermitReasonCodes: Array<ArmouredVehiclePermitReasonCode> = [];
 		const bodyArmourPermitReasonCodes: Array<BodyArmourPermitReasonCode> = [];
 		let permitOtherRequiredReason: string | null = null;

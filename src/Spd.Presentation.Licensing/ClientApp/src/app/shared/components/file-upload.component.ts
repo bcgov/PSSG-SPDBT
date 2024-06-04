@@ -220,7 +220,7 @@ export class FileUploadComponent implements OnInit {
 			// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
 			// for example: filename.gov.bc.ca.docx
 			// Block the uploading of these files for now. Hopefully newer version will fix this.
-			var numberOfPeriods = addedFile.name.match(/\./g)?.length ?? 0;
+			const numberOfPeriods = addedFile.name.match(/\./g)?.length ?? 0;
 
 			if (numberOfPeriods > 1) {
 				this.hotToastService.error(
