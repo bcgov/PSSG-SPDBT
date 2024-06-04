@@ -226,12 +226,7 @@ internal class Mappings : Profile
             .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.ManagerEmailAddress))
             .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.ManagerMiddleName1))
             .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.ManagerMiddleName2))
-            .ForPath(d => d.ApplicantContactInfo.GivenName, opt => opt.MapFrom(s => s.GivenName))
-            .ForPath(d => d.ApplicantContactInfo.Surname, opt => opt.MapFrom(s => s.Surname))
-            .ForPath(d => d.ApplicantContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            .ForPath(d => d.ApplicantContactInfo.EmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForPath(d => d.ApplicantContactInfo.MiddleName1, opt => opt.MapFrom(s => s.MiddleName1))
-            .ForPath(d => d.ApplicantContactInfo.MiddleName2, opt => opt.MapFrom(s => s.MiddleName2))
+            .ForMember(d => d.ApplicantContactInfo, opt => opt.MapFrom(s => GetApplicantInfo(s)))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.LicenceId));
 
         CreateMap<PortalUserResp, BizUserLoginResponse>()
@@ -649,6 +644,21 @@ internal class Mappings : Profile
         string mn = middleName == null ? string.Empty : middleName.Trim();
         string ln = lastName == null ? string.Empty : lastName.Trim();
         return ($"{fn} {mn}".Trim() + " " + ln).Trim();
+    }
+
+    private ContactInfo? GetApplicantInfo(BizLicApplicationResp bizLicApplicationResp)
+    {
+        if ((bool)bizLicApplicationResp.ApplicantIsBizManager)
+            return null;
+
+        return new ContactInfo()
+        {
+            GivenName = bizLicApplicationResp.GivenName,
+            Surname = bizLicApplicationResp.Surname,
+            EmailAddress = bizLicApplicationResp.EmailAddress,
+            MiddleName1 = bizLicApplicationResp.MiddleName1,
+            MiddleName2 = bizLicApplicationResp.MiddleName2
+        };
     }
 }
 

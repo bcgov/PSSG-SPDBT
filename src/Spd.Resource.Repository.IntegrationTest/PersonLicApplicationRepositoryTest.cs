@@ -5,6 +5,7 @@ using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -82,11 +83,8 @@ public class PersonLicApplicationRepositoryTest : IClassFixture<IntegrationTestS
     [Fact]
     public async Task GetLicenceApplicationAsync_ApplicationNotFound_Throw_Exception()
     {
-        // Action
-        var response = await _personLicAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None);
-
-        // Assert
-        Assert.Null(response);
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _personLicAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
     }
 
     [Fact]
