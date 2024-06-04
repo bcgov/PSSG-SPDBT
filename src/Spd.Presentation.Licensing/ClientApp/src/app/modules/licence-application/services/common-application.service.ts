@@ -330,7 +330,7 @@ export class CommonApplicationService {
 							const response: Array<BusinessLicenceResponse> = [];
 							applResps.forEach((resp: BizLicAppResponse) => {
 								const matchingLicence = licenceResps[0];
-								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!) as BusinessLicenceResponse;
+								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!);
 
 								response.push(licence);
 							});
@@ -631,9 +631,9 @@ export class CommonApplicationService {
 
 		// get Licence Reprint Fee
 		const fee = this.getLicenceTermsAndFees(
-			resp.workerLicenceTypeCode!,
+			resp.workerLicenceTypeCode,
 			ApplicationTypeCode.Replacement,
-			bizTypeCode!,
+			bizTypeCode,
 			resp.licenceTermCode
 		).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
 		licence.licenceReprintFee = fee?.amount ? fee.amount : null;
