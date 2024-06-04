@@ -11,6 +11,7 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Delegates;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
+using Spd.Resource.Repository.Event;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Invoice;
@@ -66,6 +67,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IWorkerLicenceCategoryRepository, WorkerLicenceCategoryRepository>();
             configurationServices.Services.AddTransient<IBizLicApplicationRepository, BizLicApplicationRepository>();
             configurationServices.Services.AddTransient<IBizContactRepository, BizContactRepository>();
+            configurationServices.Services.AddTransient<IEventRepository, EventRepository>();
         }
     }
 }

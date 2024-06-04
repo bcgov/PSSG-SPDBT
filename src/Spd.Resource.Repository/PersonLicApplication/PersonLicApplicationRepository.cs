@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
@@ -139,14 +140,24 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
     }
     public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
-        var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
-            .Expand(a => a.spd_ApplicantId_contact)
-            .Expand(a => a.spd_application_spd_licencecategory)
-            .Expand(a => a.spd_CurrentExpiredLicenceId)
-            .Where(a => a.spd_applicationid == licenceApplicationId)
-            .SingleOrDefaultAsync(ct);
-        if (app == null)
-            throw new ArgumentException("invalid app id");
+        spd_application? app;
+        try
+        {
+            app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_CurrentExpiredLicenceId)
+                .Where(a => a.spd_applicationid == licenceApplicationId)
+                .SingleOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                throw new ArgumentException("invalid app id");
+            else
+                throw;
+        }
+        
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
 
         if (app.spd_ApplicantId_contact?.contactid != null)

@@ -25,7 +25,6 @@ public record LicenceApplication
     public DateOnly? DateOfBirth { get; set; }
     public GenderEnum? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
-    public string? ExpiredLicenceNumber { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
@@ -94,6 +93,7 @@ public record LicenceApplicationResp() : LicenceApplication
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
     public string? CaseNumber { get; set; }
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
+    public string? ExpiredLicenceNumber { get; set; }
 };
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);

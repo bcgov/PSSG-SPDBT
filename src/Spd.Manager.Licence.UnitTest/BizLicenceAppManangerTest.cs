@@ -58,7 +58,8 @@ public class BizLicenceAppManangerTest
             .ReturnsAsync(new BizLicApplicationResp()
             {
                 LicenceAppId = licAppId,
-                BizId = Guid.NewGuid()
+                BizId = Guid.NewGuid(),
+                ApplicantIsBizManager = true
             });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
