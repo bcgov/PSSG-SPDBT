@@ -182,7 +182,7 @@ internal class PermitAppManager :
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
-        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        LicenceApplicationCmdResp response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
@@ -194,6 +194,7 @@ internal class PermitAppManager :
                 null,
                 cancellationToken);
 
+        if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
         {
