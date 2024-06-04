@@ -69,10 +69,7 @@ namespace Spd.Resource.Repository.Biz
                 throw new ApiException(HttpStatusCode.InternalServerError, $"Biz {biz.name} does not have service type.");
 
             var licenceId = biz.spd_organization_spd_licence_soleproprietor
-                .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)?.spd_licenceid;
-
-            var contactId = biz.spd_organization_spd_licence_soleproprietor
-                .FirstOrDefault(l => l.statecode == DynamicsConstants.StateCode_Active)?._spd_licenceholder_value;
+                .FirstOrDefault()?.spd_licenceid;
 
             var response = _mapper.Map<BizResult>(biz);
             response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
