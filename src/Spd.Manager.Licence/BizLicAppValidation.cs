@@ -107,5 +107,13 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
                 .WithMessage("Email address in Controllingmember is not valid.")
             .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null)
             .WithMessage("No more than 20 Controlling members (not SWL) are allowed");
+
+        //Employees
+        RuleFor(r => r.Members.Employees)
+            .Must(r => r.Count() <= 20)
+            .ForEach(r => r
+                .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
+            .When(r => r.Members != null && r.Members.Employees != null)
+            .WithMessage("No more than 20 employees are allowed");
     }
 }
