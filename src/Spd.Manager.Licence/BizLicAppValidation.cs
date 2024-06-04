@@ -104,6 +104,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .ForEach(r => r
                 .Must(m => m.Surname.IsNullOrEmpty() != true)
                 .Must(m => m.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(m.EmailAddress)))
+                .WithMessage("Email address in Controllingmember is not valid.")
             .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null)
             .WithMessage("No more than 20 Controlling members (not SWL) are allowed");
     }
