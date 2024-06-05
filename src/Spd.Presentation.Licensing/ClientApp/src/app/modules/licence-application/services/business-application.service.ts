@@ -452,7 +452,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	getBusinessLicenceWithSelection(
 		// TODO getBusinessLicenceWithSelection
 		licenceAppId: string,
-		applicationTypeCode: ApplicationTypeCode
+		_applicationTypeCode: ApplicationTypeCode
 	): Observable<BizLicAppResponse> {
 		return this.loadExistingLicenceWithId(licenceAppId).pipe(
 			tap((_resp: any) => {

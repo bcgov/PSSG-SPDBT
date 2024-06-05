@@ -46,18 +46,18 @@ import * as moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
 
-export interface MainApplicationResponse extends LicenceAppListResponse {
-	applicationExpiryDate?: string;
-	isExpiryWarning: boolean;
-	isExpiryError: boolean;
-}
-
 export class LicenceLookupResult {
 	'isFound': boolean;
 	'isFoundValid': boolean;
 	'isExpired': boolean;
 	'isInRenewalPeriod': boolean;
 	'searchResult': LicenceResponse | null;
+}
+
+export interface MainApplicationResponse extends LicenceAppListResponse {
+	applicationExpiryDate?: string;
+	isExpiryWarning: boolean;
+	isExpiryError: boolean;
 }
 
 export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse, BizLicAppResponse {
@@ -76,44 +76,6 @@ export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLic
 	dogAuthorization: null | LicenceDocumentTypeCode;
 	restraintAuthorization: null | LicenceDocumentTypeCode;
 }
-
-// export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse {
-// 	hasBcscNameChanged: boolean;
-// 	cardHolderName?: null | string;
-// 	licenceHolderName?: null | string;
-// 	licenceExpiryDate?: string;
-// 	licenceExpiryNumberOfDays?: null | number;
-// 	licenceStatusCode?: LicenceStatusCode;
-// 	licenceId?: null | string;
-// 	licenceNumber?: null | string;
-// 	licenceReprintFee: null | number;
-// 	isRenewalPeriod: boolean;
-// 	isUpdatePeriod: boolean;
-// 	isReplacementPeriod: boolean;
-// 	dogAuthorization: null | LicenceDocumentTypeCode;
-// 	restraintAuthorization: null | LicenceDocumentTypeCode;
-// }
-
-// export interface BusinessApplicationResponse extends LicenceAppListResponse {
-// 	applicationExpiryDate?: string;
-// 	isExpiryWarning: boolean;
-// 	isExpiryError: boolean;
-// }
-
-// export interface MainLicenceResponse extends BizLicAppResponse {
-// 	cardHolderName?: null | string;
-// 	licenceHolderName?: null | string;
-// 	licenceExpiryDate?: string;
-// 	licenceExpiryNumberOfDays?: null | number;
-// 	licenceStatusCode?: LicenceStatusCode;
-// 	licenceId?: null | string;
-// 	licenceNumber?: null | string;
-// 	licenceReprintFee: null | number;
-// 	isRenewalPeriod: boolean;
-// 	isUpdatePeriod: boolean;
-// 	isReplacementPeriod: boolean;
-// 	dogAuthorization: null | LicenceDocumentTypeCode;
-// }
 
 @Injectable({
 	providedIn: 'root',
@@ -228,35 +190,9 @@ export class CommonApplicationService {
 			})
 			.pipe(
 				map((_resp: Array<LicenceAppListResponse>) => {
-					const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
-					const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
-					const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
-
 					const response = _resp as Array<MainApplicationResponse>;
 					response.forEach((item: MainApplicationResponse) => {
-						item.isExpiryWarning = false;
-						item.isExpiryError = false;
-
-						if (
-							item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-							item.applicationTypeCode === ApplicationTypeCode.New
-						) {
-							const today = moment().startOf('day');
-							const applicationExpiryDate = moment(item.updatedOn)
-								.startOf('day')
-								.add(applicationNotSubmittedValidDays, 'days');
-
-							item.applicationExpiryDate = applicationExpiryDate.toString();
-							if (
-								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))
-							) {
-								item.isExpiryError = true;
-							} else if (
-								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
-							) {
-								item.isExpiryWarning = true;
-							}
-						}
+						this.setApplicationFlags(item);
 					});
 
 					response.sort((a, b) => {
@@ -329,11 +265,32 @@ export class CommonApplicationService {
 			);
 	}
 
+	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
+		return this.licenceAppService
+			.apiBizsBizIdLicenceApplicationsGet({
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+			})
+			.pipe(
+				map((_resp: Array<LicenceAppListResponse>) => {
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
+					});
+
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
+					return response;
+				})
+			);
+	}
+
 	userBusinessLicencesList(): Observable<Array<MainLicenceResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		return this.licenceService
 			.apiBizsBizIdLicencesGet({
-				bizId: this.authUserBceidService.bceidUserProfile?.bizId!, //'0326f9fd-7043-ee11-b845-00505683fbf4', // this.authUserBceidService.bceidUserProfile?.bizId!,
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
 			})
 			.pipe(
 				switchMap((licenceResps: Array<LicenceBasicResponse>) => {
@@ -348,7 +305,7 @@ export class CommonApplicationService {
 					licenceResps.forEach((appl: LicenceBasicResponse) => {
 						apis.push(
 							this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({
-								licenceAppId: appl.licenceAppId!, //'404a6472-faa0-4206-96b2-d9aaf5bc0694', //'6982c6c3-ea36-4029-a697-2aeba9b34c7b', // appl.licenceAppId!,
+								licenceAppId: appl.licenceAppId!,
 							})
 						);
 					});
@@ -376,51 +333,6 @@ export class CommonApplicationService {
 							return response;
 						})
 					);
-				})
-			);
-	}
-
-	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
-		return this.licenceAppService
-			.apiBizsBizIdLicenceApplicationsGet({
-				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
-			})
-			.pipe(
-				map((_resp: Array<LicenceAppListResponse>) => {
-					// const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
-					// const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
-					// const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
-
-					const response = _resp as Array<MainApplicationResponse>;
-					response.forEach((item: MainApplicationResponse) => {
-						// 	item.isExpiryWarning = false;
-						// 	item.isExpiryError = false;
-						// 	if (
-						// 		item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-						// 		item.applicationTypeCode === ApplicationTypeCode.New
-						// 	) {
-						// 		const today = moment().startOf('day');
-						// 		const applicationExpiryDate = moment(item.updatedOn)
-						// 			.startOf('day')
-						// 			.add(applicationNotSubmittedValidDays, 'days');
-						// 		item.applicationExpiryDate = applicationExpiryDate.toString();
-						// 		if (
-						// 			today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))
-						// 		) {
-						// 			item.isExpiryError = true;
-						// 		} else if (
-						// 			today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
-						// 		) {
-						// 			item.isExpiryWarning = true;
-						// 		}
-						// 	}
-					});
-
-					response.sort((a, b) => {
-						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
-					});
-
-					return response;
 				})
 			);
 	}
@@ -705,6 +617,32 @@ export class CommonApplicationService {
 		});
 
 		return [warningMessages, errorMessages];
+	}
+
+	private setApplicationFlags(item: MainApplicationResponse) {
+		const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
+		const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
+		const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
+
+		item.isExpiryWarning = false;
+		item.isExpiryError = false;
+
+		if (
+			item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+			item.applicationTypeCode === ApplicationTypeCode.New
+		) {
+			const today = moment().startOf('day');
+			const applicationExpiryDate = moment(item.updatedOn).startOf('day').add(applicationNotSubmittedValidDays, 'days');
+
+			item.applicationExpiryDate = applicationExpiryDate.toString();
+			if (today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))) {
+				item.isExpiryError = true;
+			} else if (
+				today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
+			) {
+				item.isExpiryWarning = true;
+			}
+		}
 	}
 
 	private getLicence(
