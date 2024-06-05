@@ -237,7 +237,7 @@ export class CommonApplicationService {
 									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 								);
 
-								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!) as MainLicenceResponse;
+								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!);
 
 								const hasRestraintAuthorization = resp.documentInfos?.find(
 									(item: Document) =>
@@ -645,11 +645,7 @@ export class CommonApplicationService {
 		}
 	}
 
-	private getLicence(
-		resp: any,
-		bizTypeCode: BizTypeCode,
-		matchingLicence: LicenceBasicResponse
-	): MainLicenceResponse | MainLicenceResponse {
+	private getLicence(resp: any, bizTypeCode: BizTypeCode, matchingLicence: LicenceBasicResponse): MainLicenceResponse {
 		const licence = resp;
 
 		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
