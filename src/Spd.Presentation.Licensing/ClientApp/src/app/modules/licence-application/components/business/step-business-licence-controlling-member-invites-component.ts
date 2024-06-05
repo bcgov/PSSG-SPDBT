@@ -20,7 +20,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row mb-3" *ngIf="membersWithoutSwlListWithEmail.length > 0">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 						<div class="summary-heading mb-2">
@@ -35,7 +35,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					</div>
 				</div>
 
-				<div class="row mb-3">
+				<div class="row mb-3" *ngIf="membersWithoutSwlListWithoutEmail.length > 0">
 					<div class="offset-md-2 col-md-8 col-sm-12">
 						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 						<div class="summary-heading mb-2">

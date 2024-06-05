@@ -50,7 +50,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { CommonApplicationService, UserLicenceResponse } from './common-application.service';
+import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { LicenceApplicationHelper, LicenceDocument } from './licence-application.helper';
 
 export class LicenceDocumentsToSave {
@@ -556,7 +556,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	getLicenceWithSelectionAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation: UserLicenceResponse
+		userLicenceInformation: MainLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
 		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
@@ -761,7 +761,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 	private loadExistingLicenceWithIdAuthenticated(
 		licenceAppId: string,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation?: MainLicenceResponse
 	): Observable<any> {
 		this.reset();
 
@@ -800,7 +800,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private applyLicenceAndProfileIntoModel(
 		workerLicenceApplication: WorkerLicenceAppResponse,
 		profile: ApplicantProfileResponse | null | undefined,
-		userLicenceInformation?: UserLicenceResponse,
+		userLicenceInformation?: MainLicenceResponse,
 		expiredLicenceInformation?: LicenceResponse
 	): Observable<any> {
 		return this.applyLicenceProfileIntoModel(
@@ -822,7 +822,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceOfTypeAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation: UserLicenceResponse
+		userLicenceInformation: MainLicenceResponse
 	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal:
@@ -1141,7 +1141,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private applyLicenceProfileIntoModel(
 		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation?: MainLicenceResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -1154,7 +1154,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
 			hasGenderChanged: false,
-			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
+			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged === true ? true : false,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,
