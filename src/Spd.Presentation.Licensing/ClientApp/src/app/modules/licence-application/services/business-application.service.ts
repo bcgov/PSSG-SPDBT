@@ -190,6 +190,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
+	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		console.log('body', body); // TODO fix body for submit
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+	}
+
 	/**
 	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
 	 * @param documentCode
