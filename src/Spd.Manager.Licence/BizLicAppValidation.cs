@@ -52,14 +52,13 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
                 r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityGuard));
-        
+
         // Documents required for branding
         RuleFor(r => r)
             .Must(r => r.DocumentInfos != null && r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
             .WithMessage("Missing business branding document.")
             .Must(r => r.DocumentInfos != null && r.DocumentInfos.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
-            .WithMessage("Maximum of 10 documents allowed for branding was exceded.")
-            .When(r => r.NoBranding == false);
+            .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
 
         // Document required for business insurance
         RuleFor(r => r)
