@@ -1,0 +1,81 @@
+﻿using AutoFixture;
+using FluentValidation.TestHelper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Spd.Manager.Licence.UnitTest;
+public class BizLicAppValidationTest
+{
+    private readonly BizLicAppSubmitRequestValidator validator;
+    private readonly IFixture fixture;
+
+    public BizLicAppValidationTest()
+    {
+        validator = new BizLicAppSubmitRequestValidator();
+
+        fixture = new Fixture();
+        fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+    }
+
+    [Fact]
+    public void BizLicAppSubmitRequestValidator_ShouldPass()
+    {
+        // Documents
+        Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
+        Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+        Document armourCarRegistrar = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
+        Document dogCertificate = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
+        List<Document> documentInfos = new()
+        {
+            branding,
+            insurance,
+            armourCarRegistrar,
+            dogCertificate
+        };
+
+        List<WorkerCategoryTypeCode> categories = new()
+        {
+            WorkerCategoryTypeCode.ArmouredCarGuard,
+            WorkerCategoryTypeCode.SecurityGuard,
+            WorkerCategoryTypeCode.SecurityAlarmMonitor,
+            WorkerCategoryTypeCode.SecurityAlarmResponse
+        };
+
+        // Contact info
+        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .Create();
+        ContactInfo applicantContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .Create();
+
+        // Controlling members
+        List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() { LicenceId = Guid.NewGuid() } };
+        List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() { Surname = "test", EmailAddress = "test@test.com" } };
+        List<SwlContactInfo> employees = new() { new SwlContactInfo() { LicenceId = Guid.NewGuid() } };
+
+        Members members = new()
+        {
+            SwlControllingMembers = swlControllingMembers,
+            NonSwlControllingMembers = nonSwlControllingMembers,
+            Employees = employees
+        };
+
+        var model = fixture.Build<BizLicAppUpsertRequest>()
+            .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
+            .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
+            .With(r => r.DocumentInfos, documentInfos)
+            .With(r => r.CategoryCodes, categories)
+            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+            .With(r => r.ApplicantContactInfo, applicantContactInfo)
+            .With(r => r.Members, members)
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+}
