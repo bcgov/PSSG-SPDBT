@@ -79,9 +79,9 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
             .WithMessage("Missing security dog certificate document.");
 
-        // Prviate investigator
+        // Private investigator
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
-            .NotEmpty()
+            .Must(r => r.LicenceId != null && r.LicenceId != Guid.Empty)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator) &&
                 (r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && 
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor))
