@@ -1,10 +1,10 @@
 export { AddressAutoCompleteService } from './services/address-auto-complete.service';
-export { ApplicantLicenceAppService } from './services/applicant-licence-app.service';
 export { ApplicantProfileService } from './services/applicant-profile.service';
 export { BizLicensingService } from './services/biz-licensing.service';
 export { BizProfileService } from './services/biz-profile.service';
 export { ConfigurationService } from './services/configuration.service';
 export { LicenceService } from './services/licence.service';
+export { LicenceAppService } from './services/licence-app.service';
 export { LicenceFeeService } from './services/licence-fee.service';
 export { LoginService } from './services/login.service';
 export { PaymentService } from './services/payment.service';
