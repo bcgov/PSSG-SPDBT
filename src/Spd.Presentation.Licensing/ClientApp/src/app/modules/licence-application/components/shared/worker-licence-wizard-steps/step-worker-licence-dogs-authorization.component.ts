@@ -56,7 +56,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 										class="mat-option-error"
 										*ngIf="
 											(form.get('dogsPurposeFormGroup')?.dirty || form.get('dogsPurposeFormGroup')?.touched) &&
-											form.hasError('atLeastOneCheckboxWhenReqdValidator')
+											form.hasError('atLeastOneCheckboxWhenReqd')
 										"
 										>At least one option must be selected</mat-error
 									>

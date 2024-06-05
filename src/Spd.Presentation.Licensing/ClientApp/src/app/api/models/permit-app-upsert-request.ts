@@ -33,7 +33,6 @@ export interface PermitAppUpsertRequest {
   employerName?: null | string;
   employerPrimaryAddress?: Address;
   expiredLicenceId?: null | string;
-  expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;
   genderCode?: GenderCode;
   givenName?: null | string;

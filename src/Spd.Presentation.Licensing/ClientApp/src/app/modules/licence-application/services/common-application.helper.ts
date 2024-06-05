@@ -102,7 +102,7 @@ export abstract class CommonApplicationHelper {
 					'policeOfficerRoleCode',
 					(form) => form.get('isPoliceOrPeaceOfficer')?.value == BooleanTypeCode.Yes
 				),
-				FormGroupValidators.nopoliceofficer('policeOfficerRoleCode', 'isPoliceOrPeaceOfficer'),
+				FormGroupValidators.nopoliceofficerValidator('policeOfficerRoleCode', 'isPoliceOrPeaceOfficer'),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'otherOfficerRole',
 					(form) => form.get('policeOfficerRoleCode')?.value == PoliceOfficerRoleCode.Other
