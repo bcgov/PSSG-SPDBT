@@ -7,7 +7,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
 {
     public BizLicAppSubmitRequestValidator()
     {
-        Regex emailRegex = new(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+        Regex emailRegex = new(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", RegexOptions.NonBacktracking);
 
         // General validations
         RuleFor(r => r.BizId).NotEqual(Guid.Empty);
