@@ -19,7 +19,10 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.UseDogs).NotEmpty();
         RuleFor(r => r.ApplicantIsBizManager).NotEmpty();
         RuleFor(r => r.BizManagerContactInfo)
-            .NotEmpty()
+            .Must(r => r.GivenName.IsNullOrEmpty() != true && 
+                r.Surname.IsNullOrEmpty() != true && 
+                r.PhoneNumber.IsNullOrEmpty() != true &&
+                r.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(r.EmailAddress))
             .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.ApplicantContactInfo)
             .NotEmpty()
