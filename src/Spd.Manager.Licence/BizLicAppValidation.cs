@@ -52,21 +52,15 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         
         // Documents required for branding
         RuleFor(r => r)
-            .Must(r => r.DocumentInfos != null && 
-                r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) &&
-                r.DocumentInfos.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
-            .When(r => r.NoBranding == false)
-            .WithMessage("Missing business branding document.");
-        RuleFor(r => r)
-            .Must(r => r.DocumentInfos != null &&
-                r.DocumentInfos.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
-            .When(r => r.NoBranding == false)
-            .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
+            .Must(r => r.DocumentInfos != null && r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+            .WithMessage("Missing business branding document.")
+            .Must(r => r.DocumentInfos != null && r.DocumentInfos.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
+            .WithMessage("Maximum of 10 documents allowed for branding was exceded.")
+            .When(r => r.NoBranding == false);
 
         // Document required for business insurance
         RuleFor(r => r)
-            .Must(r => r.DocumentInfos != null &&
-                r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+            .Must(r => r.DocumentInfos != null && r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
             .WithMessage("Missing business insurance document.");
 
         // Document required for "Armoured car guard"
