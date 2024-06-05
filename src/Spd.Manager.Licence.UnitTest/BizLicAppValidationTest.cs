@@ -40,6 +40,20 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
+    public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+        model.ApplicantIsBizManager = false;
+        model.ApplicantContactInfo.GivenName = string.Empty;
+        model.ApplicantContactInfo.Surname = string.Empty;
+        model.ApplicantContactInfo.PhoneNumber = string.Empty;
+        model.ApplicantContactInfo.EmailAddress = string.Empty;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo);
+    }
+
+    [Fact]
     public void CategoryCodes_WhenHasWrongSet_ShouldThrowException()
     {
         var model = GenerateValidRequest();
