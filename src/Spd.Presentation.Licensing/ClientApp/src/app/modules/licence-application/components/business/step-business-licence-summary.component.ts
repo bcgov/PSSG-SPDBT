@@ -35,8 +35,8 @@ import { BusinessApplicationService } from '../../services/business-application.
 														mat-mini-fab
 														color="primary"
 														class="go-to-step-button"
-														matTooltip="Go to Step 2"
-														aria-label="Go to Step 2"
+														matTooltip="Go to Step 1"
+														aria-label="Go to Step 1"
 														(click)="$event.stopPropagation(); onEditStep(0)"
 													>
 														<mat-icon>edit</mat-icon>
@@ -210,8 +210,8 @@ import { BusinessApplicationService } from '../../services/business-application.
 														mat-mini-fab
 														color="primary"
 														class="go-to-step-button"
-														matTooltip="Go to Step 2"
-														aria-label="Go to Step 2"
+														matTooltip="Go to Step 3"
+														aria-label="Go to Step 3"
 														(click)="$event.stopPropagation(); onEditStep(2)"
 													>
 														<mat-icon>edit</mat-icon>
@@ -282,8 +282,8 @@ import { BusinessApplicationService } from '../../services/business-application.
 														mat-mini-fab
 														color="primary"
 														class="go-to-step-button"
-														matTooltip="Go to Step 2"
-														aria-label="Go to Step 2"
+														matTooltip="Go to Step 4"
+														aria-label="Go to Step 4"
 														(click)="$event.stopPropagation(); onEditStep(3)"
 													>
 														<mat-icon>edit</mat-icon>
@@ -405,6 +405,7 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
+	isSoleProprietor = false;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -415,6 +416,7 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.businessModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
+		this.setIsSoleProprietor();
 	}
 
 	onEditStep(stepNumber: number) {
@@ -425,10 +427,11 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
+		this.setIsSoleProprietor();
 	}
 
-	isSoleProprietor() {
-		return this.businessApplicationService.isSoleProprietor(this.bizTypeCode!);
+	private setIsSoleProprietor() {
+		this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(this.bizTypeCode!);
 	}
 
 	get hasExpiredLicence(): string {

@@ -190,6 +190,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
+	getBusinessProfile(): Observable<BizProfileResponse> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId });
+	}
+
 	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
@@ -443,22 +449,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	// 	getBusinessLicenceWithSelection(
-	// 		licenceAppId: string,
-	// 		applicationTypeCode: ApplicationTypeCode
-	// 	): Observable<BizLicAppResponse> {
-	// 		return this.loadExistingLicenceWithId(licenceAppId).pipe(
-	// 			tap((_resp: any) => {
-	// 				this.initialized = true;
-	// // see getLicenceOfTypeAuthenticated
-	// 				this.commonApplicationService.setApplicationTitle(
-	// 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
-	// 					_resp.applicationTypeData.applicationTypeCode,
-	// 					_resp.originalLicenceNumber
-	// 				);
-	// 			})
-	// 		);
-	// 	}
+	getBusinessLicenceWithSelection(
+		// TODO getBusinessLicenceWithSelection
+		licenceAppId: string,
+		_applicationTypeCode: ApplicationTypeCode
+	): Observable<BizLicAppResponse> {
+		return this.loadExistingLicenceWithId(licenceAppId).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+				// see getLicenceOfTypeAuthenticated
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceNumber
+				);
+			})
+		);
+	}
 
 	getMembersAndEmployees(licenceAppId: string): Observable<any> {
 		this.reset();

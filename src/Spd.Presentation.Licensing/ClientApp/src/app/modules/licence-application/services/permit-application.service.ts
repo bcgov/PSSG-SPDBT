@@ -50,7 +50,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-import { CommonApplicationService, UserLicenceResponse } from './common-application.service';
+import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { LicenceDocument } from './licence-application.helper';
 import { LicenceDocumentsToSave } from './licence-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
@@ -497,7 +497,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	getPermitWithSelectionAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation: UserLicenceResponse
+		userLicenceInformation: MainLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
 		return this.getPermitOfTypeAuthenticated(licenceAppId, applicationTypeCode, userLicenceInformation).pipe(
 			tap((_resp: any) => {
@@ -625,7 +625,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private getPermitOfTypeAuthenticated(
 		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
-		userLicenceInformation: UserLicenceResponse
+		userLicenceInformation: MainLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
 		return forkJoin([
 			this.loadExistingPermitWithIdAuthenticated(licenceAppId, userLicenceInformation),
@@ -665,7 +665,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	private loadExistingPermitWithIdAuthenticated(
 		licenceAppId: string,
-		userLicenceInformation?: UserLicenceResponse
+		userLicenceInformation?: MainLicenceResponse
 	): Observable<PermitLicenceAppResponse> {
 		this.reset();
 
@@ -1025,7 +1025,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		permitLicenceAppData: PermitLicenceAppResponse;
 		permitLicenceData?: LicenceResponse;
 		profileData?: ApplicantProfileResponse;
-		userLicenceInformation?: UserLicenceResponse;
+		userLicenceInformation?: MainLicenceResponse;
 		expiredLicenceData?: LicenceResponse;
 	}): Observable<any> {
 		return this.applyPermitProfileIntoModel(
@@ -1045,7 +1045,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		profileData: ApplicantProfileResponse | PermitLicenceAppResponse,
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		userLicenceInformation?: UserLicenceResponse | null,
+		userLicenceInformation?: MainLicenceResponse | null,
 		updateLicenceData?: LicenceResponse | null
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
@@ -1059,7 +1059,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			dateOfBirth: profileData.dateOfBirth,
 			genderCode: profileData.genderCode,
 			hasGenderChanged: false,
-			hasBcscNameChanged: userLicenceInformation?.hasBcscNameChanged === true ? true : false,
+			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged === true ? true : false,
 			origGivenName: profileData.givenName,
 			origMiddleName1: profileData.middleName1,
 			origMiddleName2: profileData.middleName2,
