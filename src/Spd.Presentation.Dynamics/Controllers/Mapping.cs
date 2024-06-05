@@ -4,9 +4,9 @@ using Spd.Presentation.Dynamics.Models;
 
 namespace Spd.Presentation.Dynamics.Controllers;
 
-public class Mapping : Profile
+internal class Mappings : Profile
 {
-    public Mapping()
+    public Mappings()
     {
         CreateMap<PrintJobRequest, PrintJob>();
     }
