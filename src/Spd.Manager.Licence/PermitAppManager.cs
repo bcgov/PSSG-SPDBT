@@ -3,9 +3,10 @@ using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
@@ -25,6 +26,7 @@ internal class PermitAppManager :
         IRequestHandler<PermitAppUpdateCommand, PermitAppCommandResponse>,
         IPermitAppManager
 {
+    private readonly IPersonLicApplicationRepository _personLicAppRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -37,9 +39,17 @@ internal class PermitAppManager :
         IContactRepository contactRepository,
         ITaskRepository taskRepository,
         IMainFileStorageService mainFileStorageService,
-        ITransientFileStorageService transientFileStorageService)
-        : base(mapper, documentUrlRepository, feeRepository, licenceRepository, personLicAppRepository, mainFileStorageService, transientFileStorageService)
+        ITransientFileStorageService transientFileStorageService,
+        ILicAppRepository licAppRepository)
+        : base(mapper,
+            documentUrlRepository,
+            feeRepository,
+            licenceRepository,
+            mainFileStorageService,
+            transientFileStorageService,
+            licAppRepository)
     {
+        _personLicAppRepository = personLicAppRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
     }
@@ -172,7 +182,7 @@ internal class PermitAppManager :
 
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
-        var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+        LicenceApplicationCmdResp response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         await UploadNewDocsAsync(request,
                 cmd.LicAppFileInfos,
@@ -184,6 +194,7 @@ internal class PermitAppManager :
                 null,
                 cancellationToken);
 
+        if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
         //copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
         {
@@ -194,7 +205,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-        decimal cost = await CommitApplicationAsync(request, (Guid)response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
