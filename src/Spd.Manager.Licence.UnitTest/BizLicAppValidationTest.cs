@@ -1,10 +1,5 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
@@ -23,6 +18,47 @@ public class BizLicAppValidationTest
 
     [Fact]
     public void BizLicAppSubmitRequestValidator_ShouldPass()
+    {
+        var model = GenerateValidRequest();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+        model.BizManagerContactInfo.GivenName = string.Empty;
+        model.BizManagerContactInfo.Surname = string.Empty;
+        model.BizManagerContactInfo.PhoneNumber = string.Empty;
+        model.BizManagerContactInfo.EmailAddress = string.Empty;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo);
+    }
+
+    [Fact]
+    public void CategoryCodes_WhenHasWrongSet_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+        model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.SecurityAlarmInstaller };
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.CategoryCodes);
+    }
+
+    [Fact]
+    public void DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+        model.DocumentInfos = null;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
+    }
+
+    private BizLicAppUpsertRequest GenerateValidRequest()
     {
         // Documents
         Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
@@ -75,7 +111,6 @@ public class BizLicAppValidationTest
             .With(r => r.Members, members)
             .Create();
 
-        var result = validator.TestValidate(model);
-        result.ShouldNotHaveAnyValidationErrors();
+        return model;
     }
 }
