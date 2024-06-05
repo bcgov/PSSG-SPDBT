@@ -29,7 +29,6 @@ export interface WorkerLicenceAppSubmitRequest {
   documentKeyCodes?: null | Array<string>;
   emailAddress?: null | string;
   expiredLicenceId?: null | string;
-  expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;
   genderCode?: GenderCode;
   givenName?: null | string;

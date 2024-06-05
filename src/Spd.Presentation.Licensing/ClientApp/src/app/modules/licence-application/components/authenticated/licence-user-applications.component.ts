@@ -146,27 +146,27 @@ import {
 							<div class="section-title fs-5 py-3">Active Licences/Permits</div>
 							<div
 								class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-								*ngFor="let appl of activeLicences; let i = index"
+								*ngFor="let licence of activeLicences; let i = index"
 							>
 								<div class="row">
 									<div class="col-lg-2">
 										<div class="fs-5" style="color: var(--color-primary);">
-											{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+											{{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 										</div>
 									</div>
 									<div class="col-lg-10">
 										<div class="row">
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-												<div class="text-data">{{ appl.licenceNumber }}</div>
+												<div class="text-data">{{ licence.licenceNumber }}</div>
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-												<div class="text-data">{{ appl.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-3">
 												<div class="d-block text-muted mt-2 mt-lg-0">Case Number</div>
-												<div class="text-data">{{ appl.caseNumber }}</div>
+												<div class="text-data">{{ licence.caseNumber }}</div>
 											</div>
 											<div class="col-lg-3 text-end">
 												<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -179,35 +179,35 @@ import {
 
 										<ng-container
 											*ngIf="
-												appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
+												licence.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
 												else IsPermitContent
 											"
 										>
 											<div class="row mb-2">
 												<div class="col-lg-3">
 													<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-													<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
-														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+													<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
+														{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 													</div>
 												</div>
 												<div class="col-lg-9">
 													<div class="d-block text-muted mt-2 mt-lg-0">Licence Categories</div>
 													<div class="text-data">
 														<ul class="m-0">
-															<ng-container *ngFor="let catCode of appl.categoryCodes; let i = index">
+															<ng-container *ngFor="let catCode of licence.categoryCodes; let i = index">
 																<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
 															</ng-container>
 														</ul>
 													</div>
 												</div>
-												<div class="col-lg-6" *ngIf="appl.dogAuthorization">
+												<div class="col-lg-6" *ngIf="licence.dogAuthorization">
 													<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
-													<div class="text-data">{{ appl.dogAuthorization | options : 'DogDocumentTypes' }}</div>
+													<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
 												</div>
-												<div class="col-lg-6" *ngIf="appl.restraintAuthorization">
+												<div class="col-lg-6" *ngIf="licence.restraintAuthorization">
 													<div class="d-block text-muted mt-2">Restraint Authorization Documents</div>
 													<div class="text-data">
-														{{ appl.restraintAuthorization | options : 'RestraintDocumentTypes' }}
+														{{ licence.restraintAuthorization | options : 'RestraintDocumentTypes' }}
 													</div>
 												</div>
 											</div>
@@ -215,7 +215,8 @@ import {
 											<div class="row mb-2">
 												<div class="col-lg-9">
 													The following updates have a
-													{{ appl.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
+													{{ licence.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint
+													fee:
 													<ul class="m-0">
 														<li>changes to licence category</li>
 														<li>requests for authorization for dogs or restraints</li>
@@ -227,25 +228,25 @@ import {
 													<button
 														mat-flat-button
 														color="primary"
-														*ngIf="appl.isRenewalPeriod"
+														*ngIf="licence.isRenewalPeriod"
 														class="large my-2"
-														(click)="onRenew(appl)"
+														(click)="onRenew(licence)"
 													>
 														<mat-icon>restore</mat-icon>Renew
 													</button>
 													<button
 														mat-flat-button
 														color="primary"
-														*ngIf="appl.isUpdatePeriod"
+														*ngIf="licence.isUpdatePeriod"
 														class="large my-2"
-														(click)="onUpdate(appl)"
+														(click)="onUpdate(licence)"
 													>
 														<mat-icon>update</mat-icon>Update
 													</button>
 												</div>
 												<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 													<app-alert type="info" icon="info">
-														This {{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed,
+														This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed,
 														updated or replaced while an application is in progress
 													</app-alert>
 												</div>
@@ -255,39 +256,39 @@ import {
 											<div class="row mb-2">
 												<div class="col-lg-9">
 													<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-													<div class="text-data" [ngClass]="appl.isRenewalPeriod ? 'error-color' : ''">
-														{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+													<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
+														{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 													</div>
 												</div>
 												<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 													<button
 														mat-flat-button
 														color="primary"
-														*ngIf="appl.isRenewalPeriod"
+														*ngIf="licence.isRenewalPeriod"
 														class="large my-2"
-														(click)="onRenew(appl)"
+														(click)="onRenew(licence)"
 													>
 														<mat-icon>restore</mat-icon>Renew
 													</button>
 													<button
 														mat-flat-button
 														color="primary"
-														*ngIf="appl.isUpdatePeriod"
+														*ngIf="licence.isUpdatePeriod"
 														class="large my-2"
-														(click)="onUpdate(appl)"
+														(click)="onUpdate(licence)"
 													>
 														<mat-icon>update</mat-icon>Update
 													</button>
 												</div>
 												<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 													<app-alert type="info" icon="info">
-														<ng-container *ngIf="appl.isReplacementPeriod; else NoPermitReplacementPeriod">
-															This {{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed,
-															updated or replaced while an application is in progress
+														<ng-container *ngIf="licence.isReplacementPeriod; else NoPermitReplacementPeriod">
+															This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be
+															renewed, updated or replaced while an application is in progress
 														</ng-container>
 														<ng-template #NoPermitReplacementPeriod>
-															This {{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed
-															or updated while an application is in progress
+															This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be
+															renewed or updated while an application is in progress
 														</ng-template>
 													</app-alert>
 												</div>
@@ -298,11 +299,11 @@ import {
 									<div class="row">
 										<ng-container
 											*ngIf="
-												appl.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
+												licence.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
 												else IsPermitFooter
 											"
 										>
-											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
+											<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
 												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
 													<span class="fw-semibold">Lost your licence? </span>
@@ -311,8 +312,8 @@ import {
 														*ngIf="!applicationIsInProgress"
 														class="large"
 														tabindex="0"
-														(click)="onRequestReplacement(appl)"
-														(keydown)="onKeydownRequestReplacement($event, appl)"
+														(click)="onRequestReplacement(licence)"
+														(keydown)="onKeydownRequestReplacement($event, licence)"
 														>Request a replacement</a
 													>
 													and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
@@ -329,7 +330,7 @@ import {
 										</ng-container>
 
 										<ng-template #IsPermitFooter>
-											<ng-container *ngIf="appl.isReplacementPeriod; else IsNotReplacementPeriod">
+											<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
 												<div class="col-12" *ngIf="lostLicenceDaysText">
 													<mat-divider class="my-2"></mat-divider>
 													<span class="fw-semibold">Lost or stolen permit? </span>
@@ -338,8 +339,8 @@ import {
 														*ngIf="!applicationIsInProgress"
 														class="large"
 														tabindex="0"
-														(click)="onRequestReplacement(appl)"
-														(keydown)="onKeydownRequestReplacement($event, appl)"
+														(click)="onRequestReplacement(licence)"
+														(keydown)="onKeydownRequestReplacement($event, licence)"
 														>Request a replacement</a
 													>
 													and we'll send you one in {{ lostLicenceDaysText }} business days.
@@ -591,9 +592,6 @@ export class LicenceUserApplicationsComponent implements OnInit {
 			tap((resps: Array<any>) => {
 				const userLicencesList: Array<UserLicenceResponse> = resps[0];
 				const userApplicationsList: Array<UserApplicationResponse> = resps[1];
-
-				console.debug('userLicencesList', userLicencesList);
-				console.debug('userApplicationsList', userApplicationsList);
 
 				// User Applications
 				const draftNotifications = userApplicationsList.filter(

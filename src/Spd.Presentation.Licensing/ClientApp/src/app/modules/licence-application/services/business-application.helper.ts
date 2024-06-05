@@ -92,6 +92,7 @@ export abstract class BusinessApplicationHelper {
 						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
 						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
 				),
+				FormGroupValidators.licencemustbeactiveValidator('soleProprietorLicenceStatusCode', 'bizTypeCode'),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'soleProprietorSwlEmailAddress',
 					(form) =>

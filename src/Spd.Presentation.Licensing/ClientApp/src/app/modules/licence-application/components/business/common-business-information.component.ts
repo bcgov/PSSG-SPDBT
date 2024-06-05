@@ -117,6 +117,25 @@ import {
 						A valid security worker licence must be selected
 					</mat-error>
 
+					<div
+						class="col-12"
+						*ngIf="
+							(form.dirty || form.touched) &&
+							form.invalid &&
+							!form.get('soleProprietorLicenceId')?.hasError('required') &&
+							form.hasError('licencemustbeactive')
+						"
+					>
+						<app-alert type="danger" icon="error">
+							<div>You must have a valid security worker licence to apply for a sole proprietor business licence.</div>
+							<div class="mt-2">
+								To renew your security worker licence, visit
+								<a href="https://www.google.ca" target="_blank">Security worker licencing</a>. Once you have your
+								renewed licence, return to complete your business licence application.
+							</div>
+						</app-alert>
+					</div>
+
 					<div class="row">
 						<div class="col-lg-4 col-md-7 col-sm-12">
 							<mat-form-field>
