@@ -12,7 +12,7 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
     IPrinter _printer,
     IEventRepository _eventRepo)
   : IRequestHandler<StartPrintJobCommand, string>,
-    IRequestHandler<PrintJobStatusQuery, PrintJobStatusResp>,
+    IRequestHandler<PrintJobStatusQuery, string>,
     IRequestHandler<PreviewDocumentCommand, PreviewDocumentResp>,
     IPrintingManager
 {
@@ -41,12 +41,15 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
                     var printResponse = await _printer.Send(
                         new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
                         cancellationToken);
-                    return await UpdateResultInEvent(printResponse, request.EventId, cancellationToken);
+                    ResultResponse resultResponse = new(printResponse.PrintJobId,
+                        printResponse.Status,
+                        printResponse.Error);
+                    return await UpdateResultInEvent(resultResponse, request.EventId, cancellationToken);
                 };
             }
             catch (Exception ex)
             {
-                SendResponse result = new(null, JobStatus.Failed, $"{ex.Message} {ex.InnerException?.Message}");
+                ResultResponse result = new(null, JobStatus.Failed, $"{ex.Message} {ex.InnerException?.Message}");
                 return await UpdateResultInEvent(result, request.EventId, cancellationToken);
             }
         }
@@ -54,16 +57,28 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
         return string.Empty;
     }
 
-    public async Task<PrintJobStatusResp> Handle(PrintJobStatusQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(PrintJobStatusQuery request, CancellationToken cancellationToken)
     {
-        var statusResponse = await _printer.Report(new BCMailPlusPrintStatusRequest(request.PrintJobId), cancellationToken);
-        var status = statusResponse.Status switch
+        //get event 
+        EventResp? eventResp = await _eventRepo.GetAsync(request.EventId, cancellationToken);
+        if (eventResp == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid eventqueue id.");
+        if (eventResp.JobId == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid eventqueue id.The event has never been executed. There is no job id.");
+
+        try
         {
-            JobStatus.Completed => PrintJobStatus.Completed,
-            JobStatus.Failed => PrintJobStatus.Failed,
-            _ => PrintJobStatus.InProgress,
-        };
-        return new PrintJobStatusResp(status, statusResponse.Error);
+            var statusResponse = await _printer.Report(new BCMailPlusPrintStatusRequest(eventResp.JobId), cancellationToken);
+            ResultResponse resultResponse = new(statusResponse.PrintJobId,
+                statusResponse.Status,
+                statusResponse.Error);
+            return await UpdateResultInEvent(resultResponse, request.EventId, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            ResultResponse result = new(null, JobStatus.Failed, $"{ex.Message} {ex.InnerException?.Message}");
+            return await UpdateResultInEvent(result, request.EventId, cancellationToken);
+        }
     }
 
     public async Task<PreviewDocumentResp> Handle(PreviewDocumentCommand request, CancellationToken cancellationToken)
@@ -93,32 +108,32 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
         };
     }
 
-    private async Task<string> UpdateResultInEvent(SendResponse sendResponse, Guid eventId, CancellationToken cancellationToken)
+    private async Task<string> UpdateResultInEvent(ResultResponse resultResponse, Guid eventId, CancellationToken cancellationToken)
     {
         //update event queue
         DateTimeOffset exeTime = DateTimeOffset.UtcNow;
         EventUpdateCmd update = new();
         update.Id = eventId;
         update.LastExeTime = exeTime;
-        update.JobId = sendResponse.PrintJobId;
+        update.JobId = resultResponse.PrintJobId;
         update.StateCode = DynamicsConstants.StateCode_Inactive;
-        if (sendResponse.Status == JobStatus.Failed)
+        if (resultResponse.Status == JobStatus.Failed)
         {
             update.EventStatusReasonEnum = EventStatusReasonEnum.Fail;
-            update.ErrorDescription = sendResponse.Error;
+            update.ErrorDescription = resultResponse.Error;
         }
-        if (sendResponse.Status == JobStatus.Completed)
+        if (resultResponse.Status == JobStatus.Completed)
         {
             update.EventStatusReasonEnum = EventStatusReasonEnum.Success;
             update.ErrorDescription = string.Empty;
         }
-        if (sendResponse.Status == JobStatus.InProgress)
+        if (resultResponse.Status == JobStatus.InProgress)
         {
             update.EventStatusReasonEnum = EventStatusReasonEnum.Processed;
             update.ErrorDescription = string.Empty;
         }
         await _eventRepo.ManageAsync(update, cancellationToken);
-        return sendResponse.PrintJobId!;
+        return resultResponse.PrintJobId;
     }
 
     private async Task<PreviewDocumentResp> PreviewViaBcMailPlus(BcMailPlusTransformResponse bcmailplusResponse, CancellationToken cancellationToken)
@@ -127,4 +142,6 @@ internal class PrintingManager(IDocumentTransformationEngine _documentTransforma
         if (previewResponse.Status != JobStatus.Completed) throw new InvalidOperationException(previewResponse.Error);
         return new PreviewDocumentResp(previewResponse.ContentType!, previewResponse.Content!);
     }
+
+    private record ResultResponse(string PrintJobId, JobStatus Status, string? Error);
 }

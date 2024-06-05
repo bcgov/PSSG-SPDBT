@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Printing;
 using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.Shared;
-using PrintJobStatus = Spd.Presentation.Dynamics.Models.PrintJobStatus;
 
 namespace Spd.Presentation.Dynamics.Controllers;
 
@@ -17,6 +16,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     ///  a GET request that takes an event id. It should be like
     ///    GET /api/printjobs/{eventid}
     /// where eventid is the GUID for spd_eventqueue record.
+    /// Now, it will exe the event according to the eventype (now, only finger print), and update the event according to the response from bcMail plus.
     /// </summary>
     /// <param name="eventId"></param>
     /// <param name="ct"></param>
@@ -43,19 +43,16 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     }
 
     /// <summary>
-    /// input jobId, this endpoint will return the job status.
+    /// input eventId, this endpoint will get jobId from event queue and then query the job status to bc mail plus. After that, it will
+    /// update the event queue..
     /// </summary>
-    /// <param name="jobId"></param>
+    /// <param name="eventId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpGet("api/printjobs/{jobId}/status")]
-    public async Task<PrintJobStatusResponse> GetPrintJobStatus(string jobId, CancellationToken ct)
+    [HttpGet("api/printjobs/{eventId}/status")]
+    public async Task<Results<Ok<string>, BadRequest>> GetPrintJobStatus(Guid eventId, CancellationToken ct)
     {
-        var response = await mediator.Send(new PrintJobStatusQuery(jobId), ct);
-        if (response.Status == Spd.Manager.Printing.PrintJobStatus.Failed)
-        {
-            return new PrintJobStatusResponse(jobId, PrintJobStatus.Failed, response.Error);
-        }
-        return new PrintJobStatusResponse(jobId, PrintJobStatus.Success, null);
+        var jobId = await mediator.Send(new PrintJobStatusQuery(eventId), ct);
+        return TypedResults.Ok(jobId);
     }
 }
