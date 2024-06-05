@@ -132,6 +132,10 @@ import { LicencePaymentSuccessAnonymousComponent } from './components/shared/lic
 import { LicencePaymentSuccessComponent } from './components/shared/licence-payment-success.component';
 import { LicenceUpdateReceivedSuccessComponent } from './components/shared/licence-update-received-success.component';
 import { LoginSelectionComponent } from './components/shared/login-selection.component';
+import { MainActiveBusinessLicencesComponent } from './components/shared/main-active-business-licences.component';
+import { MainActiveSwlPermitLicencesComponent } from './components/shared/main-active-swl-permit-licences.component';
+import { MainApplicationsComponent } from './components/shared/main-applications.component';
+import { MainExpiredLicencesComponent } from './components/shared/main-expired-licences.component';
 import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit-update-received-success.component';
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-steps/step-permit-reprint.component';
@@ -274,6 +278,10 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentSuccessAnonymousComponent,
 		LicenceUpdateReceivedSuccessComponent,
 		LoginSelectionComponent,
+		MainActiveBusinessLicencesComponent,
+		MainActiveSwlPermitLicencesComponent,
+		MainApplicationsComponent,
+		MainExpiredLicencesComponent,
 		ModalLookupByLicenceNumberComponent,
 		ModalMemberWithoutSwlEditComponent,
 		PermitApplicationBaseAnonymousComponent,

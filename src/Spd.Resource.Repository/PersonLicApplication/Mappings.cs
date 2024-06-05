@@ -202,16 +202,6 @@ internal class Mappings : Profile
           .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
           .IncludeBase<spd_application, LicenceApplication>();
 
-        _ = CreateMap<spd_application, LicenceAppListResp>()
-          .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
-          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
-          .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
-          .ForMember(d => d.SubmittedOn, opt => opt.MapFrom(s => s.spd_submittedon))
-          .ForMember(d => d.UpdatedOn, opt => opt.MapFrom(s => s.modifiedon))
-          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
-          .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
-          .ForMember(d => d.ApplicationPortalStatusCode, opt => opt.MapFrom(s => s.spd_portalstatus == null ? null : ((ApplicationPortalStatus)s.spd_portalstatus.Value).ToString()));
-
         _ = CreateMap<AliasResp, spd_alias>()
           .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
           .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))

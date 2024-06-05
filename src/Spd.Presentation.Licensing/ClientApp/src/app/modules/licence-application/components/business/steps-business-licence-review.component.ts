@@ -61,10 +61,10 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	}
 
 	ngOnInit(): void {
-		this.submitPayLabel = 'Pay Now';
-		if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-			this.submitPayLabel = 'Submit';
-		}
+		this.submitPayLabel = 'Pay Now'; // TODO handle submit vs pay
+		// if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+		// this.submitPayLabel = 'Submit';
+		// }
 
 		this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
@@ -72,12 +72,13 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	}
 
 	onPayNow(): void {
-		// const isValid = this.consentAndDeclarationComponent.isFormValid();
-		// if (!isValid) return;
-		// if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-		// 	this.nextSubmitStep.emit();
+		const isValid = this.consentAndDeclarationComponent.isFormValid();
+		if (!isValid) return;
+
+		// if (this.applicationTypeCode === ApplicationTypeCode.Update) { // TODO handle submit vs pay
+		// this.nextSubmitStep.emit();
 		// } else {
-		// 	this.nextPayStep.emit();
+		this.nextPayStep.emit();
 		// }
 	}
 
