@@ -23,9 +23,9 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import {
-	ApplicantLicenceAppService,
 	BizLicensingService,
 	BizProfileService,
+	LicenceAppService,
 	LicenceService,
 	PaymentService,
 	PermitService,
@@ -38,17 +38,13 @@ import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
+import { UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-
-export interface UserApplicationResponse extends LicenceAppListResponse {
-	applicationExpiryDate?: string;
-	isExpiryWarning: boolean;
-	isExpiryError: boolean;
-}
 
 export class LicenceLookupResult {
 	'isFound': boolean;
@@ -58,8 +54,14 @@ export class LicenceLookupResult {
 	'searchResult': LicenceResponse | null;
 }
 
-export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse {
-	hasBcscNameChanged: boolean;
+export interface MainApplicationResponse extends LicenceAppListResponse {
+	applicationExpiryDate?: string;
+	isExpiryWarning: boolean;
+	isExpiryError: boolean;
+}
+
+export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse, BizLicAppResponse {
+	hasLoginNameChanged: boolean;
 	cardHolderName?: null | string;
 	licenceHolderName?: null | string;
 	licenceExpiryDate?: string;
@@ -73,21 +75,6 @@ export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLic
 	isReplacementPeriod: boolean;
 	dogAuthorization: null | LicenceDocumentTypeCode;
 	restraintAuthorization: null | LicenceDocumentTypeCode;
-}
-
-export interface BusinessLicenceResponse extends BizLicAppResponse {
-	cardHolderName?: null | string;
-	licenceHolderName?: null | string;
-	licenceExpiryDate?: string;
-	licenceExpiryNumberOfDays?: null | number;
-	licenceStatusCode?: LicenceStatusCode;
-	licenceId?: null | string;
-	licenceNumber?: null | string;
-	licenceReprintFee: null | number;
-	isRenewalPeriod: boolean;
-	isUpdatePeriod: boolean;
-	isReplacementPeriod: boolean;
-	dogAuthorization: null | LicenceDocumentTypeCode;
 }
 
 @Injectable({
@@ -105,13 +92,15 @@ export class CommonApplicationService {
 		private router: Router,
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
+		private utilService: UtilService,
+		private formatDatePipe: FormatDatePipe,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
 		private paymentService: PaymentService,
 		private authProcessService: AuthProcessService,
 		private authUserBcscService: AuthUserBcscService,
 		private authUserBceidService: AuthUserBceidService,
-		private applicantLicenceAppService: ApplicantLicenceAppService,
+		private licenceAppService: LicenceAppService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private bizLicensingService: BizLicensingService,
 		private bizProfileService: BizProfileService,
@@ -194,51 +183,28 @@ export class CommonApplicationService {
 			);
 	}
 
-	userApplicationsList(): Observable<Array<UserApplicationResponse>> {
-		return this.applicantLicenceAppService
+	userApplicationsList(): Observable<Array<MainApplicationResponse>> {
+		return this.licenceAppService
 			.apiApplicantsApplicantIdLicenceApplicationsGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
 				map((_resp: Array<LicenceAppListResponse>) => {
-					const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
-					const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
-					const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
-
-					const response = _resp as Array<UserApplicationResponse>;
-					response.forEach((item: UserApplicationResponse) => {
-						item.isExpiryWarning = false;
-						item.isExpiryError = false;
-
-						if (
-							item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-							item.applicationTypeCode === ApplicationTypeCode.New
-						) {
-							const today = moment().startOf('day');
-							const applicationExpiryDate = moment(item.updatedOn)
-								.startOf('day')
-								.add(applicationNotSubmittedValidDays, 'days');
-
-							item.applicationExpiryDate = applicationExpiryDate.toString();
-							if (
-								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))
-							) {
-								item.isExpiryError = true;
-							} else if (
-								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
-							) {
-								item.isExpiryWarning = true;
-							}
-						}
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
 					});
 
-					this.setApplicationTitle();
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
 					return response;
 				})
 			);
 	}
 
-	userLicencesList(): Observable<Array<UserLicenceResponse>> {
+	userLicencesList(): Observable<Array<MainLicenceResponse>> {
 		return this.licenceService
 			.apiApplicantsApplicantIdLicencesGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
@@ -265,13 +231,13 @@ export class CommonApplicationService {
 
 					return forkJoin(apis).pipe(
 						map((resps: Array<WorkerLicenceAppResponse | PermitLicenceAppResponse>) => {
-							const response: Array<UserLicenceResponse> = [];
+							const response: Array<MainLicenceResponse> = [];
 							resps.forEach((resp: WorkerLicenceAppResponse | PermitLicenceAppResponse) => {
 								const matchingLicence = licenceResps.find(
 									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 								);
 
-								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!) as UserLicenceResponse;
+								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!);
 
 								const hasRestraintAuthorization = resp.documentInfos?.find(
 									(item: Document) =>
@@ -288,6 +254,10 @@ export class CommonApplicationService {
 								response.push(licence);
 							});
 
+							response.sort((a, b) => {
+								return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+							});
+
 							return response;
 						})
 					);
@@ -295,11 +265,32 @@ export class CommonApplicationService {
 			);
 	}
 
-	userBusinessLicencesList(): Observable<Array<BusinessLicenceResponse>> {
+	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
+		return this.licenceAppService
+			.apiBizsBizIdLicenceApplicationsGet({
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+			})
+			.pipe(
+				map((_resp: Array<LicenceAppListResponse>) => {
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
+					});
+
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
+					return response;
+				})
+			);
+	}
+
+	userBusinessLicencesList(): Observable<Array<MainLicenceResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		return this.licenceService
 			.apiBizsBizIdLicencesGet({
-				bizId: this.authUserBceidService.bceidUserProfile?.bizId!, //'0326f9fd-7043-ee11-b845-00505683fbf4', // this.authUserBceidService.bceidUserProfile?.bizId!,
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
 			})
 			.pipe(
 				switchMap((licenceResps: Array<LicenceBasicResponse>) => {
@@ -314,7 +305,7 @@ export class CommonApplicationService {
 					licenceResps.forEach((appl: LicenceBasicResponse) => {
 						apis.push(
 							this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({
-								licenceAppId: appl.licenceAppId!, //'404a6472-faa0-4206-96b2-d9aaf5bc0694', //'6982c6c3-ea36-4029-a697-2aeba9b34c7b', // appl.licenceAppId!,
+								licenceAppId: appl.licenceAppId!,
 							})
 						);
 					});
@@ -327,12 +318,16 @@ export class CommonApplicationService {
 							// the rest of the items in the array are the licences
 							const applResps: Array<BizLicAppResponse> = resps;
 
-							const response: Array<BusinessLicenceResponse> = [];
+							const response: Array<MainLicenceResponse> = [];
 							applResps.forEach((resp: BizLicAppResponse) => {
 								const matchingLicence = licenceResps[0];
 								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!);
 
 								response.push(licence);
+							});
+
+							response.sort((a, b) => {
+								return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
 							});
 
 							return response;
@@ -526,6 +521,17 @@ export class CommonApplicationService {
 		return [messageWarn, messageError];
 	}
 
+	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
+		return !!appls.find(
+			(item: MainApplicationResponse) =>
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingApplicant ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.UnderAssessment ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.VerifyIdentity
+		);
+	}
+
 	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
 		if (!expiryDate || !licenceTermCode) {
 			return false;
@@ -563,11 +569,83 @@ export class CommonApplicationService {
 			});
 	}
 
-	private getLicence(
-		resp: any,
-		bizTypeCode: BizTypeCode,
-		matchingLicence: LicenceBasicResponse
-	): UserLicenceResponse | BusinessLicenceResponse {
+	getMainWarningsAndError(
+		userApplicationsList: Array<MainApplicationResponse>,
+		activeLicences: Array<MainLicenceResponse>
+	): [Array<string>, Array<string>] {
+		const warningMessages: Array<string> = [];
+		const errorMessages: Array<string> = [];
+
+		const draftNotifications = userApplicationsList.filter(
+			(item: MainApplicationResponse) => item.isExpiryWarning || item.isExpiryError
+		);
+		draftNotifications.forEach((item: MainApplicationResponse) => {
+			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'WorkerLicenceTypes');
+			const itemExpiry = this.formatDatePipe.transform(item.applicationExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			if (item.isExpiryWarning) {
+				warningMessages.push(
+					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
+				);
+			} else {
+				errorMessages.push(
+					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
+				);
+			}
+		});
+
+		const renewals = activeLicences.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
+		renewals.forEach((item: MainLicenceResponse) => {
+			const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+
+			if (item.licenceExpiryNumberOfDays != null) {
+				if (item.licenceExpiryNumberOfDays < 0) {
+					errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
+				} else if (item.licenceExpiryNumberOfDays > 7) {
+					warningMessages.push(
+						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
+					);
+				} else if (item.licenceExpiryNumberOfDays === 0) {
+					errorMessages.push(`Your ${itemLabel} is expiring <strong>today</strong>. Please renew now.`);
+				} else {
+					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
+					errorMessages.push(
+						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
+					);
+				}
+			}
+		});
+
+		return [warningMessages, errorMessages];
+	}
+
+	private setApplicationFlags(item: MainApplicationResponse) {
+		const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
+		const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
+		const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
+
+		item.isExpiryWarning = false;
+		item.isExpiryError = false;
+
+		if (
+			item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+			item.applicationTypeCode === ApplicationTypeCode.New
+		) {
+			const today = moment().startOf('day');
+			const applicationExpiryDate = moment(item.updatedOn).startOf('day').add(applicationNotSubmittedValidDays, 'days');
+
+			item.applicationExpiryDate = applicationExpiryDate.toString();
+			if (today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))) {
+				item.isExpiryError = true;
+			} else if (
+				today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
+			) {
+				item.isExpiryWarning = true;
+			}
+		}
+	}
+
+	private getLicence(resp: any, bizTypeCode: BizTypeCode, matchingLicence: LicenceBasicResponse): MainLicenceResponse {
 		const licence = resp;
 
 		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
