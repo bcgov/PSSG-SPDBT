@@ -22,10 +22,9 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpGet("api/printjobs/{eventId}")]
-    public async Task<Results<Ok<string>, BadRequest>> GetPrintJob([FromRoute] Guid eventId, CancellationToken ct)
+    public async Task<ResultResponse> GetPrintJob([FromRoute] Guid eventId, CancellationToken ct)
     {
-        var createdJobId = await mediator.Send(new StartPrintJobCommand(eventId), ct);
-        return TypedResults.Ok(createdJobId);
+        return await mediator.Send(new StartPrintJobCommand(eventId), ct);
     }
 
     /// <summary>
@@ -50,9 +49,8 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpGet("api/printjobs/{eventId}/status")]
-    public async Task<Results<Ok<string>, BadRequest>> GetPrintJobStatus(Guid eventId, CancellationToken ct)
+    public async Task<ResultResponse> GetPrintJobStatus(Guid eventId, CancellationToken ct)
     {
-        var jobId = await mediator.Send(new PrintJobStatusQuery(eventId), ct);
-        return TypedResults.Ok(jobId);
+        return await mediator.Send(new PrintJobStatusQuery(eventId), ct);
     }
 }

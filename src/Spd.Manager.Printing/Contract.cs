@@ -4,29 +4,35 @@ namespace Spd.Manager.Printing;
 
 public interface IPrintingManager
 {
-    public Task<string> Handle(StartPrintJobCommand cmd, CancellationToken ct);
-    public Task<string> Handle(PrintJobStatusQuery cmd, CancellationToken ct);
+    public Task<ResultResponse> Handle(StartPrintJobCommand cmd, CancellationToken ct);
+    public Task<ResultResponse> Handle(PrintJobStatusQuery cmd, CancellationToken ct);
     public Task<PreviewDocumentResp> Handle(PreviewDocumentCommand request, CancellationToken ct);
 }
-public record StartPrintJobCommand(Guid EventId) : IRequest<string>;
-public record PrintJobStatusQuery(Guid EventId) : IRequest<string>;
+public record StartPrintJobCommand(Guid EventId) : IRequest<ResultResponse>;
+public record PrintJobStatusQuery(Guid EventId) : IRequest<ResultResponse>;
 public record PreviewDocumentCommand(PrintJob PrintJob) : IRequest<PreviewDocumentResp>;
 
 public record PrintJob(DocumentType DocumentType, Guid? ApplicationId, Guid? LicenceId);
-
+public record ResultResponse()
+{
+    public string PrintJobId { get; set; }
+    public JobStatusCode Status { get; set; }
+    public string? Error { get; set; }
+};
 public enum DocumentType
 {
     FingerprintLetter,
     PersonalLicencePreview,
 }
 
-public record PrintJobStatusResp(PrintJobStatus Status, string? Error);
-
-public enum PrintJobStatus
+public enum JobStatusCode
 {
-    InProgress,
-    Completed,
-    Failed
+    Ready, //Active state status reason
+    Error, //Active state status reason
+    Processed, //Inactive State status reason
+    Cancelled, //Inactive State status reason
+    Success, //Inactive State status reason
+    Fail //Inactive State status reason
 }
 
 public record PreviewDocumentResp(string ContentType, IEnumerable<byte> Content);
