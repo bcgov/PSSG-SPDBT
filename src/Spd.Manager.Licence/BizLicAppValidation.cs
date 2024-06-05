@@ -68,8 +68,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
 
         // Document required for "Armoured car guard"
         RuleFor(r => r)
-            .Must(r => r.DocumentInfos != null &&
-                r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
+            .Must(r => r.DocumentInfos != null && r.DocumentInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
             .WithMessage("Missing armour car guard registrar document.");
 
