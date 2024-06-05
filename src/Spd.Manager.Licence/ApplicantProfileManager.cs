@@ -6,6 +6,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Shared.Exceptions;
@@ -29,6 +30,7 @@ namespace Spd.Manager.Licence
         private readonly ILogger<IApplicantProfileManager> _logger;
         private readonly IDocumentRepository _documentRepository;
         private readonly IPersonLicApplicationRepository _personLicAppRepository;
+        private readonly ILicAppRepository _licAppRepository;
 
         public ApplicantProfileManager(
             IIdentityRepository idRepository,
@@ -37,7 +39,8 @@ namespace Spd.Manager.Licence
             IMapper mapper,
             ILogger<IApplicantProfileManager> logger,
             IDocumentRepository documentRepository,
-            IPersonLicApplicationRepository personLicAppRepository)
+            IPersonLicApplicationRepository personLicAppRepository,
+            ILicAppRepository licAppRepository)
         {
             _idRepository = idRepository;
             _mapper = mapper;
@@ -46,6 +49,7 @@ namespace Spd.Manager.Licence
             _documentRepository = documentRepository;
             _aliasRepository = aliasRepository;
             _personLicAppRepository = personLicAppRepository;
+            _licAppRepository = licAppRepository;
         }
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
@@ -134,6 +138,7 @@ namespace Spd.Manager.Licence
             //if there is application in progress, then do not allow to update applicant profile
             LicenceAppQuery q = new(
                 cmd.ApplicantId,
+                null,
                 new List<WorkerLicenceTypeEnum>
                 {
                     WorkerLicenceTypeEnum.ArmouredVehiclePermit,
@@ -149,7 +154,7 @@ namespace Spd.Manager.Licence
                     ApplicationPortalStatusEnum.VerifyIdentity
                 }
             );
-            var response = await _personLicAppRepository.QueryAsync(q, ct);
+            var response = await _licAppRepository.QueryAsync(q, ct);
             if (response.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "There is some application in progress, you cannot update your profile.");
 

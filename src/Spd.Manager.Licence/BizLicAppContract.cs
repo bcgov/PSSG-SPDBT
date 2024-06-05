@@ -12,12 +12,14 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand command, CancellationToken ct);
     public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
+    public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
-public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) 
+public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest)
     : BizLicAppUpsertCommand(BizLicAppUpsertRequest), IRequest<BizLicAppCommandResponse>;
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
+public record GetBizLicAppListQuery(Guid BizId) : IRequest<IEnumerable<LicenceAppListResponse>>;
 public record BizLicAppReplaceCommand(
     BizLicAppChangeRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
