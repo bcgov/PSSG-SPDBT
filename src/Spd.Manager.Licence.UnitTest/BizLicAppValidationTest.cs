@@ -58,6 +58,65 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
     }
 
+    [Fact]
+    public void PrivateInvestigatorSwlInfo_WhenHasEmptyFields_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+
+        model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.PrivateInvestigator };
+        model.PrivateInvestigatorSwlInfo.LicenceId = null;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.PrivateInvestigatorSwlInfo);
+    }
+
+    [Fact]
+    public void ControllingMembers_WhenHasEmptyFields_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+
+        List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() };
+        List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() };
+        List<SwlContactInfo> employees = new() { new SwlContactInfo() };
+        Members members = new()
+        {
+            SwlControllingMembers = swlControllingMembers,
+            NonSwlControllingMembers = nonSwlControllingMembers,
+            Employees = employees
+        };
+        model.Members = members;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.Members.SwlControllingMembers);
+        result.ShouldHaveValidationErrorFor(r => r.Members.NonSwlControllingMembers);
+        result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
+    }
+
+    [Fact]
+    public void ControllingMembers_WhenExceedsMAxAllowed_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+        List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(21).ToList();
+        List<NonSwlContactInfo> nonSwlControllingMembers = fixture.Build<NonSwlContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .CreateMany(21)
+            .ToList();
+        List<SwlContactInfo> employees = fixture.CreateMany<SwlContactInfo>(21).ToList();
+
+        Members members = new()
+        {
+            SwlControllingMembers = swlControllingMembers,
+            NonSwlControllingMembers = nonSwlControllingMembers,
+            Employees = employees
+        };
+        model.Members = members;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.Members.SwlControllingMembers);
+        result.ShouldHaveValidationErrorFor(r => r.Members.NonSwlControllingMembers);
+        result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
+    }
+
     private BizLicAppUpsertRequest GenerateValidRequest()
     {
         // Documents
