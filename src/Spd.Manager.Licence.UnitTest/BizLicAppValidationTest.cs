@@ -12,6 +12,7 @@ public class BizLicAppValidationTest
         validator = new BizLicAppSubmitRequestValidator();
 
         fixture = new Fixture();
+        fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
     }
@@ -59,6 +60,76 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
+    public void DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
+    {
+        var model = GenerateValidRequest();
+
+        Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
+        Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+        Document armourCarRegistrar = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
+        Document dogCertificate = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
+
+        // Exceed max allowed for branding
+        List<Document> documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.BizBranding)
+            .CreateMany(11)
+            .ToList();
+        documentInfos.Add(insurance);
+        documentInfos.Add(armourCarRegistrar);
+        documentInfos.Add(dogCertificate);
+
+        model.DocumentInfos = documentInfos;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
+
+        // Exceed max allowed for insurance
+        documentInfos = new()
+        {
+            branding,
+            insurance,
+            insurance,
+            armourCarRegistrar,
+            dogCertificate
+        };
+
+        model.DocumentInfos = documentInfos;
+
+        result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
+
+        // Exceed max allowed for armour car registrar
+        documentInfos = new()
+        {
+            branding,
+            insurance,
+            armourCarRegistrar,
+            armourCarRegistrar,
+            dogCertificate
+        };
+
+        model.DocumentInfos = documentInfos;
+
+        result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
+
+        // Exceed max allowed for dog certificate
+        documentInfos = new()
+        {
+            branding,
+            insurance,
+            armourCarRegistrar,
+            dogCertificate,
+            dogCertificate
+        };
+
+        model.DocumentInfos = documentInfos;
+
+        result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
+    }
+
+    [Fact]
     public void PrivateInvestigatorSwlInfo_WhenHasEmptyFields_ShouldThrowException()
     {
         var model = GenerateValidRequest();
@@ -93,7 +164,7 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void ControllingMembers_WhenExceedsMAxAllowed_ShouldThrowException()
+    public void ControllingMembers_WhenExceedsMaxAllowed_ShouldThrowException()
     {
         var model = GenerateValidRequest();
         List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(21).ToList();
