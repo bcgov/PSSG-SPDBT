@@ -1,5 +1,6 @@
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.LicApp;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
 public partial interface IPersonLicApplicationRepository
@@ -7,14 +8,7 @@ public partial interface IPersonLicApplicationRepository
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
-    public Task<IEnumerable<LicenceAppListResp>> QueryAsync(LicenceAppQuery qry, CancellationToken cancellationToken);
-
-    //connect spd_application with spd_contact and update application to correct status
-    public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct);
 }
-
-public record LicenceAppQuery(Guid ApplicantId, List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
-public record LicenceApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
 
 public record LicenceApplication
 {
@@ -98,18 +92,6 @@ public record LicenceApplicationResp() : LicenceApplication
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
 };
-
-public record LicenceAppListResp
-{
-    public Guid LicenceAppId { get; set; }
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset? SubmittedOn { get; set; }
-    public DateTimeOffset? UpdatedOn { get; set; }
-    public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public string CaseNumber { get; set; }
-    public ApplicationPortalStatusEnum ApplicationPortalStatusCode { get; set; }
-}
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 

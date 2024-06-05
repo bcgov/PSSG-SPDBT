@@ -6,6 +6,7 @@ using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Identity;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -15,6 +16,7 @@ namespace Spd.Manager.Licence.UnitTest
     {
         private readonly IFixture fixture;
         private Mock<IPersonLicApplicationRepository> mockPersonLicAppRepo = new();
+        private Mock<ILicAppRepository> mockLicAppRepo = new();
         private Mock<IIdentityRepository> mockIdRepo = new();
         private Mock<IDocumentRepository> mockDocRepo = new();
         private Mock<IContactRepository> mockContactRepo = new();
@@ -35,7 +37,8 @@ namespace Spd.Manager.Licence.UnitTest
                 mockMapper.Object,
                 null,
                 mockDocRepo.Object,
-                mockPersonLicAppRepo.Object);
+                mockPersonLicAppRepo.Object,
+                mockLicAppRepo.Object);
         }
 
         [Fact]
@@ -150,7 +153,7 @@ namespace Spd.Manager.Licence.UnitTest
         {
             //Arrange
             ApplicantUpdateCommand cmd = new(Guid.NewGuid(), fixture.Create<ApplicantUpdateRequest>(), fixture.Create<IEnumerable<LicAppFileInfo>>());
-            mockPersonLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
+            mockLicAppRepo.Setup(a => a.QueryAsync(It.Is<LicenceAppQuery>(q => q.ApplicantId == cmd.ApplicantId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(fixture.Create<IEnumerable<LicenceAppListResp>>);
 
             //Act

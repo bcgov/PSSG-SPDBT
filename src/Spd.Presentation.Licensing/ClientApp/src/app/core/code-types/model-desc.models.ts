@@ -222,6 +222,10 @@ export const DogDocumentTypes: SelectOptions[] = [
 		desc: 'Security Dog Validation Certificate',
 		code: LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate,
 	},
+	{
+		desc: 'Security Dog Validation Certificate',
+		code: LicenceDocumentTypeCode.BizSecurityDogCertificate,
+	},
 ];
 
 export const RestraintDocumentTypes: SelectOptions[] = [
