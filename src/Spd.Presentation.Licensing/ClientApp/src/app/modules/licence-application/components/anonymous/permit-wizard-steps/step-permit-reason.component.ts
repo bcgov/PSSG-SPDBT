@@ -30,7 +30,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										(form.get('bodyArmourRequirementFormGroup')?.dirty ||
 											form.get('bodyArmourRequirementFormGroup')?.touched) &&
 										form.get('bodyArmourRequirementFormGroup')?.invalid &&
-										form.get('bodyArmourRequirementFormGroup')?.hasError('atLeastOneCheckboxValidator')
+										form.get('bodyArmourRequirementFormGroup')?.hasError('atLeastOneCheckbox')
 									"
 									>At least one option must be selected</mat-error
 								>
@@ -58,7 +58,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										(form.get('armouredVehicleRequirementFormGroup')?.dirty ||
 											form.get('armouredVehicleRequirementFormGroup')?.touched) &&
 										form.get('armouredVehicleRequirementFormGroup')?.invalid &&
-										form.get('armouredVehicleRequirementFormGroup')?.hasError('atLeastOneCheckboxValidator')
+										form.get('armouredVehicleRequirementFormGroup')?.hasError('atLeastOneCheckbox')
 									"
 									>At least one option must be selected</mat-error
 								>
