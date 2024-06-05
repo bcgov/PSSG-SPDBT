@@ -40,8 +40,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
                 r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmInstaller));
         RuleFor(r => r.CategoryCodes)
-            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
-                r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
+            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor))
             .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmResponse));
         RuleFor(r => r.CategoryCodes)
             .Must(r => r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
