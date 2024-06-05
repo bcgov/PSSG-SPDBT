@@ -27,6 +27,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
 						[mailingAddressFormGroup]="mailingAddressFormGroup"
 						[branchesInBcFormGroup]="branchesInBcFormGroup"
+						[isBcBusinessAddress]="isBcBusinessAddress"
 						[isReadonly]="false"
 					></app-common-business-profile>
 
@@ -126,5 +127,9 @@ export class StepBusinessLicenceProfileComponent implements OnInit {
 		}
 
 		this.businessApplicationService.saveBusinessProfileAndContinue(this.applicationTypeCode!).subscribe();
+	}
+
+	get isBcBusinessAddress(): boolean {
+		return this.businessApplicationService.isBcBusinessAddress();
 	}
 }

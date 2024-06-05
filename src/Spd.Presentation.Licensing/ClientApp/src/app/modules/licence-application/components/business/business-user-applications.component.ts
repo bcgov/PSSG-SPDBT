@@ -3,21 +3,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import {
-	ApplicationPortalStatusCode,
-	ApplicationTypeCode,
-	LicenceAppListResponse,
-	WorkerLicenceTypeCode,
-} from '@app/api/models';
+import { ApplicationTypeCode, BizProfileResponse, LicenceStatusCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService } from '@app/core/services/config.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import {
 	CommonApplicationService,
-	UserLicenceResponse,
+	MainApplicationResponse,
+	MainLicenceResponse,
 } from '@app/modules/licence-application/services/common-application.service';
-import { Observable, take, tap } from 'rxjs';
+import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-business-user-applications',
@@ -33,7 +29,7 @@ import { Observable, take, tap } from 'rxjs';
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
 								<button mat-flat-button color="primary" class="large w-auto me-2 mb-3" (click)="onBusinessProfile()">
-									<mat-icon>person</mat-icon>
+									<mat-icon>storefront</mat-icon>
 									{{ businessProfileLabel }}
 								</button>
 								<button mat-flat-button color="primary" class="large w-auto ms-2 mb-3" (click)="onBusinessManagers()">
@@ -57,290 +53,22 @@ import { Observable, take, tap } from 'rxjs';
 						</app-alert>
 					</ng-container>
 
-					<!-- <button mat-flat-button color="primary" class="large my-3 w-auto" (click)="onResume()">
-						<mat-icon>play_arrow</mat-icon>Resume
-					</button> -->
+					<app-main-applications
+						[applicationsDataSource]="applicationsDataSource"
+						(resumeApplication)="onResume($event)"
+					></app-main-applications>
 
-					<div class="mb-3" *ngIf="applicationsDataSource.data.length > 0">
-						<div class="section-title fs-5 py-3">Applications</div>
+					<app-main-active-business-licences
+						[activeLicences]="activeLicences"
+						[applicationIsInProgress]="applicationIsInProgress"
+						[isSoleProprietor]="isSoleProprietor"
+						[lostLicenceDaysText]="lostLicenceDaysText"
+						(replaceLicence)="onReplace($event)"
+						(updateLicence)="onUpdate($event)"
+						(renewLicence)="onRenew($event)"
+					></app-main-active-business-licences>
 
-						<div class="row summary-card-section summary-card-section__orange m-0">
-							<div class="col-12" class="draft-table">
-								<mat-table
-									[dataSource]="applicationsDataSource"
-									class="draft-table pb-3"
-									[multiTemplateDataRows]="true"
-								>
-									<ng-container matColumnDef="workerLicenceTypeCode">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Licence Type</mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Licence Type:</span>
-											<span class="my-2">
-												{{ application.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-											</span>
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="createdOn">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Started</mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Date Started:</span>
-											{{ application.createdOn | formatDate | default }}
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="submittedOn">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Date Submitted</mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Date Submitted:</span>
-											{{ application.submittedOn | formatDate | default }}
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="applicationTypeCode">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Type</mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Type:</span>
-											{{ application.applicationTypeCode | options : 'ApplicationTypes' }}
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="caseNumber">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Case Number</mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Case Number:</span>
-											{{ application.caseNumber }}
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="applicationPortalStatusCode">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<span class="mobile-label">Status:</span>
-											<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
-												{{
-													application.applicationPortalStatusCode | options : 'ApplicationPortalStatusTypes' | default
-												}}
-											</span>
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="action1">
-										<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-										<mat-cell *matCellDef="let application">
-											<button
-												mat-flat-button
-												color="primary"
-												class="large my-3 w-auto"
-												(click)="onResumex(application)"
-												*ngIf="application.applicationPortalStatusCode === applicationPortalStatusCodes.Draft"
-											>
-												<mat-icon>play_arrow</mat-icon>Resume
-											</button>
-										</mat-cell>
-									</ng-container>
-
-									<ng-container matColumnDef="expandedDetail">
-										<mat-cell *matCellDef="let application" [attr.colspan]="columns.length" class="px-0">
-											<ng-container *ngIf="application.isErrorMessage || application.isWarningMessage">
-												<div
-													class="alert d-flex d-inline-flex align-items-center w-100"
-													[ngClass]="application.isWarningMessage ? 'draft-warning-message' : 'draft-error-message'"
-													role="alert"
-												>
-													<div class="my-1 px-2">
-														You haven't submitted this licence application yet. It will expire on
-														{{ application.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}.
-													</div>
-												</div>
-											</ng-container>
-										</mat-cell>
-									</ng-container>
-
-									<mat-header-row *matHeaderRowDef="columns; sticky: true"></mat-header-row>
-									<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
-									<mat-row
-										class="mat-data-row"
-										*matRowDef="let row; columns: ['expandedDetail']"
-										class="expanded-detail-row"
-									></mat-row>
-								</mat-table>
-							</div>
-						</div>
-					</div>
-
-					<div class="mb-3" *ngIf="activeLicences.length > 0">
-						<div class="section-title fs-5 py-3">Valid Licence</div>
-						<div
-							class="summary-card-section summary-card-section__green mb-3 px-4 py-3"
-							*ngFor="let licence of activeLicences; let i = index"
-						>
-							<div class="row">
-								<div class="col-lg-2">
-									<div class="fs-5" style="color: var(--color-primary);">
-										{{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-									</div>
-								</div>
-								<div class="col-lg-10">
-									<div class="row">
-										<div class="col-lg-5">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
-											<div class="text-data">{{ licence.licenceNumber }}</div>
-										</div>
-										<div class="col-lg-4">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
-										</div>
-										<div class="col-lg-3 text-end">
-											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
-												<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
-												<span class="appl-chip-option-item ms-2 fs-5">Active</span>
-											</mat-chip-option>
-										</div>
-										<mat-divider class="my-2"></mat-divider>
-									</div>
-
-									<div class="row mb-2">
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-											<div class="text-data">
-												{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-											</div>
-										</div>
-										<div class="col-lg-4">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
-											<div class="text-data">
-												<ul class="m-0">
-													<ng-container *ngFor="let catCode of licence.categoryCodes; let i = index">
-														<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
-													</ng-container>
-												</ul>
-											</div>
-										</div>
-										<div class="col-lg-5" *ngIf="licence.dogAuthorization">
-											<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
-											<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
-										</div>
-
-										<!-- 
-										<app-alert type="info" icon="">
-											You can update your controlling members and employees when you renew your business licence // TODO prevent update of members
-										</app-alert>										
-										-->
-
-										<div class="col-lg-5">
-											<div class="d-block text-muted mt-2 mt-md-0"></div>
-											<div *ngIf="isNotSoleProprietor">
-												<a
-													class="large"
-													tabindex="0"
-													(click)="onManageMembersAndEmployees()"
-													(keydown)="onKeydownManageMembersAndEmployees($event)"
-												>
-													Manage Controlling Members and Employees
-												</a>
-											</div>
-										</div>
-										<mat-divider class="my-2"></mat-divider>
-									</div>
-
-									<div class="row mb-2">
-										<div class="col-lg-9">
-											The following updates have a
-											{{ licence.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
-											<ul class="m-0">
-												<li>add or remove branch</li>
-												<li>change to business trade name</li>
-												<li>change to business legal name</li>
-												<li>change to business address</li>
-												<li>add request for dogs authorization</li>
-												<li>update licence category</li>
-											</ul>
-										</div>
-										<div class="col-lg-3 text-end">
-											<!--
-														*ngIf="appl.isRenewalPeriod"
-														(click)="onRenew(appl)"
-											-->
-											<button mat-flat-button color="primary" class="large my-2">
-												<mat-icon>restore</mat-icon>Renew
-											</button>
-											<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(licence)">
-												<mat-icon>update</mat-icon>Update
-											</button>
-										</div>
-									</div>
-								</div>
-
-								<div class="row">
-									<ng-container *ngIf="licence.isRenewalPeriod && licence.isRenewalPeriod; else IsNotRenewalPeriod">
-										<div class="col-12">
-											<mat-divider class="my-2"></mat-divider>
-											<span class="fw-semibold">Lost your licence? </span>
-											<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
-											for a digital copy of your current licence before it expires.
-										</div>
-									</ng-container>
-									<ng-template #IsNotRenewalPeriod>
-										<div class="col-12">
-											<mat-divider class="my-2"></mat-divider>
-											<span class="fw-semibold">Lost your licence? </span>
-											<a *ngIf="applicationIsInProgress" class="large disable">Request a replacement</a>
-											<a
-												*ngIf="!applicationIsInProgress"
-												class="large"
-												tabindex="0"
-												(click)="onRequestReplacement(licence)"
-												(keydown)="onKeydownRequestReplacement($event, licence)"
-												>Request a replacement</a
-											>
-											and we'll send you a new licence in {{ lostLicenceDaysText }} business days.
-										</div>
-									</ng-template>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="mb-3" *ngIf="expiredLicences.length > 0">
-						<div class="section-title fs-5 py-3">Expired Licences</div>
-						<div
-							class="summary-card-section summary-card-section__red mb-2 px-4 py-3"
-							*ngFor="let appl of expiredLicences; let i = index"
-						>
-							<div class="row">
-								<div class="col-lg-3">
-									<div class="fs-5" style="color: var(--color-primary);">
-										{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-									</div>
-								</div>
-								<div class="col-lg-9">
-									<div class="row">
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
-											<div class="text-data">{{ appl.licenceNumber }}</div>
-										</div>
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-											<div class="text-data">---</div>
-										</div>
-										<div class="col-lg-3">
-											<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-											<div class="text-data">
-												{{ appl.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-											</div>
-										</div>
-										<div class="col-lg-3 text-end">
-											<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-red">
-												<mat-icon class="appl-chip-option-item">cancel</mat-icon>
-												<span class="appl-chip-option-item ms-2 fs-5">Expired</span>
-											</mat-chip-option>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<app-expired-licences [expiredLicences]="expiredLicences"></app-expired-licences>
 
 					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
 						<div class="row">
@@ -368,36 +96,6 @@ import { Observable, take, tap } from 'rxjs';
 			.appl-chip-option-item {
 				vertical-align: text-bottom;
 			}
-
-			.mat-column-action1 {
-				text-align: right;
-				justify-content: flex-end;
-				min-width: 160px;
-				.table-button {
-					min-width: 140px;
-				}
-			}
-
-			.section-title {
-				color: var(--color-primary) !important;
-			}
-
-			.status-green {
-				color: var(--color-green) !important;
-			}
-
-			.status-orange {
-				color: var(--color-orange) !important;
-			}
-
-			.draft-table {
-				background-color: #f6f6f6 !important;
-			}
-
-			.error-color {
-				font-weight: 600;
-				color: var(--color-red-dark);
-			}
 		`,
 	],
 })
@@ -408,34 +106,24 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	applicationIsInProgress: boolean | null = null;
+	applicationIsInProgress = true;
 	businessProfileLabel = '';
-	lostLicenceDaysText: string | null = null;
+	lostLicenceDaysText = 'TBD';
 
 	activeLicenceExist = false;
 
-	isNotSoleProprietor = true; // TODO  Only display if NOT sole proprietor
+	isSoleProprietor = false;
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
-	applicationPortalStatusCodes = ApplicationPortalStatusCode;
 
-	licenceAppId = '404a6472-faa0-4206-96b2-d9aaf5bc0694'; // TODO Remove
-
-	activeLicences: Array<UserLicenceResponse> = [];
-	expiredLicences: Array<UserLicenceResponse> = [];
+	activeLicences: Array<MainLicenceResponse> = [];
+	expiredLicences: Array<MainLicenceResponse> = [];
 
 	licenceApplicationRoutes = LicenceApplicationRoutes;
 
-	applicationsDataSource: MatTableDataSource<UserLicenceResponse> = new MatTableDataSource<UserLicenceResponse>([]);
-	columns: string[] = [
-		'workerLicenceTypeCode',
-		'createdOn',
-		'submittedOn',
-		'applicationTypeCode',
-		'caseNumber',
-		'applicationPortalStatusCode',
-		'action1',
-	];
+	applicationsDataSource: MatTableDataSource<MainApplicationResponse> = new MatTableDataSource<MainApplicationResponse>(
+		[]
+	);
 
 	constructor(
 		private router: Router,
@@ -445,39 +133,64 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? null;
+		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 
-		this.results$ = this.commonApplicationService.userBusinessLicencesList().pipe(
-			tap((resps: any) => {
-				console.debug('userBusinessLicencesList', resps);
-				this.activeLicences = resps;
+		this.commonApplicationService.setApplicationTitle();
+
+		this.results$ = forkJoin([
+			this.commonApplicationService.userBusinessLicencesList(),
+			this.commonApplicationService.userBusinessApplicationsList(),
+			this.businessApplicationService.getBusinessProfile(),
+		]).pipe(
+			tap((resps: Array<any>) => {
+				const businessLicencesList: Array<MainLicenceResponse> = resps[0];
+				const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
+				const businessProfile: BizProfileResponse = resps[2];
+
+				console.debug('businessLicencesList', businessLicencesList);
+				console.debug('businessApplicationsList', businessApplicationsList);
+				console.debug('businessProfile', businessProfile);
+
+				this.isSoleProprietor = !this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+
+				// User Licences/Permits
+				const activeLicences = businessLicencesList.filter(
+					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+				);
+
+				this.expiredLicences = businessLicencesList.filter(
+					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+				);
+
+				// User Licence/Permit Applications
+				this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
+				this.applicationIsInProgress =
+					this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
+
+				// Set flags that determine if NEW licences/permits can be created
+				let activeLicenceExist = activeLicences.length > 0;
+				if (!activeLicenceExist) {
+					activeLicenceExist = businessApplicationsList.length > 0;
+				}
+				this.activeLicenceExist = activeLicenceExist;
+
+				[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndError(
+					businessApplicationsList,
+					activeLicences
+				);
+
+				this.activeLicences = activeLicences;
+
+				this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 			})
 		);
-
-		this.applicationIsInProgress = false; // TODO remove hardcoded flag
-
-		this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 
 		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
 	}
 
-	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
-		switch (applicationPortalStatusCode) {
-			case ApplicationPortalStatusCode.Draft: {
-				return 'status-orange';
-			}
-			case ApplicationPortalStatusCode.InProgress: {
-				return 'status-green';
-			}
-			default: {
-				return '';
-			}
-		}
-	}
-
-	onManageMembersAndEmployees(): void {
+	onManageMembersAndEmployees(licence: MainLicenceResponse): void {
 		this.businessApplicationService
-			.getMembersAndEmployees(this.licenceAppId)
+			.getMembersAndEmployees(licence.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -491,39 +204,43 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+	onReplace(licence: MainLicenceResponse): void {
+		if (this.applicationIsInProgress) return;
 
-		this.onManageMembersAndEmployees();
-	}
-
-	onRequestReplacement(_appl: UserLicenceResponse): void {
-		// if (this.applicationIsInProgress) return;
-		// 	this.licenceApplicationService
-		// 		.getLicenceWithSelectionAuthenticated(appl.licenceAppId!, ApplicationTypeCode.Replacement, appl)
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-		// 					),
-		// 					{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-	}
-
-	onKeydownRequestReplacement(event: KeyboardEvent, appl: UserLicenceResponse) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
-
-		this.onRequestReplacement(appl);
-	}
-
-	onResume(): void {
 		this.businessApplicationService
-			.getBusinessLicenceToResume(this.licenceAppId)
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onRenew(licence: MainLicenceResponse): void {
+		if (this.applicationIsInProgress) return;
+
+		this.businessApplicationService
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onResume(appl: MainApplicationResponse): void {
+		this.businessApplicationService
+			.getBusinessLicenceToResume(appl.licenceAppId!)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -536,68 +253,21 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onResumex(_appl: LicenceAppListResponse): void {
-		// if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-		// 	this.licenceApplicationService
-		// 		.getLicenceNew(appl.licenceAppId!)
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-		// 					)
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else {
-		// 	this.permitApplicationService
-		// 		.loadPermit(appl.licenceAppId!, appl.workerLicenceTypeCode!, appl.applicationTypeCode!)
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.WORKER_LICENCE_NEW_AUTHENTICATED
-		// 					)
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// }
-	}
+	onUpdate(licence: MainLicenceResponse): void {
+		if (this.applicationIsInProgress) return;
 
-	onUpdate(_appl: UserLicenceResponse): void {
-		// if (appl.workerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence) {
-		// 	this.licenceApplicationService
-		// 		.getLicenceOfType('172761bb-3fd7-497c-81a9-b953359709a2', ApplicationTypeCode.Update) //TODO hardcoded ID
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.WORKER_LICENCE_UPDATE_AUTHENTICATED
-		// 					)
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// } else {
-		// 	this.permitApplicationService
-		// 		.loadPermit(appl.licenceAppId!, appl.workerLicenceTypeCode!, appl.applicationTypeCode!)
-		// 		.pipe(
-		// 			tap((_resp: any) => {
-		// 				this.router.navigateByUrl(
-		// 					LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-		// 						LicenceApplicationRoutes.PERMIT_NEW_AUTHENTICATED
-		// 					)
-		// 				);
-		// 			}),
-		// 			take(1)
-		// 		)
-		// 		.subscribe();
-		// }
+		this.businessApplicationService
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	onCreateNew(): void {
