@@ -6,10 +6,16 @@ import { BusinessApplicationService } from '@app/modules/licence-application/ser
 
 @Component({
 	selector: 'app-business-licence-application-base',
-	template: ` <router-outlet></router-outlet> `,
+	template: `
+		<ng-container *ngIf="isAuthenticated$ | async">
+			<router-outlet></router-outlet>
+		</ng-container>
+	`,
 	styles: [],
 })
 export class BusinessLicenceApplicationBaseComponent implements OnInit {
+	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
+
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,

@@ -1,5 +1,5 @@
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { PoliceOfficerRoleCode } from '@app/api/models';
+import { BizTypeCode, LicenceStatusCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from './form-control.validators';
 
@@ -58,7 +58,7 @@ export class FormGroupValidators {
 			return null;
 		};
 
-	public static nopoliceofficer(controlName: string, checkControlName: string): ValidatorFn {
+	public static nopoliceofficerValidator(controlName: string, checkControlName: string): ValidatorFn {
 		return (controls: AbstractControl) => {
 			const control = controls.get(controlName);
 			const checkControl = controls.get(checkControlName);
@@ -71,7 +71,27 @@ export class FormGroupValidators {
 		};
 	}
 
-	public static match(controlName: string, checkControlName: string): ValidatorFn {
+	public static licencemustbeactiveValidator(controlName: string, checkControlName: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control = controls.get(controlName);
+			const checkControl = controls.get(checkControlName);
+
+			if (
+				checkControl?.value == BizTypeCode.NonRegisteredSoleProprietor ||
+				checkControl?.value == BizTypeCode.RegisteredSoleProprietor
+			) {
+				if (control?.value != LicenceStatusCode.Active) {
+					return { licencemustbeactive: true };
+				} else {
+					return null;
+				}
+			}
+
+			return null;
+		};
+	}
+
+	public static matchValidator(controlName: string, checkControlName: string): ValidatorFn {
 		return (controls: AbstractControl) => {
 			const control = controls.get(controlName);
 			const checkControl = controls.get(checkControlName);
@@ -103,7 +123,7 @@ export class FormGroupValidators {
 
 			if (checked < minRequired) {
 				return {
-					atLeastOneTrueValidator: true,
+					atLeastOneTrue: true,
 				};
 			}
 
@@ -129,7 +149,7 @@ export class FormGroupValidators {
 
 			if (checked < minRequired) {
 				return {
-					atLeastOneCheckboxValidator: true,
+					atLeastOneCheckbox: true,
 				};
 			}
 
@@ -156,6 +176,6 @@ export class FormGroupValidators {
 				}
 			});
 
-			return checked < minRequired ? { atLeastOneCheckboxWhenReqdValidator: true } : null;
+			return checked < minRequired ? { atLeastOneCheckboxWhenReqd: true } : null;
 		};
 }

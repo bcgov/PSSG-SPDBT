@@ -26,7 +26,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 							</div>
 							<mat-error
 								class="mat-option-error"
-								*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrueValidator')"
+								*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrue')"
 								>At least one option must be selected</mat-error
 							>
 
