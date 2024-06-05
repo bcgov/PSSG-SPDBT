@@ -4,8 +4,8 @@ using Moq;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
@@ -15,7 +15,7 @@ public class BizLicenceAppManangerTest
 {
     private readonly IFixture fixture;
     private Mock<ILicenceRepository> mockLicRepo = new();
-    private Mock<IPersonLicApplicationRepository> mockLicAppRepo = new();
+    private Mock<ILicAppRepository> mockLicAppRepo = new();
     private Mock<IDocumentRepository> mockDocRepo = new();
     private Mock<ILicenceFeeRepository> mockLicFeeRepo = new();
     private Mock<IMainFileStorageService> mockMainFileService = new();
