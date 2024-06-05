@@ -30,7 +30,6 @@ export interface WorkerLicenceAppUpsertRequest {
   documentInfos?: null | Array<Document>;
   emailAddress?: null | string;
   expiredLicenceId?: null | string;
-  expiredLicenceNumber?: null | string;
   eyeColourCode?: EyeColourCode;
   genderCode?: GenderCode;
   givenName?: null | string;

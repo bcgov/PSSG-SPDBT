@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
+	BizLicAppResponse,
 	BizTypeCode,
 	Document,
 	IdentityProviderTypeCode,
@@ -22,7 +23,9 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import {
-	ApplicantLicenceAppService,
+	BizLicensingService,
+	BizProfileService,
+	LicenceAppService,
 	LicenceService,
 	PaymentService,
 	PermitService,
@@ -31,20 +34,17 @@ import {
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
+import { UtilService } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { LicenceApplicationRoutes } from '../licence-application-routing.module';
-
-export interface UserApplicationResponse extends LicenceAppListResponse {
-	applicationExpiryDate?: string;
-	isExpiryWarning: boolean;
-	isExpiryError: boolean;
-}
 
 export class LicenceLookupResult {
 	'isFound': boolean;
@@ -54,8 +54,14 @@ export class LicenceLookupResult {
 	'searchResult': LicenceResponse | null;
 }
 
-export interface UserLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse {
-	hasBcscNameChanged: boolean;
+export interface MainApplicationResponse extends LicenceAppListResponse {
+	applicationExpiryDate?: string;
+	isExpiryWarning: boolean;
+	isExpiryError: boolean;
+}
+
+export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse, BizLicAppResponse {
+	hasLoginNameChanged: boolean;
 	cardHolderName?: null | string;
 	licenceHolderName?: null | string;
 	licenceExpiryDate?: string;
@@ -86,13 +92,18 @@ export class CommonApplicationService {
 		private router: Router,
 		private dialog: MatDialog,
 		private optionsPipe: OptionsPipe,
+		private utilService: UtilService,
+		private formatDatePipe: FormatDatePipe,
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
 		private paymentService: PaymentService,
 		private authProcessService: AuthProcessService,
 		private authUserBcscService: AuthUserBcscService,
-		private applicantLicenceAppService: ApplicantLicenceAppService,
+		private authUserBceidService: AuthUserBceidService,
+		private licenceAppService: LicenceAppService,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
+		private bizLicensingService: BizLicensingService,
+		private bizProfileService: BizProfileService,
 		private licenceService: LicenceService,
 		private permitService: PermitService
 	) {
@@ -172,51 +183,28 @@ export class CommonApplicationService {
 			);
 	}
 
-	userApplicationsList(): Observable<Array<UserApplicationResponse>> {
-		return this.applicantLicenceAppService
+	userApplicationsList(): Observable<Array<MainApplicationResponse>> {
+		return this.licenceAppService
 			.apiApplicantsApplicantIdLicenceApplicationsGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
 				map((_resp: Array<LicenceAppListResponse>) => {
-					const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
-					const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
-					const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
-
-					const response = _resp as Array<UserApplicationResponse>;
-					response.forEach((item: UserApplicationResponse) => {
-						item.isExpiryWarning = false;
-						item.isExpiryError = false;
-
-						if (
-							item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
-							item.applicationTypeCode === ApplicationTypeCode.New
-						) {
-							const today = moment().startOf('day');
-							const applicationExpiryDate = moment(item.updatedOn)
-								.startOf('day')
-								.add(applicationNotSubmittedValidDays, 'days');
-
-							item.applicationExpiryDate = applicationExpiryDate.toString();
-							if (
-								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))
-							) {
-								item.isExpiryError = true;
-							} else if (
-								today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
-							) {
-								item.isExpiryWarning = true;
-							}
-						}
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
 					});
 
-					this.setApplicationTitle();
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
 					return response;
 				})
 			);
 	}
 
-	userLicencesList(): Observable<Array<UserLicenceResponse>> {
+	userLicencesList(): Observable<Array<MainLicenceResponse>> {
 		return this.licenceService
 			.apiApplicantsApplicantIdLicencesGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
@@ -243,98 +231,13 @@ export class CommonApplicationService {
 
 					return forkJoin(apis).pipe(
 						map((resps: Array<WorkerLicenceAppResponse | PermitLicenceAppResponse>) => {
-							const response: Array<UserLicenceResponse> = [];
+							const response: Array<MainLicenceResponse> = [];
 							resps.forEach((resp: WorkerLicenceAppResponse | PermitLicenceAppResponse) => {
-								const licence = resp as UserLicenceResponse;
-
-								const licenceReplacementPeriodPreventionDays =
-									SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
-								const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
-								const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
-								const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
-
-								licence.isRenewalPeriod = false;
-								licence.isUpdatePeriod = false;
-								licence.isReplacementPeriod = false;
-
 								const matchingLicence = licenceResps.find(
 									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 								);
 
-								if (matchingLicence) {
-									const today = moment().startOf('day');
-
-									licence.cardHolderName = matchingLicence.nameOnCard;
-									licence.licenceHolderName = matchingLicence.licenceHolderName;
-									licence.licenceStatusCode = matchingLicence.licenceStatusCode;
-									licence.licenceExpiryDate = matchingLicence.expiryDate;
-									licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate)
-										.startOf('day')
-										.diff(today, 'days');
-									licence.licenceId = matchingLicence.licenceId;
-									licence.licenceNumber = matchingLicence.licenceNumber;
-									licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
-
-									if (licence.licenceExpiryNumberOfDays >= 0) {
-										if (
-											licence.licenceStatusCode === LicenceStatusCode.Active &&
-											today.isBefore(
-												moment(licence.licenceExpiryDate)
-													.startOf('day')
-													.subtract(licenceUpdatePeriodPreventionDays, 'days')
-											)
-										) {
-											licence.isUpdatePeriod = true;
-										}
-
-										if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
-											if (
-												today.isSameOrAfter(
-													moment(licence.licenceExpiryDate)
-														.startOf('day')
-														.subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
-												)
-											) {
-												licence.isRenewalPeriod = true;
-											}
-										} else {
-											if (
-												today.isSameOrAfter(
-													moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
-												)
-											) {
-												licence.isRenewalPeriod = true;
-											}
-										}
-
-										if (
-											today.isBefore(
-												moment(licence.licenceExpiryDate)
-													.startOf('day')
-													.subtract(licenceReplacementPeriodPreventionDays, 'days')
-											)
-										) {
-											licence.isReplacementPeriod = true;
-										}
-									}
-								}
-
-								// get Licence Reprint Fee
-								const fee = this.getLicenceTermsAndFees(
-									resp.workerLicenceTypeCode!,
-									ApplicationTypeCode.Replacement,
-									resp.bizTypeCode!,
-									resp.licenceTermCode
-								).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
-								licence.licenceReprintFee = fee?.amount ? fee.amount : null;
-
-								const hasDogAuthorization = resp.documentInfos?.find(
-									(item: Document) =>
-										item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
-								);
-								licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
-									? hasDogAuthorization.licenceDocumentTypeCode
-									: null;
+								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!);
 
 								const hasRestraintAuthorization = resp.documentInfos?.find(
 									(item: Document) =>
@@ -349,6 +252,82 @@ export class CommonApplicationService {
 									: null;
 
 								response.push(licence);
+							});
+
+							response.sort((a, b) => {
+								return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+							});
+
+							return response;
+						})
+					);
+				})
+			);
+	}
+
+	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
+		return this.licenceAppService
+			.apiBizsBizIdLicenceApplicationsGet({
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+			})
+			.pipe(
+				map((_resp: Array<LicenceAppListResponse>) => {
+					const response = _resp as Array<MainApplicationResponse>;
+					response.forEach((item: MainApplicationResponse) => {
+						this.setApplicationFlags(item);
+					});
+
+					response.sort((a, b) => {
+						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+					});
+
+					return response;
+				})
+			);
+	}
+
+	userBusinessLicencesList(): Observable<Array<MainLicenceResponse>> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+		return this.licenceService
+			.apiBizsBizIdLicencesGet({
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+			})
+			.pipe(
+				switchMap((licenceResps: Array<LicenceBasicResponse>) => {
+					const apis: Observable<any>[] = [];
+
+					if (licenceResps.length === 0) {
+						return of([]);
+					}
+
+					apis.push(this.bizProfileService.apiBizIdGet({ id: bizId }));
+
+					licenceResps.forEach((appl: LicenceBasicResponse) => {
+						apis.push(
+							this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({
+								licenceAppId: appl.licenceAppId!,
+							})
+						);
+					});
+
+					return forkJoin(apis).pipe(
+						map((resps: Array<any>) => {
+							// first item in the array is the profile
+							const profile = resps.splice(0, 1).at(0);
+
+							// the rest of the items in the array are the licences
+							const applResps: Array<BizLicAppResponse> = resps;
+
+							const response: Array<MainLicenceResponse> = [];
+							applResps.forEach((resp: BizLicAppResponse) => {
+								const matchingLicence = licenceResps[0];
+								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!);
+
+								response.push(licence);
+							});
+
+							response.sort((a, b) => {
+								return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
 							});
 
 							return response;
@@ -542,6 +521,17 @@ export class CommonApplicationService {
 		return [messageWarn, messageError];
 	}
 
+	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
+		return !!appls.find(
+			(item: MainApplicationResponse) =>
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingApplicant ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.UnderAssessment ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.VerifyIdentity
+		);
+	}
+
 	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
 		if (!expiryDate || !licenceTermCode) {
 			return false;
@@ -577,5 +567,162 @@ export class CommonApplicationService {
 					this.onGoToHome();
 				}
 			});
+	}
+
+	getMainWarningsAndError(
+		userApplicationsList: Array<MainApplicationResponse>,
+		activeLicences: Array<MainLicenceResponse>
+	): [Array<string>, Array<string>] {
+		const warningMessages: Array<string> = [];
+		const errorMessages: Array<string> = [];
+
+		const draftNotifications = userApplicationsList.filter(
+			(item: MainApplicationResponse) => item.isExpiryWarning || item.isExpiryError
+		);
+		draftNotifications.forEach((item: MainApplicationResponse) => {
+			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'WorkerLicenceTypes');
+			const itemExpiry = this.formatDatePipe.transform(item.applicationExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			if (item.isExpiryWarning) {
+				warningMessages.push(
+					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
+				);
+			} else {
+				errorMessages.push(
+					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
+				);
+			}
+		});
+
+		const renewals = activeLicences.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
+		renewals.forEach((item: MainLicenceResponse) => {
+			const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+
+			if (item.licenceExpiryNumberOfDays != null) {
+				if (item.licenceExpiryNumberOfDays < 0) {
+					errorMessages.push(`Your ${itemLabel} expired on <strong>${itemExpiry}</strong>.`);
+				} else if (item.licenceExpiryNumberOfDays > 7) {
+					warningMessages.push(
+						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} days. Please renew by <strong>${itemExpiry}</strong>.`
+					);
+				} else if (item.licenceExpiryNumberOfDays === 0) {
+					errorMessages.push(`Your ${itemLabel} is expiring <strong>today</strong>. Please renew now.`);
+				} else {
+					const dayLabel = item.licenceExpiryNumberOfDays > 1 ? 'days' : 'day';
+					errorMessages.push(
+						`Your ${itemLabel} is expiring in ${item.licenceExpiryNumberOfDays} ${dayLabel}. Please renew by <strong>${itemExpiry}</strong>.`
+					);
+				}
+			}
+		});
+
+		return [warningMessages, errorMessages];
+	}
+
+	private setApplicationFlags(item: MainApplicationResponse) {
+		const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
+		const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
+		const applicationNotSubmittedValidDays = SPD_CONSTANTS.periods.applicationNotSubmittedValidDays;
+
+		item.isExpiryWarning = false;
+		item.isExpiryError = false;
+
+		if (
+			item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft &&
+			item.applicationTypeCode === ApplicationTypeCode.New
+		) {
+			const today = moment().startOf('day');
+			const applicationExpiryDate = moment(item.updatedOn).startOf('day').add(applicationNotSubmittedValidDays, 'days');
+
+			item.applicationExpiryDate = applicationExpiryDate.toString();
+			if (today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedErrorDays, 'days'))) {
+				item.isExpiryError = true;
+			} else if (
+				today.isSameOrAfter(moment(applicationExpiryDate).subtract(applicationNotSubmittedWarningDays, 'days'))
+			) {
+				item.isExpiryWarning = true;
+			}
+		}
+	}
+
+	private getLicence(resp: any, bizTypeCode: BizTypeCode, matchingLicence: LicenceBasicResponse): MainLicenceResponse {
+		const licence = resp;
+
+		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
+		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
+		const licenceRenewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDays;
+		const licenceRenewPeriodDaysNinetyDayTerm = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
+
+		licence.isRenewalPeriod = false;
+		licence.isUpdatePeriod = false;
+		licence.isReplacementPeriod = false;
+
+		if (matchingLicence) {
+			const today = moment().startOf('day');
+
+			licence.cardHolderName = matchingLicence.nameOnCard;
+			licence.licenceHolderName = matchingLicence.licenceHolderName;
+			licence.licenceStatusCode = matchingLicence.licenceStatusCode;
+			licence.licenceExpiryDate = matchingLicence.expiryDate;
+			licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
+			licence.licenceId = matchingLicence.licenceId;
+			licence.licenceNumber = matchingLicence.licenceNumber;
+			licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
+
+			if (licence.licenceExpiryNumberOfDays >= 0) {
+				if (
+					licence.licenceStatusCode === LicenceStatusCode.Active &&
+					today.isBefore(
+						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days')
+					)
+				) {
+					licence.isUpdatePeriod = true;
+				}
+
+				if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
+					if (
+						today.isSameOrAfter(
+							moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
+						)
+					) {
+						licence.isRenewalPeriod = true;
+					}
+				} else {
+					if (
+						today.isSameOrAfter(
+							moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
+						)
+					) {
+						licence.isRenewalPeriod = true;
+					}
+				}
+
+				if (
+					today.isBefore(
+						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
+					)
+				) {
+					licence.isReplacementPeriod = true;
+				}
+			}
+		}
+
+		// get Licence Reprint Fee
+		const fee = this.getLicenceTermsAndFees(
+			resp.workerLicenceTypeCode,
+			ApplicationTypeCode.Replacement,
+			bizTypeCode,
+			resp.licenceTermCode
+		).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
+		licence.licenceReprintFee = fee?.amount ? fee.amount : null;
+
+		const hasDogAuthorization = resp.documentInfos?.find(
+			(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
+		);
+		licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
+			? hasDogAuthorization.licenceDocumentTypeCode
+			: null;
+
+		return licence;
 	}
 }

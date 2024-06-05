@@ -190,6 +190,25 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
+	getBusinessProfile(): Observable<BizProfileResponse> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId });
+	}
+
+	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		console.log('body', body); // TODO fix body for submit
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+	}
+
 	/**
 	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
 	 * @param documentCode
@@ -430,22 +449,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	// 	getBusinessLicenceWithSelection(
-	// 		licenceAppId: string,
-	// 		applicationTypeCode: ApplicationTypeCode
-	// 	): Observable<BizLicAppResponse> {
-	// 		return this.loadExistingLicenceWithId(licenceAppId).pipe(
-	// 			tap((_resp: any) => {
-	// 				this.initialized = true;
-	// // see getLicenceOfTypeAuthenticated
-	// 				this.commonApplicationService.setApplicationTitle(
-	// 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
-	// 					_resp.applicationTypeData.applicationTypeCode,
-	// 					_resp.originalLicenceNumber
-	// 				);
-	// 			})
-	// 		);
-	// 	}
+	getBusinessLicenceWithSelection(
+		// TODO getBusinessLicenceWithSelection
+		licenceAppId: string,
+		_applicationTypeCode: ApplicationTypeCode
+	): Observable<BizLicAppResponse> {
+		return this.loadExistingLicenceWithId(licenceAppId).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+				// see getLicenceOfTypeAuthenticated
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceNumber
+				);
+			})
+		);
+	}
 
 	getMembersAndEmployees(licenceAppId: string): Observable<any> {
 		this.reset();

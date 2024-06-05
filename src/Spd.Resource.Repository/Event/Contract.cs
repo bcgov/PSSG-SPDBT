@@ -14,6 +14,8 @@ namespace Spd.Resource.Repository.Event
         public EventTypeEnum EventTypeEnum { get; set; }
         public Guid? RegardingObjectId { get; set; }
         public string? RegardingObjectName { get; set; }
+        public string? JobId { get; set; }
+        public DateTimeOffset? LastExeTime { get; set; }
     }
 
     public record EventUpdateCmd()

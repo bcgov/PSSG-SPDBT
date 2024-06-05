@@ -2,9 +2,10 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AppRoutes } from '@app/app-routing.module';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { BizLicensingService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
+import { BizLicensingService, LoginService, PermitService, SecurityWorkerLicensingService } from 'src/app/api/services';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 
 @Injectable()
@@ -16,13 +17,6 @@ export class ErrorInterceptor implements HttpInterceptor {
 			catchError((errorResponse: HttpErrorResponse) => {
 				console.error('ErrorInterceptor errorResponse', errorResponse);
 
-				// Handling 401 that can occur when you are logged into the wrong identity authority
-				// if (errorResponse.status == 401 && errorResponse.url?.includes(LoginService.ApiApplicantLoginGetPath)) {
-				// 	console.debug(`ErrorInterceptor Access Denied- ${errorResponse.status} and ${errorResponse.url}`);
-				// 	this.router.navigate([AppRoutes.ACCESS_DENIED]);
-				// 	return throwError(() => new Error('Access denied'));
-				// }
-
 				// Certain 404s will be handled in the component
 				if (
 					errorResponse.status == 403 &&
@@ -30,6 +24,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 						errorResponse.url?.includes(PermitService.ApiPermitApplicationsPostPath) ||
 						errorResponse.url?.includes(BizLicensingService.ApiBusinessLicenceApplicationPostPath))
 				) {
+					return throwError(() => errorResponse);
+				}
+
+				if (errorResponse.status == 400 && errorResponse.url?.includes(LoginService.ApiBizLoginGetPath)) {
+					this.router.navigate([AppRoutes.ACCESS_DENIED], { state: { errorMessage: errorResponse.error?.message } });
 					return throwError(() => errorResponse);
 				}
 
