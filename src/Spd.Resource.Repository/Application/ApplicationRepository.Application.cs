@@ -111,7 +111,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             .Where(r => r._spd_applicantid_value == query.ApplicantId)
             .OrderByDescending(i => i.createdon);
 
-        List<Guid?> serviceTypeGuid = IApplicationRepository.ScreeningServiceTypes.Select(c => _context.LookupServiceType(c.ToString()).spd_servicetypeid).ToList();
+        List<Guid?> serviceTypeGuid = IApplicationRepository.ScreeningServiceTypes.Select(c => DynamicsContextLookupHelpers.GetServiceTypeGuid(c.ToString())).ToList();
 
         var result = applications.ToList().Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value));
         var response = new ApplicantApplicationListResp();
@@ -134,14 +134,14 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (!createApplicationCmd.SharedClearanceId.HasValue)
             throw new ArgumentException("SharedClearanceId cannot be null");
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
-        spd_clearance clearance = await _context.GetClearanceById((Guid)createApplicationCmd.SharedClearanceId, ct);
-        contact contact = await _context.contacts.Where(c => c.contactid == createApplicationCmd.ContactId).FirstOrDefaultAsync(ct);
+        spd_clearance? clearance = await _context.GetClearanceById((Guid)createApplicationCmd.SharedClearanceId, ct);
+        contact? contact = await _context.contacts.Where(c => c.contactid == createApplicationCmd.ContactId).FirstOrDefaultAsync(ct);
         _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
         _context.UpdateObject(contact);
 
         Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
         team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
-        spd_clearanceaccess clearanceaccess = new spd_clearanceaccess() { spd_clearanceaccessid = Guid.NewGuid() };
+        spd_clearanceaccess clearanceaccess = new() { spd_clearanceaccessid = Guid.NewGuid() };
         clearanceaccess.statecode = DynamicsConstants.StateCode_Active;
         clearanceaccess.statuscode = (int)ClearanceAccessStatusOptionSet.Draft;
         _context.AddTospd_clearanceaccesses(clearanceaccess);
@@ -202,7 +202,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         string? portalStatusFilter = null;
         if (appFilterBy.ApplicationPortalStatus != null && appFilterBy.ApplicationPortalStatus.Any())
         {
-            List<string> strs = new List<string>();
+            List<string> strs = new();
             foreach (ApplicationPortalStatusEnum cd in appFilterBy.ApplicationPortalStatus)
             {
                 var status = Enum.Parse<ApplicationPortalStatus>(cd.ToString());
@@ -431,7 +431,7 @@ internal partial class ApplicationRepository : IApplicationRepository
                     && string.Equals(existingContact.lastname, createApplicationCmd.Surname, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     //if the contact first name and lastname is different. make existing one to be alias and add the new one.
-                    AliasCreateCmd newAlias = new AliasCreateCmd
+                    AliasCreateCmd newAlias = new()
                     {
                         Surname = existingContact.lastname,
                         GivenName = existingContact.firstname,
