@@ -90,7 +90,7 @@ namespace Spd.Presentation.Screening.Controllers
             }
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            PaginationRequest pagination = new((int)page, (int)pageSize);
 
             string? filterValue = null;
             if (!string.IsNullOrWhiteSpace(filters))
@@ -106,8 +106,8 @@ namespace Spd.Presentation.Screening.Controllers
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
                 }
             }
-            AppInviteListFilterBy filterBy = new AppInviteListFilterBy(orgId, EmailOrNameContains: filterValue);
-            AppInviteListSortBy sortBy = new AppInviteListSortBy(SubmittedDateDesc: true);
+            AppInviteListFilterBy filterBy = new(orgId, EmailOrNameContains: filterValue);
+            AppInviteListSortBy sortBy = new(SubmittedDateDesc: true);
 
             return await _mediator.Send(new ApplicationInviteListQuery()
             {
@@ -153,7 +153,7 @@ namespace Spd.Presentation.Screening.Controllers
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            PaginationRequest pagination = new((int)page, (int)pageSize);
             return await _mediator.Send(new GetBulkUploadHistoryQuery(orgId)
             {
                 SortBy = sorts,
@@ -176,9 +176,10 @@ namespace Spd.Presentation.Screening.Controllers
 
             //validation file
             string fileName = bulkUploadRequest.File.FileName;
-            if (!fileName.EndsWith(SpdConstants.BulkAppUploadFileExtension, StringComparison.InvariantCultureIgnoreCase))
+            string exe = fileName.Split(".").Last();
+            if (!SpdConstants.BulkAppUploadFileExtensions.Contains(exe))
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"only {SpdConstants.BulkAppUploadFileExtension} file supported.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"file uploaded is not supported.");
             }
             long fileSize = bulkUploadRequest.File.Length;
             if (fileSize > SpdConstants.UploadFileMaxSize)
@@ -215,7 +216,7 @@ namespace Spd.Presentation.Screening.Controllers
                     foreach (string line in lines)
                     {
                         if (string.IsNullOrWhiteSpace(line)) continue;
-                        ApplicationCreateRequestFromBulk oneRequest = new ApplicationCreateRequestFromBulk();
+                        ApplicationCreateRequestFromBulk oneRequest = new();
                         AliasCreateRequest[] aliases = new AliasCreateRequest[3];
                         oneRequest.LineNumber = lineNo;
                         try
@@ -258,7 +259,7 @@ namespace Spd.Presentation.Screening.Controllers
                             oneRequest.HaveVerifiedIdentity = true;
                             oneRequest.OriginTypeCode = ApplicationOriginTypeCode.GenericUpload;
                             oneRequest.PayeeType = PayerPreferenceTypeCode.Organization;
-                            List<AliasCreateRequest> aliasCreates = new List<AliasCreateRequest>();
+                            List<AliasCreateRequest> aliasCreates = new();
                             foreach (AliasCreateRequest a in aliases)
                             {
                                 if (!string.IsNullOrWhiteSpace(a.Surname))
@@ -268,7 +269,7 @@ namespace Spd.Presentation.Screening.Controllers
                             var validateResult = await _appCreateRequestFromBulkValidator.ValidateAsync(oneRequest, ct);
                             if (!validateResult.IsValid)
                             {
-                                ValidationErr err = new ValidationErr(lineNo,
+                                ValidationErr err = new(lineNo,
                                     string.Join(";", validateResult.Errors.Select(e => e.ErrorMessage)));
                                 errors.Add(err);
                             }
@@ -277,7 +278,7 @@ namespace Spd.Presentation.Screening.Controllers
                         }
                         catch (Exception ex)
                         {
-                            ValidationErr err = new ValidationErr(lineNo, ex.Message);
+                            ValidationErr err = new(lineNo, ex.Message);
                             errors.Add(err);
                         }
                         lineNo++;
@@ -442,7 +443,7 @@ namespace Spd.Presentation.Screening.Controllers
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "-submittedOn";
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            PaginationRequest pagination = new((int)page, (int)pageSize);
             AppListFilterBy filterBy = GetAppListFilterBy(filters, orgId);
             AppListSortBy sortBy = GetAppSortBy(sorts);
             _logger.LogDebug($"GetList filterBy ={filterBy}");
@@ -478,7 +479,7 @@ namespace Spd.Presentation.Screening.Controllers
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "paid";
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            PaginationRequest pagination = new((int)page, (int)pageSize);
             AppPaymentListFilterBy filterBy = GetAppPaymentListFilterBy(filters, orgId);
             AppPaymentListSortBy sortBy = GetAppPaymentListSortBy(sorts);
             return await _mediator.Send(
@@ -492,7 +493,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         private AppListFilterBy GetAppListFilterBy(string? filters, Guid orgId)
         {
-            AppListFilterBy appListFilterBy = new AppListFilterBy(orgId);
+            AppListFilterBy appListFilterBy = new(orgId);
             if (orgId == SpdConstants.BcGovOrgId)
             {
                 appListFilterBy = new AppListFilterBy(null);
@@ -554,7 +555,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         private AppPaymentListFilterBy GetAppPaymentListFilterBy(string? filters, Guid orgId)
         {
-            AppPaymentListFilterBy filterBy = new AppPaymentListFilterBy(orgId);
+            AppPaymentListFilterBy filterBy = new(orgId);
             if (string.IsNullOrWhiteSpace(filters)) return filterBy;
 
             try
@@ -638,7 +639,7 @@ namespace Spd.Presentation.Screening.Controllers
             page = (page == null || page < 0) ? 0 : page;
             pageSize = (pageSize == null || pageSize == 0 || pageSize > 100) ? 10 : pageSize;
             if (string.IsNullOrWhiteSpace(sorts)) sorts = "expireOn";
-            PaginationRequest pagination = new PaginationRequest((int)page, (int)pageSize);
+            PaginationRequest pagination = new((int)page, (int)pageSize);
             ClearanceAccessListFilterBy filterBy = GetClearanceListFilterBy(filters, orgId);
             ClearanceAccessListSortBy sortBy = GetClearanceSortBy(sorts);
             return await _mediator.Send(
@@ -698,7 +699,7 @@ namespace Spd.Presentation.Screening.Controllers
 
         private ClearanceAccessListFilterBy GetClearanceListFilterBy(string? filters, Guid orgId)
         {
-            ClearanceAccessListFilterBy clearanceListFilterBy = new ClearanceAccessListFilterBy(orgId);
+            ClearanceAccessListFilterBy clearanceListFilterBy = new(orgId);
             if (string.IsNullOrWhiteSpace(filters)) return clearanceListFilterBy;
 
             try
