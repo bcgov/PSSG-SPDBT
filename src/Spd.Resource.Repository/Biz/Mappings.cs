@@ -10,15 +10,8 @@ namespace Spd.Resource.Repository.Biz
         {
             _ = CreateMap<Biz, account>()
             .ForMember(d => d.accountid, opt => opt.MapFrom(s => s.Id))
-            .ForMember(d => d.emailaddress1, opt => {
-                opt.PreCondition(s => s.SoleProprietorSwlContactInfo?.LicenceId != null);
-                opt.MapFrom(s => s.Email);
-             })
-            .ForMember(d => d.telephone1, opt =>
-            {
-                opt.PreCondition(s => s.SoleProprietorSwlContactInfo?.LicenceId != null);
-                opt.MapFrom(s => s.PhoneNumber);
-            })
+            .ForMember(d => d.emailaddress1, opt => opt.MapFrom(s => s.Email))
+            .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.name, opt => opt.MapFrom(s => s.BizName))
             .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
             .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
