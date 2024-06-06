@@ -134,8 +134,8 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (!createApplicationCmd.SharedClearanceId.HasValue)
             throw new ArgumentException("SharedClearanceId cannot be null");
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
-        spd_clearance clearance = await _context.GetClearanceById((Guid)createApplicationCmd.SharedClearanceId, ct);
-        contact contact = await _context.contacts.Where(c => c.contactid == createApplicationCmd.ContactId).FirstOrDefaultAsync(ct);
+        spd_clearance? clearance = await _context.GetClearanceById((Guid)createApplicationCmd.SharedClearanceId, ct);
+        contact? contact = await _context.contacts.Where(c => c.contactid == createApplicationCmd.ContactId).FirstOrDefaultAsync(ct);
         _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
         _context.UpdateObject(contact);
 
