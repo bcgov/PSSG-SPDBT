@@ -173,7 +173,7 @@ namespace Spd.Resource.Repository.Org
                 throw new ApiException(HttpStatusCode.InternalServerError, $"organization {org.name} does not have service type.");
 
             var response = _mapper.Map<OrgResult>(org);
-            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
+            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
             return new OrgQryResult(response);
         }
     }

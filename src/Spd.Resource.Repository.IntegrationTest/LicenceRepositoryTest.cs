@@ -135,7 +135,7 @@ public class LicenceRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Fact]
-    public async Task GetAsync_Licence_Throw_Exception()
+    public async Task GetAsync_WithNoExistLicence_ReturnNull()
     {
         // Action 
         var response = await _licRepo.GetAsync(Guid.NewGuid(), CancellationToken.None);
