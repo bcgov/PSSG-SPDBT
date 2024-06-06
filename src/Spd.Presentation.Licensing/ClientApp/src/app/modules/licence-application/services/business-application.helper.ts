@@ -485,7 +485,7 @@ export abstract class BusinessApplicationHelper {
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			licenceTermCode: businessModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			noBranding: companyBrandingData.noLogoOrBranding,
+			noBranding: companyBrandingData.noLogoOrBranding ?? false,
 			applicantContactInfo,
 			applicantIsBizManager,
 			bizManagerContactInfo,
