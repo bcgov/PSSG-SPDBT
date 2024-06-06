@@ -70,7 +70,7 @@ internal static class SharedMappingFuncs
     internal static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
     {
         if (serviceTypeGuid == null) return null;
-        return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceTypeGuid));
+        return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(serviceTypeGuid));
     }
 
     internal static BizTypeEnum? GetBizTypeEnum(int? optionset)
