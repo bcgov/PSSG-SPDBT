@@ -179,7 +179,7 @@ namespace Spd.Presentation.Screening.Controllers
             string exe = fileName.Split(".").Last();
             if (!SpdConstants.BulkAppUploadFileExtensions.Contains(exe))
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"file uploaded does not supported.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"file uploaded is not supported.");
             }
             long fileSize = bulkUploadRequest.File.Length;
             if (fileSize > SpdConstants.UploadFileMaxSize)
