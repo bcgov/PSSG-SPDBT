@@ -20,6 +20,7 @@ import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
 import { IdentifyVerificationCommonComponent } from './components/identify-verification-common.component';
+import { LoginFailureComponent } from './components/login-failure.component';
 import { ManualSubmissionCommonComponent } from './components/manual-submission-common.component';
 import { MonthPickerComponent } from './components/month-picker.component';
 import { OrgSelectionModalComponent } from './components/org-selection-modal.component';
@@ -86,6 +87,7 @@ const SHARED_COMPONENTS = [
 	CaptchaV2Component,
 	FileUploadComponent,
 	AccessDeniedComponent,
+	LoginFailureComponent,
 	AlertComponent,
 	SaConsentToReleasePssoaComponent,
 	SaConsentToReleaseCrrpaComponent,

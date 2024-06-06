@@ -8,6 +8,7 @@ import { PssoRoutes } from './modules/psso-portal/psso-routing.module';
 import { PssoaRoutes } from './modules/pssoa-portal/pssoa-routing.module';
 import { SecurityScreeningRoutes } from './modules/security-screening-portal/security-screening-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
+import { LoginFailureComponent } from './shared/components/login-failure.component';
 
 export class AppRoutes {
 	public static ORG_REGISTRATION = OrgRegistrationRoutes.MODULE_PATH;
@@ -18,6 +19,7 @@ export class AppRoutes {
 	public static SECURITY_SCREENING_APPLICATION = SecurityScreeningRoutes.MODULE_PATH;
 	public static LANDING = '';
 	public static ACCESS_DENIED = 'access-denied';
+	public static LOGIN_FAILURE = 'login-failure';
 	public static INVITATION_DENIED = 'invitation-denied';
 
 	public static path(route: string): string {
@@ -69,6 +71,10 @@ const routes: Routes = [
 	{
 		path: AppRoutes.ACCESS_DENIED,
 		component: AccessDeniedComponent,
+	},
+	{
+		path: AppRoutes.LOGIN_FAILURE,
+		component: LoginFailureComponent,
 	},
 	{
 		path: '**',

@@ -229,6 +229,20 @@ export class AuthProcessService {
 				return Promise.resolve(null);
 			}
 
+			// SPDBT-2412 - show login failure if orgName is missing
+			const idirUserWhoamiProfile = this.authUserIdirService.idirUserWhoamiProfile;
+			if (!idirUserWhoamiProfile?.orgName) {
+				this.router.navigate([AppRoutes.LOGIN_FAILURE], {
+					state: {
+						identityProviderTypeCode: IdentityProviderTypeCode.Idir,
+						orgCodeFromIdir: idirUserWhoamiProfile?.orgCodeFromIdir,
+					},
+				});
+				this.logout(true);
+				this.notify(false);
+				return Promise.resolve(null);
+			}
+
 			this.notify(success);
 
 			let nextRoute = decodeURIComponent(nextUrl);
@@ -356,11 +370,11 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public logout(): void {
+	public logout(noRedirectToLogoutUrl: boolean = false): void {
 		const loginType = this.identityProvider;
 
 		this.identityProvider = null;
-		this.oauthService.logOut();
+		this.oauthService.logOut(noRedirectToLogoutUrl);
 		this.utilService.clearAllSessionData();
 
 		this.authUserBceidService.clearUserData();
