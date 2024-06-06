@@ -14,46 +14,15 @@ import {
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService } from '@app/core/services/config.service';
+import { FileUtilService } from '@app/core/services/file-util.service';
 import { UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { ControllingMemberContactInfo } from './business-application.service';
+import { CommonApplicationHelper } from './common-application.helper';
 
-export abstract class BusinessApplicationHelper {
-	booleanTypeCodes = BooleanTypeCode;
-
-	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
-		workerLicenceTypeCode: new FormControl('', [Validators.required]),
-	});
-
-	applicationTypeFormGroup: FormGroup = this.formBuilder.group({
-		applicationTypeCode: new FormControl('', [Validators.required]),
-	});
-
-	licenceTermFormGroup: FormGroup = this.formBuilder.group({
-		licenceTermCode: new FormControl('', [FormControlValidators.required]),
-	});
-
-	expiredLicenceFormGroup = this.formBuilder.group(
-		{
-			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
-			expiredLicenceId: new FormControl(''),
-			expiredLicenceHolderName: new FormControl(''),
-			expiredLicenceNumber: new FormControl(''),
-			expiredLicenceExpiryDate: new FormControl(''),
-			expiredLicenceStatusCode: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiredLicenceId',
-					(form) => form.get('hasExpiredLicence')?.value == this.booleanTypeCodes.Yes
-				),
-			],
-		}
-	);
-
+export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
 		{
 			noLogoOrBranding: new FormControl(''),
@@ -238,7 +207,7 @@ export abstract class BusinessApplicationHelper {
 		isMailingTheSame: new FormControl(false),
 	});
 
-	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
+	businessMailingAddressFormGroup: FormGroup = this.formBuilder.group(
 		{
 			addressSelected: new FormControl(false),
 			addressLine1: new FormControl(''),
@@ -375,10 +344,6 @@ export abstract class BusinessApplicationHelper {
 		isActive: new FormControl(''),
 	});
 
-	profileConfirmationFormGroup: FormGroup = this.formBuilder.group({
-		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
-	});
-
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		check2: new FormControl(null, [Validators.requiredTrue]),
@@ -391,11 +356,14 @@ export abstract class BusinessApplicationHelper {
 	});
 
 	constructor(
-		protected formBuilder: FormBuilder,
+		formBuilder: FormBuilder,
 		protected configService: ConfigService,
 		protected formatDatePipe: FormatDatePipe,
-		protected utilService: UtilService
-	) {}
+		protected utilService: UtilService,
+		protected fileUtilService: FileUtilService
+	) {
+		super(formBuilder);
+	}
 
 	getSaveBodyBase(businessModelFormValue: any): BizLicAppUpsertRequest {
 		const bizId = businessModelFormValue.bizId;
@@ -406,32 +374,40 @@ export abstract class BusinessApplicationHelper {
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
 		const businessManagerData = { ...businessModelFormValue.businessManagerData };
 
+		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
+
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
 		let useDogs = false;
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
 
+		// Business Manager information is only supplied in non-sole proprietor flow
 		let applicantContactInfo: ContactInfo = {};
-		const applicantIsBizManager = businessManagerData.isBusinessManager;
-		const bizManagerContactInfo: ContactInfo = {
-			emailAddress: businessManagerData.emailAddress,
-			givenName: businessManagerData.givenName,
-			middleName1: businessManagerData.middleName1,
-			middleName2: businessManagerData.middleName2,
-			phoneNumber: businessManagerData.phoneNumber,
-			surname: businessManagerData.surname,
-		};
+		let applicantIsBizManager: boolean | null = null;
+		let bizManagerContactInfo: ContactInfo = {};
 
-		if (!applicantIsBizManager) {
-			applicantContactInfo = {
-				emailAddress: businessManagerData.applicantEmailAddress,
-				givenName: businessManagerData.applicantGivenName,
-				middleName1: businessManagerData.applicantMiddleName1,
-				middleName2: businessManagerData.applicantMiddleName2,
-				phoneNumber: businessManagerData.applicantPhoneNumber,
-				surname: businessManagerData.applicantSurname,
+		if (!this.isSoleProprietor(bizTypeCode)) {
+			applicantIsBizManager = businessManagerData.isBusinessManager;
+			bizManagerContactInfo = {
+				emailAddress: businessManagerData.emailAddress,
+				givenName: businessManagerData.givenName,
+				middleName1: businessManagerData.middleName1,
+				middleName2: businessManagerData.middleName2,
+				phoneNumber: businessManagerData.phoneNumber,
+				surname: businessManagerData.surname,
 			};
+
+			if (!applicantIsBizManager) {
+				applicantContactInfo = {
+					emailAddress: businessManagerData.applicantEmailAddress,
+					givenName: businessManagerData.applicantGivenName,
+					middleName1: businessManagerData.applicantMiddleName1,
+					middleName2: businessManagerData.applicantMiddleName2,
+					phoneNumber: businessManagerData.applicantPhoneNumber,
+					surname: businessManagerData.applicantSurname,
+				};
+			}
 		}
 
 		const categoryData = { ...businessModelFormValue.categoryData };
@@ -446,6 +422,8 @@ export abstract class BusinessApplicationHelper {
 				contactId: privateInvestigatorData.managerContactId,
 				licenceId: privateInvestigatorData.managerLicenceId,
 			};
+		} else {
+			this.clearPrivateInvestigatorModelData();
 		}
 
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
@@ -464,7 +442,6 @@ export abstract class BusinessApplicationHelper {
 			nonSwlControllingMembers: [],
 			swlControllingMembers: [],
 		};
-		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 		if (!this.isSoleProprietor(bizTypeCode)) {
 			members = {
 				employees: this.saveEmployeesBody(businessModelFormValue.employeesData),
@@ -477,6 +454,9 @@ export abstract class BusinessApplicationHelper {
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
+		if (!hasExpiredLicence) {
+			this.clearExpiredLicenceModelData();
+		}
 
 		const body = {
 			bizId,
@@ -485,7 +465,7 @@ export abstract class BusinessApplicationHelper {
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			licenceTermCode: businessModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			noBranding: companyBrandingData.noLogoOrBranding,
+			noBranding: companyBrandingData.noLogoOrBranding ?? false,
 			applicantContactInfo,
 			applicantIsBizManager,
 			bizManagerContactInfo,
@@ -727,5 +707,17 @@ export abstract class BusinessApplicationHelper {
 		return (
 			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
 		);
+	}
+
+	clearPrivateInvestigatorModelData(): void {
+		// clear out any old data
+		this.categoryPrivateInvestigatorFormGroup.patchValue({
+			managerContactId: null,
+			managerLicenceId: null,
+			managerLicenceHolderName: null,
+			managerLicenceNumber: null,
+			managerLicenceExpiryDate: null,
+			managerLicenceStatusCode: null,
+		});
 	}
 }
