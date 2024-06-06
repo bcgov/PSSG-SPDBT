@@ -120,7 +120,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         spd_licence? licence = _context.spd_licences
             .Where(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId)
-            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
             .FirstOrDefault();
 
         if (licence == null)
