@@ -72,7 +72,7 @@ namespace Spd.Resource.Repository.Biz
                 .FirstOrDefault()?.spd_licenceid;
 
             var response = _mapper.Map<BizResult>(biz);
-            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
+            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
 
             return response;
@@ -134,7 +134,7 @@ namespace Spd.Resource.Repository.Biz
 
             foreach (spd_servicetype serviceType in biz.spd_account_spd_servicetype)
             {
-                var serviceTypeCode = DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceType.spd_servicetypeid);
+                var serviceTypeCode = DynamicsContextLookupHelpers.GetServiceTypeName(serviceType.spd_servicetypeid);
                 if (updateBizServiceTypeCmd.ServiceTypeEnum.ToString() != serviceTypeCode)
                     _context.DeleteLink(biz, nameof(biz.spd_account_spd_servicetype), serviceType);
             }
@@ -177,7 +177,7 @@ namespace Spd.Resource.Repository.Biz
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
 
-        private void UpdateLicenceLink(account account, Guid? licenceId, BizTypeEnum bizType)
+        private void UpdateLicenceLink(account account, Guid? licenceId, BizTypeEnum? bizType)
         {
             spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
                 .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
@@ -206,8 +206,10 @@ namespace Spd.Resource.Repository.Biz
             }
         }
 
-        private bool IsSoleProprietor(BizTypeEnum bizType)
+        private bool IsSoleProprietor(BizTypeEnum? bizType)
         {
+            if (bizType == null) return false;
+
             return soleProprietorTypes.Any(s => s.Equals(bizType));
         }
     }

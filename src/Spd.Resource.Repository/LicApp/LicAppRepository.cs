@@ -61,7 +61,9 @@ internal class LicAppRepository : ILicAppRepository
 
         if (qry.ValidWorkerLicenceTypeCodes != null && qry.ValidWorkerLicenceTypeCodes.Any())
         {
-            List<Guid?> serviceTypeGuid = qry.ValidWorkerLicenceTypeCodes.Select(c => _context.LookupServiceType(c.ToString()).spd_servicetypeid).ToList();
+            List<Guid?> serviceTypeGuid = qry.ValidWorkerLicenceTypeCodes
+                .Select(c => DynamicsContextLookupHelpers.GetServiceTypeGuid(c.ToString()))
+                .ToList();
             applist = applist.Where(a => serviceTypeGuid.Contains(a._spd_servicetypeid_value)).ToList();
         }
 
