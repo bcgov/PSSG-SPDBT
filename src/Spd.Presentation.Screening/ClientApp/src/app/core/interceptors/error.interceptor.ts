@@ -8,11 +8,10 @@ import { ApplicantService, OrgService, OrgUserService, UserProfileService } from
 import { AppRoutes } from 'src/app/app-routing.module';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
-import { ConfigService } from '../services/config.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private configService: ConfigService, private router: Router, private dialog: MatDialog) {}
+	constructor(private router: Router, private dialog: MatDialog) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(

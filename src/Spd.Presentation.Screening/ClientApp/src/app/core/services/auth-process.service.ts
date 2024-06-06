@@ -383,7 +383,7 @@ export class AuthProcessService {
 
 		this.notify(false);
 
-		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
+		if (!noRedirectToLogoutUrl && loginType == IdentityProviderTypeCode.BcServicesCard) {
 			this.router.navigate([AppRoutes.LANDING]);
 		}
 	}
