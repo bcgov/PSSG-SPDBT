@@ -72,7 +72,7 @@ namespace Spd.Resource.Repository.Biz
                 .FirstOrDefault()?.spd_licenceid;
 
             var response = _mapper.Map<BizResult>(biz);
-            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.LookupServiceTypeKey(s.spd_servicetypeid)));
+            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
 
             return response;
@@ -134,7 +134,7 @@ namespace Spd.Resource.Repository.Biz
 
             foreach (spd_servicetype serviceType in biz.spd_account_spd_servicetype)
             {
-                var serviceTypeCode = DynamicsContextLookupHelpers.LookupServiceTypeKey(serviceType.spd_servicetypeid);
+                var serviceTypeCode = DynamicsContextLookupHelpers.GetServiceTypeName(serviceType.spd_servicetypeid);
                 if (updateBizServiceTypeCmd.ServiceTypeEnum.ToString() != serviceTypeCode)
                     _context.DeleteLink(biz, nameof(biz.spd_account_spd_servicetype), serviceType);
             }
