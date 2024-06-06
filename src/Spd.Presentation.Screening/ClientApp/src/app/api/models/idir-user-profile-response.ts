@@ -8,6 +8,7 @@ export interface IdirUserProfileResponse {
   isFirstTimeLogin?: boolean;
   isPSA?: boolean;
   lastName?: null | string;
+  orgCodeFromIdir?: null | string;
   orgId?: string;
   orgName?: null | string;
   userDisplayName?: null | string;
