@@ -113,9 +113,19 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _context.AddLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
     }
 
-    private void DeletePrivateInvestigatorLink(spd_licence? licence, spd_application app)
+    private void DeletePrivateInvestigatorLink(SwlContactInfo privateInvestigatorInfo, spd_application app)
     {
-        if (licence == null) return;
+        if (privateInvestigatorInfo.LicenceId == null)
+            return;
+
+        spd_licence? licence = _context.spd_licences
+            .Where(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId)
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+
+        if (licence == null)
+            return;
+
         _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
     }
 }
