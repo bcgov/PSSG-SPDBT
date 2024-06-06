@@ -327,6 +327,10 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
         Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
         Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
+
+        // Annihilate
+        _context.DeleteObject(account);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
