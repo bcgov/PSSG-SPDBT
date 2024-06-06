@@ -207,6 +207,7 @@ export class CommonBusinessBcBranchesComponent implements OnInit, LicenceChildSt
 			.open(ModalBcBranchEditComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp) => {

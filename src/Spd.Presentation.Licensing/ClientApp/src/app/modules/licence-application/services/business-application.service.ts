@@ -622,6 +622,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorLicenceId = modelFormValue.businessInformationData.soleProprietorLicenceId;
 			soleProprietorSwlEmailAddress = modelFormValue.businessInformationData.soleProprietorSwlEmailAddress;
 			soleProprietorSwlPhoneNumber = modelFormValue.businessInformationData.soleProprietorSwlPhoneNumber;
+		} else {
+			// Clear out any old data
+			this.businessInformationFormGroup.patchValue({
+				soleProprietorLicenceId: null,
+				soleProprietorLicenceHolderName: null,
+				soleProprietorLicenceNumber: null,
+				soleProprietorLicenceExpiryDate: null,
+				soleProprietorLicenceStatusCode: null,
+				soleProprietorSwlEmailAddress: null,
+				soleProprietorSwlPhoneNumber: null,
+			});
 		}
 
 		const body: BizProfileUpdateRequest = {

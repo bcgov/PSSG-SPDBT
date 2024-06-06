@@ -5,10 +5,10 @@ import { LandingComponent } from './landing.component';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 export class AppRoutes {
-	public static LICENCE_APPLICATION = LicenceApplicationRoutes.MODULE_PATH;
-	public static LANDING = '';
-	public static ACCESS_DENIED = 'access-denied';
-	public static INVITATION_DENIED = 'invitation-denied';
+	public static readonly LICENCE_APPLICATION = LicenceApplicationRoutes.MODULE_PATH;
+	public static readonly LANDING = '';
+	public static readonly ACCESS_DENIED = 'access-denied';
+	public static readonly INVITATION_DENIED = 'invitation-denied';
 
 	public static path(route: string): string {
 		return `/${route}`;

@@ -97,6 +97,7 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
