@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SecurityScreeningDetailComponent } from './components/security-screening-detail.component';
 import { SecurityScreeningListComponent } from './components/security-screening-list.component';
-import { SecurityScreeningLoginFailComponent } from './components/security-screening-login-fail.component';
 import { SecurityScreeningPaymentErrorComponent } from './components/security-screening-payment-error.component';
 import { SecurityScreeningPaymentFailComponent } from './components/security-screening-payment-fail.component';
 import { SecurityScreeningPaymentManualComponent } from './components/security-screening-payment-manual.component';
@@ -17,7 +16,6 @@ export class SecurityScreeningRoutes {
 	public static PAYMENT_FAIL = 'payment-fail';
 	public static PAYMENT_MANUAL = 'payment-manual';
 	public static PAYMENT_ERROR = 'payment-error';
-	public static LOGIN_FAIL = 'login-fail';
 
 	public static MODULE_PATH = SecurityScreeningRoutes.SECURITY_SCREENING_APPLICATION;
 
@@ -40,7 +38,6 @@ const routes: Routes = [
 			{ path: '', redirectTo: SecurityScreeningRoutes.CRC_LIST, pathMatch: 'full' },
 		],
 	},
-	{ path: SecurityScreeningRoutes.LOGIN_FAIL, component: SecurityScreeningLoginFailComponent },
 ];
 
 @NgModule({
