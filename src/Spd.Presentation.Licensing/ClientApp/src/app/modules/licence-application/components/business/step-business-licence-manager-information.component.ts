@@ -12,7 +12,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 			<div class="step">
 				<app-step-title
 					title="Provide contact information"
-					subtitle="We require contact information for your company's business manager, who will be responsible for day-to-day supervision of licensed security employees in B.C. in accordance with section 14(2) of the <i>Security Services Act</i>"
+					subtitle="We require contact information for your company's business manager, who is responsible for the day-to-day supervision of licensed security workers"
 				></app-step-title>
 			</div>
 
@@ -110,6 +110,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
 										<input matInput formControlName="applicantSurname" [errorStateMatcher]="matcher" maxlength="40" />
+										<div>I do not have a surname</div>
 										<mat-error *ngIf="form.get('applicantSurname')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>

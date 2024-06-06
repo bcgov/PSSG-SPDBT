@@ -122,6 +122,7 @@ export class CommonExpiredLicenceComponent implements OnInit {
 			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
@@ -133,17 +134,6 @@ export class CommonExpiredLicenceComponent implements OnInit {
 							expiredLicenceNumber: resp.data.licenceNumber,
 							expiredLicenceExpiryDate: resp.data.expiryDate,
 							expiredLicenceStatusCode: resp.data.licenceStatusCode,
-						},
-						{ emitEvent: false }
-					);
-				} else {
-					this.form.patchValue(
-						{
-							expiredLicenceId: null,
-							expiredLicenceHolderName: null,
-							expiredLicenceNumber: null,
-							expiredLicenceExpiryDate: null,
-							expiredLicenceStatusCode: null,
 						},
 						{ emitEvent: false }
 					);
