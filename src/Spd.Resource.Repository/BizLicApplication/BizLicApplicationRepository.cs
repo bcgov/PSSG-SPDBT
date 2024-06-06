@@ -69,7 +69,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
             LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         else
-            DeletePrivateInvestigatorLink(app.spd_application_spd_licence_manager?.FirstOrDefault(), app);
+            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
 
         await _context.SaveChangesAsync(ct);
 
@@ -96,6 +96,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     private void LinkPrivateInvestigator(SwlContactInfo privateInvestigatorInfo, spd_application app)
     {
         if (privateInvestigatorInfo.LicenceId == null)
+            return;
+
+        // Related licence already linked
+        if (app.spd_application_spd_licence_manager.Any(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId))
             return;
 
         spd_licence? licence = _context.spd_licences
