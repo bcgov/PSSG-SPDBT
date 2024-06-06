@@ -85,7 +85,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
-		mailingAddressData: this.mailingAddressFormGroup,
+		businessMailingAddressData: this.businessMailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
 
 		branchesInBcData: this.branchesInBcFormGroup,
@@ -100,16 +100,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		configService: ConfigService,
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
+		fileUtilService: FileUtilService,
 		private router: Router,
 		private licenceService: LicenceService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
 		private commonApplicationService: CommonApplicationService,
-		private fileUtilService: FileUtilService,
 		private hotToastService: HotToastService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService);
+		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
 		this.businessModelChangedSubscription = this.businessModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -610,7 +610,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const bizMailingAddress = modelFormValue.businessAddressData.isMailingTheSame
 			? { ...modelFormValue.businessAddressData }
-			: { ...modelFormValue.mailingAddressData };
+			: { ...modelFormValue.businessMailingAddressData };
 
 		const bizTypeCode = modelFormValue.businessInformationData.bizTypeCode;
 
@@ -622,6 +622,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorLicenceId = modelFormValue.businessInformationData.soleProprietorLicenceId;
 			soleProprietorSwlEmailAddress = modelFormValue.businessInformationData.soleProprietorSwlEmailAddress;
 			soleProprietorSwlPhoneNumber = modelFormValue.businessInformationData.soleProprietorSwlPhoneNumber;
+		} else {
+			// Clear out any old data
+			this.businessInformationFormGroup.patchValue({
+				soleProprietorLicenceId: null,
+				soleProprietorLicenceHolderName: null,
+				soleProprietorLicenceNumber: null,
+				soleProprietorLicenceExpiryDate: null,
+				soleProprietorLicenceStatusCode: null,
+				soleProprietorSwlEmailAddress: null,
+				soleProprietorSwlPhoneNumber: null,
+			});
 		}
 
 		const body: BizProfileUpdateRequest = {
@@ -982,7 +993,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorSwlPhoneNumber: businessProfile.soleProprietorSwlPhoneNumber,
 			soleProprietorSwlEmailAddress: businessProfile.soleProprietorSwlEmailAddress,
 		};
-		const businessManagerData = { isBusinessManager: true }; // default
+
+		const bceidUserProfile = this.authUserBceidService.bceidUserProfile;
+		const businessManagerData = {
+			givenName: bceidUserProfile?.firstName,
+			surname: bceidUserProfile?.lastName,
+			isBusinessManager: true,
+		};
 
 		const bizAddress = businessProfile.bizAddress;
 		const businessAddressData = {
@@ -1008,7 +1025,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		};
 
 		const bizMailingAddress = businessProfile.bizMailingAddress;
-		const mailingAddressData = {
+		const businessMailingAddressData = {
 			addressSelected: !!bizMailingAddress?.addressLine1,
 			addressLine1: bizMailingAddress?.addressLine1,
 			addressLine2: bizMailingAddress?.addressLine2,
@@ -1034,7 +1051,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				isBcBusinessAddress,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
-				mailingAddressData: { ...mailingAddressData },
+				businessMailingAddressData: { ...businessMailingAddressData },
 				branchesInBcData,
 			},
 			{

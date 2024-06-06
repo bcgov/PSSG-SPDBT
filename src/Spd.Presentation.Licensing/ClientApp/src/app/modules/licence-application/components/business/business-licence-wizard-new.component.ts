@@ -56,7 +56,7 @@ import { StepsBusinessLicenceSelectionNewComponent } from './steps-business-lice
 				></app-steps-business-licence-selection-new>
 			</mat-step>
 
-			<mat-step [completed]="step3Complete">
+			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-business-licence-contact-information-new
 					[isFormValid]="isFormValid"

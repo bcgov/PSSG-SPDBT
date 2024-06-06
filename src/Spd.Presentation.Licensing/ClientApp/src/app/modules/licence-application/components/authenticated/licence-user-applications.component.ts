@@ -238,37 +238,36 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				let activeSwlExist =
 					activeLicences.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
-					) > 0;
-
+					) >= 0;
 				if (!activeSwlExist) {
 					activeSwlExist =
 						userApplicationsList.findIndex(
 							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
-						) > 0;
+						) >= 0;
 				}
 				this.activeSwlExist = activeSwlExist;
 
 				let activeBaPermitExist =
 					activeLicences.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
-					) > 0;
+					) >= 0;
 				if (!activeBaPermitExist) {
 					activeBaPermitExist =
 						userApplicationsList.findIndex(
 							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
-						) > 0;
+						) >= 0;
 				}
 				this.activeBaPermitExist = activeBaPermitExist;
 
 				let activeAvPermitExist =
 					activeLicences.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
-					) > 0;
+					) >= 0;
 				if (!activeAvPermitExist) {
 					activeAvPermitExist =
 						userApplicationsList.findIndex(
 							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
-						) > 0;
+						) >= 0;
 				}
 				this.activeAvPermitExist = activeAvPermitExist;
 

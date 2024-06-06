@@ -324,6 +324,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
@@ -377,6 +378,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.open(ModalMemberWithoutSwlEditComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
