@@ -5,9 +5,9 @@ public static class SpdConstants
     public static readonly int UserInviteValidDays = 7;
     public static readonly int ApplicationInviteValidDays = 14;
     public static readonly int PrePaymentLinkValidDays = 15;
-    public static readonly string BulkAppUploadFileExtension = ".tsv";
+    public static readonly string[] BulkAppUploadFileExtensions = { "tsv", "txt" };
     public static readonly long UploadFileMaxSize = 26214400; //25M
-    public static readonly string BulkAppUploadColSeperator = "\"\t\"";
+    public static readonly string BulkAppUploadColSeperator = "\t";
     public static readonly string BulkAppUploadBirthdateFormat = "yyyy-MM-dd";
     public static readonly string DefaultBannerMsg = "10 business days for online applications and 20 business days for manual applications.";
     public static readonly string UserInviteLink = "crrp/invitation/";

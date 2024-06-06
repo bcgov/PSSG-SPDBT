@@ -28,11 +28,11 @@ import { CrrpRoutes } from '../crrp-routing.module';
 				<h2 class="mb-2">Generic Uploads</h2>
 				<div class="col-lg-8 col-md-12 col-sm-12 my-4">
 					<app-file-upload
-						accept=".tsv"
+						accept=".tsv,.txt"
 						[maxNumberOfFiles]="1"
 						(uploadedFile)="onUploadFile($event)"
 						(removeFile)="onRemoveFile($event)"
-						message="Text files ending in '.TSV' only"
+						message="Text files ending in '.TSV' or '.TXT' only"
 					></app-file-upload>
 				</div>
 			</div>
