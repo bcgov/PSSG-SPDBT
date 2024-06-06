@@ -171,6 +171,7 @@ export class AddressAutocompleteComponent implements OnInit {
 			.open(ModalAddressComponent, {
 				width: '600px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((res) => {

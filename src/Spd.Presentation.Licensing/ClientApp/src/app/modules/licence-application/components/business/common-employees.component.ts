@@ -202,6 +202,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { WorkerCategoryTypeCode } from '@app/api/models';
-import { BusinessCategoryTypes } from '@app/core/code-types/model-desc.models';
+import { BusinessCategoryTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -154,7 +154,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categoryFormGroup;
 
-	businessCategoryTypes = BusinessCategoryTypes;
+	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
 	categoryArmouredCarGuardFormGroup = this.businessApplicationService.categoryArmouredCarGuardFormGroup;
@@ -200,6 +200,14 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		// 		this.infoTitle = this.subtitle_update;
 		// 		break;
 		// 	}
+
+		if (this.isBusinessLicenceSoleProprietor) {
+			this.businessCategoryTypes = BusinessCategoryTypes.filter(
+				(item: SelectOptions) => item.code != WorkerCategoryTypeCode.PrivateInvestigator
+			);
+		} else {
+			this.businessCategoryTypes = BusinessCategoryTypes;
+		}
 
 		this.setupCategories();
 	}
