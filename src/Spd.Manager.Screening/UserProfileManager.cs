@@ -175,10 +175,14 @@ namespace Spd.Manager.Screening
                 RequesterAccountType = RequesterAccountTypeEnum.Internal,
                 UserGuid = cmd.IdirUserIdentity.UserGuid
             });
-            _logger.LogDebug($"from webservice orgCode = {idirDetail.MinistryCode}");
+            _logger.LogInformation($"from webservice orgCode = {idirDetail.MinistryCode}");
 
             OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
-            Guid orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BcGovOrgId;
+            OrgResult? org = orgResult.OrgResults?.FirstOrDefault();
+            if (org == null)
+                _logger.LogInformation($"Cannot find ministry for {idirDetail.MinistryCode}");
+
+            Guid orgId = org?.Id ?? SpdConstants.BcGovOrgId;
 
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
@@ -235,6 +239,7 @@ namespace Spd.Manager.Screening
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
                 response.IsFirstTimeLogin = isFirstTimeLogin;
                 response.OrgId = orgId;
+                response.OrgCodeFromIdir = idirDetail?.MinistryCode;
                 return response;
             }
             else
