@@ -137,17 +137,6 @@ export class CommonExpiredLicenceComponent implements OnInit {
 						},
 						{ emitEvent: false }
 					);
-				} else {
-					this.form.patchValue(
-						{
-							expiredLicenceId: null,
-							expiredLicenceHolderName: null,
-							expiredLicenceNumber: null,
-							expiredLicenceExpiryDate: null,
-							expiredLicenceStatusCode: null,
-						},
-						{ emitEvent: false }
-					);
 				}
 			});
 	}

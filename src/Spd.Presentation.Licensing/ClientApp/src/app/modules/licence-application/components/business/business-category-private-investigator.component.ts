@@ -111,18 +111,6 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 						managerLicenceExpiryDate: memberData.expiryDate,
 						managerLicenceStatusCode: memberData.licenceStatusCode,
 					});
-				} else {
-					this.form.patchValue(
-						{
-							managerContactId: null,
-							managerLicenceId: null,
-							managerLicenceHolderName: null,
-							managerLicenceNumber: null,
-							managerLicenceExpiryDate: null,
-							managerLicenceStatusCode: null,
-						},
-						{ emitEvent: false }
-					);
 				}
 			});
 	}
