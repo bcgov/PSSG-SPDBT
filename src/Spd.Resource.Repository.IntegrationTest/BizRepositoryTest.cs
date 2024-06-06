@@ -301,14 +301,14 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Assert
         Assert.NotNull(account);
-        Assert.Null(account.emailaddress1);
-        Assert.Null(account.telephone1);
         Assert.Null(account.spd_organization_spd_licence_soleproprietor.FirstOrDefault());
         Assert.Equal(updateCmd.Id, account.accountid);
         Assert.Equal(updateCmd.BizName, account.name);
         Assert.Equal(updateCmd.BizLegalName, account.spd_organizationlegalname);
         Assert.Equal(updateCmd.BizGuid.ToString(), account.spd_orgguid);
         Assert.Equal(updateCmd.BizType, SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype));
+        Assert.Equal(updateCmd.Email, account.emailaddress1);
+        Assert.Equal(updateCmd.PhoneNumber, account.telephone1);
         Assert.Equal(updateCmd.BCBusinessAddress.AddressLine1, account.spd_bcbusinessaddressline1);
         Assert.Equal(updateCmd.BCBusinessAddress.AddressLine2, account.spd_bcbusinessaddressline2);
         Assert.Equal(updateCmd.BCBusinessAddress.City, account.spd_bcbusinessaddresscity);
