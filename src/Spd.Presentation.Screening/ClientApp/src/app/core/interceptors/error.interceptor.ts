@@ -6,13 +6,12 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApplicantService, OrgService, OrgUserService, UserProfileService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
-import { SecurityScreeningRoutes } from 'src/app/modules/security-screening-portal/security-screening-routing.module';
 import { DialogOopsComponent, DialogOopsOptions } from 'src/app/shared/components/dialog-oops.component';
-import { ConfigService } from '../services/config.service';
+import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-	constructor(private configService: ConfigService, private router: Router, private dialog: MatDialog) {}
+	constructor(private router: Router, private dialog: MatDialog) {}
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(request).pipe(
@@ -28,14 +27,14 @@ export class ErrorInterceptor implements HttpInterceptor {
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsUserinfoGetPath) ||
 						errorResponse.url?.includes(ApplicantService.ApiApplicantsInvitesPostPath))
 				) {
-					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
 					this.router.navigate([AppRoutes.ACCESS_DENIED]);
 					return throwError(() => new Error('Access denied'));
 				}
 
 				if (errorResponse.status == 403 && errorResponse.url?.includes(UserProfileService.ApiApplicantsWhoamiGetPath)) {
-					console.debug(`ErrorInterceptor - ${errorResponse.status} and ${errorResponse.url}`);
-					this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.LOGIN_FAIL)]);
+					this.router.navigate([AppRoutes.LOGIN_FAILURE], {
+						state: { identityProviderTypeCode: IdentityProviderTypeCode.BcServicesCard },
+					});
 					return throwError(() => new Error('Login failure'));
 				}
 
