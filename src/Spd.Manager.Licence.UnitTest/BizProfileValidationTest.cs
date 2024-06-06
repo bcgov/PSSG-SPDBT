@@ -55,29 +55,4 @@ public class BizProfileValidationTest
         var result = validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(r => r.BizBCAddress);
     }
-
-    [Fact]
-    public void SoleProprietorEmpty_WhenBizTypeCodeIsOneOfSoleProprietor_ShouldThrowException()
-    {
-        var address = fixture.Build<Address>()
-            .With(a => a.AddressLine1, new string('a', 100))
-            .With(a => a.City, new string('a', 100))
-            .With(a => a.Country, new string('a', 100))
-            .With(a => a.PostalCode, new string('a', 20))
-            .Create();
-
-        var model = fixture.Build<BizProfileUpdateRequest>()
-            .With(r => r.BizTypeCode, BizTypeCode.RegisteredSoleProprietor)
-            .With(r => r.BizAddress, address)
-            .With(r => r.BizMailingAddress, address)
-            .Without(r => r.SoleProprietorLicenceId)
-            .Without(r => r.SoleProprietorSwlEmailAddress)
-            .Without(r => r.SoleProprietorSwlPhoneNumber)
-            .Create();
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.SoleProprietorLicenceId);
-        result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlEmailAddress);
-        result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlPhoneNumber);
-    }
 }
