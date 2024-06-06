@@ -175,10 +175,14 @@ namespace Spd.Manager.Screening
                 RequesterAccountType = RequesterAccountTypeEnum.Internal,
                 UserGuid = cmd.IdirUserIdentity.UserGuid
             });
-            _logger.LogDebug($"from webservice orgCode = {idirDetail.MinistryCode}");
+            _logger.LogInformation("from webservice orgCode = {orgCode}", idirDetail.MinistryCode);
 
             OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
-            Guid orgId = orgResult.OrgResults?.FirstOrDefault()?.Id ?? SpdConstants.BcGovOrgId;
+            OrgResult? org = orgResult.OrgResults?.FirstOrDefault();
+            if (org == null)
+                _logger.LogInformation("Cannot find ministry for {orgCode}", idirDetail.MinistryCode);
+
+            Guid orgId = org?.Id ?? SpdConstants.BcGovOrgId;
 
             var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
@@ -216,7 +220,6 @@ namespace Spd.Manager.Screening
                 }
                 else
                 {
-                    _logger.LogDebug($"userId = {result.Id}, username={result.LastName}, {result.FirstName}");
                     UpdatePortalUserCmd updateUserCmd = new()
                     {
                         Id = result.Id,
@@ -229,12 +232,13 @@ namespace Spd.Manager.Screening
                     result = await _portalUserRepository.ManageAsync(updateUserCmd, ct);
                 }
                 var response = _mapper.Map<IdirUserProfileResponse>(result);
-                response.OrgName = idirDetail?.MinistryName;
+                response.OrgName = idirDetail.MinistryName;
                 response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
                 response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
                 response.IsFirstTimeLogin = isFirstTimeLogin;
                 response.OrgId = orgId;
+                response.OrgCodeFromIdir = idirDetail.MinistryCode;
                 return response;
             }
             else

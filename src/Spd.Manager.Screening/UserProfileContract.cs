@@ -119,6 +119,7 @@ namespace Spd.Manager.Screening
         public IdentityProviderTypeCode? IdentityProviderType { get; set; }
         public bool IsPSA { get; set; } = false;
         public bool IsFirstTimeLogin { get; set; } = false;
+        public string? OrgCodeFromIdir { get; set; }
     }
 
     public class IdirUserIdentity
