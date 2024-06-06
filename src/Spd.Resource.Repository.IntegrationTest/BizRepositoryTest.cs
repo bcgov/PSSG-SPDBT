@@ -78,7 +78,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         // Arrange
         Guid bizId = Guid.NewGuid();
-        CreateBizCmd cmd = new() 
+        CreateBizCmd cmd = new()
         {
             BizGuid = Guid.NewGuid(),
             Id = bizId,
@@ -93,7 +93,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
             .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
-        Guid? serviceTypeId = _context.LookupServiceType(cmd.ServiceTypes.FirstOrDefault().ToString()).spd_servicetypeid;
+        Guid? serviceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(cmd.ServiceTypes.FirstOrDefault().ToString());
         spd_servicetype? serviceType = account.spd_account_spd_servicetype.Where(s => s.spd_servicetypeid == serviceTypeId).FirstOrDefault();
 
         Assert.NotNull(account);
@@ -104,8 +104,8 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(cmd.BizType, SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype));
 
         //Annihilate : When we have delete privilege, we need to do following
-        //_context.DeleteObject(account);
-        //await _context.SaveChangesAsync();
+        _context.DeleteObject(account);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
             .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
-        Guid? serviceTypeId = _context.LookupServiceType(cmd.ServiceTypeEnum.ToString()).spd_servicetypeid;
+        Guid? serviceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(cmd.ServiceTypeEnum.ToString());
         spd_servicetype? serviceType = account.spd_account_spd_servicetype.Where(s => s.spd_servicetypeid == serviceTypeId).FirstOrDefault();
 
         Assert.NotNull(account);
@@ -150,7 +150,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(a => a.AddressLine1, "address 2")
             .With(a => a.PostalCode, "abc123")
             .Create();
-        
+
         Addr updatedAddress = fixture.Build<Addr>()
             .With(a => a.AddressLine1, "updated address 1")
             .With(a => a.AddressLine1, "updated address 2")
@@ -188,14 +188,14 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             })
             .Create();
 
-        spd_licence licence = new spd_licence() 
-        { 
-            spd_licenceid = newLicenceId, 
+        spd_licence licence = new()
+        {
+            spd_licenceid = newLicenceId,
             statecode = DynamicsConstants.StateCode_Active,
             createdon = DateTime.Now
         };
         _context.AddTospd_licences(licence);
-        contact contact = new contact() { contactid = newLicHolderId, statecode = DynamicsConstants.StateCode_Active };
+        contact contact = new() { contactid = newLicHolderId, statecode = DynamicsConstants.StateCode_Active };
         _context.AddTocontacts(contact);
         _context.SetLink(licence, nameof(licence.spd_LicenceHolder_contact), contact);
         await _context.SaveChangesAsync();
@@ -372,7 +372,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.MailingAddress, address)
             .Create();
 
-        UpdateBizServiceTypeCmd updateServiceTypeCmd = new(bizId, ServiceTypeEnum.PSSO);  
+        UpdateBizServiceTypeCmd updateServiceTypeCmd = new(bizId, ServiceTypeEnum.PSSO);
 
         // Act
         await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
@@ -381,7 +381,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Assert
         account? account = await _context.accounts.Expand(a => a.spd_account_spd_servicetype)
             .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
-        Guid? serviceTypeId = _context.LookupServiceType(updateServiceTypeCmd.ServiceTypeEnum.ToString()).spd_servicetypeid;
+        Guid? serviceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(updateServiceTypeCmd.ServiceTypeEnum.ToString());
         spd_servicetype? serviceType = account.spd_account_spd_servicetype.Where(s => s.spd_servicetypeid == serviceTypeId).FirstOrDefault();
 
         Assert.NotNull(account);
