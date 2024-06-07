@@ -104,7 +104,7 @@ namespace Spd.Resource.Repository.Biz
             
             _mapper.Map(updateBizCmd, biz);
 
-            if (!IsSoleProprietor(updateBizCmd.BizType) && updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
+            if (IsSoleProprietor(updateBizCmd.BizType))
             {
                 biz.emailaddress1 = string.Empty;
                 biz.telephone1 = string.Empty;
