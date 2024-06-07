@@ -21,7 +21,7 @@ import {
 				<div class="col-lg-6 col-md-12">
 					<div class="mb-3">
 						<ng-container *ngIf="isBusinessLicenceSoleProprietor">
-							<app-alert type="warning" icon="" [showBorder]="false">
+							<app-alert type="info" icon="" [showBorder]="false">
 								The name of your business must be your name, as it appears on your security worker licence
 							</app-alert>
 						</ng-container>
@@ -200,7 +200,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 
 	onLookupSoleProprietor(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
-			title: 'Add Sole Proprietor',
+			title: 'Select Sole Proprietor',
 			subtitle: 'A sole proprietor must have a valid security worker licence',
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
@@ -210,6 +210,7 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 			.open(ModalLookupByLicenceNumberComponent, {
 				width: '800px',
 				data: dialogOptions,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
@@ -225,17 +226,6 @@ export class CommonBusinessInformationComponent implements LicenceChildStepperSt
 						{ emitEvent: false }
 					);
 					this.hotToastService.success('A sole proprietor was successfully selected');
-				} else {
-					this.form.patchValue(
-						{
-							soleProprietorLicenceId: null,
-							soleProprietorLicenceHolderName: null,
-							soleProprietorLicenceNumber: null,
-							soleProprietorLicenceExpiryDate: null,
-							soleProprietorLicenceStatusCode: null,
-						},
-						{ emitEvent: false }
-					);
 				}
 			});
 	}

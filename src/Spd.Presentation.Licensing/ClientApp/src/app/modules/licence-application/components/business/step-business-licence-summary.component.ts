@@ -441,7 +441,7 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.businessModelData.expiredLicenceData.expiryDate ?? '';
+		return this.businessModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get noLogoOrBranding(): string {

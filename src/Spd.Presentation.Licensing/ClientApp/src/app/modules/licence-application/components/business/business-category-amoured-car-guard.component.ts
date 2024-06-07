@@ -17,8 +17,14 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 				<li>Proof you own, lease or rent an approved armoured car</li>
 				<li>Proof you have liability insurance</li>
 				<li>
-					A copy of a safety certificate issued under section 37.04 of the Motor Vehicle Act Regulations (See also s.
-					4(3)(e) of the Security Services Regulation).
+					A copy of a safety certificate issued under
+					<a
+						href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/10_207_2008#section4"
+						target="_blank"
+					>
+						section 37.04 of the Motor Vehicle Act Regulations (See also s. 4(3)(e) of the Security Services
+						Regulation)</a
+					>.
 				</li>
 			</ul>
 		</div>

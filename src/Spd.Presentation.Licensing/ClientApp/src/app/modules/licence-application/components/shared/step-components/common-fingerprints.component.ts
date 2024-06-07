@@ -92,7 +92,9 @@ export class CommonFingerprintsComponent {
 	}
 
 	onShowSampleTearOffModal(): void {
-		this.dialog.open(ModalFingerprintTearOffComponent);
+		this.dialog.open(ModalFingerprintTearOffComponent, {
+			autoFocus: true,
+		});
 	}
 
 	get attachments(): FormControl {
