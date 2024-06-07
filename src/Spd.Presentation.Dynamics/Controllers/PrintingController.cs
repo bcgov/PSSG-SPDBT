@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Printing;
-using Spd.Presentation.Dynamics.Models;
 using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Dynamics.Controllers;
@@ -28,16 +27,15 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     }
 
     /// <summary>
-    /// return the preview picture of personal licence.
+    /// return the preview picture of licence.
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="eventId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpPost("api/printjobs/preview")]
-    public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(PrintPreviewJobRequest request, CancellationToken ct)
+    [HttpGet("api/person-licence-preview/{licenceId}")]
+    public async Task<Results<FileContentHttpResult, BadRequest>> GetPrintJobPreview([FromRoute] Guid licenceId, CancellationToken ct)
     {
-        var printJob = mapper.Map<PrintJob>(request);
-        var previewResponse = await mediator.Send(new PreviewDocumentCommand(printJob), ct);
+        var previewResponse = await mediator.Send(new PreviewDocumentCommand(licenceId), ct);
         return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
     }
 
