@@ -1022,6 +1022,9 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
+		if (!hasExpiredLicence) {
+			this.clearExpiredLicenceModelData();
+		}
 
 		const body = {
 			licenceAppId,

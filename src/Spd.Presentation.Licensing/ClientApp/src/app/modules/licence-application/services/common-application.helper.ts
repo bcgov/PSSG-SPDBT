@@ -280,4 +280,15 @@ export abstract class CommonApplicationHelper {
 	});
 
 	constructor(protected formBuilder: FormBuilder) {}
+
+	clearExpiredLicenceModelData(): void {
+		// clear out any old data
+		this.expiredLicenceFormGroup.patchValue({
+			expiredLicenceId: null,
+			expiredLicenceHolderName: null,
+			expiredLicenceNumber: null,
+			expiredLicenceExpiryDate: null,
+			expiredLicenceStatusCode: null,
+		});
+	}
 }
