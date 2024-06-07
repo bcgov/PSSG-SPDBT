@@ -656,6 +656,7 @@ internal class Mappings : Profile
         {
             GivenName = bizLicApplicationResp.GivenName,
             Surname = bizLicApplicationResp.Surname,
+            PhoneNumber = bizLicApplicationResp.PhoneNumber,
             EmailAddress = bizLicApplicationResp.EmailAddress,
             MiddleName1 = bizLicApplicationResp.MiddleName1,
             MiddleName2 = bizLicApplicationResp.MiddleName2
