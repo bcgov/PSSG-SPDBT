@@ -8,6 +8,6 @@ internal class Mappings : Profile
 {
     public Mappings()
     {
-        CreateMap<PrintJobRequest, PrintJob>();
+        CreateMap<PrintPreviewJobRequest, PrintJob>();
     }
 }
