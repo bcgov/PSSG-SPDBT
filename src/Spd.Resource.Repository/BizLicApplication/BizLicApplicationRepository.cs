@@ -129,6 +129,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (privateInvestigatorInfo.LicenceId == null)
             return;
 
+        // Related licence is not linked
+        if (!app.spd_application_spd_licence_manager.Any(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId))
+            return;
+
         spd_licence? licence = _context.spd_licences
             .Where(l => l.spd_licenceid == privateInvestigatorInfo.LicenceId)
             .FirstOrDefault();

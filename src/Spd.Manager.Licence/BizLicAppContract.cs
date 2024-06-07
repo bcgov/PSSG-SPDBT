@@ -82,6 +82,7 @@ public abstract record BizLicenceApp : LicenceAppBase
     public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
+    public bool? AgreeToCompleteAndAccurate { get; set; }
 }
 
 public record NonSwlContactInfo : ContactInfo
