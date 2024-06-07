@@ -275,8 +275,8 @@ internal class Mappings : Profile
            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
-           .ForMember(d => d.Email, opt => opt.MapFrom(s => s.SoleProprietorLicenceId != null ? s.SoleProprietorSwlEmailAddress : null))
-           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.SoleProprietorLicenceId != null ? s.SoleProprietorSwlPhoneNumber : null))
+           .ForMember(d => d.Email, opt => opt.MapFrom(s => s.SoleProprietorSwlEmailAddress))
+           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.SoleProprietorSwlPhoneNumber))
            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
 
         CreateMap<AddressResp, BranchAddr>()
