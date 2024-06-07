@@ -41,7 +41,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[businessInformationFormGroup]="businessInformationFormGroup"
 						[businessAddressFormGroup]="businessAddressFormGroup"
 						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
-						[mailingAddressFormGroup]="mailingAddressFormGroup"
+						[businessMailingAddressFormGroup]="businessMailingAddressFormGroup"
 						[branchesInBcFormGroup]="branchesInBcFormGroup"
 						[isBcBusinessAddress]="isBcBusinessAddress"
 						[isReadonly]="isReadonly"
@@ -70,7 +70,7 @@ export class BusinessProfileComponent {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
-	mailingAddressFormGroup = this.businessApplicationService.mailingAddressFormGroup;
+	businessMailingAddressFormGroup = this.businessApplicationService.businessMailingAddressFormGroup;
 	branchesInBcFormGroup = this.businessApplicationService.branchesInBcFormGroup;
 
 	isReadonly = true;

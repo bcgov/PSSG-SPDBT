@@ -348,6 +348,7 @@ export class BusinessManagersComponent implements OnInit {
 			.open(ModalBusinessManagerEditComponent, {
 				width: '800px',
 				data,
+				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp) => {
