@@ -52,70 +52,70 @@ import { StepWorkerLicenceUserProfileComponent } from './components/shared/worke
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
-	public static LICENCE_APPLICATION = 'licensing';
+	public static readonly LICENCE_APPLICATION = 'licensing';
 
-	public static LOGIN_SELECTION = 'login-selection';
+	public static readonly LOGIN_SELECTION = 'login-selection';
 
 	// AUTHENTICATED
-	public static LICENCE_BASE = 'user';
-	public static LICENCE_USER_APPLICATIONS_AUTHENTICATED = 'applications';
+	public static readonly LICENCE_BASE = 'user';
+	public static readonly LICENCE_USER_APPLICATIONS_AUTHENTICATED = 'applications';
 
-	public static LICENCE_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
-	public static LICENCE_FIRST_TIME_USER_SELECTION = 'user-selection';
-	public static LICENCE_LINK = 'licence-link';
-	public static LICENCE_LOGIN_USER_PROFILE = 'user-profile';
+	public static readonly LICENCE_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
+	public static readonly LICENCE_FIRST_TIME_USER_SELECTION = 'user-selection';
+	public static readonly LICENCE_LINK = 'licence-link';
+	public static readonly LICENCE_LOGIN_USER_PROFILE = 'user-profile';
 
-	public static WORKER_LICENCE_UPDATE_TERMS_AUTHENTICATED = 'licence-update-terms';
-	public static WORKER_LICENCE_USER_PROFILE_AUTHENTICATED = 'licence-user-profile';
+	public static readonly WORKER_LICENCE_UPDATE_TERMS_AUTHENTICATED = 'licence-update-terms';
+	public static readonly WORKER_LICENCE_USER_PROFILE_AUTHENTICATED = 'licence-user-profile';
 
-	public static PERMIT_UPDATE_TERMS_AUTHENTICATED = 'permit-update-terms';
-	public static PERMIT_USER_PROFILE_AUTHENTICATED = 'permit-user-profile';
+	public static readonly PERMIT_UPDATE_TERMS_AUTHENTICATED = 'permit-update-terms';
+	public static readonly PERMIT_USER_PROFILE_AUTHENTICATED = 'permit-user-profile';
 
-	public static PERMIT_NEW_AUTHENTICATED = 'permit-new';
-	public static PERMIT_RENEWAL_AUTHENTICATED = 'permit-renew';
-	public static PERMIT_UPDATE_AUTHENTICATED = 'permit-update';
+	public static readonly PERMIT_NEW_AUTHENTICATED = 'permit-new';
+	public static readonly PERMIT_RENEWAL_AUTHENTICATED = 'permit-renew';
+	public static readonly PERMIT_UPDATE_AUTHENTICATED = 'permit-update';
 
-	public static WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
-	public static WORKER_LICENCE_RENEWAL_AUTHENTICATED = 'worker-licence-renew';
-	public static WORKER_LICENCE_UPDATE_AUTHENTICATED = 'worker-licence-update';
-	public static WORKER_LICENCE_REPLACEMENT_AUTHENTICATED = 'worker-licence-replacement';
+	public static readonly WORKER_LICENCE_NEW_AUTHENTICATED = 'worker-licence-new';
+	public static readonly WORKER_LICENCE_RENEWAL_AUTHENTICATED = 'worker-licence-renew';
+	public static readonly WORKER_LICENCE_UPDATE_AUTHENTICATED = 'worker-licence-update';
+	public static readonly WORKER_LICENCE_REPLACEMENT_AUTHENTICATED = 'worker-licence-replacement';
 
-	public static BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
-	public static BUSINESS_BASE = 'business-licence';
-	public static BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
-	public static BUSINESS_NEW = 'business-new';
-	public static BUSINESS_USER_APPLICATIONS = 'applications';
-	public static BUSINESS_RENEW = 'business-renew';
-	public static BUSINESS_PROFILE = 'business-profile';
-	public static BUSINESS_MANAGERS = 'business-managers';
-	public static BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
+	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
+	public static readonly BUSINESS_BASE = 'business-licence';
+	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
+	public static readonly BUSINESS_NEW = 'business-new';
+	public static readonly BUSINESS_USER_APPLICATIONS = 'applications';
+	public static readonly BUSINESS_RENEW = 'business-renew';
+	public static readonly BUSINESS_PROFILE = 'business-profile';
+	public static readonly BUSINESS_MANAGERS = 'business-managers';
+	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
 
 	// ANONYMOUS
-	public static LICENCE_APPLICATION_ANONYMOUS = 'applications-anonymous';
-	public static LICENCE_APPLICATION_TYPE_ANONYMOUS = 'licence-application-type';
-	public static LICENCE_ACCESS_CODE_ANONYMOUS = 'licence-access-code';
+	public static readonly LICENCE_APPLICATION_ANONYMOUS = 'applications-anonymous';
+	public static readonly LICENCE_APPLICATION_TYPE_ANONYMOUS = 'licence-application-type';
+	public static readonly LICENCE_ACCESS_CODE_ANONYMOUS = 'licence-access-code';
 
-	public static WORKER_LICENCE_NEW_ANONYMOUS = 'worker-licence-new';
-	public static WORKER_LICENCE_RENEWAL_ANONYMOUS = 'worker-licence-renewal';
-	public static WORKER_LICENCE_REPLACEMENT_ANONYMOUS = 'worker-licence-replacement';
-	public static WORKER_LICENCE_UPDATE_ANONYMOUS = 'worker-licence-update';
+	public static readonly WORKER_LICENCE_NEW_ANONYMOUS = 'worker-licence-new';
+	public static readonly WORKER_LICENCE_RENEWAL_ANONYMOUS = 'worker-licence-renewal';
+	public static readonly WORKER_LICENCE_REPLACEMENT_ANONYMOUS = 'worker-licence-replacement';
+	public static readonly WORKER_LICENCE_UPDATE_ANONYMOUS = 'worker-licence-update';
 
-	public static PERMIT_ANONYMOUS = 'permit-anonymous';
-	public static PERMIT_ACCESS_CODE_ANONYMOUS = 'permit-access-code';
-	public static PERMIT_TYPE_ANONYMOUS = 'permit-type';
-	public static PERMIT_NEW_ANONYMOUS = 'permit-new';
-	public static PERMIT_RENEWAL_ANONYMOUS = 'permit-renewal';
-	public static PERMIT_UPDATE_ANONYMOUS = 'permit-update';
+	public static readonly PERMIT_ANONYMOUS = 'permit-anonymous';
+	public static readonly PERMIT_ACCESS_CODE_ANONYMOUS = 'permit-access-code';
+	public static readonly PERMIT_TYPE_ANONYMOUS = 'permit-type';
+	public static readonly PERMIT_NEW_ANONYMOUS = 'permit-new';
+	public static readonly PERMIT_RENEWAL_ANONYMOUS = 'permit-renewal';
+	public static readonly PERMIT_UPDATE_ANONYMOUS = 'permit-update';
 
 	// PAYMENT
-	public static PAYMENT_SUCCESS = 'payment-success';
-	public static PAYMENT_FAIL = 'payment-fail';
-	public static PAYMENT_CANCEL = 'payment-cancel';
-	public static PAYMENT_ERROR = 'payment-error';
-	public static LICENCE_UPDATE_SUCCESS = 'licence-update-success';
-	public static PERMIT_UPDATE_SUCCESS = 'permit-update-success';
+	public static readonly PAYMENT_SUCCESS = 'payment-success';
+	public static readonly PAYMENT_FAIL = 'payment-fail';
+	public static readonly PAYMENT_CANCEL = 'payment-cancel';
+	public static readonly PAYMENT_ERROR = 'payment-error';
+	public static readonly LICENCE_UPDATE_SUCCESS = 'licence-update-success';
+	public static readonly PERMIT_UPDATE_SUCCESS = 'permit-update-success';
 
-	public static MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
+	public static readonly MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
 
 	public static path(route: string | null = null): string {
 		return route ? `/${LicenceApplicationRoutes.MODULE_PATH}/${route}` : `/${LicenceApplicationRoutes.MODULE_PATH}`;

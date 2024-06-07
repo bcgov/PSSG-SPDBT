@@ -97,7 +97,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 							<ng-template #mailingIsDifferentSection>
 								<section>
 									<app-common-address
-										[form]="mailingAddressFormGroup"
+										[form]="businessMailingAddressFormGroup"
 										[isWizardStep]="false"
 										[isReadonly]="isReadonly"
 									></app-common-address>
@@ -131,7 +131,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	@Input() businessInformationFormGroup!: FormGroup;
 	@Input() businessAddressFormGroup!: FormGroup;
 	@Input() bcBusinessAddressFormGroup!: FormGroup;
-	@Input() mailingAddressFormGroup!: FormGroup;
+	@Input() businessMailingAddressFormGroup!: FormGroup;
 	@Input() branchesInBcFormGroup!: FormGroup;
 	@Input() isReadonly = true;
 	@Input() isBcBusinessAddress = true;
@@ -143,7 +143,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 		const isValid1 = this.businessInformationComponent.isFormValid();
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
-		const isValid4 = this.isMailingTheSame ? true : this.isFormGroupValid(this.mailingAddressFormGroup);
+		const isValid4 = this.isMailingTheSame ? true : this.isFormGroupValid(this.businessMailingAddressFormGroup);
 		const isValid5 = this.businessBcBranchesComponent.isFormValid();
 
 		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);

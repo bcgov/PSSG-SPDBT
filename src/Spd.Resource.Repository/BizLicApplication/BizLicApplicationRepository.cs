@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -19,19 +20,29 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
-        spd_application? app = await _context.spd_applications
-            .Expand(a => a.spd_ServiceTypeId)
-            .Expand(a => a.spd_ApplicantId_account)
-            .Expand(a => a.spd_ApplicantId_contact)
-            .Expand(a => a.spd_application_spd_licencecategory)
-            .Expand(a => a.spd_application_spd_licence_manager)
-            .Expand(a => a.spd_CurrentExpiredLicenceId)
-            .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
-            .Where(a => a.spd_applicationid == licenceApplicationId)
-            .FirstOrDefaultAsync(ct);
+        spd_application? app;
+        try
+        {
+            app = await _context.spd_applications
+                .Expand(a => a.spd_ServiceTypeId)
+                .Expand(a => a.spd_ApplicantId_account)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_application_spd_licence_manager)
+                .Expand(a => a.spd_CurrentExpiredLicenceId)
+                .Where(a => a.spd_applicationid == licenceApplicationId)
+                .FirstOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                app = null;
+            else
+                throw;
+        }
 
-        if (app == null) 
-            throw new ApiException(HttpStatusCode.NotFound);
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {licenceApplicationId} ");
 
         return _mapper.Map<BizLicApplicationResp>(app);
     }
