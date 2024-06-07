@@ -37,6 +37,7 @@ public record BizLicApplication
     public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
     public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
+    public bool? AgreeToCompleteAndAccurate { get; set; }
 }
 
 public record SaveBizLicApplicationCmd() : BizLicApplication
