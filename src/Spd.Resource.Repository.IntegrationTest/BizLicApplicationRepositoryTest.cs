@@ -108,6 +108,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
             .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, false)
             .Without(a => a.LicenceAppId)
             .Create();
 
@@ -148,6 +149,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(100000004, app.spd_businesstype);
         Assert.Equal(100000000, app.spd_nologoorbranding);
         Assert.Equal(100000000, app.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, app.spd_declaration);
+        Assert.Null(app.spd_declarationdate);
         Assert.NotNull(app.spd_origin);
         Assert.NotNull(app.spd_payer);
         Assert.NotNull(app.spd_portalmodifiedon);
@@ -181,6 +184,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
             .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, true)
             .Create();
 
         spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
@@ -222,6 +226,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(100000004, updatedApp.spd_businesstype);
         Assert.Equal(100000000, updatedApp.spd_nologoorbranding);
         Assert.Equal(100000000, updatedApp.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, updatedApp.spd_declaration);
+        Assert.NotNull(updatedApp.spd_declarationdate);
         Assert.NotNull(updatedApp.spd_origin);
         Assert.NotNull(updatedApp.spd_payer);
         Assert.NotNull(updatedApp.spd_portalmodifiedon);
