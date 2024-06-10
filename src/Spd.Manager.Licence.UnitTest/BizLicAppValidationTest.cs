@@ -181,10 +181,10 @@ public class BizLicAppValidationTest
     public void ControllingMembers_WhenExceedsMaxAllowed_ShouldThrowException()
     {
         var model = GenerateValidRequest();
-        List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(21).ToList();
+        List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(10).ToList();
         List<NonSwlContactInfo> nonSwlControllingMembers = fixture.Build<NonSwlContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
-            .CreateMany(21)
+            .CreateMany(11)
             .ToList();
         List<SwlContactInfo> employees = fixture.CreateMany<SwlContactInfo>(21).ToList();
 
@@ -197,8 +197,7 @@ public class BizLicAppValidationTest
         model.Members = members;
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.Members.SwlControllingMembers);
-        result.ShouldHaveValidationErrorFor(r => r.Members.NonSwlControllingMembers);
+        result.ShouldHaveValidationErrorFor(r => r.Members);
         result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
     }
 
