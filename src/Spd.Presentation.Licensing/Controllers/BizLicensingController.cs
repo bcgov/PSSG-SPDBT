@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -10,6 +11,7 @@ using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -18,16 +20,19 @@ namespace Spd.Presentation.Licensing.Controllers
     {
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
+        private readonly IValidator<BizLicAppUpsertRequest> _bizLicAppUpsertValidator;
 
         public BizLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
+            IValidator<BizLicAppUpsertRequest> bizLicAppUpsertValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
         {
             _currentUser = currentUser;
             _mediator = mediator;
+            _bizLicAppUpsertValidator = bizLicAppUpsertValidator;
         }
 
         /// <summary>
@@ -164,6 +169,10 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SubmitBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
+            var validateResult = await _bizLicAppUpsertValidator.ValidateAsync(bizUpsertRequest, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
             return await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
         }
     }
