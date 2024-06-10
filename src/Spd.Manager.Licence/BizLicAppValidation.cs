@@ -87,11 +87,13 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         // Document required for "Security guard"
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard))
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.UseDogs == true)
             .WithMessage("Missing security dog certificate document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) < 2)
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) 
+                && r.UseDogs == true
+                && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
             .WithMessage("No more than 1 dog certificate is allowed.");
 
         // Private investigator
