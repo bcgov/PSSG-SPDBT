@@ -249,6 +249,7 @@ public class BizLicAppValidationTest
             .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
             .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
             .With(r => r.AgreeToCompleteAndAccurate, true)
+            .With(r => r.UseDogs, true)
             .With(r => r.DocumentInfos, documentInfos)
             .With(r => r.CategoryCodes, categories)
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
