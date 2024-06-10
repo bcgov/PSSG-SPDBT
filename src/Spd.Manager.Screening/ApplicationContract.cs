@@ -560,11 +560,7 @@ namespace Spd.Manager.Screening
                     .NotEmpty()
                     .MaximumLength(100);
 
-            //spdbt-2653
-            //RuleFor(r => r.PostalCode)
-            //        .NotEmpty()
-            //        .MinimumLength(5)
-            //        .MaximumLength(20);
+            //spdbt-2653: make postal code optional, so RuleFor postalcode is removed.
 
             RuleFor(r => r.Province)
                     .MaximumLength(100);
