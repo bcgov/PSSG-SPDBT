@@ -3,6 +3,8 @@ using MediatR;
 using Spd.Manager.Printing.Documents;
 using Spd.Manager.Printing.Documents.TransformationStrategies;
 using Spd.Resource.Repository.Event;
+using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Printing;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -17,16 +19,19 @@ internal class PrintingManager
     private readonly IDocumentTransformationEngine _documentTransformationEngine;
     private readonly IPrinter _printer;
     private readonly IEventRepository _eventRepo;
+    private readonly ILicenceRepository _licenceRepository;
     private readonly IMapper _mapper;
 
     public PrintingManager(IDocumentTransformationEngine documentTransformationEngine,
         IPrinter printer,
         IEventRepository eventRepo,
+        ILicenceRepository licenceRepository,
         IMapper mapper)
     {
         this._documentTransformationEngine = documentTransformationEngine;
         this._printer = printer;
         this._eventRepo = eventRepo;
+        this._licenceRepository = licenceRepository;
         this._mapper = mapper;
     }
     public async Task<ResultResponse> Handle(StartPrintJobCommand request, CancellationToken cancellationToken)
@@ -104,9 +109,13 @@ internal class PrintingManager
         }
     }
 
-    public async Task<PreviewDocumentResp> Handle(PreviewDocumentCommand request, CancellationToken cancellationToken)
+    public async Task<PreviewDocumentResp> Handle(PreviewDocumentCommand cmd, CancellationToken cancellationToken)
     {
-        var transformResponse = await _documentTransformationEngine.Transform(CreateDocumentTransformRequest(request.PrintJob), cancellationToken);
+        LicenceResp? licence = await _licenceRepository.GetAsync(cmd.LicenceId, cancellationToken);
+        if (licence == null || licence.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the licence or the licence is not person licence.");
+        PrintJob printJob = new(DocumentType.PersonalLicencePreview, null, cmd.LicenceId);
+        var transformResponse = await _documentTransformationEngine.Transform(CreateDocumentTransformRequest(printJob), cancellationToken);
         return transformResponse switch
         {
             BcMailPlusTransformResponse bcmailplusResponse => await PreviewViaBcMailPlus(bcmailplusResponse, cancellationToken),
