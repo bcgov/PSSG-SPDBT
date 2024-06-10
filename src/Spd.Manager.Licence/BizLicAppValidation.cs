@@ -60,10 +60,11 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         // Documents required for branding
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+            .When(r => r.NoBranding == false)
             .WithMessage("Missing business branding document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
-            .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
+            .When(r => r.NoBranding == false && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
             .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
 
         // Document required for business insurance
