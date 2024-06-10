@@ -79,11 +79,11 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
-            .WithMessage("Missing armour car guard registrar document.");
+            .WithMessage("Missing armoured car guard registrar document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) == 1)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) > 0)
-            .WithMessage("No more than 1 armour car guard registrar document is allowed.");
+            .WithMessage("No more than 1 armoured car guard registrar document is allowed.");
 
         // Document required for "Security guard"
         RuleFor(r => r.DocumentInfos)
