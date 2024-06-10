@@ -238,6 +238,12 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
         Assert.Equal(licence.spd_licenceid, account.spd_organization_spd_licence_soleproprietor.FirstOrDefault()?.spd_licenceid);
         Assert.Equal(licence._spd_licenceholder_value, account.spd_organization_spd_licence_soleproprietor.FirstOrDefault()?._spd_licenceholder_value);
+
+        // Annihilate
+        _context.DeleteObject(licence);
+        _context.DeleteObject(contact);
+        _context.DeleteObject(account);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
