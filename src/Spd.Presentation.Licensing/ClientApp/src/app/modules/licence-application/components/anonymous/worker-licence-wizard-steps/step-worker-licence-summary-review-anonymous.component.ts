@@ -861,20 +861,17 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		const originalLicenceData = this.licenceModelData.originalLicenceData;
 
 		const applicationTypeCode = this.applicationTypeCode;
-		let bizTypeCode: BizTypeCode | null = null;
+		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
 		if (applicationTypeCode === ApplicationTypeCode.New) {
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
-		} else {
-			bizTypeCode = originalLicenceData.originalBizTypeCode;
 		}
-		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				this.applicationTypeCode,
 				bizTypeCode,
-				originalLicenceTermCode
+				originalLicenceData.originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
