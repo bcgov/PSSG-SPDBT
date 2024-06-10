@@ -16,7 +16,9 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .NotEmpty()
             .When(r => r.HasExpiredLicence == true);
         RuleFor(r => r.NoBranding).NotEmpty();
-        RuleFor(r => r.UseDogs).NotEmpty();
+        RuleFor(r => r.UseDogs)
+            .NotEmpty()
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
         RuleFor(r => r.ApplicantIsBizManager).NotEmpty();
         RuleFor(r => r.BizManagerContactInfo)
             .Must(r => r.GivenName.IsNullOrEmpty() != true && 
