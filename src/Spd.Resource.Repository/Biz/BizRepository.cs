@@ -104,12 +104,6 @@ namespace Spd.Resource.Repository.Biz
             
             _mapper.Map(updateBizCmd, biz);
 
-            if (!IsSoleProprietor(updateBizCmd.BizType) && updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId != null)
-            {
-                biz.emailaddress1 = string.Empty;
-                biz.telephone1 = string.Empty;
-            }
-
             _context.UpdateObject(biz);
             UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
             await _context.SaveChangesAsync(ct);

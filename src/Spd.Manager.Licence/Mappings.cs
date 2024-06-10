@@ -275,8 +275,8 @@ internal class Mappings : Profile
            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
-           .ForMember(d => d.Email, opt => opt.MapFrom(s => s.SoleProprietorLicenceId != null ? s.SoleProprietorSwlEmailAddress : null))
-           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.SoleProprietorLicenceId != null ? s.SoleProprietorSwlPhoneNumber : null))
+           .ForMember(d => d.Email, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlEmailAddress : null))
+           .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : null))
            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
 
         CreateMap<AddressResp, BranchAddr>()
@@ -661,6 +661,15 @@ internal class Mappings : Profile
             MiddleName1 = bizLicApplicationResp.MiddleName1,
             MiddleName2 = bizLicApplicationResp.MiddleName2
         };
+    }
+
+    private static bool IsSoleProprietor(BizTypeCode? bizType)
+    {
+        if (bizType == null) return false;
+        if (bizType == BizTypeCode.NonRegisteredSoleProprietor || bizType == BizTypeCode.RegisteredSoleProprietor)
+            return true;
+
+        return false;
     }
 }
 
