@@ -38,11 +38,11 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageVersion Include="Microsoft.OData.Client" Version="7.21.2" />
-    <PackageVersion Include="Microsoft.OData.Core" Version="7.21.2" />
-    <PackageVersion Include="Microsoft.OData.Edm" Version="7.21.2" />
+    <PackageVersion Include="Microsoft.OData.Client" Version="7.21.3" />
+    <PackageVersion Include="Microsoft.OData.Core" Version="7.21.3" />
+    <PackageVersion Include="Microsoft.OData.Edm" Version="7.21.3" />
     <PackageVersion Include="Microsoft.OData.Extensions.Client" Version="1.0.6" />
-    <PackageVersion Include="Microsoft.Spatial" Version="7.21.2" />
+    <PackageVersion Include="Microsoft.Spatial" Version="7.21.3" />
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="Polly" Version="8.4.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
