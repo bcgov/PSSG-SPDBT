@@ -6,7 +6,7 @@ namespace Spd.Resource.Repository.Licence
     {
         public Task<LicenceListResp> QueryAsync(LicenceQry query, CancellationToken cancellationToken);
         public Task<LicenceResp> ManageAsync(UpdateLicenceCmd cmd, CancellationToken cancellationToken);
-        public Task<LicenceResp> GetAsync(Guid licenceId, CancellationToken cancellationToken);
+        public Task<LicenceResp?> GetAsync(Guid licenceId, CancellationToken cancellationToken);
     }
 
     public record LicenceQry
