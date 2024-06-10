@@ -31,7 +31,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 									</td>
 									<td>Apply faster</td>
 								</tr>
-								<tr *ngIf="portal === portalTypeCodes.Crrp">
+								<tr>
 									<td class="pr-2 pb-2">
 										<img
 											class="step-container__box__title__checkbox"
@@ -63,14 +63,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 								complete the application.
 							</p>
 						</div>
-						<div
-							class="p-4"
-							[ngClass]="
-								portal === portalTypeCodes.Psso
-									? 'step-container__box__footer-psso'
-									: 'step-container__box__footer-crrp'
-							"
-						>
+						<div class="p-4 step-container__box__footer-no-bcsc">
 							<button mat-flat-button color="primary" class="large" (click)="onClickNext()">
 								Continue without BC Services Card
 							</button>
@@ -112,11 +105,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 						}
 					}
 
-					&__footer-psso {
-						padding-top: 2.5rem !important;
-					}
-
-					&__footer-crrp {
+					&__footer-no-bcsc {
 						padding-top: 5.7rem !important;
 					}
 				}
