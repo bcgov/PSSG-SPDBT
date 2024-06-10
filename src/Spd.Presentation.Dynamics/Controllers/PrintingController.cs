@@ -33,7 +33,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpGet("api/person-licence-preview/{licenceId}")]
-    public async Task<Results<FileContentHttpResult, BadRequest>> GetPrintJobPreview([FromRoute] Guid licenceId, CancellationToken ct)
+    public async Task<Results<FileContentHttpResult, BadRequest>> GetPersonLicencePreview([FromRoute] Guid licenceId, CancellationToken ct)
     {
         var previewResponse = await mediator.Send(new PreviewDocumentCommand(licenceId), ct);
         return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
