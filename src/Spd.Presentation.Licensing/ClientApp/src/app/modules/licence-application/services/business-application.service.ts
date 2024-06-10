@@ -1260,7 +1260,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyRenewalDataUpdatesToModel(resp: any): Observable<any> {
+	private applyRenewalDataUpdatesToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		this.businessModelFormGroup.patchValue(
@@ -1277,7 +1277,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
+	private applyUpdateDataUpdatesToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
 		this.businessModelFormGroup.patchValue(
@@ -1294,7 +1294,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyReplacementDataUpdatesToModel(resp: any): Observable<any> {
+	private applyReplacementDataUpdatesToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		this.businessModelFormGroup.patchValue(
