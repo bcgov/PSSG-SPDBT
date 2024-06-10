@@ -2,6 +2,7 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
 using Spd.Resource.Repository.BizLicApplication;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -108,6 +109,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
             .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, false)
             .Without(a => a.LicenceAppId)
             .Create();
 
@@ -148,6 +150,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(100000004, app.spd_businesstype);
         Assert.Equal(100000000, app.spd_nologoorbranding);
         Assert.Equal(100000000, app.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, app.spd_declaration);
+        Assert.Null(app.spd_declarationdate);
         Assert.NotNull(app.spd_origin);
         Assert.NotNull(app.spd_payer);
         Assert.NotNull(app.spd_portalmodifiedon);
@@ -155,6 +159,30 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(app.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(app.spd_application_spd_licencecategory);
         Assert.NotEmpty(app.spd_application_spd_licence_manager);
+
+        //Innihilate
+        _context.DeleteObject(expiredLicence);
+        _context.DeleteObject(account);
+        _context.DeleteObject(pInvestigatorLicence);
+
+        // Remove all links to the application before removing it
+        _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
+        spd_licence? licence = _context.spd_licences
+            .Where(l => l.spd_licenceid == pInvestigatorLicenceId)
+            .FirstOrDefault();
+        _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
+
+        foreach (var appCategory in app.spd_application_spd_licencecategory)
+            _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .FirstOrDefault();
+
+        _context.DeleteObject(appToRemove);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
@@ -181,6 +209,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, new SwlContactInfo() { LicenceId = pInvestigatorLicenceId })
             .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, true)
             .Create();
 
         spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
@@ -222,13 +251,39 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(100000004, updatedApp.spd_businesstype);
         Assert.Equal(100000000, updatedApp.spd_nologoorbranding);
         Assert.Equal(100000000, updatedApp.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, updatedApp.spd_declaration);
+        Assert.NotNull(updatedApp.spd_declarationdate);
         Assert.NotNull(updatedApp.spd_origin);
         Assert.NotNull(updatedApp.spd_payer);
         Assert.NotNull(updatedApp.spd_portalmodifiedon);
         Assert.NotNull(updatedApp.spd_ServiceTypeId);
         Assert.NotNull(updatedApp.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
-        Assert.NotEmpty(app.spd_application_spd_licence_manager);
+        Assert.NotEmpty(updatedApp.spd_application_spd_licence_manager);
+
+        //Innihilate
+        _context.DeleteObject(expiredLicence);
+        _context.DeleteObject(account);
+        _context.DeleteObject(pInvestigatorLicence);
+
+        // Remove all links to the application before removing it
+        _context.SetLink(updatedApp, nameof(updatedApp.spd_CurrentExpiredLicenceId), null);
+
+        spd_licence? licence = _context.spd_licences
+            .Where(l => l.spd_licenceid == pInvestigatorLicenceId)
+            .FirstOrDefault();
+        _context.DeleteLink(updatedApp, nameof(spd_application.spd_application_spd_licence_manager), licence);
+
+        foreach (var appCategory in updatedApp.spd_application_spd_licencecategory)
+            _context.DeleteLink(updatedApp, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .FirstOrDefault();
+
+        _context.DeleteObject(appToRemove);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
