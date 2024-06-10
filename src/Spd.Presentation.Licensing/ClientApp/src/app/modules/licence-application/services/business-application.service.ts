@@ -66,6 +66,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
 		bizId: new FormControl(null),
+		// bizTypeCode: new FormControl(null),
 		licenceAppId: new FormControl(null),
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
@@ -203,8 +204,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		console.log('body', body); // TODO fix body for submit
 		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
-		// const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		// body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}

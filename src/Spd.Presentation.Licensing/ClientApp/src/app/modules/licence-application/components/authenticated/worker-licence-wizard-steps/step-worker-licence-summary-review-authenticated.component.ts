@@ -611,7 +611,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+		return this.licenceModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get carryAndUseRestraints(): string {

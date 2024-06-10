@@ -164,7 +164,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group(
 		{
-			givenName: new FormControl(''),
+			givenName: new FormControl('', [FormControlValidators.required]),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
@@ -180,6 +180,10 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'applicantGivenName',
+					(form) => !form.get('isBusinessManager')?.value
+				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'applicantSurname',
 					(form) => !form.get('isBusinessManager')?.value
@@ -377,7 +381,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		let useDogs = false;
+		let useDogs: boolean | null = null;
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
