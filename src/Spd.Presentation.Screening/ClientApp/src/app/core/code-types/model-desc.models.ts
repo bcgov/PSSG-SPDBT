@@ -86,7 +86,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'CRC + CRRA', code: ServiceTypeCode.PssoVs },
 	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'MCFD', code: ServiceTypeCode.Mcfd },
+	{ desc: 'MCFD Contracted Care Providers - CSH only', code: ServiceTypeCode.Mcfd },
 	{ desc: 'MDRA', code: ServiceTypeCode.Mdra },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC + Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
