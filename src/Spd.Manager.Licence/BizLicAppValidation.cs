@@ -114,23 +114,19 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
                 .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
             .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
             .WithMessage("Missing infomration in Controlling members (SWL)");
-        RuleFor(r => r.Members.SwlControllingMembers)
-           .Must(r => r.Count() <= 20)
-           .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
-           .WithMessage("No more than 20 Controlling members (SWL) are allowed");
-
+        
         RuleFor(r => r.Members.NonSwlControllingMembers)
             .ForEach(r => r
                 .Must(m => m.Surname.IsNullOrEmpty() != true)
                 .Must(m => m.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(m.EmailAddress)))
                 .WithMessage("Missing information in Controlling members (not SWL)")
             .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null);
-        RuleFor(r => r.Members.NonSwlControllingMembers)
-           .Must(r => r.Count() <= 20)
-           .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null)
-           .WithMessage("No more than 20 Controlling members (not SWL) are allowed");
+        
+        RuleFor(r => r.Members)
+            .Must(r => r.SwlControllingMembers.Count() + r.NonSwlControllingMembers.Count() <= 20)
+            .When(r => r.Members != null && r.Members.SwlControllingMembers != null && r.Members.NonSwlControllingMembers != null);
 
-        //Employees
+        // Employees
         RuleFor(r => r.Members.Employees)
             .ForEach(r => r
                 .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
