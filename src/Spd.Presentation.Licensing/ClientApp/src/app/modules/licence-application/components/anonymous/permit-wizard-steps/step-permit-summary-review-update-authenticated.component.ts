@@ -269,13 +269,13 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitModelData.personalInformationData.hasGenderChanged ?? '';
 	}
 	get originalLicenceNumber(): string {
-		return this.permitModelData.originalLicenceNumber ?? '';
+		return this.permitModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.permitModelData.originalExpiryDate ?? '';
+		return this.permitModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 	get originalLicenceTermCode(): string {
-		return this.permitModelData.originalLicenceTermCode ?? '';
+		return this.permitModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 
 	get licenceFee(): number | null {
@@ -283,8 +283,9 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 			return null;
 		}
 
-		const bizTypeCode = this.permitModelData.originalBizTypeCode;
-		const originalLicenceTermCode = this.permitModelData.originalLicenceTermCode;
+		const originalLicenceData = this.permitModelData.originalLicenceData;
+		const bizTypeCode = originalLicenceData.originalBizTypeCode;
+		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(

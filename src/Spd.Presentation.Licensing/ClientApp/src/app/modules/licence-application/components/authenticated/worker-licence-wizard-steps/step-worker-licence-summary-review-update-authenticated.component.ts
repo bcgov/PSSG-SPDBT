@@ -150,13 +150,13 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return this.licenceModelData.personalInformationData.hasGenderChanged ?? '';
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceNumber ?? '';
+		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalExpiryDate ?? '';
+		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceTermCode ?? '';
+		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
@@ -176,8 +176,9 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 			return null;
 		}
 
-		const bizTypeCode = this.licenceModelData.originalBizTypeCode;
-		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
+		const originalLicenceData = this.licenceModelData.originalLicenceData;
+		const bizTypeCode = originalLicenceData.originalBizTypeCode;
+		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(

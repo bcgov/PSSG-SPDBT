@@ -110,7 +110,6 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
 										<input matInput formControlName="applicantSurname" [errorStateMatcher]="matcher" maxlength="40" />
-										<div>I do not have a surname</div>
 										<mat-error *ngIf="form.get('applicantSurname')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>

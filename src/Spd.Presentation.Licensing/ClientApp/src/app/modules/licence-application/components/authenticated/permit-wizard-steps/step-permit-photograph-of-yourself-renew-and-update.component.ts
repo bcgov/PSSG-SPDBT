@@ -99,7 +99,7 @@ export class StepPermitPhotographOfYourselfRenewAndUpdateComponent implements On
 
 	ngOnInit(): void {
 		this.originalPhotoOfYourselfExpired = this.permitApplicationService.permitModelFormGroup.get(
-			'originalPhotoOfYourselfExpired'
+			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 
 		if (!this.originalPhotoOfYourselfExpired) {

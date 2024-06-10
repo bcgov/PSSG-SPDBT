@@ -23,6 +23,16 @@ import { ControllingMemberContactInfo } from './business-application.service';
 import { CommonApplicationHelper } from './common-application.helper';
 
 export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
+	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
+		originalApplicationId: new FormControl(null),
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+		originalLicenceTermCode: new FormControl(null),
+		originalBizTypeCode: new FormControl(null),
+		originalDogAuthorizationExists: new FormControl(false),
+	});
+
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
 		{
 			noLogoOrBranding: new FormControl(''),
