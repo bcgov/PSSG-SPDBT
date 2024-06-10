@@ -560,10 +560,11 @@ namespace Spd.Manager.Screening
                     .NotEmpty()
                     .MaximumLength(100);
 
-            RuleFor(r => r.PostalCode)
-                    .NotEmpty()
-                    .MinimumLength(5)
-                    .MaximumLength(20);
+            //spdbt-2653
+            //RuleFor(r => r.PostalCode)
+            //        .NotEmpty()
+            //        .MinimumLength(5)
+            //        .MaximumLength(20);
 
             RuleFor(r => r.Province)
                     .MaximumLength(100);
@@ -579,8 +580,9 @@ namespace Spd.Manager.Screening
             RuleFor(r => r.HaveVerifiedIdentity)
                 .Equal(true); // Must be true or false
 
+            //change from 15 to 25 for max len, spdbt-2653
             RuleFor(r => r.DriversLicense)
-                .MaximumLength(15);
+                .MaximumLength(25);
 
             RuleFor(r => r.LicenceNo)
                 .MaximumLength(25);
