@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using AutoFixture;
+using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +15,8 @@ using System.Security.Claims;
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class BizLicensingControllerTest
 {
+    private readonly IFixture fixture;
+    private Mock<IValidator<BizLicAppUpsertRequest>> mockValidator = new();
     private Mock<IMediator> mockMediator = new();
     private Mock<IDistributedCache> mockCache = new();
     private Mock<IDataProtectionProvider> mockDpProvider = new();
@@ -28,6 +33,10 @@ public class BizLicensingControllerTest
 
     public BizLicensingControllerTest()
     {
+        fixture = new Fixture();
+        fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(uploadFileConfiguration)
             .Build();
@@ -40,6 +49,11 @@ public class BizLicensingControllerTest
             .ReturnsAsync(new BizLicAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
+        var validationResults = fixture.Build<ValidationResult>()
+                .With(r => r.Errors, [])
+                .Create();
+        mockValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppUpsertRequest>(), CancellationToken.None))
+                .ReturnsAsync(validationResults);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [
@@ -50,6 +64,7 @@ public class BizLicensingControllerTest
         sut = new BizLicensingController(user,
             mockMediator.Object,
             configuration,
+            mockValidator.Object,
             mockRecaptch.Object,
             mockCache.Object,
             mockDpProvider.Object);

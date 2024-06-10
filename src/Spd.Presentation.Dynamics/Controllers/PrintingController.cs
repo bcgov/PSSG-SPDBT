@@ -34,7 +34,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPost("api/printjobs/preview")]
-    public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(PrintJobRequest request, CancellationToken ct)
+    public async Task<Results<FileContentHttpResult, BadRequest>> PostPrintJobPreview(PrintPreviewJobRequest request, CancellationToken ct)
     {
         var printJob = mapper.Map<PrintJob>(request);
         var previewResponse = await mediator.Send(new PreviewDocumentCommand(printJob), ct);

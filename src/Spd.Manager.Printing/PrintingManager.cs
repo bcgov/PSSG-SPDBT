@@ -64,7 +64,7 @@ internal class PrintingManager
                 ResultResponse result = new()
                 {
                     PrintJobId = null,
-                    Status = JobStatusCode.Fail,
+                    Status = JobStatusCode.Error,
                     Error = $"{ex.Message} {ex.InnerException?.Message}"
                 };
                 await UpdateResultInEvent(result, request.EventId, cancellationToken);
