@@ -34,7 +34,6 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .When(r => r.ApplicantIsBizManager == false);
         RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
-        RuleFor(r => r.BizTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode)
             .NotEmpty()
             .Must(r => r == Shared.LicenceTermCode.OneYear || r == Shared.LicenceTermCode.TwoYears || r == Shared.LicenceTermCode.ThreeYears);
