@@ -254,7 +254,6 @@ public class BizLicAppValidationTest
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .With(r => r.ApplicantContactInfo, applicantContactInfo)
             .With(r => r.Members, members)
-            .Without(r => r.BizTypeCode)
             .Create();
 
         return model;
