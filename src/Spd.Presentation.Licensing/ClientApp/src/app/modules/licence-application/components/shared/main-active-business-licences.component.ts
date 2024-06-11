@@ -97,11 +97,10 @@ import { MainLicenceResponse } from '@app/modules/licence-application/services/c
 								</ul>
 							</div>
 							<div class="col-lg-3 text-end">
-								<!--
-														*ngIf="appl.isRenewalPeriod"
-														(click)="onRenew(appl)"
-											-->
-								<button mat-flat-button color="primary" class="large my-2"><mat-icon>restore</mat-icon>Renew</button>
+								<!-- *ngIf="appl.isRenewalPeriod" // TODO add renewal period -->
+								<button mat-flat-button color="primary" class="large my-2" (click)="onRenew(licence)">
+									<mat-icon>restore</mat-icon>Renew
+								</button>
 								<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(licence)">
 									<mat-icon>update</mat-icon>Update
 								</button>

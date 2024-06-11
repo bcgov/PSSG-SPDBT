@@ -228,7 +228,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 			next: (_resp: any) => {
 				this.hotToastService.success('Your business licence has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-				// this.payNow(_resp.body.licenceAppId!); // TODO handle payment
+				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -343,7 +343,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
-		// only 403s will be here as an error // TODO business licence has duplicates?
+		// only 403s will be here as an error
 		if (error.status == 403) {
 			this.commonApplicationService.handleDuplicateLicence();
 		}
