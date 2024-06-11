@@ -25,7 +25,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
                 r.Surname.IsNullOrEmpty() != true && 
                 r.PhoneNumber.IsNullOrEmpty() != true &&
                 r.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(r.EmailAddress))
-            .When(r => r.BizManagerContactInfo != null);
+            .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.ApplicantContactInfo)
             .Must(r => r.GivenName.IsNullOrEmpty() != true &&
                 r.Surname.IsNullOrEmpty() != true &&
@@ -102,7 +102,9 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         // Private investigator
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
             .Must(r => r.LicenceId != null && r.LicenceId != Guid.Empty)
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator))
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator) &&
+                 r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
+                 r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor)
             .WithMessage("Missing private investigator information.");
 
         // Controlling members
