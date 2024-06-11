@@ -431,8 +431,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	 */
 	private getSaveBodyBase(permitModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = permitModelFormValue.licenceAppId;
-		const originalApplicationId = permitModelFormValue.originalApplicationId;
-		const originalLicenceId = permitModelFormValue.originalLicenceId;
+		const originalLicenceData = permitModelFormValue.originalLicenceData;
 		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
 		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
 		const bcDriversLicenceData = { ...permitModelFormValue.bcDriversLicenceData };
@@ -642,8 +641,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 		const body = {
 			licenceAppId,
-			originalApplicationId,
-			originalLicenceId,
+			originalApplicationId: originalLicenceData.originalApplicationId,
+			originalLicenceId: originalLicenceData.originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------

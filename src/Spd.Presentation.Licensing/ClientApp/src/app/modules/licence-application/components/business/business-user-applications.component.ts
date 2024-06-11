@@ -147,9 +147,9 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
 				const businessProfile: BizProfileResponse = resps[2];
 
-				console.debug('businessLicencesList', businessLicencesList);
-				console.debug('businessApplicationsList', businessApplicationsList);
-				console.debug('businessProfile', businessProfile);
+				// console.debug('businessLicencesList', businessLicencesList);
+				// console.debug('businessApplicationsList', businessApplicationsList);
+				// console.debug('businessProfile', businessProfile);
 
 				this.isSoleProprietor = !this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
 
@@ -204,40 +204,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onReplace(licence: MainLicenceResponse): void {
-		if (this.applicationIsInProgress) return;
-
-		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
-						{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
-	onRenew(licence: MainLicenceResponse): void {
-		if (this.applicationIsInProgress) return;
-
-		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
-						{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
 	onResume(appl: MainApplicationResponse): void {
 		this.businessApplicationService
 			.getBusinessLicenceToResume(appl.licenceAppId!)
@@ -253,11 +219,45 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onUpdate(licence: MainLicenceResponse): void {
-		if (this.applicationIsInProgress) return;
+	onReplace(licence: MainLicenceResponse): void {
+		// if (this.applicationIsInProgress) return; TODO Add back
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update)
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement, licence)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onRenew(licence: MainLicenceResponse): void {
+		// if (this.applicationIsInProgress) return; TODO Add back
+
+		this.businessApplicationService
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal, licence)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onUpdate(licence: MainLicenceResponse): void {
+		// if (this.applicationIsInProgress) return; TODO Add back
+
+		this.businessApplicationService
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
