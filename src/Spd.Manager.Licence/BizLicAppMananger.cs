@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -29,7 +28,6 @@ internal class BizLicAppMananger :
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
-    private readonly IBizRepository _bizRepository;
 
     public BizLicAppMananger(
         ILicenceRepository licenceRepository,
@@ -40,8 +38,7 @@ internal class BizLicAppMananger :
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService,
         IBizContactRepository bizContactRepository,
-        IBizLicApplicationRepository bizApplicationRepository,
-        IBizRepository bizRepository)
+        IBizLicApplicationRepository bizApplicationRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -52,7 +49,6 @@ internal class BizLicAppMananger :
     {
         _bizLicApplicationRepository = bizApplicationRepository;
         _bizContactRepository = bizContactRepository;
-        _bizRepository = bizRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -80,8 +76,6 @@ internal class BizLicAppMananger :
 
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.BizLicAppUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
-        BizResult? bizProfile = await _bizRepository.GetBizAsync(cmd.BizLicAppUpsertRequest.BizId, cancellationToken);
-        saveCmd.BizTypeCode = bizProfile?.BizType;
         var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
 
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
