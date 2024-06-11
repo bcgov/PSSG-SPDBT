@@ -246,6 +246,7 @@ public class BizLicAppValidationTest
 
         var model = fixture.Build<BizLicAppUpsertRequest>()
             .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
+            .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.UseDogs, true)
             .With(r => r.NoBranding, false)
