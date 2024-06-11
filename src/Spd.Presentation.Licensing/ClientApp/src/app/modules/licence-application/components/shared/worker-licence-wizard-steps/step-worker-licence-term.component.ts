@@ -82,8 +82,9 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 			'soleProprietorData.bizTypeCode'
 		)?.value;
 
-		const originalLicenceTermCode =
-			this.licenceApplicationService.licenceModelFormGroup.get('originalLicenceTermCode')?.value;
+		const originalLicenceTermCode = this.licenceApplicationService.licenceModelFormGroup.get(
+			'originalLicenceData.originalLicenceTermCode'
+		)?.value;
 
 		// console.debug(
 		// 	'get termCodes',

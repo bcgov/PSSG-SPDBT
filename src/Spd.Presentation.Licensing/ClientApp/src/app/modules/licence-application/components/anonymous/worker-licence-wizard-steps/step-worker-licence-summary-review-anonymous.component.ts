@@ -858,21 +858,20 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 			return null;
 		}
 
+		const originalLicenceData = this.licenceModelData.originalLicenceData;
+
 		const applicationTypeCode = this.applicationTypeCode;
-		let bizTypeCode: BizTypeCode | null = null;
+		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
 		if (applicationTypeCode === ApplicationTypeCode.New) {
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
-		} else {
-			bizTypeCode = this.licenceModelData.originalBizTypeCode;
 		}
-		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				this.applicationTypeCode,
 				bizTypeCode,
-				originalLicenceTermCode
+				originalLicenceData.originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
@@ -885,7 +884,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+		return this.licenceModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get carryAndUseRestraints(): string {
