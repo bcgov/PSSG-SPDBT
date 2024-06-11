@@ -115,7 +115,23 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         spd_licence expiredLicence = new() { spd_licenceid = cmd.ExpiredLicenceId };
         _context.AddTospd_licences(expiredLicence);
-        account account = new() { accountid = cmd.ApplicantId, statecode = DynamicsConstants.StateCode_Active };
+        account account = new() 
+        { 
+            accountid = cmd.ApplicantId,
+            address1_line1 = "MailingAddressLine1",
+            address1_line2 = "MailingAddressLine2",
+            address1_city = "MailingAddressCity",
+            address1_stateorprovince = "MailingAddressProvince",
+            address1_country = "MailingAddressCountry",
+            address1_postalcode = "abc123",
+            address2_line1 = "ResidentialAddressLine1",
+            address2_line2 = "ResidentialAddressLine2",
+            address2_city = "ResidentialAddressCity",
+            address2_stateorprovince = "ResidentialAddressProvince",
+            address2_country = "ResidentialAddressCountry",
+            address2_postalcode = "xyz789",
+            statecode = DynamicsConstants.StateCode_Active 
+        };
         _context.AddToaccounts(account);
         spd_licence pInvestigatorLicence = new() { spd_licenceid = pInvestigatorLicenceId };
         _context.AddTospd_licences(pInvestigatorLicence);
@@ -151,6 +167,18 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(100000000, app.spd_nologoorbranding);
         Assert.Equal(100000000, app.spd_requestdogs);
         Assert.Equal(cmd.AgreeToCompleteAndAccurate, app.spd_declaration);
+        Assert.Equal(account.address1_line1, app.spd_addressline1);
+        Assert.Equal(account.address1_line2, app.spd_addressline2);
+        Assert.Equal(account.address1_city, app.spd_city);
+        Assert.Equal(account.address1_stateorprovince, app.spd_province);
+        Assert.Equal(account.address1_country, app.spd_country);
+        Assert.Equal(account.address1_postalcode, app.spd_postalcode);
+        Assert.Equal(account.address2_line1, app.spd_residentialaddress1);
+        Assert.Equal(account.address2_line2, app.spd_residentialaddress2);
+        Assert.Equal(account.address2_city, app.spd_residentialcity);
+        Assert.Equal(account.address2_stateorprovince, app.spd_residentialprovince);
+        Assert.Equal(account.address2_country, app.spd_residentialcountry);
+        Assert.Equal(account.address2_postalcode, app.spd_residentialpostalcode);
         Assert.Null(app.spd_declarationdate);
         Assert.NotNull(app.spd_origin);
         Assert.NotNull(app.spd_payer);
