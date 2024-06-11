@@ -31,15 +31,44 @@ internal class ContactRepository : IContactRepository
 
     public async Task<ContactListResp> QueryAsync(ContactQry qry, CancellationToken ct)
     {
-        IQueryable<contact> contacts = _context.contacts.Expand(c => c.spd_Contact_Alias).Expand(c => c.spd_contact_spd_identity);
+        IQueryable<contact> contacts = _context.contacts
+            .Expand(c => c.spd_Contact_Alias)
+            .Expand(c => c.spd_contact_spd_identity);
 
         if (!qry.IncludeInactive)
             contacts = contacts.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
-        if (qry.UserEmail != null) contacts = contacts.Where(d => d.emailaddress1 == qry.UserEmail);
-        if (qry.FirstName != null) contacts = contacts.Where(d => d.firstname == qry.FirstName);
-        if (qry.LastName != null) contacts = contacts.Where(d => d.lastname == qry.LastName);
-        if (qry.MiddleName1 != null) contacts = contacts.Where(d => d.spd_middlename1 == qry.MiddleName1);
-        if (qry.MiddleName2 != null) contacts = contacts.Where(d => d.spd_middlename2 == qry.MiddleName2);
+        if (qry.UserEmail != null)
+        {
+            if (string.IsNullOrEmpty(qry.UserEmail))
+                contacts = contacts.Where(d => d.emailaddress1 == null || d.emailaddress1 == string.Empty);
+            else
+                contacts = contacts.Where(d => d.emailaddress1 == qry.UserEmail);
+        }
+        if (qry.FirstName != null)
+        {
+            if (string.IsNullOrEmpty(qry.FirstName))
+                contacts = contacts.Where(d => d.firstname == null || d.firstname == string.Empty);
+            else
+                contacts = contacts.Where(d => d.firstname == qry.FirstName);
+        }
+        if (qry.LastName != null)
+        {
+            contacts = contacts.Where(d => d.lastname == qry.LastName);
+        }
+        if (qry.MiddleName1 != null)
+        {
+            if (string.IsNullOrEmpty(qry.MiddleName1))
+                contacts = contacts.Where(d => d.spd_middlename1 == null || d.spd_middlename1 == string.Empty);
+            else
+                contacts = contacts.Where(d => d.spd_middlename1 == qry.MiddleName1);
+        }
+        if (qry.MiddleName2 != null)
+        {
+            if (string.IsNullOrEmpty(qry.MiddleName2))
+                contacts = contacts.Where(d => d.spd_middlename2 == null || d.spd_middlename2 == string.Empty);
+            else
+                contacts = contacts.Where(d => d.spd_middlename2 == qry.MiddleName2);
+        }
         if (qry.BirthDate != null)
         {
             var birthdate = new Microsoft.OData.Edm.Date(qry.BirthDate.Value.Year, qry.BirthDate.Value.Month, qry.BirthDate.Value.Day);
