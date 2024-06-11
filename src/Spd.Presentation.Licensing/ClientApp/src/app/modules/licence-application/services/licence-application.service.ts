@@ -74,14 +74,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicantId: new FormControl(null), // when authenticated, the applicant id
 		caseNumber: new FormControl(null), // placeholder to save info for display purposes
 
-		originalApplicationId: new FormControl(null),
-		originalLicenceId: new FormControl(null),
-		originalLicenceNumber: new FormControl(null),
-		originalExpiryDate: new FormControl(null),
-		originalLicenceTermCode: new FormControl(null),
-		originalBizTypeCode: new FormControl(null),
-		originalPhotoOfYourselfExpired: new FormControl(false),
-		originalDogAuthorizationExists: new FormControl(false),
+		originalLicenceData: this.originalLicenceFormGroup,
 
 		applicationPortalStatus: new FormControl(null),
 
@@ -565,7 +558,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.commonApplicationService.setApplicationTitle(
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
-					_resp.originalLicenceNumber
+					_resp.originalLicenceData.originalLicenceNumber
 				);
 
 				console.debug('[getLicenceWithSelectionAuthenticated] licenceFormGroup', this.licenceModelFormGroup.value);
@@ -893,13 +886,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
 				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
 
+				const originalLicenceData = {
+					originalApplicationId: accessCodeData.linkedLicenceAppId,
+					originalLicenceId: accessCodeData.linkedLicenceId,
+					originalLicenceNumber: accessCodeData.licenceNumber,
+					originalExpiryDate: accessCodeData.linkedExpiryDate,
+					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+				};
+
 				this.licenceModelFormGroup.patchValue(
 					{
-						originalApplicationId: accessCodeData.linkedLicenceAppId,
-						originalLicenceId: accessCodeData.linkedLicenceId,
-						originalLicenceNumber: accessCodeData.licenceNumber,
-						originalExpiryDate: accessCodeData.linkedExpiryDate,
-						originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+						originalLicenceData,
 						personalInformationData,
 					},
 					{ emitEvent: false }
@@ -1171,7 +1168,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
 			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBizTypeCode: userLicenceInformation?.bizTypeCode ?? null,
+			originalBizTypeCode: 'bizTypeCode' in profile ? profile.bizTypeCode : userLicenceInformation?.bizTypeCode,
 		};
 
 		const contactInformationData = {
@@ -1241,7 +1238,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
-				...originalLicenceData,
+				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
 				residentialAddress: { ...residentialAddress },
@@ -1668,7 +1665,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
-				originalBizTypeCode: soleProprietorData.bizTypeCode,
 				applicationPortalStatus: workerLicenceAppl.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
@@ -1755,8 +1751,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			criminalChargeDescription: null,
 		};
 
+		const originalLicenceData = resp.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
 		const photographOfYourselfData = { ...resp.photographOfYourselfData };
-		let originalPhotoOfYourselfExpired = false;
+		originalLicenceData.originalPhotoOfYourselfExpired = false;
 
 		if (resp.photographOfYourselfData.uploadedDateTime) {
 			const originalPhotoOfYourselfLastUpload = moment(resp.photographOfYourselfData.uploadedDateTime).startOf('day');
@@ -1764,9 +1763,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			// We require a new photo every 5 years. Please provide a new photo for your licence
 			const today = moment().startOf('day');
 			const yearsDiff = today.diff(originalPhotoOfYourselfLastUpload, 'years');
-			originalPhotoOfYourselfExpired = yearsDiff >= 5;
+			originalLicenceData.originalPhotoOfYourselfExpired = yearsDiff >= 5;
 
-			if (originalPhotoOfYourselfExpired) {
+			if (originalLicenceData.originalPhotoOfYourselfExpired) {
 				// set flag - user will be updating their photo
 				photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 			}
@@ -1774,10 +1773,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,
 		// clear attachments to force user to upload a new proof of qualification.
-		const originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
+		originalLicenceData.originalDogAuthorizationExists = resp.dogsAuthorizationData.useDogs === BooleanTypeCode.Yes;
 		const dogsPurposeFormGroup = resp.dogsAuthorizationData.dogsPurposeFormGroup;
 		let dogsAuthorizationData = {};
-		if (originalDogAuthorizationExists) {
+		if (originalLicenceData.originalDogAuthorizationExists) {
 			dogsAuthorizationData = {
 				useDogs: resp.dogsAuthorizationData.useDogs,
 				dogsPurposeFormGroup: {
@@ -1794,9 +1793,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				licenceAppId: null,
 				applicationTypeData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
-				originalPhotoOfYourselfExpired,
-				originalDogAuthorizationExists,
+				originalLicenceData,
 
 				soleProprietorData,
 				licenceTermData,
@@ -1820,6 +1817,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
+		const originalLicenceData = resp.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
 			attachments: [],
@@ -1842,8 +1842,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				mentalHealthConditionsData,
 				policeBackgroundData,
 				criminalHistoryData,
@@ -1860,6 +1860,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private applyReplacementDataUpdatesToModel(resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
+		const originalLicenceData = resp.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
 		const residentialAddress = {
 			isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
 		};
@@ -1868,8 +1871,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
 				residentialAddress: { ...residentialAddress },
 			},
 			{

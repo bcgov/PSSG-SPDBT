@@ -10,6 +10,7 @@ import { SwlContactInfo } from './swl-contact-info';
 import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
 export interface BizLicAppUpsertRequest {
+  agreeToCompleteAndAccurate?: null | boolean;
   applicantContactInfo?: ContactInfo;
   applicantIsBizManager?: null | boolean;
   applicationTypeCode?: ApplicationTypeCode;

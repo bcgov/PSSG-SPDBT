@@ -101,7 +101,7 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 
 	ngOnInit(): void {
 		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(
-			'originalPhotoOfYourselfExpired'
+			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 
 		if (!this.originalPhotoOfYourselfExpired) {

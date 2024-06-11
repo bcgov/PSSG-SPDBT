@@ -438,7 +438,7 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 		return this.permitModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.permitModelData.expiredLicenceData.expiryDate ?? '';
+		return this.permitModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get isCanadianCitizen(): string {
