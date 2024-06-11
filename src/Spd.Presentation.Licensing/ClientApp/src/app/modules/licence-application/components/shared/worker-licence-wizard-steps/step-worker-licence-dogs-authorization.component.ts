@@ -118,7 +118,7 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
 
 		this.originalDogAuthorizationExists = this.licenceApplicationService.licenceModelFormGroup.get(
-			'originalDogAuthorizationExists'
+			'originalLicenceData.originalDogAuthorizationExists'
 		)?.value;
 	}
 

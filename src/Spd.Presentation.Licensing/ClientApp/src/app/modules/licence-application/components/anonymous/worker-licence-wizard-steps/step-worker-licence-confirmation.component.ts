@@ -86,12 +86,16 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 		this.applicationTypeCode = this.licenceModelData.applicationTypeData?.applicationTypeCode;
 		if (this.applicationTypeCode === ApplicationTypeCode.Replacement) {
 			const workerLicenceTypeCode = this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
-			const bizTypeCode = this.licenceModelData.originalBizTypeCode;
-			const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
+			const originalLicenceData = this.licenceModelData.originalLicenceData;
 
 			const fee = this.commonApplicationService
-				.getLicenceTermsAndFees(workerLicenceTypeCode, this.applicationTypeCode, bizTypeCode, originalLicenceTermCode)
-				.filter((item) => item.licenceTermCode == originalLicenceTermCode);
+				.getLicenceTermsAndFees(
+					workerLicenceTypeCode,
+					this.applicationTypeCode,
+					originalLicenceData.originalBizTypeCode,
+					originalLicenceData.originalLicenceTermCode
+				)
+				.filter((item) => item.licenceTermCode == originalLicenceData.originalLicenceTermCode);
 
 			if (fee?.length > 0) {
 				this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
@@ -103,13 +107,13 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 		return this.licenceModelData.personalInformationData.cardHolderName;
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceNumber ?? '';
+		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalExpiryDate ?? '';
+		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceTermCode ?? '';
+		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 	get categoryList(): Array<WorkerCategoryTypeCode> {
 		const list: Array<WorkerCategoryTypeCode> = [];

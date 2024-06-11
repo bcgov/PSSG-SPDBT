@@ -770,8 +770,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 	private getSaveBodyBase(licenceModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = licenceModelFormValue.licenceAppId;
-		const originalApplicationId = licenceModelFormValue.originalApplicationId;
-		const originalLicenceId = licenceModelFormValue.originalLicenceId;
+		const originalLicenceData = { ...licenceModelFormValue.originalLicenceData };
 		const workerLicenceTypeData = { ...licenceModelFormValue.workerLicenceTypeData };
 		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
 		const soleProprietorData = { ...licenceModelFormValue.soleProprietorData };
@@ -1028,8 +1027,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		const body = {
 			licenceAppId,
-			originalApplicationId,
-			originalLicenceId,
+			originalApplicationId: originalLicenceData.originalApplicationId,
+			originalLicenceId: originalLicenceData.originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			//-----------------------------------
