@@ -69,12 +69,13 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
         }
+        await SetAddresses(cmd.ApplicantId, app, ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-
+        
         LinkOrganization(cmd.ApplicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
@@ -141,5 +142,31 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             return;
 
         _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licence_manager), licence);
+    }
+
+    private async Task SetAddresses(Guid accountId, spd_application app, CancellationToken ct)
+    {
+        IQueryable<account> accounts = _context.accounts
+                .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.accountid == accountId);
+
+        account? biz = await accounts.FirstOrDefaultAsync(ct);
+
+        if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
+
+        app.spd_addressline1 = biz.address1_line1;
+        app.spd_addressline2 = biz.address1_line2;
+        app.spd_city = biz.address1_city;
+        app.spd_province = biz.address1_stateorprovince;
+        app.spd_country = biz.address1_country;
+        app.spd_postalcode = biz.address1_postalcode;
+        app.spd_residentialaddress1 = biz.address2_line1;
+        app.spd_residentialaddress2 = biz.address2_line2;
+        app.spd_residentialcity = biz.address2_city;
+        app.spd_residentialprovince = biz.address2_stateorprovince;
+        app.spd_residentialcountry = biz.address2_country;
+        app.spd_residentialpostalcode = biz.address2_postalcode;
+
+        _context.UpdateObject(app);
     }
 }
