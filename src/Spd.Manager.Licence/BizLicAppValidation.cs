@@ -117,10 +117,11 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         
         RuleFor(r => r.Members.NonSwlControllingMembers)
             .ForEach(r => r
-                .Must(m => m.Surname.IsNullOrEmpty() != true))
+                .Must(m => m.Surname.IsNullOrEmpty() != true)
+                .Must(m => m.EmailAddress != null ? emailRegex.IsMatch(m.EmailAddress) : true ))
                 .WithMessage("Missing surname in Controlling members (not SWL)")
             .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null);
-        
+
         RuleFor(r => r.Members)
             .Must(r => r.SwlControllingMembers.Count() + r.NonSwlControllingMembers.Count() <= 20)
             .When(r => r.Members != null && r.Members.SwlControllingMembers != null && r.Members.NonSwlControllingMembers != null);
