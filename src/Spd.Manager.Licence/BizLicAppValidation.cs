@@ -112,13 +112,12 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .ForEach(r => r
                 .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
             .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
-            .WithMessage("Missing infomration in Controlling members (SWL)");
+            .WithMessage("Missing licence Id in Controlling members (SWL)");
         
         RuleFor(r => r.Members.NonSwlControllingMembers)
             .ForEach(r => r
-                .Must(m => m.Surname.IsNullOrEmpty() != true)
-                .Must(m => m.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(m.EmailAddress)))
-                .WithMessage("Missing information in Controlling members (not SWL)")
+                .Must(m => m.Surname.IsNullOrEmpty() != true))
+                .WithMessage("Missing surname in Controlling members (not SWL)")
             .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null);
         
         RuleFor(r => r.Members)
