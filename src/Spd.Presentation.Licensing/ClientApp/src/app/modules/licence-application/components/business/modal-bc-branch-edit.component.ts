@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BranchResponse } from './common-business-bc-branches.component';
@@ -28,14 +27,7 @@ export interface UserDialogData {
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Manager's Phone Number <span class="optional-label">(optional)</span></mat-label>
-							<input
-								matInput
-								formControlName="branchPhoneNumber"
-								[mask]="phoneMask"
-								[showMaskTyped]="false"
-								[errorStateMatcher]="matcher"
-							/>
-							<mat-error *ngIf="form.get('branchPhoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
+							<input matInput formControlName="branchPhoneNumber" [errorStateMatcher]="matcher" maxlength="15" />
 						</mat-form-field>
 					</div>
 
@@ -82,7 +74,6 @@ export class ModalBcBranchEditComponent implements OnInit {
 
 	form = this.businessApplicationService.branchInBcFormGroup;
 
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(

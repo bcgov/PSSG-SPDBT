@@ -133,7 +133,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
 										<div class="summary-text-data">
-											{{ supervisorPhoneNumber | mask : phoneMask }}
+											{{ supervisorPhoneNumber }}
 										</div>
 									</div>
 								</div>
@@ -225,7 +225,6 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	permitModelData: any = {};
 	showEmployerInformation = false;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 

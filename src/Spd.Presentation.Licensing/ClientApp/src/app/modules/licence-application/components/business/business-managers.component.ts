@@ -105,7 +105,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Phone Number</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Phone Number:</span>
-										{{ manager.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}
+										{{ manager.phoneNumber || '' | default }}
 									</mat-cell>
 								</ng-container>
 

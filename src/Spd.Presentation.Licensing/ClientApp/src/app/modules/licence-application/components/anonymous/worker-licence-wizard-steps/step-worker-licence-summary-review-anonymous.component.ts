@@ -610,7 +610,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | default }}
 													</div>
 												</div>
 											</div>

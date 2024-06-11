@@ -175,7 +175,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Email Address</div>
 													<div class="summary-text-data">
-														{{ supervisorPhoneNumber | mask : constants.phone.displayMask }}
+														{{ supervisorPhoneNumber | default }}
 													</div>
 												</div>
 											</div>
@@ -442,7 +442,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | default }}
 													</div>
 												</div>
 											</div>

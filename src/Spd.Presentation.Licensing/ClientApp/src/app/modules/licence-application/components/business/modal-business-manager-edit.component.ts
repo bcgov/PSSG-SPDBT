@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -46,15 +45,8 @@ export interface UserDialogData {
 					<div class="col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
-							<input
-								matInput
-								formControlName="phoneNumber"
-								[mask]="phoneMask"
-								[showMaskTyped]="false"
-								[errorStateMatcher]="matcher"
-							/>
+							<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" maxlength="15" />
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')">This must be 10 digits</mat-error>
 						</mat-form-field>
 					</div>
 
@@ -97,7 +89,6 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 
 	form = this.businessApplicationService.managerFormGroup;
 
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	matcher = new FormErrorStateMatcher();
 
 	constructor(

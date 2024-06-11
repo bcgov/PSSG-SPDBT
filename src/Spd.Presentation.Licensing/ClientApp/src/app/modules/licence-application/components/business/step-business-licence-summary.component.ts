@@ -240,7 +240,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 												<div class="col-lg-3 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ businessManagerPhoneNumber | mask : constants.phone.displayMask | default }}
+														{{ businessManagerPhoneNumber | default }}
 													</div>
 												</div>
 											</div>
@@ -265,7 +265,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 													<div class="col-lg-3 col-md-12">
 														<div class="text-label d-block text-muted">Phone Number</div>
 														<div class="summary-text-data">
-															{{ yourContactPhoneNumber | mask : constants.phone.displayMask | default }}
+															{{ yourContactPhoneNumber | default }}
 														</div>
 													</div>
 												</div>
