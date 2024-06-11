@@ -16,7 +16,10 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .NotEmpty()
             .When(r => r.HasExpiredLicence == true);
         RuleFor(r => r.NoBranding).NotEmpty();
-        RuleFor(r => r.UseDogs).NotEmpty();
+        RuleFor(r => r.BizTypeCode).NotEmpty();
+        RuleFor(r => r.UseDogs)
+            .NotEmpty()
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
         RuleFor(r => r.ApplicantIsBizManager).NotEmpty();
         RuleFor(r => r.BizManagerContactInfo)
             .Must(r => r.GivenName.IsNullOrEmpty() != true && 
@@ -32,7 +35,6 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .When(r => r.ApplicantIsBizManager == false);
         RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
-        RuleFor(r => r.BizTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode)
             .NotEmpty()
             .Must(r => r == Shared.LicenceTermCode.OneYear || r == Shared.LicenceTermCode.TwoYears || r == Shared.LicenceTermCode.ThreeYears);
@@ -60,10 +62,11 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         // Documents required for branding
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+            .When(r => r.NoBranding == false)
             .WithMessage("Missing business branding document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
-            .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
+            .When(r => r.NoBranding == false && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
             .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
 
         // Document required for business insurance
@@ -78,28 +81,31 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         // Document required for "Armoured car guard"
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
-            .WithMessage("Missing armour car guard registrar document.");
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
+            .WithMessage("Missing armoured car guard registrar document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) == 1)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) > 0)
-            .WithMessage("No more than 1 armour car guard registrar document is allowed.");
+            .WithMessage("No more than 1 armoured car guard registrar document is allowed.");
 
         // Document required for "Security guard"
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard))
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.UseDogs == true)
             .WithMessage("Missing security dog certificate document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) < 2)
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) 
+                && r.UseDogs == true
+                && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
             .WithMessage("No more than 1 dog certificate is allowed.");
 
         // Private investigator
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
             .Must(r => r.LicenceId != null && r.LicenceId != Guid.Empty)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator) &&
-                (r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && 
-                 r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor))
+                 r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
+                 r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor)
             .WithMessage("Missing private investigator information.");
 
         // Controlling members
@@ -107,24 +113,20 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .ForEach(r => r
                 .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
             .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
-            .WithMessage("Missing infomration in Controlling members (SWL)");
-        RuleFor(r => r.Members.SwlControllingMembers)
-           .Must(r => r.Count() <= 20)
-           .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
-           .WithMessage("No more than 20 Controlling members (SWL) are allowed");
-
+            .WithMessage("Missing licence Id in Controlling members (SWL)");
+        
         RuleFor(r => r.Members.NonSwlControllingMembers)
             .ForEach(r => r
                 .Must(m => m.Surname.IsNullOrEmpty() != true)
-                .Must(m => m.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(m.EmailAddress)))
-                .WithMessage("Missing information in Controlling members (not SWL)")
+                .Must(m => m.EmailAddress != null ? emailRegex.IsMatch(m.EmailAddress) : true ))
+                .WithMessage("Missing surname in Controlling members (not SWL)")
             .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null);
-        RuleFor(r => r.Members.NonSwlControllingMembers)
-           .Must(r => r.Count() <= 20)
-           .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null)
-           .WithMessage("No more than 20 Controlling members (not SWL) are allowed");
 
-        //Employees
+        RuleFor(r => r.Members)
+            .Must(r => r.SwlControllingMembers.Count() + r.NonSwlControllingMembers.Count() <= 20)
+            .When(r => r.Members != null && r.Members.SwlControllingMembers != null && r.Members.NonSwlControllingMembers != null);
+
+        // Employees
         RuleFor(r => r.Members.Employees)
             .ForEach(r => r
                 .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
