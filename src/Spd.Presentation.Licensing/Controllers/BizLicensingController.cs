@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
+using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -153,10 +154,32 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/{bizId}/{applicationId}/members")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] Members members, CancellationToken ct)
+        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] MembersRequest members, CancellationToken ct)
         {
             await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members), ct);
             return Ok();
+        }
+
+        ///<summary>
+        /// Uploading file only save files in cache, the files are not connected to the biz and application yet.
+        /// for business, this is for controlling member file upload.
+        /// </summary>
+        /// <param name="fileUploadRequest"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business-licence-application/{bizId}/{applicationId}/members/files")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBcsc")]
+        [RequestSizeLimit(26214400)] //25M
+        public async Task<Guid> UploadControllingMemberFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        {
+            VerifyFiles(fileUploadRequest.Documents);
+
+            CreateDocumentInCacheCommand command = new(fileUploadRequest);
+            var newFileInfos = await _mediator.Send(command, ct);
+            Guid fileKeyCode = Guid.NewGuid();
+            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            return fileKeyCode;
         }
 
         /// <summary>

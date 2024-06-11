@@ -99,6 +99,11 @@ public record Members
     public IEnumerable<SwlContactInfo> Employees { get; set; }
 };
 
+public record MembersRequest : Members
+{
+    public Guid? ControllingMemberDocumentKeyCode { get; set; }
+}
+
 public record UpsertBizMembersCommand(
     Guid BizId,
     Guid ApplicationId,
