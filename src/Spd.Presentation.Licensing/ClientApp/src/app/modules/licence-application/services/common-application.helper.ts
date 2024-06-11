@@ -30,6 +30,17 @@ export abstract class CommonApplicationHelper {
 		}),
 	});
 
+	originalLicenceFormGroup: FormGroup = this.formBuilder.group({
+		originalApplicationId: new FormControl(null),
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+		originalLicenceTermCode: new FormControl(null),
+		originalBizTypeCode: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false),
+		originalDogAuthorizationExists: new FormControl(false),
+	});
+
 	linkAccountCodeFormGroup: FormGroup = this.formBuilder.group({
 		licenceNumber: new FormControl('', [FormControlValidators.required]),
 		accessCode: new FormControl('', [FormControlValidators.required]),
