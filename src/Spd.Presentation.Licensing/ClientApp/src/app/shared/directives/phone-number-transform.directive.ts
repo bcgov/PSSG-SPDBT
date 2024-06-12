@@ -1,5 +1,4 @@
 import { Directive, ElementRef, HostListener, OnInit } from '@angular/core';
-import { NgControl } from '@angular/forms';
 import { FormatPhoneNumberPipe } from '@app/shared/pipes/phone-number.pipe';
 
 @Directive({
@@ -8,11 +7,7 @@ import { FormatPhoneNumberPipe } from '@app/shared/pipes/phone-number.pipe';
 export class PhoneNumberTransformDirective implements OnInit {
 	private el: any;
 
-	constructor(
-		public ngControl: NgControl,
-		private elementRef: ElementRef,
-		private formatPhoneNumberPipe: FormatPhoneNumberPipe
-	) {
+	constructor(private elementRef: ElementRef, private formatPhoneNumberPipe: FormatPhoneNumberPipe) {
 		this.el = this.elementRef.nativeElement;
 	}
 
