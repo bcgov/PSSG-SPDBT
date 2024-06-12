@@ -57,7 +57,7 @@ internal abstract class LicenceAppManagerBase
     }
 
     //upload file from cache to main bucket
-    protected async Task UploadNewDocsAsync(PersonalLicenceAppBase request,
+    protected async Task UploadNewDocsAsync(IEnumerable<DocumentExpiredInfo> documentExpiredInfos,
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? licenceAppId,
         Guid? contactId,
@@ -88,8 +88,7 @@ internal abstract class LicenceAppManagerBase
                 }
                 fileCmd.ApplicantId = contactId;
                 fileCmd.ApplicationId = licenceAppId;
-                fileCmd.ExpiryDate = request?
-                        .DocumentExpiredInfos?
+                fileCmd.ExpiryDate = documentExpiredInfos?
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
                 fileCmd.TempFile = tempFile;
