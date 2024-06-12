@@ -59,12 +59,11 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
             if (cmd.OriginalLicenceId != null)
             {
-                // * Check with Peggy
-                SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+                SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
             }
             else
             {
-
+                throw new ArgumentException("For replace, renew or update, original licence id cannot be null.");
             }
         }
 
