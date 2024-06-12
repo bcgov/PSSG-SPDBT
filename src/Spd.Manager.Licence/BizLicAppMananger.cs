@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
@@ -112,7 +113,32 @@ internal class BizLicAppMananger :
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand cmd, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        BizLicAppSubmitRequest request = cmd.LicenceRequest;
+        if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
+            throw new ArgumentException("should be a renewal request");
+
+        //validation: check if original licence meet renew condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+        LicenceResp originalLic = originalLicences.Items.First();
+
+        //check Renew your existing permit before it expires, within 90 days of the expiry date.
+        if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
+
+        var existingFiles = await GetExistingFileInfo(
+            cmd.LicenceRequest.OriginalApplicationId,
+            cmd.LicenceRequest.PreviousDocumentIds,
+            cancellationToken);
+        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
+            cmd.LicAppFileInfos.ToList(),
+            cancellationToken);
+
+        return null;
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand cmd, CancellationToken cancellationToken)
@@ -185,5 +211,25 @@ internal class BizLicAppMananger :
         BizContactUpsertCmd upsertCmd = new(bizId, appId, contacts);
         await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
         return default;
+    }
+
+    private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,
+        IList<LicAppFileInfo> newFileInfos,
+        CancellationToken ct)
+    {
+        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
+        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+        if (request.PreviousDocumentIds != null)
+        {
+            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
+            .Select(f => new LicAppFileInfo()
+            {
+                FileName = f.FileName ?? String.Empty,
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
+            }).ToList();
+        }
+
+
     }
 }
