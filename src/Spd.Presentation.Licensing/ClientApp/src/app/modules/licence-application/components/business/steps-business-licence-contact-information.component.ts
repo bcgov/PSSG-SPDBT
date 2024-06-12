@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '../../services/common-application.service';
+import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 
 @Component({
-	selector: 'app-steps-business-licence-contact-information-new',
+	selector: 'app-steps-business-licence-contact-information',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
@@ -24,7 +24,7 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceContactInformationNewComponent extends BaseWizardStepComponent {
+export class StepsBusinessLicenceContactInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_MANAGER_INFORMATION = 1;
 
 	@Input() isFormValid!: boolean;

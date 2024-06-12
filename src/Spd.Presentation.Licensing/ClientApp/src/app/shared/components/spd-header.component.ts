@@ -21,13 +21,11 @@ import { Subscription } from 'rxjs';
 			</div>
 			<span style="flex: 1 1 auto;"></span>
 
+			<!-- <mat-chip-option class="me-3" *ngIf="env" disabled>{{ env }}</mat-chip-option> -->
+
 			<div *ngIf="loggedInUserDisplay">
-				<button mat-button [matMenuTriggerFor]="menu" class="login-user-menu-button w-auto" style="font-size: inherit;">
-					<mat-icon>more_vert</mat-icon> <span class="d-none d-sm-block">{{ loggedInUserDisplay }}</span>
-				</button>
-				<mat-menu #menu="matMenu">
-					<button mat-menu-item (click)="onLogout()">Logout</button>
-				</mat-menu>
+				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
+				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
 			</div>
 		</mat-toolbar>
 	`,
@@ -53,6 +51,11 @@ import { Subscription } from 'rxjs';
 				line-height: 20px;
 			}
 
+			.logout-button {
+				vertical-align: middle;
+				cursor: pointer;
+			}
+
 			span.mobile {
 				display: none;
 			}
@@ -73,10 +76,6 @@ import { Subscription } from 'rxjs';
 				border-right-color: gray;
 			}
 
-			.login-user-menu-button:hover {
-				background-color: var(--color-primary-dark);
-			}
-
 			@media (max-width: 767px) {
 				.mat-toolbar-row,
 				.mat-toolbar-single-row {
@@ -91,6 +90,8 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 	mobileTitle = '';
 	loggedInUserDisplay: string | null = null;
 
+	// env: string | null | undefined = null; // TODO add display of env
+
 	private applicationTitleSubscription!: Subscription;
 
 	constructor(
@@ -98,6 +99,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private commonApplicationService: CommonApplicationService,
+		// private configService: ConfigService,
 		private utilService: UtilService
 	) {}
 
@@ -111,6 +113,8 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 
 			this.getUserInfo();
 		});
+
+		// this.env = this.configService.isProduction() ? null : this.configService.configs?.environment;
 
 		this.applicationTitleSubscription = this.commonApplicationService.applicationTitle$.subscribe(
 			(_resp: [string, string]) => {

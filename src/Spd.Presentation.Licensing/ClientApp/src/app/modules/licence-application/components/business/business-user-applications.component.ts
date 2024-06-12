@@ -39,6 +39,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 						</div>
 					</div>
+
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<ng-container *ngFor="let msg of errorMessages; let i = index">
@@ -63,6 +64,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						[applicationIsInProgress]="applicationIsInProgress"
 						[isSoleProprietor]="isSoleProprietor"
 						[lostLicenceDaysText]="lostLicenceDaysText"
+						(manageControllingMembers)="onManageMembersAndEmployees($event)"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenew($event)"
@@ -151,7 +153,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				// console.debug('businessApplicationsList', businessApplicationsList);
 				// console.debug('businessProfile', businessProfile);
 
-				this.isSoleProprietor = !this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+				this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
 
 				// User Licences/Permits
 				const activeLicences = businessLicencesList.filter(
@@ -220,7 +222,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onReplace(licence: MainLicenceResponse): void {
-		// if (this.applicationIsInProgress) return; TODO Add back
+		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
 			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement, licence)
@@ -237,7 +239,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onRenew(licence: MainLicenceResponse): void {
-		// if (this.applicationIsInProgress) return; TODO Add back
+		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
 			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal, licence)
@@ -254,7 +256,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onUpdate(licence: MainLicenceResponse): void {
-		// if (this.applicationIsInProgress) return; TODO Add back
+		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
 			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update, licence)

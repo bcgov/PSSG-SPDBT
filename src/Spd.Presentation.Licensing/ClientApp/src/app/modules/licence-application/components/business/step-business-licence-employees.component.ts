@@ -8,7 +8,7 @@ import { CommonEmployeesComponent } from './common-employees.component';
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
-					title="Add all employees to this application?"
+					title="Add all employees to this application"
 					subtitle="Your business must have valid security worker licence holders in B.C. that support the various licence categories the business wishes to be licensed for. If your controlling members don't meet this requirement, add employees who do."
 				></app-step-title>
 

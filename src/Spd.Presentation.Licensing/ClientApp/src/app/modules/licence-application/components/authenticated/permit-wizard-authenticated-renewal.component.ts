@@ -3,7 +3,8 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -221,7 +222,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 
 	onNextPayStep(): void {
 		this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
-			next: (_resp: any) => {
+			next: (_resp: StrictHttpResponse<PermitAppCommandResponse>) => {
 				this.hotToastService.success('Your permit renewal has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);
 			},
