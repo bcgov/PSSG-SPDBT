@@ -14,6 +14,7 @@ import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
 	declarations: [AppComponent, LandingComponent],
@@ -37,7 +38,10 @@ import { SharedModule } from './shared/shared.module';
 		ApiModule.forRoot({ rootUrl: '' }),
 		SharedModule,
 	],
-	providers: [provideHotToastConfig()],
+  providers: [
+    provideHotToastConfig(),
+    { provide: APP_BASE_HREF, useValue: (window as { [key: string]: any })['_app_base'] || '/' }
+  ],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
