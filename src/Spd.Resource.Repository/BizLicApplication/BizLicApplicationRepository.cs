@@ -110,7 +110,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         await SetAddresses(cmd.ApplicantId, app, ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-            SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+            SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
         
