@@ -200,7 +200,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
@@ -272,7 +272,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isSoleProprietor">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
@@ -403,7 +403,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
-	isSoleProprietor = false;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -414,7 +413,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.businessModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
-		this.setIsSoleProprietor();
 	}
 
 	onEditStep(stepNumber: number) {
@@ -425,11 +423,10 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
-		this.setIsSoleProprietor();
 	}
 
-	private setIsSoleProprietor() {
-		this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(this.bizTypeCode!);
+	get isBusinessLicenceSoleProprietor(): string {
+		return this.businessModelData.isBusinessLicenceSoleProprietor ?? false;
 	}
 
 	get hasExpiredLicence(): string {

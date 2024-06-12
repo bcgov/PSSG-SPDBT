@@ -1,6 +1,7 @@
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BizTypeCode, LicenceStatusCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from './form-control.validators';
 
 export class FormGroupValidators {
@@ -65,9 +66,8 @@ export class FormGroupValidators {
 
 			if (checkControl?.value === BooleanTypeCode.Yes && control?.value === PoliceOfficerRoleCode.PoliceOfficer) {
 				return { nopoliceofficer: true };
-			} else {
-				return null;
 			}
+			return null;
 		};
 	}
 
@@ -82,10 +82,37 @@ export class FormGroupValidators {
 			) {
 				if (control?.value != LicenceStatusCode.Active) {
 					return { licencemustbeactive: true };
-				} else {
-					return null;
 				}
 			}
+
+			return null;
+		};
+	}
+
+	public static controllingmembersValidator(controlArrayName1: string, controlArrayName2: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control1 = controls.get(controlArrayName1);
+			const control2 = controls.get(controlArrayName2);
+
+			const value1 = control1?.value;
+			const value2 = control2?.value;
+
+			const count = value1.length + value2.length;
+
+			if (count === 0) return { controllingmembersmin: true };
+			if (count > SPD_CONSTANTS.maxCount.controllingMembers) return { controllingmembersmax: true };
+
+			return null;
+		};
+	}
+
+	public static employeesValidator(controlArrayName: string): ValidatorFn {
+		return (controls: AbstractControl) => {
+			const control = controls.get(controlArrayName);
+			const value = control?.value;
+			const count = value.length;
+
+			if (count > SPD_CONSTANTS.maxCount.employees) return { employeesmax: true };
 
 			return null;
 		};
@@ -103,9 +130,8 @@ export class FormGroupValidators {
 			if (control?.value !== checkControl?.value) {
 				controls.get(checkControlName)?.setErrors({ nomatch: true });
 				return { nomatch: true };
-			} else {
-				return null;
 			}
+			return null;
 		};
 	}
 

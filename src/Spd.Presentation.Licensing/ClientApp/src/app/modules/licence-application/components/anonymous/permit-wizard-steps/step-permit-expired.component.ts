@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
@@ -25,22 +25,16 @@ import { CommonExpiredLicenceComponent } from '../../shared/step-components/comm
 	`,
 	styles: [],
 })
-export class StepPermitExpiredComponent implements OnInit, PermitChildStepperStepComponent {
+export class StepPermitExpiredComponent implements PermitChildStepperStepComponent {
 	form: FormGroup = this.permitApplicationService.expiredLicenceFormGroup;
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	@Input() isLoggedIn!: boolean;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
 	@ViewChild(CommonExpiredLicenceComponent)
 	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
-
-	ngOnInit(): void {
-		this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

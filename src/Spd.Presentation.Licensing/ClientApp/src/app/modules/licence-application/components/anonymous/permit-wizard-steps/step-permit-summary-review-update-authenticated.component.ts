@@ -283,15 +283,13 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		}
 
 		const originalLicenceData = this.permitModelData.originalLicenceData;
-		const bizTypeCode = originalLicenceData.originalBizTypeCode;
-		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				ApplicationTypeCode.Update,
-				bizTypeCode,
-				originalLicenceTermCode
+				originalLicenceData.originalBizTypeCode,
+				originalLicenceData.originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
