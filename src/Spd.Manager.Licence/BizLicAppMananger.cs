@@ -138,7 +138,35 @@ internal class BizLicAppMananger :
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
 
-        return null;
+        CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
+        BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+
+        // * Check with Peggy
+        //await UploadNewDocsAsync(request.DocumentExpiredInfos,
+        //        cmd.LicAppFileInfos,
+        //        response?.LicenceAppId,
+        //        response?.ContactId,
+        //        null,
+        //        null,
+        //        null,
+        //        null,
+        //        cancellationToken);
+
+        if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    cancellationToken);
+            }
+        }
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+
+        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand cmd, CancellationToken cancellationToken)
