@@ -858,9 +858,8 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 		const originalLicenceData = this.licenceModelData.originalLicenceData;
 
-		const applicationTypeCode = this.applicationTypeCode;
 		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
-		if (applicationTypeCode === ApplicationTypeCode.New) {
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
 		}
 

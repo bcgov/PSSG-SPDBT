@@ -19,7 +19,7 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-new',
+	selector: 'app-business-licence-wizard-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -110,13 +110,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 	`,
 	styles: [],
 })
-export class BusinessLicenceWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
-	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 2;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -124,7 +124,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	step4Complete = false;
 
 	isFormValid = false;
-	showSaveAndExit = false;
+	showSaveAndExit = false; // Always false for renewals
 	nonSwlControllingMembersExist = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
@@ -183,8 +183,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.nonSwlControllingMembersExist = membersWithoutSwl?.length > 0;
 
 				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
 
 				this.updateCompleteStatus();
 			}

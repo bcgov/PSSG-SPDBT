@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LicenceFeeResponse } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
@@ -58,6 +58,10 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() bizTypeCode!: BizTypeCode;
+
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
@@ -69,26 +73,14 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 	}
 
 	get termCodes(): Array<LicenceFeeResponse> {
-		const workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
-
-		const applicationTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'applicationTypeData.applicationTypeCode'
-		)?.value;
-
-		const bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'businessInformationData.bizTypeCode'
-		)?.value;
-
-		if (!workerLicenceTypeCode || !applicationTypeCode || !bizTypeCode) {
+		if (!this.workerLicenceTypeCode || !this.applicationTypeCode || !this.bizTypeCode) {
 			return [];
 		}
 
 		return this.commonApplicationService.getLicenceTermsAndFees(
-			workerLicenceTypeCode,
-			applicationTypeCode,
-			bizTypeCode
+			this.workerLicenceTypeCode,
+			this.applicationTypeCode,
+			this.bizTypeCode
 		);
 	}
 

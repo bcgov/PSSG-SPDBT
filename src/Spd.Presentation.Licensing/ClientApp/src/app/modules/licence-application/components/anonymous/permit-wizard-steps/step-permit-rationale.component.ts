@@ -60,7 +60,8 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 
 	form: FormGroup = this.permitApplicationService.permitRationaleFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -81,15 +82,12 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 	// TODO Show only if permit type = Body Armour Permit 90-day exemption AND reason = imminent risk
 
 	ngOnInit(): void {
-		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
 		const name =
-			workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
-		const workerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
+			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
+		const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 
 		this.documentType =
-			workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
+			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 				? LicenceDocumentTypeCode.BodyArmourRationale
 				: LicenceDocumentTypeCode.ArmouredVehicleRationale;
 

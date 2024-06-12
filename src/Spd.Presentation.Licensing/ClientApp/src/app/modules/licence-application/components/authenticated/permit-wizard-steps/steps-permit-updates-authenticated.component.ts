@@ -66,7 +66,10 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
+				<app-step-permit-rationale
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-rationale>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
