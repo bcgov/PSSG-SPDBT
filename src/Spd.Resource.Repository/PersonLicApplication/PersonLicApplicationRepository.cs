@@ -45,7 +45,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             {
                 throw new ArgumentException("for replace, renew or update, original application id cannot be null");
             }
-
+            
             if (cmd.OriginalLicenceId != null)
             {
                 SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.OriginalLicenceId, app);
