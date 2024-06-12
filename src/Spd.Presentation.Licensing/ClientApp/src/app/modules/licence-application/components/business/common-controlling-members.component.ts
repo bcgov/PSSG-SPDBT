@@ -47,7 +47,13 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				</mat-expansion-panel-header>
 
 				<form [formGroup]="form" novalidate>
-					<div class="row mt-4" *ngIf="controllingMembersWithSwlExist">
+					<ng-container *ngIf="!controllingMembersExist">
+						<div class="mt-3">
+							<app-alert type="info" icon=""> No controlling members exist </app-alert>
+						</div>
+					</ng-container>
+
+					<div class="row mt-4 mb-3" *ngIf="controllingMembersWithSwlExist">
 						<div class="col-12">
 							<div class="mb-2 text-primary-color">Controlling Members with a Security Worker Licence:</div>
 							<mat-table [dataSource]="dataSourceWithSWL">
@@ -106,18 +112,20 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</div>
 					</div>
 
-					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
-						<ng-container *ngIf="!controllingMembersWithSwlExist">
-							<div class="mt-2 mb-3">No controlling members with a Security Worker Licence exist</div>
-						</ng-container>
-						<div class="col-md-12" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
-							<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithSWL()">
+					<div class="row" *ngIf="!isMaxNumberOfControllingMembers">
+						<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
+							<a
+								class="large"
+								tabindex="0"
+								(click)="onAddMemberWithSWL()"
+								(keydown)="onKeydownAddMemberWithSWL($event)"
+							>
 								Add Member with a Security Worker Licence
-							</button>
+							</a>
 						</div>
 					</div>
 
-					<mat-divider class="mat-divider-primary my-2"></mat-divider>
+					<mat-divider class="mat-divider my-2"></mat-divider>
 
 					<div class="row mt-4" *ngIf="controllingMembersWithoutSwlExist">
 						<div class="col-12">
@@ -179,9 +187,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 					</div>
 
 					<div class="row mt-3">
-						<ng-container *ngIf="!controllingMembersWithoutSwlExist">
-							<div class="mt-2 mb-3">No controlling members without a Security Worker Licence exist</div>
-						</ng-container>
 						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
 							<div class="col-12">
 								<app-alert type="warning" icon="warning">
@@ -190,10 +195,15 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</div>
 						</ng-container>
 						<ng-template #CanAddMember2>
-							<div class="col-md-12" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
-								<button mat-flat-button color="primary" class="large mb-2" (click)="onAddMemberWithoutSWL()">
+							<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
+								<a
+									class="large"
+									tabindex="0"
+									(click)="onAddMemberWithoutSWL()"
+									(keydown)="onKeydownAddMemberWithoutSWL($event)"
+								>
 									Add Member without a Security Worker Licence
-								</button>
+								</a>
 							</div>
 						</ng-template>
 					</div>
@@ -222,6 +232,13 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							>This is required</mat-error
 						>
 					</div>
+
+					<div
+						class="mt-3"
+						*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('controllingmembersmin')"
+					>
+						<mat-error class="mat-option-error">At least one controlling member is required</mat-error>
+					</div>
 				</form>
 			</mat-expansion-panel>
 		</mat-accordion>
@@ -248,7 +265,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 })
 export class CommonControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	maxNumberOfMembers = SPD_CONSTANTS.maxCount.controllingMembers;
 
 	form = this.businessApplicationService.controllingMembersFormGroup;
 
@@ -338,12 +354,24 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			});
 	}
 
+	onKeydownAddMemberWithSWL(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onAddMemberWithSWL();
+	}
+
 	onEditMemberWithoutSWL(member: any): void {
 		this.memberDialogWithoutSWL(member, false);
 	}
 
 	onAddMemberWithoutSWL(): void {
 		this.memberDialogWithoutSWL({}, true);
+	}
+
+	onKeydownAddMemberWithoutSWL(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onAddMemberWithoutSWL();
 	}
 
 	onFileUploaded(file: File): void {
@@ -454,6 +482,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 	get membersWithoutSwlList(): FormArray {
 		return <FormArray>this.form.get('membersWithoutSwl');
+	}
+	get controllingMembersExist(): boolean {
+		return this.dataSourceWithSWL.data.length > 0 || this.dataSourceWithoutSWL.data.length > 0;
 	}
 	get controllingMembersWithSwlExist(): boolean {
 		return this.dataSourceWithSWL.data.length > 0;

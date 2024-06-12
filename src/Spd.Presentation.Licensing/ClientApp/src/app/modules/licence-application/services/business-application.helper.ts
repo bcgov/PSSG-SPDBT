@@ -292,13 +292,19 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 					'attachments',
 					(form) => form.get('attachmentIsRequired')?.value
 				),
+				FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl'),
 			],
 		}
 	);
 
-	employeesFormGroup: FormGroup = this.formBuilder.group({
-		employees: this.formBuilder.array([]),
-	});
+	employeesFormGroup: FormGroup = this.formBuilder.group(
+		{
+			employees: this.formBuilder.array([]),
+		},
+		{
+			validators: [FormGroupValidators.employeesValidator('employees')],
+		}
+	);
 
 	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({ // TODO needed?
 	// 	attachments: new FormControl([], [Validators.required]),
@@ -474,6 +480,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		const body = {
 			bizId,
+			bizTypeCode,
 			licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,

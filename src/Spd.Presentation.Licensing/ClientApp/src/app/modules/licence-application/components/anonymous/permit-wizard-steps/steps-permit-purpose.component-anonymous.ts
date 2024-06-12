@@ -38,7 +38,10 @@ import { StepPermitReasonComponent } from './step-permit-reason.component';
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
+				<app-step-permit-rationale
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-rationale>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

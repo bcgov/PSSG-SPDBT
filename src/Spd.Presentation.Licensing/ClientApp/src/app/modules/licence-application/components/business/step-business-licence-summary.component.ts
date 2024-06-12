@@ -200,7 +200,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isSoleProprietor">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
