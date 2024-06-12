@@ -232,7 +232,7 @@ namespace Spd.Manager.Screening
                     result = await _portalUserRepository.ManageAsync(updateUserCmd, ct);
                 }
                 var response = _mapper.Map<IdirUserProfileResponse>(result);
-                response.OrgName = idirDetail.MinistryName;
+                response.OrgName = orgId == SpdConstants.BcGovOrgId ? null : idirDetail.MinistryName;
                 response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
                 response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
