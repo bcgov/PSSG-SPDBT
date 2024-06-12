@@ -10,7 +10,6 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -610,7 +609,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | formatPhoneNumber }}
 													</div>
 												</div>
 											</div>
@@ -744,7 +743,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit {
 	licenceModelData: any = {};
 
-	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;

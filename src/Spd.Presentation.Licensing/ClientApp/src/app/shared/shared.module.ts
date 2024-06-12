@@ -26,10 +26,12 @@ import { SpdHeaderComponent } from './components/spd-header.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { WizardFooterComponent } from './components/wizard-footer.component';
 import { WizardOutsideFooterComponent } from './components/wizard-outside-footer.component';
+import { PhoneNumberTransformDirective } from './directives/phone-number-transform.directive';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
 import { OptionsPipe } from './pipes/options.pipe';
+import { FormatPhoneNumberPipe } from './pipes/phone-number.pipe';
 import { YesNoPipe } from './pipes/yes-no.pipe';
 
 const SHARED_COMPONENTS = [
@@ -47,8 +49,8 @@ const SHARED_COMPONENTS = [
 	FullnamePipe,
 	YesNoPipe,
 	FormatDatePipe,
+	FormatPhoneNumberPipe,
 	OptionsPipe,
-	FormatDatePipe,
 	CaptchaV2Component,
 	FileUploadComponent,
 	AccessDeniedComponent,
@@ -61,6 +63,7 @@ const SHARED_COMPONENTS = [
 	ModalFingerprintTearOffComponent,
 	WizardFooterComponent,
 	WizardOutsideFooterComponent,
+	PhoneNumberTransformDirective,
 ];
 
 @NgModule({
@@ -76,7 +79,15 @@ const SHARED_COMPONENTS = [
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
-	providers: [provideNgxMask(), NgxMaskPipe, DatePipe, CurrencyPipe, FormatDatePipe, OptionsPipe],
+	providers: [
+		provideNgxMask(),
+		NgxMaskPipe,
+		DatePipe,
+		CurrencyPipe,
+		FormatDatePipe,
+		OptionsPipe,
+		FormatPhoneNumberPipe,
+	],
 	exports: [
 		CommonModule,
 		MaterialModule,
