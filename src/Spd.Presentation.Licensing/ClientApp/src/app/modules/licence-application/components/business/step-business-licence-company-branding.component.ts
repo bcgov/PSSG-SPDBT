@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -12,10 +12,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title
-					title="Provide examples of company branding"
-					subtitle="Provide drawings or photos of any uniforms, insignia, logos, vehicle marking, or advertising you plan on using for your security business. Security Program Division must review and approve these before your licence will be issued."
-				></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
 				<form [formGroup]="form" novalidate>
 					<div class="row">
@@ -59,10 +56,15 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+	subtitle = '';
+
 	form = this.businessApplicationService.companyBrandingFormGroup;
 
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -70,6 +72,17 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
+
+	ngOnInit(): void {
+		if (this.isRenewalOrUpdate) {
+			this.title = 'Confirm your business" branding';
+			this.subtitle = 'Update any information that has changed since your last application';
+		} else {
+			this.title = 'Provide examples of company branding';
+			this.subtitle =
+				'Provide drawings or photos of any uniforms, insignia, logos, vehicle marking, or advertising you plan on using for your security business. Security Program Division must review and approve these before your licence will be issued.';
+		}
+	}
 
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
@@ -102,5 +115,11 @@ export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChild
 	}
 	get isNoLogoOrBranding(): boolean {
 		return this.form.get('noLogoOrBranding')?.value ?? false;
+	}
+	get isRenewalOrUpdate(): boolean {
+		return (
+			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
+			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
 	}
 }

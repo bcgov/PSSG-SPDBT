@@ -8,8 +8,9 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
-					title="Add all controlling members of this business"
-					info="<a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/rules' target='_blank'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence."
+					title="Add all controlling members of this business <mat-icon class='info-icon' matTooltip='A controlling member is any person who can direct the activity of your business.'>info</mat-icon>"
+					subtitle="A controlling member is any person who can direct the activity of your business."
+					info="<a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/controlling-members' target='_blank'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence."
 				></app-step-title>
 
 				<div class="row">

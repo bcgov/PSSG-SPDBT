@@ -42,7 +42,10 @@ import { StepPermitReasonComponent } from '../../anonymous/permit-wizard-steps/s
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-rationale [applicationTypeCode]="applicationTypeCode"></app-step-permit-rationale>
+				<app-step-permit-rationale
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-permit-rationale>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"

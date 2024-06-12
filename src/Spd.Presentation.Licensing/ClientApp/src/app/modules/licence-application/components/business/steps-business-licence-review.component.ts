@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
@@ -43,9 +42,9 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 })
 export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -53,10 +52,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private businessApplicationService: BusinessApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
 
@@ -65,10 +61,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		// if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 		// this.submitPayLabel = 'Submit';
 		// }
-
-		this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
 	}
 
 	onPayNow(): void {

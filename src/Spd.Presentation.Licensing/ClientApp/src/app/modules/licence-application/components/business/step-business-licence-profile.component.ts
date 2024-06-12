@@ -32,7 +32,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					></app-common-business-profile>
 
 					<section *ngIf="showConfirmation">
-						<form [formGroup]="form" novalidate>
+						<form [formGroup]="profileConfirmationFormGroup" novalidate>
 							<div class="text-minor-heading py-2">Confirmation</div>
 							<mat-checkbox formControlName="isProfileUpToDate">
 								I confirm that this information is up-to-date
@@ -40,9 +40,10 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('isProfileUpToDate')?.dirty || form.get('isProfileUpToDate')?.touched) &&
-									form.get('isProfileUpToDate')?.invalid &&
-									form.get('isProfileUpToDate')?.hasError('required')
+									(profileConfirmationFormGroup.get('isProfileUpToDate')?.dirty ||
+										profileConfirmationFormGroup.get('isProfileUpToDate')?.touched) &&
+									profileConfirmationFormGroup.get('isProfileUpToDate')?.invalid &&
+									profileConfirmationFormGroup.get('isProfileUpToDate')?.hasError('required')
 								"
 							>
 								This is required
@@ -68,7 +69,7 @@ export class StepBusinessLicenceProfileComponent implements OnInit {
 	saveAndContinueLabel = 'Save & Continue to Application';
 	showConfirmation = false;
 
-	form = this.businessApplicationService.profileConfirmationFormGroup;
+	profileConfirmationFormGroup = this.businessApplicationService.profileConfirmationFormGroup;
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
@@ -119,7 +120,13 @@ export class StepBusinessLicenceProfileComponent implements OnInit {
 	}
 
 	onContinue(): void {
-		const isValid = this.businessProfileComponent.isFormValid();
+		if (this.showConfirmation) {
+			this.profileConfirmationFormGroup.markAllAsTouched();
+		}
+
+		const isValid =
+			this.businessProfileComponent.isFormValid() &&
+			(this.showConfirmation ? this.profileConfirmationFormGroup.valid : true);
 
 		if (!isValid) {
 			this.utilService.scrollToErrorSection();

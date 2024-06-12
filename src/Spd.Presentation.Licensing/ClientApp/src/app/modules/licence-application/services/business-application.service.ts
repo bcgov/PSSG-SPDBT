@@ -69,6 +69,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(null),
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
+		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
 
 		originalLicenceData: this.originalBusinessLicenceFormGroup,
 
@@ -123,15 +124,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
 					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
+					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
-					this.businessModelFormGroup.patchValue({ isBcBusinessAddress }, { emitEvent: false });
-
-					const isSoleProprietor = this.isSoleProprietor(bizTypeCode);
+					this.businessModelFormGroup.patchValue(
+						{ isBcBusinessAddress, isBusinessLicenceSoleProprietor },
+						{ emitEvent: false }
+					);
 
 					const step1Complete = this.isStepBackgroundInformationComplete();
 					const step2Complete = this.isStepLicenceSelectionComplete();
-					const step3Complete = this.isStepContactInformationComplete();
-					const step4Complete = isSoleProprietor ? true : this.isStepControllingMembersAndEmployeesComplete();
+					const step3Complete = isBusinessLicenceSoleProprietor ? true : this.isStepContactInformationComplete();
+					const step4Complete = isBusinessLicenceSoleProprietor
+						? true
+						: this.isStepControllingMembersAndEmployeesComplete();
 					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
@@ -249,12 +254,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepBackgroundInformationComplete(): boolean {
-		console.debug(
-			'isStepBackgroundInformationComplete',
-			this.expiredLicenceFormGroup.valid,
-			this.companyBrandingFormGroup.valid,
-			this.liabilityFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepBackgroundInformationComplete',
+		// 	this.expiredLicenceFormGroup.valid,
+		// 	this.companyBrandingFormGroup.valid,
+		// 	this.liabilityFormGroup.valid
+		// );
 
 		return this.expiredLicenceFormGroup.valid && this.companyBrandingFormGroup.valid && this.liabilityFormGroup.valid;
 	}
@@ -264,14 +269,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepLicenceSelectionComplete(): boolean {
-		console.debug(
-			'isStepLicenceSelectionComplete',
-			this.categoryFormGroup.valid,
-			this.categoryPrivateInvestigatorFormGroup.valid,
-			this.categoryArmouredCarGuardFormGroup.valid,
-			this.categorySecurityGuardFormGroup.valid,
-			this.licenceTermFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepLicenceSelectionComplete',
+		// 	this.categoryFormGroup.valid,
+		// 	this.categoryPrivateInvestigatorFormGroup.valid,
+		// 	this.categoryArmouredCarGuardFormGroup.valid,
+		// 	this.categorySecurityGuardFormGroup.valid,
+		// 	this.licenceTermFormGroup.valid
+		// );
 
 		return this.categoryFormGroup.valid && this.licenceTermFormGroup.valid;
 	}
@@ -281,7 +286,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepContactInformationComplete(): boolean {
-		console.debug('isStepContactInformationComplete', this.businessManagerFormGroup.valid);
+		// console.debug('isStepContactInformationComplete', this.businessManagerFormGroup.valid);
 
 		return this.businessManagerFormGroup.valid;
 	}
@@ -291,11 +296,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepControllingMembersAndEmployeesComplete(): boolean {
-		console.debug(
-			'isStepControllingMembersAndEmployeesComplete',
-			this.controllingMembersFormGroup.valid,
-			this.employeesFormGroup.valid
-		);
+		// console.debug(
+		// 	'isStepControllingMembersAndEmployeesComplete',
+		// 	this.controllingMembersFormGroup.valid,
+		// 	this.employeesFormGroup.valid
+		// );
 
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
@@ -352,37 +357,35 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	private continueToNextStep(_applicationTypeCode: ApplicationTypeCode): void {
-		// switch (applicationTypeCode) {
-		// 	case ApplicationTypeCode.Replacement: {
-		// 		this.router.navigateByUrl(
-		// 			LicenceApplicationRoutes.pathBusinessLicence(
-		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_REPLACEMENT
-		// 			)
-		// 		);
-		// 		break;
-		// 	}
-		// 	case ApplicationTypeCode.Renewal: {
-		// 		this.router.navigateByUrl(
-		// 			LicenceApplicationRoutes.pathBusinessLicence(
-		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_RENEW
-		// 			)
-		// 		);
-		// 		break;
-		// 	}
-		// 	case ApplicationTypeCode.Update: {
-		// 		this.router.navigateByUrl(
-		// 			LicenceApplicationRoutes.pathBusinessLicence(
-		// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_UPDATE
-		// 			)
-		// 		);
-		// 		break;
-		// 	}
-		// 	default: {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
-		// 		break;
-		// 	}
-		// }
+	private continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
+		switch (applicationTypeCode) {
+			// 	case ApplicationTypeCode.Replacement: {
+			// 		this.router.navigateByUrl(
+			// 			LicenceApplicationRoutes.pathBusinessLicence(
+			// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_REPLACEMENT
+			// 			)
+			// 		);
+			// 		break;
+			// 	}
+			case ApplicationTypeCode.Renewal: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_RENEW)
+				);
+				break;
+			}
+			// 	case ApplicationTypeCode.Update: {
+			// 		this.router.navigateByUrl(
+			// 			LicenceApplicationRoutes.pathBusinessLicence(
+			// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_UPDATE
+			// 			)
+			// 		);
+			// 		break;
+			// 	}
+			default: {
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
+				break;
+			}
+		}
 	}
 
 	/**
@@ -759,6 +762,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					);
 				});
 
+				// TODO get the branding documents
+				// businessLicenceAppl.documentInfos?.filter((item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding).forEach((item: Document) => {
+				// 	apis.push(
+				// 		this.licenceService.apiLicencesLicenceIdGet({
+				// 			licenceId: item.documentUrlId!,
+				// 		})
+				// 	);
+				// });
+
 				this.applyControllingMembersWithoutSwl(businessLicenceAppl.members.nonSwlControllingMembers ?? []);
 
 				if (apis.length > 0) {
@@ -1084,6 +1096,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const hasBranchesInBc = (businessProfile.branches ?? []).length > 0;
 		const branchesInBcData = { hasBranchesInBc: this.utilService.booleanToBooleanType(hasBranchesInBc) };
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
+		const isBusinessLicenceSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -1095,6 +1108,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessManagerData,
 
 				isBcBusinessAddress,
+				isBusinessLicenceSoleProprietor,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
 				businessMailingAddressData: { ...businessMailingAddressData },
