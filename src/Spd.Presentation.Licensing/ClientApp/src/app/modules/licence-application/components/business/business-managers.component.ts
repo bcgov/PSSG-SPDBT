@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
@@ -105,7 +104,7 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Phone Number</mat-header-cell>
 									<mat-cell *matCellDef="let manager">
 										<span class="mobile-label">Phone Number:</span>
-										{{ manager.phoneNumber || '' | mask : appConstants.phone.displayMask | default }}
+										{{ manager.phoneNumber | formatPhoneNumber | default }}
 									</mat-cell>
 								</ng-container>
 
@@ -208,8 +207,6 @@ export class BusinessManagersComponent implements OnInit {
 
 	maximumNumberOfManagers = 6;
 	maximumNumberOfPrimaryManagers = 1;
-
-	appConstants = SPD_CONSTANTS;
 
 	showAdd = false;
 	isAllowedAddManager = false;
