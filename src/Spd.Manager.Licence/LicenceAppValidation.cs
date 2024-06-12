@@ -23,7 +23,7 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.Weight).NotEmpty();
         RuleFor(r => r.WeightUnitCode).NotEmpty();
         RuleFor(r => r.IsMailingTheSameAsResidential).NotEmpty();
-        RuleFor(r => r.PhoneNumber).MaximumLength(15).NotEmpty();
+        RuleFor(r => r.PhoneNumber).MaximumLength(30).NotEmpty();
         RuleFor(r => r.EmailAddress).MaximumLength(75).When(r => r.EmailAddress != null);
         RuleFor(r => r.IsCanadianCitizen).NotEmpty();
         //residential address
