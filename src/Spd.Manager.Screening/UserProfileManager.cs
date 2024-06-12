@@ -175,7 +175,19 @@ namespace Spd.Manager.Screening
                 RequesterAccountType = RequesterAccountTypeEnum.Internal,
                 UserGuid = cmd.IdirUserIdentity.UserGuid
             });
-            _logger.LogInformation("from webservice orgCode = {orgCode}", idirDetail.MinistryCode);
+            if (idirDetail?.MinistryCode == null)
+            {
+                _logger.LogInformation("The MinistryCode returned from webservice is null.");
+                return new IdirUserProfileResponse()
+                {
+                    OrgName = null,
+                    UserGuid = cmd.IdirUserIdentity?.UserGuid,
+                    UserDisplayName = cmd.IdirUserIdentity?.DisplayName,
+                    IdirUserName = cmd.IdirUserIdentity?.IdirUserName,
+                    OrgId = SpdConstants.BcGovOrgId,
+                    OrgCodeFromIdir = "EMPTY_ORG_CODE"
+                };
+            }
 
             OrgsQryResult orgResult = (OrgsQryResult)await _orgRepository.QueryOrgAsync(new OrgsQry(OrgCode: idirDetail.MinistryCode), ct);
             OrgResult? org = orgResult.OrgResults?.FirstOrDefault();
@@ -232,7 +244,7 @@ namespace Spd.Manager.Screening
                     result = await _portalUserRepository.ManageAsync(updateUserCmd, ct);
                 }
                 var response = _mapper.Map<IdirUserProfileResponse>(result);
-                response.OrgName = idirDetail.MinistryName;
+                response.OrgName = orgId == SpdConstants.BcGovOrgId ? null : idirDetail.MinistryName;
                 response.UserGuid = cmd.IdirUserIdentity?.UserGuid;
                 response.UserDisplayName = cmd.IdirUserIdentity?.DisplayName;
                 response.IdirUserName = cmd.IdirUserIdentity?.IdirUserName;
