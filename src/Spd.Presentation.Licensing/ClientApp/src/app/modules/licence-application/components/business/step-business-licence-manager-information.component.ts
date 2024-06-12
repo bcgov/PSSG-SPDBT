@@ -74,7 +74,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										formControlName="phoneNumber"
 										[errorStateMatcher]="matcher"
 										maxlength="30"
-										phoneNumberTransform
+										appPhoneNumberTransform
 									/>
 									<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
@@ -145,7 +145,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 											formControlName="applicantPhoneNumber"
 											[errorStateMatcher]="matcher"
 											maxlength="30"
-											phoneNumberTransform
+											appPhoneNumberTransform
 										/>
 										<mat-error *ngIf="form.get('applicantPhoneNumber')?.hasError('required')"
 											>This is required</mat-error

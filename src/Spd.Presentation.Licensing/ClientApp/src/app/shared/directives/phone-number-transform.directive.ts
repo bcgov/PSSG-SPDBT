@@ -3,7 +3,7 @@ import { NgControl } from '@angular/forms';
 import { FormatPhoneNumberPipe } from '@app/shared/pipes/phone-number.pipe';
 
 @Directive({
-	selector: '[formControlName][phoneNumberTransform]',
+	selector: '[formControlName][appPhoneNumberTransform]',
 })
 export class PhoneNumberTransformDirective implements OnInit {
 	private el: any;
@@ -20,7 +20,7 @@ export class PhoneNumberTransformDirective implements OnInit {
 		this.el.value = this.transform(this.el.value);
 	}
 
-	@HostListener('blur') onModelChange(event: any) {
+	@HostListener('blur') onChange() {
 		const oldval = this.el.value;
 		this.el.value = this.transform(oldval);
 		this.el.dispatchEvent(new Event('input'));

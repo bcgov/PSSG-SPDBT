@@ -164,7 +164,7 @@ import {
 									formControlName="soleProprietorSwlPhoneNumber"
 									[errorStateMatcher]="matcher"
 									maxlength="30"
-									phoneNumberTransform
+									appPhoneNumberTransform
 								/>
 								<mat-error *ngIf="form.get('soleProprietorSwlPhoneNumber')?.hasError('required')"
 									>This is required</mat-error

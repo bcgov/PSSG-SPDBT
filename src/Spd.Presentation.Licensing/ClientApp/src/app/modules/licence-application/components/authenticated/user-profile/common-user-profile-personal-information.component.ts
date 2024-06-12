@@ -84,7 +84,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						formControlName="phoneNumber"
 						[errorStateMatcher]="matcher"
 						maxlength="30"
-						phoneNumberTransform
+						appPhoneNumberTransform
 					/>
 					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 				</mat-form-field>

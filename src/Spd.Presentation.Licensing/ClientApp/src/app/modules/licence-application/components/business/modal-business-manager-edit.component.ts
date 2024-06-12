@@ -50,7 +50,7 @@ export interface UserDialogData {
 								formControlName="phoneNumber"
 								[errorStateMatcher]="matcher"
 								maxlength="30"
-								phoneNumberTransform
+								appPhoneNumberTransform
 							/>
 							<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>

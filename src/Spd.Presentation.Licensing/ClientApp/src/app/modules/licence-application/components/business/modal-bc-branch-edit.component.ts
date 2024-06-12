@@ -32,7 +32,7 @@ export interface UserDialogData {
 								formControlName="branchPhoneNumber"
 								[errorStateMatcher]="matcher"
 								maxlength="30"
-								phoneNumberTransform
+								appPhoneNumberTransform
 							/>
 						</mat-form-field>
 					</div>
