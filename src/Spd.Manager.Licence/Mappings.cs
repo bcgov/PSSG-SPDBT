@@ -48,6 +48,8 @@ internal class Mappings : Profile
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
 
+        CreateMap<BizLicAppSubmitRequest, CreateLicenceApplicationCmd>();
+
         CreateMap<PermitAppUpsertRequest, SaveLicenceApplicationCmd>()
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
