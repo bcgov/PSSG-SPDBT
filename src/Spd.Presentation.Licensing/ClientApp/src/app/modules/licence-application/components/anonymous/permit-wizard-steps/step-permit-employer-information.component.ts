@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { Address } from '@app/shared/components/address-autocomplete.component';
@@ -62,14 +61,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											matInput
 											formControlName="supervisorPhoneNumber"
 											[errorStateMatcher]="matcher"
-											[mask]="phoneMask"
+											maxlength="30"
+											phoneNumberTransform
 										/>
 										<mat-error *ngIf="form.get('supervisorPhoneNumber')?.hasError('required')"
 											>This is required</mat-error
 										>
-										<mat-error *ngIf="form.get('supervisorPhoneNumber')?.hasError('mask')">
-											This must be 10 digits
-										</mat-error>
 									</mat-form-field>
 								</div>
 							</div>
@@ -153,7 +150,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 })
 export class StepPermitEmployerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.permitApplicationService.employerInformationFormGroup;
 	title = '';

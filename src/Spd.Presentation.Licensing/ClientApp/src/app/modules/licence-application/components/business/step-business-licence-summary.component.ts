@@ -6,7 +6,6 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -240,7 +239,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 												<div class="col-lg-3 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ businessManagerPhoneNumber | mask : constants.phone.displayMask | default }}
+														{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
 													</div>
 												</div>
 											</div>
@@ -265,7 +264,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 													<div class="col-lg-3 col-md-12">
 														<div class="text-label d-block text-muted">Phone Number</div>
 														<div class="summary-text-data">
-															{{ yourContactPhoneNumber | mask : constants.phone.displayMask | default }}
+															{{ yourContactPhoneNumber | formatPhoneNumber | default }}
 														</div>
 													</div>
 												</div>
@@ -402,7 +401,6 @@ import { BusinessApplicationService } from '../../services/business-application.
 export class StepBusinessLicenceSummaryComponent implements OnInit {
 	businessModelData: any = {};
 
-	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
 	isSoleProprietor = false;

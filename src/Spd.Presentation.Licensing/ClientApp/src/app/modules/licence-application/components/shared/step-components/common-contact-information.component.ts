@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
@@ -25,9 +24,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				<div class="col-lg-4 col-md-6 col-sm-12">
 					<mat-form-field>
 						<mat-label>Phone Number</mat-label>
-						<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+						<input
+							matInput
+							formControlName="phoneNumber"
+							[errorStateMatcher]="matcher"
+							maxlength="30"
+							phoneNumberTransform
+						/>
 						<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-						<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
 					</mat-form-field>
 				</div>
 			</div>
@@ -36,7 +40,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 })
 export class CommonContactInformationComponent {
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;

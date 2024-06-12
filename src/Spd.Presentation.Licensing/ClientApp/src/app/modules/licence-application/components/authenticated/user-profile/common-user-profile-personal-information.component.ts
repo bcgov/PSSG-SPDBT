@@ -79,9 +79,14 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<div [formGroup]="contactFormGroup" class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
 				<mat-form-field>
 					<mat-label>Phone Number</mat-label>
-					<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+					<input
+						matInput
+						formControlName="phoneNumber"
+						[errorStateMatcher]="matcher"
+						maxlength="30"
+						phoneNumberTransform
+					/>
 					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-					<mat-error *ngIf="contactFormGroup.get('phoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
 				</mat-form-field>
 			</div>
 		</div>
@@ -93,7 +98,6 @@ export class CommonUserProfilePersonalInformationComponent implements OnInit, Li
 	genderTypes = GenderTypes;
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	title = 'Confirm your personal information';
 	subtitle =
