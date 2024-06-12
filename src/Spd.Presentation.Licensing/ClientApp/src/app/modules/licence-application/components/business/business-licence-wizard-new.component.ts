@@ -131,7 +131,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 
-	isBusinessLicenceSoleProprietor = false;
+	isBusinessLicenceSoleProprietor!: boolean;
 	private businessModelValueChangedSubscription!: Subscription;
 
 	@ViewChild(StepsBusinessLicenceInformationComponent)
@@ -173,9 +173,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 					'businessInformationData.bizTypeCode'
 				)?.value;
 
-				this.isBusinessLicenceSoleProprietor =
-					this.bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor ||
-					this.bizTypeCode === BizTypeCode.RegisteredSoleProprietor;
+				this.isBusinessLicenceSoleProprietor = this.businessApplicationService.businessModelFormGroup.get(
+					'isBusinessLicenceSoleProprietor'
+				)?.value;
 
 				const membersWithoutSwl = this.businessApplicationService.businessModelFormGroup.get(
 					'controllingMembersData.membersWithoutSwl'

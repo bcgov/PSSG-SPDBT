@@ -724,7 +724,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		return employees;
 	}
 
-	isSoleProprietor(bizTypeCode: BizTypeCode): boolean {
+	isSoleProprietor(bizTypeCode: BizTypeCode | undefined): boolean {
+		if (!bizTypeCode) return false;
+
 		return (
 			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
 		);

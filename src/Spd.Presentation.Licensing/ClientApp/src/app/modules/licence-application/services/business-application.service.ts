@@ -69,6 +69,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(null),
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
+		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
 
 		originalLicenceData: this.originalBusinessLicenceFormGroup,
 
@@ -123,15 +124,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
 					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
+					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
-					this.businessModelFormGroup.patchValue({ isBcBusinessAddress }, { emitEvent: false });
-
-					const isSoleProprietor = this.isSoleProprietor(bizTypeCode);
+					this.businessModelFormGroup.patchValue(
+						{ isBcBusinessAddress, isBusinessLicenceSoleProprietor },
+						{ emitEvent: false }
+					);
 
 					const step1Complete = this.isStepBackgroundInformationComplete();
 					const step2Complete = this.isStepLicenceSelectionComplete();
-					const step3Complete = isSoleProprietor ? true : this.isStepContactInformationComplete();
-					const step4Complete = isSoleProprietor ? true : this.isStepControllingMembersAndEmployeesComplete();
+					const step3Complete = isBusinessLicenceSoleProprietor ? true : this.isStepContactInformationComplete();
+					const step4Complete = isBusinessLicenceSoleProprietor
+						? true
+						: this.isStepControllingMembersAndEmployeesComplete();
 					const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
 
 					console.debug(
@@ -1091,6 +1096,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const hasBranchesInBc = (businessProfile.branches ?? []).length > 0;
 		const branchesInBcData = { hasBranchesInBc: this.utilService.booleanToBooleanType(hasBranchesInBc) };
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
+		const isBusinessLicenceSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -1102,6 +1108,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessManagerData,
 
 				isBcBusinessAddress,
+				isBusinessLicenceSoleProprietor,
 				businessAddressData: { ...businessAddressData },
 				bcBusinessAddressData: { ...bcBusinessAddressData },
 				businessMailingAddressData: { ...businessMailingAddressData },
