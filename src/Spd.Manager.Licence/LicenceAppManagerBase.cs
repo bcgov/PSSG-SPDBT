@@ -57,7 +57,7 @@ internal abstract class LicenceAppManagerBase
     }
 
     //upload file from cache to main bucket
-    protected async Task UploadNewDocsAsync(IEnumerable<DocumentExpiredInfo> documentExpiredInfos,
+    protected async Task UploadNewDocsAsync(IEnumerable<DocumentExpiredInfo>? documentExpiredInfos,
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? licenceAppId,
         Guid? contactId,
