@@ -142,16 +142,15 @@ internal class BizLicAppMananger :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
-        // * Check with Peggy
-        //await UploadNewDocsAsync(request.DocumentExpiredInfos,
-        //        cmd.LicAppFileInfos,
-        //        response?.LicenceAppId,
-        //        response?.ContactId,
-        //        null,
-        //        null,
-        //        null,
-        //        null,
-        //        cancellationToken);
+        await UploadNewDocsAsync(null,
+                cmd.LicAppFileInfos,
+                response?.LicenceAppId,
+                response?.ContactId,
+                null,
+                null,
+                null,
+                null,
+                cancellationToken);
 
         if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
         //copying all old files to new application in PreviousFileIds 
