@@ -18,34 +18,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _mapper = mapper;
     }
 
-    public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
-    {
-        spd_application? app;
-        try
-        {
-            app = await _context.spd_applications
-                .Expand(a => a.spd_ServiceTypeId)
-                .Expand(a => a.spd_ApplicantId_account)
-                .Expand(a => a.spd_ApplicantId_contact)
-                .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_application_spd_licence_manager)
-                .Expand(a => a.spd_CurrentExpiredLicenceId)
-                .Where(a => a.spd_applicationid == licenceApplicationId)
-                .FirstOrDefaultAsync(ct);
-        }
-        catch (DataServiceQueryException ex)
-        {
-            if (ex.Response.StatusCode == 404)
-                app = null;
-            else
-                throw;
-        }
-
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {licenceApplicationId} ");
-
-        return _mapper.Map<BizLicApplicationResp>(app);
-    }
+    
 
     public async Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct)
     {
@@ -90,6 +63,35 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         await _context.SaveChangesAsync(ct);
         return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
+    }
+
+    public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
+    {
+        spd_application? app;
+        try
+        {
+            app = await _context.spd_applications
+                .Expand(a => a.spd_ServiceTypeId)
+                .Expand(a => a.spd_ApplicantId_account)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_application_spd_licence_manager)
+                .Expand(a => a.spd_CurrentExpiredLicenceId)
+                .Where(a => a.spd_applicationid == licenceApplicationId)
+                .FirstOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                app = null;
+            else
+                throw;
+        }
+
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {licenceApplicationId} ");
+
+        return _mapper.Map<BizLicApplicationResp>(app);
     }
 
     private void LinkOrganization(Guid? accountId, spd_application app)
