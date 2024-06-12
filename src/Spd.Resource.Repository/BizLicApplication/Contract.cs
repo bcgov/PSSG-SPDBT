@@ -4,6 +4,7 @@ using Spd.Resource.Repository.PersonLicApplication;
 namespace Spd.Resource.Repository.BizLicApplication;
 public partial interface IBizLicApplicationRepository
 {
+    public Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
 }
@@ -47,6 +48,13 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public SwlContactInfo PrivateInvestigatorSwlInfo { get; set; } = new();
 }
+
+public record CreateBizLicApplicationCmd() : BizLicApplication
+{
+    public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+    public Guid? OriginalApplicationId { get; set; }
+    public Guid? OriginalLicenceId { get; set; }    // * Might be redundant, check with Peggy
+};
 
 public record BizLicApplicationResp() : BizLicApplication
 {
