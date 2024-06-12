@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -99,7 +98,6 @@ import { Address } from 'src/app/shared/components/address-autocomplete.componen
 })
 export class StepPermitMailingAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	form: FormGroup = this.permitApplicationService.mailingAddressFormGroup;
 	title = '';

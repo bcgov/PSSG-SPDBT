@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
@@ -70,9 +69,14 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Phone Number</mat-label>
-									<input matInput formControlName="phoneNumber" [errorStateMatcher]="matcher" [mask]="phoneMask" />
+									<input
+										matInput
+										formControlName="phoneNumber"
+										[errorStateMatcher]="matcher"
+										maxlength="30"
+										appPhoneNumberTransform
+									/>
 									<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-									<mat-error *ngIf="form.get('phoneNumber')?.hasError('mask')"> This must be 10 digits </mat-error>
 								</mat-form-field>
 							</div>
 
@@ -140,14 +144,12 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 											matInput
 											formControlName="applicantPhoneNumber"
 											[errorStateMatcher]="matcher"
-											[mask]="phoneMask"
+											maxlength="30"
+											appPhoneNumberTransform
 										/>
 										<mat-error *ngIf="form.get('applicantPhoneNumber')?.hasError('required')"
 											>This is required</mat-error
 										>
-										<mat-error *ngIf="form.get('applicantPhoneNumber')?.hasError('mask')">
-											This must be 10 digits
-										</mat-error>
 									</mat-form-field>
 								</div>
 							</div>
@@ -160,7 +162,6 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	styles: [],
 })
 export class StepBusinessLicenceManagerInformationComponent implements LicenceChildStepperStepComponent {
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	matcher = new FormErrorStateMatcher();
 
 	form: FormGroup = this.businessApplicationService.businessManagerFormGroup;
