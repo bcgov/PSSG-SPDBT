@@ -101,10 +101,11 @@ public record Members
 
 public record MembersRequest : Members
 {
-    public Guid? ControllingMemberDocumentKeyCode { get; set; }
+    public IEnumerable<Guid> ControllingMemberDocumentKeyCodes { get; set; } = Array.Empty<Guid>();//the document is saved in cache.
 }
 
 public record UpsertBizMembersCommand(
     Guid BizId,
     Guid ApplicationId,
-    Members Members) : IRequest<Unit>;
+    Members Members,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;

@@ -151,6 +151,7 @@ namespace Spd.Resource.Repository.Document
         NonCanadianPassport,
         BCID,
         CompanyBranding,
-        CorporateSummary
+        CorporateSummary,
+        CorporateRegistryDocument
     }
 }

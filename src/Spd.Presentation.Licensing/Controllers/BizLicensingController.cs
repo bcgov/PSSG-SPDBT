@@ -156,22 +156,23 @@ namespace Spd.Presentation.Licensing.Controllers
         [Authorize(Policy = "OnlyBceid")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] MembersRequest members, CancellationToken ct)
         {
-            await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members), ct);
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
+            await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members, newDocInfos), ct);
             return Ok();
         }
 
         ///<summary>
         /// Uploading file only save files in cache, the files are not connected to the biz and application yet.
-        /// for business, this is for controlling member file upload.
+        /// this is used for uploading member files or update, renew, replace.
         /// </summary>
         /// <param name="fileUploadRequest"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/{applicationId}/members/files")]
+        [Route("api/business-licence-application/{bizId}/{applicationId}/files")]
         [HttpPost]
         [Authorize(Policy = "OnlyBcsc")]
         [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadControllingMemberFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+        public async Task<Guid> UploadFilesToCache([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
             VerifyFiles(fileUploadRequest.Documents);
 
