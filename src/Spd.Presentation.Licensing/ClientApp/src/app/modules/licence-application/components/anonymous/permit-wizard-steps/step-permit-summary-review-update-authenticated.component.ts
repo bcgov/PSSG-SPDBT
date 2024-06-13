@@ -133,7 +133,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
 										<div class="summary-text-data">
-											{{ supervisorPhoneNumber | mask : phoneMask }}
+											{{ supervisorPhoneNumber | formatPhoneNumber }}
 										</div>
 									</div>
 								</div>
@@ -225,7 +225,6 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	permitModelData: any = {};
 	showEmployerInformation = false;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -269,13 +268,13 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitModelData.personalInformationData.hasGenderChanged ?? '';
 	}
 	get originalLicenceNumber(): string {
-		return this.permitModelData.originalLicenceNumber ?? '';
+		return this.permitModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.permitModelData.originalExpiryDate ?? '';
+		return this.permitModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 	get originalLicenceTermCode(): string {
-		return this.permitModelData.originalLicenceTermCode ?? '';
+		return this.permitModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 
 	get licenceFee(): number | null {
@@ -283,15 +282,14 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 			return null;
 		}
 
-		const bizTypeCode = this.permitModelData.originalBizTypeCode;
-		const originalLicenceTermCode = this.permitModelData.originalLicenceTermCode;
+		const originalLicenceData = this.permitModelData.originalLicenceData;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				ApplicationTypeCode.Update,
-				bizTypeCode,
-				originalLicenceTermCode
+				originalLicenceData.originalBizTypeCode,
+				originalLicenceData.originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;

@@ -23,6 +23,16 @@ import { ControllingMemberContactInfo } from './business-application.service';
 import { CommonApplicationHelper } from './common-application.helper';
 
 export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
+	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
+		originalApplicationId: new FormControl(null),
+		originalLicenceId: new FormControl(null),
+		originalLicenceNumber: new FormControl(null),
+		originalExpiryDate: new FormControl(null),
+		originalLicenceTermCode: new FormControl(null),
+		originalBizTypeCode: new FormControl(null),
+		originalDogAuthorizationExists: new FormControl(false),
+	});
+
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
 		{
 			noLogoOrBranding: new FormControl(''),
@@ -164,7 +174,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	businessManagerFormGroup: FormGroup = this.formBuilder.group(
 		{
-			givenName: new FormControl(''),
+			givenName: new FormControl('', [FormControlValidators.required]),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
 			surname: new FormControl('', [FormControlValidators.required]),
@@ -180,6 +190,10 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		},
 		{
 			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'applicantGivenName',
+					(form) => !form.get('isBusinessManager')?.value
+				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'applicantSurname',
 					(form) => !form.get('isBusinessManager')?.value
@@ -278,13 +292,19 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 					'attachments',
 					(form) => form.get('attachmentIsRequired')?.value
 				),
+				FormGroupValidators.controllingmembersValidator('membersWithSwl', 'membersWithoutSwl'),
 			],
 		}
 	);
 
-	employeesFormGroup: FormGroup = this.formBuilder.group({
-		employees: this.formBuilder.array([]),
-	});
+	employeesFormGroup: FormGroup = this.formBuilder.group(
+		{
+			employees: this.formBuilder.array([]),
+		},
+		{
+			validators: [FormGroupValidators.employeesValidator('employees')],
+		}
+	);
 
 	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({ // TODO needed?
 	// 	attachments: new FormControl([], [Validators.required]),
@@ -377,7 +397,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		let useDogs = false;
+		let useDogs: boolean | null = null;
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
@@ -460,6 +480,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		const body = {
 			bizId,
+			bizTypeCode,
 			licenceAppId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
@@ -703,7 +724,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		return employees;
 	}
 
-	isSoleProprietor(bizTypeCode: BizTypeCode): boolean {
+	isSoleProprietor(bizTypeCode: BizTypeCode | undefined): boolean {
+		if (!bizTypeCode) return false;
+
 		return (
 			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
 		);

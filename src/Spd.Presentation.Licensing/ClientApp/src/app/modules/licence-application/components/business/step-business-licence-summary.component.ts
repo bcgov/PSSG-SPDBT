@@ -6,7 +6,6 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -201,7 +200,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
@@ -240,7 +239,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 												<div class="col-lg-3 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ businessManagerPhoneNumber | mask : constants.phone.displayMask | default }}
+														{{ businessManagerPhoneNumber | formatPhoneNumber | default }}
 													</div>
 												</div>
 											</div>
@@ -265,7 +264,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 													<div class="col-lg-3 col-md-12">
 														<div class="text-label d-block text-muted">Phone Number</div>
 														<div class="summary-text-data">
-															{{ yourContactPhoneNumber | mask : constants.phone.displayMask | default }}
+															{{ yourContactPhoneNumber | formatPhoneNumber | default }}
 														</div>
 													</div>
 												</div>
@@ -273,7 +272,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										</div>
 									</mat-expansion-panel>
 
-									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isSoleProprietor">
+									<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
 										<mat-expansion-panel-header>
 											<mat-panel-title class="review-panel-title">
 												<mat-toolbar class="d-flex justify-content-between">
@@ -402,10 +401,8 @@ import { BusinessApplicationService } from '../../services/business-application.
 export class StepBusinessLicenceSummaryComponent implements OnInit {
 	businessModelData: any = {};
 
-	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
-	isSoleProprietor = false;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -416,7 +413,6 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.businessModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
-		this.setIsSoleProprietor();
 	}
 
 	onEditStep(stepNumber: number) {
@@ -427,11 +423,10 @@ export class StepBusinessLicenceSummaryComponent implements OnInit {
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
-		this.setIsSoleProprietor();
 	}
 
-	private setIsSoleProprietor() {
-		this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(this.bizTypeCode!);
+	get isBusinessLicenceSoleProprietor(): string {
+		return this.businessModelData.isBusinessLicenceSoleProprietor ?? false;
 	}
 
 	get hasExpiredLicence(): string {

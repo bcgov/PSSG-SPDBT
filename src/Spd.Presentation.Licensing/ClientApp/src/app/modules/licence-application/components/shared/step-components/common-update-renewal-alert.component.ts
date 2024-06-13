@@ -64,12 +64,12 @@ export class CommonUpdateRenewalAlertComponent implements OnInit {
 	}
 
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceNumber ?? '';
+		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalExpiryDate ?? '';
+		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceTermCode ?? '';
+		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 }

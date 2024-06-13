@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -55,6 +55,8 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 })
 export class StepBusinessLicenceLiabilityComponent implements LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.liabilityFormGroup;
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

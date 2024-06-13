@@ -589,17 +589,22 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 			return null;
 		}
 
-		const applicationTypeCode = this.applicationTypeCode;
-		let bizTypeCode: BizTypeCode | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.New) {
+		const originalLicenceData = this.licenceModelData.originalLicenceData;
+
+		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
-		} else {
-			bizTypeCode = this.licenceModelData.originalBizTypeCode;
 		}
-		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
+
+		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, applicationTypeCode, bizTypeCode, originalLicenceTermCode)
+			.getLicenceTermsAndFees(
+				this.workerLicenceTypeCode,
+				this.applicationTypeCode,
+				bizTypeCode,
+				originalLicenceTermCode
+			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}
@@ -611,7 +616,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+		return this.licenceModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get carryAndUseRestraints(): string {

@@ -10,7 +10,6 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
@@ -610,7 +609,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | formatPhoneNumber }}
 													</div>
 												</div>
 											</div>
@@ -744,7 +743,6 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit {
 	licenceModelData: any = {};
 
-	constants = SPD_CONSTANTS;
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodes = PoliceOfficerRoleCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
@@ -858,21 +856,19 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 			return null;
 		}
 
-		const applicationTypeCode = this.applicationTypeCode;
-		let bizTypeCode: BizTypeCode | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.New) {
+		const originalLicenceData = this.licenceModelData.originalLicenceData;
+
+		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
-		} else {
-			bizTypeCode = this.licenceModelData.originalBizTypeCode;
 		}
-		const originalLicenceTermCode = this.licenceModelData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				this.applicationTypeCode,
 				bizTypeCode,
-				originalLicenceTermCode
+				originalLicenceData.originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
@@ -885,7 +881,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return this.licenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.licenceModelData.expiredLicenceData.expiryDate ?? '';
+		return this.licenceModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get carryAndUseRestraints(): string {

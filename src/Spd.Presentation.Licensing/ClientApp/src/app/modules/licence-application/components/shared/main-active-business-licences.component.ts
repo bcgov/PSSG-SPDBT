@@ -61,20 +61,23 @@ import { MainLicenceResponse } from '@app/modules/licence-application/services/c
 								<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
 							</div>
 
-							<!-- 
-										<app-alert type="info" icon="">
-											You can update your controlling members and employees when you renew your business licence // TODO prevent update of members
-										</app-alert>										
-										-->
-
 							<div class="col-lg-5">
 								<div class="d-block text-muted mt-2 mt-md-0"></div>
 								<div *ngIf="!isSoleProprietor">
+									<ng-container *ngIf="applicationIsInProgress">
+										<div class="mb-2">
+											<a class="large disable">Manage Controlling Members and Employees</a>
+										</div>
+										<app-alert type="info" icon="">
+											You can update your controlling members and employees when you renew your business licence
+										</app-alert>
+									</ng-container>
 									<a
 										class="large"
 										tabindex="0"
 										(click)="onManageMembersAndEmployees(licence)"
 										(keydown)="onKeydownManageMembersAndEmployees($event, licence)"
+										*ngIf="!applicationIsInProgress"
 									>
 										Manage Controlling Members and Employees
 									</a>
@@ -96,21 +99,31 @@ import { MainLicenceResponse } from '@app/modules/licence-application/services/c
 									<li>update licence category</li>
 								</ul>
 							</div>
-							<div class="col-lg-3 text-end">
-								<!--
-														*ngIf="appl.isRenewalPeriod"
-														(click)="onRenew(appl)"
-											-->
-								<button mat-flat-button color="primary" class="large my-2"><mat-icon>restore</mat-icon>Renew</button>
+							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
+								<button
+									mat-flat-button
+									color="primary"
+									class="large my-2"
+									(click)="onRenew(licence)"
+									*ngIf="licence.isRenewalPeriod"
+								>
+									<mat-icon>restore</mat-icon>Renew
+								</button>
 								<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(licence)">
 									<mat-icon>update</mat-icon>Update
 								</button>
+							</div>
+							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
+								<app-alert type="info" icon="info">
+									This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed, updated
+									or replaced while an application is in progress
+								</app-alert>
 							</div>
 						</div>
 					</div>
 
 					<div class="row">
-						<ng-container *ngIf="licence.isRenewalPeriod && licence.isRenewalPeriod; else IsNotRenewalPeriod">
+						<ng-container *ngIf="licence.isRenewalPeriod; else IsNotRenewalPeriod">
 							<div class="col-12">
 								<mat-divider class="my-2"></mat-divider>
 								<span class="fw-semibold">Lost your licence? </span>

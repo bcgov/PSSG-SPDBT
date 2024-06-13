@@ -61,9 +61,9 @@ export class StepPermitConfirmationComponent implements OnInit {
 		return this.permitModelData.personalInformationData.cardHolderName ?? '';
 	}
 	get originalLicenceNumber(): string {
-		return this.permitModelData.originalLicenceNumber ?? '';
+		return this.permitModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.permitModelData.originalExpiryDate ?? '';
+		return this.permitModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 }

@@ -76,14 +76,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		applicantId: new FormControl(null), // when authenticated, the applicant id
 		caseNumber: new FormControl(null), // placeholder to save info for display purposes
 
-		originalApplicationId: new FormControl(null),
-		originalLicenceId: new FormControl(null),
-		originalLicenceNumber: new FormControl(null),
-		originalExpiryDate: new FormControl(null),
-		originalLicenceTermCode: new FormControl(null),
-		originalBizTypeCode: new FormControl(null),
-		originalPhotoOfYourselfExpired: new FormControl(false),
-		originalDogAuthorizationExists: new FormControl(false),
+		originalLicenceData: this.originalLicenceFormGroup,
 
 		applicationPortalStatus: new FormControl(null),
 
@@ -768,13 +761,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
 				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
 
+				const originalLicenceData = {
+					originalApplicationId: accessCodeData.linkedLicenceAppId,
+					originalLicenceId: accessCodeData.linkedLicenceId,
+					originalLicenceNumber: accessCodeData.licenceNumber,
+					originalExpiryDate: accessCodeData.linkedExpiryDate,
+					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+				};
+
 				this.permitModelFormGroup.patchValue(
 					{
-						originalApplicationId: accessCodeData.linkedLicenceAppId,
-						originalLicenceId: accessCodeData.linkedLicenceId,
-						originalLicenceNumber: accessCodeData.licenceNumber,
-						originalExpiryDate: accessCodeData.linkedExpiryDate,
-						originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+						originalLicenceData,
 						personalInformationData,
 					},
 					{ emitEvent: false }
@@ -1076,7 +1073,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
 			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBizTypeCode: userLicenceInformation?.bizTypeCode ?? null,
+			originalBizTypeCode: 'bizTypeCode' in profileData ? profileData.bizTypeCode : userLicenceInformation?.bizTypeCode,
 		};
 
 		const contactInformationData = {
@@ -1157,7 +1154,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				applicantId: 'applicantId' in profileData ? profileData.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
-				...originalLicenceData,
+				originalLicenceData,
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
@@ -1443,6 +1440,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 
+		const originalLicenceData = resp.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
@@ -1456,10 +1456,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		// We require a new photo every 5 years. Please provide a new photo for your licence
 		const today = moment().startOf('day');
 		const yearsDiff = today.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-		const originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+		originalLicenceData.originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
 
 		let photographOfYourselfData = {};
-		if (originalPhotoOfYourselfExpired) {
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
 			// clear out data to force user to upload a new photo
 			photographOfYourselfData = {
 				attachments: [],
@@ -1471,8 +1471,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				licenceAppId: null,
 				workerLicenceTypeData,
 				applicationTypeData,
-				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
-				originalPhotoOfYourselfExpired,
+				originalLicenceData,
 
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
@@ -1492,6 +1491,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 
+		const originalLicenceData = resp.originalLicenceData;
+		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
+
 		const licenceTermData = {
 			licenceTermCode: LicenceTermCode.FiveYears,
 		};
@@ -1504,7 +1506,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				licenceAppId: null,
 				applicationTypeData,
-				originalLicenceTermCode: resp.licenceTermData.licenceTermCode,
+				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
 				permitRequirementData,
 				licenceTermData,

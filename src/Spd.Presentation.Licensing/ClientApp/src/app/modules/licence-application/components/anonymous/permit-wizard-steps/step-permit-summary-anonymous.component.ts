@@ -7,7 +7,6 @@ import {
 	LicenceDocumentTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -175,7 +174,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Email Address</div>
 													<div class="summary-text-data">
-														{{ supervisorPhoneNumber | mask : constants.phone.displayMask }}
+														{{ supervisorPhoneNumber | formatPhoneNumber }}
 													</div>
 												</div>
 											</div>
@@ -442,7 +441,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Phone Number</div>
 													<div class="summary-text-data">
-														{{ phoneNumber | mask : constants.phone.displayMask }}
+														{{ phoneNumber | formatPhoneNumber }}
 													</div>
 												</div>
 											</div>
@@ -575,7 +574,6 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	permitModelData: any = {};
 	showEmployerInformation = false;
 
-	constants = SPD_CONSTANTS;
 	applicationTypeCodes = ApplicationTypeCode;
 	booleanTypeCodes = BooleanTypeCode;
 
@@ -628,7 +626,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.permitModelData.expiredLicenceData.expiredLicenceNumber ?? '';
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.permitModelData.expiredLicenceData.expiryDate ?? '';
+		return this.permitModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
 	}
 
 	get givenName(): string {

@@ -39,6 +39,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 							</div>
 						</div>
 					</div>
+
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<ng-container *ngFor="let msg of errorMessages; let i = index">
@@ -63,6 +64,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						[applicationIsInProgress]="applicationIsInProgress"
 						[isSoleProprietor]="isSoleProprietor"
 						[lostLicenceDaysText]="lostLicenceDaysText"
+						(manageControllingMembers)="onManageMembersAndEmployees($event)"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenew($event)"
@@ -147,11 +149,11 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
 				const businessProfile: BizProfileResponse = resps[2];
 
-				console.debug('businessLicencesList', businessLicencesList);
-				console.debug('businessApplicationsList', businessApplicationsList);
-				console.debug('businessProfile', businessProfile);
+				// console.debug('businessLicencesList', businessLicencesList);
+				// console.debug('businessApplicationsList', businessApplicationsList);
+				// console.debug('businessProfile', businessProfile);
 
-				this.isSoleProprietor = !this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+				this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
 
 				// User Licences/Permits
 				const activeLicences = businessLicencesList.filter(
@@ -204,11 +206,26 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
+	onResume(appl: MainApplicationResponse): void {
+		this.businessApplicationService
+			.getBusinessLicenceToResume(appl.licenceAppId!)
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+						{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
 	onReplace(licence: MainLicenceResponse): void {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement)
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -225,7 +242,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal)
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -238,26 +255,11 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onResume(appl: MainApplicationResponse): void {
-		this.businessApplicationService
-			.getBusinessLicenceToResume(appl.licenceAppId!)
-			.pipe(
-				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
-						{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
-					);
-				}),
-				take(1)
-			)
-			.subscribe();
-	}
-
 	onUpdate(licence: MainLicenceResponse): void {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update)
+			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

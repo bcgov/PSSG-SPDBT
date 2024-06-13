@@ -163,13 +163,11 @@ import {
 									matInput
 									formControlName="soleProprietorSwlPhoneNumber"
 									[errorStateMatcher]="matcher"
-									[mask]="phoneMask"
+									maxlength="30"
+									appPhoneNumberTransform
 								/>
 								<mat-error *ngIf="form.get('soleProprietorSwlPhoneNumber')?.hasError('required')"
 									>This is required</mat-error
-								>
-								<mat-error *ngIf="form.get('soleProprietorSwlPhoneNumber')?.hasError('mask')"
-									>This must be 10 digits</mat-error
 								>
 							</mat-form-field>
 						</div>
@@ -184,7 +182,6 @@ import {
 export class CommonBusinessInformationComponent implements LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
 	matcher = new FormErrorStateMatcher();
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	businessTypes = BusinessLicenceTypes;
 

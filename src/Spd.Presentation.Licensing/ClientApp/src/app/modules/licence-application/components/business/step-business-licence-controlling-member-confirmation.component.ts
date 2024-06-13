@@ -11,11 +11,10 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 			<div class="step">
 				<app-step-title title="Confirm the list of controlling members for this security business"></app-step-title>
 
-				<div class="row">
+				<div class="row" *ngIf="membersWithSwlList.length > 0">
 					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 						<div class="fs-5 mb-2">Current members with active security worker licences</div>
-						<div class="row">
+						<div class="row mb-3">
 							<ng-container *ngFor="let empl of membersWithSwlList; let i = index">
 								<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.licenceHolderName }}</div>
 								<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">{{ empl.licenceNumber }}</div>
@@ -24,16 +23,16 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row" *ngIf="membersWithoutSwlList.length > 0">
 					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+						<mat-divider class="my-3 mat-divider-primary" *ngIf="membersWithSwlList.length > 0"></mat-divider>
 						<div class="fs-5 mb-2">Members who require criminal record checks</div>
 						<p>
 							A link to an online application form will be sent to each controlling member via email. They must provide
 							personal information and consent to a criminal record check. We must receive criminal record check consent
 							forms from each individual listed here before the business licence application will be reviewed.
 						</p>
-						<div class="row">
+						<div class="row mb-3">
 							<ng-container *ngFor="let empl of membersWithoutSwlList; let i = index">
 								<div class="col-md-6 col-sm-12 summary-text-data mt-2">{{ empl.givenName }} {{ empl.surname }}</div>
 								<div class="col-md-6 col-sm-12 summary-text-data mt-0 mt-md-2">

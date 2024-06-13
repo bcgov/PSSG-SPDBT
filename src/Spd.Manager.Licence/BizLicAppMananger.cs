@@ -28,6 +28,7 @@ internal class BizLicAppMananger :
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
+
     public BizLicAppMananger(
         ILicenceRepository licenceRepository,
         ILicAppRepository licAppRepository,
