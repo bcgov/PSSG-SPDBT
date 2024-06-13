@@ -27,45 +27,30 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _context.AddTospd_applications(app);
 
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
-            throw new ArgumentException("New application type is not supported for business licence");
-        else
+            throw new ArgumentException("New application type is not supported for business licence.");
+
+        if (cmd.OriginalApplicationId == null)
+            throw new ArgumentException("For replace, renew or update, original licence id cannot be null.");
+
+        try
         {
-            if (cmd.OriginalApplicationId != null)
-            {
-                try
-                {
-                    originalApp = await _context.spd_applications
-                        .Expand(a => a.spd_ApplicantId_account)
-                        .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
-                        .FirstOrDefaultAsync(ct);
-                }
-                catch (DataServiceQueryException ex)
-                {
-                    if (ex.Response.StatusCode == 404)
-                        throw new ArgumentException("Original business licence application was not found.");
-                    else
-                        throw;
-                }
-
-                if (originalApp?.spd_ApplicantId_account?.accountid == null)
-                    throw new ArgumentException("There is no account linked to the application found.");
-                else
-                    applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
-            }
-            else
-            {
-                throw new ArgumentException("For replace, renew or update, original application id cannot be null.");
-            }
-
-            if (cmd.OriginalLicenceId != null)
-            {
-                SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
-            }
-            else
-            {
-                throw new ArgumentException("For replace, renew or update, original licence id cannot be null.");
-            }
+            originalApp = await _context.spd_applications
+                .Expand(a => a.spd_ApplicantId_account)
+                .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
+                .FirstOrDefaultAsync(ct);
         }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                throw new ArgumentException("Original business licence application was not found.");
+            throw;
+        }
+
+        if (originalApp?.spd_ApplicantId_account?.accountid == null)
+            throw new ArgumentException("There is no account linked to the application found.");
+
+        SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
+        applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
 
         await SetAddresses(applicantId, app, ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
