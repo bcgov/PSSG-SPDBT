@@ -97,6 +97,11 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	}
 
 	override onGoToFirstStep() {
+		if (this.isRenewalShortForm) {
+			this.childstepper.selectedIndex = 1;
+			return;
+		}
+
 		this.childstepper.selectedIndex = 0;
 		this.summaryReviewComponent.onUpdateData();
 	}
