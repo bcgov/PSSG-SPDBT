@@ -1282,11 +1282,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			attachments: [],
 		};
 
+		const licenceTermData = {
+			licenceTermCode: null,
+		};
+
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
 				liabilityData,
+				licenceTermData,
 			},
 			{
 				emitEvent: false,

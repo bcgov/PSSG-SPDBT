@@ -11,13 +11,9 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 		<section class="step-section">
 			<div class="step">
 				<ng-container *ngIf="applicationTypeCode === applicationTypeRenewal">
-					business licence summary
-					<!-- // TODO business licence summary
 					<app-common-update-renewal-alert
-						[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
+						[workerLicenceTypeCode]="securityBusinessLicenceCode"
 					></app-common-update-renewal-alert>
-				
-				 -->
 				</ng-container>
 
 				<app-step-title
@@ -65,6 +61,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 })
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;
+	securityBusinessLicenceCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
 
 	applicationTypeRenewal = ApplicationTypeCode.Renewal;
 
