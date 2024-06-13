@@ -117,7 +117,7 @@ internal class BizLicAppMananger :
         if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
 
-        //validation: check if original licence meet renew condition.
+        // Validation: check if original licence meet renew condition.
         LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
             new LicenceQry() { LicenceId = request.OriginalLicenceId },
             cancellationToken);
@@ -125,7 +125,7 @@ internal class BizLicAppMananger :
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         LicenceResp originalLic = originalLicences.Items.First();
 
-        //check Renew your existing permit before it expires, within 90 days of the expiry date.
+        // Check Renew your existing permit before it expires, within 90 days of the expiry date.
         if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
@@ -153,7 +153,7 @@ internal class BizLicAppMananger :
                 cancellationToken);
 
         if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
-        //copying all old files to new application in PreviousFileIds 
+        // Copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
         {
             foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
