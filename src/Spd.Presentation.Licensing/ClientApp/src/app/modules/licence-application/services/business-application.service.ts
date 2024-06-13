@@ -1278,10 +1278,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private applyRenewalDataUpdatesToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
+		const liabilityData = {
+			attachments: [],
+		};
+
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				liabilityData,
 			},
 			{
 				emitEvent: false,

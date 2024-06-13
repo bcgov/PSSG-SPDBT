@@ -139,16 +139,18 @@ import { BusinessApplicationService } from '../../services/business-application.
 									<div class="text-minor-heading mt-4">Licence Information</div>
 
 									<div class="row mt-0">
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Licence Term</div>
-											<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
-										</div>
-										<div class="col-lg-4 col-md-12">
-											<div class="text-label d-block text-muted">Fee</div>
-											<div class="summary-text-data">
-												{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+										<ng-container *ngIf="!isChangeFlow">
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Licence Term</div>
+												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 											</div>
-										</div>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Fee</div>
+												<div class="summary-text-data">
+													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+												</div>
+											</div>
+										</ng-container>
 
 										<ng-container
 											*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
