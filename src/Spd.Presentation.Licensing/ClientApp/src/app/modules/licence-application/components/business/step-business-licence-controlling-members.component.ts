@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { CommonControllingMembersComponent } from './common-controlling-members.component';
@@ -30,7 +30,7 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceControllingMembersComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
 	readonly title_new = 'Add all controlling members of this business';
