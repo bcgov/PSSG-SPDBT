@@ -115,7 +115,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         spd_licence expiredLicence = new() { spd_licenceid = cmd.ExpiredLicenceId };
         _context.AddTospd_licences(expiredLicence);
         account account = new() 
-        { 
+        {
             accountid = cmd.ApplicantId,
             address1_line1 = "MailingAddressLine1",
             address1_line2 = "MailingAddressLine2",
@@ -349,5 +349,127 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         // Act and Assert
         await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.SaveBizLicApplicationAsync(cmd, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task CreateBizLicApplicationAsync_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        account biz = new()
+        {
+            accountid = bizId,
+            name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}",
+            address1_line1 = "MailingAddressLine1",
+            address1_line2 = "MailingAddressLine2",
+            address1_city = "MailingAddressCity",
+            address1_stateorprovince = "MailingAddressProvince",
+            address1_country = "MailingAddressCountry",
+            address1_postalcode = "abc123",
+            address2_line1 = "ResidentialAddressLine1",
+            address2_line2 = "ResidentialAddressLine2",
+            address2_city = "ResidentialAddressCity",
+            address2_stateorprovince = "ResidentialAddressProvince",
+            address2_country = "ResidentialAddressCountry",
+            address2_postalcode = "xyz789",
+            statecode = DynamicsConstants.StateCode_Active
+        };
+        _context.AddToaccounts(biz);
+
+        Guid originalLicenceId = Guid.NewGuid();
+        spd_licence originalLicence = new();
+        originalLicence.spd_licenceid = originalLicenceId;
+        _context.AddTospd_licences(originalLicence);
+
+        Guid originalApplicationId = Guid.NewGuid();
+        spd_application originalApp = new();
+        originalApp.spd_applicationid = originalApplicationId;
+
+        _context.AddTospd_applications(originalApp);
+        _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), biz);
+        await _context.SaveChangesAsync();
+
+        CreateBizLicApplicationCmd cmd = fixture.Build<CreateBizLicApplicationCmd>()
+            .With(a => a.ApplicationTypeCode, ApplicationTypeEnum.Renewal)
+            .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
+            .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
+            .With(a => a.MiddleName1, IntegrationTestSetup.DataPrefix + "MiddleName1")
+            .With(a => a.MiddleName2, IntegrationTestSetup.DataPrefix + "MiddleName2")
+            .With(a => a.PhoneNumber, "1234567")
+            .With(a => a.ManagerGivenName, IntegrationTestSetup.DataPrefix + "ManagerGiveName")
+            .With(a => a.ManagerSurname, IntegrationTestSetup.DataPrefix + "ManagerSurname")
+            .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
+            .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
+            .With(a => a.ManagerPhoneNumber, "1234567")
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.WorkPermit })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.SecurityAlarmSales })
+            .With(a => a.OriginalApplicationId, originalApplicationId)
+            .With(a => a.OriginalLicenceId, originalLicenceId)
+            .Create();
+
+        // Action
+        var result = await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None);
+        spd_application? app = _context.spd_applications
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Where(a => a.spd_applicationid == result.LicenceAppId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(cmd.GivenName, app.spd_firstname);
+        Assert.Equal(cmd.Surname, app.spd_lastname);
+        Assert.Equal(cmd.MiddleName1, app.spd_middlename1);
+        Assert.Equal(cmd.MiddleName2, app.spd_middlename2);
+        Assert.Equal(cmd.EmailAddress, app.spd_emailaddress1);
+        Assert.Equal(cmd.PhoneNumber, app.spd_phonenumber);
+        Assert.Equal(cmd.ManagerGivenName, app.spd_businessmanagerfirstname);
+        Assert.Equal(cmd.ManagerSurname, app.spd_businessmanagersurname);
+        Assert.Equal(cmd.ManagerMiddleName1, app.spd_businessmanagermiddlename1);
+        Assert.Equal(cmd.ManagerMiddleName2, app.spd_businessmanagermiddlename2);
+        Assert.Equal(cmd.ManagerEmailAddress, app.spd_businessmanageremail);
+        Assert.Equal(cmd.ManagerPhoneNumber, app.spd_businessmanagerphone);
+        Assert.Equal("100000002", app.spd_uploadeddocuments);
+        Assert.Equal(biz.address1_line1, app.spd_addressline1);
+        Assert.Equal(biz.address1_line2, app.spd_addressline2);
+        Assert.Equal(biz.address1_city, app.spd_city);
+        Assert.Equal(biz.address1_stateorprovince, app.spd_province);
+        Assert.Equal(biz.address1_country, app.spd_country);
+        Assert.Equal(biz.address1_postalcode, app.spd_postalcode);
+        Assert.Equal(biz.address2_line1, app.spd_residentialaddress1);
+        Assert.Equal(biz.address2_line2, app.spd_residentialaddress2);
+        Assert.Equal(biz.address2_city, app.spd_residentialcity);
+        Assert.Equal(biz.address2_stateorprovince, app.spd_residentialprovince);
+        Assert.Equal(biz.address2_country, app.spd_residentialcountry);
+        Assert.Equal(biz.address2_postalcode, app.spd_residentialpostalcode);
+        Assert.NotNull(app.spd_CurrentExpiredLicenceId);
+        Assert.NotEmpty(app.spd_application_spd_licencecategory);
+
+        // Annihilate
+        _context.DeleteObject(originalLicence);
+        _context.DeleteObject(biz);
+        //_context.DeleteObject(originalApp);
+
+        // Remove all links to the application before removing it
+        _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), null);
+        _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
+        foreach (var appCategory in app.spd_application_spd_licencecategory)
+            _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == result.LicenceAppId)
+            .FirstOrDefault();
+        _context.DeleteObject(appToRemove);
+
+        spd_application? originalAppToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == originalApplicationId)
+            .FirstOrDefault();
+        _context.DeleteObject(originalAppToRemove);
+
+        await _context.SaveChangesAsync();
     }
 }
