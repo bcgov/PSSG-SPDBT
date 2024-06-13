@@ -32,7 +32,7 @@ jobs:
     with:
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/licensing-portal.dockerfile
-      IMAGE_NAME: ${{ github.repository }}/licensing-portal
+      IMAGE_NAME: licensing-portal
       # REGISTRY: ghcr.io
       REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev
     secrets:
