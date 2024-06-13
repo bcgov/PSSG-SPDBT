@@ -450,7 +450,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         // Annihilate
         _context.DeleteObject(originalLicence);
         _context.DeleteObject(biz);
-        //_context.DeleteObject(originalApp);
 
         // Remove all links to the application before removing it
         _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), null);
@@ -471,5 +470,63 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.DeleteObject(originalAppToRemove);
 
         await _context.SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task CreateBizLicApplicationAsync_WithWrongApplicationType_Throw_Exception()
+    {
+        // Arrange
+        CreateBizLicApplicationCmd cmd = new() { ApplicationTypeCode = ApplicationTypeEnum.New };
+
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task CreateBizLicApplicationAsync_WithoutOriginalApplicationId_Throw_Exception()
+    {
+        // Arrange
+        CreateBizLicApplicationCmd cmd = new() 
+        { 
+            ApplicationTypeCode = ApplicationTypeEnum.Renewal,
+        };
+
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task CreateBizLicApplicationAsync_WithoutOriginalApplication_Throw_Exception()
+    {
+        // Arrange
+        CreateBizLicApplicationCmd cmd = new()
+        {
+            ApplicationTypeCode = ApplicationTypeEnum.Renewal,
+            OriginalApplicationId = Guid.NewGuid()
+        };
+
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task CreateBizLicApplicationAsync_OriginalApplicationWithoutLinkedAccount_Throw_Exception()
+    {
+        // Arrange
+        Guid originalApplicationId = Guid.NewGuid();
+        spd_application originalApp = new();
+        originalApp.spd_applicationid = originalApplicationId;
+
+        _context.AddTospd_applications(originalApp);
+        await _context.SaveChangesAsync();
+
+        CreateBizLicApplicationCmd cmd = new()
+        {
+            ApplicationTypeCode = ApplicationTypeEnum.Renewal,
+            OriginalApplicationId = originalApplicationId
+        };
+
+        // Action and Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None));
     }
 }
