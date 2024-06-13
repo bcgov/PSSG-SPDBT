@@ -116,16 +116,13 @@ namespace Spd.Presentation.Screening
                     options.Credentials = new BasicAWSCredentials(configuration["storage:MainBucketSettings:accessKey"], configuration["storage:MainBucketSettings:secret"]);
                 });
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
+            services.Configure<ForwardedHeadersOptions>(options => { options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto; });
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
         {
             app.UseForwardedHeaders();
+            app.UsePathBase(configuration.GetValue("pathBase", string.Empty));
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

@@ -1,4 +1,4 @@
-import { APP_BASE_HREF, CommonModule } from '@angular/common';
+import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,7 +14,6 @@ import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
-import { environment } from './../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, LandingComponent],
@@ -40,15 +39,13 @@ import { environment } from './../environments/environment';
   ],
   providers: [
     provideHotToastConfig(),
-    { provide: APP_BASE_HREF, useFactory: getBaseLocation },
+    { provide: APP_BASE_HREF, useFactory: getBaseHref, deps: [PlatformLocation] },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
 
-export function getBaseLocation() {
-  const paths: string[] = location.pathname.split('/').splice(1, 1);
-  const basePath: string = environment.production ? (paths?.[0]) || '' : '';
-  return '/' + basePath;
+export function getBaseHref(platformLocation: PlatformLocation) {
+  return platformLocation.getBaseHrefFromDOM();
 }
 
