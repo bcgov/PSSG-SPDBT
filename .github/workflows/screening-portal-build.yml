@@ -31,7 +31,7 @@ jobs:
     with:
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/screening-portal.dockerfile
-      IMAGE_NAME: screening-portal
+      IMAGE_NAME: ${{ github.repository }}/screening-portal
       # REGISTRY: ghcr.io
       REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev/
     secrets:

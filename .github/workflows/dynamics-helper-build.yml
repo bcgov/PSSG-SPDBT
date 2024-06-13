@@ -34,7 +34,7 @@ jobs:
     with:
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/dynamics.dockerfile
-      IMAGE_NAME: dynamics-helper
+      IMAGE_NAME: ${{ github.repository }}/dynamics-helper
       # REGISTRY: ghcr.io
       REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev/
     secrets:
