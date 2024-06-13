@@ -528,5 +528,13 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         // Action and Assert
         await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None));
+
+        // Annihilate
+        spd_application? originalAppToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == originalApplicationId)
+            .FirstOrDefault();
+        _context.DeleteObject(originalAppToRemove);
+
+        await _context.SaveChangesAsync();
     }
 }
