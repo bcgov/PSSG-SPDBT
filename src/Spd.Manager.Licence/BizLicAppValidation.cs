@@ -20,7 +20,9 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.UseDogs)
             .NotEmpty()
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
-        RuleFor(r => r.ApplicantIsBizManager).NotEmpty();
+        RuleFor(r => r.ApplicantIsBizManager)
+            .NotEmpty()
+            .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.BizManagerContactInfo)
             .Must(r => r.GivenName.IsNullOrEmpty() != true && 
                 r.Surname.IsNullOrEmpty() != true && 
