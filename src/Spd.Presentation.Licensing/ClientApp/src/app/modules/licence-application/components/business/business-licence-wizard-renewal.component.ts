@@ -64,6 +64,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-business-licence-contact-information
+					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
@@ -78,6 +79,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
 				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
 				<app-steps-business-licence-controlling-members
+					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					[nonSwlControllingMembersExist]="nonSwlControllingMembersExist"

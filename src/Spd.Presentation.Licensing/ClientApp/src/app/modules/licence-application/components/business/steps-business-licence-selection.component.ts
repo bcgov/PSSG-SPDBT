@@ -12,6 +12,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 			<mat-step>
 				<app-step-business-licence-category
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[applicationTypeCode]="applicationTypeCode"
 				></app-step-business-licence-category>
 
 				<app-wizard-footer
