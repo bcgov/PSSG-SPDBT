@@ -574,7 +574,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.BizInsurance, DocumentTypeEnum.BusinessInsurance },
         {LicenceDocumentTypeCode.ArmourCarGuardRegistrar, DocumentTypeEnum.ArmouredCarGuard },
         {LicenceDocumentTypeCode.BizSecurityDogCertificate, DocumentTypeEnum.DogCertificate },
-        {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary }
+        {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
+        {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
     }.ToImmutableDictionary();
 
 
@@ -636,7 +637,8 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.BizInsurance, DocumentTypeEnum.BusinessInsurance },
         {LicenceDocumentTypeCode.ArmourCarGuardRegistrar, DocumentTypeEnum.ArmouredCarGuard },
         {LicenceDocumentTypeCode.BizSecurityDogCertificate, DocumentTypeEnum.DogCertificate },
-        {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary }
+        {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
+        {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
     }.ToImmutableDictionary();
 
     private string GetHolderName(string firstName, string middleName, string lastName)
