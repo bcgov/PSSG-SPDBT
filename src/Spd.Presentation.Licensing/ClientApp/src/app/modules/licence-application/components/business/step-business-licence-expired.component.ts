@@ -18,7 +18,7 @@ import { CommonExpiredLicenceComponent } from '../shared/step-components/common-
 				<app-common-expired-licence
 					[form]="form"
 					[isLoggedIn]="true"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[workerLicenceTypeCode]="securityBusinessLicenceCode"
 				></app-common-expired-licence>
 			</div>
 		</section>
@@ -27,7 +27,7 @@ import { CommonExpiredLicenceComponent } from '../shared/step-components/common-
 })
 export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.expiredLicenceFormGroup;
-	workerLicenceTypeCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
+	securityBusinessLicenceCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
 
 	@ViewChild(CommonExpiredLicenceComponent)
 	expiredLicenceComponent!: CommonExpiredLicenceComponent;

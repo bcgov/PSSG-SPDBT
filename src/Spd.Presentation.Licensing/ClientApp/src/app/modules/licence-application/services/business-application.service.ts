@@ -70,6 +70,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
+		isRenewalShortForm: new FormControl(), // placeholder for flag
 
 		originalLicenceData: this.originalBusinessLicenceFormGroup,
 
