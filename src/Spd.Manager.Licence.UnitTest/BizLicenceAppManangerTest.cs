@@ -277,4 +277,107 @@ public class BizLicenceAppManangerTest
         Assert.Equal(newLicAppId, result.LicenceAppId);
         Assert.Equal(licenceFeeResp.Amount, result.Cost);
     }
+
+    [Fact]
+    public async void Handle_BizLicAppRenewCommand_WithWrongApplicationType_Throw_Exception()
+    {
+        // Arrange
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.New
+        };
+
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppRenewCommand_WithoutOriginalLicence_Throw_Exception()
+    {
+        // Arrange
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>()
+            });
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
+        };
+
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppRenewCommand_WithInvalidExpirationDate_Throw_Exception()
+    {
+        // Arrange
+        DateOnly expiryDate = new(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.ExpiryDate, expiryDate)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>() { originalLicence }
+            });
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
+        };
+
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppRenewCommand_WithMissingFiles_Throw_Exception()
+    {
+        // Arrange
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.ExpiryDate, expiryDate)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { originalLicence }
+            });
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
+            NoBranding = true,
+            UseDogs = false
+        };
+        LicAppFileInfo bizInsurenceFile = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ApiException>(act);
+    }
 }
