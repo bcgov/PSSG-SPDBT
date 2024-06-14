@@ -127,7 +127,7 @@ public class BizLicensingControllerTest
     {
         BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.Renewal };
 
-        var result = await sut.SubmitBusinessLicenceApplicationChange(request, CancellationToken.None);
+        var result = await sut.ChangeOnBizLicApp(request, CancellationToken.None);
 
         Assert.IsType<BizLicAppCommandResponse>(result);
         mockMediator.Verify();
@@ -138,6 +138,6 @@ public class BizLicensingControllerTest
     {
         BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.New };
 
-        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SubmitBusinessLicenceApplicationChange(request, CancellationToken.None));
+        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.ChangeOnBizLicApp(request, CancellationToken.None));
     }
 }
