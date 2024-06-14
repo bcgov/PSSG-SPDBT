@@ -257,6 +257,31 @@ internal class BizLicAppMananger :
             }).ToList();
         }
 
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing business insurance file");
+        }
 
+        if (request.NoBranding == false && 
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing branding file");
+        }
+
+        if (request.UseDogs == true && 
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing security dog certificate file");
+        }
+
+        if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing armoured car guard registrar file");
+        }
     }
 }
