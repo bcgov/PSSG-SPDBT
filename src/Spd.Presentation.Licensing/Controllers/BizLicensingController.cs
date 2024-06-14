@@ -92,7 +92,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/change")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpPost]
-        public async Task<BizLicAppCommandResponse?> ChangeOnBizLicApp(BizLicAppChangeRequest request, CancellationToken ct)
+        public async Task<BizLicAppCommandResponse?> ChangeOnBizLicApp(BizLicAppSubmitRequest request, CancellationToken ct)
         {
             BizLicAppCommandResponse? response = null;
 
