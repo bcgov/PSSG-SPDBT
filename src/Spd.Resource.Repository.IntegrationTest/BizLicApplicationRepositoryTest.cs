@@ -384,6 +384,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Guid originalApplicationId = Guid.NewGuid();
         spd_application originalApp = new();
         originalApp.spd_applicationid = originalApplicationId;
+        originalApp.spd_businesstype = (int?)BizTypeOptionSet.Corporation;
 
         _context.AddTospd_applications(originalApp);
         _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), biz);
@@ -444,6 +445,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(biz.address2_stateorprovince, app.spd_residentialprovince);
         Assert.Equal(biz.address2_country, app.spd_residentialcountry);
         Assert.Equal(biz.address2_postalcode, app.spd_residentialpostalcode);
+        Assert.Equal(originalApp.spd_businesstype, app.spd_businesstype);
         Assert.NotNull(app.spd_CurrentExpiredLicenceId);
         Assert.NotEmpty(app.spd_application_spd_licencecategory);
 
