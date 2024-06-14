@@ -22,7 +22,6 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 				<div class="row mb-3" *ngIf="membersWithoutSwlListWithEmail.length > 0">
 					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
 						<div class="summary-heading mb-2">
 							A link to the online criminal record check consent form has been sent to:
 						</div>
@@ -37,7 +36,10 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 
 				<div class="row mb-3" *ngIf="membersWithoutSwlListWithoutEmail.length > 0">
 					<div class="offset-md-2 col-md-8 col-sm-12">
-						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
+						<mat-divider
+							class="my-3 mat-divider-primary"
+							*ngIf="membersWithoutSwlListWithEmail.length > 0"
+						></mat-divider>
 						<div class="summary-heading mb-2">
 							Download the Consent to Criminal Record Check form and provide it to the following member to fill out:
 						</div>

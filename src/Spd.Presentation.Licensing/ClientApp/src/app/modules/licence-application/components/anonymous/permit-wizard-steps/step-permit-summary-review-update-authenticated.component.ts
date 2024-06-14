@@ -133,7 +133,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 									<div class="col-lg-6 col-md-12">
 										<div class="text-label d-block text-muted">Email Address</div>
 										<div class="summary-text-data">
-											{{ supervisorPhoneNumber | mask : phoneMask }}
+											{{ supervisorPhoneNumber | formatPhoneNumber }}
 										</div>
 									</div>
 								</div>
@@ -225,7 +225,6 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 	permitModelData: any = {};
 	showEmployerInformation = false;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
-	phoneMask = SPD_CONSTANTS.phone.displayMask;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -284,15 +283,13 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		}
 
 		const originalLicenceData = this.permitModelData.originalLicenceData;
-		const bizTypeCode = originalLicenceData.originalBizTypeCode;
-		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
 				this.workerLicenceTypeCode,
 				ApplicationTypeCode.Update,
-				bizTypeCode,
-				originalLicenceTermCode
+				originalLicenceData.originalBizTypeCode,
+				originalLicenceData.originalLicenceTermCode
 			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;

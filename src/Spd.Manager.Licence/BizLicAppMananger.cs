@@ -197,6 +197,22 @@ internal class BizLicAppMananger :
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
     {
         await UpdateMembersAsync(cmd.Members, cmd.BizId, cmd.ApplicationId, ct);
+        if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CorporateRegistryDocument))
+            throw new ApiException(HttpStatusCode.BadRequest, "Can only Upload Corporate Registry Document for management of controlling member.");
+
+        if (cmd.LicAppFileInfos != null && cmd.LicAppFileInfos.Any())
+        {
+            foreach (LicAppFileInfo licAppFile in cmd.LicAppFileInfos)
+            {
+                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
+                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
+                fileCmd.AccountId = cmd.BizId;
+                fileCmd.ApplicationId = cmd.ApplicationId;
+                fileCmd.TempFile = tempFile;
+                //create bcgov_documenturl and file
+                await _documentRepository.ManageAsync(fileCmd, ct);
+            }
+        }
         return default;
     }
 
