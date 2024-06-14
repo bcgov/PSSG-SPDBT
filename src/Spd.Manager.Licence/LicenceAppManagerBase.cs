@@ -65,6 +65,7 @@ internal abstract class LicenceAppManagerBase
         Guid? mentalHealthStatusChangeTaskId,
         Guid? purposeChangeTaskId,
         Guid? licenceId,
+        Guid? accountId,
         CancellationToken ct)
     {
         if (newFileInfos != null && newFileInfos.Any())
@@ -88,6 +89,7 @@ internal abstract class LicenceAppManagerBase
                 }
                 fileCmd.ApplicantId = contactId;
                 fileCmd.ApplicationId = licenceAppId;
+                fileCmd.AccountId = accountId;
                 fileCmd.ExpiryDate = documentExpiredInfos?
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
