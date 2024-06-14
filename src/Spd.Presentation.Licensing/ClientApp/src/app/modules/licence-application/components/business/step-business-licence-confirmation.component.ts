@@ -9,7 +9,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title title="Confirm your current licence information"></app-step-title>
+				<app-step-title title="Confirm your current business licence information"></app-step-title>
 
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">

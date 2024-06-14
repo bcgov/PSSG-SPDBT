@@ -1,4 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { CommonControllingMembersComponent } from './common-controlling-members.component';
 
@@ -8,7 +9,7 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
-					title="Add all controlling members of this business <mat-icon class='info-icon' matTooltip='A controlling member is any person who can direct the activity of your business.'>info</mat-icon>"
+					[title]="title"
 					subtitle="A controlling member is any person who can direct the activity of your business."
 					info="<a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/controlling-members' target='_blank'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence."
 				></app-step-title>
@@ -29,8 +30,29 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceControllingMembersComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
+	title = '';
+
+	readonly title_new = 'Add all controlling members of this business';
+	readonly title_renew_update = 'Confirm controlling members of this business';
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+
 	@ViewChild(CommonControllingMembersComponent) controllingMembersComponent!: CommonControllingMembersComponent;
+
+	ngOnInit(): void {
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = this.title_new;
+				break;
+			}
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Update: {
+				this.title = this.title_renew_update;
+				break;
+			}
+		}
+	}
 
 	isFormValid(): boolean {
 		return this.controllingMembersComponent.isFormValid();
