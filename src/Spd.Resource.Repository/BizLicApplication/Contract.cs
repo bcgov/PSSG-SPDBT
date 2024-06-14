@@ -9,7 +9,7 @@ public partial interface IBizLicApplicationRepository
     public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
 }
 
-public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
+public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);
 
 public record BizLicApplication
 {
