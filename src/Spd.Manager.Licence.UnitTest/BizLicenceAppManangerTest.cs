@@ -337,7 +337,6 @@ public class BizLicenceAppManangerTest
         {
             ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
         };
-
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
         // Action
