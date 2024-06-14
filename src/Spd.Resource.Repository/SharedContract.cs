@@ -152,3 +152,14 @@ public record SwlContactInfo
 {
     public Guid? LicenceId { get; set; }
 }
+
+public enum UploadedDocumentEnum
+{
+    Fingerprint,
+    StudyPermit,
+    WorkPermit,
+    BizBranding,
+    BizInsurance,
+    ArmourCarGuardRegistrar,
+    BizSecurityDogCertificate
+}
