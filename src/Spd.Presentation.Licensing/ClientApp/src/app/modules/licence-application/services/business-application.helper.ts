@@ -405,7 +405,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		// Business Manager information is only supplied in non-sole proprietor flow
 		let applicantContactInfo: ContactInfo = {};
-		let applicantIsBizManager: boolean = false;
+		let applicantIsBizManager: boolean | null = null;
 		let bizManagerContactInfo: ContactInfo = {};
 
 		if (!this.isSoleProprietor(bizTypeCode)) {
