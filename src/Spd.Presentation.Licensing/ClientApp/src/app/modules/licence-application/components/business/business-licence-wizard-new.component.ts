@@ -365,7 +365,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for new Business Licence application');
+		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
 	}
 
 	private goToReviewStep(): void {
