@@ -44,6 +44,13 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								>
 
 								<mat-divider class="my-4"></mat-divider>
+
+								<ng-container *ngIf="isRenewalOrUpdate">
+									<div>Previously uploaded images:</div>
+									<!-- // TODO Previously uploaded images -->
+									<div>Remove any examples of business branding that are no longer being used</div>
+									<div>Add new examples</div>
+								</ng-container>
 							</div>
 
 							<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
@@ -60,6 +67,8 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 	title = '';
 	subtitle = '';
 
+	isRenewalOrUpdate!: boolean;
+
 	form = this.businessApplicationService.companyBrandingFormGroup;
 
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
@@ -74,8 +83,10 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 	) {}
 
 	ngOnInit(): void {
+		this.isRenewalOrUpdate = this.businessApplicationService.isRenewalOrUpdate(this.applicationTypeCode);
+
 		if (this.isRenewalOrUpdate) {
-			this.title = 'Confirm your business" branding';
+			this.title = "Confirm your business' branding";
 			this.subtitle = 'Update any information that has changed since your last application';
 		} else {
 			this.title = 'Provide examples of company branding';
@@ -115,11 +126,5 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 	}
 	get isNoLogoOrBranding(): boolean {
 		return this.form.get('noLogoOrBranding')?.value ?? false;
-	}
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }

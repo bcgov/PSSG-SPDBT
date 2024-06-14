@@ -64,6 +64,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-business-licence-contact-information
+					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
@@ -78,6 +79,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
 				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
 				<app-steps-business-licence-controlling-members
+					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					[nonSwlControllingMembersExist]="nonSwlControllingMembersExist"
@@ -204,7 +206,12 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToFirstStep();
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
+				if (this.isBusinessLicenceSoleProprietor) {
+					this.stepsReviewAndConfirm?.onGoToFirstStep();
+				} else {
+					this.stepsContactInformationComponent?.onGoToFirstStep();
+				}
 				break;
 			case this.STEP_CONTROLLING_MEMBERS:
 				// If Sole Proprietor biz type, this step is not the controlling members step,
@@ -216,7 +223,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				}
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
 				break;
 		}
@@ -235,13 +241,17 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToLastStep();
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
+				if (this.isBusinessLicenceSoleProprietor) {
+					this.stepsReviewAndConfirm?.onGoToLastStep();
+				} else {
+					this.stepsContactInformationComponent?.onGoToLastStep();
+				}
 				break;
 			case this.STEP_CONTROLLING_MEMBERS:
 				this.stepsControllingMembersComponent?.onGoToLastStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToLastStep();
 				break;
 		}
