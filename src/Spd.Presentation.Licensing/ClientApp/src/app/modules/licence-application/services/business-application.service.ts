@@ -70,6 +70,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
+		isRenewalShortForm: new FormControl(), // placeholder for flag
 
 		originalLicenceData: this.originalBusinessLicenceFormGroup,
 
@@ -1277,10 +1278,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private applyRenewalDataUpdatesToModel(_resp: any): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
+		const liabilityData = {
+			attachments: [],
+		};
+
+		const licenceTermData = {
+			licenceTermCode: null,
+		};
+
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
+				liabilityData,
+				licenceTermData,
 			},
 			{
 				emitEvent: false,

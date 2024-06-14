@@ -1,5 +1,6 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicationTypeCode,
 	BizLicAppUpsertRequest,
 	BizTypeCode,
 	ContactInfo,
@@ -404,7 +405,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		// Business Manager information is only supplied in non-sole proprietor flow
 		let applicantContactInfo: ContactInfo = {};
-		let applicantIsBizManager: boolean | null = null;
+		let applicantIsBizManager: boolean = false;
 		let bizManagerContactInfo: ContactInfo = {};
 
 		if (!this.isSoleProprietor(bizTypeCode)) {
@@ -730,6 +731,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		return (
 			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
 		);
+	}
+
+	isRenewalOrUpdate(applicationTypeCode: ApplicationTypeCode | undefined): boolean {
+		if (!applicationTypeCode) return false;
+
+		return applicationTypeCode === ApplicationTypeCode.Renewal || applicationTypeCode === ApplicationTypeCode.Update;
 	}
 
 	clearPrivateInvestigatorModelData(): void {
