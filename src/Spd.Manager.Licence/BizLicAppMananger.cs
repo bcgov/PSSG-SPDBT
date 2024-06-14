@@ -145,11 +145,12 @@ internal class BizLicAppMananger :
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
-                response?.ContactId,
                 null,
                 null,
                 null,
                 null,
+                null,
+                response?.AccountId,
                 cancellationToken);
 
         if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
@@ -159,7 +160,7 @@ internal class BizLicAppMananger :
             foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
             {
                 await _documentRepository.ManageAsync(
-                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.ContactId),
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.AccountId),
                     cancellationToken);
             }
         }
