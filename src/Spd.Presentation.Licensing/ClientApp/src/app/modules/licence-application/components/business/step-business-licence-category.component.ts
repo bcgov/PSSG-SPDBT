@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { WorkerCategoryTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { BusinessCategoryTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
@@ -10,7 +10,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title [title]="title"></app-step-title>
+				<app-step-title [title]="title" [subtitle]="infoTitle"></app-step-title>
 
 				<div class="row">
 					<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
@@ -154,6 +154,8 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categoryFormGroup;
 
+	isRenewalOrUpdate!: boolean;
+
 	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
@@ -167,39 +169,42 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	showSecurityGuardMessage = false;
 
 	title = 'Which categories of security business licence are you applying for?';
-	// infoTitle = '';
+	infoTitle = '';
 
-	// readonly title_new = 'What category of security business licence are you applying for?';
-	// readonly subtitle_new = 'You can add up to a total of 6 categories';
+	readonly title_new = 'What category of security business licence are you applying for?';
+	readonly subtitle_new = '';
 
-	// readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
-	// readonly subtitle_renew = 'You can change and remove existing categories as well as add new ones';
+	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
+	readonly subtitle_renew = 'You can change and remove existing categories as well as add new ones';
 
-	// readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
-	// readonly subtitle_update = 'You can change and remove existing categories as well as add new ones';
+	readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
+	readonly subtitle_update = 'You can change and remove existing categories as well as add new ones';
 
-	// @Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
-		// switch (this.applicationTypeCode) {
-		// 	case ApplicationTypeCode.New: {
-		// 		this.title = this.title_new;
-		// 		this.infoTitle = this.subtitle_new;
-		// 		break;
-		// 	}
-		// 	case ApplicationTypeCode.Renewal: {
-		// 		this.title = this.title_renew;
-		// 		this.infoTitle = this.subtitle_renew;
-		// 		break;
-		// 	}
-		// 	case ApplicationTypeCode.Update: {
-		// 		this.title = this.title_update;
-		// 		this.infoTitle = this.subtitle_update;
-		// 		break;
-		// 	}
+		this.isRenewalOrUpdate = this.businessApplicationService.isRenewalOrUpdate(this.applicationTypeCode);
+
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = this.title_new;
+				this.infoTitle = this.subtitle_new;
+				break;
+			}
+			case ApplicationTypeCode.Renewal: {
+				this.title = this.title_renew;
+				this.infoTitle = this.subtitle_renew;
+				break;
+			}
+			case ApplicationTypeCode.Update: {
+				this.title = this.title_update;
+				this.infoTitle = this.subtitle_update;
+				break;
+			}
+		}
 
 		if (this.isBusinessLicenceSoleProprietor) {
 			this.businessCategoryTypes = BusinessCategoryTypes.filter(
@@ -338,13 +343,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		item.setValue(false, { emitEvent: false });
 		item.enable({ emitEvent: false });
 	}
-
-	// get isRenewalOrUpdate(): boolean {
-	// 	return (
-	// 		this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-	// 		this.applicationTypeCode === ApplicationTypeCode.Update
-	// 	);
-	// }
 
 	get ArmouredCarGuard(): FormControl {
 		return this.form.get(WorkerCategoryTypeCode.ArmouredCarGuard) as FormControl;

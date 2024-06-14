@@ -17,24 +17,6 @@ import {
 	selector: 'app-common-employees',
 	template: `
 		<mat-accordion multi="false">
-			<!-- <ng-container *ngIf="isNewOrRenewal; else isUpdateTitle2"> -->
-			<!-- <div class="fs-5 mb-2">Controlling members WITHOUT a security worker licence</div> -->
-			<!-- <div class="my-3">
-					<app-alert type="info" icon="info">
-						Your business must have valid security worker licence holders in B.C. that support the various licence
-						categories the business wishes to be licensed for. If your controlling members don't meet this requirement,
-						add employees who do.
-					</app-alert>
-				</div> -->
-			<!-- </ng-container>
-			<ng-template #isUpdateTitle2>
-				<div class="fs-5 mb-2">Employee Updates</div>
-				<div>
-					If your employees who are licence holders for the business change during the business licence term, update
-					their information here.
-				</div>
-			</ng-template> -->
-
 			<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 				<mat-expansion-panel-header>
 					<mat-panel-title>Employees</mat-panel-title>
@@ -101,7 +83,7 @@ import {
 
 					<div class="row mt-3">
 						<ng-container *ngIf="!employeesExist">
-							<div class="mt-2 mb-3">No employees exist</div>
+							<app-alert type="info" icon=""> No employees exist </app-alert>
 						</ng-container>
 
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">
@@ -110,10 +92,10 @@ import {
 							</app-alert>
 						</ng-container>
 						<ng-template #CanAddEmployee>
-							<div class="col-md-12" [ngClass]="isWizard ? 'col-lg-4 col-xl-4' : 'col-lg-6 col-xl-5'">
-								<button mat-flat-button color="primary" class="large mb-2" (click)="onAddLicenceHolder()">
+							<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-4 col-xl-4' : 'col-lg-6 col-xl-5'">
+								<a class="large" tabindex="0" (click)="onAddEmployee()" (keydown)="onKeydownAddEmployee($event)">
 									Add Employee
-								</button>
+								</a>
 							</div>
 						</ng-template>
 					</div>
@@ -191,7 +173,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 			});
 	}
 
-	onAddLicenceHolder(): void {
+	onAddEmployee(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Member with Security Worker Licence',
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
@@ -220,6 +202,12 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 					this.dataSource.data = this.employeesList.value;
 				}
 			});
+	}
+
+	onKeydownAddEmployee(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onAddEmployee();
 	}
 
 	private newMemberRow(memberData: any): FormGroup {

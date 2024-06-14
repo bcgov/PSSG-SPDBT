@@ -19,7 +19,7 @@ import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-re
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-new',
+	selector: 'app-business-licence-wizard-renewal',
 	template: `
 		<mat-stepper
 			linear
@@ -35,11 +35,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[showSaveAndExit]="showSaveAndExit"
 					[applicationTypeCode]="applicationTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isRenewalShortForm]="isRenewalShortForm"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
+					(renewalShortForm)="onRenewalShortForm($event)"
 				></app-steps-business-licence-information>
 			</mat-step>
 
@@ -52,6 +54,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
+					[isRenewalShortForm]="isRenewalShortForm"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -61,7 +64,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-selection>
 			</mat-step>
 
-			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor">
+			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor && !isRenewalShortForm">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-business-licence-contact-information
 					[applicationTypeCode]="applicationTypeCode"
@@ -76,7 +79,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-contact-information>
 			</mat-step>
 
-			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
+			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor && !isRenewalShortForm">
 				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
 				<app-steps-business-licence-controlling-members
 					[applicationTypeCode]="applicationTypeCode"
@@ -97,6 +100,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-review
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[isRenewalShortForm]="isRenewalShortForm"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
@@ -112,13 +116,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 	`,
 	styles: [],
 })
-export class BusinessLicenceWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 1;
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
-	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 2;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -126,8 +130,9 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	step4Complete = false;
 
 	isFormValid = false;
-	showSaveAndExit = false;
+	showSaveAndExit = false; // Always false for renewals
 	nonSwlControllingMembersExist = false;
+	isRenewalShortForm = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -186,8 +191,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 				this.isFormValid = _resp;
 
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
-
 				this.updateCompleteStatus();
 			}
 		);
@@ -206,12 +209,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-				if (this.isBusinessLicenceSoleProprietor) {
-					this.stepsReviewAndConfirm?.onGoToFirstStep();
-				} else {
-					this.stepsContactInformationComponent?.onGoToFirstStep();
-				}
+				this.stepsContactInformationComponent?.onGoToFirstStep();
 				break;
 			case this.STEP_CONTROLLING_MEMBERS:
 				// If Sole Proprietor biz type, this step is not the controlling members step,
@@ -223,6 +221,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				}
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
 				break;
 		}
@@ -241,17 +240,13 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.stepsLicenceSelectionComponent?.onGoToLastStep();
 				break;
 			case this.STEP_CONTACT_INFORMATION:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-				if (this.isBusinessLicenceSoleProprietor) {
-					this.stepsReviewAndConfirm?.onGoToLastStep();
-				} else {
-					this.stepsContactInformationComponent?.onGoToLastStep();
-				}
+				this.stepsContactInformationComponent?.onGoToLastStep();
 				break;
 			case this.STEP_CONTROLLING_MEMBERS:
 				this.stepsControllingMembersComponent?.onGoToLastStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
+			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 				this.stepsReviewAndConfirm?.onGoToLastStep();
 				break;
 		}
@@ -273,6 +268,15 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.saveStep(stepper);
+	}
+
+	onRenewalShortForm(isShortForm: boolean) {
+		this.businessApplicationService.businessModelFormGroup.patchValue(
+			{ isRenewalShortForm: isShortForm },
+			{ emitEvent: false }
+		);
+		this.isRenewalShortForm = isShortForm;
+		this.goToChildNextStep();
 	}
 
 	onGoToStep(step: number) {

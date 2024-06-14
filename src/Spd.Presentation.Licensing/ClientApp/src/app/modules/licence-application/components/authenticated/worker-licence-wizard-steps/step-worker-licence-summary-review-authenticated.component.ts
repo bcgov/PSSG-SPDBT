@@ -591,18 +591,20 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 		const originalLicenceData = this.licenceModelData.originalLicenceData;
 
-		const applicationTypeCode = this.applicationTypeCode;
-		let bizTypeCode: BizTypeCode | null = null;
-		if (applicationTypeCode === ApplicationTypeCode.New) {
+		let bizTypeCode: BizTypeCode | null = originalLicenceData.originalBizTypeCode;
+		if (this.applicationTypeCode === ApplicationTypeCode.New) {
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
-		} else {
-			bizTypeCode = originalLicenceData.originalBizTypeCode;
 		}
 
 		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, applicationTypeCode, bizTypeCode, originalLicenceTermCode)
+			.getLicenceTermsAndFees(
+				this.workerLicenceTypeCode,
+				this.applicationTypeCode,
+				bizTypeCode,
+				originalLicenceTermCode
+			)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}

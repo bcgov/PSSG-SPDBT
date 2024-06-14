@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
-import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
@@ -10,7 +9,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 	selector: 'app-steps-business-licence-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<mat-step *ngIf="!isRenewalShortForm">
 				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
 
 				<app-wizard-footer
@@ -32,7 +31,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 					[showSaveAndExit]="true"
 					(saveAndExit)="onNoSaveAndExit()"
 					[nextButtonLabel]="submitPayLabel"
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onConsentGoToPreviousStep()"
 					(nextStepperStep)="onPayNow()"
 				></app-wizard-footer>
 			</mat-step>
@@ -43,9 +42,10 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 })
 export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent implements OnInit {
 	submitPayLabel = '';
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isRenewalShortForm!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -53,10 +53,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
-	constructor(
-		override commonApplicationService: CommonApplicationService,
-		private businessApplicationService: BusinessApplicationService
-	) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
 
@@ -65,10 +62,15 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		// if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 		// this.submitPayLabel = 'Submit';
 		// }
+	}
 
-		this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
+	onConsentGoToPreviousStep(): void {
+		if (this.isRenewalShortForm) {
+			this.onStepPrevious();
+			return;
+		}
+
+		this.onGoToPreviousStep();
 	}
 
 	onPayNow(): void {
@@ -95,6 +97,11 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	}
 
 	override onGoToFirstStep() {
+		if (this.isRenewalShortForm) {
+			this.childstepper.selectedIndex = 1;
+			return;
+		}
+
 		this.childstepper.selectedIndex = 0;
 		this.summaryReviewComponent.onUpdateData();
 	}

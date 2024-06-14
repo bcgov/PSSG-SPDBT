@@ -35,7 +35,10 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-expired [isLoggedIn]="isLoggedIn"></app-step-permit-expired>
+				<app-step-permit-expired
+					[isLoggedIn]="isLoggedIn"
+					[workerLicenceTypeCode]="workerLicenceTypeCode"
+				></app-step-permit-expired>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"

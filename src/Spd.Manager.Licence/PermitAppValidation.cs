@@ -25,7 +25,7 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit) ||
             (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorPhoneNumber).NotEmpty()
-            .MaximumLength(15)
+            .MaximumLength(30)
             .When(r =>
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit) ||
             (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit));
@@ -107,7 +107,7 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit) ||
             (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorPhoneNumber).NotEmpty()
-            .MaximumLength(15)
+            .MaximumLength(30)
             .When(r =>
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit) ||
             (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit));
