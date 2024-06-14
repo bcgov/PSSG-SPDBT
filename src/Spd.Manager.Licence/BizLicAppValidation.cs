@@ -77,7 +77,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .WithMessage("Missing business insurance document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) < 2)
-            .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
+            .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) > 0)
             .WithMessage("No more than 1 business insurance document is allowed.");
 
         // Document required for "Armoured car guard"
