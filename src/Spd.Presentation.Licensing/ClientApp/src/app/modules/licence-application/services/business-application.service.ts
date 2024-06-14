@@ -556,6 +556,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
 
+		this.profileConfirmationFormGroup.reset();
+		this.consentAndDeclarationFormGroup.reset();
 		this.businessModelFormGroup.reset();
 
 		// clear the alias data - this does not seem to get reset during a formgroup reset
