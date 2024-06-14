@@ -273,6 +273,8 @@ public class BizLicenceAppManangerTest
         var result = await sut.Handle(cmd, CancellationToken.None);
 
         // Assert
+        Assert.IsType<BizLicAppCommandResponse>(result);
         Assert.Equal(newLicAppId, result.LicenceAppId);
+        Assert.Equal(licenceFeeResp.Amount, result.Cost);
     }
 }
