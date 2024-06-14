@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ApplicationTypeCode } from '@app/api/models';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
@@ -9,10 +10,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title
-					title="Provide contact information"
-					subtitle="We require contact information for your company's business manager, who is responsible for the day-to-day supervision of licensed security workers"
-				></app-step-title>
+				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 			</div>
 
 			<div class="row">
@@ -161,12 +159,35 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceManagerInformationComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceManagerInformationComponent implements OnInit, LicenceChildStepperStepComponent {
 	matcher = new FormErrorStateMatcher();
+
+	title = '';
+	subtitle =
+		"We require contact information for your company's business manager, who is responsible for the day-to-day supervision of licensed security workers";
+
+	readonly title_new = 'Provide contact information';
+	readonly title_renew_update = 'Confirm contact information';
+
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	form: FormGroup = this.businessApplicationService.businessManagerFormGroup;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
+
+	ngOnInit(): void {
+		switch (this.applicationTypeCode) {
+			case ApplicationTypeCode.New: {
+				this.title = this.title_new;
+				break;
+			}
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Update: {
+				this.title = this.title_renew_update;
+				break;
+			}
+		}
+	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

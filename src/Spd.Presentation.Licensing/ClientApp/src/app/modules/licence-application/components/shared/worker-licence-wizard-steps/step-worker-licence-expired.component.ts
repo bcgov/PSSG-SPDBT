@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
@@ -17,26 +17,20 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				<app-common-expired-licence
 					[form]="form"
 					[isLoggedIn]="isLoggedIn"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[workerLicenceTypeCode]="securityWorkerLicenceCode"
 				></app-common-expired-licence>
 			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceExpiredComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	securityWorkerLicenceCode = WorkerLicenceTypeCode.SecurityWorkerLicence;
 
 	@Input() isLoggedIn!: boolean;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
-	ngOnInit(): void {
-		this.workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
-		)?.value;
-	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

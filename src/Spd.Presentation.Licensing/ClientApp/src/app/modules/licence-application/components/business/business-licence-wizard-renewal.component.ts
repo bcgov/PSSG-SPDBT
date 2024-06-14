@@ -35,11 +35,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[showSaveAndExit]="showSaveAndExit"
 					[applicationTypeCode]="applicationTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+					[isRenewalShortForm]="isRenewalShortForm"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
+					(renewalShortForm)="onRenewalShortForm($event)"
 				></app-steps-business-licence-information>
 			</mat-step>
 
@@ -52,6 +54,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
+					[isRenewalShortForm]="isRenewalShortForm"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -61,9 +64,10 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-selection>
 			</mat-step>
 
-			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor">
+			<mat-step [completed]="step3Complete" *ngIf="!isBusinessLicenceSoleProprietor && !isRenewalShortForm">
 				<ng-template matStepLabel>Contact Information</ng-template>
 				<app-steps-business-licence-contact-information
+					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(childNextStep)="onChildNextStep()"
@@ -75,9 +79,10 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				></app-steps-business-licence-contact-information>
 			</mat-step>
 
-			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor">
+			<mat-step [completed]="step4Complete" *ngIf="!isBusinessLicenceSoleProprietor && !isRenewalShortForm">
 				<ng-template matStepLabel>Controlling Members & Employees</ng-template>
 				<app-steps-business-licence-controlling-members
+					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					[nonSwlControllingMembersExist]="nonSwlControllingMembersExist"
@@ -95,6 +100,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-review
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[isRenewalShortForm]="isRenewalShortForm"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
@@ -126,6 +132,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	isFormValid = false;
 	showSaveAndExit = false; // Always false for renewals
 	nonSwlControllingMembersExist = false;
+	isRenewalShortForm = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -261,6 +268,15 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 
 	onNextStepperStep(stepper: MatStepper): void {
 		this.saveStep(stepper);
+	}
+
+	onRenewalShortForm(isShortForm: boolean) {
+		this.businessApplicationService.businessModelFormGroup.patchValue(
+			{ isRenewalShortForm: isShortForm },
+			{ emitEvent: false }
+		);
+		this.isRenewalShortForm = isShortForm;
+		this.goToChildNextStep();
 	}
 
 	onGoToStep(step: number) {
