@@ -24,8 +24,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         Guid applicantId;
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-        _context.AddTospd_applications(app);
-
+        
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
             throw new ArgumentException("New application type is not supported for business licence.");
 
@@ -45,6 +44,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 throw new ArgumentException("Original business licence application was not found.");
             throw;
         }
+        
+        app.spd_businesstype = originalApp.spd_businesstype;
+        _context.AddTospd_applications(app);
 
         if (originalApp?.spd_ApplicantId_account?.accountid == null)
             throw new ArgumentException("There is no account linked to the application found.");
