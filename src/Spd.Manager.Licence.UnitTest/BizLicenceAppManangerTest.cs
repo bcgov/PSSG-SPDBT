@@ -230,4 +230,49 @@ public class BizLicenceAppManangerTest
         Assert.Equal(licAppId, viewResult.LicenceAppId);
         Assert.Equal(licenceFeeResp.Amount, viewResult.Cost);
     }
+
+    [Fact]
+    public async void Handle_BizLicAppRenewCommand_Return_BizLicAppCommandResponse()
+    {
+        // Arrange
+        Guid originalApplicationId = Guid.NewGuid();
+        Guid originalLicenceId = Guid.NewGuid();
+        Guid newLicAppId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.ExpiryDate, expiryDate)
+            .Create();
+        LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
+            m => m.OriginalApplicationId == originalApplicationId && 
+            m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
+        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
+            OriginalLicenceId = originalLicenceId,
+            OriginalApplicationId = originalApplicationId,
+            NoBranding = true,
+            UseDogs = false
+        };
+        LicAppFileInfo bizInsurenceFile = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>() { bizInsurenceFile });
+
+        // Action
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(newLicAppId, result.LicenceAppId);
+    }
 }
