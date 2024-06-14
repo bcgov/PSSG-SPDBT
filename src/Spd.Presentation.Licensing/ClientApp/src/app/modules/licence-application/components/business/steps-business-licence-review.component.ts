@@ -14,7 +14,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 
 				<app-wizard-footer
 					[isFormValid]="true"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
@@ -28,7 +28,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 
 				<app-wizard-footer
 					[isFormValid]="true"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
 					[nextButtonLabel]="submitPayLabel"
 					(previousStepperStep)="onConsentGoToPreviousStep()"
@@ -46,6 +46,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isRenewalShortForm!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 

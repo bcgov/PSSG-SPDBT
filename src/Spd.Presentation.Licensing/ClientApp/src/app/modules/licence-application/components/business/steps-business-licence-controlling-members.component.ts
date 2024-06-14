@@ -54,7 +54,9 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-employees></app-step-business-licence-employees>
+				<app-step-business-licence-employees
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-business-licence-employees>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
