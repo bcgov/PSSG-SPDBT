@@ -54,7 +54,7 @@ export class LicencePaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowAuthenticated(
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
 			this.payment!.applicationId!,
 			`Payment for: ${this.payment!.caseNumber}`
 		);

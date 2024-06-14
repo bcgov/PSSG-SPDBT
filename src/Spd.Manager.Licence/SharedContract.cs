@@ -77,7 +77,8 @@ public enum LicenceDocumentTypeCode
     BizInsurance,
     ArmourCarGuardRegistrar,
     BizSecurityDogCertificate,
-    BizBCReport
+    BizBCReport,
+    CorporateRegistryDocument
 }
 
 public enum PoliceOfficerRoleCode

@@ -9,12 +9,12 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 	selector: 'app-steps-business-licence-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
+			<mat-step *ngIf="!isRenewalShortForm">
 				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
 
 				<app-wizard-footer
 					[isFormValid]="true"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
@@ -28,10 +28,10 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 
 				<app-wizard-footer
 					[isFormValid]="true"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
 					[nextButtonLabel]="submitPayLabel"
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onConsentGoToPreviousStep()"
 					(nextStepperStep)="onPayNow()"
 				></app-wizard-footer>
 			</mat-step>
@@ -45,6 +45,8 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isRenewalShortForm!: boolean;
+	@Input() showSaveAndExit!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -61,6 +63,15 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		// if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 		// this.submitPayLabel = 'Submit';
 		// }
+	}
+
+	onConsentGoToPreviousStep(): void {
+		if (this.isRenewalShortForm) {
+			this.onStepPrevious();
+			return;
+		}
+
+		this.onGoToPreviousStep();
 	}
 
 	onPayNow(): void {
@@ -87,6 +98,11 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	}
 
 	override onGoToFirstStep() {
+		if (this.isRenewalShortForm) {
+			this.childstepper.selectedIndex = 1;
+			return;
+		}
+
 		this.childstepper.selectedIndex = 0;
 		this.summaryReviewComponent.onUpdateData();
 	}
