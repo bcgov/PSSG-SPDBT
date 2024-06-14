@@ -94,7 +94,7 @@ internal abstract class LicenceAppManagerBase
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
                 fileCmd.TempFile = tempFile;
-                fileCmd.SubmittedByApplicantId = contactId;
+                fileCmd.SubmittedByApplicantId = contactId ?? accountId;
                 //create bcgov_documenturl and file
                 await _documentRepository.ManageAsync(fileCmd, ct);
             }
