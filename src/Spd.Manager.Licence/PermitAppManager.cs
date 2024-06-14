@@ -192,6 +192,7 @@ internal class PermitAppManager :
                 null,
                 null,
                 null,
+                null,
                 cancellationToken);
 
         if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
@@ -276,6 +277,7 @@ internal class PermitAppManager :
             null,
             changes.PurposeChangeTaskId,
             originalLic.LicenceId,
+            null,
             cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
