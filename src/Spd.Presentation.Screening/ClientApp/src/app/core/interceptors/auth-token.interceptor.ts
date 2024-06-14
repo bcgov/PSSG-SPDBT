@@ -7,8 +7,6 @@ import { AuthUserBceidService } from '../services/auth-user-bceid.service';
 import { AuthUserIdirService } from '../services/auth-user-idir.service';
 import { AuthenticationService } from '../services/authentication.service';
 
-const includedURLs = [/^\/api\/.+$/];
-
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 	constructor(
@@ -19,7 +17,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 	) {}
 
 	private checkUrl(url: string): boolean {
-		return includedURLs.some((regexp) => regexp.test(url)); //isIncluded
+    return url.includes('/api/');
 	}
 
 	public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

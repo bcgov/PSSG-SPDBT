@@ -30,7 +30,7 @@ import { SharedModule } from './shared/shared.module';
     NgxSpinnerModule,
     OAuthModule.forRoot({
       resourceServer: {
-        customUrlValidation: (url) => url.startsWith('/api') && !url.endsWith('/configuration'),
+        customUrlValidation: (url) => url.includes('/api/') && !url.endsWith('/configuration'),
         sendAccessToken: true,
       },
     }),
@@ -46,6 +46,10 @@ import { SharedModule } from './shared/shared.module';
 export class AppModule { }
 
 export function getBaseHref(platformLocation: PlatformLocation) {
-  return platformLocation.getBaseHrefFromDOM();
+  let baseHref = platformLocation.getBaseHrefFromDOM();
+  if (baseHref.endsWith('/')) {
+    baseHref = baseHref.substring(0, baseHref.length - 1);
+  }
+  return baseHref;
 }
 
