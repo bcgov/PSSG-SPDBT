@@ -122,19 +122,12 @@ namespace Spd.Presentation.Screening
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
         {
             app.UseForwardedHeaders();
-            app.UsePathBase(configuration.GetValue("pathBase", string.Empty));
+            app.UsePathBase(configuration.GetValue("PathBase", string.Empty));
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseMiddleware<UsersMiddleware>();
-            app.UseAuthorization();
-            app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
             app.MapHealthChecks("/health/startup", new HealthCheckOptions
             {
@@ -145,7 +138,13 @@ namespace Spd.Presentation.Screening
             app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
                .ShortCircuit();
 
+            app.UseStaticFiles();
+            app.UseRouting();
             app.UseDefaultHttpRequestLogging();
+            app.UseAuthentication();
+            app.UseMiddleware<UsersMiddleware>();
+            app.UseAuthorization();
+            app.ConfigureComponentPipeline(configuration, hostEnvironment, assemblies);
 
             app.MapControllerRoute(
                 name: "default",

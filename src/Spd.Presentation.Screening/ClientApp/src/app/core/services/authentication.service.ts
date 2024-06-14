@@ -14,7 +14,7 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string
 	): Promise<{ state: any; loggedIn: boolean }> {
-		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+		await this.configService.configureOAuthService(loginType, window.location.origin + '/' + window.location.pathname.split('/')[1] + returnComponentRoute);
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndTryLogin()
@@ -36,7 +36,7 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
-		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+		await this.configService.configureOAuthService(loginType, window.location.origin + '/' + window.location.pathname.split('/')[1] + returnComponentRoute);
 
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
