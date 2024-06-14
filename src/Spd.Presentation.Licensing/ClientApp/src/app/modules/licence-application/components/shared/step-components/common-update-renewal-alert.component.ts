@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
@@ -52,12 +53,15 @@ export class CommonUpdateRenewalAlertComponent implements OnInit {
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	ngOnInit() {
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
 			this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		} else if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityBusinessLicence) {
+			this.licenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 		} else {
 			this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
 		}
