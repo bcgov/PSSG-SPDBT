@@ -35,7 +35,10 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
-							<div class="mb-3 text-primary-color">This is the address of the business's primary location</div>
+							<div class="mb-4 text-primary-color">
+								This address is from your Business BCeID. If you need to make any updates, please
+								<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
+							</div>
 
 							<section>
 								<app-common-business-address
@@ -81,7 +84,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
-							<div class="mb-3 text-primary-color">
+							<div class="mb-4 text-primary-color">
 								Provide your mailing address, if different from your business address
 							</div>
 							<!-- <app-alert type="info" icon="" [showBorder]="false">

@@ -538,7 +538,7 @@ namespace Spd.Manager.Screening
                 .MaximumLength(75);
 
             RuleFor(r => r.PhoneNumber)
-                 .MaximumLength(15)
+                 .MaximumLength(30)
                  .NotEmpty();
 
             RuleFor(r => r.DateOfBirth)
