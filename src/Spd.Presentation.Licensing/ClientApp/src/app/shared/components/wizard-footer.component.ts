@@ -35,7 +35,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						Previous
 					</button>
 				</div>
-				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+				<div class="col-md-12" [ngClass]="isWideNext ? 'col-xxl-3 col-xl-4 col-lg-4' : 'col-xxl-2 col-xl-3 col-lg-3'">
 					<button
 						*ngIf="isNextStepperStepObserved"
 						mat-flat-button
@@ -91,6 +91,7 @@ export class WizardFooterComponent implements OnInit {
 	@Input() nextButtonLabel = 'Next';
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
+	@Input() isWideNext = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<any> = new EventEmitter();
