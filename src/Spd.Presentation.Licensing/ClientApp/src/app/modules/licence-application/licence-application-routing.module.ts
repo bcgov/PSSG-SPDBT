@@ -38,6 +38,10 @@ import { BusinessManagersComponent } from './components/business/business-manage
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
+import { BusinessLicencePaymentCancelComponent } from './components/shared/business-licence-payment-cancel.component';
+import { BusinessLicencePaymentErrorComponent } from './components/shared/business-licence-payment-error.component';
+import { BusinessLicencePaymentFailComponent } from './components/shared/business-licence-payment-fail.component';
+import { BusinessLicencePaymentSuccessComponent } from './components/shared/business-licence-payment-success.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
 import { LicencePaymentErrorAnonymousComponent } from './components/shared/licence-payment-error-anonymous.component';
@@ -275,6 +279,13 @@ const routes: Routes = [
 						path: '',
 						component: BusinessUserApplicationsComponent,
 					},
+					{
+						path: `${LicenceApplicationRoutes.PAYMENT_SUCCESS}/:id`,
+						component: BusinessLicencePaymentSuccessComponent,
+					},
+					{ path: `${LicenceApplicationRoutes.PAYMENT_FAIL}/:id`, component: BusinessLicencePaymentFailComponent },
+					{ path: `${LicenceApplicationRoutes.PAYMENT_CANCEL}/:id`, component: BusinessLicencePaymentCancelComponent },
+					{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: BusinessLicencePaymentErrorComponent },
 				],
 			},
 			{

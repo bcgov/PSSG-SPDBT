@@ -125,6 +125,10 @@ import { StepsBusinessLicenceControllingMembersComponent } from './components/bu
 import { StepsBusinessLicenceInformationComponent } from './components/business/steps-business-licence-information.component';
 import { StepsBusinessLicenceReviewComponent } from './components/business/steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './components/business/steps-business-licence-selection.component';
+import { BusinessLicencePaymentCancelComponent } from './components/shared/business-licence-payment-cancel.component';
+import { BusinessLicencePaymentErrorComponent } from './components/shared/business-licence-payment-error.component';
+import { BusinessLicencePaymentFailComponent } from './components/shared/business-licence-payment-fail.component';
+import { BusinessLicencePaymentSuccessComponent } from './components/shared/business-licence-payment-success.component';
 import { CollectionNoticeComponent } from './components/shared/collection-notice.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
 import { LicencePaymentCancelComponent } from './components/shared/licence-payment-cancel.component';
@@ -278,6 +282,10 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		LicencePaymentErrorComponent,
 		LicencePaymentFailComponent,
 		LicencePaymentSuccessComponent,
+		BusinessLicencePaymentCancelComponent,
+		BusinessLicencePaymentErrorComponent,
+		BusinessLicencePaymentFailComponent,
+		BusinessLicencePaymentSuccessComponent,
 		LicencePaymentCancelAnonymousComponent,
 		LicencePaymentErrorAnonymousComponent,
 		LicencePaymentFailAnonymousComponent,

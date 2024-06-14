@@ -406,7 +406,7 @@ export class CommonApplicationService {
 			});
 	}
 
-	payNowAuthenticated(licenceAppId: string, description: string): void {
+	payNowPersonalLicenceAuthenticated(licenceAppId: string, description: string): void {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
@@ -414,6 +414,25 @@ export class CommonApplicationService {
 		};
 		this.paymentService
 			.apiAuthLicenceApplicationIdPaymentLinkPost({
+				applicationId: licenceAppId,
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
+	}
+
+	payNowBusinessLicence(licenceAppId: string, description: string): void {
+		const body: PaymentLinkCreateRequest = {
+			applicationId: licenceAppId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description,
+		};
+		this.paymentService
+			.apiAuthBizLicenceApplicationIdPaymentLinkPost({
 				applicationId: licenceAppId,
 				body,
 			})
@@ -439,6 +458,17 @@ export class CommonApplicationService {
 	downloadManualPaymentFormAuthenticated(licenceAppId: string): void {
 		this.paymentService
 			.apiAuthLicenceApplicationIdManualPaymentFormGet$Response({
+				applicationId: licenceAppId,
+			})
+			.pipe()
+			.subscribe((resp: StrictHttpResponse<Blob>) => {
+				this.fileUtilService.downloadFile(resp.headers, resp.body);
+			});
+	}
+
+	downloadManualBusinessPaymentForm(licenceAppId: string): void {
+		this.paymentService
+			.apiAuthBizLicenceApplicationIdManualPaymentFormGet$Response({
 				applicationId: licenceAppId,
 			})
 			.pipe()

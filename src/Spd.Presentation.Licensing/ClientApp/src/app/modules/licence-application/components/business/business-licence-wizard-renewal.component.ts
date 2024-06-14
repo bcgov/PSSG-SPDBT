@@ -101,6 +101,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isRenewalShortForm]="isRenewalShortForm"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
@@ -369,7 +370,10 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAuthenticated(licenceAppId, 'Payment for new Business Licence application');
+		this.commonApplicationService.payNowBusinessLicence(
+			licenceAppId,
+			'Payment for renewal of Business Licence application'
+		);
 	}
 
 	private goToReviewStep(): void {

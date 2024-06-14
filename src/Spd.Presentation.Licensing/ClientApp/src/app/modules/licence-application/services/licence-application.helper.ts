@@ -752,8 +752,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, true);
-
-		console.debug('[getSaveBodyBaseAuthenticated] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		return baseData;
@@ -761,8 +759,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppSubmitRequest, Array<Document>] {
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
-
-		console.debug('[getSaveBodyBaseAnonymous] licenceModelFormValue', licenceModelFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		return [baseData, baseData.documentInfos];

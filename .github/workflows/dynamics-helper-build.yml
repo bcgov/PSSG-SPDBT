@@ -36,7 +36,7 @@ jobs:
       IMAGE_FILE: src/dynamics.dockerfile
       IMAGE_NAME: ${{ github.repository }}/dynamics-helper
       # REGISTRY: ghcr.io
-      REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev
+      REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev/
     secrets:
       # REGISTRY_USER: ${{ github.actor }}
       # REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
