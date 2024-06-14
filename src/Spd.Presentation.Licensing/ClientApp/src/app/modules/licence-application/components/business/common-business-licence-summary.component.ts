@@ -62,7 +62,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 									</div>
 									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes && !isChangeFlow">
 										<div class="text-minor-heading">Expired Licence</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
