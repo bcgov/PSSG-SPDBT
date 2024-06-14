@@ -225,6 +225,18 @@ internal abstract class LicenceAppManagerBase
         if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit) ||
             existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
             docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+            docEnums.Add(UploadedDocumentEnum.BizBranding);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+            docEnums.Add(UploadedDocumentEnum.BizInsurance);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
+            docEnums.Add(UploadedDocumentEnum.ArmourCarGuardRegistrar);
+        if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) ||
+            existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
+            docEnums.Add(UploadedDocumentEnum.BizSecurityDogCertificate);
         return docEnums;
     }
 
@@ -238,6 +250,14 @@ internal abstract class LicenceAppManagerBase
             docEnums.Add(UploadedDocumentEnum.WorkPermit);
         if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
             docEnums.Add(UploadedDocumentEnum.StudyPermit);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+            docEnums.Add(UploadedDocumentEnum.BizBranding);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+            docEnums.Add(UploadedDocumentEnum.BizInsurance);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
+            docEnums.Add(UploadedDocumentEnum.ArmourCarGuardRegistrar);
+        if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
+            docEnums.Add(UploadedDocumentEnum.BizSecurityDogCertificate);
         return docEnums;
     }
 
