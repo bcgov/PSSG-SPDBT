@@ -1,11 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { ConfigService } from './config.service';
+import { APP_BASE_HREF } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  constructor(private oauthService: OAuthService, private configService: ConfigService) { }
+  constructor(
+    @Inject(APP_BASE_HREF) private baseHref: string,
+    private oauthService: OAuthService,
+    private configService: ConfigService) { }
 
   //----------------------------------------------------------
   // *
@@ -14,7 +18,7 @@ export class AuthenticationService {
     loginType: IdentityProviderTypeCode,
     returnComponentRoute: string
   ): Promise<{ state: any; loggedIn: boolean }> {
-    await this.configService.configureOAuthService(loginType, window.location.origin + '/' + window.location.pathname.split('/')[1] + returnComponentRoute);
+    await this.configService.configureOAuthService(loginType, this.createReturnUrl(returnComponentRoute));
 
     const isLoggedIn = await this.oauthService
       .loadDiscoveryDocumentAndTryLogin()
@@ -24,7 +28,7 @@ export class AuthenticationService {
     console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
     return {
-      state: this.oauthService.state || null,
+      state: this.oauthService.state ?? null,
       loggedIn: isLoggedIn,
     };
   }
@@ -34,9 +38,9 @@ export class AuthenticationService {
   // *
   public async login(
     loginType: IdentityProviderTypeCode,
-    returnComponentRoute: string | undefined = undefined
+    returnComponentRoute: string
   ): Promise<string | null> {
-    await this.configService.configureOAuthService(loginType, window.location.origin + '/' + window.location.pathname.split('/')[1] + returnComponentRoute);
+    await this.configService.configureOAuthService(loginType, this.createReturnUrl(returnComponentRoute));
 
     const returnRoute = location.pathname.substring(1);
     console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
@@ -69,5 +73,11 @@ export class AuthenticationService {
   // *
   public isLoggedIn(): boolean {
     return this.oauthService.hasValidAccessToken();
+  }
+
+  private createReturnUrl(returnComponentRoute: string): string {
+    const url = window.location.origin + this.baseHref + returnComponentRoute;
+    console.debug('[AuthenticationService.createReturnUrl] url', url);
+    return url;
   }
 }
