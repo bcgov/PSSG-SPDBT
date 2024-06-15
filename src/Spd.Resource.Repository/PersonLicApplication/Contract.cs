@@ -167,3 +167,10 @@ public enum PermitPurposeEnum
     TravelInResponseToInternationalConflict, //ba
     Other //av,ba
 }
+
+public enum UploadedDocumentEnum
+{
+    Fingerprint,
+    StudyPermit,
+    WorkPermit
+}
