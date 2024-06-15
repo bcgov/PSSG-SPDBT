@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
@@ -24,6 +25,7 @@ internal class BizLicAppMananger :
         IRequestHandler<GetBizMembersQuery, Members>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
+        IRequestHandler<BrandImageQuery, FileResponse>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -186,6 +188,33 @@ internal class BizLicAppMananger :
         );
         var response = await _licAppRepository.QueryAsync(q, cancellationToken);
         return _mapper.Map<IEnumerable<LicenceAppListResponse>>(response);
+    }
+
+    public async Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct)
+    {
+        DocumentResp docResp = await _documentRepository.GetAsync(qry.DocumentId, ct);
+        if (docResp == null)
+            return new FileResponse();
+        if (docResp.DocumentType != DocumentTypeEnum.CompanyBranding)
+            throw new ApiException(HttpStatusCode.BadRequest, "the document is not branding image.");
+
+        try
+        {
+            FileQueryResult fileResult = (FileQueryResult)await _mainFileService.HandleQuery(
+                new FileQuery { Key = docResp.DocumentUrlId.ToString(), Folder = docResp.Folder },
+                ct);
+            return new FileResponse
+            {
+                Content = fileResult.File.Content,
+                ContentType = fileResult.File.ContentType,
+                FileName = fileResult.File.FileName
+            };
+        }
+        catch
+        {
+            //todo: add more logging
+            return new FileResponse(); //error in S3, probably cannot find the file
+        }
     }
 
     private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid appId, CancellationToken ct)
