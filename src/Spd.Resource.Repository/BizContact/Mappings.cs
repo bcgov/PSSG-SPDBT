@@ -19,7 +19,8 @@ namespace Spd.Resource.Repository.BizContact
             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s._spd_contactid_value))
             .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_swlnumber_value))
             .ReverseMap()
-            .ForMember(d => d.spd_role, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(s.BizContactRoleCode)));
+            .ForMember(d => d.spd_role, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(s.BizContactRoleCode)))
+            .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => $"{s.Surname}, {s.GivenName}"));
         }
     }
 }
