@@ -73,7 +73,20 @@ namespace Spd.Resource.Repository.BizContact
                 foreach (var item in toAdd)
                 {
                     spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(item);
-                    _context.AddTospd_businesscontacts(bizContact);
+
+                    if (item.ContactId != null)
+                    {
+                        contact? c = await _context.GetContactById((Guid)item.ContactId, ct);
+                        if (c == null)
+                            throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
+                        bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
+                        _context.AddTospd_businesscontacts(bizContact);
+                        _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
+                    }
+                    else
+                    {
+                        _context.AddTospd_businesscontacts(bizContact);
+                    }
                     if (item.LicenceId != null)
                     {
                         spd_licence? swlLic = _context.spd_licences.Where(l => l.spd_licenceid == item.LicenceId && l.statecode == DynamicsConstants.StateCode_Active).FirstOrDefault();
@@ -83,13 +96,7 @@ namespace Spd.Resource.Repository.BizContact
                             throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid licence {item.LicenceId}");
                         _context.SetLink(bizContact, nameof(bizContact.spd_SWLNumber), swlLic);
                     }
-                    if (item.ContactId != null)
-                    {
-                        contact? c = await _context.GetContactById((Guid)item.ContactId, ct);
-                        if (c == null)
-                            throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {item.ContactId}");
-                        _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
-                    }
+
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
                     _context.SetLink(bizContact, nameof(bizContact.spd_Application), app);
                 }
