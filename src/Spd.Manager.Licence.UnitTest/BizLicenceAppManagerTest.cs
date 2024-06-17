@@ -11,7 +11,7 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest;
-public class BizLicenceAppManangerTest
+public class BizLicenceAppManagerTest
 {
     private readonly IFixture fixture;
     private Mock<ILicenceRepository> mockLicRepo = new();
@@ -24,7 +24,7 @@ public class BizLicenceAppManangerTest
     private Mock<IBizContactRepository> mockBizContactRepo = new();
     private BizLicAppManager sut;
 
-    public BizLicenceAppManangerTest()
+    public BizLicenceAppManagerTest()
     {
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
