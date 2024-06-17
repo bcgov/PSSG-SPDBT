@@ -1,13 +1,10 @@
 ﻿using FluentValidation;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
-public class BizLicAppUpsertRequestValidator : BizLicenceAppBaseValidator<BizLicAppUpsertRequest>
+public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppUpsertRequest>
 {
     public BizLicAppUpsertRequestValidator()
     {
-
         // General validations
         RuleFor(r => r.BizId).NotEqual(Guid.Empty);
         RuleFor(r => r.HasExpiredLicence).NotEmpty();
