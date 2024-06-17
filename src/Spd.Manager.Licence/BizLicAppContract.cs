@@ -1,4 +1,5 @@
 using MediatR;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 
@@ -13,6 +14,7 @@ public interface IBizLicAppManager
     public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
+    public Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
@@ -34,6 +36,8 @@ public record BizLicAppUpdateCommand(
     BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
+
+public record BrandImageQuery(Guid DocumentId) : IRequest<FileResponse>;
 
 public record BizLicAppUpsertRequest : BizLicenceApp
 {

@@ -12,7 +12,7 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Collections.Generic;
 
 namespace Spd.Manager.Licence.UnitTest;
-public class BizLicenceAppManangerTest
+public class BizLicenceAppManagerTest
 {
     private readonly IFixture fixture;
     private Mock<ILicenceRepository> mockLicRepo = new();
@@ -23,9 +23,9 @@ public class BizLicenceAppManangerTest
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
     private Mock<IBizLicApplicationRepository> mockBizLicAppRepo = new();
     private Mock<IBizContactRepository> mockBizContactRepo = new();
-    private BizLicAppMananger sut;
+    private BizLicAppManager sut;
 
-    public BizLicenceAppManangerTest()
+    public BizLicenceAppManagerTest()
     {
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
@@ -38,7 +38,7 @@ public class BizLicenceAppManangerTest
         });
         var mapper = mapperConfig.CreateMapper();
 
-        sut = new BizLicAppMananger(
+        sut = new BizLicAppManager(
             mockLicRepo.Object,
             mockLicAppRepo.Object,
             mapper,
