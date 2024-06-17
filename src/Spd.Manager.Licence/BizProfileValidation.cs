@@ -26,12 +26,13 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
 
         RuleFor(r => r.Branches)
             .ForEach(r => r
-                .Must(r => r.BranchAddress != null ? r.BranchAddress.AddressLine1.IsNullOrEmpty() : true)
-                .Must(r => r.BranchAddress != null ? r.BranchAddress.City.IsNullOrEmpty() : true)
-                .Must(r => r.BranchAddress != null ? r.BranchAddress.Country.IsNullOrEmpty() : true)
-                .Must(r => r.BranchAddress != null ? r.BranchAddress.Province.IsNullOrEmpty() : true)
-                .Must(r => r.BranchAddress != null ? r.BranchAddress.PostalCode.IsNullOrEmpty() : true)
-                .Must(r => r.BranchManager.IsNullOrEmpty()))
+                .Must(r => r.BranchAddress?.AddressLine1.IsNullOrEmpty() != true)
+                .Must(r => r.BranchAddress?.City.IsNullOrEmpty() != true)
+                .Must(r => r.BranchAddress?.Country.IsNullOrEmpty() != true)
+                .Must(r => r.BranchAddress?.Province.IsNullOrEmpty() != true)
+                .Must(r => r.BranchAddress?.PostalCode.IsNullOrEmpty() != true)
+                .Must(r => r.BranchManager.IsNullOrEmpty() != true))
+                .WithMessage("Missing branch address information.")
             .When(r => r.Branches != null &&
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
