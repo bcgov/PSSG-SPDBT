@@ -13,7 +13,7 @@ import {
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
-	Members,
+	MembersRequest,
 	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
@@ -336,13 +336,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	saveControllingMembersAndEmployees(): Observable<any> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bizId = businessModelFormValue.bizId;
-		const licenceAppId = businessModelFormValue.licenceAppId;
+		const applicationId = businessModelFormValue.licenceAppId;
 
-		// if (businessModelFormValue.controllingMembersData.attachments) {
-		// TODO save controllingMember attachments
-		// }
-
-		const body: Members = {
+		const body: MembersRequest = {
 			employees: this.saveEmployeesBody(businessModelFormValue.employeesData),
 			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(
 				businessModelFormValue.controllingMembersData
@@ -350,11 +346,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue.controllingMembersData),
 		};
 
-		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
-			bizId,
-			applicationId: licenceAppId,
-			body,
-		});
+		if (businessModelFormValue.controllingMembersData.attachments) {
+			return this.saveControllingMembersAndEmployeesWithDocument(bizId, applicationId, body);
+		}
+
+		return this.saveControllingMembersAndEmployeesBody(bizId, applicationId, body);
 	}
 
 	/**
@@ -397,14 +393,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				);
 				break;
 			}
-			// 	case ApplicationTypeCode.Update: {
-			// 		this.router.navigateByUrl(
-			// 			LicenceApplicationRoutes.pathBusinessLicence(
-			// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_UPDATE
-			// 			)
-			// 		);
-			// 		break;
-			// 	}
+			case ApplicationTypeCode.Update: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_UPDATE)
+				);
+				break;
+			}
 			default: {
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
 				break;
@@ -1360,5 +1354,58 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
+	}
+
+	/**
+	 * Save the controlling members and employees with documents added
+	 * @returns
+	 */
+	private saveControllingMembersAndEmployeesWithDocument(
+		bizId: string,
+		applicationId: string,
+		body: MembersRequest
+	): Observable<any> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+
+		// Get the keyCode for the existing documents to save.
+		const documentsToSaveApis: Observable<string>[] = [];
+
+		businessModelFormValue.controllingMembersData.attachments.forEach((document: any) => {
+			documentsToSaveApis.push(
+				this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdFilesPost({
+					bizId,
+					applicationId,
+					body: {
+						Documents: document,
+						LicenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
+					},
+				})
+			);
+		});
+
+		return forkJoin(documentsToSaveApis).pipe(
+			switchMap((resps: string[]) => {
+				// pass in the list of document key codes
+				body.controllingMemberDocumentKeyCodes = [...resps];
+
+				return this.saveControllingMembersAndEmployeesBody(bizId, applicationId, body);
+			})
+		);
+	}
+
+	/**
+	 * Save the controlling members and employees - no documents added
+	 * @returns
+	 */
+	private saveControllingMembersAndEmployeesBody(
+		bizId: string,
+		applicationId: string,
+		body: MembersRequest
+	): Observable<any> {
+		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
+			bizId,
+			applicationId,
+			body,
+		});
 	}
 }
