@@ -201,20 +201,9 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
     }
 
-    private BizLicAppUpsertRequest GenerateValidRequest()
+    private T GenerateValidRequest<T>()
     {
-        // Documents
-        Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
-        Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
-        Document armourCarRegistrar = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
-        Document dogCertificate = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
-        List<Document> documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        object model;
 
         List<WorkerCategoryTypeCode> categories = new()
         {
@@ -244,19 +233,51 @@ public class BizLicAppValidationTest
             Employees = employees
         };
 
-        var model = fixture.Build<BizLicAppUpsertRequest>()
-            .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
-            .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
-            .With(r => r.AgreeToCompleteAndAccurate, true)
-            .With(r => r.UseDogs, true)
-            .With(r => r.NoBranding, false)
-            .With(r => r.DocumentInfos, documentInfos)
-            .With(r => r.CategoryCodes, categories)
-            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
-            .With(r => r.ApplicantContactInfo, applicantContactInfo)
-            .With(r => r.Members, members)
-            .Create();
+        if (typeof(T).Name == "BizLicAppUpsertRequest")
+        {
+            // Documents
+            Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
+            Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+            Document armourCarRegistrar = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
+            Document dogCertificate = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
+            List<Document> documentInfos = new()
+            {
+                branding,
+                insurance,
+                armourCarRegistrar,
+                dogCertificate
+            };
 
-        return model;
+            model = fixture.Build<BizLicAppUpsertRequest>()
+                .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
+                .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
+                .With(r => r.AgreeToCompleteAndAccurate, true)
+                .With(r => r.UseDogs, true)
+                .With(r => r.NoBranding, false)
+                .With(r => r.DocumentInfos, documentInfos)
+                .With(r => r.CategoryCodes, categories)
+                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+                .With(r => r.ApplicantContactInfo, applicantContactInfo)
+                .With(r => r.Members, members)
+                .Create();
+
+            return (T)Convert.ChangeType(model, typeof(T));
+        }
+        else
+        {
+            model = fixture.Build<BizLicAppSubmitRequest>()
+                .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
+                .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
+                .With(r => r.AgreeToCompleteAndAccurate, true)
+                .With(r => r.UseDogs, true)
+                .With(r => r.NoBranding, false)
+                .With(r => r.CategoryCodes, categories)
+                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+                .With(r => r.ApplicantContactInfo, applicantContactInfo)
+                .With(r => r.Members, members)
+                .Create();
+
+            return (T)Convert.ChangeType(model, typeof(T));
+        }
     }
 }
