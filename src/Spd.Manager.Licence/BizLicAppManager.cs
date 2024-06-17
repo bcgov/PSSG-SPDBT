@@ -14,7 +14,7 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Manager.Licence;
-internal class BizLicAppMananger :
+internal class BizLicAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetBizLicAppQuery, BizLicAppResponse>,
         IRequestHandler<BizLicAppUpsertCommand, BizLicAppCommandResponse>,
@@ -31,7 +31,7 @@ internal class BizLicAppMananger :
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
 
-    public BizLicAppMananger(
+    public BizLicAppManager(
         ILicenceRepository licenceRepository,
         ILicAppRepository licAppRepository,
         IMapper mapper,

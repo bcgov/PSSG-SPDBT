@@ -22,7 +22,7 @@ public class BizLicenceAppManangerTest
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
     private Mock<IBizLicApplicationRepository> mockBizLicAppRepo = new();
     private Mock<IBizContactRepository> mockBizContactRepo = new();
-    private BizLicAppMananger sut;
+    private BizLicAppManager sut;
 
     public BizLicenceAppManangerTest()
     {
@@ -37,7 +37,7 @@ public class BizLicenceAppManangerTest
         });
         var mapper = mapperConfig.CreateMapper();
 
-        sut = new BizLicAppMananger(
+        sut = new BizLicAppManager(
             mockLicRepo.Object,
             mockLicAppRepo.Object,
             mapper,
