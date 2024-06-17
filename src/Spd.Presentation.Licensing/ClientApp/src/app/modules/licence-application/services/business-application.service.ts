@@ -370,7 +370,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// 	}
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_RENEW)
+					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_RENEWAL)
 				);
 				break;
 			}
