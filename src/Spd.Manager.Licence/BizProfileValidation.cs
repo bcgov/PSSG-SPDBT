@@ -1,5 +1,4 @@
 using FluentValidation;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Spd.Manager.Licence;
 public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpdateRequest>
@@ -24,12 +23,12 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.Branches)
             .ForEach(r => r
-                .Must(r => r.BranchAddress?.AddressLine1.IsNullOrEmpty() != true)
-                .Must(r => r.BranchAddress?.City.IsNullOrEmpty() != true)
-                .Must(r => r.BranchAddress?.Country.IsNullOrEmpty() != true)
-                .Must(r => r.BranchAddress?.Province.IsNullOrEmpty() != true)
-                .Must(r => r.BranchAddress?.PostalCode.IsNullOrEmpty() != true)
-                .Must(r => r.BranchManager.IsNullOrEmpty() != true))
+                .Must(r => string.IsNullOrEmpty(r.BranchAddress?.AddressLine1) != true)
+                .Must(r => string.IsNullOrEmpty(r.BranchAddress?.City) != true)
+                .Must(r => string.IsNullOrEmpty(r.BranchAddress?.Country) != true)
+                .Must(r => string.IsNullOrEmpty(r.BranchAddress?.Province) != true)
+                .Must(r => string.IsNullOrEmpty(r.BranchAddress?.PostalCode) != true)
+                .Must(r => string.IsNullOrEmpty(r.BranchManager) != true))
                 .WithMessage("Missing branch address information.")
             .When(r => r.Branches != null &&
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
