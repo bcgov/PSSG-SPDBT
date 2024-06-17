@@ -277,28 +277,55 @@ internal class BizLicAppMananger :
         if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing business insurance file");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing business insurance file.");
+        }
+
+        if (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) > 1)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 business insurance document is allowed.");
         }
 
         if (request.NoBranding == false && 
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing branding file");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing branding file.");
+        }
+
+        if (request.NoBranding == false &&
+            (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 10))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for branding was exceded.");
         }
 
         if (request.UseDogs == true && 
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing security dog certificate file");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing security dog certificate file.");
+        }
+
+        if (request.UseDogs == true &&
+            (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 1))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 dog certificate is allowed.");
         }
 
         if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing armoured car guard registrar file");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing armoured car guard registrar file.");
+        }
+
+        if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&
+            (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) > 1))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 armoured car guard registrar document is allowed.");
         }
     }
 }
