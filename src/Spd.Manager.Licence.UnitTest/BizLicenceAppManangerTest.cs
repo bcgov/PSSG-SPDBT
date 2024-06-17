@@ -9,6 +9,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using System.Collections.Generic;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicenceAppManangerTest
@@ -263,11 +264,23 @@ public class BizLicenceAppManangerTest
             ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
             OriginalLicenceId = originalLicenceId,
             OriginalApplicationId = originalApplicationId,
-            NoBranding = true,
-            UseDogs = false
+            NoBranding = false,
+            UseDogs = true,
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
         };
-        LicAppFileInfo bizInsurenceFile = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
-        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>() { bizInsurenceFile });
+        List<LicAppFileInfo> files = new();
+        List<LicAppFileInfo> branding = fixture.Build<LicAppFileInfo>()
+            .With(f => f.LicenceDocumentTypeCode, LicenceDocumentTypeCode.BizBranding)
+            .CreateMany(10)
+            .ToList();
+        LicAppFileInfo insurnace = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+        LicAppFileInfo dogCertificate = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
+        LicAppFileInfo armourCarCertificate = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar }; 
+        files.AddRange(branding);
+        files.Add(insurnace);
+        files.Add(dogCertificate);
+        files.Add(armourCarCertificate);
+        BizLicAppRenewCommand cmd = new(request, files);
 
         // Action
         var result = await sut.Handle(cmd, CancellationToken.None);
