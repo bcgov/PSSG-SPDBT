@@ -4,12 +4,12 @@ using FluentValidation.TestHelper;
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
 {
-    private readonly BizLicAppSubmitRequestValidator validator;
+    private readonly BizLicAppUpsertRequestValidator validator;
     private readonly IFixture fixture;
 
     public BizLicAppValidationTest()
     {
-        validator = new BizLicAppSubmitRequestValidator();
+        validator = new BizLicAppUpsertRequestValidator();
 
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
@@ -18,7 +18,7 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void BizLicAppSubmitRequestValidator_ShouldPass()
+    public void BizLicAppUpsertRequestValidator_ShouldPass()
     {
         var model = GenerateValidRequest();
 

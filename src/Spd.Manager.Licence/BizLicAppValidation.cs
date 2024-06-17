@@ -3,9 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
-public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsertRequest>
+public class BizLicAppUpsertRequestValidator : AbstractValidator<BizLicAppUpsertRequest>
 {
-    public BizLicAppSubmitRequestValidator()
+    public BizLicAppUpsertRequestValidator()
     {
         Regex emailRegex = new(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", RegexOptions.NonBacktracking);
 
