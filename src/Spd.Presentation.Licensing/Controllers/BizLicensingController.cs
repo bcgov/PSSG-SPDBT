@@ -203,5 +203,32 @@ namespace Spd.Presentation.Licensing.Controllers
 
             return await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
         }
+
+        /// <summary>
+        /// Get biz brand image from its documentId
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        [Route("api/business-licence-application/brand-image/{documentId}")]
+        [Authorize(Policy = "OnlyBceid")]
+        [HttpGet]
+        public async Task<FileStreamResult> GetBrandImage([FromRoute][Required] Guid documentId, CancellationToken ct)
+        {
+            FileResponse? response = await _mediator.Send(new BrandImageQuery(documentId), ct);
+            MemoryStream content;
+            string contentType;
+            if (response == null)
+            {
+                content = new MemoryStream(Array.Empty<byte>());
+                contentType = string.Empty;
+            }
+            else
+            {
+                content = new MemoryStream(response.Content);
+                contentType = response.ContentType ?? "application/octet-stream";
+            }
+
+            return File(content, contentType, response?.FileName);
+        }
     }
 }
