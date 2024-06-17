@@ -19,7 +19,20 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequestValidator_ShouldPass()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void BizLicAppSubmitRequestValidator_ShouldPass()
+    {
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppSubmitRequest>();
 
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
