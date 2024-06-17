@@ -88,9 +88,9 @@ export class LicenceApplicationRoutes {
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 	public static readonly BUSINESS_BASE = 'business-licence';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
-	public static readonly BUSINESS_NEW = 'business-new';
 	public static readonly BUSINESS_USER_APPLICATIONS = 'applications';
-	public static readonly BUSINESS_RENEW = 'business-renew';
+	public static readonly BUSINESS_NEW = 'business-new';
+	public static readonly BUSINESS_RENEWAL = 'business-renewal';
 	public static readonly BUSINESS_PROFILE = 'business-profile';
 	public static readonly BUSINESS_MANAGERS = 'business-managers';
 	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
@@ -260,7 +260,7 @@ const routes: Routes = [
 						component: BusinessLicenceWizardNewComponent,
 					},
 					{
-						path: LicenceApplicationRoutes.BUSINESS_RENEW,
+						path: LicenceApplicationRoutes.BUSINESS_RENEWAL,
 						component: BusinessLicenceWizardRenewalComponent,
 					},
 					{
