@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Spd.Manager.Licence;
 public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpdateRequest>
@@ -22,5 +23,17 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .NotEmpty()
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         //todo: add rule for branches
+
+        RuleFor(r => r.Branches)
+            .ForEach(r => r
+                .Must(r => r.BranchAddress != null ? r.BranchAddress.AddressLine1.IsNullOrEmpty() : true)
+                .Must(r => r.BranchAddress != null ? r.BranchAddress.City.IsNullOrEmpty() : true)
+                .Must(r => r.BranchAddress != null ? r.BranchAddress.Country.IsNullOrEmpty() : true)
+                .Must(r => r.BranchAddress != null ? r.BranchAddress.Province.IsNullOrEmpty() : true)
+                .Must(r => r.BranchAddress != null ? r.BranchAddress.PostalCode.IsNullOrEmpty() : true)
+                .Must(r => r.BranchManager.IsNullOrEmpty()))
+            .When(r => r.Branches != null &&
+                 r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
+                 r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
     }
 }
