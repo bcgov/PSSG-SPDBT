@@ -4,7 +4,6 @@ using FluentValidation.TestHelper;
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
 {
-    //private readonly BizLicAppUpsertRequestValidator validator;
     private readonly IFixture fixture;
 
     public BizLicAppValidationTest()
@@ -288,8 +287,6 @@ public class BizLicAppValidationTest
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
                 .With(r => r.Members, members)
                 .Create();
-
-            return (T)Convert.ChangeType(model, typeof(T));
         }
         else
         {
@@ -304,8 +301,8 @@ public class BizLicAppValidationTest
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
                 .With(r => r.Members, members)
                 .Create();
-
-            return (T)Convert.ChangeType(model, typeof(T));
         }
+
+        return (T)Convert.ChangeType(model, typeof(T));
     }
 }
