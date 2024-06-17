@@ -297,7 +297,7 @@ internal class BizLicAppMananger :
             (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) +
             existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 10))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for branding was exceded.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for branding was exceeded.");
         }
 
         if (request.UseDogs == true && 
