@@ -23,17 +23,17 @@ public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertReque
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
 public record GetBizLicAppListQuery(Guid BizId) : IRequest<IEnumerable<LicenceAppListResponse>>;
 public record BizLicAppReplaceCommand(
-    BizLicAppChangeRequest LicenceRequest,
+    BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
 
 public record BizLicAppRenewCommand(
-    BizLicAppChangeRequest LicenceRequest,
+    BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
 
 public record BizLicAppUpdateCommand(
-    BizLicAppChangeRequest LicenceRequest,
+    BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
 
@@ -43,12 +43,14 @@ public record BizLicAppUpsertRequest : BizLicenceApp
 {
     public Guid? LicenceAppId { get; set; }
     public Guid BizId { get; set; }
+    public Guid? ExpiredLicenceId { get; set; }
+    public bool? HasExpiredLicence { get; set; }
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
 };
 
-public record BizLicAppChangeRequest : BizLicenceApp
+public record BizLicAppSubmitRequest : BizLicenceApp
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
@@ -66,15 +68,15 @@ public record BizLicAppResponse : BizLicenceApp
     public DateOnly? ExpiryDate { get; set; }
     public string? CaseNumber { get; set; } //application number
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public Guid? ExpiredLicenceId { get; set; }
+    public bool? HasExpiredLicence { get; set; }
+
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
 }
 
 public abstract record BizLicenceApp : LicenceAppBase
 {
-    public Guid? ExpiredLicenceId { get; set; }
-    public bool? HasExpiredLicence { get; set; }
-
     //branding
     public bool? NoBranding { get; set; } //wait
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected

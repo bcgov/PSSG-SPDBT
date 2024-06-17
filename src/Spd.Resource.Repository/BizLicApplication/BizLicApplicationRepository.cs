@@ -18,6 +18,105 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _mapper = mapper;
     }
 
+    public async Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct)
+    {
+        spd_application? originalApp;
+        Guid applicantId;
+        spd_application app = _mapper.Map<spd_application>(cmd);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        
+        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+            throw new ArgumentException("New application type is not supported for business licence.");
+
+        if (cmd.OriginalApplicationId == null)
+            throw new ArgumentException("For replace, renew or update, original licence id cannot be null.");
+
+        try
+        {
+            originalApp = await _context.spd_applications
+                .Expand(a => a.spd_ApplicantId_account)
+                .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
+                .FirstOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                throw new ArgumentException("Original business licence application was not found.");
+            throw;
+        }
+        
+        app.spd_businesstype = originalApp.spd_businesstype;
+        _context.AddTospd_applications(app);
+
+        if (originalApp?.spd_ApplicantId_account?.accountid == null)
+            throw new ArgumentException("There is no account linked to the application found.");
+
+        SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
+        applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
+
+        await SetAddresses(applicantId, app, ct);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        LinkOrganization(applicantId, app);
+
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        else
+            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
+
+        await _context.SaveChangesAsync(ct);
+
+        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
+        //then update category.
+        SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
+        await _context.SaveChangesAsync(ct);
+        return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, applicantId);
+    }
+
+    public async Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct)
+    {
+        spd_application? app;
+        if (cmd.LicenceAppId != null)
+        {
+            app = _context.spd_applications
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Expand(a => a.spd_application_spd_licence_manager)
+                .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
+                .Where(a => a.spd_applicationid == cmd.LicenceAppId)
+                .FirstOrDefault();
+            if (app == null)
+                throw new ArgumentException("Application Id was not found.");
+            _mapper.Map<SaveBizLicApplicationCmd, spd_application>(cmd, app);
+            app.spd_applicationid = (Guid)(cmd.LicenceAppId);
+            _context.UpdateObject(app);
+        }
+        else
+        {
+            app = _mapper.Map<spd_application>(cmd);
+            _context.AddTospd_applications(app);
+        }
+        await SetAddresses(cmd.ApplicantId, app, ct);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
+            SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
+        else
+            _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+        
+        LinkOrganization(cmd.ApplicantId, app);
+
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        else
+            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
+
+        await _context.SaveChangesAsync(ct);
+
+        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
+        //then update category.
+        SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
+        await _context.SaveChangesAsync(ct);
+        return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
+    }
+
     public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
         spd_application? app;
@@ -45,51 +144,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {licenceApplicationId} ");
 
         return _mapper.Map<BizLicApplicationResp>(app);
-    }
-
-    public async Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct)
-    {
-        spd_application? app;
-        if (cmd.LicenceAppId != null)
-        {
-            app = _context.spd_applications
-                .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_application_spd_licence_manager)
-                .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
-                .Where(a => a.spd_applicationid == cmd.LicenceAppId)
-                .FirstOrDefault();
-            if (app == null)
-                throw new ArgumentException("invalid app id");
-            _mapper.Map<SaveBizLicApplicationCmd, spd_application>(cmd, app);
-            app.spd_applicationid = (Guid)(cmd.LicenceAppId);
-            _context.UpdateObject(app);
-        }
-        else
-        {
-            app = _mapper.Map<spd_application>(cmd);
-            _context.AddTospd_applications(app);
-        }
-        await SetAddresses(cmd.ApplicantId, app, ct);
-        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
-        if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-            SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
-        else
-            _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-        
-        LinkOrganization(cmd.ApplicantId, app);
-
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
-        else
-            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
-
-        await _context.SaveChangesAsync(ct);
-
-        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
-        //then update category.
-        SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        await _context.SaveChangesAsync(ct);
-        return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
     }
 
     private void LinkOrganization(Guid? accountId, spd_application app)

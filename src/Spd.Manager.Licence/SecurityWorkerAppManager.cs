@@ -141,7 +141,7 @@ internal class SecurityWorkerAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
+        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
 
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -228,10 +228,11 @@ internal class SecurityWorkerAppManager :
         CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request,
+        await UploadNewDocsAsync(request.DocumentExpiredInfos,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
+                null,
                 null,
                 null,
                 null,
@@ -315,12 +316,13 @@ internal class SecurityWorkerAppManager :
             await _contactRepository.ManageAsync(updateCmd, cancellationToken);
         }
 
-        await UploadNewDocsAsync(request,
+        await UploadNewDocsAsync(request.DocumentExpiredInfos,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
             originalApp.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
+            null,
             null,
             null,
             cancellationToken);
