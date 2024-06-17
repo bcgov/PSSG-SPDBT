@@ -500,8 +500,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
-
-				console.debug('[getPermitWithSelectionAuthenticated] permitModelFormGroup', this.permitModelFormGroup.value);
 			})
 		);
 	}
@@ -517,9 +515,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		body.previousDocumentIds = [...existingDocumentIds];
 
-		console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
-		console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
-		console.debug('[saveUserProfile] getProfileSaveBody', body);
+		// console.debug('[saveUserProfile] permitModelFormValue', permitModelFormValue);
+		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
+		// console.debug('[saveUserProfile] getProfileSaveBody', body);
 
 		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
 			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
@@ -581,9 +579,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		});
 
-		console.debug('[submitPermitRenewalOrUpdateAuthenticated] body', body);
-		console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
-		console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
+		// console.debug('[submitPermitRenewalOrUpdateAuthenticated] body', body);
+		// console.debug('[submitPermitRenewalOrUpdateAuthenticated] documentsToSave', documentsToSave);
+		// console.debug('[submitPermitRenewalOrUpdateAuthenticated] existingDocumentIds', existingDocumentIds);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -797,8 +795,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
-				console.debug('[createNewPermitAnonymous] resp', resp);
-
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
@@ -872,7 +868,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		);
 
-		console.debug('[createEmptyPermitAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
 		return of(this.permitModelFormGroup.value);
 	}
 
@@ -901,11 +896,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			});
 		});
 
-		console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
-		console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
-		console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
-		console.debug('[submitPermitAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
+		// console.debug('[submitPermitAnonymous] permitModelFormValue', permitModelFormValue);
+		// console.debug('[submitPermitAnonymous] saveBodyAnonymous', body);
+		// console.debug('[submitPermitAnonymous] documentsToSave', documentsToSave);
+		// console.debug('[submitPermitAnonymous] existingDocumentIds', existingDocumentIds);
+		// console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		if (newDocumentsExist) {

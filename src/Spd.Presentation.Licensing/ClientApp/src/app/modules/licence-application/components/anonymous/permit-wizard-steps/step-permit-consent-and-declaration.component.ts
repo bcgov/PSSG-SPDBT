@@ -134,11 +134,22 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<div class="row">
 								<div class="col-12">
 									<mat-checkbox formControlName="check4" (click)="onCheckboxChange()">
-										I HEREBY CERTIFY THAT I have read and understand all portions of this update form and the
-										information set out by me herein is true and correct to the best of my knowledge and belief. I have
-										read and understand the <i>{{ collectionNoticeActName }}</i> and Regulations; and I confirm that I
-										am aware of, understand, and remain bound by the conditions that are placed on me as
-										{{ check4Name }}.
+										<ng-container
+											*ngIf="applicationTypeCode === applicationTypeCodes.Update; else newOrRenewalCertifyText"
+										>
+											I HEREBY CERTIFY THAT I have read and understand all portions of this update form and the
+											information set out by me herein is true and correct to the best of my knowledge and belief. I
+											have read and understand the <i>{{ collectionNoticeActName }}</i> and Regulations; and I confirm
+											that I am aware of, understand, and remain bound by the conditions that are placed on me as
+											{{ check4Name }}.
+										</ng-container>
+
+										<ng-template #newOrRenewalCertifyText>
+											I HEREBY CERTIFY THAT I have read and understand all portions of this application form and the
+											information set out by me in this application is true and correct to the best of my knowledge and
+											belief. I have read and understand the <i>{{ collectionNoticeActName }}</i> and Regulations; and I
+											am aware of, and understand, the conditions that will be placed on me as {{ check4Name }}.
+										</ng-template>
 									</mat-checkbox>
 									<mat-error
 										class="mat-option-error"
