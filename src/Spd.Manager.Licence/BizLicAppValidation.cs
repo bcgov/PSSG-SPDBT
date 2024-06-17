@@ -48,9 +48,22 @@ public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppU
             .WithMessage("Missing security dog certificate document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) < 2)
-            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) 
+            .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard)
                 && r.UseDogs == true
                 && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
             .WithMessage("No more than 1 dog certificate is allowed.");
+    }
+}
+
+public class BizLicAppSubmitRequestValidator : BizLicAppBaseValidator<BizLicAppSubmitRequest>
+{
+    public BizLicAppSubmitRequestValidator()
+    {
+        // General validations
+        RuleFor(r => r.OriginalApplicationId).NotEmpty();
+        RuleFor(r => r.OriginalLicenceId).NotEmpty();
+        RuleFor(r => r.PreviousDocumentIds)
+            .Must(r => r != null && r.Any())
+            .WithMessage("Missing previous documents.");
     }
 }
