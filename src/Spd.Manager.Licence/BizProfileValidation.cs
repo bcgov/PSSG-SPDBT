@@ -22,8 +22,6 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.SoleProprietorSwlPhoneNumber)
             .NotEmpty()
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
-        //todo: add rule for branches
-
         RuleFor(r => r.Branches)
             .ForEach(r => r
                 .Must(r => r.BranchAddress?.AddressLine1.IsNullOrEmpty() != true)
