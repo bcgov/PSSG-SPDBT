@@ -239,6 +239,29 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
+	 * Upload a file for a controlling member. Return a reference to the file that will used when the licence is saved
+	 * @param documentCode
+	 * @param document
+	 * @returns
+	 */
+	addUploadControllingMemberDocument(documentFile: File): Observable<StrictHttpResponse<string>> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const bizId = businessModelFormValue.bizId;
+		const applicationId = businessModelFormValue.licenceAppId;
+
+		const doc: LicenceDocument = {
+			Documents: [documentFile],
+			LicenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
+		};
+
+		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response({
+			bizId,
+			applicationId,
+			body: doc,
+		});
+	}
+
+	/**
 	 * Determine if the Save & Exit process can occur
 	 * @returns
 	 */
