@@ -36,10 +36,10 @@ internal static class SharedRepositoryFuncs
         }
     }
 
-    public static void LinkExpiredLicence(DynamicsContext _context, Guid? expiredLicenceId, spd_application app)
+    public static void LinkLicence(DynamicsContext _context, Guid? licenceId, spd_application app)
     {
-        if (expiredLicenceId == null) return;
-        var licence = _context.spd_licences.Where(l => l.spd_licenceid == expiredLicenceId).FirstOrDefault();
+        if (licenceId == null) return;
+        var licence = _context.spd_licences.Where(l => l.spd_licenceid == licenceId).FirstOrDefault();
         if (licence != null)
         {
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
