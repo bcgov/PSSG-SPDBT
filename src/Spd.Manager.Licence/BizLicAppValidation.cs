@@ -69,7 +69,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
             .When(r => r.NoBranding == false && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
-            .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
+            .WithMessage("Maximum of 10 documents allowed for branding was exceeded.");
 
         // Document required for business insurance
         RuleFor(r => r.DocumentInfos)
