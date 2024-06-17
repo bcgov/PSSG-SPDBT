@@ -48,12 +48,10 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 				<form [formGroup]="form" novalidate>
 					<ng-container *ngIf="!controllingMembersExist">
-						<div class="mt-3">
-							<app-alert type="info" icon=""> No controlling members exist </app-alert>
-						</div>
+						<div class="fs-5 fw-bold my-3">No controlling members exist</div>
 					</ng-container>
 
-					<div class="row mt-4 mb-3" *ngIf="controllingMembersWithSwlExist">
+					<div class="row mt-4" *ngIf="controllingMembersWithSwlExist">
 						<div class="col-12">
 							<div class="mb-2 text-primary-color">Controlling Members with a Security Worker Licence:</div>
 							<mat-table [dataSource]="dataSourceWithSWL">
@@ -112,7 +110,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</div>
 					</div>
 
-					<div class="row" *ngIf="!isMaxNumberOfControllingMembers">
+					<div class="row mt-3" *ngIf="!isMaxNumberOfControllingMembers">
 						<div class="col-md-12 mb-2" [ngClass]="isWizard ? 'col-lg-7 col-xl-6' : 'col-lg-6 col-xl-5'">
 							<a
 								class="large"
