@@ -4,12 +4,11 @@ using FluentValidation.TestHelper;
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
 {
-    private readonly BizLicAppUpsertRequestValidator validator;
+    //private readonly BizLicAppUpsertRequestValidator validator;
     private readonly IFixture fixture;
 
     public BizLicAppValidationTest()
     {
-        validator = new BizLicAppUpsertRequestValidator();
 
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
@@ -29,7 +28,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.BizManagerContactInfo.GivenName = string.Empty;
         model.BizManagerContactInfo.Surname = string.Empty;
         model.BizManagerContactInfo.PhoneNumber = string.Empty;
@@ -42,7 +43,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.ApplicantIsBizManager = false;
         model.ApplicantContactInfo.GivenName = string.Empty;
         model.ApplicantContactInfo.Surname = string.Empty;
@@ -56,7 +59,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void CategoryCodes_WhenHasWrongSet_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.SecurityAlarmInstaller };
 
         var result = validator.TestValidate(model);
@@ -64,9 +69,11 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
+    public void BizLicAppUpsertRequest_DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.DocumentInfos = null;
 
         var result = validator.TestValidate(model);
@@ -74,9 +81,11 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
+    public void BizLicAppUpsertRequest_DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
         Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
@@ -146,7 +155,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void PrivateInvestigatorSwlInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.PrivateInvestigator };
         model.PrivateInvestigatorSwlInfo.LicenceId = null;
@@ -158,7 +169,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void ControllingMembers_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() };
         List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() };
@@ -180,7 +193,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void ControllingMembers_WhenExceedsMaxAllowed_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(10).ToList();
         List<NonSwlContactInfo> nonSwlControllingMembers = fixture.Build<NonSwlContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
