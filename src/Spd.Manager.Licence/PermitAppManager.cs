@@ -110,7 +110,7 @@ internal class PermitAppManager :
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        await UploadNewDocsAsync(request, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, cancellationToken);
+        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -184,10 +184,11 @@ internal class PermitAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         LicenceApplicationCmdResp response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
-        await UploadNewDocsAsync(request,
+        await UploadNewDocsAsync(request.DocumentExpiredInfos,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
                 response?.ContactId,
+                null,
                 null,
                 null,
                 null,
@@ -268,7 +269,7 @@ internal class PermitAppManager :
             cancellationToken);
 
         //upload new files
-        await UploadNewDocsAsync(request,
+        await UploadNewDocsAsync(request.DocumentExpiredInfos,
             cmd.LicAppFileInfos,
             createLicResponse?.LicenceAppId,
             originalLic.LicenceHolderId,
@@ -276,6 +277,7 @@ internal class PermitAppManager :
             null,
             changes.PurposeChangeTaskId,
             originalLic.LicenceId,
+            null,
             cancellationToken);
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
