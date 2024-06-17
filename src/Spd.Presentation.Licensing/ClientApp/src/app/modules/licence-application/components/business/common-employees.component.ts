@@ -83,7 +83,7 @@ import {
 
 					<div class="row mt-3">
 						<ng-container *ngIf="!employeesExist">
-							<app-alert type="info" icon=""> No employees exist </app-alert>
+							<div class="fs-5 fw-bold mb-3">No employees exist</div>
 						</ng-container>
 
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">

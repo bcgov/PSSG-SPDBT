@@ -370,7 +370,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// 	}
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
-					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_RENEW)
+					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_RENEWAL)
 				);
 				break;
 			}
@@ -553,7 +553,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	reset(): void {
 		this.initialized = false;
-		console.debug('reset.initialized', this.initialized);
 		this.hasValueChanged = false;
 
 		this.profileConfirmationFormGroup.reset();
@@ -581,6 +580,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		while (employeesArray.length) {
 			employeesArray.removeAt(0);
 		}
+
+		console.debug('RESET', this.initialized, this.businessModelFormGroup.value);
 	}
 
 	/*************************************************************/
