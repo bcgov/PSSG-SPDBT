@@ -19,32 +19,37 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task GetBizAppContactsAsync_return_Correctly()
     {
-        // Arrange
         account biz = await CreateAccountAsync();
         spd_application app = await CreateApplicationAsync(biz);
         spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
         spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.Employee);
         await _context.SaveChangesAsync(CancellationToken.None);
 
-        BizContactQry qry = new(biz.accountid, app.spd_applicationid);
+        try
+        {
+            // Arrange
+            BizContactQry qry = new(biz.accountid, app.spd_applicationid);
 
-        // Action
-        var response = await _bizContactRepo.GetBizAppContactsAsync(qry, CancellationToken.None);
+            // Action
+            var response = await _bizContactRepo.GetBizAppContactsAsync(qry, CancellationToken.None);
 
-        // Assert
-        Assert.NotNull(response);
-        Assert.Equal(2, response.Count());
-        Assert.Equal(true, response.Any(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName1"));
-        Assert.Equal(true, response.Any(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName2"));
-        Assert.Equal(BizContactRoleEnum.ControllingMember, response.Where(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName1").FirstOrDefault().BizContactRoleCode);
-        Assert.Equal(BizContactRoleEnum.Employee, response.Where(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName2").FirstOrDefault().BizContactRoleCode);
-
-        //Annihilate
-        _context.DeleteObject(bizContact2);
-        _context.DeleteObject(bizContact);
-        _context.DeleteObject(app);
-        _context.DeleteObject(biz);
-        await _context.SaveChangesAsync(CancellationToken.None);
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(2, response.Count());
+            Assert.Equal(true, response.Any(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName1"));
+            Assert.Equal(true, response.Any(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName2"));
+            Assert.Equal(BizContactRoleEnum.ControllingMember, response.Where(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName1").FirstOrDefault().BizContactRoleCode);
+            Assert.Equal(BizContactRoleEnum.Employee, response.Where(r => r.GivenName == IntegrationTestSetup.DataPrefix + "firstName2").FirstOrDefault().BizContactRoleCode);
+        }
+        finally
+        {
+            //Annihilate
+            _context.DeleteObject(bizContact2);
+            _context.DeleteObject(bizContact);
+            _context.DeleteObject(app);
+            _context.DeleteObject(biz);
+            await _context.SaveChangesAsync(CancellationToken.None);
+        }
     }
 
     [Fact]
@@ -63,7 +68,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Assert
         var contact = await _context.spd_businesscontacts
-            .Where(c => c._spd_organizationid_value == biz.accountid && c._spd_application_value == app.spd_applicationid)
+            .Where(c => c._spd_organizationid_value == biz.accountid)
             .FirstOrDefaultAsync(CancellationToken.None);
         Assert.Equal(null, contact);
 
@@ -98,7 +103,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Assert
         var bizContacts = _context.spd_businesscontacts
-            .Where(c => c._spd_organizationid_value == biz.accountid && c._spd_application_value == app.spd_applicationid)
+            .Where(c => c._spd_organizationid_value == biz.accountid)
             .ToList();
         Assert.Equal(5, bizContacts.Count());
         Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName1")); //updated
@@ -148,7 +153,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         bizContact.spd_role = (int)role;
         _context.AddTospd_businesscontacts(bizContact);
         _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
-        _context.SetLink(bizContact, nameof(bizContact.spd_Application), app);
+        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
         return bizContact;
     }
 

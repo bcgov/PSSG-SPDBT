@@ -30,12 +30,14 @@ namespace Spd.Resource.Repository.BizContact
                 bizContacts = bizContacts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
             if (qry.BizId != null)
                 bizContacts = bizContacts.Where(a => a._spd_organizationid_value == qry.BizId);
-            if (qry.AppId != null)
-                bizContacts = bizContacts.Where(a => a._spd_application_value == qry.AppId);
             if (qry.RoleCode != null)
                 bizContacts = bizContacts.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode));
-
-            return _mapper.Map<IEnumerable<BizContactResp>>(bizContacts.ToList());
+            List<spd_businesscontact> bizContactList = bizContacts.ToList();
+            //if (qry.AppId != null)
+            //{
+            //    bizContacts = bizContactList.Where(a => a.spd_businesscontact_spd_application.Contains(app));
+            //}
+            return _mapper.Map<IEnumerable<BizContactResp>>(bizContactList);
         }
 
         public async Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct)
@@ -105,7 +107,7 @@ namespace Spd.Resource.Repository.BizContact
 
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
                     if (app != null)
-                        _context.AddLink(bizContact, nameof(bizContact.spd_Application), app);
+                        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
                 }
             }
             await _context.SaveChangesAsync(ct);
