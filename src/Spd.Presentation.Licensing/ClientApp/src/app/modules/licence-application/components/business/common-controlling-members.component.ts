@@ -357,7 +357,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		if (this.businessApplicationService.isAutoSave()) {
 			this.businessApplicationService.addUploadControllingMemberDocument(file).subscribe({
 				next: (resp: any) => {
-					console.log('resp', resp);
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 					matchingFile.documentUrlId = resp.body[0].documentUrlId;
 				},
