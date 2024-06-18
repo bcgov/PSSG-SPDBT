@@ -4,12 +4,10 @@ using FluentValidation.TestHelper;
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
 {
-    private readonly BizLicAppSubmitRequestValidator validator;
     private readonly IFixture fixture;
 
     public BizLicAppValidationTest()
     {
-        validator = new BizLicAppSubmitRequestValidator();
 
         fixture = new Fixture();
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
@@ -18,18 +16,65 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void BizLicAppSubmitRequestValidator_ShouldPass()
+    public void BizLicAppUpsertRequestValidator_ShouldPass()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
+    public void BizLicAppUpsertRequestValidator_WithEmptyFields_ShouldPass()
+    {
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+
+        model.BizId = Guid.Empty;
+        model.HasExpiredLicence = null;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizId);
+        result.ShouldHaveValidationErrorFor(r => r.HasExpiredLicence);
+    }
+
+    [Fact]
+    public void BizLicAppSubmitRequestValidator_ShouldPass()
+    {
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppSubmitRequest>();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void BizLicAppSubmitRequestValidator_WithEmptyFields_ShouldPass()
+    {
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppSubmitRequest>();
+
+        model.OriginalApplicationId = null;
+        model.OriginalLicenceId = null;
+        model.PreviousDocumentIds = [];
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.OriginalApplicationId);
+        result.ShouldHaveValidationErrorFor(r => r.OriginalLicenceId);
+        result.ShouldHaveValidationErrorFor(r => r.PreviousDocumentIds);
+    }
+
+    [Fact]
     public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.BizManagerContactInfo.GivenName = string.Empty;
         model.BizManagerContactInfo.Surname = string.Empty;
         model.BizManagerContactInfo.PhoneNumber = string.Empty;
@@ -42,7 +87,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.ApplicantIsBizManager = false;
         model.ApplicantContactInfo.GivenName = string.Empty;
         model.ApplicantContactInfo.Surname = string.Empty;
@@ -56,7 +103,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void CategoryCodes_WhenHasWrongSet_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.SecurityAlarmInstaller };
 
         var result = validator.TestValidate(model);
@@ -64,9 +113,11 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
+    public void BizLicAppUpsertRequest_DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.DocumentInfos = null;
 
         var result = validator.TestValidate(model);
@@ -74,9 +125,11 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
+    public void BizLicAppUpsertRequest_DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
         Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
@@ -146,7 +199,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void PrivateInvestigatorSwlInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.PrivateInvestigator };
         model.PrivateInvestigatorSwlInfo.LicenceId = null;
@@ -158,7 +213,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void ControllingMembers_WhenHasEmptyFields_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() };
         List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() };
@@ -180,7 +237,9 @@ public class BizLicAppValidationTest
     [Fact]
     public void ControllingMembers_WhenExceedsMaxAllowed_ShouldThrowException()
     {
-        var model = GenerateValidRequest();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(10).ToList();
         List<NonSwlContactInfo> nonSwlControllingMembers = fixture.Build<NonSwlContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
@@ -201,20 +260,9 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
     }
 
-    private BizLicAppUpsertRequest GenerateValidRequest()
+    private T GenerateValidRequest<T>()
     {
-        // Documents
-        Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
-        Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
-        Document armourCarRegistrar = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
-        Document dogCertificate = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
-        List<Document> documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        object model;
 
         List<WorkerCategoryTypeCode> categories = new()
         {
@@ -244,19 +292,49 @@ public class BizLicAppValidationTest
             Employees = employees
         };
 
-        var model = fixture.Build<BizLicAppUpsertRequest>()
-            .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
-            .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
-            .With(r => r.AgreeToCompleteAndAccurate, true)
-            .With(r => r.UseDogs, true)
-            .With(r => r.NoBranding, false)
-            .With(r => r.DocumentInfos, documentInfos)
-            .With(r => r.CategoryCodes, categories)
-            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
-            .With(r => r.ApplicantContactInfo, applicantContactInfo)
-            .With(r => r.Members, members)
-            .Create();
+        if (typeof(T).Name == "BizLicAppUpsertRequest")
+        {
+            // Documents
+            Document branding = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizBranding };
+            Document insurance = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
+            Document armourCarRegistrar = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
+            Document dogCertificate = new Document() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
+            List<Document> documentInfos = new()
+            {
+                branding,
+                insurance,
+                armourCarRegistrar,
+                dogCertificate
+            };
 
-        return model;
+            model = fixture.Build<BizLicAppUpsertRequest>()
+                .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
+                .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
+                .With(r => r.AgreeToCompleteAndAccurate, true)
+                .With(r => r.UseDogs, true)
+                .With(r => r.NoBranding, false)
+                .With(r => r.DocumentInfos, documentInfos)
+                .With(r => r.CategoryCodes, categories)
+                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+                .With(r => r.ApplicantContactInfo, applicantContactInfo)
+                .With(r => r.Members, members)
+                .Create();
+        }
+        else
+        {
+            model = fixture.Build<BizLicAppSubmitRequest>()
+                .With(r => r.LicenceTermCode, Shared.LicenceTermCode.OneYear)
+                .With(r => r.BizTypeCode, BizTypeCode.RegisteredPartnership)
+                .With(r => r.AgreeToCompleteAndAccurate, true)
+                .With(r => r.UseDogs, true)
+                .With(r => r.NoBranding, false)
+                .With(r => r.CategoryCodes, categories)
+                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+                .With(r => r.ApplicantContactInfo, applicantContactInfo)
+                .With(r => r.Members, members)
+                .Create();
+        }
+
+        return (T)Convert.ChangeType(model, typeof(T));
     }
 }
