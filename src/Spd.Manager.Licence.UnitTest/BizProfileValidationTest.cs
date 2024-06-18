@@ -37,6 +37,50 @@ public class BizProfileValidationTest
     }
 
     [Fact]
+    public void BizProfileUpdateRequestValidator_WithBranches_ShouldPass()
+    {
+        var address = fixture.Build<Address>()
+            .With(a => a.AddressLine1, new string('a', 100))
+            .With(a => a.City, new string('a', 100))
+            .With(a => a.Country, new string('a', 100))
+            .With(a => a.Province, new string('a', 100))
+            .With(a => a.PostalCode, new string('a', 20))
+            .Create();
+
+        var branch = fixture.Build<BranchInfo>()
+            .With(b => b.BranchAddress, address)
+            .Create();
+
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.Corporation)
+            .With(r => r.Branches, new List<BranchInfo>() { branch })
+            .With(r => r.BizAddress, address)
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void BizProfileUpdateRequestValidator_WithBranchWithoutInformation_ShouldThrowException()
+    {
+        Address address = new();
+
+        var branch = fixture.Build<BranchInfo>()
+            .With(b => b.BranchAddress, address)
+            .Create();
+
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.Corporation)
+            .With(r => r.Branches, new List<BranchInfo>() { branch })
+            .With(r => r.BizAddress, address)
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.Branches);
+    }
+
+    [Fact]
     public void BizBCAddressEmpty_WhenBizAddressIsNotInBC_ShouldThrowException()
     {
         var address = fixture.Build<Address>()
