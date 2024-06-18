@@ -172,7 +172,34 @@ internal class BizLicAppManager :
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand cmd, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        BizLicAppSubmitRequest request = cmd.LicenceRequest;
+        if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
+            throw new ArgumentException("should be an update request");
+
+        // Validation: check if original licence meet update condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be updated.");
+        LicenceResp originalLic = originalLicences.Items.First();
+
+        SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.LicenceRequest);
+        BizLicApplicationResp bizLicAppResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)originalLic.LicenceAppId, cancellationToken);
+
+        if (bizLicAppResp.BizId == null)
+            throw new ArgumentException("there is no business related to the application.");
+
+        saveCmd.ApplicantId = (Guid)bizLicAppResp.BizId;
+        var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+
+        if (cmd.LicenceRequest.Members != null)
+            await UpdateMembersAsync(cmd.LicenceRequest.Members,
+                (Guid)bizLicAppResp.BizId,
+                (Guid)bizLicAppResp.LicenceAppId,
+                cancellationToken);
+
+        return _mapper.Map<BizLicAppCommandResponse>(response);
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
