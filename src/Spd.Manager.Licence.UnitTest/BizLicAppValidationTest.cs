@@ -27,6 +27,21 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
+    public void BizLicAppUpsertRequestValidator_WithEmptyFields_ShouldPass()
+    {
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+
+        model.BizId = Guid.Empty;
+        model.HasExpiredLicence = null;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizId);
+        result.ShouldHaveValidationErrorFor(r => r.HasExpiredLicence);
+    }
+
+    [Fact]
     public void BizLicAppSubmitRequestValidator_ShouldPass()
     {
         BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
