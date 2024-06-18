@@ -37,7 +37,3 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
             .When(r => r.ApplicationTypeCode == ApplicationTypeCode.Renewal || r.ApplicationTypeCode == ApplicationTypeCode.Update);
     }
 }
-
-
-
-
