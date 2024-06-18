@@ -436,4 +436,21 @@ public class BizLicenceAppManagerTest
         Assert.IsType<BizLicAppCommandResponse>(result);
         Assert.Equal(originalApplicationId, result.LicenceAppId);
     }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_WithWrongApplicationType_Throw_Exception()
+    {
+        // Arrange
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.New
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
 }
