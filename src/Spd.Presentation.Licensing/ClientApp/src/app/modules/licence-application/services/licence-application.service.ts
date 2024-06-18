@@ -560,8 +560,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					_resp.applicationTypeData.applicationTypeCode,
 					_resp.originalLicenceData.originalLicenceNumber
 				);
-
-				console.debug('[getLicenceWithSelectionAuthenticated] licenceFormGroup', this.licenceModelFormGroup.value);
 			})
 		);
 	}
@@ -627,11 +625,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[saveUserProfile] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[saveUserProfile] getProfileSaveBody', body);
-		console.debug('[saveUserProfile] getProfileDocsToSaveBlobs', documentsToSave);
-		console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
-		console.debug('[saveUserProfile] documentsToSaveApis', documentsToSaveApis);
+		// console.debug('[saveUserProfile] licenceModelFormValue', licenceModelFormValue);
+		// console.debug('[saveUserProfile] getProfileSaveBody', body);
+		// console.debug('[saveUserProfile] getProfileDocsToSaveBlobs', documentsToSave);
+		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
+		// console.debug('[saveUserProfile] documentsToSaveApis', documentsToSaveApis);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -714,9 +712,9 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] body', body);
-		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] existingDocumentIds', existingDocumentIds);
+		// console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] body', body);
+		// console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] documentsToSave', documentsToSave);
+		// console.debug('[submitLicenceRenewalOrUpdateOrReplaceAuthenticated] existingDocumentIds', existingDocumentIds);
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -922,8 +920,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		return this.getLicenceEmptyAnonymous(workerLicenceTypeCode).pipe(
 			tap((resp: any) => {
-				console.debug('[createNewLicenceAnonymous] resp', resp);
-
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
@@ -1044,11 +1040,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.filter((item: Document) => !!item.documentUrlId)
 			.map((item: Document) => item.documentUrlId!);
 
-		console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceAnonymous] body', body);
-		console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
-		console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
-		console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
+		// console.debug('[submitLicenceAnonymous] licenceModelFormValue', licenceModelFormValue);
+		// console.debug('[submitLicenceAnonymous] body', body);
+		// console.debug('[submitLicenceAnonymous] documentsToSave', documentsToSave);
+		// console.debug('[submitLicenceAnonymous] existingDocumentIds', existingDocumentIds);
+		// console.debug('[submitLicenceAnonymous] documentsToSaveApis', documentsToSaveApis);
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
 		return this.postLicenceAnonymousDocuments(
@@ -1076,8 +1072,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		});
 
-		console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
-		console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
+		// console.debug('[submitLicenceReplacementAnonymous] licenceModelFormValue', licenceModelFormValue);
+		// console.debug('[submitLicenceReplacementAnonymous] saveBodyAnonymous', body);
 
 		const googleRecaptcha = { recaptchaCode: mailingAddress.captchaFormGroup.token };
 		return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);

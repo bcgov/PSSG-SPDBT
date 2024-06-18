@@ -4,11 +4,12 @@ using Spd.Resource.Repository.PersonLicApplication;
 namespace Spd.Resource.Repository.BizLicApplication;
 public partial interface IBizLicApplicationRepository
 {
+    public Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
 }
 
-public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid ContactId);
+public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);
 
 public record BizLicApplication
 {
@@ -28,8 +29,6 @@ public record BizLicApplication
     public string? ManagerEmailAddress { get; set; }
     public string? ManagerPhoneNumber { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
-    public Guid? ExpiredLicenceId { get; set; }
-    public bool? HasExpiredLicence { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
     public LicenceTermEnum? LicenceTermCode { get; set; }
     public bool? NoBranding { get; set; }
@@ -45,8 +44,17 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
     public Guid? LicenceAppId { get; set; }
     public Guid ApplicantId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+    public Guid? ExpiredLicenceId { get; set; }
+    public bool? HasExpiredLicence { get; set; }
     public SwlContactInfo PrivateInvestigatorSwlInfo { get; set; } = new();
 }
+
+public record CreateBizLicApplicationCmd() : BizLicApplication
+{
+    public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+    public Guid? OriginalApplicationId { get; set; }
+    public Guid? OriginalLicenceId { get; set; }    // * Might be redundant, check with Peggy
+};
 
 public record BizLicApplicationResp() : BizLicApplication
 {
@@ -57,4 +65,6 @@ public record BizLicApplicationResp() : BizLicApplication
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
     public string? CaseNumber { get; set; }
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
+    public Guid? ExpiredLicenceId { get; set; }
+    public bool? HasExpiredLicence { get; set; }
 }
