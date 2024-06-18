@@ -21,6 +21,17 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.SoleProprietorSwlPhoneNumber)
             .NotEmpty()
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
-        //todo: add rule for branches
+        RuleFor(r => r.Branches)
+            .ForEach(r => r
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.AddressLine1))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.City))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.Country))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.Province))
+                .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.PostalCode))
+                .Must(r => !string.IsNullOrEmpty(r.BranchManager)))
+                .WithMessage("Missing branch address information.")
+            .When(r => r.Branches != null &&
+                 r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
+                 r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
     }
 }
