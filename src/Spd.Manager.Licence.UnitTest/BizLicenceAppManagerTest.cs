@@ -484,8 +484,8 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp>() { originalLicence }
             });
-        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.IsAny<SaveBizLicApplicationCmd>(), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationCmdResp(Guid.NewGuid(), Guid.Empty));
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp());
 
         BizLicAppSubmitRequest request = new()
         {
