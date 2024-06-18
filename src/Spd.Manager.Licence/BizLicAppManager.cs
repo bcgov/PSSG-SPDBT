@@ -187,7 +187,7 @@ internal class BizLicAppManager :
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.LicenceRequest);
         BizLicApplicationResp bizLicAppResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)originalLic.LicenceAppId, cancellationToken);
 
-        if (bizLicAppResp.BizId == null)
+        if (bizLicAppResp.BizId == null || bizLicAppResp.BizId == Guid.Empty)
             throw new ArgumentException("there is no business related to the application.");
 
         saveCmd.ApplicantId = (Guid)bizLicAppResp.BizId;
