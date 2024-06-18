@@ -38,6 +38,23 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
+    public void BizLicAppSubmitRequestValidator_WithEmptyFields_ShouldPass()
+    {
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+
+        var model = GenerateValidRequest<BizLicAppSubmitRequest>();
+
+        model.OriginalApplicationId = null;
+        model.OriginalLicenceId = null;
+        model.PreviousDocumentIds = [];
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.OriginalApplicationId);
+        result.ShouldHaveValidationErrorFor(r => r.OriginalLicenceId);
+        result.ShouldHaveValidationErrorFor(r => r.PreviousDocumentIds);
+    }
+
+    [Fact]
     public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
         BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
