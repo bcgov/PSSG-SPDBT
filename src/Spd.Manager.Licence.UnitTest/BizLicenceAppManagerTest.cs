@@ -473,4 +473,30 @@ public class BizLicenceAppManagerTest
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(act);
     }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_WithoutLinkedBusiness_Throw_Exception()
+    {
+        // Arrange
+        LicenceResp originalLicence = new() { LicenceAppId = Guid.NewGuid() };
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>() { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.IsAny<SaveBizLicApplicationCmd>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationCmdResp(Guid.NewGuid(), Guid.Empty));
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.Update
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
 }
