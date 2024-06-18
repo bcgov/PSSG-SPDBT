@@ -175,10 +175,9 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	readonly subtitle_new = '';
 
 	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
-	readonly subtitle_renew = 'You can change and remove existing categories as well as add new ones';
+	readonly subtitle_renew_update = 'You can change and remove existing categories as well as add new ones';
 
 	readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
-	readonly subtitle_update = 'You can change and remove existing categories as well as add new ones';
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
@@ -196,12 +195,12 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 			case ApplicationTypeCode.Renewal: {
 				this.title = this.title_renew;
-				this.infoTitle = this.subtitle_renew;
+				this.infoTitle = this.subtitle_renew_update;
 				break;
 			}
 			case ApplicationTypeCode.Update: {
 				this.title = this.title_update;
-				this.infoTitle = this.subtitle_update;
+				this.infoTitle = this.subtitle_renew_update;
 				break;
 			}
 		}

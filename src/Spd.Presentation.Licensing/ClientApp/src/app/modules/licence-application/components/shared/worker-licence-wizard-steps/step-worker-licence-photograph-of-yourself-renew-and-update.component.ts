@@ -17,7 +17,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 					<ng-container *ngIf="!originalPhotoOfYourselfExpired">
 						<div class="d-flex justify-content-center" *ngIf="photographOfYourself">
 							<div class="photo-of-yourself">
-								<div class="fs-5">Current licence photo</div>
+								<div class="fs-5">Current photo</div>
 								<img class="photo-of-yourself__item" [src]="photographOfYourself" alt="Photograph of yourself" />
 							</div>
 						</div>
@@ -105,7 +105,7 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 		)?.value;
 
 		if (!this.originalPhotoOfYourselfExpired) {
-			this.title = 'Do you want to update the photo on your licence?';
+			this.title = 'Do you want to update your photo?';
 		} else {
 			this.title = 'Upload a photo of yourself';
 		}

@@ -18,7 +18,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 					<div class="row">
 						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 							<app-alert type="warning" icon="warning">
-								We recommend you do not finalize any branding, marketing or advertising until your licence is approved.
+								{{ info }}
 							</app-alert>
 
 							<div *ngIf="!isNoLogoOrBranding" @showHideTriggerSlideAnimation>
@@ -66,6 +66,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
+	info = '';
 
 	isRenewalOrUpdate!: boolean;
 
@@ -88,10 +89,14 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 		if (this.isRenewalOrUpdate) {
 			this.title = "Confirm your business' branding";
 			this.subtitle = 'Update any information that has changed since your last application';
+			this.info =
+				"If there been changes to your business' uniforms, insignia, logos, vehicle marking, or advertising, add and remove any examples of business branding that are no longer being used.";
 		} else {
 			this.title = 'Provide examples of company branding';
 			this.subtitle =
 				'Provide drawings or photos of any uniforms, insignia, logos, vehicle marking, or advertising you plan on using for your security business. Security Program Division must review and approve these before your licence will be issued.';
+			this.info =
+				'We recommend you do not finalize any branding, marketing or advertising until your licence is approved.';
 		}
 	}
 

@@ -20,7 +20,9 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.UseDogs)
             .NotEmpty()
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
-        RuleFor(r => r.ApplicantIsBizManager).NotEmpty();
+        RuleFor(r => r.ApplicantIsBizManager)
+            .NotEmpty()
+            .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.BizManagerContactInfo)
             .Must(r => r.GivenName.IsNullOrEmpty() != true && 
                 r.Surname.IsNullOrEmpty() != true && 
@@ -67,7 +69,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) <= 10)
             .When(r => r.NoBranding == false && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 0)
-            .WithMessage("Maximum of 10 documents allowed for branding was exceded.");
+            .WithMessage("Maximum of 10 documents allowed for branding was exceeded.");
 
         // Document required for business insurance
         RuleFor(r => r.DocumentInfos)
@@ -75,7 +77,7 @@ public class BizLicAppSubmitRequestValidator : AbstractValidator<BizLicAppUpsert
             .WithMessage("Missing business insurance document.");
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) < 2)
-            .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
+            .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) > 0)
             .WithMessage("No more than 1 business insurance document is allowed.");
 
         // Document required for "Armoured car guard"
