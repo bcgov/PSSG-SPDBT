@@ -61,7 +61,7 @@ internal class BizLicAppManager :
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
 
         if (result.BizId != null)
-            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, result.LicenceAppId), cancellationToken);
+            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, null), cancellationToken);
 
         return result;
     }
@@ -270,7 +270,7 @@ internal class BizLicAppManager :
         }
     }
 
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid appId, CancellationToken ct)
+    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid? appId, CancellationToken ct)
     {
         List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
         contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));

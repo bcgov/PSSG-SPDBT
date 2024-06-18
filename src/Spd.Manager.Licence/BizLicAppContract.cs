@@ -96,7 +96,7 @@ public record NonSwlContactInfo : ContactInfo
     public Guid? BizContactId { get; set; }
 }
 
-public record GetBizMembersQuery(Guid BizId) : IRequest<Members>;
+public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
 
 public record Members
 {
