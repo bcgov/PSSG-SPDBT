@@ -390,4 +390,50 @@ public class BizLicenceAppManagerTest
         // Assert
         await Assert.ThrowsAsync<ApiException>(act);
     }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_Return_BizLicAppCommandResponse()
+    {
+        // Arrange
+        Guid originalApplicationId = Guid.NewGuid();
+        Guid originalLicenceId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceId, originalLicenceId)
+            .Create();
+        LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
+        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.Is<SaveBizLicApplicationCmd>(
+            m => m.LicenceAppId == originalApplicationId &&
+            m.ApplicantId == bizId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationCmdResp(originalApplicationId, bizId));
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = Shared.ApplicationTypeCode.Update,
+            OriginalLicenceId = originalLicenceId,
+            OriginalApplicationId = originalApplicationId,
+            NoBranding = false,
+            UseDogs = true,
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        Assert.Equal(originalApplicationId, result.LicenceAppId);
+    }
 }
