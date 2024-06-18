@@ -28,7 +28,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
             if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-                SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+                SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
             //for new, always create a new contact
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
@@ -45,10 +45,10 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             {
                 throw new ArgumentException("for replace, renew or update, original application id cannot be null");
             }
-
+            
             if (cmd.OriginalLicenceId != null)
             {
-                SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.OriginalLicenceId, app);
+                SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
             }
             else
             {
@@ -95,7 +95,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         }
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
-            SharedRepositoryFuncs.LinkExpiredLicence(_context, cmd.ExpiredLicenceId, app);
+            SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 

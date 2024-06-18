@@ -57,7 +57,7 @@ internal abstract class LicenceAppManagerBase
     }
 
     //upload file from cache to main bucket
-    protected async Task UploadNewDocsAsync(PersonalLicenceAppBase request,
+    protected async Task UploadNewDocsAsync(IEnumerable<DocumentExpiredInfo>? documentExpiredInfos,
         IEnumerable<LicAppFileInfo> newFileInfos,
         Guid? licenceAppId,
         Guid? contactId,
@@ -65,6 +65,7 @@ internal abstract class LicenceAppManagerBase
         Guid? mentalHealthStatusChangeTaskId,
         Guid? purposeChangeTaskId,
         Guid? licenceId,
+        Guid? accountId,
         CancellationToken ct)
     {
         if (newFileInfos != null && newFileInfos.Any())
@@ -88,12 +89,12 @@ internal abstract class LicenceAppManagerBase
                 }
                 fileCmd.ApplicantId = contactId;
                 fileCmd.ApplicationId = licenceAppId;
-                fileCmd.ExpiryDate = request?
-                        .DocumentExpiredInfos?
+                fileCmd.AccountId = accountId;
+                fileCmd.ExpiryDate = documentExpiredInfos?
                         .FirstOrDefault(d => d.LicenceDocumentTypeCode == licAppFile.LicenceDocumentTypeCode)?
                         .ExpiryDate;
                 fileCmd.TempFile = tempFile;
-                fileCmd.SubmittedByApplicantId = contactId;
+                fileCmd.SubmittedByApplicantId = contactId ?? accountId;
                 //create bcgov_documenturl and file
                 await _documentRepository.ManageAsync(fileCmd, ct);
             }
