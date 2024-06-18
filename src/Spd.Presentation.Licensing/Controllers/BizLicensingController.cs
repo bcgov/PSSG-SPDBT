@@ -212,23 +212,37 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/brand-image/{documentId}")]
         [Authorize(Policy = "OnlyBceid")]
         [HttpGet]
-        public async Task<FileStreamResult> GetBrandImage([FromRoute][Required] Guid documentId, CancellationToken ct)
+        public async Task<BrandImageResponse> GetBrandImage([FromRoute][Required] Guid documentId, CancellationToken ct)
         {
             FileResponse? response = await _mediator.Send(new BrandImageQuery(documentId), ct);
-            MemoryStream content;
+            byte[] content;
             string contentType;
             if (response == null)
             {
-                content = new MemoryStream(Array.Empty<byte>());
+                content = Array.Empty<byte>();
                 contentType = string.Empty;
             }
             else
             {
-                content = new MemoryStream(response.Content);
+                content = response.Content;
                 contentType = response.ContentType ?? "application/octet-stream";
             }
 
-            return File(content, contentType, response?.FileName);
+            return new BrandImageResponse
+            {
+                ImageContent = content,
+                DocumentUrlId = documentId,
+                ContentType = contentType,
+                FileName = response?.FileName
+            };
         }
+    }
+
+    public class BrandImageResponse
+    {
+        public Guid DocumentUrlId { get; set; }
+        public byte[] ImageContent { get; set; }
+        public string ContentType { get; set; }
+        public string FileName { get; set; }
     }
 }
