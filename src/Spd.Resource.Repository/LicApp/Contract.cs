@@ -24,6 +24,3 @@ public record LicenceAppListResp
 }
 
 public record LicenceApplicationCmdResp(Guid LicenceAppId, Guid? ContactId = null, Guid? BizId = null);
-
-
-

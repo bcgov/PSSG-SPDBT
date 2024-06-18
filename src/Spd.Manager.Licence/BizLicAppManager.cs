@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
@@ -13,7 +14,7 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Manager.Licence;
-internal class BizLicAppMananger :
+internal class BizLicAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetBizLicAppQuery, BizLicAppResponse>,
         IRequestHandler<BizLicAppUpsertCommand, BizLicAppCommandResponse>,
@@ -24,12 +25,13 @@ internal class BizLicAppMananger :
         IRequestHandler<GetBizMembersQuery, Members>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
+        IRequestHandler<BrandImageQuery, FileResponse>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
 
-    public BizLicAppMananger(
+    public BizLicAppManager(
         ILicenceRepository licenceRepository,
         ILicAppRepository licAppRepository,
         IMapper mapper,
@@ -112,7 +114,60 @@ internal class BizLicAppMananger :
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand cmd, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        BizLicAppSubmitRequest request = cmd.LicenceRequest;
+        if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
+            throw new ArgumentException("should be a renewal request");
+
+        // Validation: check if original licence meet renew condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be renewed.");
+        LicenceResp originalLic = originalLicences.Items.First();
+
+        // Check Renew your existing application before it expires, within 90 days of the expiry date.
+        if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
+
+        var existingFiles = await GetExistingFileInfo(
+            cmd.LicenceRequest.OriginalApplicationId,
+            cmd.LicenceRequest.PreviousDocumentIds,
+            cancellationToken);
+        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
+            cmd.LicAppFileInfos.ToList(),
+            cancellationToken);
+
+        CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
+        BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+
+        await UploadNewDocsAsync(null,
+                cmd.LicAppFileInfos,
+                response?.LicenceAppId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                response?.AccountId,
+                cancellationToken);
+
+        if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
+        // Copying all old files to new application in PreviousFileIds 
+        if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.AccountId),
+                    cancellationToken);
+            }
+        }
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+
+        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand cmd, CancellationToken cancellationToken)
@@ -188,6 +243,33 @@ internal class BizLicAppMananger :
         return _mapper.Map<IEnumerable<LicenceAppListResponse>>(response);
     }
 
+    public async Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct)
+    {
+        DocumentResp docResp = await _documentRepository.GetAsync(qry.DocumentId, ct);
+        if (docResp == null)
+            return new FileResponse();
+        if (docResp.DocumentType != DocumentTypeEnum.CompanyBranding)
+            throw new ApiException(HttpStatusCode.BadRequest, "the document is not branding image.");
+
+        try
+        {
+            FileQueryResult fileResult = (FileQueryResult)await _mainFileService.HandleQuery(
+                new FileQuery { Key = docResp.DocumentUrlId.ToString(), Folder = docResp.Folder },
+                ct);
+            return new FileResponse
+            {
+                Content = fileResult.File.Content,
+                ContentType = fileResult.File.ContentType,
+                FileName = fileResult.File.FileName
+            };
+        }
+        catch
+        {
+            //todo: add more logging
+            return new FileResponse(); //error in S3, probably cannot find the file
+        }
+    }
+
     private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid appId, CancellationToken ct)
     {
         List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
@@ -201,5 +283,77 @@ internal class BizLicAppMananger :
         BizContactUpsertCmd upsertCmd = new(bizId, appId, contacts);
         await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
         return default;
+    }
+
+    private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,
+        IList<LicAppFileInfo> newFileInfos,
+        CancellationToken ct)
+    {
+        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
+        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+        if (request.PreviousDocumentIds != null)
+        {
+            existingFileInfos = docListResps.Items.Where(d => request.PreviousDocumentIds.Contains(d.DocumentUrlId) && d.DocumentType2 != null)
+            .Select(f => new LicAppFileInfo()
+            {
+                FileName = f.FileName ?? String.Empty,
+                LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(f.DocumentType, f.DocumentType2),
+            }).ToList();
+        }
+
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing business insurance file.");
+        }
+
+        if (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) > 1)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 business insurance document is allowed.");
+        }
+
+        if (request.NoBranding == false && 
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing branding file.");
+        }
+
+        if (request.NoBranding == false &&
+            (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) > 10))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for branding was exceeded.");
+        }
+
+        if (request.UseDogs == true && 
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing security dog certificate file.");
+        }
+
+        if (request.UseDogs == true &&
+            (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 1))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 dog certificate is allowed.");
+        }
+
+        if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing armoured car guard registrar file.");
+        }
+
+        if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&
+            (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) +
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) > 1))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 armoured car guard registrar document is allowed.");
+        }
     }
 }
