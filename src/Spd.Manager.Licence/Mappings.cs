@@ -143,7 +143,7 @@ internal class Mappings : Profile
             .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.LicenceId));
 
         CreateMap<BizLicAppSubmitRequest, SaveBizLicApplicationCmd>()
-            .ForMember(d => d.ApplicantId, opt => opt.Ignore())
+            .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.OriginalApplicationId))
             .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.ApplicantIsBizManager == true ? s.BizManagerContactInfo.GivenName : s.ApplicantContactInfo.GivenName))
@@ -158,6 +158,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ManagerMiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
             .ForMember(d => d.ManagerEmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
             .ForMember(d => d.ManagerPhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+            .ForMember(d => d.ApplicantId, opt => opt.Ignore())
             .ForMember(d => d.ExpiredLicenceId, opt => opt.Ignore())
             .ForMember(d => d.ExpiredLicenceNumber, opt => opt.Ignore())
             .ForMember(d => d.HasExpiredLicence, opt => opt.Ignore())
