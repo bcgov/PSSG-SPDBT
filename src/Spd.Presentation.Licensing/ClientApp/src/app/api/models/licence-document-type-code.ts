@@ -57,5 +57,6 @@ export enum LicenceDocumentTypeCode {
   BizInsurance = 'BizInsurance',
   ArmourCarGuardRegistrar = 'ArmourCarGuardRegistrar',
   BizSecurityDogCertificate = 'BizSecurityDogCertificate',
-  BizBcReport = 'BizBCReport'
+  BizBcReport = 'BizBCReport',
+  CorporateRegistryDocument = 'CorporateRegistryDocument'
 }
