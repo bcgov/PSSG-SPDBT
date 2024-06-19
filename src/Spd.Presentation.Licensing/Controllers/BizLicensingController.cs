@@ -130,18 +130,19 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get Biz Application controlling members and employees, controlling member includes swl and non-swl
+        /// Get Biz controlling members and employees, controlling member includes swl and non-swl
+        /// This is the latest active biz controlling members and employees, irrelevent to application.
         /// </summary>
         /// <param name="bizId"></param>
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/{applicationId}/members")]
+        [Route("api/business-licence-application/{bizId}/members")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<Members> GetMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, CancellationToken ct)
+        public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
         {
-            return await _mediator.Send(new GetBizMembersQuery(bizId, applicationId), ct);
+            return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
         }
 
         /// <summary>
