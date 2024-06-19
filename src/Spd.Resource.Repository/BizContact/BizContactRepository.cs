@@ -27,7 +27,7 @@ namespace Spd.Resource.Repository.BizContact
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
                 .Expand(c => c.spd_businesscontact_spd_application);
-            if (qry.AppId != null) //change to n:n relationship, so have to do the seperate way.
+            if (qry.AppId != null) //change to n:n relationship, so have to do the separate way.
             {
                 spd_application? app = _context.spd_applications.Expand(a => a.spd_businesscontact_spd_application)
                     .Where(a => a.spd_applicationid == qry.AppId)

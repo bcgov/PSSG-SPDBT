@@ -86,7 +86,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task ManageBizContactsAsync_WithExistingContacts_Correctly()
     {
-        /********************************************* Dynamics change the schema, licence can only be created when it links to a case. But it seems we cannot create case(incident) in program. So, make this a todo.
+        /********************************************* Dynamics change the schema, licence can only be created when it links to a case. But it seems we cannot create case(incident) in program. So, make this a todo-spdbt-2716
         // So, we need to deal with it later.
         // Arrange
         account biz = await CreateAccountAsync();
