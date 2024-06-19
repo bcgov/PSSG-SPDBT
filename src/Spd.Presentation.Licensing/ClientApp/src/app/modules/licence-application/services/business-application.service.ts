@@ -886,7 +886,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const fileName = this.fileUtilService.getFileNameFromHeader(item.headers);
 					const doc: Document = brandingDocumentInfos[index];
 
-					let imageFile = new File([item.body], fileName, { type: item.body.type });
+					const imageFile = new File([item.body], fileName, { type: item.body.type });
 					const imageSpdFile: SpdFile = imageFile as SpdFile;
 					imageSpdFile.documentUrlId = doc.documentUrlId;
 
