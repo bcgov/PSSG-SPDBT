@@ -123,7 +123,7 @@ public class BizLicensingControllerTest
     }
 
     [Fact]
-    public async void Post_SubmitBusinessLicenceApplicationChange_Return_BizLicAppCommandResponse()
+    public async void Post_ChangeOnBizLicApp_Renewal_Return_BizLicAppCommandResponse()
     {
         BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.Renewal };
 
