@@ -63,19 +63,24 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)app.spd_applicationid, new List<BizContactResp>());
 
-        // Action
-        var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
+        try
+        {
+            // Action
+            var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
 
-        // Assert
-        var contact = await _context.spd_businesscontacts
-            .Where(c => c._spd_organizationid_value == biz.accountid)
-            .FirstOrDefaultAsync(CancellationToken.None);
-        Assert.Equal(null, contact);
-
-        //Annihilate
-        _context.DeleteObject(app);
-        _context.DeleteObject(biz);
-        await _context.SaveChangesAsync(CancellationToken.None);
+            // Assert
+            var contact = await _context.spd_businesscontacts
+                .Where(c => c._spd_organizationid_value == biz.accountid)
+                .FirstOrDefaultAsync(CancellationToken.None);
+            Assert.Equal(null, contact);
+        }
+        finally
+        {
+            //Annihilate
+            _context.DeleteObject(app);
+            _context.DeleteObject(biz);
+            await _context.SaveChangesAsync(CancellationToken.None);
+        }
     }
 
     [Fact]
