@@ -17,6 +17,7 @@ import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { Members } from '../models/members';
+import { MembersRequest } from '../models/members-request';
 
 @Injectable({
   providedIn: 'root',
@@ -374,7 +375,7 @@ export class BizLicensingService extends BaseService {
   apiBusinessLicenceApplicationBizIdApplicationIdMembersPost$Response(params: {
     bizId: string;
     applicationId: string;
-    body?: Members
+    body?: MembersRequest
   },
   context?: HttpContext
 
@@ -412,7 +413,7 @@ export class BizLicensingService extends BaseService {
   apiBusinessLicenceApplicationBizIdApplicationIdMembersPost(params: {
     bizId: string;
     applicationId: string;
-    body?: Members
+    body?: MembersRequest
   },
   context?: HttpContext
 
@@ -420,6 +421,81 @@ export class BizLicensingService extends BaseService {
 
     return this.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+    );
+  }
+
+  /**
+   * Path part for operation apiBusinessLicenceApplicationBizIdApplicationIdFilesPost
+   */
+  static readonly ApiBusinessLicenceApplicationBizIdApplicationIdFilesPostPath = '/api/business-licence-application/{bizId}/{applicationId}/files';
+
+  /**
+   * Uploading file only save files in cache, the files are not connected to the biz and application yet.
+   * this is used for uploading member files or update, renew, replace.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessLicenceApplicationBizIdApplicationIdFilesPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response(params: {
+    bizId: string;
+    applicationId: string;
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<string>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBizIdApplicationIdFilesPostPath, 'post');
+    if (params) {
+      rb.path('bizId', params.bizId, {});
+      rb.path('applicationId', params.applicationId, {});
+      rb.body(params.body, 'multipart/form-data');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<string>;
+      })
+    );
+  }
+
+  /**
+   * Uploading file only save files in cache, the files are not connected to the biz and application yet.
+   * this is used for uploading member files or update, renew, replace.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiBusinessLicenceApplicationBizIdApplicationIdFilesPost(params: {
+    bizId: string;
+    applicationId: string;
+    body?: {
+'Documents'?: Array<Blob>;
+'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
+}
+  },
+  context?: HttpContext
+
+): Observable<string> {
+
+    return this.apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<string>) => r.body as string)
     );
   }
 
