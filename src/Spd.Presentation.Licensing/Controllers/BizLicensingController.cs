@@ -152,17 +152,17 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/{applicationId}/members")]
+        [Route("api/business-licence-application/{bizId}/members")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
-        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromRoute] Guid applicationId, [FromBody] MembersRequest members, CancellationToken ct)
+        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
         {
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
             if (newDocInfos.Count() != members.ControllingMemberDocumentKeyCodes.Count())
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Cannot find all files in the cache.");
             }
-            await _mediator.Send(new UpsertBizMembersCommand(bizId, applicationId, members, newDocInfos), ct);
+            await _mediator.Send(new UpsertBizMembersCommand(bizId, null, members, newDocInfos), ct);
             return Ok();
         }
 
