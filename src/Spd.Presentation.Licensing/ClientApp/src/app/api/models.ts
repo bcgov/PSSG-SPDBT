@@ -45,6 +45,7 @@ export { LicenceStatusCode } from './models/licence-status-code';
 export { LicenceTermCode } from './models/licence-term-code';
 export { MailingAddress } from './models/mailing-address';
 export { Members } from './models/members';
+export { MembersRequest } from './models/members-request';
 export { NonSwlContactInfo } from './models/non-swl-contact-info';
 export { OidcConfiguration } from './models/oidc-configuration';
 export { PaymentLinkCreateRequest } from './models/payment-link-create-request';
