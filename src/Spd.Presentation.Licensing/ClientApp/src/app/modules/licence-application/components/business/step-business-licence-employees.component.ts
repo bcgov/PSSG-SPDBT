@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { CommonEmployeesComponent } from './common-employees.component';
@@ -20,7 +20,7 @@ import { CommonEmployeesComponent } from './common-employees.component';
 	`,
 	styles: [],
 })
-export class StepBusinessLicenceEmployeesComponent implements LicenceChildStepperStepComponent {
+export class StepBusinessLicenceEmployeesComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 
