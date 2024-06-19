@@ -112,6 +112,6 @@ public record MembersRequest : Members
 
 public record UpsertBizMembersCommand(
     Guid BizId,
-    Guid ApplicationId,
+    Guid? ApplicationId,
     Members Members,
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;
