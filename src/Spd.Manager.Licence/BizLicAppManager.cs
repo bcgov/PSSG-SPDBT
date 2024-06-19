@@ -185,7 +185,7 @@ internal class BizLicAppManager :
         LicenceResp originalLic = originalLicences.Items.First();
 
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.LicenceRequest);
-        BizLicApplicationResp bizLicAppResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)originalLic.LicenceAppId, cancellationToken);
+        BizLicApplicationResp bizLicAppResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
 
         if (bizLicAppResp.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
