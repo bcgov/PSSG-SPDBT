@@ -25,19 +25,34 @@ namespace Spd.Resource.Repository.BizContact
 
         public async Task<IEnumerable<BizContactResp>> GetBizAppContactsAsync(BizContactQry qry, CancellationToken ct)
         {
-            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts;
+            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Expand(c => c.spd_businesscontact_spd_application);
+            if (qry.AppId != null) //change to n:n relationship, so have to do the seperate way.
+            {
+                spd_application? app = _context.spd_applications.Expand(a => a.spd_businesscontact_spd_application)
+                    .Where(a => a.spd_applicationid == qry.AppId)
+                    .FirstOrDefault();
+                if (app != null)
+                {
+                    IList<spd_businesscontact> bizContactList = app.spd_businesscontact_spd_application.ToList();
+                    if (!qry.IncludeInactive)
+                    {
+                        bizContactList = bizContactList.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive).ToList();
+                    }
+                    if (qry.RoleCode != null)
+                        bizContactList = bizContactList.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode)).ToList();
+                    return _mapper.Map<IEnumerable<BizContactResp>>(bizContactList);
+                }
+            }
+
             if (!qry.IncludeInactive)
                 bizContacts = bizContacts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
             if (qry.BizId != null)
                 bizContacts = bizContacts.Where(a => a._spd_organizationid_value == qry.BizId);
             if (qry.RoleCode != null)
                 bizContacts = bizContacts.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode));
-            List<spd_businesscontact> bizContactList = bizContacts.ToList();
-            //if (qry.AppId != null)
-            //{
-            //    bizContacts = bizContactList.Where(a => a.spd_businesscontact_spd_application.Contains(app));
-            //}
-            return _mapper.Map<IEnumerable<BizContactResp>>(bizContactList);
+
+            return _mapper.Map<IEnumerable<BizContactResp>>(bizContacts.ToList());
         }
 
         public async Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct)

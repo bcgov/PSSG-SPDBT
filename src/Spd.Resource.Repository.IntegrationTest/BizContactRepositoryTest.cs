@@ -81,11 +81,15 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task ManageBizContactsAsync_WithExistingContacts_Correctly()
     {
+        /********************************************* Dynamics change the schema, licence can only be created when it links to a case. But it seems we cannot create case(incident) in program. So, make this a todo.
+        // So, we need to deal with it later.
         // Arrange
         account biz = await CreateAccountAsync();
         spd_application app = await CreateApplicationAsync(biz);
         contact contact = await CreateContactAsync();
-        spd_licence lic = await CreateLicenceAsync(contact);
+        incident spd_case = await CreateIncidentAsync(contact); //here, we create incident failed. todo: fix it later.
+        spd_licence lic = await CreateLicenceAsync(contact, spd_case);
+        await _context.SaveChangesAsync(CancellationToken.None);
         spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
         spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.ControllingMember);
         await _context.SaveChangesAsync(CancellationToken.None);
@@ -125,6 +129,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.DeleteObject(app);
         _context.DeleteObject(biz);
         await _context.SaveChangesAsync(CancellationToken.None);
+        *********************************************/
     }
 
     private async Task<account> CreateAccountAsync()
@@ -165,11 +170,25 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         return contact;
     }
 
-    private async Task<spd_licence> CreateLicenceAsync(contact c)
+    private async Task<incident> CreateIncidentAsync(contact c)
+    {
+        incident incident = new();
+        incident.incidentid = Guid.NewGuid();
+
+        _context.AddToincidents(incident);
+        spd_servicetype? servicetype = _context.LookupServiceType("BodyArmourPermit");
+        _context.SetLink(incident, nameof(incident.spd_ServiceTypeId), servicetype);
+        _context.SetLink(incident, nameof(incident.customerid_contact), c);
+        _context.SaveChanges();
+        return incident;
+    }
+
+    private async Task<spd_licence> CreateLicenceAsync(contact c, incident incident)
     {
         spd_licence lic = new();
         lic.spd_licenceid = Guid.NewGuid();
         _context.AddTospd_licences(lic);
+        _context.SetLink(lic, nameof(lic.spd_CaseId), incident);
         _context.SetLink(lic, nameof(lic.spd_LicenceHolder_contact), c);
         _context.SetLink(lic, nameof(lic.spd_LicenceType), _context.LookupServiceType(ServiceTypeEnum.SecurityWorkerLicence.ToString()));
         return lic;
