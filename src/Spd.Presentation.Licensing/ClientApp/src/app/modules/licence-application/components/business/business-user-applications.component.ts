@@ -67,7 +67,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						(manageControllingMembers)="onManageMembersAndEmployees($event)"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
-						(renewLicence)="onRenew($event)"
+						(renewLicence)="onRenewal($event)"
 					></app-main-active-business-licences>
 
 					<app-expired-licences [expiredLicences]="expiredLicences"></app-expired-licences>
@@ -169,6 +169,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				this.applicationIsInProgress =
 					this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
 
+				this.applicationIsInProgress = false; // TODO REMOVE
+
 				// Set flags that determine if NEW licences/permits can be created
 				let activeLicenceExist = activeLicences.length > 0;
 				if (!activeLicenceExist) {
@@ -238,7 +240,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onRenew(licence: MainLicenceResponse): void {
+	onRenewal(licence: MainLicenceResponse): void {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService

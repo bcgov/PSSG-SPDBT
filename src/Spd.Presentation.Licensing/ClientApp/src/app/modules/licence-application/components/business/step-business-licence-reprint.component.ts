@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
-import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
+import { BusinessApplicationService } from '../../services/business-application.service';
 
 @Component({
-	selector: 'app-step-worker-licence-reprint',
+	selector: 'app-step-business-licence-reprint',
 	template: `
 		<section class="step-section">
 			<div class="step">
 				<app-step-title
 					title="Do you need a new licence printed?"
-					info="For a licence reprint, a reprint fee will be changed"
+					info="A licence reprint and fee will automatically occur if category changes are made"
 				></app-step-title>
 
 				<app-common-reprint [form]="form"></app-common-reprint>
@@ -19,10 +19,10 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceReprintComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.reprintLicenceFormGroup;
+export class StepBusinessLicenceReprintComponent implements LicenceChildStepperStepComponent {
+	form: FormGroup = this.businessApplicationService.reprintLicenceFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
