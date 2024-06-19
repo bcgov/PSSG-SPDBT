@@ -61,7 +61,7 @@ internal class BizLicAppManager :
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
 
         if (result.BizId != null)
-            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, result.LicenceAppId), cancellationToken);
+            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, null), cancellationToken);
 
         return result;
     }
@@ -177,7 +177,7 @@ internal class BizLicAppManager :
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
     {
-        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, qry.ApplicationId), ct);
+        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
         Members members = new();
         members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
@@ -270,7 +270,7 @@ internal class BizLicAppManager :
         }
     }
 
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid appId, CancellationToken ct)
+    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid? appId, CancellationToken ct)
     {
         List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
         contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
@@ -314,7 +314,7 @@ internal class BizLicAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 business insurance document is allowed.");
         }
 
-        if (request.NoBranding == false && 
+        if (request.NoBranding == false &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizBranding))
         {
@@ -328,7 +328,7 @@ internal class BizLicAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for branding was exceeded.");
         }
 
-        if (request.UseDogs == true && 
+        if (request.UseDogs == true &&
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) &&
             !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate))
         {
