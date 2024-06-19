@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Moq;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -417,7 +418,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Update,
+            ApplicationTypeCode = ApplicationTypeCode.Update,
             OriginalLicenceId = originalLicenceId,
             OriginalApplicationId = originalApplicationId,
             NoBranding = false,
@@ -440,7 +441,7 @@ public class BizLicenceAppManagerTest
         // Arrange
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.New
+            ApplicationTypeCode = ApplicationTypeCode.New
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -463,7 +464,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Update
+            ApplicationTypeCode = ApplicationTypeCode.Update
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -489,7 +490,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Update
+            ApplicationTypeCode = ApplicationTypeCode.Update
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
 
