@@ -9,9 +9,12 @@ using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Resource.Repository.Tasks;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
+using System.Text;
 
 namespace Spd.Manager.Licence;
 internal class BizLicAppManager :
@@ -30,6 +33,7 @@ internal class BizLicAppManager :
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
+    private readonly ITaskRepository _taskRepository;
 
     public BizLicAppManager(
         ILicenceRepository licenceRepository,
@@ -40,7 +44,8 @@ internal class BizLicAppManager :
         IMainFileStorageService mainFileStorageService,
         ITransientFileStorageService transientFileStorageService,
         IBizContactRepository bizContactRepository,
-        IBizLicApplicationRepository bizApplicationRepository)
+        IBizLicApplicationRepository bizApplicationRepository,
+        ITaskRepository taskRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -51,6 +56,7 @@ internal class BizLicAppManager :
     {
         _bizLicApplicationRepository = bizApplicationRepository;
         _bizContactRepository = bizContactRepository;
+        _taskRepository = taskRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -382,6 +388,61 @@ internal class BizLicAppManager :
         {
             throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 armoured car guard registrar document is allowed.");
         }
+    }
+
+    private async Task<ChangeSpec> MakeChanges(BizLicApplicationResp originalApp, 
+        BizLicAppSubmitRequest newRequest,
+        IEnumerable<LicAppFileInfo> newFileInfos,
+        CancellationToken ct)
+    {
+        ChangeSpec changes = new();
+        //categories changed
+        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
+            changes.CategoriesChanged = true;
+        else
+        {
+            List<WorkerCategoryTypeCode> newList = newRequest.CategoryCodes.ToList();
+            newList.Sort();
+            List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
+            originalList.Sort();
+            if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
+        }
+
+        //UseDogsChanged
+        if (newRequest.UseDogs != originalApp.UseDogs)
+            changes.UseDogsChanged = true;
+
+        if (changes.CategoriesChanged)
+        {
+            StringBuilder previousCategories = new();
+            StringBuilder updatedCategories = new();
+
+            foreach (WorkerCategoryTypeCode category in originalApp.CategoryCodes)
+                previousCategories.AppendLine(category.ToString());
+
+            foreach (WorkerCategoryTypeCode category in newRequest.CategoryCodes)
+                updatedCategories.AppendLine(category.ToString());
+
+            await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Request to update the license category applicable on the {originalApp.ExpiredLicenceNumber} \n " +
+                    $"Previous Categories: {previousCategories} \n " +
+                    $"Updated Categories: {updatedCategories}",
+                DueDateTime = DateTimeOffset.Now.AddDays(1),
+                Subject = $"License Category update {originalApp.ExpiredLicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingContactId = originalApp.BizId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
+                LicenceId = originalApp.ExpiredLicenceId
+            }, ct);
+        }
+
+        if (changes.UseDogsChanged) 
+        { 
+        
+        }
+
+        return changes;
     }
 
     private sealed record ChangeSpec
