@@ -919,7 +919,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		return this.getLicenceEmptyAnonymous(workerLicenceTypeCode).pipe(
-			tap((resp: any) => {
+			tap((_resp: any) => {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);

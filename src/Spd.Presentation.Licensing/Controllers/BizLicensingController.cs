@@ -174,7 +174,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/{applicationId}/files")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBceid")]
         [RequestSizeLimit(26214400)] //25M
         public async Task<Guid> UploadFilesToCache([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
