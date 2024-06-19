@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
@@ -50,6 +51,8 @@ public class BizLicensingControllerTest
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppRenewCommand>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicAppCommandResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppUpdateCommand>(), CancellationToken.None))
             .ReturnsAsync(new BizLicAppCommandResponse());
         var validationResults = fixture.Build<ValidationResult>()
                 .With(r => r.Errors, [])
@@ -125,7 +128,7 @@ public class BizLicensingControllerTest
     [Fact]
     public async void Post_ChangeOnBizLicApp_Renewal_Return_BizLicAppCommandResponse()
     {
-        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.Renewal };
+        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = ApplicationTypeCode.Renewal };
 
         var result = await sut.ChangeOnBizLicApp(request, CancellationToken.None);
 
@@ -134,9 +137,20 @@ public class BizLicensingControllerTest
     }
 
     [Fact]
-    public async void Post_SubmitBusinessLicenceApplicationChange_With_Wrong_ApplicationTypeCode_Throw_Exception()
+    public async void Post_ChangeOnBizLicApp_Update_Return_BizLicAppCommandResponse()
     {
-        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.New };
+        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = ApplicationTypeCode.Update };
+
+        var result = await sut.ChangeOnBizLicApp(request, CancellationToken.None);
+
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_ChangeOnBizLicApp_With_Wrong_ApplicationTypeCode_Throw_Exception()
+    {
+        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = ApplicationTypeCode.New };
 
         _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.ChangeOnBizLicApp(request, CancellationToken.None));
     }
