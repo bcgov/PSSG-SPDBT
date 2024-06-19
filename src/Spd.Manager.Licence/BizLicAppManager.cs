@@ -383,4 +383,10 @@ internal class BizLicAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 armoured car guard registrar document is allowed.");
         }
     }
+
+    private sealed record ChangeSpec
+    {
+        public bool CategoriesChanged { get; set; }
+        public bool UseDogsChanged { get; set; }
+    }
 }
