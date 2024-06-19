@@ -359,7 +359,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			return this.saveControllingMembersAndEmployeesWithDocument(bizId, applicationId, body);
 		}
 
-		return this.saveControllingMembersAndEmployeesBody(bizId, applicationId, body);
+		return this.saveControllingMembersAndEmployeesBody(bizId, body);
 	}
 
 	/**
@@ -499,7 +499,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(licenceAppId: string): Observable<any> {
+	getMembersAndEmployees(): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
@@ -529,9 +529,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						})
 					);
 				});
-
-				// licenceAppId is used during the save
-				this.businessModelFormGroup.patchValue({ licenceAppId: licenceAppId }, { emitEvent: false });
 
 				if (apis.length > 0) {
 					return forkJoin(apis).pipe(
@@ -1471,7 +1468,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// pass in the list of document key codes
 				body.controllingMemberDocumentKeyCodes = [...resps];
 
-				return this.saveControllingMembersAndEmployeesBody(bizId, applicationId, body);
+				return this.saveControllingMembersAndEmployeesBody(bizId, body);
 			})
 		);
 	}
@@ -1480,14 +1477,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save the controlling members and employees - no documents added
 	 * @returns
 	 */
-	private saveControllingMembersAndEmployeesBody(
-		bizId: string,
-		applicationId: string,
-		body: MembersRequest
-	): Observable<any> {
-		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
+	private saveControllingMembersAndEmployeesBody(bizId: string, body: MembersRequest): Observable<any> {
+		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdMembersPost({
 			bizId,
-			applicationId,
 			body,
 		});
 	}

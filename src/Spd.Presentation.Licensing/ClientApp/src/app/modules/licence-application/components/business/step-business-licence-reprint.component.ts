@@ -10,7 +10,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 			<div class="step">
 				<app-step-title
 					title="Do you need a new licence printed?"
-					info="A licence reprint and fee will automatically occur if category changes are made"
+					subtitle="A licence reprint and fee will automatically occur if category changes are made"
 				></app-step-title>
 
 				<app-common-reprint [form]="form"></app-common-reprint>

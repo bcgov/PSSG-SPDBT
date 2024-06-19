@@ -64,7 +64,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						[applicationIsInProgress]="applicationIsInProgress"
 						[isSoleProprietor]="isSoleProprietor"
 						[lostLicenceDaysText]="lostLicenceDaysText"
-						(manageControllingMembers)="onManageMembersAndEmployees($event)"
+						(manageControllingMembers)="onManageMembersAndEmployees()"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenewal($event)"
@@ -169,7 +169,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				this.applicationIsInProgress =
 					this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
 
-				this.applicationIsInProgress = false; // TODO REMOVE
+				// this.applicationIsInProgress = false; // TODO REMOVE
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeLicenceExist = activeLicences.length > 0;
@@ -192,9 +192,9 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
 	}
 
-	onManageMembersAndEmployees(licence: MainLicenceResponse): void {
+	onManageMembersAndEmployees(): void {
 		this.businessApplicationService
-			.getMembersAndEmployees(licence.licenceAppId!)
+			.getMembersAndEmployees()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

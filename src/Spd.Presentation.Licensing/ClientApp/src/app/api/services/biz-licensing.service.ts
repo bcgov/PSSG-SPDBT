@@ -357,9 +357,9 @@ export class BizLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiBusinessLicenceApplicationBizIdApplicationIdMembersPost
+   * Path part for operation apiBusinessLicenceApplicationBizIdMembersPost
    */
-  static readonly ApiBusinessLicenceApplicationBizIdApplicationIdMembersPostPath = '/api/business-licence-application/{bizId}/{applicationId}/members';
+  static readonly ApiBusinessLicenceApplicationBizIdMembersPostPath = '/api/business-licence-application/{bizId}/members';
 
   /**
    * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
@@ -367,23 +367,21 @@ export class BizLicensingService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationBizIdApplicationIdMembersPost()` instead.
+   * To access only the response body, use `apiBusinessLicenceApplicationBizIdMembersPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationBizIdApplicationIdMembersPost$Response(params: {
+  apiBusinessLicenceApplicationBizIdMembersPost$Response(params: {
     bizId: string;
-    applicationId: string;
     body?: MembersRequest
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<ActionResult>> {
 
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBizIdApplicationIdMembersPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBizIdMembersPostPath, 'post');
     if (params) {
       rb.path('bizId', params.bizId, {});
-      rb.path('applicationId', params.applicationId, {});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -405,20 +403,19 @@ export class BizLicensingService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationBizIdApplicationIdMembersPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationBizIdMembersPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationBizIdApplicationIdMembersPost(params: {
+  apiBusinessLicenceApplicationBizIdMembersPost(params: {
     bizId: string;
-    applicationId: string;
     body?: MembersRequest
   },
   context?: HttpContext
 
 ): Observable<ActionResult> {
 
-    return this.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost$Response(params,context).pipe(
+    return this.apiBusinessLicenceApplicationBizIdMembersPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
