@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceDocumentTypeCode, LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -21,26 +21,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 	selector: 'app-common-controlling-members',
 	template: `
 		<mat-accordion multi="false">
-			<!-- <ng-container *ngIf="isNewOrRenewal; else isUpdateTitle1">
-				<div class="fs-5 mb-2">Controlling members with valid security worker licences</div>
-				<div class="my-3">
-					<app-alert type="info" icon="info">
-						<a
-							class="large"
-							href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/rules"
-							target="_blank"
-							>Controlling members</a
-						>
-						who are also licensed security workers must provide their licence number to the Registrar of Security
-						Services when the business applies for a licence.
-					</app-alert>
-				</div>
-			</ng-container>
-			<ng-template #isUpdateTitle1>
-				<div class="fs-5 mb-2">Controlling Members Updates</div>
-				<div>If your controlling members change during the business licence term, update their information here.</div>
-			</ng-template> -->
-
 			<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
 				<mat-expansion-panel-header>
 					<mat-panel-title>Controlling Members</mat-panel-title>
@@ -375,11 +355,10 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
 		if (this.businessApplicationService.isAutoSave()) {
-			// TODO use LicenceDocumentTypeCode.BizBcReport??
-			this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.BizBcReport, file).subscribe({
+			this.businessApplicationService.addUploadControllingMemberDocument(file).subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+					matchingFile.documentUrlId = resp.body; //documentUrlId
 				},
 				error: (error: any) => {
 					console.log('An error occurred during file upload', error);
