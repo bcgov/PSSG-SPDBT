@@ -25,13 +25,30 @@ namespace Spd.Resource.Repository.BizContact
 
         public async Task<IEnumerable<BizContactResp>> GetBizAppContactsAsync(BizContactQry qry, CancellationToken ct)
         {
-            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts;
+            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Expand(c => c.spd_businesscontact_spd_application);
+            if (qry.AppId != null) //change to n:n relationship, so have to do the separate way.
+            {
+                spd_application? app = _context.spd_applications.Expand(a => a.spd_businesscontact_spd_application)
+                    .Where(a => a.spd_applicationid == qry.AppId)
+                    .FirstOrDefault();
+                if (app != null)
+                {
+                    IList<spd_businesscontact> bizContactList = app.spd_businesscontact_spd_application.ToList();
+                    if (!qry.IncludeInactive)
+                    {
+                        bizContactList = bizContactList.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive).ToList();
+                    }
+                    if (qry.RoleCode != null)
+                        bizContactList = bizContactList.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode)).ToList();
+                    return _mapper.Map<IEnumerable<BizContactResp>>(bizContactList);
+                }
+            }
+
             if (!qry.IncludeInactive)
                 bizContacts = bizContacts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
             if (qry.BizId != null)
                 bizContacts = bizContacts.Where(a => a._spd_organizationid_value == qry.BizId);
-            if (qry.AppId != null)
-                bizContacts = bizContacts.Where(a => a._spd_application_value == qry.AppId);
             if (qry.RoleCode != null)
                 bizContacts = bizContacts.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode));
 
@@ -41,8 +58,8 @@ namespace Spd.Resource.Repository.BizContact
         public async Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
-                .Where(a => a._spd_organizationid_value == cmd.BizId)
-                .Where(a => a._spd_application_value == cmd.AppId);
+                .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+                .Where(a => a._spd_organizationid_value == cmd.BizId);
             var list = bizContacts.ToList();
 
             //remove all not in cmd.Data
@@ -68,8 +85,14 @@ namespace Spd.Resource.Repository.BizContact
             {
                 account? biz = await _context.GetOrgById(cmd.BizId, ct);
                 if (biz == null) throw new ApiException(HttpStatusCode.BadRequest, $"account {cmd.BizId} does not exist.");
-                spd_application? app = await _context.GetApplicationById(cmd.AppId, ct);
-                if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
+
+                spd_application? app = null;
+                if (cmd.AppId != null)
+                {
+                    app = await _context.GetApplicationById((Guid)cmd.AppId, ct);
+                    if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
+                }
+
                 foreach (var item in toAdd)
                 {
                     spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(item);
@@ -98,7 +121,8 @@ namespace Spd.Resource.Repository.BizContact
                     }
 
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
-                    _context.SetLink(bizContact, nameof(bizContact.spd_Application), app);
+                    if (app != null)
+                        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
                 }
             }
             await _context.SaveChangesAsync(ct);

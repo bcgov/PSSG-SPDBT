@@ -603,7 +603,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			controllingMembersData.attachments?.forEach((doc: any) => {
 				documentInfos.push({
 					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance, // TODO what is the correct type to use?
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
 				});
 			});
 		}
