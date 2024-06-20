@@ -193,7 +193,7 @@ internal class BizLicAppManager :
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
-        ChangeSpec changes = await MakeChanges(originalLic, request, cmd.LicAppFileInfos, cancellationToken);
+        ChangeSpec changes = await MakeChanges(originalLic, request, cancellationToken);
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
 
@@ -422,7 +422,6 @@ internal class BizLicAppManager :
 
     private async Task<ChangeSpec> MakeChanges(BizLicApplicationResp originalApp, 
         BizLicAppSubmitRequest newRequest,
-        IEnumerable<LicAppFileInfo> newFileInfos,
         CancellationToken ct)
     {
         ChangeSpec changes = new();
