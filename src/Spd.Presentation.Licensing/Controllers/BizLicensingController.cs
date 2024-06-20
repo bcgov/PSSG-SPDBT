@@ -22,11 +22,13 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IMediator _mediator;
         private readonly IValidator<BizLicAppUpsertRequest> _bizLicAppUpsertValidator;
+        private readonly IValidator<BizLicAppSubmitRequest> _bizLicAppSubmitValidator;
 
         public BizLicensingController(IPrincipal currentUser,
             IMediator mediator,
             IConfiguration configuration,
             IValidator<BizLicAppUpsertRequest> bizLicAppUpsertValidator,
+            IValidator<BizLicAppSubmitRequest> bizLicAppSubmitValidator,
             IRecaptchaVerificationService recaptchaVerificationService,
             IDistributedCache cache,
             IDataProtectionProvider dpProvider) : base(cache, dpProvider, recaptchaVerificationService, configuration)
@@ -34,6 +36,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _currentUser = currentUser;
             _mediator = mediator;
             _bizLicAppUpsertValidator = bizLicAppUpsertValidator;
+            _bizLicAppSubmitValidator = bizLicAppSubmitValidator;
         }
 
         /// <summary>
@@ -98,10 +101,9 @@ namespace Spd.Presentation.Licensing.Controllers
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
 
-            //add validation here
-            //var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
-            //if (!validateResult.IsValid)
-            //    throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            var validateResult = await _bizLicAppSubmitValidator.ValidateAsync(request, ct);
+            if (!validateResult.IsValid)
+                throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
             if (request.ApplicationTypeCode == ApplicationTypeCode.New)
             {
