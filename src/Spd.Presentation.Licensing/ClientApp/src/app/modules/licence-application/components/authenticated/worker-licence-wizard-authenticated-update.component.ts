@@ -103,10 +103,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	}
 
 	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		}
-
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -142,12 +138,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	}
 
 	onGotoUserProfile(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-			),
-			{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
-		);
+		this.commonApplicationService.onGotoSwlUserProfile(ApplicationTypeCode.Update);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

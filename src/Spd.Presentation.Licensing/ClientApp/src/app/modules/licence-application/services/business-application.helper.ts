@@ -13,7 +13,6 @@ import {
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -22,6 +21,7 @@ import { FormGroupValidators } from '@app/core/validators/form-group.validators'
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { ControllingMemberContactInfo } from './business-application.service';
 import { CommonApplicationHelper } from './common-application.helper';
+import { LicenceDocumentsToSave } from './licence-application.service';
 
 export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
 	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
@@ -307,10 +307,6 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 	);
 
-	// membersConfirmationFormGroup: FormGroup = this.formBuilder.group({ // TODO needed?
-	// 	attachments: new FormControl([], [Validators.required]),
-	// });
-
 	branchInBcFormGroup: FormGroup = this.formBuilder.group({
 		addressSelected: new FormControl(false, [Validators.requiredTrue]),
 		addressLine1: new FormControl('', [FormControlValidators.required]),
@@ -398,6 +394,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
 		const businessManagerData = { ...businessModelFormValue.businessManagerData };
+		const originalLicenceData = { ...businessModelFormValue.originalLicenceData };
 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
@@ -453,7 +450,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
 			documentInfos
-				.filter((doc) => doc.expiryDate)
+				.filter((doc: any) => doc.expiryDate)
 				.map((doc: Document) => {
 					return {
 						expiryDate: doc.expiryDate,
@@ -500,6 +497,9 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			expiredLicenceId,
 			//-----------------------------------
 			members,
+			//-----------------------------------
+			originalApplicationId: originalLicenceData ? originalLicenceData.originalApplicationId : null,
+			originalLicenceId: originalLicenceData ? originalLicenceData.originalLicenceId : null,
 			//-----------------------------------
 			categoryCodes: [...categoryCodes],
 			documentExpiredInfos: [...documentExpiredInfos],
@@ -566,97 +566,75 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		return categoryCodes;
 	}
 
-	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<Document> {
+	getSaveBodyDocumentInfos(businessModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
 		const liabilityData = { ...businessModelFormValue.liabilityData };
 		const controllingMembersData = { ...businessModelFormValue.controllingMembersData };
 
-		const documentInfos: Array<Document> = [];
+		const documents: Array<LicenceDocumentsToSave> = [];
 
 		if (!companyBrandingData.noLogoOrBranding) {
+			const docs: Array<Blob> = [];
 			companyBrandingData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
-				});
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
+				documents: docs,
 			});
 		}
 
-		liabilityData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+		if (liabilityData.attachments.length > 0) {
+			const docs: Array<Blob> = [];
+			liabilityData.attachments?.forEach((doc: any) => {
+				docs.push(doc);
 			});
-		});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
+				documents: docs,
+			});
+		}
 
 		const categoryData = { ...businessModelFormValue.categoryData };
 
 		if (categoryData.ArmouredCarGuard) {
-			documentInfos.push(...this.getCategoryArmouredCarGuard(businessModelFormValue.categoryArmouredCarGuardFormGroup));
+			const docs: Array<Blob> = [];
+			businessModelFormValue.categoryArmouredCarGuardFormGroup.attachments.forEach((doc: any) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.ArmourCarGuardRegistrar,
+				documents: docs,
+			});
 		}
 
 		if (categoryData.SecurityGuard) {
 			const useDogs =
 				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
 			if (useDogs) {
-				documentInfos.push(...this.getCategorySecurityGuard(businessModelFormValue.categorySecurityGuardFormGroup));
+				if (businessModelFormValue.categorySecurityGuardFormGroup.attachments) {
+					const docs: Array<Blob> = [];
+					businessModelFormValue.categorySecurityGuardFormGroup.attachments.forEach((doc: any) => {
+						docs.push(doc);
+					});
+					documents.push({
+						licenceDocumentTypeCode: LicenceDocumentTypeCode.BizSecurityDogCertificate,
+						documents: docs,
+					});
+				}
 			}
 		}
 
 		if (controllingMembersData.attachments) {
-			controllingMembersData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
-				});
+			const docs: Array<Blob> = [];
+			controllingMembersData.attachments.forEach((doc: any) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
+				documents: docs,
 			});
 		}
-
-		return documentInfos;
-	}
-
-	/**
-	 * Get the category data formatted for saving
-	 * @param armouredCarGuardData
-	 * @returns
-	 */
-	private getCategoryArmouredCarGuard(armouredCarGuardData: any): Array<Document> {
-		const documents: Array<Document> = [];
-
-		const expiryDate = armouredCarGuardData.expiryDate
-			? this.formatDatePipe.transform(armouredCarGuardData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
-		armouredCarGuardData.attachments?.forEach((doc: any) => {
-			documents.push({
-				documentUrlId: doc.documentUrlId,
-				expiryDate,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.ArmourCarGuardRegistrar,
-			});
-		});
-
-		return documents;
-	}
-
-	/**
-	 * Get the category data formatted for saving
-	 * @param securityGuardData
-	 * @returns
-	 */
-	private getCategorySecurityGuard(securityGuardData: any): Array<Document> {
-		const documents: Array<Document> = [];
-
-		const expiryDate = securityGuardData.expiryDate
-			? this.formatDatePipe.transform(securityGuardData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
-			: null;
-
-		securityGuardData.attachments?.forEach((doc: any) => {
-			documents.push({
-				documentUrlId: doc.documentUrlId,
-				expiryDate,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizSecurityDogCertificate,
-			});
-		});
 
 		return documents;
 	}

@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileComponent } from '@app/modules/licence-application/components/authenticated/user-profile/common-user-profile.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from '../../authenticated/user-profile/common-user-profile-licence-criminal-history.component';
@@ -91,7 +90,7 @@ import { CommonUserProfileLicencePoliceBackgroundComponent } from '../../authent
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepWorkerLicenceUserProfileComponent implements LicenceChildStepperStepComponent {
 	alertText = '';
 	saveAndContinueLabel = 'Save & Continue to Application';
 
@@ -151,12 +150,6 @@ export class StepWorkerLicenceUserProfileComponent implements OnInit, LicenceChi
 					'Make sure your profile information is up-to-date before renewing or updating your licence, or starting a new application.';
 				break;
 			}
-		}
-	}
-
-	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated());
 		}
 	}
 

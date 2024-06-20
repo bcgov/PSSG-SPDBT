@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -139,10 +138,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
-
-		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		}
 
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {

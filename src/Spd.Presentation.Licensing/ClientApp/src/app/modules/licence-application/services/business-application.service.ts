@@ -6,6 +6,7 @@ import {
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
+	BizLicAppSubmitRequest,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
@@ -44,6 +45,7 @@ import { LicenceApplicationRoutes } from '../licence-application-routing.module'
 import { BusinessApplicationHelper } from './business-application.helper';
 import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { LicenceDocument } from './licence-application.helper';
+import { LicenceDocumentsToSave } from './licence-application.service';
 
 export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
@@ -218,12 +220,68 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	submitBusinessLicenceRenewalOrUpdateOrReplace() {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(businessModelFormValue);
+		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
+		delete bodyUpsert.documentInfos;
+
+		const bodySubmit = bodyUpsert as BizLicAppSubmitRequest;
+		const documentsToSave = this.getSaveBodyDocumentInfos(businessModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-		// TODO fix renewal
-		return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({ body });
+		bodySubmit.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// Create list of APIs to call for the newly added documents
+		const documentsToSaveApis: Observable<any>[] = [];
+
+		// Get the keyCode for the existing documents to save.
+		const existingDocumentIds: Array<string> = [];
+
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+			const newDocumentsOnly: Array<Blob> = [];
+
+			doc.documents.forEach((item: Blob) => {
+				const spdFile: SpdFile = item as SpdFile;
+				if (spdFile.documentUrlId) {
+					existingDocumentIds.push(spdFile.documentUrlId);
+				} else {
+					newDocumentsOnly.push(item);
+				}
+			});
+
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.bizLicensingService.apiBusinessLicenceApplicationFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					bodySubmit.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					bodySubmit.previousDocumentIds = [...existingDocumentIds];
+
+					return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+						body: bodySubmit,
+					});
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			bodySubmit.previousDocumentIds = [...existingDocumentIds];
+
+			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+				body: bodySubmit,
+			});
+		}
 	}
 
 	/**
@@ -243,29 +301,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response({
 			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
-		});
-	}
-
-	/**
-	 * Upload a file for a controlling member. Return a reference to the file that will used when the licence is saved
-	 * @param documentCode
-	 * @param document
-	 * @returns
-	 */
-	addUploadControllingMemberDocument(documentFile: File): Observable<StrictHttpResponse<string>> {
-		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-		const bizId = businessModelFormValue.bizId;
-		const applicationId = businessModelFormValue.licenceAppId;
-
-		const doc: LicenceDocument = {
-			Documents: [documentFile],
-			LicenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
-		};
-
-		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response({
-			bizId,
-			applicationId,
 			body: doc,
 		});
 	}
@@ -342,7 +377,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save the controlling members and employees
 	 * @returns
 	 */
-	saveControllingMembersAndEmployees(): Observable<any> {
+	submitControllingMembersAndEmployees(): Observable<any> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bizId = businessModelFormValue.bizId;
 		const applicationId = businessModelFormValue.licenceAppId;
@@ -359,7 +394,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			return this.saveControllingMembersAndEmployeesWithDocument(bizId, applicationId, body);
 		}
 
-		return this.saveControllingMembersAndEmployeesBody(bizId, body);
+		return this.saveControllingMembersAndEmployees(bizId, body);
 	}
 
 	/**
@@ -541,11 +576,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 								tap((_resp: any) => {
 									this.initialized = true;
 
-									this.commonApplicationService.setApplicationTitle(
-										// TODO update header text?
-										_resp.workerLicenceTypeData.workerLicenceTypeCode,
-										_resp.applicationTypeData.applicationTypeCode
-									);
+									this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 								})
 							);
 						})
@@ -555,11 +586,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						tap((_resp: any) => {
 							this.initialized = true;
 
-							this.commonApplicationService.setApplicationTitle(
-								// TODO update header text?
-								_resp.workerLicenceTypeData.workerLicenceTypeCode,
-								_resp.applicationTypeData.applicationTypeCode
-							);
+							this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 						})
 					);
 				}
@@ -1452,9 +1479,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		businessModelFormValue.controllingMembersData.attachments.forEach((document: any) => {
 			documentsToSaveApis.push(
-				this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdFilesPost({
-					bizId,
-					applicationId,
+				this.bizLicensingService.apiBusinessLicenceApplicationFilesPost({
 					body: {
 						Documents: document,
 						LicenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
@@ -1468,7 +1493,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// pass in the list of document key codes
 				body.controllingMemberDocumentKeyCodes = [...resps];
 
-				return this.saveControllingMembersAndEmployeesBody(bizId, body);
+				return this.saveControllingMembersAndEmployees(bizId, body);
 			})
 		);
 	}
@@ -1477,7 +1502,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save the controlling members and employees - no documents added
 	 * @returns
 	 */
-	private saveControllingMembersAndEmployeesBody(bizId: string, body: MembersRequest): Observable<any> {
+	private saveControllingMembersAndEmployees(bizId: string, body: MembersRequest): Observable<any> {
 		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdMembersPost({
 			bizId,
 			body,
