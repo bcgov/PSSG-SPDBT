@@ -137,6 +137,57 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         *********************************************/
     }
 
+    [Fact]
+    public async Task ManageBizContactsAsync_WithExistingBizContacts_Correctly()
+    {
+        // Arrange
+        account biz = await CreateAccountAsync();
+        spd_application app = await CreateApplicationAsync(biz);
+        await _context.SaveChangesAsync(CancellationToken.None);
+        spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
+        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.ControllingMember);
+        spd_application newApp = await CreateApplicationAsync(biz);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+        try
+        {
+            List<BizContactResp> requests = new()
+            {
+                new BizContactResp{ BizContactId = bizContact.spd_businesscontactid, GivenName = "newFirstName1", EmailAddress="firstName1@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
+                new BizContactResp{ GivenName = "newFirstName3", EmailAddress="firstName3@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
+            };
+
+            BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)newApp.spd_applicationid, requests);
+
+            // Action
+            var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
+
+            // Assert
+            var bizContacts = _context.spd_businesscontacts
+                .Where(c => c._spd_organizationid_value == biz.accountid)
+                .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
+                .ToList();
+            Assert.Equal(2, bizContacts.Count());
+            Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName1")); //updated
+
+            var newAppliation = _context.spd_applications
+                .Expand(a => a.spd_businesscontact_spd_application)
+                .Where(a => a.spd_applicationid == newApp.spd_applicationid)
+                .FirstOrDefault();
+            Assert.Equal(2, newAppliation.spd_businesscontact_spd_application.Count());
+        }
+        finally
+        {
+            //Annihilate
+            _context.DeleteObject(bizContact);
+            _context.DeleteObject(bizContact2);
+            _context.DeleteObject(app);
+            _context.DeleteObject(biz);
+            await _context.SaveChangesAsync(CancellationToken.None);
+        }
+
+    }
+
     private async Task<account> CreateAccountAsync()
     {
         account biz = new();

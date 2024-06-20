@@ -58,6 +58,7 @@ namespace Spd.Resource.Repository.BizContact
         public async Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Expand(b => b.spd_businesscontact_spd_application)
                 .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
                 .Where(a => a._spd_organizationid_value == cmd.BizId);
             var list = bizContacts.ToList();
@@ -71,13 +72,23 @@ namespace Spd.Resource.Repository.BizContact
                 _context.UpdateObject(item);
             }
 
+            spd_application? app = null;
+            if (cmd.AppId != null)
+            {
+                app = await _context.GetApplicationById((Guid)cmd.AppId, ct);
+                if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
+            }
+
             //update all that in cmd.Data
             var toModify = list.Where(c => cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid));
             foreach (var item in toModify)
             {
                 _mapper.Map(cmd.Data.FirstOrDefault(d => d.BizContactId == item.spd_businesscontactid), item);
                 _context.UpdateObject(item);
+                if (app != null && !item.spd_businesscontact_spd_application.Any(a => a.spd_applicationid == cmd.AppId))
+                    _context.AddLink(item, nameof(item.spd_businesscontact_spd_application), app);
             }
+            await _context.SaveChangesAsync(ct);
 
             //add all that in cmd.Data which does not have id
             var toAdd = cmd.Data.Where(d => d.BizContactId == null).ToList();
@@ -85,13 +96,6 @@ namespace Spd.Resource.Repository.BizContact
             {
                 account? biz = await _context.GetOrgById(cmd.BizId, ct);
                 if (biz == null) throw new ApiException(HttpStatusCode.BadRequest, $"account {cmd.BizId} does not exist.");
-
-                spd_application? app = null;
-                if (cmd.AppId != null)
-                {
-                    app = await _context.GetApplicationById((Guid)cmd.AppId, ct);
-                    if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
-                }
 
                 foreach (var item in toAdd)
                 {
