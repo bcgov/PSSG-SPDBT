@@ -13,15 +13,7 @@ export type SortWeight = -1 | 0 | 1;
 @Injectable({ providedIn: 'root' })
 export class FileUtilService {
 	downloadFile(headers: HttpHeaders, file: Blob): void {
-		let fileName = 'download-file';
-		const contentDisposition = headers.get('Content-Disposition');
-		if (contentDisposition) {
-			const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-			const matches = fileNameRegex.exec(contentDisposition);
-			if (matches != null && matches[1]) {
-				fileName = matches[1].replace(/['"]/g, '');
-			}
-		}
+		const fileName = this.getFileNameFromHeader(headers);
 
 		if (file?.size > 0) {
 			const url = window.URL.createObjectURL(file);
@@ -43,10 +35,16 @@ export class FileUtilService {
 		return b;
 	}
 
-	// dummyFile(item: LicenceAppDocumentResponse): SpdFile {
-	// 	const b: SpdFile = new Blob(undefined, { type: item.documentExtension ?? '' }) as SpdFile;
-	// 	b.documentUrlId = item.documentUrlId;
-	// 	b.name = item.documentName ?? '';
-	// 	return b;
-	// }
+	getFileNameFromHeader(headers: HttpHeaders): string {
+		let fileName = 'file-name';
+		const contentDisposition = headers.get('Content-Disposition');
+		if (contentDisposition) {
+			const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+			const matches = fileNameRegex.exec(contentDisposition);
+			if (matches != null && matches[1]) {
+				fileName = matches[1].replace(/['"]/g, '');
+			}
+		}
+		return fileName;
+	}
 }
