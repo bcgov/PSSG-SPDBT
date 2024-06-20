@@ -25,7 +25,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
-import { UtilService } from '@app/core/services/util.service';
+import { SpdFile, UtilService } from '@app/core/services/util.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import {
@@ -95,6 +95,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		branchesInBcData: this.branchesInBcFormGroup,
 		controllingMembersData: this.controllingMembersFormGroup,
 		employeesData: this.employeesFormGroup,
+
+		reprintLicenceData: this.reprintLicenceFormGroup,
 	});
 
 	businessModelChangedSubscription!: Subscription;
@@ -208,13 +210,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
 
-		console.log('body', body); // TODO fix body for submit
-		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+	}
+
+	submitBusinessLicenceRenewalOrUpdateOrReplace() {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		// TODO fix renewal
+		return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({ body });
 	}
 
 	/**
@@ -350,7 +359,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			return this.saveControllingMembersAndEmployeesWithDocument(bizId, applicationId, body);
 		}
 
-		return this.saveControllingMembersAndEmployeesBody(bizId, applicationId, body);
+		return this.saveControllingMembersAndEmployeesBody(bizId, body);
 	}
 
 	/**
@@ -379,26 +388,24 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	private continueToNextStep(applicationTypeCode: ApplicationTypeCode): void {
 		switch (applicationTypeCode) {
-			// 	case ApplicationTypeCode.Replacement: {
-			// 		this.router.navigateByUrl(
-			// 			LicenceApplicationRoutes.pathBusinessLicence(
-			// 				LicenceApplicationRoutes.BUSINESS_NEW // TODO change to BUSINESS_REPLACEMENT
-			// 			)
-			// 		);
-			// 		break;
-			// 	}
+			case ApplicationTypeCode.Replacement: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_REPLACEMENT)
+				);
+				break;
+			}
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
 					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_RENEWAL)
 				);
 				break;
 			}
-			// case ApplicationTypeCode.Update: {
-			// 	this.router.navigateByUrl(
-			// 		LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_UPDATE)
-			// 	);
-			// 	break;
-			// }
+			case ApplicationTypeCode.Update: {
+				this.router.navigateByUrl(
+					LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_UPDATE)
+				);
+				break;
+			}
 			default: {
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_NEW));
 				break;
@@ -455,7 +462,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	getBusinessLicenceToResume(licenceAppId: string): Observable<BizLicAppResponse> {
-		return this.loadExistingBusinessLicenceWithId(licenceAppId).pipe(
+		return this.loadExistingBusinessLicenceWithId({ licenceAppId, applicationTypeCode: ApplicationTypeCode.New }).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -492,16 +499,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(licenceAppId: string): Observable<any> {
+	getMembersAndEmployees(): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return forkJoin([
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersGet({
+			this.bizLicensingService.apiBusinessLicenceApplicationBizIdMembersGet({
 				bizId,
-				applicationId: licenceAppId,
 			}),
 		]).pipe(
 			switchMap((resps: any[]) => {
@@ -523,9 +529,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						})
 					);
 				});
-
-				// licenceAppId is used during the save
-				this.businessModelFormGroup.patchValue({ licenceAppId: licenceAppId }, { emitEvent: false });
 
 				if (apis.length > 0) {
 					return forkJoin(apis).pipe(
@@ -710,7 +713,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		originalLicence: MainLicenceResponse
 	): Observable<any> {
-		return this.loadExistingBusinessLicenceWithId(licenceAppId, originalLicence).pipe(
+		return this.loadExistingBusinessLicenceWithId({
+			licenceAppId,
+			originalLicence,
+			applicationTypeCode,
+		}).pipe(
 			switchMap((resp: any) => {
 				switch (applicationTypeCode) {
 					case ApplicationTypeCode.Renewal:
@@ -718,7 +725,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					case ApplicationTypeCode.Update:
 						return this.applyUpdateDataUpdatesToModel(resp);
 					default:
-						// ApplicationTypeCode.Replacement
 						return this.applyReplacementDataUpdatesToModel(resp);
 				}
 			})
@@ -729,10 +735,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Loads the current profile and a licence
 	 * @returns
 	 */
-	private loadExistingBusinessLicenceWithId(
-		licenceAppId: string,
-		originalLicence?: MainLicenceResponse
-	): Observable<any> {
+	private loadExistingBusinessLicenceWithId({
+		licenceAppId,
+		originalLicence,
+		applicationTypeCode,
+	}: {
+		licenceAppId: string;
+		originalLicence?: MainLicenceResponse;
+		applicationTypeCode: ApplicationTypeCode;
+	}): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
@@ -783,14 +794,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					);
 				});
 
-				// TODO get the branding documents
-				// businessLicenceAppl.documentInfos?.filter((item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding).forEach((item: Document) => {
-				// 	apis.push(
-				// 		this.licenceService.apiLicencesLicenceIdGet({
-				// 			licenceId: item.documentUrlId!,
-				// 		})
-				// 	);
-				// });
+				const brandingDocumentInfos =
+					applicationTypeCode === ApplicationTypeCode.New || applicationTypeCode === ApplicationTypeCode.Renewal
+						? businessLicenceAppl.documentInfos?.filter(
+								(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding
+						  )
+						: [];
 
 				this.applyControllingMembersWithoutSwl(businessLicenceAppl.members.nonSwlControllingMembers ?? []);
 
@@ -834,12 +843,71 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 								associatedExpiredLicence,
 								soleProprietorSwlLicence,
 								privateInvestigatorSwlLicence,
+								brandingDocumentInfos,
 							});
 						})
 					);
 				}
 
-				return this.applyLicenceAndProfileIntoModel({ businessLicenceAppl, businessProfile, originalLicence });
+				return this.applyLicenceAndProfileIntoModel({
+					businessLicenceAppl,
+					businessProfile,
+					originalLicence,
+					brandingDocumentInfos,
+				});
+			})
+		);
+	}
+
+	/**
+	 * Loads the current branding files into the business model
+	 * @returns
+	 */
+	private loadBrandingFiles(brandingDocumentInfos: Array<Document>): Observable<any> {
+		if (brandingDocumentInfos.length === 0) {
+			return of(this.businessModelFormGroup.value);
+		}
+
+		const apis: Observable<any>[] = [];
+
+		// get the branding documents
+		brandingDocumentInfos.forEach((item: Document) => {
+			apis.push(
+				this.bizLicensingService.apiBusinessLicenceApplicationBrandImageDocumentIdGet$Response({
+					documentId: item.documentUrlId!,
+				})
+			);
+		});
+
+		const companyBrandingAttachments: Array<SpdFile> = [];
+		return forkJoin(apis).pipe(
+			switchMap((resps: Array<StrictHttpResponse<Blob>>) => {
+				resps.forEach((item: StrictHttpResponse<Blob>, index) => {
+					const fileName = this.fileUtilService.getFileNameFromHeader(item.headers);
+					const doc: Document = brandingDocumentInfos[index];
+
+					const imageFile = new File([item.body], fileName, { type: item.body.type });
+					const imageSpdFile: SpdFile = imageFile as SpdFile;
+					imageSpdFile.documentUrlId = doc.documentUrlId;
+
+					companyBrandingAttachments.push(imageSpdFile);
+				});
+
+				const companyBrandingData = {
+					noLogoOrBranding: companyBrandingAttachments.length > 0 ? false : true,
+					attachments: companyBrandingAttachments,
+				};
+
+				this.businessModelFormGroup.patchValue(
+					{
+						companyBrandingData,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+
+				return of(this.businessModelFormGroup.value);
 			})
 		);
 	}
@@ -855,6 +923,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedExpiredLicence,
 		soleProprietorSwlLicence,
 		privateInvestigatorSwlLicence,
+		brandingDocumentInfos,
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
 		businessProfile: BizProfileResponse;
@@ -862,6 +931,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedExpiredLicence?: LicenceResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
+		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
 		return this.applyLicenceProfileIntoModel({
 			businessProfile,
@@ -874,6 +944,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					associatedExpiredLicence,
 					privateInvestigatorSwlLicence,
 					originalLicence,
+					brandingDocumentInfos,
 				});
 			})
 		);
@@ -888,11 +959,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedExpiredLicence,
 		privateInvestigatorSwlLicence,
 		originalLicence,
+		brandingDocumentInfos,
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
 		associatedExpiredLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
 		originalLicence?: MainLicenceResponse;
+		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: businessLicenceAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
@@ -951,10 +1024,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		});
 
-		const companyBrandingData = {
-			noLogoOrBranding: businessLicenceAppl.noBranding,
-			attachments: companyBrandingAttachments,
-		};
+		const companyBrandingData =
+			brandingDocumentInfos?.length === 0
+				? {
+						noLogoOrBranding: businessLicenceAppl.noBranding,
+						attachments: companyBrandingAttachments,
+				  }
+				: {};
 
 		const liabilityData = {
 			attachments: liabilityAttachments,
@@ -1039,6 +1115,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				emitEvent: false,
 			}
 		);
+
+		if (brandingDocumentInfos?.length) {
+			return this.loadBrandingFiles(brandingDocumentInfos);
+		}
 
 		console.debug('[applyLicenceIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
@@ -1388,7 +1468,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				// pass in the list of document key codes
 				body.controllingMemberDocumentKeyCodes = [...resps];
 
-				return this.saveControllingMembersAndEmployeesBody(bizId, applicationId, body);
+				return this.saveControllingMembersAndEmployeesBody(bizId, body);
 			})
 		);
 	}
@@ -1397,14 +1477,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save the controlling members and employees - no documents added
 	 * @returns
 	 */
-	private saveControllingMembersAndEmployeesBody(
-		bizId: string,
-		applicationId: string,
-		body: MembersRequest
-	): Observable<any> {
-		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdApplicationIdMembersPost({
+	private saveControllingMembersAndEmployeesBody(bizId: string, body: MembersRequest): Observable<any> {
+		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdMembersPost({
 			bizId,
-			applicationId,
 			body,
 		});
 	}

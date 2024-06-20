@@ -6,6 +6,7 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { SpdFile } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -13,7 +14,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 @Component({
 	selector: 'app-common-business-licence-summary',
 	template: `
-		<div class="row">
+		<div class="row" *ngIf="businessModelData">
 			<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 				<div class="row mb-3">
 					<div class="col-12">
@@ -24,7 +25,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										<mat-toolbar class="d-flex justify-content-between">
 											<div class="panel-header">Business Information</div>
 											<button
-												*ngIf="!isChangeFlow"
+												*ngIf="showEditButton"
 												mat-mini-fab
 												color="primary"
 												class="go-to-step-button"
@@ -39,7 +40,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 								</mat-expansion-panel-header>
 
 								<div class="panel-body">
-									<div class="text-minor-heading mt-4">Licence Information</div>
+									<div class="text-minor-heading mt-4">Business Information</div>
 									<div class="row mt-0">
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Licence Type</div>
@@ -59,10 +60,22 @@ import { BusinessApplicationService } from '../../services/business-application.
 												{{ bizTypeCode | options : 'BizTypes' }}
 											</div>
 										</div>
+										<ng-container *ngIf="isUpdate">
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Print Permit</div>
+												<div class="summary-text-data">{{ isReprint }}</div>
+											</div>
+											<div class="col-lg-4 col-md-12" *ngIf="licenceFee">
+												<div class="text-label d-block text-muted">Reprint Fee</div>
+												<div class="summary-text-data">
+													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+												</div>
+											</div>
+										</ng-container>
 									</div>
-									<mat-divider class="mt-3 mb-2"></mat-divider>
 
-									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes && !isChangeFlow">
+									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes && !isStaticDataView">
+										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading">Expired Licence</div>
 										<div class="row mt-0">
 											<div class="col-lg-4 col-md-12">
@@ -76,41 +89,43 @@ import { BusinessApplicationService } from '../../services/business-application.
 												</div>
 											</div>
 										</div>
-										<mat-divider class="mt-3 mb-2"></mat-divider>
 									</ng-container>
 
-									<div class="text-minor-heading">Company Branding</div>
-									<div class="row mt-3">
-										<div class="col-lg-6 col-md-12">
-											<ng-container *ngIf="noLogoOrBranding; else CompanyBrandingExamples">
-												<div class="summary-text-data">There is no logo or branding</div>
-											</ng-container>
-											<ng-template #CompanyBrandingExamples>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of companyBrandingAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</ng-template>
-										</div>
-									</div>
-
-									<ng-container *ngIf="!isChangeFlow">
+									<ng-container *ngIf="!isUpdate">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Proof of Insurance</div>
+										<div class="text-minor-heading">Company Branding</div>
 										<div class="row mt-3">
 											<div class="col-lg-6 col-md-12">
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
+												<ng-container *ngIf="noLogoOrBranding; else CompanyBrandingExamples">
+													<div class="summary-text-data">There is no logo or branding</div>
+												</ng-container>
+												<ng-template #CompanyBrandingExamples>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of companyBrandingAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</ng-template>
 											</div>
 										</div>
+
+										<ng-container *ngIf="!isStaticDataView">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Proof of Insurance</div>
+											<div class="row mt-3">
+												<div class="col-lg-6 col-md-12">
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+											</div>
+										</ng-container>
 									</ng-container>
 								</div>
 							</mat-expansion-panel>
@@ -121,7 +136,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										<mat-toolbar class="d-flex justify-content-between">
 											<div class="panel-header">Licence Selection</div>
 											<button
-												*ngIf="!isChangeFlow"
+												*ngIf="showEditButton"
 												mat-mini-fab
 												color="primary"
 												class="go-to-step-button"
@@ -139,7 +154,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 									<div class="text-minor-heading mt-4">Licence Information</div>
 
 									<div class="row mt-0">
-										<ng-container *ngIf="!isChangeFlow">
+										<ng-container *ngIf="!isStaticDataView && !isUpdate">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
 												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
@@ -205,7 +220,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										<mat-toolbar class="d-flex justify-content-between">
 											<div class="panel-header">Contact Information</div>
 											<button
-												*ngIf="!isChangeFlow"
+												*ngIf="showEditButton"
 												mat-mini-fab
 												color="primary"
 												class="go-to-step-button"
@@ -272,81 +287,83 @@ import { BusinessApplicationService } from '../../services/business-application.
 								</div>
 							</mat-expansion-panel>
 
-							<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
-								<mat-expansion-panel-header>
-									<mat-panel-title class="review-panel-title">
-										<mat-toolbar class="d-flex justify-content-between">
-											<div class="panel-header">Controlling Members & Employees</div>
-											<button
-												*ngIf="!isChangeFlow"
-												mat-mini-fab
-												color="primary"
-												class="go-to-step-button"
-												matTooltip="Go to Step 4"
-												aria-label="Go to Step 4"
-												(click)="$event.stopPropagation(); onEditStep(3)"
-											>
-												<mat-icon>edit</mat-icon>
-											</button>
-										</mat-toolbar>
-									</mat-panel-title>
-								</mat-expansion-panel-header>
+							<ng-container *ngIf="!isUpdate">
+								<mat-expansion-panel class="mb-2" [expanded]="true" *ngIf="!isBusinessLicenceSoleProprietor">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Controlling Members & Employees</div>
+												<button
+													*ngIf="showEditButton"
+													mat-mini-fab
+													color="primary"
+													class="go-to-step-button"
+													matTooltip="Go to Step 4"
+													aria-label="Go to Step 4"
+													(click)="$event.stopPropagation(); onEditStep(3)"
+												>
+													<mat-icon>edit</mat-icon>
+												</button>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
 
-								<div class="panel-body">
-									<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
-									<div class="row mt-0">
-										<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
-											<ng-container *ngFor="let member of membersWithSwlList; let i = index">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">
-														Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
+									<div class="panel-body">
+										<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
+										<div class="row mt-0">
+											<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
+												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
+														</div>
+														<div class="summary-text-data">
+															{{ member.licenceHolderName }} - {{ member.licenceNumber }}
+														</div>
 													</div>
-													<div class="summary-text-data">
-														{{ member.licenceHolderName }} - {{ member.licenceNumber }}
-													</div>
-												</div>
+												</ng-container>
 											</ng-container>
-										</ng-container>
-										<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
-									</div>
+											<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
+										</div>
 
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<div class="text-minor-heading">Members who require Criminal Record Checks</div>
-									<div class="row mt-0">
-										<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
-											<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">
-														Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading">Members who require Criminal Record Checks</div>
+										<div class="row mt-0">
+											<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
+												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
+														</div>
+														<div class="summary-text-data">
+															{{ member.licenceHolderName }}
+														</div>
 													</div>
-													<div class="summary-text-data">
-														{{ member.licenceHolderName }}
-													</div>
-												</div>
+												</ng-container>
 											</ng-container>
-										</ng-container>
-										<ng-template #NoMembersWithoutSwlList> <div class="col-12">None</div></ng-template>
-									</div>
+											<ng-template #NoMembersWithoutSwlList> <div class="col-12">None</div></ng-template>
+										</div>
 
-									<mat-divider class="mt-3 mb-2"></mat-divider>
-									<div class="text-minor-heading">Employees</div>
-									<div class="row mt-0">
-										<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
-											<ng-container *ngFor="let employee of employeesList; let i = index">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">
-														Employee <span *ngIf="employeesList.length > 1"> #{{ i + 1 }}</span>
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading">Employees</div>
+										<div class="row mt-0">
+											<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
+												<ng-container *ngFor="let employee of employeesList; let i = index">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">
+															Employee <span *ngIf="employeesList.length > 1"> #{{ i + 1 }}</span>
+														</div>
+														<div class="summary-text-data">
+															{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}
+														</div>
 													</div>
-													<div class="summary-text-data">
-														{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}
-													</div>
-												</div>
+												</ng-container>
 											</ng-container>
-										</ng-container>
-										<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
+											<ng-template #NoEmployeesList> <div class="col-12">None</div> </ng-template>
+										</div>
 									</div>
-								</div>
-							</mat-expansion-panel>
+								</mat-expansion-panel>
+							</ng-container>
 						</mat-accordion>
 					</div>
 				</div>
@@ -403,7 +420,8 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
 
-	@Input() isChangeFlow: boolean = false;
+	@Input() isStaticDataView: boolean = false;
+
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
@@ -412,7 +430,27 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.businessModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
+		const businessModelData = this.businessApplicationService.businessModelFormGroup.getRawValue();
+
+		if (this.isStaticDataView) {
+			const companyBrandingData = { ...businessModelData.companyBrandingData };
+			const businessModelDataCopied = JSON.parse(JSON.stringify(businessModelData));
+
+			// we want the data on this page to remain static.
+			// The JSON stringify does not copy these attachments, so copy the data manually
+			businessModelDataCopied.companyBrandingData.attachments = [];
+			if (companyBrandingData.noLogoOrBranding === false) {
+				companyBrandingData.attachments.forEach((item: SpdFile) => {
+					businessModelDataCopied.companyBrandingData.attachments.push({
+						documentUrlId: item.documentUrlId,
+						name: item.name,
+					});
+				});
+			}
+			this.businessModelData = businessModelDataCopied;
+		} else {
+			this.businessModelData = { ...businessModelData };
+		}
 	}
 
 	onEditStep(stepNumber: number) {
@@ -420,6 +458,10 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
+		if (this.isStaticDataView) {
+			return;
+		}
+
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
@@ -553,5 +595,17 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 
 	get employeesList(): Array<any> {
 		return this.businessModelData.employeesData.employees ?? [];
+	}
+
+	get isReprint(): string {
+		console.log('reprint', this.businessModelData.reprintLicenceData);
+		return this.businessModelData.reprintLicenceData.reprintLicence ?? '';
+	}
+
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
+	}
+	get showEditButton(): boolean {
+		return !this.isStaticDataView && !this.isUpdate;
 	}
 }

@@ -43,7 +43,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 
 			<mat-step *ngIf="isRenewal">
-				<app-step-business-licence-is-change-summary></app-step-business-licence-is-change-summary>
+				<app-step-business-licence-static-summary></app-step-business-licence-static-summary>
 
 				<div class="row wizard-button-row">
 					<div class="offset-xxl-4 col-xxl-5 offset-xl-3 col-xl-7 offset-lg-3 col-lg-7 col-md-12">
