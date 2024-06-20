@@ -188,26 +188,36 @@ internal class BizLicAppManager :
             cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
-        //LicenceResp originalLic = originalLicences.Items.First();
 
         BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
         ChangeSpec changes = await MakeChanges(originalLic, request, cmd.LicAppFileInfos, cancellationToken);
+        BizLicApplicationCmdResp? response = null;
+        decimal? cost = 0;
 
-
-
-        SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.LicenceRequest);
-
-
-        saveCmd.ApplicantId = (Guid)bizLicAppResp.BizId;
-        var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+        if ((request.Reprint != null && request.Reprint.Value) || changes.CategoriesChanged || changes.UseDogsChanged)
+        {
+            var existingFiles = await GetExistingFileInfo(
+                cmd.LicenceRequest.OriginalApplicationId,
+                cmd.LicenceRequest.PreviousDocumentIds,
+                cancellationToken);
+            CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+            createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
+            response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+        }
+        else
+        {
+            SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(request);
+            saveCmd.ApplicantId = (Guid)originalLic.BizId;
+            response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+        }
 
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)bizLicAppResp.BizId,
-                (Guid)bizLicAppResp.LicenceAppId,
+                (Guid)originalLic.BizId,
+                (Guid)originalLic.LicenceAppId,
                 cancellationToken);
 
         return _mapper.Map<BizLicAppCommandResponse>(response);
@@ -415,7 +425,8 @@ internal class BizLicAppManager :
         CancellationToken ct)
     {
         ChangeSpec changes = new();
-        //categories changed
+
+        // Categories changed
         if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
             changes.CategoriesChanged = true;
         else
@@ -427,7 +438,7 @@ internal class BizLicAppManager :
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
-        //UseDogsChanged
+        //UseDogs changed
         if (newRequest.UseDogs != originalApp.UseDogs)
             changes.UseDogsChanged = true;
 
