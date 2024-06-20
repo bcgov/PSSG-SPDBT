@@ -300,7 +300,7 @@ public class BizLicenceAppManagerTest
         // Arrange
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.New
+            ApplicationTypeCode = ApplicationTypeCode.New
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -323,7 +323,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
+            ApplicationTypeCode = ApplicationTypeCode.Renewal
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -351,7 +351,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
+            ApplicationTypeCode = ApplicationTypeCode.Renewal
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -380,7 +380,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
+            ApplicationTypeCode = ApplicationTypeCode.Renewal,
             NoBranding = true,
             UseDogs = false
         };
@@ -395,16 +395,18 @@ public class BizLicenceAppManagerTest
     }
 
     [Fact]
-    public async void Handle_BizLicAppUpdateCommand_Return_BizLicAppCommandResponse()
+    public async void Handle_BizLicAppUpdateCommand_CreateNewApplication_Return_BizLicAppCommandResponse()
     {
         // Arrange
         Guid originalApplicationId = Guid.NewGuid();
         Guid originalLicenceId = Guid.NewGuid();
+        Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
             .With(r => r.LicenceAppId, originalApplicationId)
             .With(r => r.LicenceId, originalLicenceId)
             .Create();
+        LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
 
         mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
             .ReturnsAsync(new LicenceListResp()
