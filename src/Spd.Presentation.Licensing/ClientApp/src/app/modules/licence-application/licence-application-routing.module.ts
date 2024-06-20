@@ -34,6 +34,7 @@ import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business/business-licence-wizard-renewal.component';
+import { BusinessLicenceWizardUpdateComponent } from './components/business/business-licence-wizard-update.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
@@ -89,8 +90,10 @@ export class LicenceApplicationRoutes {
 	public static readonly BUSINESS_BASE = 'business-licence';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
 	public static readonly BUSINESS_USER_APPLICATIONS = 'applications';
-	public static readonly BUSINESS_NEW = 'business-new';
-	public static readonly BUSINESS_RENEWAL = 'business-renewal';
+	public static readonly BUSINESS_NEW = 'business-licence-new';
+	public static readonly BUSINESS_RENEWAL = 'business-licence-renewal';
+	public static readonly BUSINESS_UPDATE = 'business-licence-update';
+	public static readonly BUSINESS_REPLACEMENT = 'business-licence-replacement';
 	public static readonly BUSINESS_PROFILE = 'business-profile';
 	public static readonly BUSINESS_MANAGERS = 'business-managers';
 	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
@@ -262,6 +265,14 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.BUSINESS_RENEWAL,
 						component: BusinessLicenceWizardRenewalComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_UPDATE,
+						component: BusinessLicenceWizardUpdateComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_REPLACEMENT,
+						component: BusinessLicenceWizardRenewalComponent, // TODO FIX
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_PROFILE,
