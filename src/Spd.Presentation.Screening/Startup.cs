@@ -1,4 +1,7 @@
-﻿using Amazon.Runtime;
+﻿using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
+using Amazon.Runtime;
 using Amazon.S3;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -17,9 +20,6 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {
@@ -96,7 +96,7 @@ namespace Spd.Presentation.Screening
             //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
 
-            //add smart health check           
+            //add smart health check
             if (redisConnection != null)
                 services.AddHealthChecks().AddRedis(redisConnection);
             services.AddHealthChecks()
@@ -118,6 +118,7 @@ namespace Spd.Presentation.Screening
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
         {
+            app.UsePathBase(configuration.GetValue("BASE_PATH", string.Empty));
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
