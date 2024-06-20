@@ -75,8 +75,8 @@ import { MainLicenceResponse } from '@app/modules/licence-application/services/c
 									<a
 										class="large"
 										tabindex="0"
-										(click)="onManageMembersAndEmployees(licence)"
-										(keydown)="onKeydownManageMembersAndEmployees($event, licence)"
+										(click)="onManageMembersAndEmployees()"
+										(keydown)="onKeydownManageMembersAndEmployees($event)"
 										*ngIf="!applicationIsInProgress"
 									>
 										Manage Controlling Members and Employees
@@ -175,19 +175,19 @@ export class MainActiveBusinessLicencesComponent {
 	@Input() lostLicenceDaysText!: string;
 	@Input() isSoleProprietor!: boolean;
 
-	@Output() manageControllingMembers: EventEmitter<MainLicenceResponse> = new EventEmitter();
+	@Output() manageControllingMembers: EventEmitter<any> = new EventEmitter();
 	@Output() replaceLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() updateLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 
-	onManageMembersAndEmployees(licence: MainLicenceResponse): void {
-		this.manageControllingMembers.emit(licence);
+	onManageMembersAndEmployees(): void {
+		this.manageControllingMembers.emit();
 	}
 
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent, licence: MainLicenceResponse) {
+	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onManageMembersAndEmployees(licence);
+		this.onManageMembersAndEmployees();
 	}
 
 	onRequestReplacement(licence: MainLicenceResponse): void {
