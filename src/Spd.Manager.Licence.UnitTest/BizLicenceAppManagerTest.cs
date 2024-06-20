@@ -2,6 +2,7 @@
 using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -10,7 +11,6 @@ using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
-using System.Collections.Generic;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicenceAppManagerTest
@@ -254,7 +254,7 @@ public class BizLicenceAppManagerTest
                 Items = new List<LicenceResp> { originalLicence }
             });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
-            m => m.OriginalApplicationId == originalApplicationId && 
+            m => m.OriginalApplicationId == originalApplicationId &&
             m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
             .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
@@ -276,7 +276,7 @@ public class BizLicenceAppManagerTest
             .ToList();
         LicAppFileInfo insurnace = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizInsurance };
         LicAppFileInfo dogCertificate = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.BizSecurityDogCertificate };
-        LicAppFileInfo armourCarCertificate = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar }; 
+        LicAppFileInfo armourCarCertificate = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ArmourCarGuardRegistrar };
         files.AddRange(branding);
         files.Add(insurnace);
         files.Add(dogCertificate);
@@ -499,5 +499,79 @@ public class BizLicenceAppManagerTest
 
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BrandImageQuery_WithDraftApplication_ShouldGetImageFromTransientStorage()
+    {
+        //Arrange
+        Guid documentUrlId = Guid.NewGuid();
+        Guid appId = Guid.NewGuid();
+        DocumentResp documentResp = new()
+        {
+            ApplicationId = appId,
+            DocumentType = DocumentTypeEnum.CompanyBranding,
+            Folder = "folder",
+            DocumentUrlId = documentUrlId,
+        };
+        BizLicApplicationResp bizLicAppResp = new()
+        {
+            LicenceAppId = appId,
+            ApplicationPortalStatus = Resource.Repository.Application.ApplicationPortalStatusEnum.Draft,
+            ApplicationTypeCode = Resource.Repository.ApplicationTypeEnum.New
+        };
+        FileQueryResult fileResult = new("key", "folder", new Utilities.FileStorage.File(), null);
+
+        mockDocRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == documentUrlId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(documentResp);
+        mockBizLicAppRepo.Setup(m => m.GetBizLicApplicationAsync(It.Is<Guid>(q => q == appId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(bizLicAppResp);
+        mockTransientFileStorageService.Setup(m => m.HandleQuery(It.Is<FileQuery>(q => q.Key == documentUrlId.ToString() && q.Folder == "folder"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fileResult);
+
+        //Act
+        var viewResult = await sut.Handle(new BrandImageQuery(documentUrlId), CancellationToken.None);
+
+        //Assert
+        Assert.IsType<FileResponse>(viewResult);
+        mockTransientFileStorageService.Verify(m => m.HandleQuery(It.Is<FileQuery>(q => q.Key == documentUrlId.ToString() && q.Folder == "folder"), It.IsAny<CancellationToken>()), Times.Once());
+        mockMainFileService.Verify(m => m.HandleQuery(It.IsAny<FileQuery>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async void Handle_BrandImageQuery_WithNoDraftApplication_ShouldGetImageFromMainStorage()
+    {
+        //Arrange
+        Guid documentUrlId = Guid.NewGuid();
+        Guid appId = Guid.NewGuid();
+        DocumentResp documentResp = new()
+        {
+            ApplicationId = appId,
+            DocumentType = DocumentTypeEnum.CompanyBranding,
+            Folder = "folder",
+            DocumentUrlId = documentUrlId,
+        };
+        BizLicApplicationResp bizLicAppResp = new()
+        {
+            LicenceAppId = appId,
+            ApplicationPortalStatus = Resource.Repository.Application.ApplicationPortalStatusEnum.AwaitingThirdParty,
+            ApplicationTypeCode = Resource.Repository.ApplicationTypeEnum.New
+        };
+        FileQueryResult fileResult = new("key", "folder", new Utilities.FileStorage.File(), null);
+
+        mockDocRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == documentUrlId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(documentResp);
+        mockBizLicAppRepo.Setup(m => m.GetBizLicApplicationAsync(It.Is<Guid>(q => q == appId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(bizLicAppResp);
+        mockMainFileService.Setup(m => m.HandleQuery(It.Is<FileQuery>(q => q.Key == documentUrlId.ToString() && q.Folder == "folder"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fileResult);
+
+        //Act
+        var viewResult = await sut.Handle(new BrandImageQuery(documentUrlId), CancellationToken.None);
+
+        //Assert
+        Assert.IsType<FileResponse>(viewResult);
+        mockMainFileService.Verify(m => m.HandleQuery(It.Is<FileQuery>(q => q.Key == documentUrlId.ToString() && q.Folder == "folder"), It.IsAny<CancellationToken>()), Times.Once());
+        mockTransientFileStorageService.Verify(m => m.HandleQuery(It.IsAny<FileQuery>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }
