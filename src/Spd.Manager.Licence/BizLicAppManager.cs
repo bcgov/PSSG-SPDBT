@@ -188,13 +188,18 @@ internal class BizLicAppManager :
             cancellationToken);
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
-        LicenceResp originalLic = originalLicences.Items.First();
+        //LicenceResp originalLic = originalLicences.Items.First();
+
+        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        if (originalLic.BizId == null)
+            throw new ArgumentException("there is no business related to the application.");
+
+        ChangeSpec changes = await MakeChanges(originalLic, request, cmd.LicAppFileInfos, cancellationToken);
+
+
 
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.LicenceRequest);
-        BizLicApplicationResp bizLicAppResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
 
-        if (bizLicAppResp.BizId == null)
-            throw new ArgumentException("there is no business related to the application.");
 
         saveCmd.ApplicantId = (Guid)bizLicAppResp.BizId;
         var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
