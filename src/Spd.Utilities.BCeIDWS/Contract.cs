@@ -15,13 +15,23 @@
     }
     public class IDIRUserDetailResult : BCeIDResult
     {
-        public string MinistryName { get; set; }
-        public string MinistryCode { get; set; }
+        public string? MinistryName { get; set; }
+        public string? MinistryCode { get; set; }
     }
     public enum RequesterAccountTypeEnum
     {
         Void,
         Internal,
+    }
+
+    public class BCeIDAccountDetailQuery : BCeIDQuery
+    {
+        public string RequesterGuid { get; set; }
+        public string BizGuid { get; set; }
+    }
+    public class BCeIDUserDetailResult : BCeIDResult
+    {
+        public string TradeName { get; set; }
     }
 }
 

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceReference;
-using Spd.Utilities.BCeIDWS;
 
-namespace Spd.Utilities.Payment
+namespace Spd.Utilities.BCeIDWS
 {
     internal partial class BCeIDService : IBCeIDService
     {
@@ -23,6 +22,7 @@ namespace Spd.Utilities.Payment
             return qry switch
             {
                 IDIRUserDetailQuery q => await GetIDIRUserDetailsAsync(q),
+                BCeIDAccountDetailQuery q => await GetBCeIDAccountDetailAsync(q),
                 _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }
@@ -48,8 +48,7 @@ namespace Spd.Utilities.Payment
                     userGuid = qry.UserGuid,
                     groupMatches = new BCeIDInternalGroupMatch[]
                     {
-                    new BCeIDInternalGroupMatch
-                    {
+                    new() {
                         groupName="Portal_Service_Account"//"MY_IDIR_SECURITY_GROUP"
                     }
                     }
@@ -63,6 +62,32 @@ namespace Spd.Utilities.Payment
             catch (Exception ex)
             {
                 _logger.LogError(ex, "getAccountDetailAsync or getInternalUserGroupInfoAsync failed.");
+                return null;
+            }
+        }
+
+        public async Task<BCeIDUserDetailResult?> GetBCeIDAccountDetailAsync(BCeIDAccountDetailQuery qry)
+        {
+            try
+            {
+                BCeIDAccountSearchResponse accountDetailResp = await _client.searchBCeIDAccountAsync(new BCeIDAccountSearchRequest()
+                {
+                    onlineServiceId = _config.OnlineServiceId,
+                    requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
+                    requesterUserGuid = qry.RequesterGuid,
+                    accountMatch = new BCeIDAccountMatch { searchableAccountType = BCeIDSearchableAccountType.Business },
+                    businessMatch = new BCeIDBusinessMatch { businessGuid = qry.BizGuid }
+                });
+
+                return new BCeIDUserDetailResult
+                {
+                    //MinistryCode = accountDetailResp.nternalIdentity.organizationCode.value,
+                    //MinistryName = accountDetailResp.account.internalIdentity.company.value,
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "searchBCeIDAccountAsync failed.");
                 return null;
             }
         }
