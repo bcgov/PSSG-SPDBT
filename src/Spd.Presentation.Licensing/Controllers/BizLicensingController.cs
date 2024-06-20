@@ -173,7 +173,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="fileUploadRequest"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/{applicationId}/files")]
+        [Route("api/business-licence-application/files")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid")]
         [RequestSizeLimit(26214400)] //25M
