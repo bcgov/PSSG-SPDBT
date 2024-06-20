@@ -206,6 +206,7 @@ internal class BizLicAppManager :
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+            cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
         else
         {
@@ -220,7 +221,7 @@ internal class BizLicAppManager :
                 (Guid)originalLic.LicenceAppId,
                 cancellationToken);
 
-        return _mapper.Map<BizLicAppCommandResponse>(response);
+        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
