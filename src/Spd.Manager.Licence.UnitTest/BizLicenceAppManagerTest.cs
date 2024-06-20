@@ -8,6 +8,7 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
@@ -440,6 +441,57 @@ public class BizLicenceAppManagerTest
         Assert.IsType<BizLicAppCommandResponse>(result);
         Assert.Equal(newLicAppId, result.LicenceAppId);
         Assert.Equal(licenceFeeResp.Amount, result.Cost);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_UpdateApplication_Return_BizLicAppCommandResponse()
+    {
+        // Arrange
+        Guid originalApplicationId = Guid.NewGuid();
+        Guid originalLicenceId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceId, originalLicenceId)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() 
+            { 
+                LicenceAppId = originalApplicationId, 
+                BizId = bizId ,
+                UseDogs = true,
+                CategoryCodes = new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.ArmouredCarGuard }
+            });
+        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.Is<SaveBizLicApplicationCmd>(
+           m => m.LicenceAppId == originalApplicationId &&
+           m.ApplicantId == bizId), CancellationToken.None))
+           .ReturnsAsync(new BizLicApplicationCmdResp(originalApplicationId, bizId));
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Update,
+            OriginalLicenceId = originalLicenceId,
+            OriginalApplicationId = originalApplicationId,
+            NoBranding = false,
+            UseDogs = true,
+            Reprint = false,
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        Assert.Equal(originalApplicationId, result.LicenceAppId);
+        Assert.Equal(0, result.Cost);
     }
 
     [Fact]
