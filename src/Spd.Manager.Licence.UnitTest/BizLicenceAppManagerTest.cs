@@ -407,7 +407,6 @@ public class BizLicenceAppManagerTest
             .With(r => r.LicenceId, originalLicenceId)
             .Create();
         LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
-
         mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
             .ReturnsAsync(new LicenceListResp()
             {
@@ -415,10 +414,12 @@ public class BizLicenceAppManagerTest
             });
         mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
             .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
-        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.Is<SaveBizLicApplicationCmd>(
-            m => m.LicenceAppId == originalApplicationId &&
-            m.ApplicantId == bizId), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationCmdResp(originalApplicationId, bizId));
+        mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
+           m => m.OriginalApplicationId == originalApplicationId &&
+           m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
+           .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
+        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
 
         BizLicAppSubmitRequest request = new()
         {
@@ -427,6 +428,7 @@ public class BizLicenceAppManagerTest
             OriginalApplicationId = originalApplicationId,
             NoBranding = false,
             UseDogs = true,
+            Reprint = true,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
@@ -436,7 +438,8 @@ public class BizLicenceAppManagerTest
 
         // Assert
         Assert.IsType<BizLicAppCommandResponse>(result);
-        Assert.Equal(originalApplicationId, result.LicenceAppId);
+        Assert.Equal(newLicAppId, result.LicenceAppId);
+        Assert.Equal(licenceFeeResp.Amount, result.Cost);
     }
 
     [Fact]
