@@ -30,7 +30,7 @@ import { SharedModule } from './shared/shared.module';
 		NgxSpinnerModule,
 		OAuthModule.forRoot({
 			resourceServer: {
-				customUrlValidation: (url) => url.startsWith('/api') && !url.endsWith('/configuration'),
+				customUrlValidation: (url) => url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
 				sendAccessToken: true,
 			},
 		}),
