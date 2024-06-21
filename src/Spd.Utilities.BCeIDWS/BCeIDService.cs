@@ -81,24 +81,34 @@ namespace Spd.Utilities.BCeIDWS
                     accountTypeCode = BCeIDAccountTypeCode.Business
                 });
 
-                return new BCeIDUserDetailResult
+                if (accountDetailResp.code == ResponseCode.Success)
                 {
-                    TradeName = accountDetailResp.account.business.doingBusinessAs.value,
-                    LegalName = accountDetailResp.account.business.legalName.value,
-                    MailingAddress = new Address
+                    return new BCeIDUserDetailResult
                     {
-                        AddressLine1 = accountDetailResp.account.business.address.addressLine1.value,
-                        AddressLine2 = accountDetailResp.account.business.address.addressLine2.value,
-                        City = accountDetailResp.account.business.address.city.value,
-                        Country = accountDetailResp.account.business.address.country.value,
-                        PostalCode = accountDetailResp.account.business.address.postal.value,
-                        Province = accountDetailResp.account.business.address.province.value,
-                    }
-                };
+                        TradeName = accountDetailResp.account.business.doingBusinessAs.value,
+                        LegalName = accountDetailResp.account.business.legalName.value,
+                        MailingAddress = new Address
+                        {
+                            AddressLine1 = accountDetailResp.account.business.address.addressLine1.value,
+                            AddressLine2 = accountDetailResp.account.business.address.addressLine2.value,
+                            City = accountDetailResp.account.business.address.city.value,
+                            Country = accountDetailResp.account.business.address.country.value,
+                            PostalCode = accountDetailResp.account.business.address.postal.value,
+                            Province = accountDetailResp.account.business.address.province.value,
+                        },
+                        BusinessTypeCode = Enum.Parse<BusinessTypeCode>(accountDetailResp.account.business.type.code.ToString()),
+                        OtherBusinessTypeDetail = accountDetailResp.account.business.businessTypeOther.value
+                    };
+                }
+                else
+                {
+                    _logger.LogError($"BceidWebService call : getAccountDetailAsync failed. code = {accountDetailResp.code}, failureCode = {accountDetailResp.failureCode}, message = {accountDetailResp.message}");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "searchBCeIDAccountAsync failed.");
+                _logger.LogError(ex, "getAccountDetailAsync failed.");
                 return null;
             }
         }

@@ -33,6 +33,8 @@
         public string TradeName { get; set; }
         public string LegalName { get; set; }
         public Address MailingAddress { get; set; }
+        public BusinessTypeCode? BusinessTypeCode { get; set; }
+        public string OtherBusinessTypeDetail { get; set; }
     }
     public record Address
     {
@@ -42,6 +44,15 @@
         public string? Country { get; set; }
         public string? PostalCode { get; set; }
         public string? Province { get; set; }
+    }
+    public enum BusinessTypeCode
+    {
+        Void,
+        Proprietorship,
+        Partnership,
+        Corporation,
+        ExtraProvinciallyRegisteredCompany,
+        Other,
     }
 }
 
