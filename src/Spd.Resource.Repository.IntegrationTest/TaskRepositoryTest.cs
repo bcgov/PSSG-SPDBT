@@ -40,7 +40,7 @@ public class TaskRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.NotEqual(Guid.Empty, response.TaskId);
 
         // Annihilate
-        task? task = _context.tasks.FirstOrDefault(t => t.activityid == response.TaskId);
+        task? task = _context.tasks.Where(t => t.activityid == response.TaskId).FirstOrDefault();
 
         _context.DeleteObject(task);
         _context.DeleteObject(account);
