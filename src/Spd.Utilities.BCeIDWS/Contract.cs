@@ -26,12 +26,22 @@
 
     public class BCeIDAccountDetailQuery : BCeIDQuery
     {
-        public string RequesterGuid { get; set; }
-        public string BizGuid { get; set; }
+        public Guid UserGuid { get; set; }
     }
     public class BCeIDUserDetailResult : BCeIDResult
     {
         public string TradeName { get; set; }
+        public string LegalName { get; set; }
+        public Address MailingAddress { get; set; }
+    }
+    public record Address
+    {
+        public string? AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Province { get; set; }
     }
 }
 

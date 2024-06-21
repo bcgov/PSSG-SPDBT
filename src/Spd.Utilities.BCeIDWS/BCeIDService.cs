@@ -70,19 +70,30 @@ namespace Spd.Utilities.BCeIDWS
         {
             try
             {
-                BCeIDAccountSearchResponse accountDetailResp = await _client.searchBCeIDAccountAsync(new BCeIDAccountSearchRequest()
+                string userGuidStr = qry.UserGuid.ToString().Replace("-", string.Empty);
+
+                AccountDetailResponse accountDetailResp = await _client.getAccountDetailAsync(new AccountDetailRequest()
                 {
                     onlineServiceId = _config.OnlineServiceId,
-                    requesterAccountTypeCode = BCeIDAccountTypeCode.Internal,
-                    requesterUserGuid = qry.RequesterGuid,
-                    accountMatch = new BCeIDAccountMatch { searchableAccountType = BCeIDSearchableAccountType.Business },
-                    businessMatch = new BCeIDBusinessMatch { businessGuid = qry.BizGuid }
+                    requesterAccountTypeCode = BCeIDAccountTypeCode.Business,
+                    requesterUserGuid = userGuidStr,
+                    userGuid = userGuidStr,
+                    accountTypeCode = BCeIDAccountTypeCode.Business
                 });
 
                 return new BCeIDUserDetailResult
                 {
-                    //MinistryCode = accountDetailResp.nternalIdentity.organizationCode.value,
-                    //MinistryName = accountDetailResp.account.internalIdentity.company.value,
+                    TradeName = accountDetailResp.account.business.doingBusinessAs.value,
+                    LegalName = accountDetailResp.account.business.legalName.value,
+                    MailingAddress = new Address
+                    {
+                        AddressLine1 = accountDetailResp.account.business.address.addressLine1.value,
+                        AddressLine2 = accountDetailResp.account.business.address.addressLine2.value,
+                        City = accountDetailResp.account.business.address.city.value,
+                        Country = accountDetailResp.account.business.address.country.value,
+                        PostalCode = accountDetailResp.account.business.address.postal.value,
+                        Province = accountDetailResp.account.business.address.province.value,
+                    }
                 };
             }
             catch (Exception ex)
