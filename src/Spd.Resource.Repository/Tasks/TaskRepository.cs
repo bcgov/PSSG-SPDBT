@@ -48,6 +48,16 @@ internal class TaskRepository : ITaskRepository
             _context.SetLink(t, nameof(t.regardingobjectid_incident), incident);
         }
 
+        if (cmd.RegardingAccountId != null)
+        {
+            account? account = _context.accounts.Where(c => c.accountid == cmd.RegardingAccountId).FirstOrDefault();
+            if (account == null)
+            {
+                throw new ArgumentException($"cannot find account for accountid = {cmd.RegardingAccountId}.");
+            }
+            _context.SetLink(t, nameof(t.regardingobjectid_account), account);
+        }
+
         if (cmd.AssignedTeamId != null)
         {
             team? serviceTeam = await _context.teams.Where(t => t.teamid == cmd.AssignedTeamId).FirstOrDefaultAsync(ct);
