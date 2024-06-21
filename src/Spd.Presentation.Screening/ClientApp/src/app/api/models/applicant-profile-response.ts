@@ -1,18 +1,18 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Address } from './address';
-import { GenderCode } from './gender-code';
-import { IdentityProviderTypeCode } from './identity-provider-type-code';
+import { Address } from '../models/address';
+import { GenderCode } from '../models/gender-code';
+import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
 export interface ApplicantProfileResponse {
   applicantId?: string;
   birthDate?: string;
-  email?: null | string;
-  firstName?: null | string;
+  email?: string | null;
+  firstName?: string | null;
   gender?: GenderCode;
   identityProviderTypeCode?: IdentityProviderTypeCode;
-  lastName?: null | string;
-  middleName1?: null | string;
-  middleName2?: null | string;
+  lastName?: string | null;
+  middleName1?: string | null;
+  middleName2?: string | null;
   residentialAddress?: Address;
-  sub?: null | string;
+  sub?: string | null;
 }

@@ -1,19 +1,48 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete } from '../fn/application/api-orgs-org-id-application-invites-application-invite-id-delete';
+import { ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Params } from '../fn/application/api-orgs-org-id-application-invites-application-invite-id-delete';
+import { apiOrgsOrgIdApplicationInvitesGet } from '../fn/application/api-orgs-org-id-application-invites-get';
+import { ApiOrgsOrgIdApplicationInvitesGet$Params } from '../fn/application/api-orgs-org-id-application-invites-get';
+import { apiOrgsOrgIdApplicationInvitesPost } from '../fn/application/api-orgs-org-id-application-invites-post';
+import { ApiOrgsOrgIdApplicationInvitesPost$Params } from '../fn/application/api-orgs-org-id-application-invites-post';
+import { apiOrgsOrgIdApplicationPost } from '../fn/application/api-orgs-org-id-application-post';
+import { ApiOrgsOrgIdApplicationPost$Params } from '../fn/application/api-orgs-org-id-application-post';
+import { apiOrgsOrgIdApplicationsBulkHistoryGet } from '../fn/application/api-orgs-org-id-applications-bulk-history-get';
+import { ApiOrgsOrgIdApplicationsBulkHistoryGet$Params } from '../fn/application/api-orgs-org-id-applications-bulk-history-get';
+import { apiOrgsOrgIdApplicationsBulkPost } from '../fn/application/api-orgs-org-id-applications-bulk-post';
+import { ApiOrgsOrgIdApplicationsBulkPost$Params } from '../fn/application/api-orgs-org-id-applications-bulk-post';
+import { apiOrgsOrgIdApplicationsGet } from '../fn/application/api-orgs-org-id-applications-get';
+import { ApiOrgsOrgIdApplicationsGet$Params } from '../fn/application/api-orgs-org-id-applications-get';
+import { apiOrgsOrgIdApplicationsPaymentsGet } from '../fn/application/api-orgs-org-id-applications-payments-get';
+import { ApiOrgsOrgIdApplicationsPaymentsGet$Params } from '../fn/application/api-orgs-org-id-applications-payments-get';
+import { apiOrgsOrgIdApplicationStatisticsGet } from '../fn/application/api-orgs-org-id-application-statistics-get';
+import { ApiOrgsOrgIdApplicationStatisticsGet$Params } from '../fn/application/api-orgs-org-id-application-statistics-get';
+import { apiOrgsOrgIdClearancesClearanceIdFileGet } from '../fn/application/api-orgs-org-id-clearances-clearance-id-file-get';
+import { ApiOrgsOrgIdClearancesClearanceIdFileGet$Params } from '../fn/application/api-orgs-org-id-clearances-clearance-id-file-get';
+import { apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete } from '../fn/application/api-orgs-org-id-clearances-expired-clearance-access-id-delete';
+import { ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Params } from '../fn/application/api-orgs-org-id-clearances-expired-clearance-access-id-delete';
+import { apiOrgsOrgIdClearancesExpiredClearanceIdGet } from '../fn/application/api-orgs-org-id-clearances-expired-clearance-id-get';
+import { ApiOrgsOrgIdClearancesExpiredClearanceIdGet$Params } from '../fn/application/api-orgs-org-id-clearances-expired-clearance-id-get';
+import { apiOrgsOrgIdClearancesExpiredGet } from '../fn/application/api-orgs-org-id-clearances-expired-get';
+import { ApiOrgsOrgIdClearancesExpiredGet$Params } from '../fn/application/api-orgs-org-id-clearances-expired-get';
+import { apiOrgsOrgIdIdentityApplicationIdPut } from '../fn/application/api-orgs-org-id-identity-application-id-put';
+import { ApiOrgsOrgIdIdentityApplicationIdPut$Params } from '../fn/application/api-orgs-org-id-identity-application-id-put';
+import { apiUsersDelegateUserIdPssoApplicationStatisticsGet } from '../fn/application/api-users-delegate-user-id-psso-application-statistics-get';
+import { ApiUsersDelegateUserIdPssoApplicationStatisticsGet$Params } from '../fn/application/api-users-delegate-user-id-psso-application-statistics-get';
 import { ApplicationCreateResponse } from '../models/application-create-response';
 import { ApplicationInviteListResponse } from '../models/application-invite-list-response';
 import { ApplicationInvitePrepopulateDataResponse } from '../models/application-invite-prepopulate-data-response';
-import { ApplicationInvitesCreateRequest } from '../models/application-invites-create-request';
 import { ApplicationInvitesCreateResponse } from '../models/application-invites-create-response';
 import { ApplicationListResponse } from '../models/application-list-response';
 import { ApplicationPaymentListResponse } from '../models/application-payment-list-response';
@@ -21,22 +50,14 @@ import { ApplicationStatisticsResponse } from '../models/application-statistics-
 import { BulkHistoryListResponse } from '../models/bulk-history-list-response';
 import { BulkUploadCreateResponse } from '../models/bulk-upload-create-response';
 import { ClearanceAccessListResponse } from '../models/clearance-access-list-response';
-import { IdentityStatusCode } from '../models/identity-status-code';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ApplicationService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationInvitesGet
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationInvitesGet()` */
   static readonly ApiOrgsOrgIdApplicationInvitesGetPath = '/api/orgs/{orgId}/application-invites';
 
   /**
@@ -51,34 +72,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationInvitesGet$Response(params: {
-    orgId: string;
-    filters?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationInviteListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.query('filters', params.filters, {});
-      rb.query('page', params.page, {});
-      rb.query('pageSize', params.pageSize, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationInviteListResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationInvitesGet$Response(params: ApiOrgsOrgIdApplicationInvitesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationInviteListResponse>> {
+    return apiOrgsOrgIdApplicationInvitesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -93,24 +88,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationInvitesGet(params: {
-    orgId: string;
-    filters?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<ApplicationInviteListResponse> {
-
-    return this.apiOrgsOrgIdApplicationInvitesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationInviteListResponse>) => r.body as ApplicationInviteListResponse)
+  apiOrgsOrgIdApplicationInvitesGet(params: ApiOrgsOrgIdApplicationInvitesGet$Params, context?: HttpContext): Observable<ApplicationInviteListResponse> {
+    return this.apiOrgsOrgIdApplicationInvitesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationInviteListResponse>): ApplicationInviteListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationInvitesPost
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationInvitesPost()` */
   static readonly ApiOrgsOrgIdApplicationInvitesPostPath = '/api/orgs/{orgId}/application-invites';
 
   /**
@@ -123,34 +107,8 @@ export class ApplicationService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationInvitesPost$Response(params: {
-
-    /**
-     * organizationId, for PSSO, it should be BC Gov hard coded id.
-     */
-    orgId: string;
-    body: ApplicationInvitesCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationInvitesCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesPostPath, 'post');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationInvitesCreateResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationInvitesPost$Response(params: ApiOrgsOrgIdApplicationInvitesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationInvitesCreateResponse>> {
+    return apiOrgsOrgIdApplicationInvitesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -163,26 +121,13 @@ export class ApplicationService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationInvitesPost(params: {
-
-    /**
-     * organizationId, for PSSO, it should be BC Gov hard coded id.
-     */
-    orgId: string;
-    body: ApplicationInvitesCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<ApplicationInvitesCreateResponse> {
-
-    return this.apiOrgsOrgIdApplicationInvitesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationInvitesCreateResponse>) => r.body as ApplicationInvitesCreateResponse)
+  apiOrgsOrgIdApplicationInvitesPost(params: ApiOrgsOrgIdApplicationInvitesPost$Params, context?: HttpContext): Observable<ApplicationInvitesCreateResponse> {
+    return this.apiOrgsOrgIdApplicationInvitesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationInvitesCreateResponse>): ApplicationInvitesCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete()` */
   static readonly ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDeletePath = '/api/orgs/{orgId}/application-invites/{applicationInviteId}';
 
   /**
@@ -195,30 +140,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params: {
-    applicationInviteId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDeletePath, 'delete');
-    if (params) {
-      rb.path('applicationInviteId', params.applicationInviteId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params: ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -231,22 +154,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete(params: {
-    applicationInviteId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete(params: ApiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationsBulkHistoryGet
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationsBulkHistoryGet()` */
   static readonly ApiOrgsOrgIdApplicationsBulkHistoryGetPath = '/api/orgs/{orgId}/applications/bulk/history';
 
   /**
@@ -260,34 +174,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params: {
-    orgId: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BulkHistoryListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsBulkHistoryGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.query('sorts', params.sorts, {});
-      rb.query('page', params.page, {});
-      rb.query('pageSize', params.pageSize, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BulkHistoryListResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params: ApiOrgsOrgIdApplicationsBulkHistoryGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BulkHistoryListResponse>> {
+    return apiOrgsOrgIdApplicationsBulkHistoryGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -301,24 +189,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsBulkHistoryGet(params: {
-    orgId: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<BulkHistoryListResponse> {
-
-    return this.apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BulkHistoryListResponse>) => r.body as BulkHistoryListResponse)
+  apiOrgsOrgIdApplicationsBulkHistoryGet(params: ApiOrgsOrgIdApplicationsBulkHistoryGet$Params, context?: HttpContext): Observable<BulkHistoryListResponse> {
+    return this.apiOrgsOrgIdApplicationsBulkHistoryGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BulkHistoryListResponse>): BulkHistoryListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationsBulkPost
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationsBulkPost()` */
   static readonly ApiOrgsOrgIdApplicationsBulkPostPath = '/api/orgs/{orgId}/applications/bulk';
 
   /**
@@ -331,33 +208,8 @@ export class ApplicationService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiOrgsOrgIdApplicationsBulkPost$Response(params: {
-    orgId: string;
-    body?: {
-'File'?: Blob;
-'RequireDuplicateCheck'?: boolean;
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BulkUploadCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsBulkPostPath, 'post');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BulkUploadCreateResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationsBulkPost$Response(params: ApiOrgsOrgIdApplicationsBulkPost$Params, context?: HttpContext): Observable<StrictHttpResponse<BulkUploadCreateResponse>> {
+    return apiOrgsOrgIdApplicationsBulkPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -370,25 +222,13 @@ export class ApplicationService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiOrgsOrgIdApplicationsBulkPost(params: {
-    orgId: string;
-    body?: {
-'File'?: Blob;
-'RequireDuplicateCheck'?: boolean;
-}
-  },
-  context?: HttpContext
-
-): Observable<BulkUploadCreateResponse> {
-
-    return this.apiOrgsOrgIdApplicationsBulkPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BulkUploadCreateResponse>) => r.body as BulkUploadCreateResponse)
+  apiOrgsOrgIdApplicationsBulkPost(params: ApiOrgsOrgIdApplicationsBulkPost$Params, context?: HttpContext): Observable<BulkUploadCreateResponse> {
+    return this.apiOrgsOrgIdApplicationsBulkPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BulkUploadCreateResponse>): BulkUploadCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationStatisticsGet
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationStatisticsGet()` */
   static readonly ApiOrgsOrgIdApplicationStatisticsGetPath = '/api/orgs/{orgId}/application-statistics';
 
   /**
@@ -401,28 +241,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationStatisticsGet$Response(params: {
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationStatisticsGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationStatisticsResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationStatisticsGet$Response(params: ApiOrgsOrgIdApplicationStatisticsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
+    return apiOrgsOrgIdApplicationStatisticsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -435,21 +255,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationStatisticsGet(params: {
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicationStatisticsResponse> {
-
-    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
+  apiOrgsOrgIdApplicationStatisticsGet(params: ApiOrgsOrgIdApplicationStatisticsGet$Params, context?: HttpContext): Observable<ApplicationStatisticsResponse> {
+    return this.apiOrgsOrgIdApplicationStatisticsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationStatisticsResponse>): ApplicationStatisticsResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiUsersDelegateUserIdPssoApplicationStatisticsGet
-   */
+  /** Path part for operation `apiUsersDelegateUserIdPssoApplicationStatisticsGet()` */
   static readonly ApiUsersDelegateUserIdPssoApplicationStatisticsGetPath = '/api/users/{delegateUserId}/psso-application-statistics';
 
   /**
@@ -462,28 +274,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params: {
-    delegateUserId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiUsersDelegateUserIdPssoApplicationStatisticsGetPath, 'get');
-    if (params) {
-      rb.path('delegateUserId', params.delegateUserId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationStatisticsResponse>;
-      })
-    );
+  apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params: ApiUsersDelegateUserIdPssoApplicationStatisticsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationStatisticsResponse>> {
+    return apiUsersDelegateUserIdPssoApplicationStatisticsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -496,21 +288,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiUsersDelegateUserIdPssoApplicationStatisticsGet(params: {
-    delegateUserId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicationStatisticsResponse> {
-
-    return this.apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationStatisticsResponse>) => r.body as ApplicationStatisticsResponse)
+  apiUsersDelegateUserIdPssoApplicationStatisticsGet(params: ApiUsersDelegateUserIdPssoApplicationStatisticsGet$Params, context?: HttpContext): Observable<ApplicationStatisticsResponse> {
+    return this.apiUsersDelegateUserIdPssoApplicationStatisticsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationStatisticsResponse>): ApplicationStatisticsResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdIdentityApplicationIdPut
-   */
+  /** Path part for operation `apiOrgsOrgIdIdentityApplicationIdPut()` */
   static readonly ApiOrgsOrgIdIdentityApplicationIdPutPath = '/api/orgs/{orgId}/identity/{applicationId}';
 
   /**
@@ -519,32 +303,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdIdentityApplicationIdPut$Response(params: {
-    applicationId: string;
-    orgId: string;
-    status?: IdentityStatusCode;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdIdentityApplicationIdPutPath, 'put');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.path('orgId', params.orgId, {});
-      rb.query('status', params.status, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiOrgsOrgIdIdentityApplicationIdPut$Response(params: ApiOrgsOrgIdIdentityApplicationIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiOrgsOrgIdIdentityApplicationIdPut(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -553,23 +313,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdIdentityApplicationIdPut(params: {
-    applicationId: string;
-    orgId: string;
-    status?: IdentityStatusCode;
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiOrgsOrgIdIdentityApplicationIdPut$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiOrgsOrgIdIdentityApplicationIdPut(params: ApiOrgsOrgIdIdentityApplicationIdPut$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiOrgsOrgIdIdentityApplicationIdPut$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationPost
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationPost()` */
   static readonly ApiOrgsOrgIdApplicationPostPath = '/api/orgs/{orgId}/application';
 
   /**
@@ -582,80 +332,8 @@ export class ApplicationService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiOrgsOrgIdApplicationPost$Response(params: {
-
-    /**
-     * organizationId
-     */
-    orgId: string;
-    body: {
-
-/**
- * PDF, Microsoft Word .docx/.doc files only
- */
-'ConsentFormFile'?: Blob;
-
-/**
- * See ApplicationCreateRequest schema
- */
-'ApplicationCreateRequestJson'?: {
-'orgId'?: string;
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-'emailAddress'?: string | null;
-'jobTitle'?: string | null;
-'genderCode'?: string | null;
-'dateOfBirth'?: string | null;
-'contractedCompanyName'?: string | null;
-'phoneNumber'?: string | null;
-'driversLicense'?: string | null;
-'birthPlace'?: string | null;
-'addressLine1'?: string | null;
-'addressLine2'?: string | null;
-'city'?: string | null;
-'postalCode'?: string | null;
-'province'?: string | null;
-'country'?: string | null;
-'oneLegalName'?: boolean | null;
-'agreeToCompleteAndAccurate'?: boolean | null;
-'haveVerifiedIdentity'?: boolean | null;
-'requireDuplicateCheck'?: boolean;
-'aliases'?: Array<{
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-}>;
-'originTypeCode'?: string;
-'payeeType'?: string;
-'screeningType'?: string;
-'serviceType'?: string;
-'employeeId'?: string | null;
-};
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationPostPath, 'post');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationCreateResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationPost$Response(params: ApiOrgsOrgIdApplicationPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
+    return apiOrgsOrgIdApplicationPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -668,72 +346,13 @@ export class ApplicationService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiOrgsOrgIdApplicationPost(params: {
-
-    /**
-     * organizationId
-     */
-    orgId: string;
-    body: {
-
-/**
- * PDF, Microsoft Word .docx/.doc files only
- */
-'ConsentFormFile'?: Blob;
-
-/**
- * See ApplicationCreateRequest schema
- */
-'ApplicationCreateRequestJson'?: {
-'orgId'?: string;
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-'emailAddress'?: string | null;
-'jobTitle'?: string | null;
-'genderCode'?: string | null;
-'dateOfBirth'?: string | null;
-'contractedCompanyName'?: string | null;
-'phoneNumber'?: string | null;
-'driversLicense'?: string | null;
-'birthPlace'?: string | null;
-'addressLine1'?: string | null;
-'addressLine2'?: string | null;
-'city'?: string | null;
-'postalCode'?: string | null;
-'province'?: string | null;
-'country'?: string | null;
-'oneLegalName'?: boolean | null;
-'agreeToCompleteAndAccurate'?: boolean | null;
-'haveVerifiedIdentity'?: boolean | null;
-'requireDuplicateCheck'?: boolean;
-'aliases'?: Array<{
-'givenName'?: string | null;
-'middleName1'?: string | null;
-'middleName2'?: string | null;
-'surname'?: string | null;
-}>;
-'originTypeCode'?: string;
-'payeeType'?: string;
-'screeningType'?: string;
-'serviceType'?: string;
-'employeeId'?: string | null;
-};
-}
-  },
-  context?: HttpContext
-
-): Observable<ApplicationCreateResponse> {
-
-    return this.apiOrgsOrgIdApplicationPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+  apiOrgsOrgIdApplicationPost(params: ApiOrgsOrgIdApplicationPost$Params, context?: HttpContext): Observable<ApplicationCreateResponse> {
+    return this.apiOrgsOrgIdApplicationPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationCreateResponse>): ApplicationCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationsGet
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationsGet()` */
   static readonly ApiOrgsOrgIdApplicationsGetPath = '/api/orgs/{orgId}/applications';
 
   /**
@@ -742,38 +361,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsGet$Response(params: {
-    orgId: string;
-    filters?: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-    showAllPSSOApps?: boolean;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.query('filters', params.filters, {});
-      rb.query('sorts', params.sorts, {});
-      rb.query('page', params.page, {});
-      rb.query('pageSize', params.pageSize, {});
-      rb.query('showAllPSSOApps', params.showAllPSSOApps, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationListResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationsGet$Response(params: ApiOrgsOrgIdApplicationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationListResponse>> {
+    return apiOrgsOrgIdApplicationsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -782,26 +371,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsGet(params: {
-    orgId: string;
-    filters?: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-    showAllPSSOApps?: boolean;
-  },
-  context?: HttpContext
-
-): Observable<ApplicationListResponse> {
-
-    return this.apiOrgsOrgIdApplicationsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationListResponse>) => r.body as ApplicationListResponse)
+  apiOrgsOrgIdApplicationsGet(params: ApiOrgsOrgIdApplicationsGet$Params, context?: HttpContext): Observable<ApplicationListResponse> {
+    return this.apiOrgsOrgIdApplicationsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationListResponse>): ApplicationListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationsPaymentsGet
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationsPaymentsGet()` */
   static readonly ApiOrgsOrgIdApplicationsPaymentsGetPath = '/api/orgs/{orgId}/applications/payments';
 
   /**
@@ -810,36 +386,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsPaymentsGet$Response(params: {
-    orgId: string;
-    filters?: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationPaymentListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdApplicationsPaymentsGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.query('filters', params.filters, {});
-      rb.query('sorts', params.sorts, {});
-      rb.query('page', params.page, {});
-      rb.query('pageSize', params.pageSize, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationPaymentListResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationsPaymentsGet$Response(params: ApiOrgsOrgIdApplicationsPaymentsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationPaymentListResponse>> {
+    return apiOrgsOrgIdApplicationsPaymentsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -848,25 +396,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationsPaymentsGet(params: {
-    orgId: string;
-    filters?: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<ApplicationPaymentListResponse> {
-
-    return this.apiOrgsOrgIdApplicationsPaymentsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationPaymentListResponse>) => r.body as ApplicationPaymentListResponse)
+  apiOrgsOrgIdApplicationsPaymentsGet(params: ApiOrgsOrgIdApplicationsPaymentsGet$Params, context?: HttpContext): Observable<ApplicationPaymentListResponse> {
+    return this.apiOrgsOrgIdApplicationsPaymentsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationPaymentListResponse>): ApplicationPaymentListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdClearancesExpiredGet
-   */
+  /** Path part for operation `apiOrgsOrgIdClearancesExpiredGet()` */
   static readonly ApiOrgsOrgIdClearancesExpiredGetPath = '/api/orgs/{orgId}/clearances/expired';
 
   /**
@@ -880,36 +416,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesExpiredGet$Response(params: {
-    orgId: string;
-    filters?: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ClearanceAccessListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.query('filters', params.filters, {});
-      rb.query('sorts', params.sorts, {});
-      rb.query('page', params.page, {});
-      rb.query('pageSize', params.pageSize, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ClearanceAccessListResponse>;
-      })
-    );
+  apiOrgsOrgIdClearancesExpiredGet$Response(params: ApiOrgsOrgIdClearancesExpiredGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ClearanceAccessListResponse>> {
+    return apiOrgsOrgIdClearancesExpiredGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -923,25 +431,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesExpiredGet(params: {
-    orgId: string;
-    filters?: string;
-    sorts?: string;
-    page?: number;
-    pageSize?: number;
-  },
-  context?: HttpContext
-
-): Observable<ClearanceAccessListResponse> {
-
-    return this.apiOrgsOrgIdClearancesExpiredGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ClearanceAccessListResponse>) => r.body as ClearanceAccessListResponse)
+  apiOrgsOrgIdClearancesExpiredGet(params: ApiOrgsOrgIdClearancesExpiredGet$Params, context?: HttpContext): Observable<ClearanceAccessListResponse> {
+    return this.apiOrgsOrgIdClearancesExpiredGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ClearanceAccessListResponse>): ClearanceAccessListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete
-   */
+  /** Path part for operation `apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete()` */
   static readonly ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDeletePath = '/api/orgs/{orgId}/clearances/expired/{clearanceAccessId}';
 
   /**
@@ -954,30 +450,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params: {
-    clearanceAccessId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDeletePath, 'delete');
-    if (params) {
-      rb.path('clearanceAccessId', params.clearanceAccessId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params: ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -990,22 +464,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete(params: {
-    clearanceAccessId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete(params: ApiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiOrgsOrgIdClearancesExpiredClearanceAccessIdDelete$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdClearancesExpiredClearanceIdGet
-   */
+  /** Path part for operation `apiOrgsOrgIdClearancesExpiredClearanceIdGet()` */
   static readonly ApiOrgsOrgIdClearancesExpiredClearanceIdGetPath = '/api/orgs/{orgId}/clearances/expired/{clearanceId}';
 
   /**
@@ -1018,30 +483,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response(params: {
-    orgId: string;
-    clearanceId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesExpiredClearanceIdGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.path('clearanceId', params.clearanceId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>;
-      })
-    );
+  apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response(params: ApiOrgsOrgIdClearancesExpiredClearanceIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>> {
+    return apiOrgsOrgIdClearancesExpiredClearanceIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -1054,22 +497,13 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesExpiredClearanceIdGet(params: {
-    orgId: string;
-    clearanceId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicationInvitePrepopulateDataResponse> {
-
-    return this.apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>) => r.body as ApplicationInvitePrepopulateDataResponse)
+  apiOrgsOrgIdClearancesExpiredClearanceIdGet(params: ApiOrgsOrgIdClearancesExpiredClearanceIdGet$Params, context?: HttpContext): Observable<ApplicationInvitePrepopulateDataResponse> {
+    return this.apiOrgsOrgIdClearancesExpiredClearanceIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationInvitePrepopulateDataResponse>): ApplicationInvitePrepopulateDataResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdClearancesClearanceIdFileGet
-   */
+  /** Path part for operation `apiOrgsOrgIdClearancesClearanceIdFileGet()` */
   static readonly ApiOrgsOrgIdClearancesClearanceIdFileGetPath = '/api/orgs/{orgId}/clearances/{clearanceId}/file';
 
   /**
@@ -1082,30 +516,8 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params: {
-    clearanceId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Blob>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicationService.ApiOrgsOrgIdClearancesClearanceIdFileGetPath, 'get');
-    if (params) {
-      rb.path('clearanceId', params.clearanceId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
-      })
-    );
+  apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params: ApiOrgsOrgIdClearancesClearanceIdFileGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiOrgsOrgIdClearancesClearanceIdFileGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -1118,16 +530,9 @@ export class ApplicationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdClearancesClearanceIdFileGet(params: {
-    clearanceId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<Blob> {
-
-    return this.apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+  apiOrgsOrgIdClearancesClearanceIdFileGet(params: ApiOrgsOrgIdClearancesClearanceIdFileGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiOrgsOrgIdClearancesClearanceIdFileGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 

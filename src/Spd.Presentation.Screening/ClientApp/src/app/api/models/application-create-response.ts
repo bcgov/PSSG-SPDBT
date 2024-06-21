@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface ApplicationCreateResponse {
-  applicationId?: null | string;
+  applicationId?: string | null;
   createSuccess?: boolean;
   hasPotentialDuplicate?: boolean;
   isDuplicateCheckRequired?: boolean;

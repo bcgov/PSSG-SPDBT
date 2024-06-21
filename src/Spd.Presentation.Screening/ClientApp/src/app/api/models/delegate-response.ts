@@ -1,11 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-import { PssoUserRoleEnum } from './psso-user-role-enum';
+import { PssoUserRoleEnum } from '../models/psso-user-role-enum';
 export interface DelegateResponse {
-  emailAddress?: null | string;
-  firstName?: null | string;
+  emailAddress?: string | null;
+  firstName?: string | null;
   id?: string;
-  lastName?: null | string;
-  portalUserId?: null | string;
+  lastName?: string | null;
+  portalUserId?: string | null;
   pssoUserRoleCode?: PssoUserRoleEnum;
 }

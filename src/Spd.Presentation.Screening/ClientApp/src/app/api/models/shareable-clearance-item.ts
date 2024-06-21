@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ServiceTypeCode } from './service-type-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 export interface ShareableClearanceItem {
   clearanceId?: string;
-  expiryDate?: null | string;
-  grantedDate?: null | string;
+  expiryDate?: string | null;
+  grantedDate?: string | null;
   orgId?: string;
   serviceType?: ServiceTypeCode;
 }

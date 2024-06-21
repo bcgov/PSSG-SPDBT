@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationInviteResponse } from './application-invite-response';
-import { PaginationResponse } from './pagination-response';
+import { ApplicationInviteResponse } from '../models/application-invite-response';
+import { PaginationResponse } from '../models/pagination-response';
 export interface ApplicationInviteListResponse {
-  applicationInvites?: null | Array<ApplicationInviteResponse>;
+  applicationInvites?: Array<ApplicationInviteResponse> | null;
   pagination?: PaginationResponse;
 }

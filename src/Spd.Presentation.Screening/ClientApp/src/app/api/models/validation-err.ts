@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface ValidationErr {
-  error?: null | string;
+  error?: string | null;
   lineNumber?: number;
 }

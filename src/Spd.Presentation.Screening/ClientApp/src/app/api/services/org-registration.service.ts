@@ -1,33 +1,30 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
-import { AnonymousOrgRegistrationCreateRequest } from '../models/anonymous-org-registration-create-request';
-import { OrgRegistrationCreateRequest } from '../models/org-registration-create-request';
+import { apiAnonymousOrgRegistrationsPost } from '../fn/org-registration/api-anonymous-org-registrations-post';
+import { ApiAnonymousOrgRegistrationsPost$Params } from '../fn/org-registration/api-anonymous-org-registrations-post';
+import { apiOrgRegistrationsPost } from '../fn/org-registration/api-org-registrations-post';
+import { ApiOrgRegistrationsPost$Params } from '../fn/org-registration/api-org-registrations-post';
+import { apiOrgRegistrationsRegistrationNumberStatusGet } from '../fn/org-registration/api-org-registrations-registration-number-status-get';
+import { ApiOrgRegistrationsRegistrationNumberStatusGet$Params } from '../fn/org-registration/api-org-registrations-registration-number-status-get';
 import { OrgRegistrationCreateResponse } from '../models/org-registration-create-response';
 import { OrgRegistrationPortalStatusResponse } from '../models/org-registration-portal-status-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class OrgRegistrationService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiAnonymousOrgRegistrationsPost
-   */
+  /** Path part for operation `apiAnonymousOrgRegistrationsPost()` */
   static readonly ApiAnonymousOrgRegistrationsPostPath = '/api/anonymous-org-registrations';
 
   /**
@@ -40,28 +37,8 @@ export class OrgRegistrationService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAnonymousOrgRegistrationsPost$Response(params: {
-    body: AnonymousOrgRegistrationCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgRegistrationCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiAnonymousOrgRegistrationsPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgRegistrationCreateResponse>;
-      })
-    );
+  apiAnonymousOrgRegistrationsPost$Response(params: ApiAnonymousOrgRegistrationsPost$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgRegistrationCreateResponse>> {
+    return apiAnonymousOrgRegistrationsPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -74,21 +51,13 @@ export class OrgRegistrationService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAnonymousOrgRegistrationsPost(params: {
-    body: AnonymousOrgRegistrationCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<OrgRegistrationCreateResponse> {
-
-    return this.apiAnonymousOrgRegistrationsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgRegistrationCreateResponse>) => r.body as OrgRegistrationCreateResponse)
+  apiAnonymousOrgRegistrationsPost(params: ApiAnonymousOrgRegistrationsPost$Params, context?: HttpContext): Observable<OrgRegistrationCreateResponse> {
+    return this.apiAnonymousOrgRegistrationsPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgRegistrationCreateResponse>): OrgRegistrationCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgRegistrationsPost
-   */
+  /** Path part for operation `apiOrgRegistrationsPost()` */
   static readonly ApiOrgRegistrationsPostPath = '/api/org-registrations';
 
   /**
@@ -97,28 +66,8 @@ export class OrgRegistrationService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgRegistrationsPost$Response(params: {
-    body: OrgRegistrationCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgRegistrationCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiOrgRegistrationsPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgRegistrationCreateResponse>;
-      })
-    );
+  apiOrgRegistrationsPost$Response(params: ApiOrgRegistrationsPost$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgRegistrationCreateResponse>> {
+    return apiOrgRegistrationsPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -127,21 +76,13 @@ export class OrgRegistrationService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgRegistrationsPost(params: {
-    body: OrgRegistrationCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<OrgRegistrationCreateResponse> {
-
-    return this.apiOrgRegistrationsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgRegistrationCreateResponse>) => r.body as OrgRegistrationCreateResponse)
+  apiOrgRegistrationsPost(params: ApiOrgRegistrationsPost$Params, context?: HttpContext): Observable<OrgRegistrationCreateResponse> {
+    return this.apiOrgRegistrationsPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgRegistrationCreateResponse>): OrgRegistrationCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgRegistrationsRegistrationNumberStatusGet
-   */
+  /** Path part for operation `apiOrgRegistrationsRegistrationNumberStatusGet()` */
   static readonly ApiOrgRegistrationsRegistrationNumberStatusGetPath = '/api/org-registrations/{registrationNumber}/status';
 
   /**
@@ -150,28 +91,8 @@ export class OrgRegistrationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgRegistrationsRegistrationNumberStatusGet$Response(params: {
-    registrationNumber: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgRegistrationPortalStatusResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgRegistrationService.ApiOrgRegistrationsRegistrationNumberStatusGetPath, 'get');
-    if (params) {
-      rb.path('registrationNumber', params.registrationNumber, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgRegistrationPortalStatusResponse>;
-      })
-    );
+  apiOrgRegistrationsRegistrationNumberStatusGet$Response(params: ApiOrgRegistrationsRegistrationNumberStatusGet$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgRegistrationPortalStatusResponse>> {
+    return apiOrgRegistrationsRegistrationNumberStatusGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -180,15 +101,9 @@ export class OrgRegistrationService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgRegistrationsRegistrationNumberStatusGet(params: {
-    registrationNumber: string;
-  },
-  context?: HttpContext
-
-): Observable<OrgRegistrationPortalStatusResponse> {
-
-    return this.apiOrgRegistrationsRegistrationNumberStatusGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgRegistrationPortalStatusResponse>) => r.body as OrgRegistrationPortalStatusResponse)
+  apiOrgRegistrationsRegistrationNumberStatusGet(params: ApiOrgRegistrationsRegistrationNumberStatusGet$Params, context?: HttpContext): Observable<OrgRegistrationPortalStatusResponse> {
+    return this.apiOrgRegistrationsRegistrationNumberStatusGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgRegistrationPortalStatusResponse>): OrgRegistrationPortalStatusResponse => r.body)
     );
   }
 

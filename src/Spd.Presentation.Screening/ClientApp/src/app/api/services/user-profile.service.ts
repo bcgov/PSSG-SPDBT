@@ -1,32 +1,31 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiApplicantsWhoamiGet } from '../fn/user-profile/api-applicants-whoami-get';
+import { ApiApplicantsWhoamiGet$Params } from '../fn/user-profile/api-applicants-whoami-get';
+import { apiIdirUsersWhoamiGet } from '../fn/user-profile/api-idir-users-whoami-get';
+import { ApiIdirUsersWhoamiGet$Params } from '../fn/user-profile/api-idir-users-whoami-get';
+import { apiUsersWhoamiGet } from '../fn/user-profile/api-users-whoami-get';
+import { ApiUsersWhoamiGet$Params } from '../fn/user-profile/api-users-whoami-get';
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
 import { IdirUserProfileResponse } from '../models/idir-user-profile-response';
 import { OrgUserProfileResponse } from '../models/org-user-profile-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class UserProfileService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiUsersWhoamiGet
-   */
+  /** Path part for operation `apiUsersWhoamiGet()` */
   static readonly ApiUsersWhoamiGetPath = '/api/users/whoami';
 
   /**
@@ -39,26 +38,8 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiUsersWhoamiGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgUserProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiUsersWhoamiGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgUserProfileResponse>;
-      })
-    );
+  apiUsersWhoamiGet$Response(params?: ApiUsersWhoamiGet$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgUserProfileResponse>> {
+    return apiUsersWhoamiGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -71,20 +52,13 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiUsersWhoamiGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<OrgUserProfileResponse> {
-
-    return this.apiUsersWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgUserProfileResponse>) => r.body as OrgUserProfileResponse)
+  apiUsersWhoamiGet(params?: ApiUsersWhoamiGet$Params, context?: HttpContext): Observable<OrgUserProfileResponse> {
+    return this.apiUsersWhoamiGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgUserProfileResponse>): OrgUserProfileResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsWhoamiGet
-   */
+  /** Path part for operation `apiApplicantsWhoamiGet()` */
   static readonly ApiApplicantsWhoamiGetPath = '/api/applicants/whoami';
 
   /**
@@ -97,26 +71,8 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsWhoamiGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiApplicantsWhoamiGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
-      })
-    );
+  apiApplicantsWhoamiGet$Response(params?: ApiApplicantsWhoamiGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
+    return apiApplicantsWhoamiGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -129,20 +85,13 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsWhoamiGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantProfileResponse> {
-
-    return this.apiApplicantsWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
+  apiApplicantsWhoamiGet(params?: ApiApplicantsWhoamiGet$Params, context?: HttpContext): Observable<ApplicantProfileResponse> {
+    return this.apiApplicantsWhoamiGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantProfileResponse>): ApplicantProfileResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiIdirUsersWhoamiGet
-   */
+  /** Path part for operation `apiIdirUsersWhoamiGet()` */
   static readonly ApiIdirUsersWhoamiGetPath = '/api/idir-users/whoami';
 
   /**
@@ -155,26 +104,8 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiIdirUsersWhoamiGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, UserProfileService.ApiIdirUsersWhoamiGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<IdirUserProfileResponse>;
-      })
-    );
+  apiIdirUsersWhoamiGet$Response(params?: ApiIdirUsersWhoamiGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IdirUserProfileResponse>> {
+    return apiIdirUsersWhoamiGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -187,14 +118,9 @@ export class UserProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiIdirUsersWhoamiGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<IdirUserProfileResponse> {
-
-    return this.apiIdirUsersWhoamiGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<IdirUserProfileResponse>) => r.body as IdirUserProfileResponse)
+  apiIdirUsersWhoamiGet(params?: ApiIdirUsersWhoamiGet$Params, context?: HttpContext): Observable<IdirUserProfileResponse> {
+    return this.apiIdirUsersWhoamiGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<IdirUserProfileResponse>): IdirUserProfileResponse => r.body)
     );
   }
 

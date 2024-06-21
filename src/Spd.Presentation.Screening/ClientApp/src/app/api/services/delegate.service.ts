@@ -1,32 +1,30 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
-import { DelegateCreateRequest } from '../models/delegate-create-request';
+import { apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete } from '../fn/delegate/api-orgs-org-id-application-application-id-delegate-delegate-id-delete';
+import { ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Params } from '../fn/delegate/api-orgs-org-id-application-application-id-delegate-delegate-id-delete';
+import { apiOrgsOrgIdApplicationApplicationIdDelegatePost } from '../fn/delegate/api-orgs-org-id-application-application-id-delegate-post';
+import { ApiOrgsOrgIdApplicationApplicationIdDelegatePost$Params } from '../fn/delegate/api-orgs-org-id-application-application-id-delegate-post';
+import { apiOrgsOrgIdApplicationApplicationIdDelegatesGet } from '../fn/delegate/api-orgs-org-id-application-application-id-delegates-get';
+import { ApiOrgsOrgIdApplicationApplicationIdDelegatesGet$Params } from '../fn/delegate/api-orgs-org-id-application-application-id-delegates-get';
 import { DelegateListResponse } from '../models/delegate-list-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class DelegateService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationApplicationIdDelegatesGet
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationApplicationIdDelegatesGet()` */
   static readonly ApiOrgsOrgIdApplicationApplicationIdDelegatesGetPath = '/api/orgs/{orgId}/application/{applicationId}/delegates';
 
   /**
@@ -35,30 +33,8 @@ export class DelegateService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params: {
-    applicationId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<DelegateListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, DelegateService.ApiOrgsOrgIdApplicationApplicationIdDelegatesGetPath, 'get');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<DelegateListResponse>;
-      })
-    );
+  apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params: ApiOrgsOrgIdApplicationApplicationIdDelegatesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<DelegateListResponse>> {
+    return apiOrgsOrgIdApplicationApplicationIdDelegatesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -67,22 +43,13 @@ export class DelegateService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationApplicationIdDelegatesGet(params: {
-    applicationId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<DelegateListResponse> {
-
-    return this.apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<DelegateListResponse>) => r.body as DelegateListResponse)
+  apiOrgsOrgIdApplicationApplicationIdDelegatesGet(params: ApiOrgsOrgIdApplicationApplicationIdDelegatesGet$Params, context?: HttpContext): Observable<DelegateListResponse> {
+    return this.apiOrgsOrgIdApplicationApplicationIdDelegatesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<DelegateListResponse>): DelegateListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationApplicationIdDelegatePost
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationApplicationIdDelegatePost()` */
   static readonly ApiOrgsOrgIdApplicationApplicationIdDelegatePostPath = '/api/orgs/{orgId}/application/{applicationId}/delegate';
 
   /**
@@ -91,32 +58,8 @@ export class DelegateService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params: {
-    applicationId: string;
-    orgId: string;
-    body: DelegateCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, DelegateService.ApiOrgsOrgIdApplicationApplicationIdDelegatePostPath, 'post');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.path('orgId', params.orgId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params: ApiOrgsOrgIdApplicationApplicationIdDelegatePost$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiOrgsOrgIdApplicationApplicationIdDelegatePost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -125,23 +68,13 @@ export class DelegateService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdApplicationApplicationIdDelegatePost(params: {
-    applicationId: string;
-    orgId: string;
-    body: DelegateCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiOrgsOrgIdApplicationApplicationIdDelegatePost(params: ApiOrgsOrgIdApplicationApplicationIdDelegatePost$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiOrgsOrgIdApplicationApplicationIdDelegatePost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete
-   */
+  /** Path part for operation `apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete()` */
   static readonly ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDeletePath = '/api/orgs/{orgId}/application/{applicationId}/delegate/{delegateId}';
 
   /**
@@ -150,32 +83,8 @@ export class DelegateService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response(params: {
-    delegateId: string;
-    applicationId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, DelegateService.ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDeletePath, 'delete');
-    if (params) {
-      rb.path('delegateId', params.delegateId, {});
-      rb.path('applicationId', params.applicationId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response(params: ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -184,17 +93,9 @@ export class DelegateService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete(params: {
-    delegateId: string;
-    applicationId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete(params: ApiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiOrgsOrgIdApplicationApplicationIdDelegateDelegateIdDelete$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 

@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-import { PayerPreferenceTypeCode } from './payer-preference-type-code';
+import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
 export interface ApplicationInviteDuplicateResponse {
-  email?: null | string;
-  firstName?: null | string;
+  email?: string | null;
+  firstName?: string | null;
   hasPotentialDuplicate?: boolean;
-  jobTitle?: null | string;
-  lastName?: null | string;
+  jobTitle?: string | null;
+  lastName?: string | null;
   orgId?: string;
   payeeType?: PayerPreferenceTypeCode;
 }

@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface BulkHistoryResponse {
-  batchNumber?: null | string;
-  fileName?: null | string;
+  batchNumber?: string | null;
+  fileName?: string | null;
   id?: string;
-  uploadedByUserFullName?: null | string;
+  uploadedByUserFullName?: string | null;
   uploadedDateTime?: string;
 }

@@ -1,30 +1,25 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiMinistriesGet } from '../fn/ministry/api-ministries-get';
+import { ApiMinistriesGet$Params } from '../fn/ministry/api-ministries-get';
 import { MinistryResponse } from '../models/ministry-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class MinistryService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiMinistriesGet
-   */
+  /** Path part for operation `apiMinistriesGet()` */
   static readonly ApiMinistriesGetPath = '/api/ministries';
 
   /**
@@ -33,26 +28,8 @@ export class MinistryService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiMinistriesGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<MinistryResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, MinistryService.ApiMinistriesGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<MinistryResponse>>;
-      })
-    );
+  apiMinistriesGet$Response(params?: ApiMinistriesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<MinistryResponse>>> {
+    return apiMinistriesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -61,14 +38,9 @@ export class MinistryService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiMinistriesGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<Array<MinistryResponse>> {
-
-    return this.apiMinistriesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<MinistryResponse>>) => r.body as Array<MinistryResponse>)
+  apiMinistriesGet(params?: ApiMinistriesGet$Params, context?: HttpContext): Observable<Array<MinistryResponse>> {
+    return this.apiMinistriesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<MinistryResponse>>): Array<MinistryResponse> => r.body)
     );
   }
 

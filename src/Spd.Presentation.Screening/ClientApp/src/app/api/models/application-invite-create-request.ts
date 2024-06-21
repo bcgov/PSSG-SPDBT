@@ -1,15 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
-import { PayerPreferenceTypeCode } from './payer-preference-type-code';
-import { ScreeningTypeCode } from './screening-type-code';
-import { ServiceTypeCode } from './service-type-code';
+import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
+import { ScreeningTypeCode } from '../models/screening-type-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 export interface ApplicationInviteCreateRequest {
-  email?: null | string;
-  firstName?: null | string;
-  jobTitle?: null | string;
-  lastName?: null | string;
+  email?: string | null;
+  firstName?: string | null;
+  jobTitle?: string | null;
+  lastName?: string | null;
   orgId?: string;
-  originalClearanceAccessId?: null | string;
+  originalClearanceAccessId?: string | null;
   payeeType?: PayerPreferenceTypeCode;
   screeningType?: ScreeningTypeCode;
   serviceType?: ServiceTypeCode;

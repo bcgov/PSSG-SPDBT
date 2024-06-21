@@ -1,33 +1,33 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiOrgsAccessCodeAccessCodeGet } from '../fn/org/api-orgs-access-code-access-code-get';
+import { ApiOrgsAccessCodeAccessCodeGet$Params } from '../fn/org/api-orgs-access-code-access-code-get';
+import { apiOrgsInviteLinkVerifyGet } from '../fn/org/api-orgs-invite-link-verify-get';
+import { ApiOrgsInviteLinkVerifyGet$Params } from '../fn/org/api-orgs-invite-link-verify-get';
+import { apiOrgsOrgIdGet } from '../fn/org/api-orgs-org-id-get';
+import { ApiOrgsOrgIdGet$Params } from '../fn/org/api-orgs-org-id-get';
+import { apiOrgsOrgIdPut } from '../fn/org/api-orgs-org-id-put';
+import { ApiOrgsOrgIdPut$Params } from '../fn/org/api-orgs-org-id-put';
 import { AppOrgResponse } from '../models/app-org-response';
 import { OrgInviteVerifyResponse } from '../models/org-invite-verify-response';
 import { OrgResponse } from '../models/org-response';
-import { OrgUpdateRequest } from '../models/org-update-request';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class OrgService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdGet
-   */
+  /** Path part for operation `apiOrgsOrgIdGet()` */
   static readonly ApiOrgsOrgIdGetPath = '/api/orgs/{orgId}';
 
   /**
@@ -36,28 +36,8 @@ export class OrgService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdGet$Response(params: {
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsOrgIdGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgResponse>;
-      })
-    );
+  apiOrgsOrgIdGet$Response(params: ApiOrgsOrgIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgResponse>> {
+    return apiOrgsOrgIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -66,21 +46,13 @@ export class OrgService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdGet(params: {
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<OrgResponse> {
-
-    return this.apiOrgsOrgIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgResponse>) => r.body as OrgResponse)
+  apiOrgsOrgIdGet(params: ApiOrgsOrgIdGet$Params, context?: HttpContext): Observable<OrgResponse> {
+    return this.apiOrgsOrgIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgResponse>): OrgResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdPut
-   */
+  /** Path part for operation `apiOrgsOrgIdPut()` */
   static readonly ApiOrgsOrgIdPutPath = '/api/orgs/{orgId}';
 
   /**
@@ -93,30 +65,8 @@ export class OrgService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdPut$Response(params: {
-    orgId: string;
-    body?: OrgUpdateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsOrgIdPutPath, 'put');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgResponse>;
-      })
-    );
+  apiOrgsOrgIdPut$Response(params: ApiOrgsOrgIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgResponse>> {
+    return apiOrgsOrgIdPut(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -129,22 +79,13 @@ export class OrgService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiOrgsOrgIdPut(params: {
-    orgId: string;
-    body?: OrgUpdateRequest
-  },
-  context?: HttpContext
-
-): Observable<OrgResponse> {
-
-    return this.apiOrgsOrgIdPut$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgResponse>) => r.body as OrgResponse)
+  apiOrgsOrgIdPut(params: ApiOrgsOrgIdPut$Params, context?: HttpContext): Observable<OrgResponse> {
+    return this.apiOrgsOrgIdPut$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgResponse>): OrgResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsAccessCodeAccessCodeGet
-   */
+  /** Path part for operation `apiOrgsAccessCodeAccessCodeGet()` */
   static readonly ApiOrgsAccessCodeAccessCodeGetPath = '/api/orgs/access-code/{accessCode}';
 
   /**
@@ -153,28 +94,8 @@ export class OrgService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsAccessCodeAccessCodeGet$Response(params: {
-    accessCode: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<AppOrgResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsAccessCodeAccessCodeGetPath, 'get');
-    if (params) {
-      rb.path('accessCode', params.accessCode, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AppOrgResponse>;
-      })
-    );
+  apiOrgsAccessCodeAccessCodeGet$Response(params: ApiOrgsAccessCodeAccessCodeGet$Params, context?: HttpContext): Observable<StrictHttpResponse<AppOrgResponse>> {
+    return apiOrgsAccessCodeAccessCodeGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -183,21 +104,13 @@ export class OrgService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsAccessCodeAccessCodeGet(params: {
-    accessCode: string;
-  },
-  context?: HttpContext
-
-): Observable<AppOrgResponse> {
-
-    return this.apiOrgsAccessCodeAccessCodeGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<AppOrgResponse>) => r.body as AppOrgResponse)
+  apiOrgsAccessCodeAccessCodeGet(params: ApiOrgsAccessCodeAccessCodeGet$Params, context?: HttpContext): Observable<AppOrgResponse> {
+    return this.apiOrgsAccessCodeAccessCodeGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<AppOrgResponse>): AppOrgResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsInviteLinkVerifyGet
-   */
+  /** Path part for operation `apiOrgsInviteLinkVerifyGet()` */
   static readonly ApiOrgsInviteLinkVerifyGetPath = '/api/orgs/invite-link-verify';
 
   /**
@@ -211,28 +124,8 @@ export class OrgService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsInviteLinkVerifyGet$Response(params?: {
-    encodedOrgId?: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgInviteVerifyResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgService.ApiOrgsInviteLinkVerifyGetPath, 'get');
-    if (params) {
-      rb.query('encodedOrgId', params.encodedOrgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgInviteVerifyResponse>;
-      })
-    );
+  apiOrgsInviteLinkVerifyGet$Response(params?: ApiOrgsInviteLinkVerifyGet$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgInviteVerifyResponse>> {
+    return apiOrgsInviteLinkVerifyGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -246,15 +139,9 @@ export class OrgService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsInviteLinkVerifyGet(params?: {
-    encodedOrgId?: string;
-  },
-  context?: HttpContext
-
-): Observable<OrgInviteVerifyResponse> {
-
-    return this.apiOrgsInviteLinkVerifyGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgInviteVerifyResponse>) => r.body as OrgInviteVerifyResponse)
+  apiOrgsInviteLinkVerifyGet(params?: ApiOrgsInviteLinkVerifyGet$Params, context?: HttpContext): Observable<OrgInviteVerifyResponse> {
+    return this.apiOrgsInviteLinkVerifyGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgInviteVerifyResponse>): OrgInviteVerifyResponse => r.body)
     );
   }
 

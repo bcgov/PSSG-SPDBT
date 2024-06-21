@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface DelegateCreateRequest {
-  emailAddress?: null | string;
-  firstName?: null | string;
-  lastName?: null | string;
+  emailAddress?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
 }

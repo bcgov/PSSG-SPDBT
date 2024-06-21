@@ -1,34 +1,34 @@
 /* tslint:disable */
 /* eslint-disable */
-import { BooleanTypeCode } from './boolean-type-code';
-import { EmployeeInteractionTypeCode } from './employee-interaction-type-code';
-import { EmployeeOrganizationTypeCode } from './employee-organization-type-code';
-import { PayerPreferenceTypeCode } from './payer-preference-type-code';
-import { ScreeningTypeCode } from './screening-type-code';
-import { ServiceTypeCode } from './service-type-code';
-import { VolunteerOrganizationTypeCode } from './volunteer-organization-type-code';
+import { BooleanTypeCode } from '../models/boolean-type-code';
+import { EmployeeInteractionTypeCode } from '../models/employee-interaction-type-code';
+import { EmployeeOrganizationTypeCode } from '../models/employee-organization-type-code';
+import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
+import { ScreeningTypeCode } from '../models/screening-type-code';
+import { ServiceTypeCode } from '../models/service-type-code';
+import { VolunteerOrganizationTypeCode } from '../models/volunteer-organization-type-code';
 export interface AppOrgResponse {
-  appInviteId?: null | string;
+  appInviteId?: string | null;
   contractorsNeedVulnerableSectorScreening?: BooleanTypeCode;
-  emailAddress?: null | string;
+  emailAddress?: string | null;
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
-  givenName?: null | string;
-  jobTitle?: null | string;
+  givenName?: string | null;
+  jobTitle?: string | null;
   licenseesNeedVulnerableSectorScreening?: BooleanTypeCode;
-  orgAddressLine1?: null | string;
-  orgAddressLine2?: null | string;
-  orgCity?: null | string;
-  orgCountry?: null | string;
-  orgEmail?: null | string;
+  orgAddressLine1?: string | null;
+  orgAddressLine2?: string | null;
+  orgCity?: string | null;
+  orgCountry?: string | null;
+  orgEmail?: string | null;
   orgId?: string;
-  orgName?: null | string;
-  orgPhoneNumber?: null | string;
-  orgPostalCode?: null | string;
-  orgProvince?: null | string;
+  orgName?: string | null;
+  orgPhoneNumber?: string | null;
+  orgPostalCode?: string | null;
+  orgProvince?: string | null;
   payeeType?: PayerPreferenceTypeCode;
   screeningType?: ScreeningTypeCode;
   serviceType?: ServiceTypeCode;
-  surname?: null | string;
+  surname?: string | null;
   volunteerOrganizationTypeCode?: VolunteerOrganizationTypeCode;
   worksWith?: EmployeeInteractionTypeCode;
 }
