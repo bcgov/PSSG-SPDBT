@@ -83,7 +83,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/biz/login")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBCeID")]
+        [Authorize(Policy = "OnlyBCeID")]
         public async Task<BizUserLoginResponse?> BizLicencePortalLogin([FromQuery] Guid? bizId)
         {
             var info = _currentUser.GetBceidUserIdentityInfo();
