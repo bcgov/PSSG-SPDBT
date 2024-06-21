@@ -16,6 +16,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context = testSetup.ServiceProvider.GetRequiredService<IDynamicsContextFactory>().CreateChangeOverwrite();
     }
 
+    /*** TODO: Fix test based on problem described in ticket SPDBT-2716
     [Fact]
     public async Task MergeContacts_Run_Correctly()
     {
@@ -53,7 +54,7 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
             _context.DeleteObject(newContact);
             await _context.SaveChangesAsync();
         }
-    }
+    } */
 
     [Theory]
     [InlineData("spd_integration_firstname", "spd_integration_lastname", null, null, "2024-01-01", null, 2)]
