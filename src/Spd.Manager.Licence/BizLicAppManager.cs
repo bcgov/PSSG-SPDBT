@@ -153,6 +153,13 @@ internal class BizLicAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
+        // Update members
+        if (cmd.LicenceRequest.Members != null)
+            await UpdateMembersAsync(cmd.LicenceRequest.Members,
+                (Guid)originaBizlLic.BizId,
+                (Guid)originaBizlLic.LicenceAppId,
+                cancellationToken);
+
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
