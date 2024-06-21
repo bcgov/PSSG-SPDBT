@@ -256,6 +256,8 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
             m => m.OriginalApplicationId == originalApplicationId &&
             m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
@@ -265,7 +267,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
+            ApplicationTypeCode = ApplicationTypeCode.Renewal,
             OriginalLicenceId = originalLicenceId,
             OriginalApplicationId = originalApplicationId,
             NoBranding = false,
@@ -407,10 +409,13 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = Guid.NewGuid(), BizId = Guid.NewGuid() });        
+        
         BizLicAppSubmitRequest request = new()
         {
             ApplicationTypeCode = ApplicationTypeCode.Renewal,
+            OriginalApplicationId = Guid.NewGuid(),
             NoBranding = true,
             UseDogs = false
         };
