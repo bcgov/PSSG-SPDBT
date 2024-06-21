@@ -7,6 +7,7 @@ using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.Text.Json;
@@ -20,6 +21,7 @@ namespace Spd.Manager.Licence.UnitTest
         private Mock<IIdentityRepository> mockIdRepo = new();
         private Mock<IBizRepository> mockBizRepo = new();
         private Mock<IAddressRepository> mockAddressRepo = new();
+        private Mock<IBCeIDService> mockBceidService = new();
         private BizProfileManager sut;
 
         public BizProfileManagerTest()
@@ -39,6 +41,7 @@ namespace Spd.Manager.Licence.UnitTest
                 mockBizRepo.Object,
                 mockPortalUserRepo.Object,
                 mockAddressRepo.Object,
+                mockBceidService.Object,
                 mapper);
         }
 
@@ -273,7 +276,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid bizId = Guid.NewGuid();
             GetBizProfileQuery qry = new(bizId);
             mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(g => g == bizId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new BizResult() { Id = bizId, BizName = "test" } );
+                .ReturnsAsync(new BizResult() { Id = bizId, BizName = "test" });
 
             // Action
             var result = await sut.Handle(qry, CancellationToken.None);

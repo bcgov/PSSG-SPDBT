@@ -93,6 +93,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Presentation.Screening.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Printing", "Spd.Manager.Printing\Spd.Manager.Printing.csproj", "{A3483065-B07D-4FD1-8FE4-D261A58AFFB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Utilities.BCeIDWS.IntegrationTest", "Spd.Utilities.BCeIDWS.IntegrationTest\Spd.Utilities.BCeIDWS.IntegrationTest.csproj", "{CE58D2CC-31CC-47DA-ACEA-123CBCF094E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -239,6 +241,10 @@ Global
 		{A3483065-B07D-4FD1-8FE4-D261A58AFFB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3483065-B07D-4FD1-8FE4-D261A58AFFB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3483065-B07D-4FD1-8FE4-D261A58AFFB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE58D2CC-31CC-47DA-ACEA-123CBCF094E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE58D2CC-31CC-47DA-ACEA-123CBCF094E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE58D2CC-31CC-47DA-ACEA-123CBCF094E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE58D2CC-31CC-47DA-ACEA-123CBCF094E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -279,6 +285,7 @@ Global
 		{2971FFA0-A3D7-4632-89CD-D69C369B2DC6} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{176888CB-63E7-41C9-A96D-67428EC6D27E} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{A3483065-B07D-4FD1-8FE4-D261A58AFFB1} = {AFA7034A-A8B1-489C-9A24-030B05C5412B}
+		{CE58D2CC-31CC-47DA-ACEA-123CBCF094E8} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}

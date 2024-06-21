@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -26,12 +26,40 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-business-licence-consent-and-declaration>
 
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+					<app-wizard-footer
+						nextButtonLabel="Submit"
+						(previousStepperStep)="onConsentGoToPreviousStep()"
+						(nextStepperStep)="onSubmitNow()"
+					></app-wizard-footer>
+				</ng-container>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
+					<app-wizard-footer
+						[isFormValid]="true"
+						[showSaveAndExit]="true"
+						(saveAndExit)="onNoSaveAndExit()"
+						nextButtonLabel="Pay Now"
+						(previousStepperStep)="onConsentGoToPreviousStep()"
+						(nextStepperStep)="onPayNow()"
+					></app-wizard-footer>
+				</ng-container>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<app-wizard-footer
+						nextButtonLabel="Pay Now"
+						(previousStepperStep)="onConsentGoToPreviousStep()"
+						(nextStepperStep)="onPayNow()"
+					></app-wizard-footer>
+				</ng-container>
+			</mat-step>
+
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
+				<app-step-business-licence-update-fee [licenceCost]="licenceCost"></app-step-business-licence-update-fee>
+
 				<app-wizard-footer
-					[isFormValid]="true"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onNoSaveAndExit()"
-					[nextButtonLabel]="submitPayLabel"
-					(previousStepperStep)="onConsentGoToPreviousStep()"
+					nextButtonLabel="Pay Now"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onPayNow()"
 				></app-wizard-footer>
 			</mat-step>
@@ -40,13 +68,14 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent implements OnInit {
-	submitPayLabel = '';
+export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent {
+	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isRenewalShortForm!: boolean;
 	@Input() showSaveAndExit!: boolean;
+	@Input() licenceCost = 0;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -58,13 +87,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		super(commonApplicationService);
 	}
 
-	ngOnInit(): void {
-		this.submitPayLabel = 'Pay Now'; // TODO handle submit vs pay
-		// if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-		// this.submitPayLabel = 'Submit';
-		// }
-	}
-
 	onConsentGoToPreviousStep(): void {
 		if (this.isRenewalShortForm) {
 			this.onStepPrevious();
@@ -72,6 +94,14 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		}
 
 		this.onGoToPreviousStep();
+	}
+
+	onSubmitNow(): void {
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
+
+		this.nextSubmitStep.emit();
 	}
 
 	onPayNow(): void {

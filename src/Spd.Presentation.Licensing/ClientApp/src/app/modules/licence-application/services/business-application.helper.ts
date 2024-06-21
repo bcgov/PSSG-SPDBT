@@ -376,6 +376,10 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		dateSigned: new FormControl({ value: null, disabled: true }),
 	});
 
+	reprintLicenceFormGroup: FormGroup = this.formBuilder.group({
+		reprintLicence: new FormControl('', [FormControlValidators.required]),
+	});
+
 	constructor(
 		formBuilder: FormBuilder,
 		protected configService: ConfigService,
