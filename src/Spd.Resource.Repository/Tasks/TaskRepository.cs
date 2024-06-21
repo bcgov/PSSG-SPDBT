@@ -43,7 +43,7 @@ internal class TaskRepository : ITaskRepository
             incident? incident = _context.incidents.Where(c => c.incidentid == cmd.RegardingCaseId).FirstOrDefault();
             if (incident == null)
             {
-                throw new ArgumentException($"cannot find contact for incidentid = {cmd.RegardingCaseId}.");
+                throw new ArgumentException($"cannot find incident for incidentid = {cmd.RegardingCaseId}.");
             }
             _context.SetLink(t, nameof(t.regardingobjectid_incident), incident);
         }
