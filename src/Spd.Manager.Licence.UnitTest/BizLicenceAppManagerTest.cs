@@ -549,7 +549,8 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = ApplicationTypeCode.Update
+            ApplicationTypeCode = ApplicationTypeCode.Update,
+            OriginalApplicationId = Guid.NewGuid(),
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
 
