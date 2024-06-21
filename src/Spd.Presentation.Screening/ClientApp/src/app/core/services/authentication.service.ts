@@ -1,73 +1,89 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { ConfigService } from './config.service';
+import { APP_BASE_HREF } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	constructor(private oauthService: OAuthService, private configService: ConfigService) {}
+  private href: string;
 
-	//----------------------------------------------------------
-	// *
-	// *
-	public async tryLogin(
-		loginType: IdentityProviderTypeCode,
-		returnComponentRoute: string
-	): Promise<{ state: any; loggedIn: boolean }> {
-		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+  constructor(
+    @Inject(APP_BASE_HREF) href: string,
+    private oauthService: OAuthService,
+    private configService: ConfigService) {
+    this.href = href;
+  }
 
-		const isLoggedIn = await this.oauthService
-			.loadDiscoveryDocumentAndTryLogin()
-			.then((_) => this.oauthService.hasValidAccessToken())
-			.catch((_) => false);
+  //----------------------------------------------------------
+  // *
+  // *
+  public async tryLogin(
+    loginType: IdentityProviderTypeCode,
+    returnComponentRoute: string
+  ): Promise<{ state: any; loggedIn: boolean }> {
+    await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
 
-		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
+    const isLoggedIn = await this.oauthService
+      .loadDiscoveryDocumentAndTryLogin()
+      .then((_) => this.oauthService.hasValidAccessToken())
+      .catch((_) => false);
 
-		return {
-			state: this.oauthService.state || null,
-			loggedIn: isLoggedIn,
-		};
-	}
+    console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
-	//----------------------------------------------------------
-	// *
-	// *
-	public async login(
-		loginType: IdentityProviderTypeCode,
-		returnComponentRoute: string | undefined = undefined
-	): Promise<string | null> {
-		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+    return {
+      state: this.oauthService.state || null,
+      loggedIn: isLoggedIn,
+    };
+  }
 
-		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
+  //----------------------------------------------------------
+  // *
+  // *
+  public async login(
+    loginType: IdentityProviderTypeCode,
+    returnComponentRoute: string | undefined = undefined
+  ): Promise<string | null> {
+    await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
 
-		const isLoggedIn = await this.oauthService
-			.loadDiscoveryDocumentAndLogin({
-				state: returnRoute,
-			})
-			.then((_) => this.oauthService.hasValidAccessToken())
-			.catch((_) => false);
+    const returnRoute = location.pathname.substring(1);
+    console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
 
-		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
+    const isLoggedIn = await this.oauthService
+      .loadDiscoveryDocumentAndLogin({
+        state: returnRoute,
+      })
+      .then((_) => this.oauthService.hasValidAccessToken())
+      .catch((_) => false);
 
-		if (isLoggedIn) {
-			return Promise.resolve(this.oauthService.state || returnRoute);
-		}
+    console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
-		return Promise.resolve(null);
-	}
+    if (isLoggedIn) {
+      return Promise.resolve(this.oauthService.state || returnRoute);
+    }
 
-	//----------------------------------------------------------
-	// *
-	// *
-	public getToken(): string {
-		return this.oauthService.getAccessToken();
-	}
+    return Promise.resolve(null);
+  }
 
-	//----------------------------------------------------------
-	// *
-	// *
-	public isLoggedIn(): boolean {
-		return this.oauthService.hasValidAccessToken();
-	}
+  //----------------------------------------------------------
+  // *
+  // *
+  public getToken(): string {
+    return this.oauthService.getAccessToken();
+  }
+
+  //----------------------------------------------------------
+  // *
+  // *
+  public isLoggedIn(): boolean {
+    return this.oauthService.hasValidAccessToken();
+  }
+
+  private createRedirectUrl(componentUrl: string): string {
+    let baseUrl = `${location.origin}${this.href}`;
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+    }
+    return `${baseUrl}${componentUrl}`;
+  }
 }
