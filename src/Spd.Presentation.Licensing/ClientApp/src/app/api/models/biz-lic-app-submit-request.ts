@@ -8,7 +8,7 @@ import { Members } from './members';
 import { SwlContactInfo } from './swl-contact-info';
 import { WorkerCategoryTypeCode } from './worker-category-type-code';
 import { WorkerLicenceTypeCode } from './worker-licence-type-code';
-export interface BizLicAppChangeRequest {
+export interface BizLicAppSubmitRequest {
   agreeToCompleteAndAccurate?: null | boolean;
   applicantContactInfo?: ContactInfo;
   applicantIsBizManager?: null | boolean;
@@ -17,8 +17,6 @@ export interface BizLicAppChangeRequest {
   bizTypeCode?: BizTypeCode;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   documentKeyCodes?: null | Array<string>;
-  expiredLicenceId?: null | string;
-  hasExpiredLicence?: null | boolean;
   licenceTermCode?: LicenceTermCode;
   members?: Members;
   noBranding?: null | boolean;
