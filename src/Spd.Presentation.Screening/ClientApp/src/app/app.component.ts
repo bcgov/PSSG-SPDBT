@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { filter, forkJoin, map } from 'rxjs';
+import { Observable, filter, forkJoin, map } from 'rxjs';
 import { ConfigService } from './core/services/config.service';
 import { OptionsService } from './core/services/options.service';
 import { ApiConfiguration } from './api/api-configuration';
@@ -25,17 +25,21 @@ import { APP_BASE_HREF } from '@angular/common';
   styles: [],
 })
 export class AppComponent {
-  configs$ = forkJoin([this.configService.getConfigs(), this.optionsService.loadMinistries()]);
+  configs$: Observable<any>;
   title = '';
 
   constructor(
-    @Inject(ApiConfiguration) apiConfig: ApiConfiguration,
+    private apiConfig: ApiConfiguration,
     @Inject(APP_BASE_HREF) href: string,
     private configService: ConfigService,
     private optionsService: OptionsService,
     private router: Router) {
 
-    apiConfig.rootUrl = `${location.protocol}//${location.host}${href}`;
+    apiConfig.rootUrl = `${location.origin}${href}`;
+    if (apiConfig.rootUrl.endsWith('/')) {
+      apiConfig.rootUrl = apiConfig.rootUrl.substring(0, apiConfig.rootUrl.length - 1);
+    }
+    console.debug('[API rootUrl]', apiConfig.rootUrl);
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -52,7 +56,8 @@ export class AppComponent {
         })
       )
       .subscribe((title: string) => {
-        this.title = title ? title : 'Criminal Record Checks';
+        this.title = title || 'Criminal Record Checks';
       });
+    this.configs$ = forkJoin([this.configService.getConfigs(), this.optionsService.loadMinistries()]);
   }
 }
