@@ -149,6 +149,7 @@ internal class BizLicAppManager :
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
 
+        // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
@@ -160,6 +161,7 @@ internal class BizLicAppManager :
                 (Guid)originaBizlLic.LicenceAppId,
                 cancellationToken);
 
+        // Upload new files
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
@@ -208,6 +210,7 @@ internal class BizLicAppManager :
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
 
+        // Create new app, else update existing one
         if ((request.Reprint != null && request.Reprint.Value) || changes.CategoriesChanged || changes.UseDogsChanged)
         {
             var existingFiles = await GetExistingFileInfo(
