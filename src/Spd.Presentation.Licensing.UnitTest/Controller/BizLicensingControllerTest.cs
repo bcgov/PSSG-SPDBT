@@ -17,7 +17,8 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class BizLicensingControllerTest
 {
     private readonly IFixture fixture;
-    private Mock<IValidator<BizLicAppUpsertRequest>> mockValidator = new();
+    private Mock<IValidator<BizLicAppUpsertRequest>> mockUpsertValidator = new();
+    private Mock<IValidator<BizLicAppSubmitRequest>> mockSubmitValidator = new();
     private Mock<IMediator> mockMediator = new();
     private Mock<IDistributedCache> mockCache = new();
     private Mock<IDataProtectionProvider> mockDpProvider = new();
@@ -57,7 +58,9 @@ public class BizLicensingControllerTest
         var validationResults = fixture.Build<ValidationResult>()
                 .With(r => r.Errors, [])
                 .Create();
-        mockValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppUpsertRequest>(), CancellationToken.None))
+        mockUpsertValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppUpsertRequest>(), CancellationToken.None))
+                .ReturnsAsync(validationResults);
+        mockSubmitValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppSubmitRequest>(), CancellationToken.None))
                 .ReturnsAsync(validationResults);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
@@ -69,7 +72,8 @@ public class BizLicensingControllerTest
         sut = new BizLicensingController(user,
             mockMediator.Object,
             configuration,
-            mockValidator.Object,
+            mockUpsertValidator.Object,
+            mockSubmitValidator.Object,
             mockRecaptch.Object,
             mockCache.Object,
             mockDpProvider.Object);
