@@ -461,7 +461,7 @@ internal class BizLicAppManager :
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
                 Subject = $"License Category update {originalApp.ExpiredLicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.BizId,
+                RegardingAccountId = originalApp.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
                 LicenceId = originalApp.ExpiredLicenceId
             }, ct);
@@ -479,7 +479,7 @@ internal class BizLicAppManager :
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
                 Subject = $"Dog validation information to be updated for Business License {originalApp.ExpiredLicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.BizId,
+                RegardingAccountId = originalApp.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
                 LicenceId = originalApp.ExpiredLicenceId
             }, ct);
