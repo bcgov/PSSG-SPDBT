@@ -252,6 +252,7 @@ internal class BizLicAppManager :
             response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
         }
 
+        // Update members
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalLic.BizId,
