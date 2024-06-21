@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceReference;
-using Spd.Utilities.BCeIDWS;
 
-namespace Spd.Utilities.Payment
+namespace Spd.Utilities.BCeIDWS
 {
     internal partial class BCeIDService : IBCeIDService
     {
@@ -23,6 +22,7 @@ namespace Spd.Utilities.Payment
             return qry switch
             {
                 IDIRUserDetailQuery q => await GetIDIRUserDetailsAsync(q),
+                BCeIDAccountDetailQuery q => await GetBCeIDAccountDetailAsync(q),
                 _ => throw new NotSupportedException($"{qry.GetType().Name} is not supported")
             };
         }
@@ -48,8 +48,7 @@ namespace Spd.Utilities.Payment
                     userGuid = qry.UserGuid,
                     groupMatches = new BCeIDInternalGroupMatch[]
                     {
-                    new BCeIDInternalGroupMatch
-                    {
+                    new() {
                         groupName="Portal_Service_Account"//"MY_IDIR_SECURITY_GROUP"
                     }
                     }
@@ -63,6 +62,53 @@ namespace Spd.Utilities.Payment
             catch (Exception ex)
             {
                 _logger.LogError(ex, "getAccountDetailAsync or getInternalUserGroupInfoAsync failed.");
+                return null;
+            }
+        }
+
+        public async Task<BCeIDUserDetailResult?> GetBCeIDAccountDetailAsync(BCeIDAccountDetailQuery qry)
+        {
+            try
+            {
+                string userGuidStr = qry.UserGuid.ToString().Replace("-", string.Empty);
+
+                AccountDetailResponse accountDetailResp = await _client.getAccountDetailAsync(new AccountDetailRequest()
+                {
+                    onlineServiceId = _config.OnlineServiceId,
+                    requesterAccountTypeCode = BCeIDAccountTypeCode.Business,
+                    requesterUserGuid = userGuidStr,
+                    userGuid = userGuidStr,
+                    accountTypeCode = BCeIDAccountTypeCode.Business
+                });
+
+                if (accountDetailResp.code == ResponseCode.Success)
+                {
+                    return new BCeIDUserDetailResult
+                    {
+                        TradeName = accountDetailResp.account.business.doingBusinessAs.value,
+                        LegalName = accountDetailResp.account.business.legalName.value,
+                        MailingAddress = new Address
+                        {
+                            AddressLine1 = accountDetailResp.account.business.address.addressLine1.value,
+                            AddressLine2 = accountDetailResp.account.business.address.addressLine2.value,
+                            City = accountDetailResp.account.business.address.city.value,
+                            Country = accountDetailResp.account.business.address.country.value,
+                            PostalCode = accountDetailResp.account.business.address.postal.value,
+                            Province = accountDetailResp.account.business.address.province.value,
+                        },
+                        BusinessTypeCode = Enum.Parse<BusinessTypeCode>(accountDetailResp.account.business.type.code.ToString()),
+                        OtherBusinessTypeDetail = accountDetailResp.account.business.businessTypeOther.value
+                    };
+                }
+                else
+                {
+                    _logger.LogError($"BceidWebService call : getAccountDetailAsync failed. code = {accountDetailResp.code}, failureCode = {accountDetailResp.failureCode}, message = {accountDetailResp.message}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "getAccountDetailAsync failed.");
                 return null;
             }
         }

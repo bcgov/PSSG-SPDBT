@@ -9,7 +9,11 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title title="Do you need a new permit printed?" [subtitle]="subtitle"></app-step-title>
+				<app-step-title
+					title="Do you need a new permit printed?"
+					[subtitle]="subtitle"
+					info="For a licence reprint, a reprint fee will be changed"
+				></app-step-title>
 
 				<app-common-reprint [form]="form"></app-common-reprint>
 			</div>
