@@ -137,6 +137,10 @@ internal class BizLicAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
+        BizLicApplicationResp originaBizlLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        if (originaBizlLic.BizId == null)
+            throw new ArgumentException("there is no business related to the application.");
+
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceRequest.OriginalApplicationId,
             cmd.LicenceRequest.PreviousDocumentIds,
