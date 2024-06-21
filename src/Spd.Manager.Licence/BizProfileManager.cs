@@ -6,6 +6,7 @@ using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Registration;
+using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -22,6 +23,7 @@ internal class BizProfileManager :
     private readonly IBizRepository _bizRepository;
     private readonly IPortalUserRepository _portalUserRepository;
     private readonly IAddressRepository _addressRepository;
+    private readonly IBCeIDService _bceidService;
     private readonly IMapper _mapper;
 
     public BizProfileManager(
@@ -29,6 +31,7 @@ internal class BizProfileManager :
         IBizRepository bizRepository,
         IPortalUserRepository portalUserRepository,
         IAddressRepository addressRepository,
+        IBCeIDService bceidService,
         IMapper mapper)
     {
         _mapper = mapper;
@@ -36,11 +39,20 @@ internal class BizProfileManager :
         _bizRepository = bizRepository;
         _addressRepository = addressRepository;
         _portalUserRepository = portalUserRepository;
+        _bceidService = bceidService;
     }
 
     public async Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct)
     {
         Identity? currentUserIdentity = null;
+
+        var bizInfo = await _bceidService.HandleQuery(new BCeIDAccountDetailQuery()
+        {
+            UserGuid = (Guid)cmd.BceidIdentityInfo.UserGuid
+        });
+
+        //todo: update bizInfo to dynamics
+
         IdentityQueryResult idResult = await _idRepository.Query(
             new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderTypeEnum.BusinessBceId),
             ct);
@@ -112,7 +124,7 @@ internal class BizProfileManager :
         bizUpdateCmd.Id = cmd.BizId;
         await _bizRepository.ManageBizAsync(bizUpdateCmd, ct);
 
-        AddressQry qry = new AddressQry() { OrganizationId = bizUpdateCmd.Id, Type = AddressTypeEnum.Branch };
+        AddressQry qry = new() { OrganizationId = bizUpdateCmd.Id, Type = AddressTypeEnum.Branch };
         IEnumerable<AddressResp> addressesResp = await _addressRepository.QueryAsync(qry, ct);
         IEnumerable<BranchAddr> addresses = _mapper.Map<IEnumerable<BranchAddr>>(addressesResp);
         await ProcessBranchAddresses(addresses.ToList(), bizUpdateCmd.BranchAddresses.ToList(), cmd.BizId, ct);
@@ -171,7 +183,7 @@ internal class BizProfileManager :
 
     private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
     {
-        CreateBizCmd createCmd = new() 
+        CreateBizCmd createCmd = new()
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
             BizLegalName = cmd.BceidIdentityInfo.BizName,
