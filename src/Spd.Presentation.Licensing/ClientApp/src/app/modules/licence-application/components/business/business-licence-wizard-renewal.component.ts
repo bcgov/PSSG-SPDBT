@@ -1,6 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -32,12 +31,11 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-steps-business-licence-information
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[isRenewalShortForm]="isRenewalShortForm"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
@@ -53,10 +51,9 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[bizTypeCode]="bizTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[isRenewalShortForm]="isRenewalShortForm"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -69,9 +66,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-contact-information
 					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -84,10 +80,9 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-controlling-members
 					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="false"
 					[nonSwlControllingMembersExist]="nonSwlControllingMembersExist"
 					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -101,8 +96,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isRenewalShortForm]="isRenewalShortForm"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit()"
+					[showSaveAndExit]="false"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
 					(scrollIntoView)="onScrollIntoView()"
@@ -131,7 +125,6 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	step4Complete = false;
 
 	isFormValid = false;
-	showSaveAndExit = false; // Always false for renewals
 	nonSwlControllingMembersExist = false;
 	isRenewalShortForm = false;
 
@@ -254,9 +247,9 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.submitBusinessLicenceNew().subscribe({
+		this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence has been successfully submitted');
+				this.hotToastService.success('Your business licence renewal has been successfully submitted');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 				this.payNow(resp.body.licenceAppId!);
 			},
@@ -268,7 +261,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		this.saveStep(stepper);
+		if (stepper?.selected) stepper.selected.completed = true;
+		stepper.next();
 	}
 
 	onRenewalShortForm(isShortForm: boolean) {
@@ -290,63 +284,11 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	onGoToReview() {
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-				next: (_resp: any) => {
-					setTimeout(() => {
-						// hack... does not navigate without the timeout
-						this.goToReviewStep();
-					}, 250);
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
-			});
-		} else {
-			this.goToReviewStep();
-		}
+		this.goToReviewStep();
 	}
 
 	onChildNextStep() {
-		this.saveStep();
-	}
-
-	onSaveAndExit(): void {
-		if (!this.businessApplicationService.isSaveAndExit()) {
-			return;
-		}
-
-		this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
-			next: (_resp: any) => {
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-			},
-			error: (error: HttpErrorResponse) => {
-				this.handlePartialSaveError(error);
-			},
-		});
-	}
-
-	private saveStep(stepper?: MatStepper): void {
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-				next: (_resp: any) => {
-					if (stepper) {
-						if (stepper?.selected) stepper.selected.completed = true;
-						stepper.next();
-					} else {
-						this.goToChildNextStep();
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
-			});
-		} else if (stepper) {
-			if (stepper?.selected) stepper.selected.completed = true;
-			stepper.next();
-		} else {
-			this.goToChildNextStep();
-		}
+		this.goToChildNextStep();
 	}
 
 	private goToChildNextStep() {
@@ -381,13 +323,6 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR;
 		} else {
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-		}
-	}
-
-	private handlePartialSaveError(error: HttpErrorResponse): void {
-		// only 403s will be here as an error
-		if (error.status == 403) {
-			this.commonApplicationService.handleDuplicateLicence();
 		}
 	}
 

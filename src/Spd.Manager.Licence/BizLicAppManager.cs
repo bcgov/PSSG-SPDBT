@@ -250,12 +250,26 @@ internal class BizLicAppManager :
             return new FileResponse();
         if (docResp.DocumentType != DocumentTypeEnum.CompanyBranding)
             throw new ApiException(HttpStatusCode.BadRequest, "the document is not branding image.");
-
         try
         {
-            FileQueryResult fileResult = (FileQueryResult)await _mainFileService.HandleQuery(
-                new FileQuery { Key = docResp.DocumentUrlId.ToString(), Folder = docResp.Folder },
-                ct);
+            FileQueryResult? fileResult = null;
+            if (docResp.ApplicationId != null)
+            {
+                BizLicApplicationResp appResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)docResp.ApplicationId, ct);
+                if (appResp != null
+                    && appResp.ApplicationTypeCode == Resource.Repository.ApplicationTypeEnum.New
+                    && (appResp.ApplicationPortalStatus == ApplicationPortalStatusEnum.Draft || appResp.ApplicationPortalStatus == ApplicationPortalStatusEnum.Incomplete))
+                {
+                    fileResult = (FileQueryResult)await _transientFileService.HandleQuery(
+                        new FileQuery { Key = docResp.DocumentUrlId.ToString(), Folder = docResp.Folder },
+                        ct);
+                }
+            }
+
+            if (fileResult == null)
+                fileResult = (FileQueryResult)await _mainFileService.HandleQuery(
+                    new FileQuery { Key = docResp.DocumentUrlId.ToString(), Folder = docResp.Folder },
+                    ct);
             return new FileResponse
             {
                 Content = fileResult.File.Content,

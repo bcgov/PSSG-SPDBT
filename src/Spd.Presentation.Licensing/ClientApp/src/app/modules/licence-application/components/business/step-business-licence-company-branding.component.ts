@@ -42,15 +42,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 									"
 									>This is required</mat-error
 								>
-
 								<mat-divider class="my-4"></mat-divider>
-
-								<ng-container *ngIf="isRenewalOrUpdate">
-									<div>Previously uploaded images:</div>
-									<!-- // TODO Previously uploaded images -->
-									<div>Remove any examples of business branding that are no longer being used</div>
-									<div>Add new examples</div>
-								</ng-container>
 							</div>
 
 							<mat-checkbox formControlName="noLogoOrBranding">I don’t have a logo or any branding</mat-checkbox>
