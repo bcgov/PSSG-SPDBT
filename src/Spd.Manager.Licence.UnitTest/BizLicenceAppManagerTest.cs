@@ -364,6 +364,35 @@ public class BizLicenceAppManagerTest
     }
 
     [Fact]
+    public async void Handle_BizLicAppRenewCommand_WithoutLinkedBusiness_Throw_Exception()
+    {
+        // Arrange
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+        LicenceResp originalLicence = new() { LicenceAppId = Guid.NewGuid(), ExpiryDate = expiryDate };
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>() { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp());
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Renewal,
+            OriginalApplicationId = Guid.NewGuid(),
+        };
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
     public async void Handle_BizLicAppRenewCommand_WithMissingFiles_Throw_Exception()
     {
         // Arrange
