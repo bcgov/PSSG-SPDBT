@@ -173,7 +173,6 @@ internal class BizLicAppManager :
                 response?.AccountId,
                 cancellationToken);
 
-        if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
         // Copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
         {
