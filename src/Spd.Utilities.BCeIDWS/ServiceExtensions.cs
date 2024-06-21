@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ServiceReference;
-using Spd.Utilities.Payment;
 using System.ServiceModel;
 
 namespace Spd.Utilities.BCeIDWS

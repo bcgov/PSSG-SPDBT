@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spd.Manager.Shared\Spd.Manager.Shared.csproj" />
     <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.BCeIDWS\Spd.Utilities.BCeIDWS.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
     <ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
     <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />

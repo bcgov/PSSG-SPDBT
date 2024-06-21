@@ -89,6 +89,7 @@ import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business/business-licence-wizard-renewal.component';
+import { BusinessLicenceWizardUpdateComponent } from './components/business/business-licence-wizard-update.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
@@ -114,17 +115,20 @@ import { StepBusinessLicenceControllingMemberInvitesComponent } from './componen
 import { StepBusinessLicenceControllingMembersComponent } from './components/business/step-business-licence-controlling-members.component';
 import { StepBusinessLicenceEmployeesComponent } from './components/business/step-business-licence-employees.component';
 import { StepBusinessLicenceExpiredComponent } from './components/business/step-business-licence-expired.component';
-import { StepBusinessLicenceIsChangeSummaryComponent } from './components/business/step-business-licence-is-change-summary.component';
 import { StepBusinessLicenceLiabilityComponent } from './components/business/step-business-licence-liability.component';
 import { StepBusinessLicenceManagerInformationComponent } from './components/business/step-business-licence-manager-information.component';
 import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
+import { StepBusinessLicenceReprintComponent } from './components/business/step-business-licence-reprint.component';
+import { StepBusinessLicenceStaticSummaryComponent } from './components/business/step-business-licence-static-summary.component';
 import { StepBusinessLicenceSummaryComponent } from './components/business/step-business-licence-summary.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
+import { StepBusinessLicenceUpdateFeeComponent } from './components/business/step-business-licence-update-fee.component';
 import { StepsBusinessLicenceContactInformationComponent } from './components/business/steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './components/business/steps-business-licence-controlling-members.component';
 import { StepsBusinessLicenceInformationComponent } from './components/business/steps-business-licence-information.component';
 import { StepsBusinessLicenceReviewComponent } from './components/business/steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './components/business/steps-business-licence-selection.component';
+import { StepsBusinessLicenceUpdatesComponent } from './components/business/steps-business-licence-updates.component';
 import { BusinessLicencePaymentCancelComponent } from './components/shared/business-licence-payment-cancel.component';
 import { BusinessLicencePaymentErrorComponent } from './components/shared/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/shared/business-licence-payment-fail.component';
@@ -229,6 +233,10 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
 		BusinessLicenceWizardRenewalComponent,
+		BusinessLicenceWizardUpdateComponent,
+		StepBusinessLicenceReprintComponent,
+		StepBusinessLicenceUpdateFeeComponent,
+		StepsBusinessLicenceUpdatesComponent,
 		CollectionNoticeComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAddressComponent,
@@ -321,7 +329,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceProfileComponent,
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,
-		StepBusinessLicenceIsChangeSummaryComponent,
+		StepBusinessLicenceStaticSummaryComponent,
 		StepBusinessLicenceTermComponent,
 		StepBusinessLicenceExpiredComponent,
 		StepBusinessLicenceManagerInformationComponent,
