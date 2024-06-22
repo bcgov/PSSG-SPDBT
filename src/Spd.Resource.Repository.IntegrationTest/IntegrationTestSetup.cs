@@ -13,6 +13,7 @@ using Spd.Resource.Repository.OptionSet;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using System.Reflection;
 
@@ -61,6 +62,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IBizLicApplicationRepository, BizLicApplicationRepository>();
         serviceCollection.AddTransient<IBizContactRepository, BizContactRepository>();
         serviceCollection.AddTransient<IApplicationRepository, ApplicationRepository>();
+        serviceCollection.AddTransient<ITaskRepository, TaskRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
     public IServiceProvider ServiceProvider { get; private set; }
