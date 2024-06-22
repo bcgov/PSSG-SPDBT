@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Controllers;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
@@ -16,7 +17,8 @@ namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class BizLicensingControllerTest
 {
     private readonly IFixture fixture;
-    private Mock<IValidator<BizLicAppUpsertRequest>> mockValidator = new();
+    private Mock<IValidator<BizLicAppUpsertRequest>> mockUpsertValidator = new();
+    private Mock<IValidator<BizLicAppSubmitRequest>> mockSubmitValidator = new();
     private Mock<IMediator> mockMediator = new();
     private Mock<IDistributedCache> mockCache = new();
     private Mock<IDataProtectionProvider> mockDpProvider = new();
@@ -51,10 +53,14 @@ public class BizLicensingControllerTest
             .ReturnsAsync(new List<LicenceAppDocumentResponse>());
         mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppRenewCommand>(), CancellationToken.None))
             .ReturnsAsync(new BizLicAppCommandResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppUpdateCommand>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicAppCommandResponse());
         var validationResults = fixture.Build<ValidationResult>()
                 .With(r => r.Errors, [])
                 .Create();
-        mockValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppUpsertRequest>(), CancellationToken.None))
+        mockUpsertValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppUpsertRequest>(), CancellationToken.None))
+                .ReturnsAsync(validationResults);
+        mockSubmitValidator.Setup(x => x.ValidateAsync(It.IsAny<BizLicAppSubmitRequest>(), CancellationToken.None))
                 .ReturnsAsync(validationResults);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
@@ -66,7 +72,8 @@ public class BizLicensingControllerTest
         sut = new BizLicensingController(user,
             mockMediator.Object,
             configuration,
-            mockValidator.Object,
+            mockUpsertValidator.Object,
+            mockSubmitValidator.Object,
             mockRecaptch.Object,
             mockCache.Object,
             mockDpProvider.Object);
@@ -123,9 +130,9 @@ public class BizLicensingControllerTest
     }
 
     [Fact]
-    public async void Post_SubmitBusinessLicenceApplicationChange_Return_BizLicAppCommandResponse()
+    public async void Post_ChangeOnBizLicApp_Renewal_Return_BizLicAppCommandResponse()
     {
-        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.Renewal };
+        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = ApplicationTypeCode.Renewal };
 
         var result = await sut.ChangeOnBizLicApp(request, CancellationToken.None);
 
@@ -134,9 +141,20 @@ public class BizLicensingControllerTest
     }
 
     [Fact]
-    public async void Post_SubmitBusinessLicenceApplicationChange_With_Wrong_ApplicationTypeCode_Throw_Exception()
+    public async void Post_ChangeOnBizLicApp_Update_Return_BizLicAppCommandResponse()
     {
-        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = Manager.Shared.ApplicationTypeCode.New };
+        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = ApplicationTypeCode.Update };
+
+        var result = await sut.ChangeOnBizLicApp(request, CancellationToken.None);
+
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        mockMediator.Verify();
+    }
+
+    [Fact]
+    public async void Post_ChangeOnBizLicApp_With_Wrong_ApplicationTypeCode_Throw_Exception()
+    {
+        BizLicAppSubmitRequest request = new() { ApplicationTypeCode = ApplicationTypeCode.New };
 
         _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.ChangeOnBizLicApp(request, CancellationToken.None));
     }
