@@ -584,7 +584,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			});
 		}
 
-		if (liabilityData.attachments.length > 0) {
+		if (liabilityData.attachments?.length > 0) {
 			const docs: Array<Blob> = [];
 			liabilityData.attachments?.forEach((doc: any) => {
 				docs.push(doc);
