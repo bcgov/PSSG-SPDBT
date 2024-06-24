@@ -2,7 +2,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
@@ -133,7 +132,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService
@@ -146,10 +144,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
-
-		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		}
 
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: any) => {
@@ -335,7 +329,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
-		// only 403s will be here as an error // TODO business licence has duplicates?
+		// only 403s will be here as an error
 		if (error.status == 403) {
 			this.commonApplicationService.handleDuplicateLicence();
 		}

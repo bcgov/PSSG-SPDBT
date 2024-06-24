@@ -1,8 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { StepWorkerLicenceCategoryComponent } from './step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from './step-worker-licence-dogs-authorization.component';
@@ -182,7 +180,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@ViewChild(StepWorkerLicenceTermComponent)
 	licenceTermComponent!: StepWorkerLicenceTermComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
 
@@ -211,12 +209,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	}
 
 	onGotoUserProfile(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
-				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
-			),
-			{ state: { applicationTypeCode: this.applicationTypeCode } }
-		);
+		this.commonApplicationService.onGotoSwlUserProfile(this.applicationTypeCode!);
 	}
 
 	isStepToSave(): boolean {

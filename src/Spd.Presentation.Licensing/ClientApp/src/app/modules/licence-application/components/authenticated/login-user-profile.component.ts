@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -64,7 +64,7 @@ import { CommonUserProfileComponent } from './user-profile/common-user-profile.c
 	`,
 	styles: [],
 })
-export class LoginUserProfileComponent implements OnInit {
+export class LoginUserProfileComponent {
 	@ViewChild(CommonUserProfileComponent) userProfileComponent!: CommonUserProfileComponent;
 
 	isReadonly = true;
@@ -84,12 +84,6 @@ export class LoginUserProfileComponent implements OnInit {
 		// check if isReadonly was passed from 'LicenceUserApplicationsComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.isReadonly = state && state['isReadonly'];
-	}
-
-	ngOnInit(): void {
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		}
 	}
 
 	onCancel(): void {
