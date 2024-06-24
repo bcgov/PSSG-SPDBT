@@ -24,6 +24,7 @@ export interface BizLicAppSubmitRequest {
   originalLicenceId?: null | string;
   previousDocumentIds?: null | Array<string>;
   privateInvestigatorSwlInfo?: SwlContactInfo;
+  reprint?: null | boolean;
   useDogs?: null | boolean;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

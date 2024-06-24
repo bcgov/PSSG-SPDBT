@@ -81,7 +81,7 @@ export class BusinessControllingMembersAndEmployeesComponent {
 		const valid2 = this.employeesComponent.isFormValid();
 		if (!valid1 || !valid2) return;
 
-		this.businessApplicationService.saveControllingMembersAndEmployees().subscribe({
+		this.businessApplicationService.submitControllingMembersAndEmployees().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your controlling members & employees has been successfully updated');
 				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());

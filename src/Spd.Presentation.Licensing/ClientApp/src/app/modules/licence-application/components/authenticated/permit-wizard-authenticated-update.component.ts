@@ -9,6 +9,7 @@ import { BaseWizardComponent } from '@app/core/components/base-wizard.component'
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { CommonApplicationService } from '../../services/common-application.service';
 import { PermitApplicationService } from '../../services/permit-application.service';
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-steps/steps-permit-review-authenticated.component';
 import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-steps/steps-permit-updates-authenticated.component';
@@ -98,7 +99,8 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private permitApplicationService: PermitApplicationService
+		private permitApplicationService: PermitApplicationService,
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 
@@ -107,10 +109,6 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	}
 
 	ngOnInit(): void {
-		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		}
-
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -159,10 +157,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	}
 
 	onGotoUserProfile(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED),
-			{ state: { workerLicenceTypeCode: this.workerLicenceTypeCode!, applicationTypeCode: ApplicationTypeCode.Update } }
-		);
+		this.commonApplicationService.onGotoPermitUserProfile(this.workerLicenceTypeCode, ApplicationTypeCode.Update);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

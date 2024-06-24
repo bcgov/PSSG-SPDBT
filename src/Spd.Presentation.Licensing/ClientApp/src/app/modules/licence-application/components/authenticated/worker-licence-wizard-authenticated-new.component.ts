@@ -123,10 +123,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathUserApplications());
-		}
-
 		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
@@ -297,7 +293,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
-		// only 403s will be here as an error // TODO business licence has duplicates?
+		// only 403s will be here as an error
 		if (error.status == 403) {
 			this.commonApplicationService.handleDuplicateLicence();
 		}
