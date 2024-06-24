@@ -8,6 +8,8 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -23,6 +25,7 @@ public class BizLicenceAppManagerTest
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
     private Mock<IBizLicApplicationRepository> mockBizLicAppRepo = new();
     private Mock<IBizContactRepository> mockBizContactRepo = new();
+    private Mock<ITaskRepository> mockTaskRepo = new();
     private BizLicAppManager sut;
 
     public BizLicenceAppManagerTest()
@@ -47,7 +50,8 @@ public class BizLicenceAppManagerTest
             mockMainFileService.Object,
             mockTransientFileStorageService.Object,
             mockBizContactRepo.Object,
-            mockBizLicAppRepo.Object);
+            mockBizLicAppRepo.Object,
+            mockTaskRepo.Object);
     }
 
     [Fact]
@@ -252,6 +256,8 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
             m => m.OriginalApplicationId == originalApplicationId &&
             m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
@@ -261,7 +267,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
+            ApplicationTypeCode = ApplicationTypeCode.Renewal,
             OriginalLicenceId = originalLicenceId,
             OriginalApplicationId = originalApplicationId,
             NoBranding = false,
@@ -297,7 +303,7 @@ public class BizLicenceAppManagerTest
         // Arrange
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.New
+            ApplicationTypeCode = ApplicationTypeCode.New
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -320,7 +326,7 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
+            ApplicationTypeCode = ApplicationTypeCode.Renewal
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -348,7 +354,36 @@ public class BizLicenceAppManagerTest
 
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal
+            ApplicationTypeCode = ApplicationTypeCode.Renewal
+        };
+        BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppRenewCommand_WithoutLinkedBusiness_Throw_Exception()
+    {
+        // Arrange
+        DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays);
+        DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+        LicenceResp originalLicence = new() { LicenceAppId = Guid.NewGuid(), ExpiryDate = expiryDate };
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>() { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp());
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Renewal,
+            OriginalApplicationId = Guid.NewGuid(),
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -374,10 +409,13 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = Guid.NewGuid(), BizId = Guid.NewGuid() });        
+        
         BizLicAppSubmitRequest request = new()
         {
-            ApplicationTypeCode = Shared.ApplicationTypeCode.Renewal,
+            ApplicationTypeCode = ApplicationTypeCode.Renewal,
+            OriginalApplicationId = Guid.NewGuid(),
             NoBranding = true,
             UseDogs = false
         };
@@ -389,6 +427,172 @@ public class BizLicenceAppManagerTest
 
         // Assert
         await Assert.ThrowsAsync<ApiException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_CreateNewApplication_Return_BizLicAppCommandResponse()
+    {
+        // Arrange
+        Guid originalApplicationId = Guid.NewGuid();
+        Guid originalLicenceId = Guid.NewGuid();
+        Guid newLicAppId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceId, originalLicenceId)
+            .Create();
+        LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
+        mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
+           m => m.OriginalApplicationId == originalApplicationId &&
+           m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
+           .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
+        mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Update,
+            OriginalLicenceId = originalLicenceId,
+            OriginalApplicationId = originalApplicationId,
+            NoBranding = false,
+            UseDogs = true,
+            Reprint = true,
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        Assert.Equal(newLicAppId, result.LicenceAppId);
+        Assert.Equal(licenceFeeResp.Amount, result.Cost);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_UpdateApplication_Return_BizLicAppCommandResponse()
+    {
+        // Arrange
+        Guid originalApplicationId = Guid.NewGuid();
+        Guid originalLicenceId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        LicenceResp originalLicence = fixture.Build<LicenceResp>()
+            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceId, originalLicenceId)
+            .Create();
+
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp> { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() 
+            { 
+                LicenceAppId = originalApplicationId, 
+                BizId = bizId ,
+                UseDogs = true,
+                CategoryCodes = new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.ArmouredCarGuard }
+            });
+        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.Is<SaveBizLicApplicationCmd>(
+           m => m.LicenceAppId == originalApplicationId &&
+           m.ApplicantId == bizId), CancellationToken.None))
+           .ReturnsAsync(new BizLicApplicationCmdResp(originalApplicationId, bizId));
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Update,
+            OriginalLicenceId = originalLicenceId,
+            OriginalApplicationId = originalApplicationId,
+            NoBranding = false,
+            UseDogs = true,
+            Reprint = false,
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizLicAppCommandResponse>(result);
+        Assert.Equal(originalApplicationId, result.LicenceAppId);
+        Assert.Equal(0, result.Cost);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_WithWrongApplicationType_Throw_Exception()
+    {
+        // Arrange
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.New
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_WithoutOriginalLicence_Throw_Exception()
+    {
+        // Arrange
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>()
+            });
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Update
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizLicAppUpdateCommand_WithoutLinkedBusiness_Throw_Exception()
+    {
+        // Arrange
+        LicenceResp originalLicence = new() { LicenceAppId = Guid.NewGuid() };
+        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
+            .ReturnsAsync(new LicenceListResp()
+            {
+                Items = new List<LicenceResp>() { originalLicence }
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp());
+
+        BizLicAppSubmitRequest request = new()
+        {
+            ApplicationTypeCode = ApplicationTypeCode.Update,
+            OriginalApplicationId = Guid.NewGuid(),
+        };
+        BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
+
+        // Action
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(act);
     }
 
     [Fact]
