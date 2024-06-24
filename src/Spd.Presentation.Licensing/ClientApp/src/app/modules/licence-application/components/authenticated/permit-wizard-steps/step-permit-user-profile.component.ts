@@ -142,10 +142,6 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	}
 
 	ngOnInit(): void {
-		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
-		}
-
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
 			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act (AVAMCCA)';
 		} else {
