@@ -126,10 +126,56 @@ internal class BizLicAppManager :
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
 
+        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        if (originalLic.BizId == null)
+            throw new ArgumentException("there is no business related to the application.");
+
+        var existingFiles = await GetExistingFileInfo(
+                cmd.LicenceRequest.OriginalApplicationId,
+                cmd.LicenceRequest.PreviousDocumentIds,
+                cancellationToken);
+        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
+            cmd.LicAppFileInfos.ToList(),
+            cancellationToken);
+
+        // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+
+        // Upload new files
+        await UploadNewDocsAsync(null,
+                cmd.LicAppFileInfos,
+                response?.LicenceAppId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                response?.AccountId,
+                cancellationToken);
+
+        // Copying all old files to new application in PreviousFileIds 
+        if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.AccountId),
+                    cancellationToken);
+            }
+        }
+
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        
+        // Update members
+        if (cmd.LicenceRequest.Members != null)
+            await UpdateMembersAsync(cmd.LicenceRequest.Members,
+                (Guid)originalLic.BizId,
+                (Guid)originalLic.LicenceAppId,
+                cancellationToken);
+
+        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand cmd, CancellationToken cancellationToken)
