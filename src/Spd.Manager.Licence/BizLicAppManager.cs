@@ -151,6 +151,10 @@ internal class BizLicAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
+        BizLicApplicationResp originaBizlLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        if (originaBizlLic.BizId == null)
+            throw new ArgumentException("there is no business related to the application.");
+
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceRequest.OriginalApplicationId,
             cmd.LicenceRequest.PreviousDocumentIds,
@@ -159,10 +163,19 @@ internal class BizLicAppManager :
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
 
+        // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
+        // Update members
+        if (cmd.LicenceRequest.Members != null)
+            await UpdateMembersAsync(cmd.LicenceRequest.Members,
+                (Guid)originaBizlLic.BizId,
+                (Guid)originaBizlLic.LicenceAppId,
+                cancellationToken);
+
+        // Upload new files
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
                 response?.LicenceAppId,
@@ -174,7 +187,6 @@ internal class BizLicAppManager :
                 response?.AccountId,
                 cancellationToken);
 
-        if (response?.LicenceAppId == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create a new application failed.");
         // Copying all old files to new application in PreviousFileIds 
         if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
         {
@@ -211,6 +223,7 @@ internal class BizLicAppManager :
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
 
+        // Create new app, else update existing one
         if ((request.Reprint != null && request.Reprint.Value) || changes.CategoriesChanged || changes.UseDogsChanged)
         {
             var existingFiles = await GetExistingFileInfo(
@@ -220,6 +233,30 @@ internal class BizLicAppManager :
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+
+            // Upload new files
+            await UploadNewDocsAsync(null,
+                    cmd.LicAppFileInfos,
+                    response?.LicenceAppId,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    response?.AccountId,
+                    cancellationToken);
+
+            // Copying all old files to new application in PreviousFileIds 
+            if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
+            {
+                foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
+                {
+                    await _documentRepository.ManageAsync(
+                        new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.AccountId),
+                        cancellationToken);
+                }
+            }
+
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
         else
@@ -229,6 +266,7 @@ internal class BizLicAppManager :
             response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
         }
 
+        // Update members
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalLic.BizId,
