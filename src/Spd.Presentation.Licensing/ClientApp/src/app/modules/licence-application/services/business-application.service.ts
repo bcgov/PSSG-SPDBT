@@ -202,6 +202,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
+	payBusinessLicenceRenewalOrUpdateOrReplace(params: { paymentSuccess: string; paymentReason: string }): void {
+		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
+			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.hotToastService.success(params.paymentSuccess);
+				this.commonApplicationService.payNowPersonalLicenceAuthenticated(
+					_resp.body.licenceAppId!,
+					params.paymentReason
+				);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+				this.hotToastService.error('An error occurred during the save. Please try again.');
+			},
+		});
+	}
+
 	getBusinessProfile(): Observable<BizProfileResponse> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
@@ -218,7 +234,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace() {
+	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -921,7 +937,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				});
 
 				const companyBrandingData = {
-					noLogoOrBranding: companyBrandingAttachments.length > 0 ? false : true,
+					noLogoOrBranding: companyBrandingAttachments.length > 0,
 					attachments: companyBrandingAttachments,
 				};
 

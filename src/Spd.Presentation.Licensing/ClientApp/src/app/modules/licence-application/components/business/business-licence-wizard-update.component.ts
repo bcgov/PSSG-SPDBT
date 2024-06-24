@@ -159,19 +159,12 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		}
 	}
 
-	// onNextPayStep(): void {
-	// 	this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-	// 		next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-	// 			this.hotToastService.success('Your business licence renewal has been successfully submitted');
-	// 			this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-	// 			this.payNow(resp.body.licenceAppId!);
-	// 		},
-	// 		error: (error: any) => {
-	// 			console.log('An error occurred during save', error);
-	// 			this.hotToastService.error('An error occurred during the save. Please try again.');
-	// 		},
-	// 	});
-	// }
+	onNextPayStep(): void {
+		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+			paymentSuccess: 'Your business licence update has been successfully submitted',
+			paymentReason: 'Payment for update of Business Licence application',
+		});
+	}
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (stepper?.selected) stepper.selected.completed = true;
@@ -225,16 +218,16 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		// }
 	}
 
-	onNextPayStep(): void {
-		this.payNow(this.newLicenceAppId!);
-	}
+	// onNextPayStep(): void {
+	// 	this.payNow(this.newLicenceAppId!);
+	// }
 
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for Business Licence update'
-		);
-	}
+	// private payNow(licenceAppId: string): void {
+	// 	this.commonApplicationService.payNowPersonalLicenceAuthenticated(
+	// 		licenceAppId,
+	// 		'Payment for Business Licence update'
+	// 	);
+	// }
 
 	// private goToChildNextStep() {
 	// 	switch (this.stepper.selectedIndex) {

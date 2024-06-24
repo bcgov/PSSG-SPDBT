@@ -1,9 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
@@ -43,7 +41,6 @@ import { CommonApplicationService } from '../../services/common-application.serv
 export class BusinessLicenceWizardReplacementComponent extends BaseWizardComponent implements OnInit {
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -62,22 +59,9 @@ export class BusinessLicenceWizardReplacementComponent extends BaseWizardCompone
 	}
 
 	onPayNow(): void {
-		this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				this.hotToastService.success('Your licence replacement has been successfully submitted');
-				this.payNow(_resp.body.licenceAppId!);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
+		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+			paymentSuccess: 'Your business licence replacement has been successfully submitted',
+			paymentReason: 'Payment for replacement of Business Licence application',
 		});
-	}
-
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for Security Worker Licence replacement'
-		);
 	}
 }
