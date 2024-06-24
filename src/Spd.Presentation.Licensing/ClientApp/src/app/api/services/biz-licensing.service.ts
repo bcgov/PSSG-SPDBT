@@ -421,9 +421,9 @@ export class BizLicensingService extends BaseService {
   }
 
   /**
-   * Path part for operation apiBusinessLicenceApplicationBizIdApplicationIdFilesPost
+   * Path part for operation apiBusinessLicenceApplicationFilesPost
    */
-  static readonly ApiBusinessLicenceApplicationBizIdApplicationIdFilesPostPath = '/api/business-licence-application/{bizId}/{applicationId}/files';
+  static readonly ApiBusinessLicenceApplicationFilesPostPath = '/api/business-licence-application/files';
 
   /**
    * Uploading file only save files in cache, the files are not connected to the biz and application yet.
@@ -432,13 +432,11 @@ export class BizLicensingService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationBizIdApplicationIdFilesPost()` instead.
+   * To access only the response body, use `apiBusinessLicenceApplicationFilesPost()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response(params: {
-    bizId: string;
-    applicationId: string;
+  apiBusinessLicenceApplicationFilesPost$Response(params?: {
     body?: {
 'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
@@ -448,10 +446,8 @@ export class BizLicensingService extends BaseService {
 
 ): Observable<StrictHttpResponse<string>> {
 
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBizIdApplicationIdFilesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationFilesPostPath, 'post');
     if (params) {
-      rb.path('bizId', params.bizId, {});
-      rb.path('applicationId', params.applicationId, {});
       rb.body(params.body, 'multipart/form-data');
     }
 
@@ -474,13 +470,11 @@ export class BizLicensingService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationFilesPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiBusinessLicenceApplicationBizIdApplicationIdFilesPost(params: {
-    bizId: string;
-    applicationId: string;
+  apiBusinessLicenceApplicationFilesPost(params?: {
     body?: {
 'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
@@ -490,7 +484,7 @@ export class BizLicensingService extends BaseService {
 
 ): Observable<string> {
 
-    return this.apiBusinessLicenceApplicationBizIdApplicationIdFilesPost$Response(params,context).pipe(
+    return this.apiBusinessLicenceApplicationFilesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<string>) => r.body as string)
     );
   }
