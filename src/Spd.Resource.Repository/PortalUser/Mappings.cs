@@ -12,6 +12,7 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portaluserid))
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
+            .ForMember(d => d.UserEmail, opt => opt.MapFrom(s => s.spd_emailaddress1))
             .ForMember(d => d.IdentityId, opt => opt.MapFrom(s => s._spd_identityid_value))
             .ForMember(d => d.IsPSA, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_psa)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))

@@ -18,6 +18,7 @@ namespace Spd.Resource.Repository.PortalUser
         public Guid? IdentityId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? UserEmail { get; set; }
         public bool? IsPSA { get; set; }
         public ContactRoleCode? ContactRoleCode { get; set; }
         public bool? IsFirstTimeLogin { get; set; }
