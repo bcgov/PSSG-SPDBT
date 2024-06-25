@@ -6,7 +6,6 @@ import {
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
-	BizLicAppSubmitRequest,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
@@ -236,14 +235,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
-		delete bodyUpsert.documentInfos;
-
-		const bodySubmit = bodyUpsert as BizLicAppSubmitRequest;
-		const documentsToSave = this.getSaveBodyDocumentInfos(businessModelFormValue);
+		const body = this.getSaveBodyBase(businessModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		bodySubmit.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Create list of APIs to call for the newly added documents
 		const documentsToSaveApis: Observable<any>[] = [];
@@ -251,7 +246,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
 
-		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+		body.documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
 			const newDocumentsOnly: Array<Blob> = [];
 
 			doc.documents.forEach((item: Blob) => {
@@ -275,27 +270,29 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		});
 
+		delete body.documentInfos;
+
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					bodySubmit.documentKeyCodes = [...resps];
+					body.documentKeyCodes = [...resps];
 					// pass in the list of document ids that were in the original
 					// application and are still being used
-					bodySubmit.previousDocumentIds = [...existingDocumentIds];
+					body.previousDocumentIds = [...existingDocumentIds];
 
 					return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-						body: bodySubmit,
+						body,
 					});
 				})
 			);
 		} else {
 			// pass in the list of document ids that were in the original
 			// application and are still being used
-			bodySubmit.previousDocumentIds = [...existingDocumentIds];
+			body.previousDocumentIds = [...existingDocumentIds];
 
 			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-				body: bodySubmit,
+				body,
 			});
 		}
 	}

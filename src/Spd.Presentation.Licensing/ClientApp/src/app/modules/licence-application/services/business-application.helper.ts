@@ -1,7 +1,6 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
 	ApplicationTypeCode,
-	BizLicAppUpsertRequest,
 	BizTypeCode,
 	ContactInfo,
 	Document,
@@ -386,7 +385,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		super(formBuilder);
 	}
 
-	getSaveBodyBase(businessModelFormValue: any): BizLicAppUpsertRequest {
+	getSaveBodyBase(businessModelFormValue: any): any {
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const workerLicenceTypeData = { ...businessModelFormValue.workerLicenceTypeData };

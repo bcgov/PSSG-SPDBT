@@ -9,7 +9,6 @@ import {
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppSubmitRequest,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
@@ -750,18 +749,18 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 	 * @returns
 	 */
 
-	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): WorkerLicenceAppSubmitRequest {
+	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): any {
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, true);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(licenceModelFormValue: any): [WorkerLicenceAppSubmitRequest, Array<Document>] {
+	getSaveBodyBaseAnonymous(licenceModelFormValue: any): any {
 		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
-		return [baseData, baseData.documentInfos];
+		return baseData;
 	}
 
 	private getSaveBodyBase(licenceModelFormValue: any, isAuthenticated: boolean): any {

@@ -32,6 +32,7 @@ import { StepWorkerLicenceUpdateTermsAuthenticatedComponent } from './components
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
+import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business/business-licence-update-received-success.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business/business-licence-wizard-replacement.component';
@@ -123,6 +124,7 @@ export class LicenceApplicationRoutes {
 	public static readonly PAYMENT_ERROR = 'payment-error';
 	public static readonly LICENCE_UPDATE_SUCCESS = 'licence-update-success';
 	public static readonly PERMIT_UPDATE_SUCCESS = 'permit-update-success';
+	public static readonly BUSINESS_UPDATE_SUCCESS = 'business-update-success';
 
 	public static readonly MODULE_PATH = LicenceApplicationRoutes.LICENCE_APPLICATION;
 
@@ -396,6 +398,10 @@ const routes: Routes = [
 			{ path: LicenceApplicationRoutes.PAYMENT_ERROR, component: LicencePaymentErrorAnonymousComponent },
 			{ path: LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS, component: LicenceUpdateReceivedSuccessComponent },
 			{ path: LicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS, component: PermitUpdateReceivedSuccessComponent },
+			{
+				path: LicenceApplicationRoutes.BUSINESS_UPDATE_SUCCESS,
+				component: BusinessLicenceUpdateReceivedSuccessComponent,
+			},
 			{
 				path: '',
 				redirectTo: LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION),

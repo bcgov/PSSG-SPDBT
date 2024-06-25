@@ -87,6 +87,7 @@ import { BusinessCategorySecurityGuardComponent } from './components/business/bu
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
+import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business/business-licence-update-received-success.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business/business-licence-wizard-replacement.component';
@@ -236,6 +237,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		BusinessLicenceWizardRenewalComponent,
 		BusinessLicenceWizardUpdateComponent,
 		BusinessLicenceWizardReplacementComponent,
+		BusinessLicenceUpdateReceivedSuccessComponent,
 		StepBusinessLicenceReprintComponent,
 		StepBusinessLicenceUpdateFeeComponent,
 		StepsBusinessLicenceUpdatesComponent,
