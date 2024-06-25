@@ -27,7 +27,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-fail.png" alt="Payment error" />
+				<img class="payment__image__item" src="./assets/payment-fail.png" alt="Payment error" />
 			</div>
 		</div>
 

@@ -20,7 +20,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 										<td class="pr-2 pb-2">
 											<img
 												class="step-container__box__title__checkbox"
-												src="/assets/checkbox.svg"
+												src="./assets/checkbox.svg"
 												alt="Send out new criminal record check requests"
 											/>
 										</td>
@@ -30,7 +30,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 										<td class="pr-2 pb-2">
 											<img
 												class="step-container__box__title__checkbox"
-												src="/assets/checkbox.svg"
+												src="./assets/checkbox.svg"
 												alt="See application statuses"
 											/>
 										</td>
@@ -40,7 +40,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 										<td class="pr-2 pb-2">
 											<img
 												class="step-container__box__title__checkbox"
-												src="/assets/checkbox.svg"
+												src="./assets/checkbox.svg"
 												alt="Grant access to other users in your organization"
 											/>
 										</td>
@@ -50,7 +50,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 										<td class="pr-2 pb-2">
 											<img
 												class="step-container__box__title__checkbox"
-												src="/assets/checkbox.svg"
+												src="./assets/checkbox.svg"
 												alt="Easily manage expiring criminal record checks"
 											/>
 										</td>

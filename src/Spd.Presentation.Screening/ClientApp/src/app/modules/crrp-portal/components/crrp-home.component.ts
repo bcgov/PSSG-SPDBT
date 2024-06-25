@@ -29,7 +29,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								[routerLink]="[crrpRoutes.path(crrpRoutes.CRIMINAL_RECORD_CHECKS)]"
 							>
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/new_screening.png" alt="New Screening" />
+									<img class="box__image__item" src="./assets/dashboard/new_screening.png" alt="New Screening" />
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column box-text-height">
@@ -48,7 +48,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.APPLICATION_STATUSES)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/screening_status.png" alt="Screening Status" />
+									<img class="box__image__item" src="./assets/dashboard/screening_status.png" alt="Screening Status" />
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column box-text-height">
@@ -69,7 +69,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								<div class="box__image">
 									<img
 										class="box__image__item"
-										src="/assets/dashboard/expired_screenings.png"
+										src="./assets/dashboard/expired_screenings.png"
 										alt="Expired Screenings"
 									/>
 								</div>
@@ -95,7 +95,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								<div class="box__image">
 									<img
 										class="box__image__item"
-										src="/assets/dashboard/outstanding_payments.png"
+										src="./assets/dashboard/outstanding_payments.png"
 										alt="Outstanding Payments"
 									/>
 								</div>
@@ -116,7 +116,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 						<div class="col-xxl-4 col-xl-6 col-lg-12 col-md-12 col-sm-12">
 							<div class="box mx-auto" tabindex="-1" [routerLink]="[crrpRoutes.path(crrpRoutes.USERS)]">
 								<div class="box__image">
-									<img class="box__image__item" src="/assets/dashboard/authorized_users.png" alt="Users or Profile" />
+									<img class="box__image__item" src="./assets/dashboard/authorized_users.png" alt="Users or Profile" />
 								</div>
 								<div class="box__text">
 									<div class="d-flex align-items-start flex-column box-text-height">
@@ -141,7 +141,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 								<div class="box__image">
 									<img
 										class="box__image__item"
-										src="/assets/dashboard/applicant_identity.png"
+										src="./assets/dashboard/applicant_identity.png"
 										alt="Applicant Identity"
 									/>
 								</div>
