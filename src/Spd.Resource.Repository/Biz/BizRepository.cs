@@ -13,14 +13,14 @@ namespace Spd.Resource.Repository.Biz
         private readonly DynamicsContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<BizRepository> _logger;
-        private readonly List<BizTypeEnum> soleProprietorTypes = new() 
-        { 
+        private readonly List<BizTypeEnum> soleProprietorTypes = new()
+        {
             BizTypeEnum.RegisteredSoleProprietor,
-            BizTypeEnum.NonRegisteredSoleProprietor 
+            BizTypeEnum.NonRegisteredSoleProprietor
         };
 
-        public BizRepository(IDynamicsContextFactory ctx, 
-            IMapper mapper, 
+        public BizRepository(IDynamicsContextFactory ctx,
+            IMapper mapper,
             ILogger<BizRepository> logger)
         {
             _context = ctx.CreateChangeOverwrite();
@@ -58,7 +58,7 @@ namespace Spd.Resource.Repository.Biz
                 .Where(a => a.accountid == accountId);
 
             account? biz = await accounts.FirstOrDefaultAsync(ct);
-            
+
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
             List<spd_account_spd_servicetype> serviceTypes = _context.spd_account_spd_servicetypeset
@@ -101,11 +101,14 @@ namespace Spd.Resource.Repository.Biz
             account? biz = await accounts.FirstOrDefaultAsync(ct);
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
-            
+
             _mapper.Map(updateBizCmd, biz);
 
             _context.UpdateObject(biz);
-            UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
+            if (updateBizCmd.UpdateSoleProprietor)
+            {
+                UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
+            }
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(biz);
@@ -132,7 +135,7 @@ namespace Spd.Resource.Repository.Biz
                 if (updateBizServiceTypeCmd.ServiceTypeEnum.ToString() != serviceTypeCode)
                     _context.DeleteLink(biz, nameof(biz.spd_account_spd_servicetype), serviceType);
             }
-            
+
             await _context.SaveChangesAsync(ct);
             return await GetBizAsync(updateBizServiceTypeCmd.BizId, ct);
         }
@@ -147,7 +150,7 @@ namespace Spd.Resource.Repository.Biz
                 spd_servicetype? st = _context.LookupServiceType(serviceType.ToString());
                 _context.AddLink(account, nameof(account.spd_account_spd_servicetype), st);
             }
-            
+
             await _context.SaveChangesAsync(ct);
 
             return _mapper.Map<BizResult>(account);
