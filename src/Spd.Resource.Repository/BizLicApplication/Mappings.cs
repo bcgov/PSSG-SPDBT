@@ -55,6 +55,7 @@ internal class Mappings : Profile
         _ = CreateMap<CreateBizLicApplicationCmd, spd_application>()
           .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
           .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+          .ForMember(d => d.ownerid, opt => opt.MapFrom(s => Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid)))
           .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
