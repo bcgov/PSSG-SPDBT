@@ -35,7 +35,7 @@ internal class BizProfileManager :
         IAddressRepository addressRepository,
         IBCeIDService bceidService,
         IMapper mapper,
-        ILogger<IBizProfileManager> logger)
+        ILogger<BizProfileManager> logger)
     {
         _mapper = mapper;
         _logger = logger;
@@ -94,7 +94,7 @@ internal class BizProfileManager :
                 //let user login
                 //return the loginResponse
                 //update the biz               
-                BizResult b = await UpdateBiz(cmd, bizInfoFormBceid, ct);
+                await UpdateBiz(cmd, bizInfoFormBceid, ct);
                 return _mapper.Map<BizUserLoginResponse>(portalUser);
             }
             else
@@ -198,7 +198,7 @@ internal class BizProfileManager :
             BizName = bizInfoFromBceid?.TradeName,
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
-            MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid.MailingAddress)
+            MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid?.MailingAddress)
         };
 
         return await _bizRepository.ManageBizAsync(createCmd, ct);
@@ -214,7 +214,7 @@ internal class BizProfileManager :
             BizName = bizInfoFromBceid?.TradeName,
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
-            MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid.MailingAddress),
+            MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid?.MailingAddress),
             UpdateSoleProprietor = false
         };
 
