@@ -130,17 +130,8 @@ internal class BizLicAppManager :
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
-        var existingFiles = await GetExistingFileInfo(
-                cmd.LicenceRequest.OriginalApplicationId,
-                cmd.LicenceRequest.PreviousDocumentIds,
-                cancellationToken);
-        await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
-            cmd.LicAppFileInfos.ToList(),
-            cancellationToken);
-
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
