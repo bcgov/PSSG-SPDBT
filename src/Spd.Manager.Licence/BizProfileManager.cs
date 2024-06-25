@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Biz;
@@ -25,6 +26,7 @@ internal class BizProfileManager :
     private readonly IAddressRepository _addressRepository;
     private readonly IBCeIDService _bceidService;
     private readonly IMapper _mapper;
+    private readonly ILogger<IBizProfileManager> _logger;
 
     public BizProfileManager(
         IIdentityRepository idRepository,
@@ -32,9 +34,11 @@ internal class BizProfileManager :
         IPortalUserRepository portalUserRepository,
         IAddressRepository addressRepository,
         IBCeIDService bceidService,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<IBizProfileManager> logger)
     {
         _mapper = mapper;
+        _logger = logger;
         _idRepository = idRepository;
         _bizRepository = bizRepository;
         _addressRepository = addressRepository;
@@ -46,12 +50,13 @@ internal class BizProfileManager :
     {
         Identity? currentUserIdentity = null;
 
-        var bizInfo = await _bceidService.HandleQuery(new BCeIDAccountDetailQuery()
+        BCeIDUserDetailResult? bizInfoFormBceid = (BCeIDUserDetailResult?)await _bceidService.HandleQuery(new BCeIDAccountDetailQuery()
         {
             UserGuid = (Guid)cmd.BceidIdentityInfo.UserGuid
         });
 
-        //todo: update bizInfo to dynamics
+        if (bizInfoFormBceid == null)
+            _logger.LogError("Cannot get the business information from BCeID web service.");
 
         IdentityQueryResult idResult = await _idRepository.Query(
             new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderTypeEnum.BusinessBceId),
@@ -66,11 +71,12 @@ internal class BizProfileManager :
             Guid? bizId = cmd.BizId;
 
             if (cmd.BizId == null)
-                bizId = (await CreateBiz(cmd, ct)).Id;
+                bizId = (await CreateBiz(cmd, bizInfoFormBceid, ct)).Id;
             else
             {
                 //add biz type to org
                 BizResult b = await _bizRepository.ManageBizAsync(new AddBizServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
+                await UpdateBiz(cmd, bizInfoFormBceid, ct);
                 bizId = b.Id;
             }
 
@@ -87,6 +93,8 @@ internal class BizProfileManager :
             {
                 //let user login
                 //return the loginResponse
+                //update the biz               
+                BizResult b = await UpdateBiz(cmd, bizInfoFormBceid, ct);
                 return _mapper.Map<BizUserLoginResponse>(portalUser);
             }
             else
@@ -181,18 +189,36 @@ internal class BizProfileManager :
         }
     }
 
-    private async Task<BizResult> CreateBiz(BizLoginCommand cmd, CancellationToken ct)
+    private async Task<BizResult> CreateBiz(BizLoginCommand cmd, BCeIDUserDetailResult? bizInfoFromBceid, CancellationToken ct)
     {
         CreateBizCmd createCmd = new()
         {
             ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
-            BizLegalName = cmd.BceidIdentityInfo.BizName,
-            BizName = cmd.BceidIdentityInfo.BizName,
+            BizLegalName = bizInfoFromBceid?.LegalName,
+            BizName = bizInfoFromBceid?.TradeName,
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
+            MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid.MailingAddress)
         };
 
         return await _bizRepository.ManageBizAsync(createCmd, ct);
+    }
+
+    private async Task<BizResult> UpdateBiz(BizLoginCommand cmd, BCeIDUserDetailResult? bizInfoFromBceid, CancellationToken ct)
+    {
+        if (cmd.BizId == null) throw new ApiException(System.Net.HttpStatusCode.BadRequest, "cannot update biz withouth Id");
+        UpdateBizCmd updateCmd = new()
+        {
+            Id = (Guid)cmd.BizId,
+            BizLegalName = bizInfoFromBceid?.LegalName,
+            BizName = bizInfoFromBceid?.TradeName,
+            Email = cmd.BceidIdentityInfo.Email,
+            BizGuid = cmd.BceidIdentityInfo.BizGuid,
+            MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid.MailingAddress),
+            UpdateSoleProprietor = false
+        };
+
+        return await _bizRepository.ManageBizAsync(updateCmd, ct);
     }
 
     private async Task<PortalUserResp> AddPortalUserToBiz(BceidIdentityInfo info, Guid identityId, Guid bizId, CancellationToken ct)
