@@ -306,6 +306,16 @@ internal class SecurityWorkerAppManager :
             CreateLicenceApplicationCmd? createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
+            //copying all old files to new application in PreviousFileIds 
+            if (cmd.LicenceAnonymousRequest.PreviousDocumentIds != null && cmd.LicenceAnonymousRequest.PreviousDocumentIds.Any())
+            {
+                foreach (var docUrlId in cmd.LicenceAnonymousRequest.PreviousDocumentIds)
+                {
+                    await _documentRepository.ManageAsync(
+                        new CopyDocumentCmd(docUrlId, createLicResponse.LicenceAppId, createLicResponse.ContactId),
+                        cancellationToken);
+                }
+            }
             cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false);
         }
         else
