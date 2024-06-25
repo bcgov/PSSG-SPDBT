@@ -115,7 +115,35 @@ internal class BizLicAppManager :
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand cmd, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        BizLicAppSubmitRequest request = cmd.LicenceRequest;
+        if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
+            throw new ArgumentException("should be a replacement request");
+
+        // Validation: check if original licence meet update condition.
+        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
+            new LicenceQry() { LicenceId = request.OriginalLicenceId },
+            cancellationToken);
+        if (originalLicences == null || !originalLicences.Items.Any())
+            throw new ArgumentException("cannot find the licence that needs to be replaced.");
+
+        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        if (originalLic.BizId == null)
+            throw new ArgumentException("there is no business related to the application.");
+
+        // Create new app
+        CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        
+        // Update members
+        if (cmd.LicenceRequest.Members != null)
+            await UpdateMembersAsync(cmd.LicenceRequest.Members,
+                (Guid)originalLic.BizId,
+                (Guid)originalLic.LicenceAppId,
+                cancellationToken);
+
+        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand cmd, CancellationToken cancellationToken)
