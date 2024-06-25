@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } 
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
@@ -28,7 +27,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				</ng-container>
 
 				<app-wizard-footer
-					(previousStepperStep)="onGotoUserProfile()"
+					(previousStepperStep)="onGotoBusinessProfile()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
 			</mat-step>
@@ -127,11 +126,8 @@ export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComp
 		super(commonApplicationService);
 	}
 
-	onGotoUserProfile(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
-			{ state: { applicationTypeCode: this.applicationTypeCode } }
-		);
+	onGotoBusinessProfile(): void {
+		this.commonApplicationService.onGotoBusinessProfile(this.applicationTypeCode);
 	}
 
 	onRenewalShortFormNextStep(): void {

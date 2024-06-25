@@ -2,11 +2,9 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
@@ -31,7 +29,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 						<app-step-business-licence-confirmation></app-step-business-licence-confirmation>
 
 						<app-wizard-footer
-							(previousStepperStep)="onGotoUserProfile()"
+							(previousStepperStep)="onGotoBusinessProfile()"
 							(nextStepperStep)="onGoToNextStep()"
 						></app-wizard-footer>
 					</mat-step>
@@ -82,7 +80,6 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
-	bizTypeCode!: BizTypeCode;
 
 	isBusinessLicenceSoleProprietor!: boolean;
 	private businessModelValueChangedSubscription!: Subscription;
@@ -94,7 +91,6 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -115,18 +111,10 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 				this.applicationTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
-				this.bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-					'businessInformationData.bizTypeCode'
-				)?.value;
 
 				this.isBusinessLicenceSoleProprietor = this.businessApplicationService.businessModelFormGroup.get(
 					'isBusinessLicenceSoleProprietor'
 				)?.value;
-
-				// const membersWithoutSwl = this.businessApplicationService.businessModelFormGroup.get(
-				// 	'controllingMembersData.membersWithoutSwl'
-				// )?.value;
-				// this.nonSwlControllingMembersExist = membersWithoutSwl?.length > 0;
 
 				this.isFormValid = _resp;
 			}
@@ -141,11 +129,8 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		this.stepper.next();
 	}
 
-	onGotoUserProfile(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
-			{ state: { applicationTypeCode: this.applicationTypeCode } }
-		);
+	onGotoBusinessProfile(): void {
+		this.commonApplicationService.onGotoBusinessProfile(this.applicationTypeCode);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
@@ -174,19 +159,12 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		}
 	}
 
-	// onNextPayStep(): void {
-	// 	this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-	// 		next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-	// 			this.hotToastService.success('Your business licence renewal has been successfully submitted');
-	// 			this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-	// 			this.payNow(resp.body.licenceAppId!);
-	// 		},
-	// 		error: (error: any) => {
-	// 			console.log('An error occurred during save', error);
-	// 			this.hotToastService.error('An error occurred during the save. Please try again.');
-	// 		},
-	// 	});
-	// }
+	onNextPayStep(): void {
+		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+			paymentSuccess: 'Your business licence update has been successfully submitted',
+			paymentReason: 'Payment for update of Business Licence application',
+		});
+	}
 
 	onNextStepperStep(stepper: MatStepper): void {
 		if (stepper?.selected) stepper.selected.completed = true;
@@ -240,16 +218,16 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		// }
 	}
 
-	onNextPayStep(): void {
-		this.payNow(this.newLicenceAppId!);
-	}
+	// onNextPayStep(): void {
+	// 	this.payNow(this.newLicenceAppId!);
+	// }
 
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for Business Licence update'
-		);
-	}
+	// private payNow(licenceAppId: string): void {
+	// 	this.commonApplicationService.payNowPersonalLicenceAuthenticated(
+	// 		licenceAppId,
+	// 		'Payment for Business Licence update'
+	// 	);
+	// }
 
 	// private goToChildNextStep() {
 	// 	switch (this.stepper.selectedIndex) {

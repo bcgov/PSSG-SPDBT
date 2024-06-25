@@ -34,6 +34,7 @@ import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business/business-licence-wizard-renewal.component';
+import { BusinessLicenceWizardReplacementComponent } from './components/business/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business/business-licence-wizard-update.component';
 import { BusinessManagersComponent } from './components/business/business-managers.component';
 import { BusinessProfileComponent } from './components/business/business-profile.component';
@@ -272,7 +273,7 @@ const routes: Routes = [
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_REPLACEMENT,
-						component: BusinessLicenceWizardRenewalComponent, // TODO FIX
+						component: BusinessLicenceWizardReplacementComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_PROFILE,
