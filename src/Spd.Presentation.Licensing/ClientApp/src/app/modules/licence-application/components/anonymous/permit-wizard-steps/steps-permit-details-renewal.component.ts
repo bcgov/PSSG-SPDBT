@@ -1,7 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
@@ -56,15 +54,12 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
+	constructor(override commonApplicationService: CommonApplicationService) {
 		super(commonApplicationService);
 	}
 
 	onGotoUserProfile(): void {
-		this.router.navigateByUrl(
-			LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED),
-			{ state: { workerLicenceTypeCode: this.workerLicenceTypeCode, applicationTypeCode: this.applicationTypeCode } }
-		);
+		this.commonApplicationService.onGotoPermitUserProfile(this.workerLicenceTypeCode, this.applicationTypeCode);
 	}
 
 	override dirtyForm(step: number): boolean {

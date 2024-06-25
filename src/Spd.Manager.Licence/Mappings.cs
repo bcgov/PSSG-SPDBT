@@ -203,6 +203,8 @@ internal class Mappings : Profile
             .IncludeBase<Address, Addr>()
             .ReverseMap();
 
+        CreateMap<Spd.Utilities.BCeIDWS.Address, Addr>();
+
         CreateMap<Alias, AliasResp>()
             .ReverseMap();
 
