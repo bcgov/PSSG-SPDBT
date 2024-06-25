@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { UtilService } from '@app/core/services/util.service';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
@@ -62,7 +61,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 	`,
 	styles: ``,
 })
-export class StepBusinessLicenceProfileComponent implements OnInit {
+export class StepBusinessLicenceProfileComponent {
 	applicationTypeCode: ApplicationTypeCode | null = null;
 
 	alertText = '';
@@ -110,12 +109,6 @@ export class StepBusinessLicenceProfileComponent implements OnInit {
 					'Make sure your profile information is up-to-date before renewing or updating your licence, or starting a new application.';
 				break;
 			}
-		}
-	}
-
-	ngOnInit(): void {
-		if (!this.businessApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 		}
 	}
 

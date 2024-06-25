@@ -145,6 +145,32 @@ export class CommonApplicationService {
 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
 	}
 
+	public onGotoBusinessProfile(applicationTypeCode: ApplicationTypeCode): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
+			{ state: { applicationTypeCode } }
+		);
+	}
+
+	public onGotoSwlUserProfile(applicationTypeCode: ApplicationTypeCode): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated(
+				LicenceApplicationRoutes.WORKER_LICENCE_USER_PROFILE_AUTHENTICATED
+			),
+			{ state: { applicationTypeCode } }
+		);
+	}
+
+	public onGotoPermitUserProfile(
+		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		applicationTypeCode: ApplicationTypeCode
+	): void {
+		this.router.navigateByUrl(
+			LicenceApplicationRoutes.pathPermitAuthenticated(LicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED),
+			{ state: { workerLicenceTypeCode, applicationTypeCode } }
+		);
+	}
+
 	/**
 	 * Get the licence fees for the licence and application type and business type
 	 * @returns list of fees

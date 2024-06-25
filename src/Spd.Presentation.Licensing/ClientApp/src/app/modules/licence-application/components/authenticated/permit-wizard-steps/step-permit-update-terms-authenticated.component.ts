@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -15,7 +15,7 @@ import { StepPermitTermsOfUseComponent } from '../../anonymous/permit-wizard-ste
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepPermitUpdateTermsAuthenticatedComponent implements OnInit {
+export class StepPermitUpdateTermsAuthenticatedComponent {
 	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
 
@@ -25,12 +25,6 @@ export class StepPermitUpdateTermsAuthenticatedComponent implements OnInit {
 	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
-	}
-
-	ngOnInit(): void {
-		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.pathPermitAuthenticated());
-		}
 	}
 
 	onFormValidNextStep(): void {

@@ -2,15 +2,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
-import { CommonApplicationService } from '../../services/common-application.service';
 import { StepsBusinessLicenceContactInformationComponent } from './steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './steps-business-licence-controlling-members.component';
 import { StepsBusinessLicenceInformationComponent } from './steps-business-licence-information.component';
@@ -148,9 +143,6 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
-		private hotToastService: HotToastService,
-		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);
@@ -247,16 +239,9 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence renewal has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
-				this.payNow(resp.body.licenceAppId!);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
+		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+			paymentSuccess: 'Your business licence renewal has been successfully submitted',
+			paymentReason: 'Payment for renewal of Business Licence application',
 		});
 	}
 
@@ -309,13 +294,6 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 				this.stepsReviewAndConfirm?.onGoToNextStep();
 				break;
 		}
-	}
-
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowBusinessLicence(
-			licenceAppId,
-			'Payment for renewal of Business Licence application'
-		);
 	}
 
 	private goToReviewStep(): void {
