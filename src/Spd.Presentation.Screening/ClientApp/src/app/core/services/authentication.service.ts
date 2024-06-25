@@ -21,7 +21,7 @@ export class AuthenticationService {
   public async tryLogin(
     loginType: IdentityProviderTypeCode,
     returnComponentRoute: string
-  ): Promise<{ state: any; loggedIn: boolean }> {
+  ): Promise<{ state: string | null; loggedIn: boolean }> {
     await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
 
     const isLoggedIn = await this.oauthService
@@ -32,7 +32,7 @@ export class AuthenticationService {
     console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
     return {
-      state: this.oauthService.state || null,
+      state: this.oauthService.state ?? null,
       loggedIn: isLoggedIn,
     };
   }
@@ -42,12 +42,12 @@ export class AuthenticationService {
   // *
   public async login(
     loginType: IdentityProviderTypeCode,
-    returnComponentRoute: string | undefined = undefined
+    returnComponentRoute: string | undefined = undefined,
   ): Promise<string | null> {
     await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
 
-    const returnRoute = location.pathname.substring(1);
-    console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
+    const returnRoute = returnComponentRoute;
+    console.debug('[AuthenticationService] LOGIN', returnRoute);
 
     const isLoggedIn = await this.oauthService
       .loadDiscoveryDocumentAndLogin({
@@ -59,7 +59,7 @@ export class AuthenticationService {
     console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
     if (isLoggedIn) {
-      return Promise.resolve(this.oauthService.state || returnRoute);
+      return Promise.resolve(this.oauthService.state ?? returnRoute ?? null);
     }
 
     return Promise.resolve(null);

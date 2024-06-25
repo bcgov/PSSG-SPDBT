@@ -54,7 +54,7 @@ export class AuthProcessService {
 	async initializeCrrp(defaultOrgId: string | null = null, defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextRoute = defaultRoute ?? CrrpRoutes.path(CrrpRoutes.HOME);
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('initializeCrrp nextUrl', nextUrl);
 
@@ -82,7 +82,7 @@ export class AuthProcessService {
 	async initializeCrrpOrgLinkBceid(defaultOrgId: string, defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextRoute = defaultRoute ?? CrrpRoutes.path(CrrpRoutes.HOME)
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('[initializeCrrpOrgLinkBceid] nextUrl', nextUrl);
 
@@ -123,7 +123,7 @@ export class AuthProcessService {
 	async initializeCrrpUserInvitation(defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextRoute = defaultRoute ?? CrrpRoutes.path(CrrpRoutes.HOME);
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('initializeCrrpUserInvitation nextUrl', nextUrl);
 
@@ -217,7 +217,7 @@ export class AuthProcessService {
 			this.identityProvider,
 			PssoRoutes.path(PssoRoutes.SCREENING_STATUSES)
 		);
-		console.debug('initializePsso nextUrl', nextUrl);
+		console.debug('[initializePsso] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserIdirService.whoAmIAsync();
@@ -251,7 +251,7 @@ export class AuthProcessService {
 			if (this.authUserIdirService.idirUserWhoamiProfile?.isFirstTimeLogin) {
 				nextRoute = PssoRoutes.path(PssoRoutes.ORG_TERMS_AND_CONDITIONS);
 			}
-
+      console.debug("[initializePsso] nextRoute", nextRoute);
 			return Promise.resolve(nextRoute);
 		}
 

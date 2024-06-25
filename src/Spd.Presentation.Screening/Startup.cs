@@ -126,6 +126,7 @@ namespace Spd.Presentation.Screening
             }
 
             app.UseStaticFiles();
+            app.UseDefaultHttpRequestLogging();
             app.UseRouting();
             app.UseAuthentication();
             app.UseMiddleware<UsersMiddleware>();
@@ -140,8 +141,6 @@ namespace Spd.Presentation.Screening
                .ShortCircuit();
             app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
                .ShortCircuit();
-
-            app.UseDefaultHttpRequestLogging();
 
             app.MapControllerRoute(
                 name: "default",
