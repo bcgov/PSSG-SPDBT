@@ -143,29 +143,6 @@ internal class BizLicAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
-        // Upload new files
-        await UploadNewDocsAsync(null,
-                cmd.LicAppFileInfos,
-                response?.LicenceAppId,
-                null,
-                null,
-                null,
-                null,
-                null,
-                response?.AccountId,
-                cancellationToken);
-
-        // Copying all old files to new application in PreviousFileIds 
-        if (cmd.LicenceRequest.PreviousDocumentIds != null && cmd.LicenceRequest.PreviousDocumentIds.Any())
-        {
-            foreach (var docUrlId in cmd.LicenceRequest.PreviousDocumentIds)
-            {
-                await _documentRepository.ManageAsync(
-                    new CopyDocumentCmd(docUrlId, response.LicenceAppId, response.AccountId),
-                    cancellationToken);
-            }
-        }
-
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         
         // Update members
