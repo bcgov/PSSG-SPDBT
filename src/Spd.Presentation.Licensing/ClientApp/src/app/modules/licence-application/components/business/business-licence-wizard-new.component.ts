@@ -261,7 +261,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		this.businessApplicationService.submitBusinessLicenceNew().subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hotToastService.success('Your business licence has been successfully submitted');
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 				this.payNow(resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
