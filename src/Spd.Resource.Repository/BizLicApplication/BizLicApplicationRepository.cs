@@ -95,6 +95,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddTospd_applications(app);
         }
         await SetAddresses(cmd.ApplicantId, app, ct);
+        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
@@ -223,4 +224,15 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         _context.UpdateObject(app);
     }
+
+    private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
+    {
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == ownerId).FirstOrDefaultAsync(ct);
+
+        if (serviceTeam == null)
+            throw new ArgumentException("service team not found");
+
+        _context.SetLink(app, nameof(app.ownerid), serviceTeam);
+    }
+        
 }
