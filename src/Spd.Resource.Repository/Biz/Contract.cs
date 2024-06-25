@@ -12,7 +12,7 @@
     public record UpdateBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
     public record CreateBizCmd() : BizCmd;
     public record AddBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
-    
+
     //query
     public record BizsQry(Guid? BizGuid = null, bool IncludeInactive = false, string? BizCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null);
 
@@ -32,10 +32,11 @@
         public BizTypeEnum? BizType { get; set; }
         public IEnumerable<BranchAddr> BranchAddresses { get; set; } = Array.Empty<BranchAddr>();
 
+        public bool UpdateSoleProprietor { get; set; } = true;
         //sole proprietor properties
         public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } = new(); //for sole proprietor (registered or non-registered)
     }
-    
+
     public record BizResult : Biz
     {
         public int MaxContacts { get; } = 6;
@@ -44,7 +45,7 @@
         public bool IsActive { get; set; } = true;
         public Guid? ParentBizId { get; set; }
     }
-    
+
     public record BranchAddr() : Addr
     {
         public Guid? BranchId { get; set; }

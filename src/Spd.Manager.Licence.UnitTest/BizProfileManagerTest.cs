@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Address;
@@ -22,6 +23,7 @@ namespace Spd.Manager.Licence.UnitTest
         private Mock<IBizRepository> mockBizRepo = new();
         private Mock<IAddressRepository> mockAddressRepo = new();
         private Mock<IBCeIDService> mockBceidService = new();
+        private Mock<ILogger<BizProfileManager>> mockLogger = new();
         private BizProfileManager sut;
 
         public BizProfileManagerTest()
@@ -42,7 +44,8 @@ namespace Spd.Manager.Licence.UnitTest
                 mockPortalUserRepo.Object,
                 mockAddressRepo.Object,
                 mockBceidService.Object,
-                mapper);
+                mapper,
+                mockLogger.Object);
         }
 
         [Fact]
@@ -63,6 +66,9 @@ namespace Spd.Manager.Licence.UnitTest
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
+            mockBceidService.Setup(a => a.HandleQuery(It.Is<BCeIDAccountDetailQuery>(q => q.UserGuid == identityInfo.UserGuid)))
+                .ReturnsAsync(
+                    new BCeIDUserDetailResult() { MailingAddress = new Utilities.BCeIDWS.Address { AddressLine1 = "test" } });
 
             // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -94,9 +100,11 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new IdentityQueryResult(new List<Identity>()));
             mockIdRepo.Setup(m => m.Manage(It.IsAny<CreateIdentityCmd>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new IdentityCmdResult() { Id = identityId });
-            mockPortalUserRepo.Setup(a => a.ManageAsync(
-                It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
+            mockPortalUserRepo.Setup(a => a.ManageAsync(It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
+            mockBceidService.Setup(a => a.HandleQuery(It.Is<BCeIDAccountDetailQuery>(q => q.UserGuid == identityInfo.UserGuid)))
+                .ReturnsAsync(
+                    new BCeIDUserDetailResult() { MailingAddress = new Utilities.BCeIDWS.Address { AddressLine1 = "test" } });
 
             // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -133,6 +141,9 @@ namespace Spd.Manager.Licence.UnitTest
             mockPortalUserRepo.Setup(a => a.ManageAsync(
                 It.Is<CreatePortalUserCmd>(c => c.IdentityId == identityId && c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new PortalUserResp() { Id = portalUserId, OrganizationId = bizId });
+            mockBceidService.Setup(a => a.HandleQuery(It.Is<BCeIDAccountDetailQuery>(q => q.UserGuid == identityInfo.UserGuid)))
+                .ReturnsAsync(
+                    new BCeIDUserDetailResult() { MailingAddress = new Utilities.BCeIDWS.Address { AddressLine1 = "test" } });
 
             // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -159,6 +170,14 @@ namespace Spd.Manager.Licence.UnitTest
                     ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
                 });
 
+            mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<UpdateBizCmd>(c => c.BizGuid == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new BizResult()
+                {
+                    Id = bizId,
+                    ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
+                    MailingAddress = new Addr() { AddressLine1 = "address line1" }
+                });
+
             mockPortalUserRepo.Setup(a => a.QueryAsync(
                 It.Is<PortalUserQry>(c => c.OrgId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -180,6 +199,10 @@ namespace Spd.Manager.Licence.UnitTest
                             new(){ Id = portalUserId, OrganizationId = bizId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager}
                         }
                     });
+
+            mockBceidService.Setup(a => a.HandleQuery(It.Is<BCeIDAccountDetailQuery>(q => q.UserGuid == identityInfo.UserGuid)))
+                .ReturnsAsync(
+                    new BCeIDUserDetailResult() { MailingAddress = new Utilities.BCeIDWS.Address { AddressLine1 = "test" } });
 
             // Action
             var result = await sut.Handle(bizLogin, CancellationToken.None);
@@ -224,6 +247,10 @@ namespace Spd.Manager.Licence.UnitTest
                     {
                         Items = new List<PortalUserResp> { }
                     });
+
+            mockBceidService.Setup(a => a.HandleQuery(It.Is<BCeIDAccountDetailQuery>(q => q.UserGuid == identityInfo.UserGuid)))
+                .ReturnsAsync(
+                    new BCeIDUserDetailResult() { MailingAddress = new Utilities.BCeIDWS.Address { AddressLine1 = "test" } });
 
             // Action
             Func<Task> act = () => sut.Handle(bizLogin, CancellationToken.None);
