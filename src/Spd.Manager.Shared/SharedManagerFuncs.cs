@@ -7,7 +7,7 @@ using System.Net;
 namespace Spd.Manager.Shared;
 public static class SharedManagerFuncs
 {
-    public static void CheckMaxRoleNumberRuleAsync(OrgQryResult org, List<UserResult> userList, CancellationToken ct)
+    public static void CheckMaxRoleNumberRuleAsync(OrgQryResult org, List<UserResult> userList)
     {
         int maxContacts = org != null ? org.OrgResult.MaxContacts : 0;
         int maxPrimaryContacts = org != null ? org.OrgResult.MaxPrimaryContacts : 0;
