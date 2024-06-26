@@ -15,7 +15,6 @@ public class OrgUserManagerTest
     private readonly IFixture fixture;
     private Mock<IOrgUserRepository> mockOrgUserRepo = new();
     private Mock<IOrgRepository> mockOrgRepo = new();
-    private Mock<IMapper> mockMapper = new();
     private Mock<IIdentityRepository> mockIdRepo = new();
     private OrgUserManager sut;
 
@@ -25,8 +24,14 @@ public class OrgUserManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        var mapperConfig = new MapperConfiguration(x =>
+        {
+            x.AddProfile<OrgUserMappings>();
+        });
+        var mapper = mapperConfig.CreateMapper();
+
         sut = new OrgUserManager(mockOrgUserRepo.Object,
-            mockMapper.Object,
+            mapper,
             mockOrgRepo.Object,
             mockIdRepo.Object);
     }
@@ -50,10 +55,6 @@ public class OrgUserManagerTest
                 It.IsAny<UserCreateCmd>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrgUserManageResult(fixture.Create<UserResult>()));
-        mockMapper.Setup(m => m.Map<User>(It.IsAny<BceidIdentityInfo>()))
-            .Returns(fixture.Create<User>());
-        mockMapper.Setup(m => m.Map<OrgUserResponse>(It.IsAny<UserResult>()))
-            .Returns(fixture.Create<OrgUserResponse>());
         mockOrgRepo.Setup(org => org.ManageOrgAsync(
             It.IsAny<OrgGuidUpdateCmd>(),
             It.IsAny<CancellationToken>()))
@@ -98,10 +99,7 @@ public class OrgUserManagerTest
                 It.IsAny<UserCreateCmd>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrgUserManageResult(fixture.Create<UserResult>()));
-        mockMapper.Setup(m => m.Map<User>(It.IsAny<BceidIdentityInfo>()))
-            .Returns(fixture.Create<User>());
-        mockMapper.Setup(m => m.Map<OrgUserResponse>(It.IsAny<UserResult>()))
-            .Returns(fixture.Create<OrgUserResponse>());
+        
         var bceid = fixture.Build<BceidIdentityInfo>()
             .With(b => b.UserGuid, userGuid)
             .With(b => b.BizGuid, orgGuid)
