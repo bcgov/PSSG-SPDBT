@@ -769,6 +769,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		return applicationTypeCode === ApplicationTypeCode.Renewal || applicationTypeCode === ApplicationTypeCode.Update;
 	}
 
+	isUpdate(applicationTypeCode: ApplicationTypeCode | undefined): boolean {
+		if (!applicationTypeCode) return false;
+
+		return applicationTypeCode === ApplicationTypeCode.Update;
+	}
+
 	clearPrivateInvestigatorModelData(): void {
 		// clear out any old data
 		this.categoryPrivateInvestigatorFormGroup.patchValue({

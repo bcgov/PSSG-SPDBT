@@ -54,6 +54,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 						<app-steps-business-licence-review
 							[workerLicenceTypeCode]="workerLicenceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
+							[licenceCost]="newLicenceCost"
 							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -167,10 +168,10 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
-			paymentSuccess: 'Your business licence update has been successfully submitted',
-			paymentReason: 'Payment for update of Business Licence application',
-		});
+		this.commonApplicationService.payNowBusinessLicence(
+			this.newLicenceAppId!,
+			'Payment for update of Business Licence application'
+		);
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -198,11 +199,11 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		} else {
 			this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 				next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-					const workerLicenceCommandResponse = resp.body;
+					const bizLicenceCommandResponse = resp.body;
 
 					// save this locally just in case application payment fails
-					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
-					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
+					this.newLicenceAppId = bizLicenceCommandResponse.licenceAppId!;
+					this.newLicenceCost = bizLicenceCommandResponse.cost ?? 0;
 					if (this.newLicenceCost > 0) {
 						this.stepsReviewAndConfirm?.onGoToLastStep();
 					} else {

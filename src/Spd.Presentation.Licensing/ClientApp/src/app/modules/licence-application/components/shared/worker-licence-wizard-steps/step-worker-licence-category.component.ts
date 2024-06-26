@@ -97,7 +97,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
+											(click)="onDeselect(workerCategoryTypeCodes.ArmouredCarGuard)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -152,7 +152,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.BodyArmourSales)"
+											(click)="onDeselect(workerCategoryTypeCodes.BodyArmourSales)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -211,7 +211,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
+											(click)="onDeselect(workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -270,7 +270,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
+											(click)="onDeselect(workerCategoryTypeCodes.ElectronicLockingDeviceInstaller)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -326,7 +326,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.FireInvestigator)"
+											(click)="onDeselect(workerCategoryTypeCodes.FireInvestigator)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -381,7 +381,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.Locksmith)"
+											(click)="onDeselect(workerCategoryTypeCodes.Locksmith)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -434,7 +434,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.LocksmithUnderSupervision)"
+											(click)="onDeselect(workerCategoryTypeCodes.LocksmithUnderSupervision)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -490,7 +490,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
+											(click)="onDeselect(workerCategoryTypeCodes.PrivateInvestigator)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -550,7 +550,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
+											(click)="onDeselect(workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -608,7 +608,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstaller)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityAlarmInstaller)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -672,7 +672,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityAlarmInstallerUnderSupervision)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -730,7 +730,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmMonitor)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityAlarmMonitor)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -788,7 +788,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmResponse)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityAlarmResponse)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -844,7 +844,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityAlarmSales)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityAlarmSales)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -900,7 +900,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityConsultant)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityConsultant)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -952,7 +952,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityGuard)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -1007,7 +1007,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											mat-stroked-button
 											class="large delete-button my-lg-3"
 											aria-label="Remove category"
-											(click)="onRemove(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityGuardUnderSupervision)"
 										>
 											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
 										</button>
@@ -1076,16 +1076,16 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
 	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
 
-	title = 'Which categories of Security Worker Licence would you like?';
+	title = 'Which categories of the Security Worker Licence would you like?';
 	infoTitle = '';
 
-	readonly title_new = 'Which categories of Security Worker Licence are you applying for?';
+	readonly title_new = 'Which categories of the Security Worker Licence are you applying for?';
 	readonly subtitle_new = 'You can add up to a total of 6 categories';
 
-	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
+	readonly title_renew = 'Which categories of the Security Worker Licence would you like to renew?';
 	readonly subtitle_renew_update = 'You can remove existing categories as well as add new ones';
 
-	readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
+	readonly title_update = 'Which categories of the Security Worker Licence would you like to update?';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
@@ -1159,72 +1159,72 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		if (this.category) {
 			switch (this.category) {
 				case WorkerCategoryTypeCode.ArmouredCarGuard:
-					this.expandArmouredCarGuard = true;
+					if (!this.blockArmouredCarGuard) this.expandArmouredCarGuard = true;
 					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.BodyArmourSales:
-					this.expandBodyArmourSales = true;
+					if (!this.blockBodyArmourSales) this.expandBodyArmourSales = true;
 					this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-					this.expandClosedCircuitTelevisionInstaller = true;
+					if (!this.blockClosedCircuitTelevisionInstaller) this.expandClosedCircuitTelevisionInstaller = true;
 					this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
-					this.expandElectronicLockingDeviceInstaller = true;
+					if (!this.blockElectronicLockingDeviceInstaller) this.expandElectronicLockingDeviceInstaller = true;
 					this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.FireInvestigator:
-					this.expandFireInvestigator = true;
+					if (!this.blockFireInvestigator) this.expandFireInvestigator = true;
 					this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.Locksmith:
-					this.expandLocksmith = true;
+					if (!this.blockLocksmith) this.expandLocksmith = true;
 					this.categoryLocksmithFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
-					this.expandLocksmithUnderSupervision = true;
+					if (!this.blockLocksmithUnderSupervision) this.expandLocksmithUnderSupervision = true;
 					this.categoryLocksmithSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigator:
-					this.expandPrivateInvestigator = true;
+					if (!this.blockPrivateInvestigator) this.expandPrivateInvestigator = true;
 					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
-					// this.onPromptFireInvestigator(); // TODO is FireInvestigator related to PrivateInvestigator?
 					break;
 				case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
-					this.expandPrivateInvestigatorUnderSupervision = true;
+					if (!this.blockPrivateInvestigatorUnderSupervision) this.expandPrivateInvestigatorUnderSupervision = true;
 					this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityGuard:
-					this.expandSecurityGuard = true;
+					if (!this.blockSecurityGuard) this.expandSecurityGuard = true;
 					this.categorySecurityGuardFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
-					this.expandSecurityGuardUnderSupervision = true;
+					if (!this.blockSecurityGuardUnderSupervision) this.expandSecurityGuardUnderSupervision = true;
 					this.categorySecurityGuardSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
-					this.expandSecurityAlarmInstaller = true;
+					if (!this.blockSecurityAlarmInstaller) this.expandSecurityAlarmInstaller = true;
 					this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
-					this.expandSecurityAlarmInstallerUnderSupervision = true;
+					if (!this.blockSecurityAlarmInstallerUnderSupervision)
+						this.expandSecurityAlarmInstallerUnderSupervision = true;
 					this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
-					this.expandSecurityAlarmMonitor = true;
+					if (!this.blockSecurityAlarmMonitor) this.expandSecurityAlarmMonitor = true;
 					this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmResponse:
-					this.expandSecurityAlarmResponse = true;
+					if (!this.blockSecurityAlarmResponse) this.expandSecurityAlarmResponse = true;
 					this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityAlarmSales:
-					this.expandSecurityAlarmSales = true;
+					if (!this.blockSecurityAlarmSales) this.expandSecurityAlarmSales = true;
 					this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: true });
 					break;
 				case WorkerCategoryTypeCode.SecurityConsultant:
-					this.expandSecurityConsultant = true;
+					if (!this.blockSecurityConsultant) this.expandSecurityConsultant = true;
 					this.categorySecurityConsultantFormGroup.patchValue({ isInclude: true });
 					break;
 			}
@@ -1236,7 +1236,11 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 		}
 	}
 
-	onRemove(code: string) {
+	onDeselect(code: string) {
+		this.onRemove(code, true);
+	}
+
+	onRemove(code: string, justDeselect = false) {
 		const codeDesc = this.optionsPipe.transform(code, 'WorkerCategoryTypes');
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -1253,80 +1257,114 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 				if (response) {
 					switch (code) {
 						case WorkerCategoryTypeCode.ArmouredCarGuard:
-							this.categoryArmouredCarGuardFormGroup.reset();
+							if (!justDeselect) {
+								this.categoryArmouredCarGuardFormGroup.reset();
+								this.blockArmouredCarGuard = false;
+							}
 							this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
-							this.blockArmouredCarGuard = false;
 							break;
 						case WorkerCategoryTypeCode.BodyArmourSales:
+							if (!justDeselect) {
+								this.blockBodyArmourSales = false;
+							}
 							this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude: false });
-							this.blockBodyArmourSales = false;
 							break;
 						case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+							if (!justDeselect) {
+								this.blockClosedCircuitTelevisionInstaller = false;
+							}
 							this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude: false });
-							this.blockClosedCircuitTelevisionInstaller = false;
 							break;
 						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+							if (!justDeselect) {
+								this.blockElectronicLockingDeviceInstaller = false;
+							}
 							this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: false });
-							this.blockElectronicLockingDeviceInstaller = false;
 							break;
 						case WorkerCategoryTypeCode.FireInvestigator:
-							this.categoryFireInvestigatorFormGroup.reset();
+							if (!justDeselect) {
+								this.categoryFireInvestigatorFormGroup.reset();
+								this.blockFireInvestigator = false;
+							}
 							this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: false });
-							this.blockFireInvestigator = false;
 							break;
 						case WorkerCategoryTypeCode.Locksmith:
-							this.categoryLocksmithFormGroup.reset();
+							if (!justDeselect) {
+								this.categoryLocksmithFormGroup.reset();
+								this.blockLocksmith = false;
+							}
 							this.categoryLocksmithFormGroup.patchValue({ isInclude: false });
-							this.blockLocksmith = false;
 							break;
 						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
+							if (!justDeselect) {
+								this.blockLocksmithUnderSupervision = false;
+							}
 							this.categoryLocksmithSupFormGroup.patchValue({ isInclude: false });
-							this.blockLocksmithUnderSupervision = false;
 							break;
 						case WorkerCategoryTypeCode.PrivateInvestigator:
-							this.categoryPrivateInvestigatorFormGroup.reset();
+							if (!justDeselect) {
+								this.categoryPrivateInvestigatorFormGroup.reset();
+								this.blockPrivateInvestigator = false;
+							}
 							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
-							this.blockPrivateInvestigator = false;
 							break;
 						case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
-							this.categoryPrivateInvestigatorSupFormGroup.reset();
+							if (!justDeselect) {
+								this.categoryPrivateInvestigatorSupFormGroup.reset();
+								this.blockPrivateInvestigatorUnderSupervision = false;
+							}
 							this.categoryPrivateInvestigatorSupFormGroup.patchValue({ isInclude: false });
-							this.blockPrivateInvestigatorUnderSupervision = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityGuard:
-							this.categorySecurityGuardFormGroup.reset();
+							if (!justDeselect) {
+								this.categorySecurityGuardFormGroup.reset();
+								this.blockSecurityGuard = false;
+							}
 							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityGuard = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
+							if (!justDeselect) {
+								this.blockSecurityGuardUnderSupervision = false;
+							}
 							this.categorySecurityGuardSupFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityGuardUnderSupervision = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
-							this.categorySecurityAlarmInstallerFormGroup.reset();
+							if (!justDeselect) {
+								this.categorySecurityAlarmInstallerFormGroup.reset();
+								this.blockSecurityAlarmInstaller = false;
+							}
 							this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityAlarmInstaller = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+							if (!justDeselect) {
+								this.blockSecurityAlarmInstallerUnderSupervision = false;
+							}
 							this.categorySecurityAlarmInstallerSupFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityAlarmInstallerUnderSupervision = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+							if (!justDeselect) {
+								this.blockSecurityAlarmMonitor = false;
+							}
 							this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityAlarmMonitor = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmResponse:
+							if (!justDeselect) {
+								this.blockSecurityAlarmResponse = false;
+							}
 							this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityAlarmResponse = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmSales:
+							if (!justDeselect) {
+								this.blockSecurityAlarmSales = false;
+							}
 							this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityAlarmSales = false;
 							break;
 						case WorkerCategoryTypeCode.SecurityConsultant:
-							this.categorySecurityConsultantFormGroup.reset();
+							if (!justDeselect) {
+								this.categorySecurityConsultantFormGroup.reset();
+								this.blockSecurityConsultant = false;
+							}
 							this.categorySecurityConsultantFormGroup.patchValue({ isInclude: false });
-							this.blockSecurityConsultant = false;
 							break;
 					}
 
@@ -1335,31 +1373,6 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 				}
 			});
 	}
-
-	// onPromptFireInvestigator() {
-	// 	if (this.showFireInvestigator) {
-	// 		return; // this has already been added
-	// 	}
-
-	// 	const data: DialogOptions = {
-	// 		icon: 'warning',
-	// 		title: 'Confirmation',
-	// 		message: 'Would you also like to add Fire Investigator to this licence?',
-	// 		actionText: 'Yes',
-	// 		cancelText: 'No',
-	// 	};
-
-	// 	this.dialog
-	// 		.open(DialogComponent, { data })
-	// 		.afterClosed()
-	// 		.subscribe((response: boolean) => {
-	// 			if (response) {
-	// 				this.categoryFireInvestigatorFormGroup.patchValue({ isInclude: true });
-
-	// 				this.validCategoryList = this.licenceApplicationService.getValidCategoryList(this.categoryList);
-	// 			}
-	// 		});
-	// }
 
 	isFormValid(): boolean {
 		this.categoryArmouredCarGuardFormGroup.markAllAsTouched();
@@ -1424,10 +1437,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 	}
 
 	private setupInitialExpansionPanel(): void {
-		if (
-			this.applicationTypeCode === ApplicationTypeCode.Update ||
-			this.applicationTypeCode === ApplicationTypeCode.Renewal
-		) {
+		if (this.isUpdate) {
 			if (this.showArmouredCarGuard) {
 				this.blockArmouredCarGuard = true;
 			}
@@ -1596,5 +1606,9 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
 			this.applicationTypeCode === ApplicationTypeCode.Update
 		);
+	}
+
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }
