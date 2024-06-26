@@ -24,7 +24,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         Guid applicantId;
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-        
+
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
             throw new ArgumentException("New application type is not supported for business licence.");
 
@@ -44,7 +44,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 throw new ArgumentException("Original business licence application was not found.");
             throw;
         }
-        
+
         app.spd_businesstype = originalApp.spd_businesstype;
         _context.AddTospd_applications(app);
 
@@ -55,6 +55,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
 
         await SetAddresses(applicantId, app, ct);
+        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         LinkOrganization(applicantId, app);
 
@@ -95,12 +96,13 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddTospd_applications(app);
         }
         await SetAddresses(cmd.ApplicantId, app, ct);
+        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-        
+
         LinkOrganization(cmd.ApplicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
@@ -223,4 +225,15 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         _context.UpdateObject(app);
     }
+
+    private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
+    {
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == ownerId).FirstOrDefaultAsync(ct);
+
+        if (serviceTeam == null)
+            throw new ArgumentException("service team not found");
+
+        _context.SetLink(app, nameof(app.ownerid), serviceTeam);
+    }
+
 }
