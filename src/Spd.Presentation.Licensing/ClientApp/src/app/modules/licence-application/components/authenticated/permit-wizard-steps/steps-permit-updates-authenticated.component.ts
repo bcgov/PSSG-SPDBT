@@ -22,15 +22,6 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showReprint">
-				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
-
-				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_REPRINT)"
-					(nextStepperStep)="onFormValidNextStep(STEP_REPRINT)"
-				></app-wizard-footer>
-			</mat-step>
-
 			<mat-step *ngIf="hasGenderChanged">
 				<app-step-permit-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
@@ -73,7 +64,16 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_RATIONALE)"
+					(nextStepperStep)="onFormValidNextStep(STEP_RATIONALE)"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step>
+				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
+
+				<app-wizard-footer
+					(previousStepperStep)="onStepUpdatePrevious(STEP_REPRINT)"
+					(nextStepperStep)="onStepNext(STEP_REPRINT)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -118,13 +118,13 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 				}
 				break;
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				if (this.showReprint || this.hasBcscNameChanged) {
+				if (this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}
 				break;
 			case this.STEP_REASON:
-				if (this.hasGenderChanged || this.showReprint || this.hasBcscNameChanged) {
+				if (this.hasGenderChanged || this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}
@@ -154,11 +154,5 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	// for Update flow: only show if they changed their sex selection earlier in the application
-	// and name change
-	get showReprint(): boolean {
-		return this.hasGenderChanged || this.hasBcscNameChanged;
 	}
 }

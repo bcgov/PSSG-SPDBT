@@ -22,15 +22,6 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showReprint">
-				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
-
-				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_REPRINT)"
-					(nextStepperStep)="onFormValidNextStep(STEP_REPRINT)"
-				></app-wizard-footer>
-			</mat-step>
-
 			<mat-step *ngIf="hasGenderChanged">
 				<app-step-worker-licence-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCodes.Update"
@@ -74,6 +65,15 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 					(nextStepperStep)="onStepNext(STEP_DOGS)"
 				></app-wizard-footer>
 			</mat-step>
+
+			<mat-step *ngIf="showReprint">
+				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
+
+				<app-wizard-footer
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_REPRINT)"
+				></app-wizard-footer>
+			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
@@ -112,20 +112,14 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 
 	onStepUpdatePrevious(step: number): void {
 		switch (step) {
-			case this.STEP_REPRINT:
+			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
 				if (this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}
 				break;
-			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
-				if (this.showReprint || this.hasBcscNameChanged) {
-					this.childstepper.previous();
-					return;
-				}
-				break;
 			case this.STEP_LICENCE_CATEGORY:
-				if (this.hasGenderChanged || this.hasBcscNameChanged || this.showReprint) {
+				if (this.hasGenderChanged || this.hasBcscNameChanged) {
 					this.childstepper.previous();
 					return;
 				}
@@ -141,7 +135,7 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 		const isValid = this.dirtyForm(this.STEP_LICENCE_CATEGORY);
 		if (!isValid) return;
 
-		if (this.showStepDogsAndRestraints) {
+		if (this.showStepDogsAndRestraints || this.showReprint) {
 			this.childNextStep.emit(true);
 			return;
 		}

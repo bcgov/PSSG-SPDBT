@@ -6,6 +6,7 @@ import {
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
+	BizLicAppSubmitRequest,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
@@ -205,10 +206,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hotToastService.success(params.paymentSuccess);
-				this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-					_resp.body.licenceAppId!,
-					params.paymentReason
-				);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -235,7 +233,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(businessModelFormValue);
+		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
+		delete bodyUpsert.documentInfos;
+
+		const body = bodyUpsert as BizLicAppSubmitRequest;
+		const documentsToSave = this.getDocsToSaveBlobs(businessModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -246,7 +248,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
 
-		body.documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+		documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
 			const newDocumentsOnly: Array<Blob> = [];
 
 			doc.documents.forEach((item: Blob) => {
@@ -269,8 +271,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				);
 			}
 		});
-
-		delete body.documentInfos;
 
 		if (documentsToSaveApis.length > 0) {
 			return forkJoin(documentsToSaveApis).pipe(
@@ -934,7 +934,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				});
 
 				const companyBrandingData = {
-					noLogoOrBranding: companyBrandingAttachments.length > 0,
+					noLogoOrBranding: companyBrandingAttachments.length === 0,
 					attachments: companyBrandingAttachments,
 				};
 
@@ -1047,8 +1047,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				case LicenceDocumentTypeCode.ArmourCarGuardRegistrar: {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					categoryArmouredCarGuardAttachments.push(aFile);
-
-					categoryArmouredCarGuardFormGroup.expiryDate = doc.expiryDate ?? null;
 					break;
 				}
 				case LicenceDocumentTypeCode.BizInsurance: {
