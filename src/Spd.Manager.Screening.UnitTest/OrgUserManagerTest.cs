@@ -180,4 +180,66 @@ public class OrgUserManagerTest
         await Assert.ThrowsAsync<ApiException>(act);
     }
 
+    [Fact]
+    public async void Handle_OrgUserCreateCommand_Return_Correct_OrgUserResponse()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        UserResult user = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.Email, "test1@test1.com")
+            .Create();
+        List<UserResult> userResults = new() { user };
+        OrgResult org = new();
+        OrgQryResult orgQryResult = new(org);
+        OrgUserManageResult orgUserManageResult = new(new UserResult());
+
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+        mockOrgRepo.Setup(o => o.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgQryResult);
+        mockOrgUserRepo.Setup(u => u.ManageOrgUserAsync(It.Is<UserCreateCmd>(c => c.User.OrganizationId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgUserManageResult);
+
+        OrgUserCreateRequest orgUserCreateRequest = fixture.Build<OrgUserCreateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test2@test2.com")
+            .Create();
+        OrgUserCreateCommand cmd = new(orgUserCreateRequest, "test.com", Guid.NewGuid());
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<OrgUserResponse>(result);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserCreateCommand_WithExistingEmail_ThrowDuplicateException()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        UserResult user = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.Email, "test1@test1.com")
+            .Create();
+        List<UserResult> userResults = new() { user };
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+
+        OrgUserCreateRequest orgUserCreateRequest = fixture.Build<OrgUserCreateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test1@test1.com")
+            .Create();
+        OrgUserCreateCommand cmd = new(orgUserCreateRequest, "test.com", Guid.NewGuid());
+
+        // Act
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<DuplicateException>(act);
+    }
+
 }
