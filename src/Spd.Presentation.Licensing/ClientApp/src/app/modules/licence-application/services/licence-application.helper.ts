@@ -1055,8 +1055,6 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			reprint: this.utilService.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence),
-			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
 			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,

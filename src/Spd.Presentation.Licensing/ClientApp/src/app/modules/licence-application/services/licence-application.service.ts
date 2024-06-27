@@ -674,12 +674,23 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
-	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(
+		isUpdateFlowWithHideReprintStep?: boolean
+	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
+
+		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
+			// if not showing the reprint step, then set to True, otherwise
+			// use the value selected
+			body.reprint = isUpdateFlowWithHideReprintStep
+				? true
+				: this.utilService.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence);
+		}
+
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();

@@ -22,7 +22,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				></app-step-title>
 
 				<div class="row">
-					<div class="col-xxl-8 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xxl-6 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row mt-0 mb-4">
 							<div class="col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">

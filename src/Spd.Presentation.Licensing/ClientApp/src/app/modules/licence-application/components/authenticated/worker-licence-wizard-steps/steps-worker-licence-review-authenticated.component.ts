@@ -70,7 +70,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 				</ng-container>
 			</mat-step>
 
-			<mat-step *ngIf="isUpdate">
+			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
 
 				<app-wizard-footer
@@ -138,9 +138,5 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 		} else {
 			this.summaryReviewComponent.onUpdateData();
 		}
-	}
-
-	get isUpdate(): boolean {
-		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

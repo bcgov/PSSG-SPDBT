@@ -49,6 +49,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 				<div class="row">
 					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div cass="fs-5 mt-2">Selected Categories</div>
 						<mat-accordion multi="false">
 							<ng-container *ngIf="showArmouredCarGuard">
 								<div class="row">

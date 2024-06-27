@@ -62,7 +62,7 @@ import { StepWorkerLicenceReviewNameChangeComponent } from '../../shared/worker-
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_DOGS)"
+					(nextStepperStep)="onFormValidDogsNextStep()"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -83,15 +83,16 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	applicationTypeCodes = ApplicationTypeCode;
 
 	readonly STEP_NAME_CHANGE = 0;
-	readonly STEP_REPRINT = 1;
-	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 2;
-	readonly STEP_LICENCE_CATEGORY = 3;
-	readonly STEP_DOGS = 4;
-	readonly STEP_RESTRAINTS = 5;
+	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 1;
+	readonly STEP_LICENCE_CATEGORY = 2;
+	readonly STEP_DOGS = 3;
+	readonly STEP_RESTRAINTS = 4;
+	readonly STEP_REPRINT = 5;
 
 	@Input() showStepDogsAndRestraints = false;
 	@Input() hasBcscNameChanged = false;
 	@Input() hasGenderChanged = false;
+	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
 	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
@@ -132,15 +133,19 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	}
 
 	onFormValidCategoryNextStep(): void {
-		const isValid = this.dirtyForm(this.STEP_LICENCE_CATEGORY);
-		if (!isValid) return;
-
 		if (this.showStepDogsAndRestraints || this.showReprint) {
-			this.childNextStep.emit(true);
-			return;
+			this.onFormValidNextStep(this.STEP_LICENCE_CATEGORY);
+		} else {
+			this.onStepNext(this.STEP_LICENCE_CATEGORY);
 		}
+	}
 
-		this.nextStepperStep.emit(true);
+	onFormValidDogsNextStep(): void {
+		if (this.showReprint) {
+			this.onFormValidNextStep(this.STEP_DOGS);
+		} else {
+			this.onStepNext(this.STEP_DOGS);
+		}
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -166,6 +171,6 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	// for Update flow: only show if they changed their sex selection earlier in the application
 	// and name change
 	get showReprint(): boolean {
-		return this.hasGenderChanged || this.hasBcscNameChanged;
+		return this.hasGenderChanged || this.hasBcscNameChanged || !this.isUpdateFlowWithHideReprintStep;
 	}
 }
