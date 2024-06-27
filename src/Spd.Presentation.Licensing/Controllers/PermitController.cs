@@ -78,7 +78,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicantId"></param>
         /// <returns></returns>
         [Route("api/applicants/{applicantId}/permit-latest")]
-        //[Authorize(Policy = "OnlyBcsc")]
+        [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetLatestSecurityWorkerLicenceApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] WorkerLicenceTypeCode typeCode)
         {

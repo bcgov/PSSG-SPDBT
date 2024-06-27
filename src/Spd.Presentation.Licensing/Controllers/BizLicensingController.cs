@@ -58,7 +58,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicantId"></param>
         /// <returns></returns>
         [Route("api/business/{bizId}/app-latest")]
-        //[Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid")]
         [HttpGet]
         public async Task<BizLicAppResponse> GetLatestBizLicenceApplication([FromRoute][Required] Guid bizId)
         {
