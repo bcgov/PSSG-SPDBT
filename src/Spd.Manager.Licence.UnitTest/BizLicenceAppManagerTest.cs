@@ -2,6 +2,7 @@
 using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -25,6 +26,7 @@ public class BizLicenceAppManagerTest
     private Mock<ITransientFileStorageService> mockTransientFileStorageService = new();
     private Mock<IBizLicApplicationRepository> mockBizLicAppRepo = new();
     private Mock<IBizContactRepository> mockBizContactRepo = new();
+    private Mock<IBizRepository> mockBizRepo = new();
     private Mock<ITaskRepository> mockTaskRepo = new();
     private BizLicAppManager sut;
 
@@ -51,7 +53,8 @@ public class BizLicenceAppManagerTest
             mockTransientFileStorageService.Object,
             mockBizContactRepo.Object,
             mockBizLicAppRepo.Object,
-            mockTaskRepo.Object);
+            mockTaskRepo.Object,
+            mockBizRepo.Object);
     }
 
     [Fact]
@@ -502,10 +505,6 @@ public class BizLicenceAppManagerTest
                 UseDogs = true,
                 CategoryCodes = new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.ArmouredCarGuard }
             });
-        mockBizLicAppRepo.Setup(a => a.SaveBizLicApplicationAsync(It.Is<SaveBizLicApplicationCmd>(
-           m => m.LicenceAppId == originalApplicationId &&
-           m.ApplicantId == bizId), CancellationToken.None))
-           .ReturnsAsync(new BizLicApplicationCmdResp(originalApplicationId, bizId));
 
         BizLicAppSubmitRequest request = new()
         {
