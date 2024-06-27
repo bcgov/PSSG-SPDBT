@@ -481,7 +481,7 @@ public class BizLicenceAppManagerTest
     }
 
     [Fact]
-    public async void Handle_BizLicAppUpdateCommand_UpdateApplication_Return_BizLicAppCommandResponse()
+    public async void Handle_BizLicAppUpdateCommand_UpdateBiz_Return_BizLicAppCommandResponse()
     {
         // Arrange
         Guid originalApplicationId = Guid.NewGuid();
