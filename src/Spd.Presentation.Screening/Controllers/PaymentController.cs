@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spd.Manager.Shared;
 using Spd.Manager.Payment;
+using Spd.Manager.Shared;
 using Spd.Presentation.Screening.Configurations;
 using Spd.Utilities.Shared;
 using System.ComponentModel.DataAnnotations;
@@ -157,6 +157,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// Return the direct pay payment link 
         /// </summary>
         /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
+        /// <param name="orgId">organization id</param>
         /// <returns></returns>
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary,Contact")]
         [Route("api/orgs/{orgId}/applications/{applicationId}/payment-link")]
@@ -383,7 +384,7 @@ namespace Spd.Presentation.Screening.Controllers
             try
             {
                 string redirectUrl = $"{hostUrl}api/crrpa/payment-result";
-                PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new PaymentLinkFromSecureLinkCreateRequest()
+                PaymentLinkFromSecureLinkCreateRequest linkCreateRequest = new()
                 {
                     ApplicationId = null,
                     EncodedApplicationId = encodedAppId,
