@@ -93,10 +93,10 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 									<div class="row">
 										<div class="col-12">
 											<mat-expansion-panel
-												[hideToggle]="blockSecurityGuard"
+												[hideToggle]="blockPrivateInvestigator"
 												class="my-3 w-100"
-												[ngClass]="{ 'disabled-pointer': blockSecurityGuard }"
-												[expanded]="expandSecurityGuard"
+												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+												[expanded]="expandPrivateInvestigator"
 											>
 												<mat-expansion-panel-header>
 													<mat-panel-title>
@@ -162,6 +162,10 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 			.error-icon {
 				margin-right: 0.5rem !important;
 				overflow: visible !important;
+			}
+
+			.disabled-pointer {
+				pointer-events: none;
 			}
 		`,
 	],
@@ -269,16 +273,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 			if (this.SecurityGuard.value) {
 				this.blockSecurityGuard = true;
-			}
-		} else {
-			if (this.ArmouredCarGuard.value) {
-				this.expandArmouredCarGuard = true;
-			}
-			if (this.PrivateInvestigator.value) {
-				this.expandPrivateInvestigator = true;
-			}
-			if (this.SecurityGuard.value) {
-				this.expandSecurityGuard = true;
 			}
 		}
 	}

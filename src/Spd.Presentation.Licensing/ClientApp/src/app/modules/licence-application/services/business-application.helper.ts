@@ -29,7 +29,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
-		originalDogAuthorizationExists: new FormControl(false),
+		originalCategories: new FormControl(null),
 	});
 
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(

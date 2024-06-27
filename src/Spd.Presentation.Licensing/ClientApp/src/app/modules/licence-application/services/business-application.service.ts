@@ -232,12 +232,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	submitBusinessLicenceRenewalOrUpdateOrReplace(
+		isUpdateFlowWithHideReprintStep?: boolean
+	): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
 		delete bodyUpsert.documentInfos;
 
 		const body = bodyUpsert as BizLicAppSubmitRequest;
+
+		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
+			// if not showing the reprint step, then set to True, otherwise
+			// use the value selected
+			body.reprint = isUpdateFlowWithHideReprintStep
+				? true
+				: this.utilService.booleanTypeToBoolean(businessModelFormValue.reprintLicenceData.reprintLicence);
+		}
+
 		const documentsToSave = this.getDocsToSaveBlobs(businessModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -726,7 +737,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.reset();
 
 		if (controllingMembersAndEmployees) {
-			return this.applyLicenceProfileMembersIntoModel(businessProfile, controllingMembersAndEmployees);
+			return this.applyLicenceProfileMembersIntoModel(
+				businessProfile,
+				controllingMembersAndEmployees,
+				ApplicationTypeCode.New
+			);
 		}
 
 		return this.applyLicenceProfileIntoModel({
@@ -736,7 +751,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyLicenceProfileMembersIntoModel(businessProfile: BizProfileResponse, members: Members) {
+	private applyLicenceProfileMembersIntoModel(
+		businessProfile: BizProfileResponse,
+		members: Members,
+		applicationTypeCode?: ApplicationTypeCode | null | undefined
+	) {
 		const apis: Observable<any>[] = [];
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
@@ -760,7 +779,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
 					this.applyEmployees(members.employees ?? [], licenceResponses);
 
-					return this.applyLicenceProfileIntoModel({ businessProfile }).pipe(
+					return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -770,7 +789,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				})
 			);
 		} else {
-			return this.applyLicenceProfileIntoModel({ businessProfile }).pipe(
+			return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
 				tap((_resp: any) => {
 					this.initialized = true;
 
@@ -1063,6 +1082,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			originalExpiryDate: originalLicence?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: originalLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: originalLicence?.bizTypeCode ?? null,
+			originalCategories: businessLicenceAppl.categoryCodes ?? null,
 		};
 
 		const companyBrandingAttachments: Array<File> = [];
