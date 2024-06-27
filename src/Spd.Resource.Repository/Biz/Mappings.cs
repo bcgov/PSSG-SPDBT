@@ -52,6 +52,12 @@ namespace Spd.Resource.Repository.Biz
             CreateMap<UpdateBizCmd, account>()
             .IncludeBase<Biz, account>()
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)))
+            .ForMember(d => d.spd_businessmanagerfirstname, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+            .ForMember(d => d.spd_businessmanagersurname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
+            .ForMember(d => d.spd_businessmanagermiddlename1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+            .ForMember(d => d.spd_businessmanagermiddlename2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
+            .ForMember(d => d.spd_businessmanageremail, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+            .ForMember(d => d.spd_businessmanagerphone, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<CreateBizCmd, account>()
