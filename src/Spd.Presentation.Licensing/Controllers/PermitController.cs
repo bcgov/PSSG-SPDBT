@@ -72,6 +72,19 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Get Lastest Permit Application 
+        /// Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit
+        /// </summary>
+        /// <param name="applicantId"></param>
+        /// <returns></returns>
+        [Route("api/applicants/{applicantId}/permit-latest")]
+        //[Authorize(Policy = "OnlyBcsc")]
+        [HttpGet]
+        public async Task<PermitLicenceAppResponse> GetLatestSecurityWorkerLicenceApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] WorkerLicenceTypeCode typeCode)
+        {
+            return await _mediator.Send(new GetLatestPermitApplicationQuery(applicantId, typeCode));
+        }
+        /// <summary>
         /// Upload permit application files to transient storage
         /// </summary>
         /// <param name="fileUploadRequest"></param>

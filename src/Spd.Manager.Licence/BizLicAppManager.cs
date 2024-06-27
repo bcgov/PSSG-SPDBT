@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
@@ -20,6 +21,7 @@ namespace Spd.Manager.Licence;
 internal class BizLicAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetBizLicAppQuery, BizLicAppResponse>,
+        IRequestHandler<GetLatestBizLicenceAppQuery, BizLicAppResponse>,
         IRequestHandler<BizLicAppUpsertCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppSubmitCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppReplaceCommand, BizLicAppCommandResponse>,
@@ -70,6 +72,25 @@ internal class BizLicAppManager :
             result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, null), cancellationToken);
 
         return result;
+    }
+
+    public async Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken cancellationToken)
+    {
+        //get the latest app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                null,
+                query.BizId,
+                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
+                null),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.SubmittedOn)
+            .FirstOrDefault();
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"there is no Security Business Licence Application for this business.");
+
+        return await Handle(new GetBizLicAppQuery(app.LicenceAppId), cancellationToken);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
@@ -135,7 +156,7 @@ internal class BizLicAppManager :
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
-        
+
         // Update members
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
@@ -486,7 +507,7 @@ internal class BizLicAppManager :
         }
     }
 
-    private async Task<ChangeSpec> MakeChanges(BizLicApplicationResp originalApp, 
+    private async Task<ChangeSpec> MakeChanges(BizLicApplicationResp originalApp,
         BizLicAppSubmitRequest newRequest,
         CancellationToken ct)
     {
@@ -533,7 +554,7 @@ internal class BizLicAppManager :
             }, ct);
         }
 
-        if (changes.UseDogsChanged) 
+        if (changes.UseDogsChanged)
         {
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {

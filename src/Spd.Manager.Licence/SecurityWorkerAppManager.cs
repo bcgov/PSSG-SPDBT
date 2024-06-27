@@ -21,6 +21,7 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
+        IRequestHandler<GetLatestWorkerLicenceQuery, WorkerLicenceAppResponse>,
         IRequestHandler<GetLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<WorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
@@ -146,11 +147,7 @@ internal class SecurityWorkerAppManager :
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "there is no SecurityWorkerLicence for this applicant.");
 
-        var response = await _personLicAppRepository.GetLicenceApplicationAsync(app.LicenceAppId, cancellationToken);
-        WorkerLicenceAppResponse result = _mapper.Map<WorkerLicenceAppResponse>(response);
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(app.LicenceAppId), cancellationToken);
-        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList(); // Exclude licence document type code that are not defined in the related dictionary
-        return result;
+        return await Handle(new GetWorkerLicenceQuery(app.LicenceAppId), cancellationToken);
     }
 
     #region anonymous new

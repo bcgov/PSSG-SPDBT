@@ -107,15 +107,11 @@ internal class PermitAppManager :
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, $"there is no {query.WorkerLicenceTypeCode} for this applicant.");
 
-        var response = await _personLicAppRepository.GetLicenceApplicationAsync(app.LicenceAppId, cancellationToken);
-        PermitLicenceAppResponse result = _mapper.Map<PermitLicenceAppResponse>(response);
-        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(app.LicenceAppId), cancellationToken);
-        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList(); // Exclude licence document type code that are not defined in the related dictionary
-        return result;
+        return await Handle(new GetPermitApplicationQuery(app.LicenceAppId), cancellationToken);
     }
     #endregion
 
-    #region anonymous
+
 
     public async Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
     {
@@ -126,6 +122,7 @@ internal class PermitAppManager :
         return result;
     }
 
+    #region anonymous new
     public async Task<PermitAppCommandResponse> Handle(PermitAppNewCommand cmd, CancellationToken cancellationToken)
     {
         PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
@@ -138,6 +135,7 @@ internal class PermitAppManager :
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
+    #endregion
 
     public async Task<PermitAppCommandResponse> Handle(PermitAppReplaceCommand cmd, CancellationToken cancellationToken)
     {
@@ -306,7 +304,7 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
 
-    #endregion
+
 
     private static void ValidateFilesForNewApp(PermitAppNewCommand cmd)
     {
