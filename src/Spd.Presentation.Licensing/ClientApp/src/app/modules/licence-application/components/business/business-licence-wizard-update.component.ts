@@ -148,7 +148,10 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 					// If the user has not changed the selected categories,
 					// then prompt whether or not to reprint
-					isUpdateFlowWithHideReprintStep = currentCategoriesList.sort().join() != originalCategoriesList.sort().join();
+					currentCategoriesList.sort((a: string, b: string) => a.localeCompare(b));
+					originalCategoriesList.sort((a: string, b: string) => a.localeCompare(b));
+
+					isUpdateFlowWithHideReprintStep = currentCategoriesList.join() != originalCategoriesList.join();
 				}
 
 				this.isUpdateFlowWithHideReprintStep = isUpdateFlowWithHideReprintStep;
