@@ -158,7 +158,7 @@ import { CommonAddressComponent } from './components/shared/step-components/comm
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
-import { CommonBusinessAddressComponent } from './components/shared/step-components/common-business-address.component';
+import { CommonBusinessMailingAddressComponent } from './components/shared/step-components/common-business-mailing-address.component';
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
@@ -247,7 +247,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
-		CommonBusinessAddressComponent,
+		CommonBusinessMailingAddressComponent,
 		CommonBusinessBcBranchesComponent,
 		CommonBusinessInformationComponent,
 		CommonBusinessLicenceSummaryComponent,
