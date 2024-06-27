@@ -264,14 +264,15 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Return the direct pay payment link 
         /// </summary>
         /// <param name="paymentLinkCreateRequest">which include Payment link create request</param>
+        /// <param name="bizId">business id</param>
         /// <returns></returns>
-        [Route("api/auth-biz-licence/{applicationId}/payment-link")]
+        [Route("api/business/{bizId}/applications/{applicationId}/payment-link")]
         [HttpPost]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<PaymentLinkResponse> GetBizLicencePaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
+        public async Task<PaymentLinkResponse> GetBizLicencePaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest, [FromRoute] Guid bizId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            string redirectUrl = $"{hostUrl}api/auth-biz-licence/payment-result";
+            string redirectUrl = $"{hostUrl}api/business/{bizId}/payment-result";
             return await _mediator.Send(new PaymentLinkCreateCommand(paymentLinkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));
         }
 
@@ -279,9 +280,9 @@ namespace Spd.Presentation.Licensing.Controllers
         /// redirect url for paybc to redirect to
         /// </summary>
         /// <returns></returns>
-        [Route("api/auth-biz-licence/payment-result")]
+        [Route("api/business/{bizId}/payment-result")]
         [HttpGet]
-        public async Task<ActionResult> ProcessBizLicencePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult)
+        public async Task<ActionResult> ProcessBizLicencePaymentResult([FromQuery] PaybcPaymentResultViewModel paybcResult, [FromRoute] Guid bizId)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             string? successPath = _paymentsConfiguration.AuthBizLicPaymentSuccessPath;
@@ -296,19 +297,19 @@ namespace Spd.Presentation.Licensing.Controllers
                 if (!paybcPaymentResult.Success && paybcPaymentResult.MessageText == "Payment Canceled")
                 {
                     _logger.LogInformation("Payment is being cancelled.");
-                    return Redirect($"{hostUrl}{cancelPath}{paybcPaymentResult.ApplicationId}");
+                    return Redirect($"{hostUrl}{cancelPath}?bizId={bizId}");
                 }
 
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
-                    return Redirect($"{hostUrl}{successPath}{paymentId}");
+                    return Redirect($"{hostUrl}{successPath}{paymentId}?bizId={bizId}");
 
-                return Redirect($"{hostUrl}{failPath}{paymentId}");
+                return Redirect($"{hostUrl}{failPath}{paymentId}?bizId={bizId}");
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Payment result processing has errors +{ex}");
-                return Redirect($"{hostUrl}{errorPath}");
+                return Redirect($"{hostUrl}{errorPath}?bizId={bizId}");
             }
         }
 
@@ -316,10 +317,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Get the payment result for application and payment
         /// </summary>
         /// <returns></returns>
-        [Route("api/auth-biz-licence/payments/{paymentId}")]
+        [Route("api/business/{bizId}/payments/{paymentId}")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<PaymentResponse> GetBizLicencePaymentResult([FromRoute] Guid paymentId)
+        public async Task<PaymentResponse> GetBizLicencePaymentResult([FromRoute] Guid paymentId, [FromRoute] Guid bizId)
         {
             return await _mediator.Send(new PaymentQuery(paymentId));
         }
@@ -328,10 +329,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Get the failed payment times for an application
         /// </summary>
         /// <returns></returns>
-        [Route("api/auth-biz-licence/{applicationId}/payment-attempts")]
+        [Route("api/business/{bizId}/applications/{applicationId}/payment-attempts")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<int> GetBizFailedPaymentAttempts([FromRoute] Guid applicationId)
+        public async Task<int> GetBizFailedPaymentAttempts([FromRoute] Guid applicationId, [FromRoute] Guid bizId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
         }
@@ -340,11 +341,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// download the receipt for successful payment
         /// </summary>
         /// <param name="applicationId"></param>
+        /// <param name="bizId"></param>
         /// <returns>FileStreamResult</returns>
-        [Route("api/auth-biz-licence/{applicationId}/payment-receipt")]
+        [Route("api/business/{bizId}/applications/{applicationId}/payment-receipt")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<FileStreamResult> BizLicenceDownloadReceiptAsync([FromRoute] Guid applicationId)
+        public async Task<FileStreamResult> BizLicenceDownloadReceiptAsync([FromRoute] Guid applicationId, [FromRoute] Guid bizId)
         {
             FileResponse response = await _mediator.Send(new PaymentReceiptQuery(applicationId));
             var content = new MemoryStream(response.Content);
@@ -356,11 +358,12 @@ namespace Spd.Presentation.Licensing.Controllers
         /// download the manual payment form
         /// </summary>
         /// <param name="applicationId"></param>
+        /// <param name="bizId"></param>
         /// <returns>FileStreamResult</returns>
-        [Route("api/auth-biz-licence/{applicationId}/manual-payment-form")]
+        [Route("api/business/{bizId}/applications/{applicationId}/manual-payment-form")]
         [HttpGet]
         [Authorize(Policy = "OnlyBCeID")]
-        public async Task<FileStreamResult> BizLicenceDownloadManualPaymentFormAsync([FromRoute] Guid applicationId)
+        public async Task<FileStreamResult> BizLicenceDownloadManualPaymentFormAsync([FromRoute] Guid applicationId, [FromRoute] Guid bizId)
         {
             FileResponse response = await _mediator.Send(new ManualPaymentFormQuery(applicationId));
             var content = new MemoryStream(response.Content);
