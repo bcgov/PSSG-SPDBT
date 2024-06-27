@@ -127,19 +127,22 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Licencing Portal - BCeID
 	// *
-	async initializeLicencingBCeID(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+	async initializeLicencingBCeID(
+		defaultBizId: string | null = null,
+		defaultRoute: string | null = null
+	): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const returningRoute = LicenceApplicationRoutes.pathBusinessApplications();
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			returnComponentRoute ? returnComponentRoute : returningRoute
+			defaultRoute ? defaultRoute : returningRoute
 		);
-		console.debug('initializeLicencingBCeID nextUrl', returnComponentRoute, nextUrl);
+		console.debug('initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
 
 		if (nextUrl) {
-			const success = await this.authUserBceidService.whoAmIAsync();
+			const success = await this.authUserBceidService.whoAmIAsync(defaultBizId);
 			this.notify(success);
 
 			const nextRoute = decodeURIComponent(nextUrl);
