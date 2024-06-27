@@ -1,5 +1,6 @@
 using AutoFixture;
 using AutoMapper;
+using MediatR;
 using Moq;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
@@ -329,5 +330,36 @@ public class OrgUserManagerTest
 
         // Assert
         await Assert.ThrowsAsync<NotFoundException>(act);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserDeleteCommand_Return_Correct_OrgUserResponse()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        UserResult existingUser = new() { ContactAuthorizationTypeCode = ContactRoleCode.Primary };
+        UserResult userToDelete = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.ContactAuthorizationTypeCode, ContactRoleCode.Primary)
+            .With(u => u.Id, userId)
+            .Create();
+        List<UserResult> userResults = new() { userToDelete, existingUser };
+        OrgResult org = new();
+        OrgQryResult orgQryResult = new(org);
+        OrgUserManageResult orgUserManageResult = new(new UserResult());
+
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+        mockOrgRepo.Setup(o => o.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgQryResult);
+
+        OrgUserDeleteCommand cmd = new(userId, orgId);
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Unit>(result);
     }
 }
