@@ -77,6 +77,18 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Get Lastest Security Worker Licence Application
+        /// </summary>
+        /// <param name="applicantId"></param>
+        /// <returns></returns>
+        [Route("api/applicants/{applicantId}/lastest-worker-licence-application/")]
+        [Authorize(Policy = "OnlyBcsc")]
+        [HttpGet]
+        public async Task<WorkerLicenceAppResponse> GetLatestSecurityWorkerLicenceApplication([FromRoute][Required] Guid applicantId)
+        {
+            return await _mediator.Send(new GetLatestWorkerLicenceQuery(applicantId));
+        }
+        /// <summary>
         /// Upload licence application files
         /// </summary>
         /// <param name="fileUploadRequest"></param>

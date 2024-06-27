@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -18,6 +19,7 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
+        IRequestHandler<GetLatestPermitApplicationQuery, PermitLicenceAppResponse>,
         IRequestHandler<PermitUpsertCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitSubmitCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
@@ -89,6 +91,28 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
+    public async Task<PermitLicenceAppResponse> Handle(GetLatestPermitApplicationQuery query, CancellationToken cancellationToken)
+    {
+        //get the latest app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                query.ApplicantId,
+                null,
+                new List<WorkerLicenceTypeEnum> { Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()) },
+                null),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.SubmittedOn)
+            .FirstOrDefault();
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"there is no {query.WorkerLicenceTypeCode} for this applicant.");
+
+        var response = await _personLicAppRepository.GetLicenceApplicationAsync(app.LicenceAppId, cancellationToken);
+        PermitLicenceAppResponse result = _mapper.Map<PermitLicenceAppResponse>(response);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(app.LicenceAppId), cancellationToken);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList(); // Exclude licence document type code that are not defined in the related dictionary
+        return result;
+    }
     #endregion
 
     #region anonymous

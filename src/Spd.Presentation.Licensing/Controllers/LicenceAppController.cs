@@ -49,17 +49,5 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             return await _mediator.Send(new GetBizLicAppListQuery(bizId), ct);
         }
-
-        /// <summary>
-        /// Get Applicant most recent application for same service type
-        /// </summary>
-        /// <returns></returns>
-        [Route("api/applicants/{applicantId}/licence-application")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpGet]
-        public async Task<IEnumerable<LicenceAppListResponse>> GetLastestApplicantLicenceApplication(Guid applicantId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetLicenceAppListQuery(applicantId), ct);
-        }
     }
 }
