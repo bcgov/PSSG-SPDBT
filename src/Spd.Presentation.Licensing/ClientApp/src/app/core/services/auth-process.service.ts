@@ -135,10 +135,7 @@ export class AuthProcessService {
 
 		const returningRoute = LicenceApplicationRoutes.pathBusinessApplications();
 
-		const nextUrl = await this.authenticationService.login(
-			this.identityProvider,
-			defaultRoute ? defaultRoute : returningRoute
-		);
+		const nextUrl = await this.authenticationService.login(this.identityProvider, defaultRoute ?? returningRoute);
 		console.debug('initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
 
 		if (nextUrl) {

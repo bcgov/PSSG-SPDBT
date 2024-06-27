@@ -112,11 +112,6 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	onStepUpdatePrevious(step: number): void {
 		switch (step) {
 			case this.STEP_REPRINT:
-				if (this.hasBcscNameChanged) {
-					this.childstepper.previous();
-					return;
-				}
-				break;
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
 				if (this.hasBcscNameChanged) {
 					this.childstepper.previous();
