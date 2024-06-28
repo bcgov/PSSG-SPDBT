@@ -51,7 +51,7 @@ namespace Spd.Manager.Screening
             var newlist = existingUsersResult.UserResults.ToList();
             newlist.Add(_mapper.Map<UserResult>(request.OrgUserCreateRequest));
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgUserCreateRequest.OrganizationId), ct);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org, newlist);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, newlist);
 
             var user = _mapper.Map<User>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
@@ -82,7 +82,7 @@ namespace Spd.Manager.Screening
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
 
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgUserUpdateRequest.OrganizationId), ct);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org, existingUsersResult.UserResults.ToList());
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, existingUsersResult.UserResults.ToList());
 
             var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
@@ -110,7 +110,7 @@ namespace Spd.Manager.Screening
             if (toDeleteUser == null) return default;
             newUsers.Remove(toDeleteUser);
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrganizationId), ct);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org, newUsers);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, newUsers);
 
             await _orgUserRepository.ManageOrgUserAsync(
                 new UserDeleteCmd(request.UserId),
