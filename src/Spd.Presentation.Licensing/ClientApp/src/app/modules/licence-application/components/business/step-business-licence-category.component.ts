@@ -62,8 +62,13 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 							<mat-accordion multi="false">
 								<ng-container *ngIf="this.ArmouredCarGuard.value">
 									<div class="row">
-										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
+										<div class="col-12">
+											<mat-expansion-panel
+												[hideToggle]="blockArmouredCarGuard"
+												class="my-3 w-100"
+												[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
+												[expanded]="expandArmouredCarGuard"
+											>
 												<mat-expansion-panel-header>
 													<mat-panel-title>
 														<mat-icon
@@ -86,8 +91,13 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 
 								<ng-container *ngIf="this.PrivateInvestigator.value">
 									<div class="row">
-										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
+										<div class="col-12">
+											<mat-expansion-panel
+												[hideToggle]="blockPrivateInvestigator"
+												class="my-3 w-100"
+												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+												[expanded]="expandPrivateInvestigator"
+											>
 												<mat-expansion-panel-header>
 													<mat-panel-title>
 														<mat-icon
@@ -111,8 +121,13 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 
 								<ng-container *ngIf="this.SecurityGuard.value">
 									<div class="row">
-										<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-											<mat-expansion-panel class="my-3 w-100" [expanded]="true">
+										<div class="col-12">
+											<mat-expansion-panel
+												[hideToggle]="blockSecurityGuard"
+												class="my-3 w-100"
+												[ngClass]="{ 'disabled-pointer': blockSecurityGuard }"
+												[expanded]="expandSecurityGuard"
+											>
 												<mat-expansion-panel-header>
 													<mat-panel-title>
 														<mat-icon
@@ -148,13 +163,17 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 				margin-right: 0.5rem !important;
 				overflow: visible !important;
 			}
+
+			.disabled-pointer {
+				pointer-events: none;
+			}
 		`,
 	],
 })
 export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categoryFormGroup;
 
-	isRenewalOrUpdate!: boolean;
+	isUpdate!: boolean;
 
 	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
@@ -168,16 +187,24 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	showSecurityAlarmResponseMessage = false;
 	showSecurityGuardMessage = false;
 
-	title = 'Which categories of security business licence are you applying for?';
+	expandArmouredCarGuard = false;
+	expandPrivateInvestigator = false;
+	expandSecurityGuard = false;
+
+	blockArmouredCarGuard = false;
+	blockPrivateInvestigator = false;
+	blockSecurityGuard = false;
+
+	title = 'Which categories of business licence are you applying for?';
 	infoTitle = '';
 
-	readonly title_new = 'What category of security business licence are you applying for?';
+	readonly title_new = 'What category of business licence are you applying for?';
 	readonly subtitle_new = '';
 
-	readonly title_renew = 'Which categories of Security Worker Licence would you like to renew?';
+	readonly title_renew = 'Which categories of the Business Licence would you like to renew?';
 	readonly subtitle_renew_update = 'You can change and remove existing categories as well as add new ones';
 
-	readonly title_update = 'Which categories of Security Worker Licence would you like to update?';
+	readonly title_update = 'Which categories of the Business Licence would you like to update?';
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
@@ -185,7 +212,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
-		this.isRenewalOrUpdate = this.businessApplicationService.isRenewalOrUpdate(this.applicationTypeCode);
+		this.isUpdate = this.businessApplicationService.isUpdate(this.applicationTypeCode);
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
@@ -235,6 +262,18 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 		if (formValue.Locksmith) {
 			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith, true);
+		}
+
+		if (this.isUpdate) {
+			if (this.ArmouredCarGuard.value) {
+				this.blockArmouredCarGuard = true;
+			}
+			if (this.PrivateInvestigator.value) {
+				this.blockPrivateInvestigator = true;
+			}
+			if (this.SecurityGuard.value) {
+				this.blockSecurityGuard = true;
+			}
 		}
 	}
 

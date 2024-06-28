@@ -598,7 +598,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	get isReprint(): string {
-		console.log('reprint', this.businessModelData.reprintLicenceData);
 		return this.businessModelData.reprintLicenceData.reprintLicence ?? '';
 	}
 

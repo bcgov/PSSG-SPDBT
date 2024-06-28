@@ -8,19 +8,21 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	template: `
 		<div class="row wizard-button-row">
 			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-				<ng-container *ngIf="showSaveAndExit; else showCancel">
-					<button
-						*ngIf="isSaveAndExitObserved"
-						mat-flat-button
-						class="large button-small-caps bordered mb-2"
-						(click)="onSaveAndExit()"
-					>
-						Save & Exit
-					</button>
+				<ng-container *ngIf="showExit">
+					<ng-container *ngIf="showSaveAndExit; else showCancel">
+						<button
+							*ngIf="isSaveAndExitObserved"
+							mat-flat-button
+							class="large button-small-caps bordered mb-2"
+							(click)="onSaveAndExit()"
+						>
+							Save & Exit
+						</button>
+					</ng-container>
+					<ng-template #showCancel>
+						<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
+					</ng-template>
 				</ng-container>
-				<ng-template #showCancel>
-					<button mat-flat-button class="large bordered mb-2" (click)="onExit()">Cancel</button>
-				</ng-template>
 			</div>
 
 			<ng-container *ngIf="isPreviousStepperStepObserved; else noPreviousButton">
@@ -92,6 +94,7 @@ export class WizardFooterComponent implements OnInit {
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
+	@Input() showExit = true;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<any> = new EventEmitter();

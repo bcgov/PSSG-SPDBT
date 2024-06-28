@@ -8,10 +8,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title
-					title="Do you need a new licence printed?"
-					subtitle="A fee for a licence reprint will be charged if category changes are made"
-				></app-step-title>
+				<app-step-title title="Do you need a new licence printed?"></app-step-title>
 
 				<app-common-reprint [form]="form"></app-common-reprint>
 			</div>

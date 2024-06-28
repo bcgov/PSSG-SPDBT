@@ -8,10 +8,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	template: `
 		<section class="step-section">
 			<div class="step">
-				<app-step-title
-					title="Do you need a new licence printed?"
-					info="For a licence reprint, a reprint fee will be changed"
-				></app-step-title>
+				<app-step-title title="Do you need a new licence printed?"></app-step-title>
 
 				<app-common-reprint [form]="form"></app-common-reprint>
 			</div>

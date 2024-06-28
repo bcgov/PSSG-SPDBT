@@ -1,9 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { BusinessApplicationService } from '../../services/business-application.service';
-import { CommonExpiredLicenceComponent } from '../shared/step-components/common-expired-licence.component';
 
 @Component({
 	selector: 'app-step-business-licence-expired',
@@ -28,9 +27,6 @@ import { CommonExpiredLicenceComponent } from '../shared/step-components/common-
 export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.expiredLicenceFormGroup;
 	securityBusinessLicenceCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
-
-	@ViewChild(CommonExpiredLicenceComponent)
-	expiredLicenceComponent!: CommonExpiredLicenceComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
