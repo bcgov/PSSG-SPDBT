@@ -43,6 +43,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
 							[hasBcscNameChanged]="hasBcscNameChanged"
 							[hasGenderChanged]="hasGenderChanged"
+							[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -75,6 +76,7 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
 	newLicenceCost = 0;
+	onLoading = true;
 
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_UPDATES = 1;
@@ -89,6 +91,10 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	showStepDogsAndRestraints = false;
 	hasBcscNameChanged = false;
 	hasGenderChanged = false;
+
+	// placeholder for flag - Update flow and data requiring reprint been changed (like categories),
+	// if so, do not show the reprint step
+	isUpdateFlowWithHideReprintStep = false;
 
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -125,6 +131,15 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				this.hasGenderChanged = this.licenceApplicationService.licenceModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
+
+				if (!this.onLoading) {
+					// if any data has changed during the update flow, do not prompt for reprinting - set reprint value to true
+					if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+						this.isUpdateFlowWithHideReprintStep = true;
+					}
+				}
+
+				this.onLoading = false;
 			}
 		);
 	}
@@ -184,26 +199,28 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
 			}
 		} else {
-			this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
-				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-					const workerLicenceCommandResponse = resp.body;
+			this.licenceApplicationService
+				.submitLicenceRenewalOrUpdateOrReplaceAuthenticated(this.isUpdateFlowWithHideReprintStep)
+				.subscribe({
+					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+						const workerLicenceCommandResponse = resp.body;
 
-					// save this locally just in application payment fails
-					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
-					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
+						// save this locally just in application payment fails
+						this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
+						this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
-					if (this.newLicenceCost > 0) {
-						this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
-					} else {
-						this.hotToastService.success('Your licence update has been successfully submitted');
-						this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
-					}
-				},
-				error: (error: any) => {
-					console.log('An error occurred during save', error);
-					this.hotToastService.error('An error occurred during the save. Please try again.');
-				},
-			});
+						if (this.newLicenceCost > 0) {
+							this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
+						} else {
+							this.hotToastService.success('Your licence update has been successfully submitted');
+							this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
+						}
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+						this.hotToastService.error('An error occurred during the save. Please try again.');
+					},
+				});
 		}
 	}
 

@@ -72,7 +72,7 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	private licenceModelData: any = {};
+	private businessLicenceModelData: any = {};
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
@@ -80,12 +80,12 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.licenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
+		this.businessLicenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 
 		// only show fee for Replacement flow
 		if (this.applicationTypeCode === ApplicationTypeCode.Replacement) {
-			const workerLicenceTypeCode = this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
-			const originalLicenceData = this.licenceModelData.originalLicenceData;
+			const workerLicenceTypeCode = this.businessLicenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
+			const originalLicenceData = this.businessLicenceModelData.originalLicenceData;
 
 			const fee = this.commonApplicationService
 				.getLicenceTermsAndFees(
@@ -104,21 +104,21 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 
 	get businessName(): string {
 		return (
-			this.licenceModelData.businessInformationData.legalBusinessName ??
-			this.licenceModelData.businessInformationData.bizTradeName
+			this.businessLicenceModelData.businessInformationData.legalBusinessName ??
+			this.businessLicenceModelData.businessInformationData.bizTradeName
 		);
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
+		return this.businessLicenceModelData.originalLicenceData.originalLicenceNumber ?? '';
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
+		return this.businessLicenceModelData.originalLicenceData.originalExpiryDate ?? '';
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
+		return this.businessLicenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 	get categoryData(): Array<WorkerCategoryTypeCode> {
-		const categoryData = this.licenceModelData.categoryData;
+		const categoryData = this.businessLicenceModelData.categoryData;
 		const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
 		const selected = workerCategoryTypeCodes.filter((item: string) => {
 			return !!categoryData[item];

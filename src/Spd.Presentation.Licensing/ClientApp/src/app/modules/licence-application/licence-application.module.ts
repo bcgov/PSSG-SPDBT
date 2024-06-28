@@ -87,6 +87,7 @@ import { BusinessCategorySecurityGuardComponent } from './components/business/bu
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business/business-licence-application-base.component';
+import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business/business-licence-update-received-success.component';
 import { BusinessLicenceWizardNewComponent } from './components/business/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business/business-licence-wizard-replacement.component';
@@ -157,7 +158,7 @@ import { CommonAddressComponent } from './components/shared/step-components/comm
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
-import { CommonBusinessAddressComponent } from './components/shared/step-components/common-business-address.component';
+import { CommonBusinessMailingAddressComponent } from './components/shared/step-components/common-business-mailing-address.component';
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
@@ -236,6 +237,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		BusinessLicenceWizardRenewalComponent,
 		BusinessLicenceWizardUpdateComponent,
 		BusinessLicenceWizardReplacementComponent,
+		BusinessLicenceUpdateReceivedSuccessComponent,
 		StepBusinessLicenceReprintComponent,
 		StepBusinessLicenceUpdateFeeComponent,
 		StepsBusinessLicenceUpdatesComponent,
@@ -245,7 +247,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
-		CommonBusinessAddressComponent,
+		CommonBusinessMailingAddressComponent,
 		CommonBusinessBcBranchesComponent,
 		CommonBusinessInformationComponent,
 		CommonBusinessLicenceSummaryComponent,
