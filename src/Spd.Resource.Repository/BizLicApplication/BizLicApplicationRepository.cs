@@ -80,7 +80,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_application_spd_licence_manager)
+                //.Expand(a => a.spd_application_spd_licence_manager)
                 .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId)
                 .FirstOrDefault();

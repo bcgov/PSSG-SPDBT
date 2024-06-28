@@ -297,6 +297,26 @@ internal class Mappings : Profile
            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : null))
            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
 
+        CreateMap<BizLicAppSubmitRequest, UpdateBizCmd>()
+            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
+            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+            .ForMember(d => d.Id, opt => opt.Ignore())
+            .ForMember(d => d.Email, opt => opt.Ignore())
+            .ForMember(d => d.PhoneNumber, opt => opt.Ignore())
+            .ForMember(d => d.MailingAddress, opt => opt.Ignore())
+            .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
+            .ForMember(d => d.BCBusinessAddress, opt => opt.Ignore())
+            .ForMember(d => d.BizName, opt => opt.Ignore())
+            .ForMember(d => d.BizLegalName, opt => opt.Ignore())
+            .ForMember(d => d.BizGuid, opt => opt.Ignore())
+            .ForMember(d => d.BizType, opt => opt.Ignore())
+            .ForMember(d => d.UpdateSoleProprietor, opt => opt.MapFrom(s => false))
+            .ForMember(d => d.SoleProprietorSwlContactInfo, opt => opt.Ignore());
+
         CreateMap<AddressResp, BranchAddr>()
             .ReverseMap();
 
