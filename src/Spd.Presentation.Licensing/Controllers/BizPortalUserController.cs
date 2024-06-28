@@ -40,6 +40,8 @@ public class BizPortalUserController : ControllerBase
         string? hostUrl = _configuration.GetValue<string>("HostUrl");
         if (hostUrl == null)
             throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
-        return await _mediator.Send(new BizPortalUserCreateCommand(bizPortalUserCreateRequest, hostUrl, Guid.Parse(_currentUser.GetUserId())));
+
+        Guid? userId = _currentUser.GetUserId() != null ? Guid.Parse(_currentUser.GetUserId()) : null;
+        return await _mediator.Send(new BizPortalUserCreateCommand(bizPortalUserCreateRequest, hostUrl, userId));
     }
 }
