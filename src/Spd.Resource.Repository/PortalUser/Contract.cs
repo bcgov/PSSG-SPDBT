@@ -35,6 +35,7 @@ namespace Spd.Resource.Repository.PortalUser
         public string? UserEmail { get; set; }
         public bool IncludeInactive { get; set; } = false;
         public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
+        public ContactRoleCode? ContactRoleCode { get; set; }
     };
 
     public abstract record PortalUserCmd
