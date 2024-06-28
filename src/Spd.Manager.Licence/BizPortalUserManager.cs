@@ -27,7 +27,7 @@ internal class BizPortalUserManager
     public async Task<BizPortalUserResponse> Handle(BizPortalUserCreateCommand request, CancellationToken ct)
     {
         PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
-            new PortalUserQry() { OrgId = request.BizPortalUserCreateRequest.BizId },
+            new PortalUserQry() { OrgId = request.BizPortalUserCreateRequest.BizId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager },
             ct);
 
         //check if email already exists for the user
