@@ -13,7 +13,7 @@ public record BizPortalUserCreateRequest : BizPortalUserUpsertRequest { }
 
 public abstract record BizPortalUserUpsertRequest
 {
-    public Guid OrganizationId { get; set; }
+    public Guid BizId { get; set; }
     public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
@@ -25,7 +25,7 @@ public abstract record BizPortalUserUpsertRequest
 public class BizPortalUserResponse
 {
     public Guid Id { get; set; }
-    public Guid OrganizationId { get; set; }
+    public Guid BizId { get; set; }
     public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
