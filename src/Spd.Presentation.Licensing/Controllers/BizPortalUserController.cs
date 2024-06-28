@@ -35,7 +35,7 @@ public class BizPortalUserController : ControllerBase
     [HttpPost]
     public async Task<BizPortalUserResponse> Add([FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest, [FromRoute] Guid bizId)
     {
-        bizPortalUserCreateRequest.OrganizationId = bizId;
+        bizPortalUserCreateRequest.BizId = bizId;
 
         string? hostUrl = _configuration.GetValue<string>("HostUrl");
         if (hostUrl == null)
