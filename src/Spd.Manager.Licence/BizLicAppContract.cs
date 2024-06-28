@@ -6,6 +6,7 @@ namespace Spd.Manager.Licence;
 public interface IBizLicAppManager
 {
     public Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken ct);
+    public Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand command, CancellationToken ct);
@@ -21,6 +22,7 @@ public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertReque
 public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest)
     : BizLicAppUpsertCommand(BizLicAppUpsertRequest), IRequest<BizLicAppCommandResponse>;
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
+public record GetLatestBizLicenceAppQuery(Guid BizId) : IRequest<BizLicAppResponse>;
 public record GetBizLicAppListQuery(Guid BizId) : IRequest<IEnumerable<LicenceAppListResponse>>;
 public record BizLicAppReplaceCommand(
     BizLicAppSubmitRequest LicenceRequest,
