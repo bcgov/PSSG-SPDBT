@@ -93,6 +93,9 @@ internal class PermitAppManager :
 
     public async Task<PermitLicenceAppResponse> Handle(GetLatestPermitApplicationQuery query, CancellationToken cancellationToken)
     {
+        if (query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.ArmouredVehiclePermit && query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.BodyArmourPermit)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Invalid WorkerLicenceTypeCode");
+
         //get the latest app id
         IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
             new LicenceAppQuery(

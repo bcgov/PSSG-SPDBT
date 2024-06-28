@@ -2,6 +2,7 @@
 using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -75,6 +76,43 @@ public class BizLicenceAppManagerTest
         // Assert
         Assert.IsType<BizLicAppResponse>(viewResult);
         Assert.Equal(licAppId, viewResult.LicenceAppId);
+    }
+
+    [Fact]
+    public async void Handle_GetLatestBizLicenceAppQuery_WithoutApp_Throw_Exception()
+    {
+        //Arrange
+        Guid applicantId = Guid.NewGuid();
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppListResp> { });
+
+        //Act
+        Func<Task> act = () => sut.Handle(new GetLatestBizLicenceAppQuery(applicantId), CancellationToken.None);
+
+        //Assert
+        await Assert.ThrowsAsync<ApiException>(act);
+    }
+
+    [Fact]
+    public async void Handle_GetLatestBizLicenceAppQuery_ReturnCorrect()
+    {
+        //Arrange
+        Guid bizId = Guid.NewGuid();
+        Guid applicationId = Guid.NewGuid();
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppListResp> {
+                    new() {ApplicationTypeCode = ApplicationTypeEnum.Update, LicenceAppId = applicationId}
+            });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(p => p == applicationId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = applicationId, ApplicantIsBizManager = true });
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(p => p.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp>() });
+
+        //Act
+        var viewResult = await sut.Handle(new GetLatestBizLicenceAppQuery(bizId), CancellationToken.None);
+
+        //Assert
+        Assert.Equal(applicationId, viewResult.LicenceAppId);
     }
 
     [Fact]
@@ -410,8 +448,8 @@ public class BizLicenceAppManagerTest
                 Items = new List<LicenceResp> { originalLicence }
             });
         mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.IsAny<Guid>(), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = Guid.NewGuid(), BizId = Guid.NewGuid() });        
-        
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = Guid.NewGuid(), BizId = Guid.NewGuid() });
+
         BizLicAppSubmitRequest request = new()
         {
             ApplicationTypeCode = ApplicationTypeCode.Renewal,
@@ -495,10 +533,10 @@ public class BizLicenceAppManagerTest
                 Items = new List<LicenceResp> { originalLicence }
             });
         mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationResp() 
-            { 
-                LicenceAppId = originalApplicationId, 
-                BizId = bizId ,
+            .ReturnsAsync(new BizLicApplicationResp()
+            {
+                LicenceAppId = originalApplicationId,
+                BizId = bizId,
                 UseDogs = true,
                 CategoryCodes = new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.ArmouredCarGuard }
             });

@@ -52,6 +52,47 @@ namespace Spd.Manager.Licence.UnitTest
         }
 
         [Fact]
+        public async void Handle_GetLatestWorkerLicenceQuery_WithoutApp_Throw_Exception()
+        {
+            //Arrange
+            Guid applicantId = Guid.NewGuid();
+            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+                .ReturnsAsync(new List<LicenceAppListResp> {
+                    new() {ApplicationTypeCode = ApplicationTypeEnum.Replacement}
+                });
+
+            //Act
+            Func<Task> act = () => sut.Handle(new GetLatestWorkerLicenceQuery(applicantId), CancellationToken.None);
+
+            //Assert
+            await Assert.ThrowsAsync<ApiException>(act);
+        }
+
+        [Fact]
+        public async void Handle_GetLatestWorkerLicenceQuery_ReturnCorrect()
+        {
+            //Arrange
+            Guid applicantId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+                .ReturnsAsync(new List<LicenceAppListResp> {
+                    new() {ApplicationTypeCode = ApplicationTypeEnum.Update, LicenceAppId=applicationId}
+                });
+            mockPersonLicAppRepo.Setup(a => a.GetLicenceApplicationAsync(It.Is<Guid>(p => p == applicationId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LicenceApplicationResp() { LicenceAppId = applicationId });
+            mockMapper.Setup(m => m.Map<WorkerLicenceAppResponse>(It.IsAny<LicenceApplicationResp>()))
+                .Returns(new WorkerLicenceAppResponse() { LicenceAppId = applicationId });
+            mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(p => p.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp>() });
+
+            //Act
+            var viewResult = await sut.Handle(new GetLatestWorkerLicenceQuery(applicantId), CancellationToken.None);
+
+            //Assert
+            Assert.Equal(applicationId, viewResult.LicenceAppId);
+        }
+
+        [Fact]
         public async void Handle_WorkerLicenceUpsertCommand_WithDuplicateApp_Throw_Exception()
         {
             //Arrange
