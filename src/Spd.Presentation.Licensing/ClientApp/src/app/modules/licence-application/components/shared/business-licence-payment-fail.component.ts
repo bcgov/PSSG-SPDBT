@@ -38,7 +38,7 @@ export class BusinessLicencePaymentFailComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 		this.paymentService
-			.apiAuthBizLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
+			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
 			.pipe(
 				switchMap((paymentResp: PaymentResponse) => {
 					this.payment = paymentResp;

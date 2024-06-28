@@ -22,6 +22,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								<mat-form-field>
 									<mat-label>Given Name</mat-label>
 									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+									<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 								</mat-form-field>
 							</div>
 

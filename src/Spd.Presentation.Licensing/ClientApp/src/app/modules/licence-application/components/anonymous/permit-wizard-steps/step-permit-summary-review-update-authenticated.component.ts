@@ -96,7 +96,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 										{{ rationale }}
 									</div>
 								</div>
-								<div class="col-lg-6 col-md-12" *ngIf="isRationaleAttachments">
+								<div class="col-12" *ngIf="isRationaleAttachments">
 									<div class="text-label d-block text-muted">Rationale Supporting Documents</div>
 									<div class="summary-text-data">
 										<ul class="m-0">

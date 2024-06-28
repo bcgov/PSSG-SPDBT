@@ -4,6 +4,7 @@ import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class BusinessLicencePaymentSuccessComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
+		private authUserBceidService: AuthUserBceidService,
 		private paymentService: PaymentService,
 		private fileUtilService: FileUtilService
 	) {}
@@ -34,8 +36,10 @@ export class BusinessLicencePaymentSuccessComponent implements OnInit {
 			console.debug('BusinessLicencePaymentSuccessComponent - missing paymentId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.paymentService
-			.apiAuthBizLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
+			.apiBusinessBizIdPaymentsPaymentIdGet({ bizId, paymentId: paymentId! })
 			.pipe()
 			.subscribe((resp: PaymentResponse) => {
 				this.payment = resp;
@@ -43,8 +47,10 @@ export class BusinessLicencePaymentSuccessComponent implements OnInit {
 	}
 
 	onDownloadReceipt(): void {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.paymentService
-			.apiAuthBizLicenceApplicationIdPaymentReceiptGet$Response({
+			.apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response({
+				bizId,
 				applicationId: this.payment?.applicationId!,
 			})
 			.pipe()

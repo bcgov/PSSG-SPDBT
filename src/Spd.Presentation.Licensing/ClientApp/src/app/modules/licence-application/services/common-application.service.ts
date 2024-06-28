@@ -346,7 +346,9 @@ export class CommonApplicationService {
 
 							const response: Array<MainLicenceResponse> = [];
 							applResps.forEach((resp: BizLicAppResponse) => {
-								const matchingLicence = licenceResps[0];
+								const matchingLicence = licenceResps.find(
+									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
+								);
 								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!);
 
 								response.push(licence);
@@ -452,13 +454,16 @@ export class CommonApplicationService {
 	}
 
 	payNowBusinessLicence(licenceAppId: string, description: string): void {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
 			description,
 		};
 		this.paymentService
-			.apiAuthBizLicenceApplicationIdPaymentLinkPost({
+			.apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost({
+				bizId,
 				applicationId: licenceAppId,
 				body,
 			})
@@ -493,8 +498,10 @@ export class CommonApplicationService {
 	}
 
 	downloadManualBusinessPaymentForm(licenceAppId: string): void {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.paymentService
-			.apiAuthBizLicenceApplicationIdManualPaymentFormGet$Response({
+			.apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response({
+				bizId,
 				applicationId: licenceAppId,
 			})
 			.pipe()
