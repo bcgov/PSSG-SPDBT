@@ -16,5 +16,12 @@ internal class BizPortalUserMapping : Profile
         CreateMap<BizPortalUserCreateRequest, UserResult>()
             .ForMember(d => d.Id, opt => opt.Ignore())
             .IncludeBase<BizPortalUserCreateRequest, User>();
+
+        CreateMap<BizPortalUserCreateRequest, CreatePortalUserCmd>()
+            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId))
+            .ForMember(d => d.ContactRoleCode, opt => opt.MapFrom(s => s.ContactAuthorizationTypeCode))
+            .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.Email));
+
+        
     }
 }
