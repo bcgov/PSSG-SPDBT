@@ -269,6 +269,14 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(a => a.PostalCode, "xyz789")
             .Create();
 
+        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.Surname, "ManagerSurname")
+            .With(c => c.GivenName, "ManagerGivenName")
+            .With(c => c.EmailAddress, "manager@test.com")
+            .With(c => c.MiddleName1, "ManagerMiddleName1")
+            .With(c => c.MiddleName2, "ManagerMiddleName2")
+            .Create();
+
         Guid bizId = Guid.NewGuid();
 
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
@@ -294,6 +302,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
             .With(c => c.BizType, BizTypeEnum.Corporation)
+            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
             .Without(c => c.SoleProprietorSwlContactInfo)
             .Create();
 
