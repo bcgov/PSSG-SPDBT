@@ -18,7 +18,7 @@ import { StepBusinessLicenceReprintComponent } from './step-business-licence-rep
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
+					(nextStepperStep)="onCategoryNextStep()"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -29,11 +29,11 @@ import { StepBusinessLicenceReprintComponent } from './step-business-licence-rep
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_MANAGER)"
+					(nextStepperStep)="onBusinessManagerNextStep()"
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="!isUpdateFlowWithHideReprintStep">
 				<app-step-business-licence-reprint></app-step-business-licence-reprint>
 
 				<app-wizard-footer
@@ -54,6 +54,7 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 	readonly STEP_REPRINT = 2;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepLicenceCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
@@ -76,5 +77,21 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	onCategoryNextStep(): void {
+		if (this.isBusinessLicenceSoleProprietor) {
+			this.onStepNext(this.STEP_LICENCE_CATEGORY);
+		} else {
+			this.onFormValidNextStep(this.STEP_LICENCE_CATEGORY);
+		}
+	}
+
+	onBusinessManagerNextStep(): void {
+		if (this.isUpdateFlowWithHideReprintStep) {
+			this.onStepNext(this.STEP_MANAGER);
+		} else {
+			this.onFormValidNextStep(this.STEP_MANAGER);
+		}
 	}
 }

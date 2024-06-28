@@ -49,18 +49,6 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 					>This is required</mat-error
 				>
 			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-md-12 col-sm-12">
-					<mat-form-field>
-						<mat-label>Document Expiry Date</mat-label>
-						<input matInput [matDatepicker]="picker" formControlName="expiryDate" [errorStateMatcher]="matcher" />
-						<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-						<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-						<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
-					</mat-form-field>
-				</div>
-			</div>
 		</form>
 	`,
 	styles: ``,

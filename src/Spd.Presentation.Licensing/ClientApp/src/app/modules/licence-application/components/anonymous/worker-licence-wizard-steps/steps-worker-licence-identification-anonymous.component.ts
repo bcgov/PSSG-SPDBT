@@ -93,17 +93,6 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showReprint">
-				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_REPRINT)"
-					(nextReviewStepperStep)="onNextReview(STEP_REPRINT)"
-				></app-wizard-footer>
-			</mat-step>
-
 			<mat-step>
 				<app-step-worker-licence-residential-address
 					[applicationTypeCode]="applicationTypeCode"
@@ -138,7 +127,17 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_CONTACT_INFORMATION)"
+					(nextStepperStep)="onContactInformationNextStep()"
+				></app-wizard-footer>
+			</mat-step>
+
+			<mat-step *ngIf="showReprint">
+				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
+
+				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					(previousStepperStep)="onGoToPreviousStep()"
+					(nextStepperStep)="onStepNext(STEP_REPRINT)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -224,5 +223,13 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	onContactInformationNextStep(): void {
+		if (!this.showReprint) {
+			this.onStepNext(this.STEP_CONTACT_INFORMATION);
+		} else {
+			this.onFormValidNextStep(this.STEP_CONTACT_INFORMATION);
+		}
 	}
 }
