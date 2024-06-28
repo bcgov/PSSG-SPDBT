@@ -47,6 +47,8 @@ public class BizLicensingControllerTest
             .Returns(new Mock<ITimeLimitedDataProtector>().Object);
         mockMediator.Setup(m => m.Send(It.IsAny<GetBizLicAppQuery>(), CancellationToken.None))
             .ReturnsAsync(new BizLicAppResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<GetLatestBizLicenceAppQuery>(), CancellationToken.None))
+            .ReturnsAsync(new BizLicAppResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppUpsertCommand>(), CancellationToken.None))
             .ReturnsAsync(new BizLicAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<CreateDocumentInTransientStoreCommand>(), CancellationToken.None))
@@ -79,6 +81,16 @@ public class BizLicensingControllerTest
             mockRecaptch.Object,
             mockCache.Object,
             mockDpProvider.Object);
+    }
+
+    [Fact]
+    public async void GetLatestBizLicenceApplication_ReturnBizLicAppResponse()
+    {
+        Guid applicantId = Guid.NewGuid();
+        var result = await sut.GetLatestBizLicenceApplication(applicantId);
+
+        Assert.IsType<BizLicAppResponse>(result);
+        mockMediator.Verify();
     }
 
     [Fact]

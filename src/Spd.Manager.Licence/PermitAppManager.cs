@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -18,6 +19,7 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
+        IRequestHandler<GetLatestPermitApplicationQuery, PermitLicenceAppResponse>,
         IRequestHandler<PermitUpsertCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitSubmitCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
@@ -89,9 +91,30 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
+    public async Task<PermitLicenceAppResponse> Handle(GetLatestPermitApplicationQuery query, CancellationToken cancellationToken)
+    {
+        if (query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.ArmouredVehiclePermit && query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.BodyArmourPermit)
+            throw new ApiException(HttpStatusCode.BadRequest, $"Invalid WorkerLicenceTypeCode");
+
+        //get the latest app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                query.ApplicantId,
+                null,
+                new List<WorkerLicenceTypeEnum> { Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()) },
+                null),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.SubmittedOn)
+            .FirstOrDefault();
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"there is no {query.WorkerLicenceTypeCode} for this applicant.");
+
+        return await Handle(new GetPermitApplicationQuery(app.LicenceAppId), cancellationToken);
+    }
     #endregion
 
-    #region anonymous
+
 
     public async Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
     {
@@ -102,6 +125,7 @@ internal class PermitAppManager :
         return result;
     }
 
+    #region anonymous new
     public async Task<PermitAppCommandResponse> Handle(PermitAppNewCommand cmd, CancellationToken cancellationToken)
     {
         PermitAppSubmitRequest request = cmd.LicenceAnonymousRequest;
@@ -114,6 +138,7 @@ internal class PermitAppManager :
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
+    #endregion
 
     public async Task<PermitAppCommandResponse> Handle(PermitAppReplaceCommand cmd, CancellationToken cancellationToken)
     {
@@ -282,7 +307,7 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = 0 };
     }
 
-    #endregion
+
 
     private static void ValidateFilesForNewApp(PermitAppNewCommand cmd)
     {
