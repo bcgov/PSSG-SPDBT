@@ -35,7 +35,11 @@ internal class PortalUserRepository : IPortalUserRepository
             users = users.Where(d => d.spd_servicecategory == null || d.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening);
         else
             users = users.Where(d => d.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Licensing);
-
+        if (qry.ContactRoleCode != null)
+        {
+            Guid categoryKey = DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Key == qry.ContactRoleCode.ToString()).Value;
+            users = users.Where(u => u.spd_spd_role_spd_portaluser.Any(r => r.spd_roleid == categoryKey));
+        }
         List<spd_portaluser> userList = users.ToList();
         IEnumerable<spd_portaluser> results = userList;
         if (qry.ParentOrgId != null)
