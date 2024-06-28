@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.Shared.Exceptions;
@@ -14,13 +15,13 @@ internal class BizPortalUserManager
 {
     private readonly IMapper _mapper;
     private readonly IPortalUserRepository _portalUserRepository;
-    private readonly IOrgRepository _orgRepository;
+    private readonly IBizRepository _bizRepository;
 
-    public BizPortalUserManager(IMapper mapper, IPortalUserRepository portalUserRepository, IOrgRepository orgRepository)
+    public BizPortalUserManager(IMapper mapper, IPortalUserRepository portalUserRepository, IBizRepository bizRepository)
     {
         _mapper = mapper;
         _portalUserRepository = portalUserRepository;
-        _orgRepository = orgRepository;
+        _bizRepository = bizRepository;
     }
 
     public async Task<BizPortalUserResponse> Handle(BizPortalUserCreateCommand request, CancellationToken ct)
@@ -38,11 +39,11 @@ internal class BizPortalUserManager
         //check if role is within the maxium number scope
         var newlist = _mapper.Map<List<UserResult>>(existingUsersResult.Items.ToList());
         newlist.Add(_mapper.Map<UserResult>(request.BizPortalUserCreateRequest));
-        var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserCreateRequest.BizId), ct);
-        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org, newlist);
+        BizResult biz = await _bizRepository.GetBizAsync(request.BizPortalUserCreateRequest.BizId, ct);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, newlist, PortalUserServiceCategoryEnum.Licensing);
 
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
-        createPortalUserCmd.PortalUserServiceCategory = Resource.Repository.PortalUserServiceCategoryEnum.Licensing;
+        createPortalUserCmd.PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing;
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
