@@ -12,7 +12,9 @@ internal class BizPortalUserMapping : Profile
             .ForMember(d => d.IsActive, opt => opt.Ignore())
             .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => s.ContactRoleCode))
             .ForMember(d => d.Email, opt => opt.MapFrom(s => s.UserEmail));
+
         CreateMap<BizPortalUserCreateRequest, User>();
+        
         CreateMap<BizPortalUserCreateRequest, UserResult>()
             .ForMember(d => d.Id, opt => opt.Ignore())
             .IncludeBase<BizPortalUserCreateRequest, User>();
