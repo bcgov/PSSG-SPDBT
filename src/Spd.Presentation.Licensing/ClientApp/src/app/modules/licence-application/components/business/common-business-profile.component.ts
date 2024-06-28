@@ -31,7 +31,7 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 				<mat-accordion>
 					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
-							<mat-panel-title>Business Address</mat-panel-title>
+							<mat-panel-title>Mailing Address</mat-panel-title>
 						</mat-expansion-panel-header>
 
 						<div class="mt-3">
@@ -41,12 +41,44 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 							</div>
 
 							<section>
-								<app-common-business-address
-									[form]="businessAddressFormGroup"
+								<app-common-business-mailing-address
+									[form]="businessMailingAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="true"
-								></app-common-business-address>
+								></app-common-business-mailing-address>
 							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-lg-6 col-md-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Business Address</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="mt-3">
+							<div class="mb-4 text-primary-color">
+								Provide your mailing address, if different from your business address
+							</div>
+
+							<ng-container *ngIf="isMailingTheSame; else mailingIsDifferentSection">
+								<div class="mb-3">
+									<mat-icon style="vertical-align: bottom;">label_important</mat-icon> The business address and mailing
+									address are the same
+								</div>
+							</ng-container>
+							<ng-template #mailingIsDifferentSection>
+								<section>
+									<app-common-address
+										[form]="businessAddressFormGroup"
+										[isWizardStep]="false"
+										[isReadonly]="isReadonly"
+									></app-common-address>
+								</section>
+							</ng-template>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>
@@ -71,41 +103,6 @@ import { CommonBusinessInformationComponent } from './common-business-informatio
 									[isReadonly]="isReadonly"
 								></app-common-address>
 							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
-			</div>
-
-			<div class="col-lg-6 col-md-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Mailing Address</mat-panel-title>
-						</mat-expansion-panel-header>
-
-						<div class="mt-3">
-							<div class="mb-4 text-primary-color">
-								Provide your mailing address, if different from your business address
-							</div>
-							<!-- <app-alert type="info" icon="" [showBorder]="false">
-								Provide your mailing address, if different from your business address
-							</app-alert> -->
-
-							<ng-container *ngIf="isMailingTheSame; else mailingIsDifferentSection">
-								<div class="mb-3">
-									<mat-icon style="vertical-align: bottom;">label_important</mat-icon> The business address and mailing
-									address are the same
-								</div>
-							</ng-container>
-							<ng-template #mailingIsDifferentSection>
-								<section>
-									<app-common-address
-										[form]="businessMailingAddressFormGroup"
-										[isWizardStep]="false"
-										[isReadonly]="isReadonly"
-									></app-common-address>
-								</section>
-							</ng-template>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>
@@ -146,7 +143,7 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 		const isValid1 = this.businessInformationComponent.isFormValid();
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
-		const isValid4 = this.isMailingTheSame ? true : this.isFormGroupValid(this.businessMailingAddressFormGroup);
+		const isValid4 = this.isMailingTheSame ? true : this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid5 = this.businessBcBranchesComponent.isFormValid();
 
 		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);
@@ -160,6 +157,6 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	}
 
 	get isMailingTheSame(): boolean {
-		return this.businessAddressFormGroup.get('isMailingTheSame')?.value ?? false;
+		return this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value ?? false;
 	}
 }

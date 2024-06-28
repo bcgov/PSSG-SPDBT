@@ -14,6 +14,7 @@ import {
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
+	Members,
 	MembersRequest,
 	NonSwlContactInfo,
 	SwlContactInfo,
@@ -206,10 +207,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hotToastService.success(params.paymentSuccess);
-				this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-					_resp.body.licenceAppId!,
-					params.paymentReason
-				);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -234,16 +232,27 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	submitBusinessLicenceRenewalOrUpdateOrReplace(
+		isUpdateFlowWithHideReprintStep?: boolean
+	): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
 		delete bodyUpsert.documentInfos;
 
-		const bodySubmit = bodyUpsert as BizLicAppSubmitRequest;
-		const documentsToSave = this.getSaveBodyDocumentInfos(businessModelFormValue);
+		const body = bodyUpsert as BizLicAppSubmitRequest;
+
+		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
+			// if not showing the reprint step, then set to True, otherwise
+			// use the value selected
+			body.reprint = isUpdateFlowWithHideReprintStep
+				? true
+				: this.utilService.booleanTypeToBoolean(businessModelFormValue.reprintLicenceData.reprintLicence);
+		}
+
+		const documentsToSave = this.getDocsToSaveBlobs(businessModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		bodySubmit.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
 		// Create list of APIs to call for the newly added documents
 		const documentsToSaveApis: Observable<any>[] = [];
@@ -279,23 +288,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			return forkJoin(documentsToSaveApis).pipe(
 				switchMap((resps: string[]) => {
 					// pass in the list of document key codes
-					bodySubmit.documentKeyCodes = [...resps];
+					body.documentKeyCodes = [...resps];
 					// pass in the list of document ids that were in the original
 					// application and are still being used
-					bodySubmit.previousDocumentIds = [...existingDocumentIds];
+					body.previousDocumentIds = [...existingDocumentIds];
 
 					return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-						body: bodySubmit,
+						body,
 					});
 				})
 			);
 		} else {
 			// pass in the list of document ids that were in the original
 			// application and are still being used
-			bodySubmit.previousDocumentIds = [...existingDocumentIds];
+			body.previousDocumentIds = [...existingDocumentIds];
 
 			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-				body: bodySubmit,
+				body,
 			});
 		}
 	}
@@ -472,37 +481,60 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
-			switchMap((profile: BizProfileResponse) => {
-				// If the profile is a sole proprietor, then we need to get the associated licence info
-				if (profile.soleProprietorSwlContactInfo?.licenceId) {
-					return this.licenceService
-						.apiLicencesLicenceIdGet({ licenceId: profile.soleProprietorSwlContactInfo?.licenceId })
-						.pipe(
-							switchMap((soleProprietorSwlLicence: LicenceResponse) => {
-								return this.createEmptyLicence(profile, soleProprietorSwlLicence).pipe(
-									tap((_resp: any) => {
-										this.initialized = true;
+			switchMap((businessProfile: BizProfileResponse) => {
+				const isSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
 
-										this.commonApplicationService.setApplicationTitle(
-											WorkerLicenceTypeCode.SecurityBusinessLicence,
-											applicationTypeCode // if undefined, we are just loading the profile.
-										);
-									})
-								);
-							})
-						);
+				if (isSoleProprietor) {
+					// If the profile is a sole proprietor, then we need to get the associated licence info
+					if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+						return this.licenceService
+							.apiLicencesLicenceIdGet({ licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId })
+							.pipe(
+								switchMap((soleProprietorSwlLicence: LicenceResponse) => {
+									return this.createEmptyLicence({ businessProfile, soleProprietorSwlLicence }).pipe(
+										tap((_resp: any) => {
+											this.initialized = true;
+
+											this.commonApplicationService.setApplicationTitle(
+												WorkerLicenceTypeCode.SecurityBusinessLicence,
+												applicationTypeCode // if undefined, we are just loading the profile.
+											);
+										})
+									);
+								})
+							);
+					}
+
+					return this.createEmptyLicence({ businessProfile }).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								applicationTypeCode // if undefined, we are just loading the profile.
+							);
+						})
+					);
 				}
 
-				return this.createEmptyLicence(profile).pipe(
-					tap((_resp: any) => {
-						this.initialized = true;
-
-						this.commonApplicationService.setApplicationTitle(
-							WorkerLicenceTypeCode.SecurityBusinessLicence,
-							applicationTypeCode // if undefined, we are just loading the profile.
-						);
+				return this.bizLicensingService
+					.apiBusinessLicenceApplicationBizIdMembersGet({
+						bizId,
 					})
-				);
+					.pipe(
+						switchMap((controllingMembersAndEmployees: Members) => {
+							return this.createEmptyLicence({ businessProfile, controllingMembersAndEmployees }).pipe(
+								tap((_resp: any) => {
+									this.initialized = true;
+
+									this.commonApplicationService.setApplicationTitle(
+										WorkerLicenceTypeCode.SecurityBusinessLicence,
+										applicationTypeCode // if undefined, we are just loading the profile.
+									);
+								})
+							);
+						})
+					);
 			})
 		);
 	}
@@ -565,47 +597,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessProfile = resps[0];
 				const members = resps[1];
 
-				const apis: Observable<any>[] = [];
-				members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: item.licenceId!,
-						})
-					);
-				});
-				members.employees?.forEach((item: SwlContactInfo) => {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: item.licenceId!,
-						})
-					);
-				});
-
-				if (apis.length > 0) {
-					return forkJoin(apis).pipe(
-						switchMap((licenceResponses: Array<LicenceResponse>) => {
-							this.applyControllingMembersWithSwl(members.swlControllingMembers ?? [], licenceResponses);
-							this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
-							this.applyEmployees(members.employees ?? [], licenceResponses);
-
-							return this.applyLicenceProfileIntoModel({ businessProfile }).pipe(
-								tap((_resp: any) => {
-									this.initialized = true;
-
-									this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
-								})
-							);
-						})
-					);
-				} else {
-					return this.applyLicenceProfileIntoModel({ businessProfile }).pipe(
-						tap((_resp: any) => {
-							this.initialized = true;
-
-							this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
-						})
-					);
-				}
+				return this.applyLicenceProfileMembersIntoModel(businessProfile, members);
 			})
 		);
 	}
@@ -733,17 +725,78 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @param soleProprietorSwlLicence
 	 * @returns
 	 */
-	private createEmptyLicence(
-		businessProfile: BizProfileResponse,
-		soleProprietorSwlLicence?: LicenceResponse
-	): Observable<any> {
+	private createEmptyLicence({
+		businessProfile,
+		soleProprietorSwlLicence,
+		controllingMembersAndEmployees,
+	}: {
+		businessProfile: BizProfileResponse;
+		soleProprietorSwlLicence?: LicenceResponse;
+		controllingMembersAndEmployees?: Members;
+	}): Observable<any> {
 		this.reset();
+
+		if (controllingMembersAndEmployees) {
+			return this.applyLicenceProfileMembersIntoModel(
+				businessProfile,
+				controllingMembersAndEmployees,
+				ApplicationTypeCode.New
+			);
+		}
 
 		return this.applyLicenceProfileIntoModel({
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSwlLicence,
 		});
+	}
+
+	private applyLicenceProfileMembersIntoModel(
+		businessProfile: BizProfileResponse,
+		members: Members,
+		applicationTypeCode?: ApplicationTypeCode | null | undefined
+	) {
+		const apis: Observable<any>[] = [];
+		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: item.licenceId!,
+				})
+			);
+		});
+		members.employees?.forEach((item: SwlContactInfo) => {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: item.licenceId!,
+				})
+			);
+		});
+
+		if (apis.length > 0) {
+			return forkJoin(apis).pipe(
+				switchMap((licenceResponses: Array<LicenceResponse>) => {
+					this.applyControllingMembersWithSwl(members.swlControllingMembers ?? [], licenceResponses);
+					this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
+					this.applyEmployees(members.employees ?? [], licenceResponses);
+
+					return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
+						})
+					);
+				})
+			);
+		} else {
+			return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
+				tap((_resp: any) => {
+					this.initialized = true;
+
+					this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
+				})
+			);
+		}
 	}
 
 	/**
@@ -937,7 +990,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				});
 
 				const companyBrandingData = {
-					noLogoOrBranding: companyBrandingAttachments.length > 0,
+					noLogoOrBranding: companyBrandingAttachments.length === 0,
 					attachments: companyBrandingAttachments,
 				};
 
@@ -1029,6 +1082,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			originalExpiryDate: originalLicence?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: originalLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: originalLicence?.bizTypeCode ?? null,
+			originalCategories: businessLicenceAppl.categoryCodes ?? null,
 		};
 
 		const companyBrandingAttachments: Array<File> = [];
@@ -1050,8 +1104,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				case LicenceDocumentTypeCode.ArmourCarGuardRegistrar: {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					categoryArmouredCarGuardAttachments.push(aFile);
-
-					categoryArmouredCarGuardFormGroup.expiryDate = doc.expiryDate ?? null;
 					break;
 				}
 				case LicenceDocumentTypeCode.BizInsurance: {

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-common-business-address',
+	selector: 'app-common-business-mailing-address',
 	template: `
 		<app-common-address [form]="form" [isWizardStep]="isWizardStep" [isReadonly]="isReadonly"></app-common-address>
 
@@ -18,7 +18,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 	`,
 	styles: [],
 })
-export class CommonBusinessAddressComponent implements OnInit {
+export class CommonBusinessMailingAddressComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadonly = false;

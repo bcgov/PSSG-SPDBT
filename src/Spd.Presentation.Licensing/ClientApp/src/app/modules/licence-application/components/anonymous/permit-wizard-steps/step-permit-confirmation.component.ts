@@ -11,11 +11,16 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 				<app-step-title title="Confirm your current permit information"></app-step-title>
 
 				<div class="row">
-					<div class="col-xxl-7 col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<app-alert type="warning" icon="warning">
 							If any of this information is not correct, please call the Security Program's Licensing Unit during
 							regular office hours: {{ spdPhoneNumber }}
 						</app-alert>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row mt-0 mb-3">
 							<div class="col-lg-4 col-md-12">
 								<div class="text-label d-block text-muted">Permit Number</div>

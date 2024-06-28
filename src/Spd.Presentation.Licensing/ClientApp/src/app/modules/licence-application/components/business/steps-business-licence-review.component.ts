@@ -58,8 +58,8 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				<app-step-business-licence-update-fee [licenceCost]="licenceCost"></app-step-business-licence-update-fee>
 
 				<app-wizard-footer
+					[showExit]="false"
 					nextButtonLabel="Pay Now"
-					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onPayNow()"
 				></app-wizard-footer>
 			</mat-step>

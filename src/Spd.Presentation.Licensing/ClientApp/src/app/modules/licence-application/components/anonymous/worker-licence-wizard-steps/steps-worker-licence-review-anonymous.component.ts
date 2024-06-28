@@ -36,8 +36,8 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 				<app-step-worker-licence-update-fee [licenceCost]="licenceCost"></app-step-worker-licence-update-fee>
 
 				<app-wizard-footer
+					[showExit]="false"
 					nextButtonLabel="Pay Now"
-					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onPayNow()"
 				></app-wizard-footer>
 			</mat-step>

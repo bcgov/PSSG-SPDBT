@@ -2,9 +2,18 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { Router } from '@angular/router';
+import {
+	ApplicationTypeCode,
+	BizLicAppCommandResponse,
+	WorkerCategoryTypeCode,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
+import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonApplicationService } from '../../services/common-application.service';
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
@@ -38,6 +47,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 						<ng-template matStepLabel>Licence Updates</ng-template>
 						<app-steps-business-licence-updates
 							[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
+							[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -50,9 +60,11 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 						<app-steps-business-licence-review
 							[workerLicenceTypeCode]="workerLicenceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
+							[licenceCost]="newLicenceCost"
 							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
+							(nextSubmitStep)="onSubmitStep()"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
@@ -71,6 +83,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
 	newLicenceCost = 0;
+	isUpdateFlowWithHideReprintStep = false;
 
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_UPDATES = 1;
@@ -91,6 +104,8 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
+		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -115,6 +130,31 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 				this.isBusinessLicenceSoleProprietor = this.businessApplicationService.businessModelFormGroup.get(
 					'isBusinessLicenceSoleProprietor'
 				)?.value;
+
+				// for the update flow, need to keep track of changes.
+				// This determines whether or not to show the 'reprint yes/no' step
+				let isUpdateFlowWithHideReprintStep = false;
+				if (this.applicationTypeCode === ApplicationTypeCode.Update) {
+					const originalCategoriesList = this.businessApplicationService.businessModelFormGroup.get(
+						'originalLicenceData.originalCategories'
+					)?.value;
+					const currentCategoriesData =
+						this.businessApplicationService.businessModelFormGroup.get('categoryData')?.value;
+
+					const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
+					const currentCategoriesList = workerCategoryTypeCodes.filter((item: string) => {
+						return !!currentCategoriesData[item];
+					});
+
+					// If the user has not changed the selected categories,
+					// then prompt whether or not to reprint
+					currentCategoriesList.sort((a: string, b: string) => a.localeCompare(b));
+					originalCategoriesList.sort((a: string, b: string) => a.localeCompare(b));
+
+					isUpdateFlowWithHideReprintStep = currentCategoriesList.join() != originalCategoriesList.join();
+				}
+
+				this.isUpdateFlowWithHideReprintStep = isUpdateFlowWithHideReprintStep;
 
 				this.isFormValid = _resp;
 			}
@@ -160,10 +200,10 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
-			paymentSuccess: 'Your business licence update has been successfully submitted',
-			paymentReason: 'Payment for update of Business Licence application',
-		});
+		this.commonApplicationService.payNowBusinessLicence(
+			this.newLicenceAppId!,
+			'Payment for update of Business Licence application'
+		);
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -177,80 +217,41 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		this.stepper.selectedIndex = step;
 	}
 
-	// onGoToReview() {
-	// 	this.goToReviewStep();
-	// }
-
-	// onChildNextStep() {
-	// 	this.goToChildNextStep();
-	// }
-
 	onChildNextStep() {
 		this.stepsLicenceUpdatesComponent?.onGoToNextStep();
 	}
 
 	onSubmitStep(): void {
-		// if (this.newLicenceAppId) {
-		// 	if (this.newLicenceCost > 0) {
-		// 		this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
-		// 	} else {
-		// 		this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
-		// 	}
-		// } else {
-		// 	this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
-		// 		next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-		// 			const workerLicenceCommandResponse = resp.body;
-		// 			// save this locally just in application payment fails
-		// 			this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
-		// 			this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
-		// 			if (this.newLicenceCost > 0) {
-		// 				this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
-		// 			} else {
-		// 				this.hotToastService.success('Your licence update has been successfully submitted');
-		// 				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS));
-		// 			}
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during save', error);
-		// 			this.hotToastService.error('An error occurred during the save. Please try again.');
-		// 		},
-		// 	});
-		// }
+		if (this.newLicenceAppId) {
+			if (this.newLicenceCost > 0) {
+				this.stepsReviewAndConfirm?.onGoToLastStep();
+			} else {
+				this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.BUSINESS_UPDATE_SUCCESS));
+			}
+		} else {
+			this.businessApplicationService
+				.submitBusinessLicenceRenewalOrUpdateOrReplace(this.isUpdateFlowWithHideReprintStep)
+				.subscribe({
+					next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+						const bizLicenceCommandResponse = resp.body;
+
+						// save this locally just in case application payment fails
+						this.newLicenceAppId = bizLicenceCommandResponse.licenceAppId!;
+						this.newLicenceCost = bizLicenceCommandResponse.cost ?? 0;
+						if (this.newLicenceCost > 0) {
+							this.stepsReviewAndConfirm?.onGoToLastStep();
+						} else {
+							this.hotToastService.success('Your business licence update has been successfully submitted');
+							this.router.navigateByUrl(
+								LicenceApplicationRoutes.path(LicenceApplicationRoutes.BUSINESS_UPDATE_SUCCESS)
+							);
+						}
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+						this.hotToastService.error('An error occurred during the save. Please try again.');
+					},
+				});
+		}
 	}
-
-	// onNextPayStep(): void {
-	// 	this.payNow(this.newLicenceAppId!);
-	// }
-
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-	// 		licenceAppId,
-	// 		'Payment for Business Licence update'
-	// 	);
-	// }
-
-	// private goToChildNextStep() {
-	// 	switch (this.stepper.selectedIndex) {
-	// 		case this.STEP_LICENCE_CONFIRMATION:
-	// 			this.stepsBusinessInformationComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_LICENCE_UPDATES:
-	// 			this.stepsLicenceSelectionComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_REVIEW_AND_CONFIRM:
-	// 			this.stepsReviewAndConfirm?.onGoToNextStep();
-	// 			break;
-	// 	}
-	// }
-
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNowBusinessLicence(
-	// 		licenceAppId,
-	// 		'Payment for renewal of Business Licence application'
-	// 	);
-	// }
-
-	// private goToReviewStep(): void {
-	// 		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-	// }
 }
