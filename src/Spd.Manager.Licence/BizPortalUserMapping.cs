@@ -22,6 +22,8 @@ internal class BizPortalUserMapping : Profile
             .ForMember(d => d.ContactRoleCode, opt => opt.MapFrom(s => s.ContactAuthorizationTypeCode))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.Email));
 
-        
+        CreateMap<PortalUserResp, BizPortalUserResponse>()
+            .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => s.ContactRoleCode))
+            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.UserEmail));
     }
 }
