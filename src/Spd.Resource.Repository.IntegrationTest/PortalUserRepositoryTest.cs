@@ -18,13 +18,15 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
     [Fact]
     public async Task QueryAsync_Run_Correctly()
     {
-        //Arrange
+        // Arrange
         PortalUserQry qry = new() { OrgId = Guid.Parse("0326f9fd-7043-ee11-b845-00505683fbf4") };
 
-        //Action
+        // Action
         var response = await _portalUserRepo.QueryAsync(qry, CancellationToken.None);
 
-        //Assert
+        // Assert
         Assert.NotNull(response);
     }
+
+    
 }
