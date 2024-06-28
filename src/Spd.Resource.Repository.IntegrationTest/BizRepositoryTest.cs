@@ -275,6 +275,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.EmailAddress, "manager@test.com")
             .With(c => c.MiddleName1, "ManagerMiddleName1")
             .With(c => c.MiddleName2, "ManagerMiddleName2")
+            .With(c => c.PhoneNumber, "80000000")
             .Create();
 
         Guid bizId = Guid.NewGuid();
@@ -343,6 +344,12 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
         Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
         Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
+        Assert.Equal(updateCmd.BizManagerContactInfo.GivenName, account.spd_businessmanagerfirstname);
+        Assert.Equal(updateCmd.BizManagerContactInfo.Surname, account.spd_businessmanagersurname);
+        Assert.Equal(updateCmd.BizManagerContactInfo.MiddleName1, account.spd_businessmanagermiddlename1);
+        Assert.Equal(updateCmd.BizManagerContactInfo.MiddleName2, account.spd_businessmanagermiddlename2);
+        Assert.Equal(updateCmd.BizManagerContactInfo.EmailAddress, account.spd_businessmanageremail);
+        Assert.Equal(updateCmd.BizManagerContactInfo.PhoneNumber, account.spd_businessmanagerphone);
     }
 
     [Fact]
