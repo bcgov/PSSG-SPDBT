@@ -21,6 +21,7 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
+        IRequestHandler<GetLatestWorkerLicenceQuery, WorkerLicenceAppResponse>,
         IRequestHandler<GetLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<WorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
@@ -130,8 +131,26 @@ internal class SecurityWorkerAppManager :
         return result;
     }
 
-    #region anonymous
+    public async Task<WorkerLicenceAppResponse> Handle(GetLatestWorkerLicenceQuery query, CancellationToken cancellationToken)
+    {
+        //get the latest app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                query.ApplicantId,
+                null,
+                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityWorkerLicence },
+                null),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.SubmittedOn)
+            .FirstOrDefault();
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "there is no SecurityWorkerLicence for this applicant.");
 
+        return await Handle(new GetWorkerLicenceQuery(app.LicenceAppId), cancellationToken);
+    }
+
+    #region anonymous new
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppNewCommand cmd, CancellationToken cancellationToken)
     {
         WorkerLicenceAppSubmitRequest request = cmd.LicenceAnonymousRequest;
@@ -146,6 +165,7 @@ internal class SecurityWorkerAppManager :
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
+    #endregion
 
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppReplaceCommand cmd, CancellationToken cancellationToken)
     {
@@ -339,8 +359,6 @@ internal class SecurityWorkerAppManager :
         return new WorkerLicenceCommandResponse() { LicenceAppId = createLicResponse?.LicenceAppId, Cost = cost };
 
     }
-
-    #endregion
 
     private async Task<ChangeSpec> MakeChanges(LicenceApplicationResp originalApp,
         WorkerLicenceAppSubmitRequest newRequest,

@@ -53,6 +53,19 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Get Lastest Security Business Licence Application
+        /// </summary>
+        /// <param name="applicantId"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/app-latest")]
+        [Authorize(Policy = "OnlyBceid")]
+        [HttpGet]
+        public async Task<BizLicAppResponse> GetLatestBizLicenceApplication([FromRoute][Required] Guid bizId)
+        {
+            return await _mediator.Send(new GetLatestBizLicenceAppQuery(bizId));
+        }
+
+        /// <summary>
         /// Save Business Licence Application
         /// </summary>
         /// <param name="bizUpsertRequest"></param>
