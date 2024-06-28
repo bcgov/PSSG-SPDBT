@@ -39,7 +39,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get List of draft or InProgress Security Worker Licence Application or Permit Application
+        /// Get List of draft or InProgress Security Business Licence Application
         /// </summary>
         /// <returns></returns>
         [Route("api/bizs/{bizId}/licence-applications")]

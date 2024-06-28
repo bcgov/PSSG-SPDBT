@@ -61,6 +61,8 @@ public class PermitControllerTest
                .ReturnsAsync(new PermitAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitAppUpdateCommand>(), CancellationToken.None))
                .ReturnsAsync(new PermitAppCommandResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<GetLatestPermitApplicationQuery>(), CancellationToken.None))
+                .ReturnsAsync(new PermitLicenceAppResponse());
 
         var validationResults = fixture.Build<ValidationResult>()
             .With(r => r.Errors, [])
@@ -84,6 +86,16 @@ public class PermitControllerTest
                 mockRecaptch.Object,
                 mockCache.Object,
                 mockDpProvider.Object);
+    }
+
+    [Fact]
+    public async void GetLatestSecurityWorkerLicenceApplication_ReturnWorkerLicenceAppResponse()
+    {
+        Guid applicantId = Guid.NewGuid();
+        var result = await sut.GetLatestPermitApplication(applicantId, WorkerLicenceTypeCode.ArmouredVehiclePermit);
+
+        Assert.IsType<PermitLicenceAppResponse>(result);
+        mockMediator.Verify();
     }
 
     [Fact]
