@@ -55,6 +55,8 @@ public class SecurityWorkerLicensingControllerTest
                .ReturnsAsync(new WorkerLicenceCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<WorkerLicenceAppUpdateCommand>(), CancellationToken.None))
                .ReturnsAsync(new WorkerLicenceCommandResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<GetLatestWorkerLicenceQuery>(), CancellationToken.None))
+                .ReturnsAsync(new WorkerLicenceAppResponse());
 
         var validationResults = fixture.Build<ValidationResult>()
             .With(r => r.Errors, [])
@@ -74,6 +76,16 @@ public class SecurityWorkerLicensingControllerTest
                 mockCache.Object,
                 mockDpProvider.Object,
                 mockRecaptch.Object);
+    }
+
+    [Fact]
+    public async void GetLatestSecurityWorkerLicenceApplication_ReturnWorkerLicenceAppResponse()
+    {
+        Guid applicantId = Guid.NewGuid();
+        var result = await sut.GetLatestSecurityWorkerLicenceApplication(applicantId);
+
+        Assert.IsType<WorkerLicenceAppResponse>(result);
+        mockMediator.Verify();
     }
 
     [Fact]

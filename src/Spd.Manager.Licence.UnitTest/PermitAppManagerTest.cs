@@ -58,6 +58,43 @@ public class PermitAppManagerTest
     }
 
     [Fact]
+    public async void Handle_GetLatestPermitApplicationQuery_WithoutApp_Throw_Exception()
+    {
+        //Arrange
+        Guid applicantId = Guid.NewGuid();
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppListResp> { });
+
+        //Act
+        Func<Task> act = () => sut.Handle(new GetLatestPermitApplicationQuery(applicantId, WorkerLicenceTypeCode.SecurityBusinessLicence), CancellationToken.None);
+
+        //Assert
+        await Assert.ThrowsAsync<ApiException>(act);
+    }
+
+    [Fact]
+    public async void Handle_GetLatestPermitApplicationQuery_ReturnCorrect()
+    {
+        //Arrange
+        Guid applicantId = Guid.NewGuid();
+        Guid applicationId = Guid.NewGuid();
+        mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
+            .ReturnsAsync(new List<LicenceAppListResp> {
+                    new() {ApplicationTypeCode = ApplicationTypeEnum.Update, LicenceAppId = applicationId}
+            });
+        mockPersonLicAppRepo.Setup(a => a.GetLicenceApplicationAsync(It.Is<Guid>(p => p == applicationId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LicenceApplicationResp() { LicenceAppId = applicationId });
+        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(p => p.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp>() });
+
+        //Act
+        var viewResult = await sut.Handle(new GetLatestPermitApplicationQuery(applicantId, WorkerLicenceTypeCode.BodyArmourPermit), CancellationToken.None);
+
+        //Assert
+        Assert.Equal(applicationId, viewResult.LicenceAppId);
+    }
+
+    [Fact]
     public async void Handle_PermitUpsertCommand_WithoutLicAppId_Return_PermitCommandResponse()
     {
         //Arrange
