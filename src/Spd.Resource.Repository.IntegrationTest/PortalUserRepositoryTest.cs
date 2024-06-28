@@ -28,5 +28,32 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.NotNull(response);
     }
 
-    
+    // * TODO finish test
+    //[Fact]
+    //public async Task CreatePortalUserAsync_Run_Correctly()
+    //{
+    //    // Arrange
+    //    CreatePortalUserCmd cmd = new()
+    //    {
+    //        PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing,
+    //        EmailAddress = "test@test.com",
+    //        IdentityId = Guid.NewGuid(),
+    //        ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
+    //        OrgId = Guid.NewGuid()
+    //    };
+
+    //    // Act
+    //    var response = await _portalUserRepo.ManageAsync(cmd, CancellationToken.None);
+
+    //    // Assert
+    //    Assert.NotNull(response);
+    //    Assert.NotEqual(Guid.Empty, response.Id);
+    //    Assert.Equal(cmd.OrgId, response.OrganizationId);
+
+    //    // Annihilate
+    //    spd_portaluser? portaluser = _context.spd_portalusers.Where(u => u.spd_portaluserid == response.Id).FirstOrDefault();
+
+    //    _context.DeleteObject(portaluser);
+    //    await _context.SaveChangesAsync();
+    //}
 }
