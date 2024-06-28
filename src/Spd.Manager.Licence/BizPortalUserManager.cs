@@ -35,7 +35,7 @@ internal class BizPortalUserManager
             throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.BizPortalUserCreateRequest.Email} has been used by another user");
         }
 
-        //check if role is withing the maxium number scope
+        //check if role is within the maxium number scope
         var newlist = _mapper.Map<List<UserResult>>(existingUsersResult.Items.ToList());
         newlist.Add(_mapper.Map<UserResult>(request.BizPortalUserCreateRequest));
         var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserCreateRequest.BizId), ct);
