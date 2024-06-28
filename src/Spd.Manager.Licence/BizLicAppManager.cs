@@ -2,6 +2,7 @@
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -34,6 +35,7 @@ internal class BizLicAppManager :
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IBizContactRepository _bizContactRepository;
     private readonly ITaskRepository _taskRepository;
+    private readonly IBizRepository _bizRepository;
 
     public BizLicAppManager(
         ILicenceRepository licenceRepository,
@@ -45,7 +47,8 @@ internal class BizLicAppManager :
         ITransientFileStorageService transientFileStorageService,
         IBizContactRepository bizContactRepository,
         IBizLicApplicationRepository bizApplicationRepository,
-        ITaskRepository taskRepository)
+        ITaskRepository taskRepository,
+        IBizRepository bizRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -57,6 +60,7 @@ internal class BizLicAppManager :
         _bizLicApplicationRepository = bizApplicationRepository;
         _bizContactRepository = bizContactRepository;
         _taskRepository = taskRepository;
+        _bizRepository = bizRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -275,9 +279,9 @@ internal class BizLicAppManager :
         }
         else
         {
-            SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(request);
-            saveCmd.ApplicantId = (Guid)originalLic.BizId;
-            response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+            UpdateBizCmd updateBizCmd = _mapper.Map<UpdateBizCmd>(request);
+            updateBizCmd.Id = (Guid)originalLic.BizId;
+            await _bizRepository.ManageBizAsync(updateBizCmd, cancellationToken);
         }
 
         // Update members
@@ -287,7 +291,7 @@ internal class BizLicAppManager :
                 (Guid)originalLic.LicenceAppId,
                 cancellationToken);
 
-        return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+        return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLic.LicenceAppId, Cost = cost };
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
