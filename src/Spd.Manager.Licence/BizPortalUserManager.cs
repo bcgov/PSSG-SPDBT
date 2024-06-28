@@ -38,11 +38,11 @@ internal class BizPortalUserManager
         //check if role is withing the maxium number scope
         var newlist = _mapper.Map<List<UserResult>>(existingUsersResult.Items.ToList());
         newlist.Add(_mapper.Map<UserResult>(request.BizPortalUserCreateRequest));
-        var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserCreateRequest.OrganizationId), ct);
+        var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserCreateRequest.BizId), ct);
         SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org, newlist);
 
-        //var user = _mapper.Map<User>(request.BizPortalUserCreateRequest);
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
+        createPortalUserCmd.PortalUserServiceCategory = Resource.Repository.PortalUserServiceCategoryEnum.Licensing;
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
