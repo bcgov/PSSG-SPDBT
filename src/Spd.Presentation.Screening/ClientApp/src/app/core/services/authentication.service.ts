@@ -59,7 +59,7 @@ export class AuthenticationService {
     console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
     if (isLoggedIn) {
-      return Promise.resolve(this.oauthService.state ?? returnRoute ?? null);
+      return Promise.resolve(this.oauthService.state || returnRoute || null);
     }
 
     return Promise.resolve(null);
