@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -24,7 +23,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         Guid applicantId;
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-        
+
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
             throw new ArgumentException("New application type is not supported for business licence.");
 
@@ -44,7 +43,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 throw new ArgumentException("Original business licence application was not found.");
             throw;
         }
-        
+
         app.spd_businesstype = originalApp.spd_businesstype;
         _context.AddTospd_applications(app);
 
@@ -55,13 +54,15 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
 
         await SetAddresses(applicantId, app, ct);
+        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         LinkOrganization(applicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
-        else
-            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
+        //comment out temporary: when Dynamics complete the schema change, redo this part.
+        //if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+        //    LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        //else
+        //    DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
 
         await _context.SaveChangesAsync(ct);
 
@@ -79,7 +80,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_application_spd_licence_manager)
+                //.Expand(a => a.spd_application_spd_licence_manager)
                 .Where(c => c.statecode != DynamicsConstants.StateCode_Inactive)
                 .Where(a => a.spd_applicationid == cmd.LicenceAppId)
                 .FirstOrDefault();
@@ -95,18 +96,20 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddTospd_applications(app);
         }
         await SetAddresses(cmd.ApplicantId, app, ct);
+        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-        
+
         LinkOrganization(cmd.ApplicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
-        else
-            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
+        //comment out temporary: when Dynamics complete the schema change, redo this part.
+        //if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+        //    LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        //else
+        //    DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
 
         await _context.SaveChangesAsync(ct);
 
@@ -127,7 +130,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(a => a.spd_ApplicantId_account)
                 .Expand(a => a.spd_ApplicantId_contact)
                 .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_application_spd_licence_manager)
+                //.Expand(a => a.spd_application_spd_licence_manager)   //comment out temporary: when Dynamics complete the schema change, redo this part.
                 .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Where(a => a.spd_applicationid == licenceApplicationId)
                 .FirstOrDefaultAsync(ct);
@@ -223,4 +226,15 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         _context.UpdateObject(app);
     }
+
+    private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
+    {
+        team? serviceTeam = await _context.teams.Where(t => t.teamid == ownerId).FirstOrDefaultAsync(ct);
+
+        if (serviceTeam == null)
+            throw new ArgumentException("service team not found");
+
+        _context.SetLink(app, nameof(app.ownerid), serviceTeam);
+    }
+
 }

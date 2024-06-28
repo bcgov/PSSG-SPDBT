@@ -53,9 +53,9 @@ internal class Mappings : Profile
          .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<CreateBizLicApplicationCmd, spd_application>()
-          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-          .IncludeBase<BizLicApplication, spd_application>();
+         .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+         .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .IncludeBase<BizLicApplication, spd_application>();
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
          .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
@@ -67,7 +67,7 @@ internal class Mappings : Profile
          .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
-         .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => GetPrivateInvestigatorLicenceId(s.spd_application_spd_licence_manager)))
+         //.ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => GetPrivateInvestigatorLicenceId(s.spd_application_spd_licence_manager))) //comment out temporary: when Dynamics complete the schema change, redo this part.
          .IncludeBase<spd_application, BizLicApplication>();
     }
 
@@ -92,7 +92,7 @@ internal class Mappings : Profile
             application.spd_businessmanagermiddlename1 == application.spd_middlename1 &&
             application.spd_businessmanagermiddlename2 == application.spd_middlename2 &&
             application.spd_businessmanageremail == application.spd_emailaddress1)
-                return true;
+            return true;
 
         return false;
     }

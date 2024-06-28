@@ -14,7 +14,7 @@ export class AuthUserBceidService {
 
 	constructor(private loginService: LoginService, private dialog: MatDialog) {}
 
-	async whoAmIAsync(): Promise<boolean> {
+	async whoAmIAsync(defaultBizId: string | null | undefined = undefined): Promise<boolean> {
 		this.clearUserData();
 
 		const bizsList: Array<BizListResponse> = await lastValueFrom(this.loginService.apiBizsGet());
@@ -24,6 +24,13 @@ export class AuthUserBceidService {
 		} else if (bizsList.length === 1) {
 			return await this.setBizProfile(bizsList[0].bizId!);
 		} else {
+			if (defaultBizId) {
+				const bizIdItem = bizsList.find((biz) => biz.bizId == defaultBizId);
+				if (bizIdItem) {
+					return await this.setBizProfile(bizIdItem.bizId);
+				}
+			}
+
 			const biz = await this.bizSelectionAsync(bizsList);
 			return await this.setBizProfile(biz.bizId);
 		}

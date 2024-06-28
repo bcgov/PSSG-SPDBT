@@ -876,9 +876,9 @@ export class PaymentService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAuthBizLicenceApplicationIdPaymentLinkPost
+   * Path part for operation apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost
    */
-  static readonly ApiAuthBizLicenceApplicationIdPaymentLinkPostPath = '/api/auth-biz-licence/{applicationId}/payment-link';
+  static readonly ApiBusinessBizIdApplicationsApplicationIdPaymentLinkPostPath = '/api/business/{bizId}/applications/{applicationId}/payment-link';
 
   /**
    * Return the direct pay payment link.
@@ -886,11 +886,16 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAuthBizLicenceApplicationIdPaymentLinkPost()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAuthBizLicenceApplicationIdPaymentLinkPost$Response(params: {
+  apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Response(params: {
+
+    /**
+     * business id
+     */
+    bizId: string;
     applicationId: string;
 
     /**
@@ -902,8 +907,9 @@ export class PaymentService extends BaseService {
 
 ): Observable<StrictHttpResponse<PaymentLinkResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthBizLicenceApplicationIdPaymentLinkPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiBusinessBizIdApplicationsApplicationIdPaymentLinkPostPath, 'post');
     if (params) {
+      rb.path('bizId', params.bizId, {});
       rb.path('applicationId', params.applicationId, {});
       rb.body(params.body, 'application/*+json');
     }
@@ -926,11 +932,16 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAuthBizLicenceApplicationIdPaymentLinkPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAuthBizLicenceApplicationIdPaymentLinkPost(params: {
+  apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost(params: {
+
+    /**
+     * business id
+     */
+    bizId: string;
     applicationId: string;
 
     /**
@@ -942,15 +953,15 @@ export class PaymentService extends BaseService {
 
 ): Observable<PaymentLinkResponse> {
 
-    return this.apiAuthBizLicenceApplicationIdPaymentLinkPost$Response(params,context).pipe(
+    return this.apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<PaymentLinkResponse>) => r.body as PaymentLinkResponse)
     );
   }
 
   /**
-   * Path part for operation apiAuthBizLicencePaymentResultGet
+   * Path part for operation apiBusinessBizIdPaymentResultGet
    */
-  static readonly ApiAuthBizLicencePaymentResultGetPath = '/api/auth-biz-licence/payment-result';
+  static readonly ApiBusinessBizIdPaymentResultGetPath = '/api/business/{bizId}/payment-result';
 
   /**
    * redirect url for paybc to redirect to.
@@ -958,11 +969,11 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAuthBizLicencePaymentResultGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdPaymentResultGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicencePaymentResultGet$Response(params?: {
+  apiBusinessBizIdPaymentResultGet$Response(params: {
     trnApproved?: number;
     messageText?: string;
     cardType?: string;
@@ -980,12 +991,13 @@ export class PaymentService extends BaseService {
     glDate?: string;
     paymentAuthCode?: string;
     revenue?: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<ActionResult>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthBizLicencePaymentResultGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiBusinessBizIdPaymentResultGetPath, 'get');
     if (params) {
       rb.query('trnApproved', params.trnApproved, {});
       rb.query('messageText', params.messageText, {});
@@ -1004,6 +1016,7 @@ export class PaymentService extends BaseService {
       rb.query('glDate', params.glDate, {});
       rb.query('paymentAuthCode', params.paymentAuthCode, {});
       rb.query('revenue', params.revenue, {});
+      rb.path('bizId', params.bizId, {});
     }
 
     return this.http.request(rb.build({
@@ -1024,11 +1037,11 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAuthBizLicencePaymentResultGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPaymentResultGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicencePaymentResultGet(params?: {
+  apiBusinessBizIdPaymentResultGet(params: {
     trnApproved?: number;
     messageText?: string;
     cardType?: string;
@@ -1046,20 +1059,21 @@ export class PaymentService extends BaseService {
     glDate?: string;
     paymentAuthCode?: string;
     revenue?: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<ActionResult> {
 
-    return this.apiAuthBizLicencePaymentResultGet$Response(params,context).pipe(
+    return this.apiBusinessBizIdPaymentResultGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
     );
   }
 
   /**
-   * Path part for operation apiAuthBizLicencePaymentsPaymentIdGet
+   * Path part for operation apiBusinessBizIdPaymentsPaymentIdGet
    */
-  static readonly ApiAuthBizLicencePaymentsPaymentIdGetPath = '/api/auth-biz-licence/payments/{paymentId}';
+  static readonly ApiBusinessBizIdPaymentsPaymentIdGetPath = '/api/business/{bizId}/payments/{paymentId}';
 
   /**
    * Get the payment result for application and payment.
@@ -1067,20 +1081,22 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAuthBizLicencePaymentsPaymentIdGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdPaymentsPaymentIdGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicencePaymentsPaymentIdGet$Response(params: {
+  apiBusinessBizIdPaymentsPaymentIdGet$Response(params: {
     paymentId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<PaymentResponse>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthBizLicencePaymentsPaymentIdGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiBusinessBizIdPaymentsPaymentIdGetPath, 'get');
     if (params) {
       rb.path('paymentId', params.paymentId, {});
+      rb.path('bizId', params.bizId, {});
     }
 
     return this.http.request(rb.build({
@@ -1101,26 +1117,27 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAuthBizLicencePaymentsPaymentIdGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPaymentsPaymentIdGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicencePaymentsPaymentIdGet(params: {
+  apiBusinessBizIdPaymentsPaymentIdGet(params: {
     paymentId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<PaymentResponse> {
 
-    return this.apiAuthBizLicencePaymentsPaymentIdGet$Response(params,context).pipe(
+    return this.apiBusinessBizIdPaymentsPaymentIdGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<PaymentResponse>) => r.body as PaymentResponse)
     );
   }
 
   /**
-   * Path part for operation apiAuthBizLicenceApplicationIdPaymentAttemptsGet
+   * Path part for operation apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet
    */
-  static readonly ApiAuthBizLicenceApplicationIdPaymentAttemptsGetPath = '/api/auth-biz-licence/{applicationId}/payment-attempts';
+  static readonly ApiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGetPath = '/api/business/{bizId}/applications/{applicationId}/payment-attempts';
 
   /**
    * Get the failed payment times for an application.
@@ -1128,20 +1145,22 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAuthBizLicenceApplicationIdPaymentAttemptsGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicenceApplicationIdPaymentAttemptsGet$Response(params: {
+  apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Response(params: {
     applicationId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<number>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthBizLicenceApplicationIdPaymentAttemptsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGetPath, 'get');
     if (params) {
       rb.path('applicationId', params.applicationId, {});
+      rb.path('bizId', params.bizId, {});
     }
 
     return this.http.request(rb.build({
@@ -1162,26 +1181,27 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAuthBizLicenceApplicationIdPaymentAttemptsGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicenceApplicationIdPaymentAttemptsGet(params: {
+  apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet(params: {
     applicationId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<number> {
 
-    return this.apiAuthBizLicenceApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
+    return this.apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<number>) => r.body as number)
     );
   }
 
   /**
-   * Path part for operation apiAuthBizLicenceApplicationIdPaymentReceiptGet
+   * Path part for operation apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet
    */
-  static readonly ApiAuthBizLicenceApplicationIdPaymentReceiptGetPath = '/api/auth-biz-licence/{applicationId}/payment-receipt';
+  static readonly ApiBusinessBizIdApplicationsApplicationIdPaymentReceiptGetPath = '/api/business/{bizId}/applications/{applicationId}/payment-receipt';
 
   /**
    * download the receipt for successful payment.
@@ -1189,20 +1209,22 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAuthBizLicenceApplicationIdPaymentReceiptGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicenceApplicationIdPaymentReceiptGet$Response(params: {
+  apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response(params: {
     applicationId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<Blob>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthBizLicenceApplicationIdPaymentReceiptGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiBusinessBizIdApplicationsApplicationIdPaymentReceiptGetPath, 'get');
     if (params) {
       rb.path('applicationId', params.applicationId, {});
+      rb.path('bizId', params.bizId, {});
     }
 
     return this.http.request(rb.build({
@@ -1223,26 +1245,27 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAuthBizLicenceApplicationIdPaymentReceiptGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicenceApplicationIdPaymentReceiptGet(params: {
+  apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet(params: {
     applicationId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<Blob> {
 
-    return this.apiAuthBizLicenceApplicationIdPaymentReceiptGet$Response(params,context).pipe(
+    return this.apiBusinessBizIdApplicationsApplicationIdPaymentReceiptGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }
 
   /**
-   * Path part for operation apiAuthBizLicenceApplicationIdManualPaymentFormGet
+   * Path part for operation apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet
    */
-  static readonly ApiAuthBizLicenceApplicationIdManualPaymentFormGetPath = '/api/auth-biz-licence/{applicationId}/manual-payment-form';
+  static readonly ApiBusinessBizIdApplicationsApplicationIdManualPaymentFormGetPath = '/api/business/{bizId}/applications/{applicationId}/manual-payment-form';
 
   /**
    * download the manual payment form.
@@ -1250,20 +1273,22 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAuthBizLicenceApplicationIdManualPaymentFormGet()` instead.
+   * To access only the response body, use `apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicenceApplicationIdManualPaymentFormGet$Response(params: {
+  apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response(params: {
     applicationId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<Blob>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiAuthBizLicenceApplicationIdManualPaymentFormGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, PaymentService.ApiBusinessBizIdApplicationsApplicationIdManualPaymentFormGetPath, 'get');
     if (params) {
       rb.path('applicationId', params.applicationId, {});
+      rb.path('bizId', params.bizId, {});
     }
 
     return this.http.request(rb.build({
@@ -1284,18 +1309,19 @@ export class PaymentService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiAuthBizLicenceApplicationIdManualPaymentFormGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAuthBizLicenceApplicationIdManualPaymentFormGet(params: {
+  apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet(params: {
     applicationId: string;
+    bizId: string;
   },
   context?: HttpContext
 
 ): Observable<Blob> {
 
-    return this.apiAuthBizLicenceApplicationIdManualPaymentFormGet$Response(params,context).pipe(
+    return this.apiBusinessBizIdApplicationsApplicationIdManualPaymentFormGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<Blob>) => r.body as Blob)
     );
   }

@@ -1,9 +1,8 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { PermitChildStepperStepComponent } from '@app/modules/licence-application/services/permit-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { CommonExpiredLicenceComponent } from '../../shared/step-components/common-expired-licence.component';
 
 @Component({
 	selector: 'app-step-permit-expired',
@@ -30,9 +29,6 @@ export class StepPermitExpiredComponent implements PermitChildStepperStepCompone
 
 	@Input() isLoggedIn!: boolean;
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
-
-	@ViewChild(CommonExpiredLicenceComponent)
-	commonExpiredLicenceComponent!: CommonExpiredLicenceComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
