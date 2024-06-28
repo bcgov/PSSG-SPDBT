@@ -22,14 +22,9 @@ public abstract record BizPortalUserUpsertRequest
     public string? PhoneNumber { get; set; }
 }
 
-public class BizPortalUserResponse
+public record BizPortalUserResponse : BizPortalUserUpsertRequest
 {
     public Guid Id { get; set; }
-    public Guid BizId { get; set; }
-    public ContactAuthorizationTypeCode ContactAuthorizationTypeCode { get; set; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
 }
 
 public enum ContactAuthorizationTypeCode
