@@ -20,12 +20,13 @@ internal class BizPortalUserMapping : Profile
             .IncludeBase<BizPortalUserCreateRequest, User>();
 
         CreateMap<BizPortalUserCreateRequest, CreatePortalUserCmd>()
-            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.OrganizationId))
+            .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s.BizId))
             .ForMember(d => d.ContactRoleCode, opt => opt.MapFrom(s => s.ContactAuthorizationTypeCode))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.Email));
 
         CreateMap<PortalUserResp, BizPortalUserResponse>()
             .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => s.ContactRoleCode))
-            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.UserEmail));
+            .ForMember(d => d.Email, opt => opt.MapFrom(s => s.UserEmail))
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.OrganizationId));
     }
 }
