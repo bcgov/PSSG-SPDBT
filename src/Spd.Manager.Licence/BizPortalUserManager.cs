@@ -38,19 +38,13 @@ internal class BizPortalUserManager
         //check if role is withing the maxium number scope
         var newlist = _mapper.Map<List<UserResult>>(existingUsersResult.Items.ToList());
         newlist.Add(_mapper.Map<UserResult>(request.BizPortalUserCreateRequest));
-        ////var org = _portalUserRepository.QueryAsync(new PortalUserQry() { OrgId = request.BizPortalUserCreateRequest.OrganizationId }, ct);
         var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserCreateRequest.OrganizationId), ct);
         SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org, newlist);
 
         //var user = _mapper.Map<User>(request.BizPortalUserCreateRequest);
-        var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(command.CreateRequest);
-        var response = await _portalUserRepository.ManageAsync(new CreatePortalUserCmd())
+        var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
+        var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
 
-        //var response = await _orgUserRepository.ManageOrgUserAsync(
-        //    new UserCreateCmd(user, request.HostUrl, CreatedByUserId: request.CreatedByUserId),
-        //    ct);
-        //return _mapper.Map<OrgUserResponse>(response.UserResult);
-
-        return new BizPortalUserResponse();
+        return _mapper.Map<BizPortalUserResponse>(response);
     }
 }
