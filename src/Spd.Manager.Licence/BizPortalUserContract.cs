@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using System.ComponentModel;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Licence;
 public interface IBizPortalUserManager
