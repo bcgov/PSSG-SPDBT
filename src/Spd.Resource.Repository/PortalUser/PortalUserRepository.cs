@@ -25,6 +25,7 @@ internal class PortalUserRepository : IPortalUserRepository
         IQueryable<spd_portaluser> users = _context.spd_portalusers
             .Expand(u => u.spd_spd_role_spd_portaluser)
             .Expand(d => d.spd_OrganizationId);
+        IEnumerable<spd_portaluser> userList;
 
         if (!qry.IncludeInactive)
             users = users.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
@@ -35,8 +36,15 @@ internal class PortalUserRepository : IPortalUserRepository
             users = users.Where(d => d.spd_servicecategory == null || d.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening);
         else
             users = users.Where(d => d.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Licensing);
-
-        List<spd_portaluser> userList = users.ToList();
+        if (qry.ContactRoleCode != null && qry.ContactRoleCode.Any())
+        {
+            IEnumerable<Guid> crIds = qry.ContactRoleCode.Select(c => DynamicsContextLookupHelpers.RoleGuidDictionary.GetValueOrDefault(c.ToString()));
+            userList = users.AsEnumerable().Where(u => crIds.Any(c => u.spd_spd_role_spd_portaluser.Any(role => role.spd_roleid == c)));
+        }
+        else
+        {
+            userList = users.ToList();
+        }
         IEnumerable<spd_portaluser> results = userList;
         if (qry.ParentOrgId != null)
         {

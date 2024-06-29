@@ -18,6 +18,9 @@ namespace Spd.Resource.Repository.PortalUser
         public Guid? IdentityId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? UserEmail { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
         public bool? IsPSA { get; set; }
         public ContactRoleCode? ContactRoleCode { get; set; }
         public bool? IsFirstTimeLogin { get; set; }
@@ -32,6 +35,7 @@ namespace Spd.Resource.Repository.PortalUser
         public string? UserEmail { get; set; }
         public bool IncludeInactive { get; set; } = false;
         public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
+        public IEnumerable<ContactRoleCode>? ContactRoleCode { get; set; } = Array.Empty<ContactRoleCode>();
     };
 
     public abstract record PortalUserCmd
@@ -42,6 +46,8 @@ namespace Spd.Resource.Repository.PortalUser
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public Guid? OrgId { get; set; }
+        public string? JobTitle { get; set; }
+        public string? PhoneNumber { get; set; }
     };
     public record UpdatePortalUserCmd : PortalUserCmd
     {

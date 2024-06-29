@@ -6,6 +6,7 @@ using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.Shared.Exceptions;
+using Spd.Manager.Shared;
 using System.Net;
 
 namespace Spd.Manager.Screening
@@ -49,7 +50,9 @@ namespace Spd.Manager.Screening
             //check if role is withing the maxium number scope
             var newlist = existingUsersResult.UserResults.ToList();
             newlist.Add(_mapper.Map<UserResult>(request.OrgUserCreateRequest));
-            await CheckMaxRoleNumberRuleAsync(newlist, request.OrgUserCreateRequest.OrganizationId, ct);
+            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgUserCreateRequest.OrganizationId), ct);
+            int primaryUserNo = newlist.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, newlist.Count);
 
             var user = _mapper.Map<User>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
@@ -78,10 +81,10 @@ namespace Spd.Manager.Screening
                 throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
 
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
-            await CheckMaxRoleNumberRuleAsync(
-                existingUsersResult.UserResults.ToList(),
-                request.OrgUserUpdateRequest.OrganizationId,
-                ct);
+
+            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgUserUpdateRequest.OrganizationId), ct);
+            int primaryUserNo = existingUsersResult.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, existingUsersResult.UserResults.Count());
 
             var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
@@ -108,7 +111,9 @@ namespace Spd.Manager.Screening
             var newUsers = existingUsersResult.UserResults.ToList();
             if (toDeleteUser == null) return default;
             newUsers.Remove(toDeleteUser);
-            await CheckMaxRoleNumberRuleAsync(newUsers, request.OrganizationId, ct);
+            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrganizationId), ct);
+            int primaryUserNo = newUsers.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, newUsers.Count);
 
             await _orgUserRepository.ManageOrgUserAsync(
                 new UserDeleteCmd(request.UserId),
@@ -193,27 +198,6 @@ namespace Spd.Manager.Screening
             user.OrganizationId = request.OrganizationId;
             var response = await _orgUserRepository.ManageOrgUserAsync(new UserCreateCmd(user, null, identityId, null), ct);
             return _mapper.Map<OrgUserResponse>(response.UserResult);
-        }
-
-        private async Task CheckMaxRoleNumberRuleAsync(List<UserResult> userList, Guid orgId, CancellationToken ct)
-        {
-            var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(orgId), ct);
-            int maxContacts = org != null ? org.OrgResult.MaxContacts : 0;
-            int maxPrimaryContacts = org != null ? org.OrgResult.MaxPrimaryContacts : 0;
-            int userNo = userList.Count;
-            if (userNo > maxContacts)
-            {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more contacts can be created. The limit of {maxContacts} contacts has been reached.");
-            }
-            int primaryUserNo = userList.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
-            if (primaryUserNo > maxPrimaryContacts)
-            {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, $"No more primary contacts can be created. The limit of {maxPrimaryContacts} primary contacts has been reached.");
-            }
-            if (primaryUserNo < 1)
-            {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There must be at least one primary user");
-            }
         }
     }
 }
