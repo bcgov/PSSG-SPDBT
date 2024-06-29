@@ -26,12 +26,3 @@ public record BizPortalUserResponse : BizPortalUserUpsertRequest
 {
     public Guid Id { get; set; }
 }
-
-public enum ContactAuthorizationTypeCode
-{
-    [Description("Primary Authorized Business Manager Contact")]
-    PrimaryBusinessManager,
-
-    [Description("Authorized Business Manager Contact")]
-    BusinessManager
-}
