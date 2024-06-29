@@ -289,7 +289,7 @@ internal class Mappings : Profile
            .ForMember(d => d.BizGuid, opt => opt.Ignore())
            .ForMember(d => d.BizLegalName, opt => opt.Ignore())
            .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
-           .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
+           .ForMember(d => d.MailingAddress, opt => opt.Ignore())
            .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
