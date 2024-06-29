@@ -2,6 +2,7 @@ using AutoFixture;
 using AutoMapper;
 using MediatR;
 using Moq;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
