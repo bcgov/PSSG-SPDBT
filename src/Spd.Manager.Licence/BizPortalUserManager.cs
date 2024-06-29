@@ -44,7 +44,8 @@ internal class BizPortalUserManager
         var newlist = _mapper.Map<List<UserResult>>(existingUsersResult.Items.ToList());
         newlist.Add(_mapper.Map<UserResult>(request.BizPortalUserCreateRequest));
         BizResult biz = await _bizRepository.GetBizAsync(request.BizPortalUserCreateRequest.BizId, ct);
-        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, newlist, PortalUserServiceCategoryEnum.Licensing);
+        int primaryUserNo = newlist.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.PrimaryBusinessManager);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, newlist.Count);
 
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
         createPortalUserCmd.PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing;

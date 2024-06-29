@@ -51,7 +51,8 @@ namespace Spd.Manager.Screening
             var newlist = existingUsersResult.UserResults.ToList();
             newlist.Add(_mapper.Map<UserResult>(request.OrgUserCreateRequest));
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgUserCreateRequest.OrganizationId), ct);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, newlist);
+            int primaryUserNo = newlist.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, newlist.Count);
 
             var user = _mapper.Map<User>(request.OrgUserCreateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
@@ -82,7 +83,8 @@ namespace Spd.Manager.Screening
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
 
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgUserUpdateRequest.OrganizationId), ct);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, existingUsersResult.UserResults.ToList());
+            int primaryUserNo = existingUsersResult.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, existingUsersResult.UserResults.Count());
 
             var user = _mapper.Map<User>(request.OrgUserUpdateRequest);
             var response = await _orgUserRepository.ManageOrgUserAsync(
@@ -110,7 +112,8 @@ namespace Spd.Manager.Screening
             if (toDeleteUser == null) return default;
             newUsers.Remove(toDeleteUser);
             var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrganizationId), ct);
-            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, newUsers);
+            int primaryUserNo = newUsers.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+            SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(org.OrgResult.MaxContacts, org.OrgResult.MaxPrimaryContacts, primaryUserNo, newUsers.Count);
 
             await _orgUserRepository.ManageOrgUserAsync(
                 new UserDeleteCmd(request.UserId),
