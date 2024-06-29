@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spd.Resource.Repository\Spd.Resource.Repository.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
   </ItemGroup>
 
