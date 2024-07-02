@@ -547,11 +547,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	getLicenceWithSelectionAuthenticated(
-		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: MainLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
-		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
+		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
+
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -778,24 +779,57 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const workerLicenceResponse = resps[0];
 				const profileResponse = resps[1];
 
-				if (workerLicenceResponse.expiredLicenceId) {
-					return this.licenceService
-						.apiLicencesLicenceIdGet({ licenceId: workerLicenceResponse.expiredLicenceId })
-						.pipe(
-							switchMap((licenceResponse: LicenceResponse) => {
-								return this.applyLicenceAndProfileIntoModel(
-									workerLicenceResponse,
-									profileResponse,
-									userLicenceInformation,
-									licenceResponse
-								);
-							})
-						);
-				} else {
-					return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profileResponse, userLicenceInformation);
-				}
+				return this.loadLicenceAppAndProfile(workerLicenceResponse, profileResponse, userLicenceInformation);
 			})
 		);
+	}
+
+	private loadExistingLicenceWithLatestAuthenticated(
+		applicantId: string,
+		userLicenceInformation?: MainLicenceResponse
+	): Observable<any> {
+		this.reset();
+
+		const apis: Observable<any>[] = [
+			this.securityWorkerLicensingService.apiApplicantsApplicantIdSwlLatestGet({ applicantId }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const workerLicenceResponse = resps[0];
+				const profileResponse = resps[1];
+
+				return this.loadLicenceAppAndProfile(workerLicenceResponse, profileResponse, userLicenceInformation);
+			})
+		);
+	}
+
+	/**
+	 * Loads the a business application and profile into the business model
+	 * @returns
+	 */
+	private loadLicenceAppAndProfile(
+		workerLicenceApp: WorkerLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse,
+		userLicenceInformation?: MainLicenceResponse
+	) {
+		if (workerLicenceApp.expiredLicenceId) {
+			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceApp.expiredLicenceId }).pipe(
+				switchMap((licenceResponse: LicenceResponse) => {
+					return this.applyLicenceAndProfileIntoModel(
+						workerLicenceApp,
+						applicantProfile,
+						userLicenceInformation,
+						licenceResponse
+					);
+				})
+			);
+		}
+
+		return this.applyLicenceAndProfileIntoModel(workerLicenceApp, applicantProfile, userLicenceInformation);
 	}
 
 	private applyLicenceAndProfileIntoModel(
@@ -821,15 +855,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private getLicenceOfTypeAuthenticated(
-		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: MainLicenceResponse
 	): Observable<any> {
+		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
+
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.loadExistingLicenceWithLatestAuthenticated(applicantId, userLicenceInformation),
 					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -848,7 +883,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 			default: {
 				// ApplicationTypeCode.Replacement
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
+				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyReplacementDataUpdatesToModel(_resp);
 					})
