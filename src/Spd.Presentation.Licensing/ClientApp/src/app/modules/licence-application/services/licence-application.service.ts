@@ -550,8 +550,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: MainLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
-		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
-
 		return this.getLicenceOfTypeAuthenticated(applicationTypeCode!, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;

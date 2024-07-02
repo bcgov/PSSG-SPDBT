@@ -103,7 +103,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</div>
 					</div>
 
-					<mat-divider class="mat-divider my-2"></mat-divider>
+					<mat-divider class="mat-divider-primary my-2"></mat-divider>
 
 					<div class="row mt-4" *ngIf="controllingMembersWithoutSwlExist">
 						<div class="col-12">

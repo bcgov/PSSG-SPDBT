@@ -650,6 +650,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private saveBusinessProfile(): Observable<StrictHttpResponse<string>> {
 		const modelFormValue = this.businessModelFormGroup.getRawValue();
 
+		const bizTypeCode = modelFormValue.businessInformationData.bizTypeCode;
+		const isSoleProprietor = this.isSoleProprietor(bizTypeCode);
+
 		const branches: Array<BranchInfo> = [];
 		if (modelFormValue.branchesInBcData.hasBranchesInBc === BooleanTypeCode.Yes) {
 			modelFormValue.branchesInBcData.branches.forEach((item: any) => {
@@ -678,13 +681,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			? { ...modelFormValue.businessAddressData }
 			: { ...modelFormValue.businessMailingAddressData };
 
-		const bizTypeCode = modelFormValue.businessInformationData.bizTypeCode;
-
 		let soleProprietorLicenceId: null | string = null;
 		let soleProprietorSwlEmailAddress: null | string = null;
 		let soleProprietorSwlPhoneNumber: null | string = null;
 
-		if (this.isSoleProprietor(bizTypeCode)) {
+		if (isSoleProprietor) {
 			soleProprietorLicenceId = modelFormValue.businessInformationData.soleProprietorLicenceId;
 			soleProprietorSwlEmailAddress = modelFormValue.businessInformationData.soleProprietorSwlEmailAddress;
 			soleProprietorSwlPhoneNumber = modelFormValue.businessInformationData.soleProprietorSwlPhoneNumber;
