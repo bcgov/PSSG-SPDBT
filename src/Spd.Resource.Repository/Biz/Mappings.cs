@@ -15,6 +15,12 @@ namespace Spd.Resource.Repository.Biz
             .ForMember(d => d.name, opt => opt.MapFrom(s => s.BizName))
             .ForMember(d => d.spd_orgguid, opt => opt.MapFrom(s => s.BizGuid))
             .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => s.BizLegalName))
+            .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress.City))
+            .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.MailingAddress.Country))
+            .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
+            .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress.Province))
+            .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
+            .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
             .ForMember(d => d.spd_bcbusinessaddresscity, opt => opt.MapFrom(s => s.BCBusinessAddress.City))
             .ForMember(d => d.spd_bcbusinessaddresscountry, opt => opt.MapFrom(s => s.BCBusinessAddress.Country))
             .ForMember(d => d.spd_bcbusinessaddresspostalcode, opt => opt.MapFrom(s => s.BCBusinessAddress.PostalCode))
@@ -31,12 +37,6 @@ namespace Spd.Resource.Repository.Biz
 
             _ = CreateMap<account, BizResult>()
             .IncludeBase<account, Biz>()
-            .ForPath(d => d.MailingAddress.City, opt => opt.MapFrom(s => s.address1_city))
-            .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.address1_country))
-            .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.address1_postalcode))
-            .ForPath(d => d.MailingAddress.Province, opt => opt.MapFrom(s => s.address1_stateorprovince))
-            .ForPath(d => d.MailingAddress.AddressLine1, opt => opt.MapFrom(s => s.address1_line1))
-            .ForPath(d => d.MailingAddress.AddressLine2, opt => opt.MapFrom(s => s.address1_line2))
             .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.name))
             .ForMember(d => d.BizLegalName, opt => opt.MapFrom(s => s.spd_organizationlegalname))
             .ForMember(d => d.MaxContacts, opt => opt.MapFrom(s => s.spd_maximumnumberofcontacts))
@@ -61,12 +61,6 @@ namespace Spd.Resource.Repository.Biz
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<CreateBizCmd, account>()
-            .ForMember(d => d.address1_city, opt => opt.MapFrom(s => s.MailingAddress.City))
-            .ForMember(d => d.address1_country, opt => opt.MapFrom(s => s.MailingAddress.Country))
-            .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
-            .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => s.MailingAddress.Province))
-            .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => s.MailingAddress.AddressLine1))
-            .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => s.MailingAddress.AddressLine2))
             .IncludeBase<Biz, account>()
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
 
