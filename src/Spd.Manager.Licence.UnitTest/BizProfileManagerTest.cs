@@ -348,7 +348,6 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(c => c.BizTypeCode, BizTypeCode.NonRegisteredPartnership)
                 .With(c => c.Branches, new List<BranchInfo>() { existingBranch, newBranch })
                 .With(c => c.BizBCAddress, address)
-                .With(c => c.BizMailingAddress, address)
                 .Create();
 
             AddressResp addressResp = new()
