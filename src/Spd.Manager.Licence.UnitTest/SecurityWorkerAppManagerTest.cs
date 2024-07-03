@@ -345,7 +345,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
 
             var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
-            swlAppSubmitRequest.OriginalApplicationId = null;
+            swlAppSubmitRequest.LatestApplicationId = null;
             WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
 
             Func<Task> act = () => sut.Handle(request, CancellationToken.None);
