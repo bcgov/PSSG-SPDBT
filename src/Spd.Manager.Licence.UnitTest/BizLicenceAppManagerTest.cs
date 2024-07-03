@@ -292,7 +292,7 @@ public class BizLicenceAppManagerTest
             .Create();
         LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
 
-        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == latestApplicationId), CancellationToken.None))
+        mockLicRepo.Setup(a => a.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == originalLicenceId), CancellationToken.None))
             .ReturnsAsync(new LicenceListResp()
             {
                 Items = new List<LicenceResp> { originalLicence }
