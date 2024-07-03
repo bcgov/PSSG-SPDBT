@@ -27,14 +27,14 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
             throw new ArgumentException("New application type is not supported for business licence.");
 
-        if (cmd.OriginalApplicationId == null)
+        if (cmd.LatestApplicationId == null)
             throw new ArgumentException("For replace, renew or update, original licence id cannot be null.");
 
         try
         {
             originalApp = await _context.spd_applications
                 .Expand(a => a.spd_ApplicantId_account)
-                .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
+                .Where(a => a.spd_applicationid == cmd.LatestApplicationId)
                 .FirstOrDefaultAsync(ct);
         }
         catch (DataServiceQueryException ex)
