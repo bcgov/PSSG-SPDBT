@@ -675,11 +675,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		const bizBCAddress = modelFormValue.isBcBusinessAddress ? {} : { ...modelFormValue.bcBusinessAddressData };
-
-		const bizMailingAddress = modelFormValue.businessAddressData.isMailingTheSame
-			? { ...modelFormValue.businessAddressData }
-			: { ...modelFormValue.businessMailingAddressData };
+		const bizAddress = modelFormValue.businessMailingAddressData.isMailingTheSame
+			? { ...modelFormValue.businessMailingAddressData }
+			: { ...modelFormValue.businessAddressData };
 
 		let soleProprietorLicenceId: null | string = null;
 		let soleProprietorSwlEmailAddress: null | string = null;
@@ -703,9 +701,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		const body: BizProfileUpdateRequest = {
-			bizAddress: { ...modelFormValue.businessAddressData },
-			bizBCAddress,
-			bizMailingAddress,
+			bizAddress,
+			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : { ...modelFormValue.bcBusinessAddressData },
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
 			bizTypeCode,
 			branches,

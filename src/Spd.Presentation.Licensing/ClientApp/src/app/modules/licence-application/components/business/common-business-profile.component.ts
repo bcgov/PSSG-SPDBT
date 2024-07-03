@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
@@ -88,7 +88,7 @@ import {
 										<mat-divider class="mat-divider-main my-3"></mat-divider>
 										<div class="row mb-3">
 											<div class="col-md-6 col-sm-12"><div class="text-minor-heading">Sole Proprietor</div></div>
-											<div class="col-md-6 col-sm-12 text-end">
+											<div class="col-md-6 col-sm-12 text-end" *ngIf="!isReadonly">
 												<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupSoleProprietor()">
 													Search for Sole Proprietor
 												</button>
@@ -236,6 +236,7 @@ import {
 									[form]="businessMailingAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="true"
+									[isCheckboxReadOnly]="isReadonly"
 								></app-common-business-mailing-address>
 							</section>
 						</div>
@@ -252,7 +253,7 @@ import {
 
 						<div class="mt-3">
 							<div class="mb-4 text-primary-color">
-								Provide your mailing address, if different from your business address
+								Provide your business address, if different from your mailing address
 							</div>
 
 							<ng-container *ngIf="isMailingTheSame; else mailingIsDifferentSection">
@@ -308,7 +309,10 @@ import {
 
 						<div class="mt-3">
 							<section>
-								<app-common-business-bc-branches [form]="branchesInBcFormGroup"></app-common-business-bc-branches>
+								<app-common-business-bc-branches
+									[form]="branchesInBcFormGroup"
+									[isReadonly]="isReadonly"
+								></app-common-business-bc-branches>
 							</section>
 						</div>
 					</mat-expansion-panel>
@@ -319,7 +323,7 @@ import {
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
+export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
 	matcher = new FormErrorStateMatcher();
 
@@ -336,6 +340,18 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	@ViewChild(CommonBusinessBcBranchesComponent) businessBcBranchesComponent!: CommonBusinessBcBranchesComponent;
 
 	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
+
+	ngOnInit(): void {
+		if (this.isReadonly) {
+			this.bizTypeCode.disable({ emitEvent: false });
+			this.soleProprietorSwlEmailAddress.disable({ emitEvent: false });
+			this.soleProprietorSwlPhoneNumber.disable({ emitEvent: false });
+		} else {
+			this.bizTypeCode.enable();
+			this.soleProprietorSwlEmailAddress.enable();
+			this.soleProprietorSwlPhoneNumber.enable();
+		}
+	}
 
 	isFormValid(): boolean {
 		this.businessInformationFormGroup.markAllAsTouched();
@@ -424,5 +440,11 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	}
 	get soleProprietorLicenceStatusCode(): FormControl {
 		return this.businessInformationFormGroup.get('soleProprietorLicenceStatusCode') as FormControl;
+	}
+	get soleProprietorSwlEmailAddress(): FormControl {
+		return this.businessInformationFormGroup.get('soleProprietorSwlEmailAddress') as FormControl;
+	}
+	get soleProprietorSwlPhoneNumber(): FormControl {
+		return this.businessInformationFormGroup.get('soleProprietorSwlPhoneNumber') as FormControl;
 	}
 }
