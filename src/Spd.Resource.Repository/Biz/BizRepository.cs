@@ -102,6 +102,9 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
+            if (!IsSoleProprietor(updateBizCmd.BizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(biz.spd_licensingbusinesstype)))
+                throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
+
             _mapper.Map(updateBizCmd, biz);
 
             _context.UpdateObject(biz);
