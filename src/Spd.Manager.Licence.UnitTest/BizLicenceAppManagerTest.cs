@@ -636,12 +636,12 @@ public class BizLicenceAppManagerTest
     public async void Handle_BizLicAppReplaceCommand_Return_BizLicAppCommandResponse()
     {
         // Arrange
-        Guid LatestApplicationId = Guid.NewGuid();
+        Guid licAppId = Guid.NewGuid();
         Guid originalLicenceId = Guid.NewGuid();
         Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
-            .With(r => r.LicenceAppId, LatestApplicationId)
+            .With(r => r.LicenceAppId, licAppId)
             .With(r => r.LicenceId, originalLicenceId)
             .Create();
         LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
@@ -650,10 +650,10 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == LatestApplicationId), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = LatestApplicationId, BizId = bizId });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == licAppId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = licAppId, BizId = bizId });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
-           m => m.OriginalApplicationId == LatestApplicationId &&
+           m => m.OriginalApplicationId == licAppId &&
            m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
@@ -663,7 +663,7 @@ public class BizLicenceAppManagerTest
         {
             ApplicationTypeCode = ApplicationTypeCode.Replacement,
             OriginalLicenceId = originalLicenceId,
-            LatestApplicationId = LatestApplicationId,
+            LatestApplicationId = licAppId,
             NoBranding = true,
             UseDogs = false,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
