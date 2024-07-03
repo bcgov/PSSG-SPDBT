@@ -248,7 +248,112 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     } */
 
     [Fact]
-    public async void UpdateBizAsync_BizTypeDifferentFromSoleProprietor_Run_Correctly()
+    public async void UpdateBizAsync_BizTypeChangeFromSoleProprietorToNonSoleProprietor_Run_Correctly()
+    {
+        // Arrange
+        BranchAddr branchAddress = fixture.Build<BranchAddr>()
+            .With(a => a.BranchId, Guid.NewGuid())
+            .With(a => a.BranchPhoneNumber, "90000000")
+            .With(a => a.PostalCode, "V7N 5J2")
+            .Create();
+
+        Addr address = fixture.Build<Addr>()
+            .With(a => a.AddressLine1, "address 1")
+            .With(a => a.AddressLine1, "address 2")
+            .With(a => a.PostalCode, "abc123")
+            .Create();
+
+        Addr updatedAddress = fixture.Build<Addr>()
+            .With(a => a.AddressLine1, "updated address 1")
+            .With(a => a.AddressLine1, "updated address 2")
+            .With(a => a.PostalCode, "xyz789")
+            .Create();
+
+        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.Surname, "ManagerSurname")
+            .With(c => c.GivenName, "ManagerGivenName")
+            .With(c => c.EmailAddress, "manager@test.com")
+            .With(c => c.MiddleName1, "ManagerMiddleName1")
+            .With(c => c.MiddleName2, "ManagerMiddleName2")
+            .With(c => c.PhoneNumber, "80000000")
+            .Create();
+
+        Guid bizId = Guid.NewGuid();
+
+        CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
+            .With(c => c.Id, bizId)
+            .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
+            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MCFD })
+            .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
+            .With(c => c.PhoneNumber, "80000000")
+            .With(c => c.BizType, BizTypeEnum.Corporation)
+            .With(c => c.BCBusinessAddress, address)
+            .With(c => c.BusinessAddress, address)
+            .With(c => c.MailingAddress, address)
+            .Create();
+
+        UpdateBizCmd updateCmd = fixture.Build<UpdateBizCmd>()
+            .With(c => c.Id, bizId)
+            .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "updated test")
+            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA })
+            .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
+            .With(c => c.PhoneNumber, "90000000")
+            .With(c => c.Email, "test@test.com")
+            .With(c => c.BCBusinessAddress, updatedAddress)
+            .With(c => c.BusinessAddress, updatedAddress)
+            .With(c => c.MailingAddress, updatedAddress)
+            .With(c => c.BizType, BizTypeEnum.RegisteredSoleProprietor)
+            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
+            .Without(c => c.SoleProprietorSwlContactInfo)
+            .Create();
+
+        // Act
+        await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
+        await _bizRepository.ManageBizAsync(updateCmd, CancellationToken.None);
+
+        account? account = await _context.accounts
+            .Expand(a => a.spd_account_spd_servicetype)
+            .Expand(a => a.spd_organization_spd_licence_soleproprietor)
+            .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
+
+        // Assert
+        Assert.NotNull(account);
+        Assert.Null(account.spd_organization_spd_licence_soleproprietor.FirstOrDefault());
+        Assert.Equal(updateCmd.Id, account.accountid);
+        Assert.Equal(updateCmd.BizName, account.name);
+        Assert.Equal(updateCmd.BizLegalName, account.spd_organizationlegalname);
+        Assert.Equal(updateCmd.BizGuid.ToString(), account.spd_orgguid);
+        Assert.Equal(updateCmd.BizType, SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype));
+        Assert.Equal(updateCmd.Email, account.emailaddress1);
+        Assert.Equal(updateCmd.PhoneNumber, account.telephone1);
+        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine1, account.spd_bcbusinessaddressline1);
+        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine2, account.spd_bcbusinessaddressline2);
+        Assert.Equal(updateCmd.BCBusinessAddress.City, account.spd_bcbusinessaddresscity);
+        Assert.Equal(updateCmd.BCBusinessAddress.Country, account.spd_bcbusinessaddresscountry);
+        Assert.Equal(updateCmd.BCBusinessAddress.Province, account.spd_bcbusinessaddressprovince);
+        Assert.Equal(updateCmd.BCBusinessAddress.PostalCode, account.spd_bcbusinessaddresspostalcode);
+        Assert.Equal(updateCmd.BusinessAddress.AddressLine1, account.address2_line1);
+        Assert.Equal(updateCmd.BusinessAddress.AddressLine2, account.address2_line2);
+        Assert.Equal(updateCmd.BusinessAddress.City, account.address2_city);
+        Assert.Equal(updateCmd.BusinessAddress.Country, account.address2_country);
+        Assert.Equal(updateCmd.BusinessAddress.Province, account.address2_stateorprovince);
+        Assert.Equal(updateCmd.BusinessAddress.PostalCode, account.address2_postalcode);
+        Assert.Equal(updateCmd.MailingAddress.AddressLine1, account.address1_line1);
+        Assert.Equal(updateCmd.MailingAddress.AddressLine2, account.address1_line2);
+        Assert.Equal(updateCmd.MailingAddress.City, account.address1_city);
+        Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
+        Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
+        Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
+        Assert.Equal(updateCmd.BizManagerContactInfo.GivenName, account.spd_businessmanagerfirstname);
+        Assert.Equal(updateCmd.BizManagerContactInfo.Surname, account.spd_businessmanagersurname);
+        Assert.Equal(updateCmd.BizManagerContactInfo.MiddleName1, account.spd_businessmanagermiddlename1);
+        Assert.Equal(updateCmd.BizManagerContactInfo.MiddleName2, account.spd_businessmanagermiddlename2);
+        Assert.Equal(updateCmd.BizManagerContactInfo.EmailAddress, account.spd_businessmanageremail);
+        Assert.Equal(updateCmd.BizManagerContactInfo.PhoneNumber, account.spd_businessmanagerphone);
+    }
+
+    [Fact]
+    public async void UpdateBizAsync_BizTypeChangeFromNonSoleProprietorToSoleProprietor_Throw_Exception()
     {
         // Arrange
         BranchAddr branchAddress = fixture.Build<BranchAddr>()
@@ -309,47 +414,9 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Act
         await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
-        await _bizRepository.ManageBizAsync(updateCmd, CancellationToken.None);
-
-        account? account = await _context.accounts
-            .Expand(a => a.spd_account_spd_servicetype)
-            .Expand(a => a.spd_organization_spd_licence_soleproprietor)
-            .Where(c => c.accountid == bizId).FirstOrDefaultAsync();
 
         // Assert
-        Assert.NotNull(account);
-        Assert.Null(account.spd_organization_spd_licence_soleproprietor.FirstOrDefault());
-        Assert.Equal(updateCmd.Id, account.accountid);
-        Assert.Equal(updateCmd.BizName, account.name);
-        Assert.Equal(updateCmd.BizLegalName, account.spd_organizationlegalname);
-        Assert.Equal(updateCmd.BizGuid.ToString(), account.spd_orgguid);
-        Assert.Equal(updateCmd.BizType, SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype));
-        Assert.Equal(updateCmd.Email, account.emailaddress1);
-        Assert.Equal(updateCmd.PhoneNumber, account.telephone1);
-        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine1, account.spd_bcbusinessaddressline1);
-        Assert.Equal(updateCmd.BCBusinessAddress.AddressLine2, account.spd_bcbusinessaddressline2);
-        Assert.Equal(updateCmd.BCBusinessAddress.City, account.spd_bcbusinessaddresscity);
-        Assert.Equal(updateCmd.BCBusinessAddress.Country, account.spd_bcbusinessaddresscountry);
-        Assert.Equal(updateCmd.BCBusinessAddress.Province, account.spd_bcbusinessaddressprovince);
-        Assert.Equal(updateCmd.BCBusinessAddress.PostalCode, account.spd_bcbusinessaddresspostalcode);
-        Assert.Equal(updateCmd.BusinessAddress.AddressLine1, account.address2_line1);
-        Assert.Equal(updateCmd.BusinessAddress.AddressLine2, account.address2_line2);
-        Assert.Equal(updateCmd.BusinessAddress.City, account.address2_city);
-        Assert.Equal(updateCmd.BusinessAddress.Country, account.address2_country);
-        Assert.Equal(updateCmd.BusinessAddress.Province, account.address2_stateorprovince);
-        Assert.Equal(updateCmd.BusinessAddress.PostalCode, account.address2_postalcode);
-        Assert.Equal(updateCmd.MailingAddress.AddressLine1, account.address1_line1);
-        Assert.Equal(updateCmd.MailingAddress.AddressLine2, account.address1_line2);
-        Assert.Equal(updateCmd.MailingAddress.City, account.address1_city);
-        Assert.Equal(updateCmd.MailingAddress.Country, account.address1_country);
-        Assert.Equal(updateCmd.MailingAddress.Province, account.address1_stateorprovince);
-        Assert.Equal(updateCmd.MailingAddress.PostalCode, account.address1_postalcode);
-        Assert.Equal(updateCmd.BizManagerContactInfo.GivenName, account.spd_businessmanagerfirstname);
-        Assert.Equal(updateCmd.BizManagerContactInfo.Surname, account.spd_businessmanagersurname);
-        Assert.Equal(updateCmd.BizManagerContactInfo.MiddleName1, account.spd_businessmanagermiddlename1);
-        Assert.Equal(updateCmd.BizManagerContactInfo.MiddleName2, account.spd_businessmanagermiddlename2);
-        Assert.Equal(updateCmd.BizManagerContactInfo.EmailAddress, account.spd_businessmanageremail);
-        Assert.Equal(updateCmd.BizManagerContactInfo.PhoneNumber, account.spd_businessmanagerphone);
+        await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.ManageBizAsync(updateCmd, CancellationToken.None));
     }
 
     [Fact]
