@@ -550,7 +550,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: MainLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
-		return this.getLicenceOfTypeAuthenticated(applicationTypeCode!, userLicenceInformation).pipe(
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
