@@ -371,7 +371,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		switch (licence.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithSelectionAuthenticated(licence.licenceAppId!, ApplicationTypeCode.Replacement, licence)
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
@@ -444,7 +444,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		switch (licence.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithSelectionAuthenticated(licence.licenceAppId!, ApplicationTypeCode.Update, licence)
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Update, licence)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
@@ -482,7 +482,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		switch (licence.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceWithSelectionAuthenticated(licence.licenceAppId!, ApplicationTypeCode.Renewal, licence)
+					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
