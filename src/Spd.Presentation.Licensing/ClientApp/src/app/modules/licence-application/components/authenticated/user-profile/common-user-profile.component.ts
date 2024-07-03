@@ -61,12 +61,11 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 							</app-alert>
 
 							<section>
-								<app-common-residential-address
+								<app-common-address
 									[form]="residentialAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="true"
-									[isCheckboxReadOnly]="isReadonlyMailingAddress"
-								></app-common-residential-address>
+								></app-common-address>
 							</section>
 						</div>
 					</mat-expansion-panel>
@@ -86,21 +85,13 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 								address.
 							</app-alert>
 
-							<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
-								<div class="mb-3">
-									<mat-icon style="vertical-align: bottom;">label_important</mat-icon> My mailing address is the same as
-									my residential address
-								</div>
-							</ng-container>
-							<ng-template #mailingIsDifferentThanResidential>
-								<section>
-									<app-common-address
-										[form]="mailingAddressFormGroup"
-										[isWizardStep]="false"
-										[isReadonly]="isReadonlyMailingAddress"
-									></app-common-address>
-								</section>
-							</ng-template>
+							<app-common-address-and-is-same
+								[form]="mailingAddressFormGroup"
+								[isWizardStep]="false"
+								[isReadonly]="isReadonlyMailingAddress"
+								[isCheckboxReadOnly]="isReadonlyMailingAddress"
+								isAddressTheSameLabel="The residential address and mailing address are the same"
+							></app-common-address-and-is-same>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>
@@ -131,7 +122,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	isFormValid(): boolean {
 		const isValid1 = this.personalComponent.isFormValid();
 		const isValid2 = this.isAliasesFormGroupFormValid();
-		const isValid3 = this.isMailingTheSameAsResidential ? true : this.isMailingAddressFormGroupValid();
+		const isValid3 = this.isMailingAddressFormGroupValid();
 
 		console.debug('[CommonUserProfileComponent] isFormValid', isValid1, isValid2, isValid3);
 
@@ -148,7 +139,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 		return this.mailingAddressFormGroup.valid;
 	}
 
-	get isMailingTheSameAsResidential(): boolean {
-		return this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value;
+	get isAddressTheSame(): boolean {
+		return this.mailingAddressFormGroup.get('isAddressTheSame')?.value;
 	}
 }

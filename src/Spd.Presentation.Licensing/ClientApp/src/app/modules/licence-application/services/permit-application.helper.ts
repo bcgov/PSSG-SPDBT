@@ -290,7 +290,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
 			residentialAddress: residentialAddress,
 		};
 
@@ -447,7 +447,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		let employerPrimaryAddress = {};
 
 		// default the flags
-		residentialAddress.isMailingTheSameAsResidential = !!residentialAddress.isMailingTheSameAsResidential;
+		mailingAddress.isAddressTheSame = !!mailingAddress.isAddressTheSame; // make it a boolean
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
@@ -672,8 +672,8 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			reprint: this.utilService.booleanTypeToBoolean(permitModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
-			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
-			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			isMailingTheSameAsResidential: mailingAddress.isAddressTheSame,
+			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
 			residentialAddress,
 			//-----------------------------------
 			isCanadianCitizen,

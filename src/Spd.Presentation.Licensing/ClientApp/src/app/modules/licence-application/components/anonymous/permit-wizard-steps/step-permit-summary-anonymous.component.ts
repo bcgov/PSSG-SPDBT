@@ -481,7 +481,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Mailing Address</div>
-											<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
+											<ng-container *ngIf="isAddressTheSame; else mailingIsDifferentThanResidential">
 												<div class="row mt-0">
 													<div class="col-12">
 														<div class="summary-text-data">Mailing address is the same as the residential address</div>
@@ -939,8 +939,8 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	get residentialCountry(): string {
 		return this.permitModelData.residentialAddress?.country ?? '';
 	}
-	get isMailingTheSameAsResidential(): string {
-		return this.permitModelData.residentialAddress?.isMailingTheSameAsResidential ?? '';
+	get isAddressTheSame(): string {
+		return this.permitModelData.mailingAddress?.isAddressTheSame ?? '';
 	}
 
 	get mailingAddressLine1(): string {

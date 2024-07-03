@@ -128,8 +128,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					this.hasValueChanged = true;
 
 					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
-					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
-					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
+					const isAddressTheSame = this.businessModelFormGroup.get('businessAddressData.isAddressTheSame')?.value;
+					const province = isAddressTheSame
+						? this.businessModelFormGroup.get('businessMailingAddressData.province')?.value
+						: this.businessModelFormGroup.get('businessAddressData.province')?.value;
+					const country = isAddressTheSame
+						? this.businessModelFormGroup.get('businessMailingAddressData.country')?.value
+						: this.businessModelFormGroup.get('businessAddressData.country')?.value;
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
@@ -675,7 +680,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		const bizAddress = modelFormValue.businessMailingAddressData.isMailingTheSame
+		const bizAddress = modelFormValue.businessAddressData.isAddressTheSame
 			? { ...modelFormValue.businessMailingAddressData }
 			: { ...modelFormValue.businessAddressData };
 
@@ -1311,7 +1316,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			postalCode: bizAddress?.postalCode,
 			province: bizAddress?.province,
 			country: bizAddress?.country,
-			isMailingTheSame: false,
+			isAddressTheSame: false,
 		};
 
 		const bizBCAddress = businessProfile.bizBCAddress;
