@@ -20,20 +20,19 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 @Component({
 	selector: 'app-common-controlling-members',
 	template: `
-		<mat-accordion multi="false">
-			<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
-				<mat-expansion-panel-header>
-					<mat-panel-title>Controlling Members</mat-panel-title>
-				</mat-expansion-panel-header>
+		<form [formGroup]="form" novalidate>
+			<mat-accordion multi="true">
+				<mat-expansion-panel class="mat-expansion-panel-border my-2 w-100" [expanded]="defaultExpanded">
+					<mat-expansion-panel-header>
+						<mat-panel-title>Controlling Members with a Security Worker Licence</mat-panel-title>
+					</mat-expansion-panel-header>
 
-				<form [formGroup]="form" novalidate>
 					<ng-container *ngIf="!controllingMembersExist">
 						<div class="fs-5 fw-bold my-3">No controlling members exist</div>
 					</ng-container>
 
 					<div class="row mt-4" *ngIf="controllingMembersWithSwlExist">
 						<div class="col-12">
-							<div class="mb-2 text-primary-color">Controlling Members with a Security Worker Licence:</div>
 							<mat-table [dataSource]="dataSourceWithSWL">
 								<ng-container matColumnDef="licenceHolderName">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
@@ -102,12 +101,14 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</a>
 						</div>
 					</div>
+				</mat-expansion-panel>
 
-					<mat-divider class="mat-divider my-2"></mat-divider>
-
+				<mat-expansion-panel class="mat-expansion-panel-border my-3 w-100" [expanded]="defaultExpanded">
+					<mat-expansion-panel-header>
+						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
+					</mat-expansion-panel-header>
 					<div class="row mt-4" *ngIf="controllingMembersWithoutSwlExist">
 						<div class="col-12">
-							<div class="text-primary-color">Controlling Members without a Security Worker Licence:</div>
 							<mat-table [dataSource]="dataSourceWithoutSWL">
 								<ng-container matColumnDef="licenceHolderName">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
@@ -217,9 +218,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 					>
 						<mat-error class="mat-option-error">At least one controlling member is required</mat-error>
 					</div>
-				</form>
-			</mat-expansion-panel>
-		</mat-accordion>
+				</mat-expansion-panel>
+			</mat-accordion>
+		</form>
 	`,
 	styles: [
 		`

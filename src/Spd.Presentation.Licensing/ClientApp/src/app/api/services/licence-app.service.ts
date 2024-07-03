@@ -89,7 +89,7 @@ export class LicenceAppService extends BaseService {
   static readonly ApiBizsBizIdLicenceApplicationsGetPath = '/api/bizs/{bizId}/licence-applications';
 
   /**
-   * Get List of draft or InProgress Security Worker Licence Application or Permit Application.
+   * Get List of draft or InProgress Security Business Licence Application.
    *
    *
    *
@@ -123,7 +123,7 @@ export class LicenceAppService extends BaseService {
   }
 
   /**
-   * Get List of draft or InProgress Security Worker Licence Application or Permit Application.
+   * Get List of draft or InProgress Security Business Licence Application.
    *
    *
    *
