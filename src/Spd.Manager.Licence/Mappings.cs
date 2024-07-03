@@ -36,7 +36,8 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(d => d.OriginalApplicationId, opt => opt.MapFrom(s => s.LatestApplicationId));
 
         CreateMap<PermitAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
@@ -125,6 +126,7 @@ internal class Mappings : Profile
 
         CreateMap<BizLicAppSubmitRequest, CreateBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
+            .ForMember(d => d.OriginalApplicationId, opt => opt.MapFrom(s => s.LatestApplicationId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.LicenceId));
 
         CreateMap<BizLicAppUpsertRequest, SaveBizLicApplicationCmd>()
@@ -134,7 +136,7 @@ internal class Mappings : Profile
 
         CreateMap<BizLicAppSubmitRequest, SaveBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
-            .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.OriginalApplicationId))
+            .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.LatestApplicationId))
             .ForMember(d => d.ApplicantId, opt => opt.Ignore())
             .ForMember(d => d.ExpiredLicenceId, opt => opt.Ignore())
             .ForMember(d => d.ExpiredLicenceNumber, opt => opt.Ignore())
@@ -284,14 +286,14 @@ internal class Mappings : Profile
           .ForMember(d => d.NameOnCard, opt => opt.Ignore());
 
         CreateMap<BizProfileUpdateRequest, UpdateBizCmd>()
-           .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
-           .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
            .ForMember(d => d.BizGuid, opt => opt.Ignore())
            .ForMember(d => d.BizLegalName, opt => opt.Ignore())
-           .ForMember(d => d.BusinessAddress, opt => opt.Ignore())
-           .ForMember(d => d.MailingAddress, opt => opt.MapFrom(s => s.BizMailingAddress))
-           .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
+           .ForMember(d => d.MailingAddress, opt => opt.Ignore())
            .ForMember(d => d.ServiceTypes, opt => opt.Ignore())
+           .ForMember(d => d.BizName, opt => opt.MapFrom(s => s.BizTradeName))
+           .ForMember(d => d.BizType, opt => opt.MapFrom(s => s.BizTypeCode))
+           .ForMember(d => d.BusinessAddress, opt => opt.MapFrom(s => s.BizAddress))
+           .ForMember(d => d.BCBusinessAddress, opt => opt.MapFrom(s => s.BizBCAddress))
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
            .ForMember(d => d.Email, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlEmailAddress : null))
            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : null))

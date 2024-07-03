@@ -96,7 +96,6 @@ import { BusinessManagersComponent } from './components/business/business-manage
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { CommonBusinessBcBranchesComponent } from './components/business/common-business-bc-branches.component';
-import { CommonBusinessInformationComponent } from './components/business/common-business-information.component';
 import { CommonBusinessLicenceSummaryComponent } from './components/business/common-business-licence-summary.component';
 import { CommonBusinessProfileComponent } from './components/business/common-business-profile.component';
 import { CommonControllingMembersComponent } from './components/business/common-controlling-members.component';
@@ -249,7 +248,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonBcDriverLicenceComponent,
 		CommonBusinessMailingAddressComponent,
 		CommonBusinessBcBranchesComponent,
-		CommonBusinessInformationComponent,
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,
 		CommonBusinessTermsComponent,
