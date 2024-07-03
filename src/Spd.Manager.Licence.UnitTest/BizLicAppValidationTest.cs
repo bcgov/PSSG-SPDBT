@@ -59,12 +59,12 @@ public class BizLicAppValidationTest
 
         var model = GenerateValidRequest<BizLicAppSubmitRequest>();
 
-        model.OriginalApplicationId = null;
+        model.LatestApplicationId = null;
         model.OriginalLicenceId = null;
         model.PreviousDocumentIds = [];
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.OriginalApplicationId);
+        result.ShouldHaveValidationErrorFor(r => r.LatestApplicationId);
         result.ShouldHaveValidationErrorFor(r => r.OriginalLicenceId);
         result.ShouldHaveValidationErrorFor(r => r.PreviousDocumentIds);
     }
