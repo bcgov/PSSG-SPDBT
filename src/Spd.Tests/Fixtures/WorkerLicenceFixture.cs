@@ -20,7 +20,7 @@ public class WorkerLicenceFixture
         Guid? appLicId = null)
     {
         WorkerLicenceAppSubmitRequest request = fixture.Build<WorkerLicenceAppSubmitRequest>()
-            .With(r => r.OriginalApplicationId, appLicId ?? Guid.NewGuid())
+            .With(r => r.LatestApplicationId, appLicId ?? Guid.NewGuid())
             .With(r => r.ApplicationTypeCode, applicationTypeCode)
             .With(r => r.HasLegalNameChanged, false)
             .With(r => r.IsPoliceOrPeaceOfficer, false)
