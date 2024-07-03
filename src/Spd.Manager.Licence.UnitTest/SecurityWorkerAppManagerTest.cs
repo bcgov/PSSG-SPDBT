@@ -62,7 +62,7 @@ namespace Spd.Manager.Licence.UnitTest
                 });
 
             //Act
-            Func<Task> act = () => sut.Handle(new GetLatestWorkerLicenceQuery(applicantId), CancellationToken.None);
+            Func<Task> act = () => sut.Handle(new GetLatestWorkerLicenceApplicationIdQuery(applicantId), CancellationToken.None);
 
             //Assert
             await Assert.ThrowsAsync<ApiException>(act);
@@ -86,10 +86,10 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp>() });
 
             //Act
-            var viewResult = await sut.Handle(new GetLatestWorkerLicenceQuery(applicantId), CancellationToken.None);
+            var viewResult = await sut.Handle(new GetLatestWorkerLicenceApplicationIdQuery(applicantId), CancellationToken.None);
 
             //Assert
-            Assert.Equal(applicationId, viewResult.LicenceAppId);
+            Assert.Equal(applicationId, viewResult);
         }
 
         [Fact]

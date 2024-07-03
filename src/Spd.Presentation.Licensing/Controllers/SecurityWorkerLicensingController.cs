@@ -86,7 +86,8 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<WorkerLicenceAppResponse> GetLatestSecurityWorkerLicenceApplication([FromRoute][Required] Guid applicantId)
         {
-            return await _mediator.Send(new GetLatestWorkerLicenceQuery(applicantId));
+            Guid id = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery(applicantId));
+            return await _mediator.Send(new GetWorkerLicenceQuery(id));
         }
         /// <summary>
         /// Upload licence application files
