@@ -17,6 +17,7 @@ import { PermitAppCommandResponse } from '../models/permit-app-command-response'
 import { PermitAppSubmitRequest } from '../models/permit-app-submit-request';
 import { PermitAppUpsertRequest } from '../models/permit-app-upsert-request';
 import { PermitLicenceAppResponse } from '../models/permit-licence-app-response';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 
 @Injectable({
   providedIn: 'root',
@@ -147,6 +148,72 @@ export class PermitService extends BaseService {
 ): Observable<PermitLicenceAppResponse> {
 
     return this.apiPermitApplicationsLicenceAppIdGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<PermitLicenceAppResponse>) => r.body as PermitLicenceAppResponse)
+    );
+  }
+
+  /**
+   * Path part for operation apiApplicantsApplicantIdPermitLatestGet
+   */
+  static readonly ApiApplicantsApplicantIdPermitLatestGetPath = '/api/applicants/{applicantId}/permit-latest';
+
+  /**
+   * Get Lastest Permit Application 
+   * Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdPermitLatestGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdPermitLatestGet$Response(params: {
+    applicantId: string;
+    typeCode: WorkerLicenceTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<PermitLicenceAppResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PermitService.ApiApplicantsApplicantIdPermitLatestGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {});
+      rb.query('typeCode', params.typeCode, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<PermitLicenceAppResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get Lastest Permit Application 
+   * Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdPermitLatestGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdPermitLatestGet(params: {
+    applicantId: string;
+    typeCode: WorkerLicenceTypeCode;
+  },
+  context?: HttpContext
+
+): Observable<PermitLicenceAppResponse> {
+
+    return this.apiApplicantsApplicantIdPermitLatestGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<PermitLicenceAppResponse>) => r.body as PermitLicenceAppResponse)
     );
   }

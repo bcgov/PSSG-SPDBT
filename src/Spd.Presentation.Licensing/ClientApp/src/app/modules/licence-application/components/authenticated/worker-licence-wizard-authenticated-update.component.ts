@@ -76,7 +76,6 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	newLicenceAppId: string | null = null;
 	newLicenceCost = 0;
-	onLoading = true;
 
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_UPDATES = 1;
@@ -131,15 +130,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				this.hasGenderChanged = this.licenceApplicationService.licenceModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
-
-				if (!this.onLoading) {
-					// if any data has changed during the update flow, do not prompt for reprinting - set reprint value to true
-					if (this.applicationTypeCode === ApplicationTypeCode.Update) {
-						this.isUpdateFlowWithHideReprintStep = true;
-					}
-				}
-
-				this.onLoading = false;
 			}
 		);
 	}
