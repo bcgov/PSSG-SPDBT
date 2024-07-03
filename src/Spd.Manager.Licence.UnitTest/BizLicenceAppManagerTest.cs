@@ -281,7 +281,7 @@ public class BizLicenceAppManagerTest
     public async void Handle_BizLicAppRenewCommand_Return_BizLicAppCommandResponse()
     {
         // Arrange
-        Guid originalApplicationId = Guid.NewGuid();
+        Guid licAppId = Guid.NewGuid();
         Guid originalLicenceId = Guid.NewGuid();
         Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
@@ -297,10 +297,10 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == licAppId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = licAppId, BizId = bizId });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
-            m => m.OriginalApplicationId == originalApplicationId &&
+            m => m.OriginalApplicationId == licAppId &&
             m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
             .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
@@ -310,7 +310,7 @@ public class BizLicenceAppManagerTest
         {
             ApplicationTypeCode = ApplicationTypeCode.Renewal,
             OriginalLicenceId = originalLicenceId,
-            OriginalApplicationId = originalApplicationId,
+            LatestApplicationId = licAppId,
             NoBranding = false,
             UseDogs = true,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
@@ -424,7 +424,7 @@ public class BizLicenceAppManagerTest
         BizLicAppSubmitRequest request = new()
         {
             ApplicationTypeCode = ApplicationTypeCode.Renewal,
-            OriginalApplicationId = Guid.NewGuid(),
+            LatestApplicationId = Guid.NewGuid(),
         };
         BizLicAppRenewCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -456,7 +456,7 @@ public class BizLicenceAppManagerTest
         BizLicAppSubmitRequest request = new()
         {
             ApplicationTypeCode = ApplicationTypeCode.Renewal,
-            OriginalApplicationId = Guid.NewGuid(),
+            LatestApplicationId = Guid.NewGuid(),
             NoBranding = true,
             UseDogs = false
         };
@@ -474,12 +474,12 @@ public class BizLicenceAppManagerTest
     public async void Handle_BizLicAppUpdateCommand_CreateNewApplication_Return_BizLicAppCommandResponse()
     {
         // Arrange
-        Guid originalApplicationId = Guid.NewGuid();
+        Guid licAppId = Guid.NewGuid();
         Guid originalLicenceId = Guid.NewGuid();
         Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
-            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceAppId, licAppId)
             .With(r => r.LicenceId, originalLicenceId)
             .Create();
         LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
@@ -488,10 +488,10 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == licAppId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = licAppId, BizId = bizId });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
-           m => m.OriginalApplicationId == originalApplicationId &&
+           m => m.OriginalApplicationId == licAppId &&
            m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
@@ -501,7 +501,7 @@ public class BizLicenceAppManagerTest
         {
             ApplicationTypeCode = ApplicationTypeCode.Update,
             OriginalLicenceId = originalLicenceId,
-            OriginalApplicationId = originalApplicationId,
+            LatestApplicationId = licAppId,
             NoBranding = false,
             UseDogs = true,
             Reprint = true,
@@ -522,11 +522,11 @@ public class BizLicenceAppManagerTest
     public async void Handle_BizLicAppUpdateCommand_UpdateBiz_Return_BizLicAppCommandResponse()
     {
         // Arrange
-        Guid originalApplicationId = Guid.NewGuid();
+        Guid licAppId = Guid.NewGuid();
         Guid originalLicenceId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
-            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceAppId, licAppId)
             .With(r => r.LicenceId, originalLicenceId)
             .Create();
 
@@ -535,10 +535,10 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == licAppId), CancellationToken.None))
             .ReturnsAsync(new BizLicApplicationResp()
             {
-                LicenceAppId = originalApplicationId,
+                LicenceAppId = licAppId,
                 BizId = bizId,
                 UseDogs = true,
                 CategoryCodes = new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.ArmouredCarGuard }
@@ -548,7 +548,7 @@ public class BizLicenceAppManagerTest
         {
             ApplicationTypeCode = ApplicationTypeCode.Update,
             OriginalLicenceId = originalLicenceId,
-            OriginalApplicationId = originalApplicationId,
+            LatestApplicationId = licAppId,
             NoBranding = false,
             UseDogs = true,
             Reprint = false,
@@ -561,7 +561,7 @@ public class BizLicenceAppManagerTest
 
         // Assert
         Assert.IsType<BizLicAppCommandResponse>(result);
-        Assert.Equal(originalApplicationId, result.LicenceAppId);
+        Assert.Equal(licAppId, result.LicenceAppId);
         Assert.Equal(0, result.Cost);
     }
 
@@ -621,7 +621,7 @@ public class BizLicenceAppManagerTest
         BizLicAppSubmitRequest request = new()
         {
             ApplicationTypeCode = ApplicationTypeCode.Update,
-            OriginalApplicationId = Guid.NewGuid(),
+            LatestApplicationId = Guid.NewGuid(),
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -636,12 +636,12 @@ public class BizLicenceAppManagerTest
     public async void Handle_BizLicAppReplaceCommand_Return_BizLicAppCommandResponse()
     {
         // Arrange
-        Guid originalApplicationId = Guid.NewGuid();
+        Guid licAppId = Guid.NewGuid();
         Guid originalLicenceId = Guid.NewGuid();
         Guid newLicAppId = Guid.NewGuid();
         Guid bizId = Guid.NewGuid();
         LicenceResp originalLicence = fixture.Build<LicenceResp>()
-            .With(r => r.LicenceAppId, originalApplicationId)
+            .With(r => r.LicenceAppId, licAppId)
             .With(r => r.LicenceId, originalLicenceId)
             .Create();
         LicenceFeeResp licenceFeeResp = new() { Amount = 100 };
@@ -650,10 +650,10 @@ public class BizLicenceAppManagerTest
             {
                 Items = new List<LicenceResp> { originalLicence }
             });
-        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == originalApplicationId), CancellationToken.None))
-            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = originalApplicationId, BizId = bizId });
+        mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(m => m == licAppId), CancellationToken.None))
+            .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = licAppId, BizId = bizId });
         mockBizLicAppRepo.Setup(a => a.CreateBizLicApplicationAsync(It.Is<CreateBizLicApplicationCmd>(
-           m => m.OriginalApplicationId == originalApplicationId &&
+           m => m.OriginalApplicationId == licAppId &&
            m.OriginalLicenceId == originalLicenceId), CancellationToken.None))
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
@@ -663,7 +663,7 @@ public class BizLicenceAppManagerTest
         {
             ApplicationTypeCode = ApplicationTypeCode.Replacement,
             OriginalLicenceId = originalLicenceId,
-            OriginalApplicationId = originalApplicationId,
+            LatestApplicationId = licAppId,
             NoBranding = true,
             UseDogs = false,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
@@ -742,7 +742,7 @@ public class BizLicenceAppManagerTest
         BizLicAppSubmitRequest request = new()
         {
             ApplicationTypeCode = ApplicationTypeCode.Replacement,
-            OriginalApplicationId = Guid.NewGuid(),
+            LatestApplicationId = Guid.NewGuid(),
         };
         BizLicAppReplaceCommand cmd = new(request, new List<LicAppFileInfo>());
 

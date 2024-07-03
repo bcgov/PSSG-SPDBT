@@ -385,9 +385,9 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         originalLicence.spd_licenceid = originalLicenceId;
         _context.AddTospd_licences(originalLicence);
 
-        Guid originalApplicationId = Guid.NewGuid();
+        Guid latestApplicationId = Guid.NewGuid();
         spd_application originalApp = new();
-        originalApp.spd_applicationid = originalApplicationId;
+        originalApp.spd_applicationid = latestApplicationId;
         originalApp.spd_businesstype = (int?)BizTypeOptionSet.Corporation;
 
         _context.AddTospd_applications(originalApp);
@@ -408,7 +408,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.ManagerPhoneNumber, "1234567")
             .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.WorkPermit })
             .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.SecurityAlarmSales })
-            .With(a => a.OriginalApplicationId, originalApplicationId)
+            .With(a => a.OriginalApplicationId, latestApplicationId)
             .With(a => a.OriginalLicenceId, originalLicenceId)
             .Create();
 
@@ -471,7 +471,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.DeleteObject(appToRemove);
 
         spd_application? originalAppToRemove = _context.spd_applications
-            .Where(a => a.spd_applicationid == originalApplicationId)
+            .Where(a => a.spd_applicationid == latestApplicationId)
             .FirstOrDefault();
         _context.DeleteObject(originalAppToRemove);
 
@@ -519,9 +519,9 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     public async Task CreateBizLicApplicationAsync_OriginalApplicationWithoutLinkedAccount_Throw_Exception()
     {
         // Arrange
-        Guid originalApplicationId = Guid.NewGuid();
+        Guid latestApplicationId = Guid.NewGuid();
         spd_application originalApp = new();
-        originalApp.spd_applicationid = originalApplicationId;
+        originalApp.spd_applicationid = latestApplicationId;
 
         _context.AddTospd_applications(originalApp);
         await _context.SaveChangesAsync();
@@ -529,7 +529,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         CreateBizLicApplicationCmd cmd = new()
         {
             ApplicationTypeCode = ApplicationTypeEnum.Renewal,
-            OriginalApplicationId = originalApplicationId
+            OriginalApplicationId = latestApplicationId
         };
 
         // Action and Assert
@@ -537,7 +537,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         // Annihilate
         spd_application? originalAppToRemove = _context.spd_applications
-            .Where(a => a.spd_applicationid == originalApplicationId)
+            .Where(a => a.spd_applicationid == latestApplicationId)
             .FirstOrDefault();
         _context.DeleteObject(originalAppToRemove);
 
