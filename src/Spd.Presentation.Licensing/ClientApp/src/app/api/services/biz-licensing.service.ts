@@ -92,6 +92,67 @@ export class BizLicensingService extends BaseService {
   }
 
   /**
+   * Path part for operation apiBusinessBizIdAppLatestGet
+   */
+  static readonly ApiBusinessBizIdAppLatestGetPath = '/api/business/{bizId}/app-latest';
+
+  /**
+   * Get Lastest Security Business Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdAppLatestGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdAppLatestGet$Response(params: {
+    bizId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<BizLicAppResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessBizIdAppLatestGetPath, 'get');
+    if (params) {
+      rb.path('bizId', params.bizId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<BizLicAppResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get Lastest Security Business Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdAppLatestGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdAppLatestGet(params: {
+    bizId: string;
+  },
+  context?: HttpContext
+
+): Observable<BizLicAppResponse> {
+
+    return this.apiBusinessBizIdAppLatestGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<BizLicAppResponse>) => r.body as BizLicAppResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiBusinessLicenceApplicationPost
    */
   static readonly ApiBusinessLicenceApplicationPostPath = '/api/business-licence-application';
