@@ -134,7 +134,7 @@ internal class Mappings : Profile
 
         CreateMap<BizLicAppSubmitRequest, SaveBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
-            .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.OriginalApplicationId))
+            .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.LatestApplicationId))
             .ForMember(d => d.ApplicantId, opt => opt.Ignore())
             .ForMember(d => d.ExpiredLicenceId, opt => opt.Ignore())
             .ForMember(d => d.ExpiredLicenceNumber, opt => opt.Ignore())
