@@ -36,7 +36,8 @@ internal class Mappings : Profile
             .ForMember(d => d.MailingAddressData, opt => opt.MapFrom(s => s.MailingAddress))
             .ForMember(d => d.ResidentialAddressData, opt => opt.MapFrom(s => s.ResidentialAddress))
             .ForMember(d => d.ContactEmailAddress, opt => opt.MapFrom(s => s.EmailAddress))
-            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber));
+            .ForMember(d => d.ContactPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
+            .ForMember(d => d.OriginalApplicationId, opt => opt.MapFrom(s => s.LatestApplicationId));
 
         CreateMap<PermitAppSubmitRequest, CreateLicenceApplicationCmd>()
             .ForMember(d => d.IsTreatedForMHC, opt => opt.Ignore())
@@ -125,6 +126,7 @@ internal class Mappings : Profile
 
         CreateMap<BizLicAppSubmitRequest, CreateBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
+            .ForMember(d => d.OriginalApplicationId, opt => opt.MapFrom(s => s.LatestApplicationId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.LicenceId));
 
         CreateMap<BizLicAppUpsertRequest, SaveBizLicApplicationCmd>()
