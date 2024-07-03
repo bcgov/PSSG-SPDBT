@@ -154,6 +154,67 @@ export class SecurityWorkerLicensingService extends BaseService {
   }
 
   /**
+   * Path part for operation apiApplicantsApplicantIdSwlLatestGet
+   */
+  static readonly ApiApplicantsApplicantIdSwlLatestGetPath = '/api/applicants/{applicantId}/swl-latest';
+
+  /**
+   * Get Lastest Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantsApplicantIdSwlLatestGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdSwlLatestGet$Response(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
+
+    const rb = new RequestBuilder(this.rootUrl, SecurityWorkerLicensingService.ApiApplicantsApplicantIdSwlLatestGetPath, 'get');
+    if (params) {
+      rb.path('applicantId', params.applicantId, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<WorkerLicenceAppResponse>;
+      })
+    );
+  }
+
+  /**
+   * Get Lastest Security Worker Licence Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantsApplicantIdSwlLatestGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantsApplicantIdSwlLatestGet(params: {
+    applicantId: string;
+  },
+  context?: HttpContext
+
+): Observable<WorkerLicenceAppResponse> {
+
+    return this.apiApplicantsApplicantIdSwlLatestGet$Response(params,context).pipe(
+      map((r: StrictHttpResponse<WorkerLicenceAppResponse>) => r.body as WorkerLicenceAppResponse)
+    );
+  }
+
+  /**
    * Path part for operation apiWorkerLicenceApplicationsLicenceAppIdFilesPost
    */
   static readonly ApiWorkerLicenceApplicationsLicenceAppIdFilesPostPath = '/api/worker-licence-applications/{licenceAppId}/files';

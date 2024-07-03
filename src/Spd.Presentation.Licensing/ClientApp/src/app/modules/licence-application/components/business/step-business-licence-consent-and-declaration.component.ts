@@ -57,7 +57,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										<div class="my-3">
 											<mat-checkbox formControlName="check2" (click)="onCheckboxChange()">
 												Within 20 days of submitting this application, and in accordance with section 4(3)(d) of the
-												Security Services Regulation, I will provide the Registrar with drawings or photos of any
+												<i>Security Services Regulation</i>, I will provide the Registrar with drawings or photos of any
 												uniforms, insignia, logos, vehicle markings used or to be used by the applicant business entity.
 											</mat-checkbox>
 											<mat-error
