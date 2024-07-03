@@ -508,7 +508,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         CreateBizLicApplicationCmd cmd = new()
         {
             ApplicationTypeCode = ApplicationTypeEnum.Renewal,
-            LatestApplicationId = Guid.NewGuid()
+            OriginalApplicationId = Guid.NewGuid()
         };
 
         // Action and Assert
@@ -529,7 +529,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         CreateBizLicApplicationCmd cmd = new()
         {
             ApplicationTypeCode = ApplicationTypeEnum.Renewal,
-            LatestApplicationId = originalApplicationId
+            OriginalApplicationId = originalApplicationId
         };
 
         // Action and Assert
