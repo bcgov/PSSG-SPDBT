@@ -85,13 +85,13 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 								address.
 							</app-alert>
 
-							<app-common-address-and-is-same
+							<app-common-address-and-is-same-flag
 								[form]="mailingAddressFormGroup"
 								[isWizardStep]="false"
 								[isReadonly]="isReadonlyMailingAddress"
 								[isCheckboxReadOnly]="isReadonlyMailingAddress"
 								isAddressTheSameLabel="The residential address and mailing address are the same"
-							></app-common-address-and-is-same>
+							></app-common-address-and-is-same-flag>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>

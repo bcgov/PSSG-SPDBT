@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-common-address-and-is-same',
+	selector: 'app-common-address-and-is-same-flag',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -23,7 +23,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 	`,
 	styles: [],
 })
-export class CommonAddressAndIsSameComponent implements OnInit {
+export class CommonAddressAndIsSameFlagComponent implements OnInit {
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;
 	@Input() isReadonly = false;

@@ -256,13 +256,13 @@ import {
 							</div>
 
 							<section>
-								<app-common-address-and-is-same
+								<app-common-address-and-is-same-flag
 									[form]="businessAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="isReadonly"
 									[isCheckboxReadOnly]="isReadonly"
 									isAddressTheSameLabel="The business address and mailing address are the same"
-								></app-common-address-and-is-same>
+								></app-common-address-and-is-same-flag>
 							</section>
 						</div>
 					</mat-expansion-panel>

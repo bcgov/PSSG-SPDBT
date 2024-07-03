@@ -153,7 +153,7 @@ import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-steps/step-permit-reprint.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
-import { CommonAddressAndIsSameComponent } from './components/shared/step-components/common-address-and-is-same.component';
+import { CommonAddressAndIsSameFlagComponent } from './components/shared/step-components/common-address-and-is-same-flag.component';
 import { CommonAddressComponent } from './components/shared/step-components/common-address.component';
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
@@ -246,7 +246,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
-		CommonAddressAndIsSameComponent,
+		CommonAddressAndIsSameFlagComponent,
 		CommonBusinessBcBranchesComponent,
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,

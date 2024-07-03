@@ -11,10 +11,10 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 			<div class="step">
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
-				<app-common-address-and-is-same
+				<app-common-address-and-is-same-flag
 					[form]="form"
 					isAddressTheSameLabel="My residential address and mailing address are the same"
-				></app-common-address-and-is-same>
+				></app-common-address-and-is-same-flag>
 			</div>
 		</section>
 	`,
