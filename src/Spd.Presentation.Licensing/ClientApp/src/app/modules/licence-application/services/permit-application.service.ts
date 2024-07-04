@@ -1072,7 +1072,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		const residentialAddress = {
 			addressSelected: true,
-			isMailingTheSameAsResidential: false,
 			addressLine1: profileData.residentialAddress?.addressLine1,
 			addressLine2: profileData.residentialAddress?.addressLine2,
 			city: profileData.residentialAddress?.city,
@@ -1083,7 +1082,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		const mailingAddress = {
 			addressSelected: !!profileData.mailingAddress,
-			isMailingTheSameAsResidential: false,
+			isAddressTheSame: false,
 			addressLine1: profileData.mailingAddress?.addressLine1,
 			addressLine2: profileData.mailingAddress?.addressLine2,
 			city: profileData.mailingAddress?.city,
