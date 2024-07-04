@@ -649,7 +649,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 											<mat-divider class="mt-3 mb-2"></mat-divider>
 
 											<div class="text-minor-heading">Mailing Address</div>
-											<ng-container *ngIf="isMailingTheSameAsResidential; else mailingIsDifferentThanResidential">
+											<ng-container *ngIf="isAddressTheSame; else mailingIsDifferentThanResidential">
 												<div class="row mt-0">
 													<div class="col-12">
 														<div class="summary-text-data">Mailing address is the same as the residential address</div>
@@ -1088,8 +1088,8 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	get residentialCountry(): string {
 		return this.licenceModelData.residentialAddress?.country ?? '';
 	}
-	get isMailingTheSameAsResidential(): string {
-		return this.licenceModelData.residentialAddress?.isMailingTheSameAsResidential ?? '';
+	get isAddressTheSame(): string {
+		return this.licenceModelData.mailingAddress?.isAddressTheSame ?? '';
 	}
 
 	get mailingAddressLine1(): string {

@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
+import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -232,12 +232,11 @@ import {
 							</div>
 
 							<section>
-								<app-common-business-mailing-address
+								<app-common-address
 									[form]="businessMailingAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="true"
-									[isCheckboxReadOnly]="isReadonly"
-								></app-common-business-mailing-address>
+								></app-common-address>
 							</section>
 						</div>
 					</mat-expansion-panel>
@@ -256,21 +255,15 @@ import {
 								Provide your business address, if different from your mailing address
 							</div>
 
-							<ng-container *ngIf="isMailingTheSame; else mailingIsDifferentSection">
-								<div class="mb-3">
-									<mat-icon style="vertical-align: bottom;">label_important</mat-icon> The business address and mailing
-									address are the same
-								</div>
-							</ng-container>
-							<ng-template #mailingIsDifferentSection>
-								<section>
-									<app-common-address
-										[form]="businessAddressFormGroup"
-										[isWizardStep]="false"
-										[isReadonly]="isReadonly"
-									></app-common-address>
-								</section>
-							</ng-template>
+							<section>
+								<app-common-address-and-is-same-flag
+									[form]="businessAddressFormGroup"
+									[isWizardStep]="false"
+									[isReadonly]="isReadonly"
+									[isCheckboxReadOnly]="isReadonly"
+									isAddressTheSameLabel="The business address and mailing address are the same"
+								></app-common-address-and-is-same-flag>
+							</section>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>
@@ -342,11 +335,29 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
 
 	ngOnInit(): void {
+		// Biz type can only be changed from sole proprietor to non-sole proprietor
+		// so limit the dropdown values when a value has previously been selected
+		// and the business is non-sole proprietor
+		if (this.bizTypeCode.value && !this.isBusinessLicenceSoleProprietor) {
+			this.businessTypes = BusinessLicenceTypes.filter(
+				(item: SelectOptions) =>
+					item.code === BizTypeCode.Corporation ||
+					item.code === BizTypeCode.NonRegisteredPartnership ||
+					item.code === BizTypeCode.RegisteredPartnership
+			);
+		}
+
 		if (this.isReadonly) {
+			if (!this.isBizTradeNameReadonly.value) {
+				this.bizTradeName.disable({ emitEvent: false });
+			}
 			this.bizTypeCode.disable({ emitEvent: false });
 			this.soleProprietorSwlEmailAddress.disable({ emitEvent: false });
 			this.soleProprietorSwlPhoneNumber.disable({ emitEvent: false });
 		} else {
+			if (!this.isBizTradeNameReadonly.value) {
+				this.bizTradeName.enable();
+			}
 			this.bizTypeCode.enable();
 			this.soleProprietorSwlEmailAddress.enable();
 			this.soleProprietorSwlPhoneNumber.enable();
@@ -359,7 +370,7 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 		const isValid1 = this.businessInformationFormGroup.valid;
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
-		const isValid4 = this.isMailingTheSame ? true : this.isFormGroupValid(this.businessAddressFormGroup);
+		const isValid4 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.businessBcBranchesComponent.isFormValid();
 
 		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);
@@ -402,10 +413,6 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 	private isFormGroupValid(form: FormGroup): boolean {
 		form.markAllAsTouched();
 		return form.valid;
-	}
-
-	get isMailingTheSame(): boolean {
-		return this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value ?? false;
 	}
 
 	get isBusinessLicenceSoleProprietor(): boolean {

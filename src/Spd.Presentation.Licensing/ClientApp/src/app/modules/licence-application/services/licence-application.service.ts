@@ -1212,7 +1212,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const residentialAddress = {
 			addressSelected: true,
-			isMailingTheSameAsResidential: false,
 			addressLine1: profile.residentialAddress?.addressLine1,
 			addressLine2: profile.residentialAddress?.addressLine2,
 			city: profile.residentialAddress?.city,
@@ -1223,7 +1222,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const mailingAddress = {
 			addressSelected: !!profile.mailingAddress,
-			isMailingTheSameAsResidential: false,
+			isAddressTheSame: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
 			addressLine2: profile.mailingAddress?.addressLine2,
 			city: profile.mailingAddress?.city,
@@ -1897,8 +1896,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
-		const residentialAddress = {
-			isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
+		const mailingAddress = {
+			isAddressTheSame: false, // Mailing address validation will only show when this is false.
 		};
 
 		this.licenceModelFormGroup.patchValue(
@@ -1907,7 +1906,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				residentialAddress: { ...residentialAddress },
+				mailingAddress: { ...mailingAddress },
 			},
 			{
 				emitEvent: false,

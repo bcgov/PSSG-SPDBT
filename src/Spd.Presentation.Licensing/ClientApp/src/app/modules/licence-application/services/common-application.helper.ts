@@ -229,7 +229,6 @@ export abstract class CommonApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [FormControlValidators.required]),
 		country: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSameAsResidential: new FormControl(false),
 	});
 
 	mailingAddressFormGroup: FormGroup = this.formBuilder.group(
@@ -241,6 +240,7 @@ export abstract class CommonApplicationHelper {
 			postalCode: new FormControl(''),
 			province: new FormControl(''),
 			country: new FormControl(''),
+			isAddressTheSame: new FormControl(false),
 			captchaFormGroup: new FormGroup(
 				{
 					displayCaptcha: new FormControl(false),
@@ -260,27 +260,27 @@ export abstract class CommonApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
 					'addressSelected',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressLine1',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'city',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'postalCode',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'province',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'country',
-					(_form) => this.residentialAddressFormGroup.get('isMailingTheSameAsResidential')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 			],
 		}
