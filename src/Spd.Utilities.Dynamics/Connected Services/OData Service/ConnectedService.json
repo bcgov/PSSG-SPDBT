@@ -1,6 +1,6 @@
 {
   "ProviderId": "Microsoft.OData.ConnectedService",
-  "Version": "1.1.0.0",
+  "Version": "1.0.2.0",
   "GettingStartedDocument": {
     "Uri": "http://odata.github.io/odata.net/"
   },
@@ -10,7 +10,6 @@
     "IncludeT4File": false,
     "ExcludedOperationImports": [],
     "ExcludedBoundOperations": [],
-    "OmitVersioningInfo": false,
     "ServiceName": "OData Service",
     "Endpoint": "https://spd-sparc.dev.jag.gov.bc.ca/api/data/v9.0/$metadata",
     "EdmxVersion": {
@@ -28,7 +27,7 @@
     "MakeTypesInternal": false,
     "OpenGeneratedFilesInIDE": false,
     "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSIsImtpZCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSJ9.eyJhdWQiOiJodHRwczovL3NwZC1zcGFyYy5kZXYuamFnLmdvdi5iYy5jYS9hcGkvZGF0YS92OS4wLyIsImlzcyI6Imh0dHA6Ly9zdHN0ZXN0Lmdvdi5iYy5jYS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNzIwMTE0NTU0LCJuYmYiOjE3MjAxMTQ1NTQsImV4cCI6MTcyMDExODE1NCwidXBuIjoic3BkX29zYWRAZ292LmJjLmNhIiwidW5pcXVlX25hbWUiOiJJRElSXFxTUERfT1NBRCIsImFwcHR5cGUiOiJDb25maWRlbnRpYWwiLCJhcHBpZCI6IjAxNzRiMjAzLWNkY2YtNDE2NC04NTMyLTBhNGM0ZmRmZGY2MiIsImF1dGhtZXRob2QiOiJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YWM6Y2xhc3NlczpQYXNzd29yZFByb3RlY3RlZFRyYW5zcG9ydCIsImF1dGhfdGltZSI6IjIwMjQtMDctMDRUMTc6MzU6NTQuNzU3WiIsInZlciI6IjEuMCIsInNjcCI6Im9wZW5pZCJ9.sZwzsR4_QLE1FeVg0Kg6kPMtMKI62rSrXrRH1Sfd7OcfbERRAh97abpktnF_PeIgySnXnCM2_FtbSqSyxQHhHj8pnmPWY8PSPtpTtxST9C78YVBMXnFRkbvJDQze-MeLKaq_IxDQ5uy8nXvdWqyjtXT9Z1mM4_oU5-qhObvN_lIw4sA_QNOZmJarNvEm2H7V-r-k-SsoCK7co2RpybdSsIGWhCqNKejwGlUq6AkZRjrCmPG26HzRvPqNnlwyNqTxeI-kQoiiSF552Sb98y_qFcEbtaFH-JpKdf9FRhDCddE6gi8fUXSu2oh6PWBwVUvrtrAl0nKM2mUmA4T2-uxj1Q",
+    "CustomHttpHeaders": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSIsImtpZCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSJ9.eyJhdWQiOiJodHRwczovL3NwZC1zcGFyYy5kZXYuamFnLmdvdi5iYy5jYS9hcGkvZGF0YS92OS4wLyIsImlzcyI6Imh0dHA6Ly9zdHN0ZXN0Lmdvdi5iYy5jYS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNzE4NzM0MDI5LCJuYmYiOjE3MTg3MzQwMjksImV4cCI6MTcxODczNzYyOSwidXBuIjoic3BkX29zYWRAZ292LmJjLmNhIiwidW5pcXVlX25hbWUiOiJJRElSXFxTUERfT1NBRCIsImFwcHR5cGUiOiJDb25maWRlbnRpYWwiLCJhcHBpZCI6IjAxNzRiMjAzLWNkY2YtNDE2NC04NTMyLTBhNGM0ZmRmZGY2MiIsImF1dGhtZXRob2QiOiJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YWM6Y2xhc3NlczpQYXNzd29yZFByb3RlY3RlZFRyYW5zcG9ydCIsImF1dGhfdGltZSI6IjIwMjQtMDYtMThUMTg6MDc6MDkuNTQ1WiIsInZlciI6IjEuMCIsInNjcCI6Im9wZW5pZCJ9.WOrTS8mGhN4gR-S2b0eEPe3HZsTBdToBEB2eqt2oQe7rxiJijSJ7i1uvX2j98vFcSSwp-Kvn9LfWv1UWqL4m8VaxMua8_QSb704NmJGVCSRVsYeuX3BjUNx-jEr3wMXzPnl8S3Dhk7tYoZ6GdyjYDPu-5efrhQ6TfGQcFr0rUOy4A1eKv2BZPO-C5ciRlmYFWpHnN_bVuNA5U25OnCh_vcFIjnBr37toIlvDrdTWXsCx-jmMRsokm7fXNTIBVqhIb3_121RhHHWOzTAoqlwvoS_rnDOyIy-nJX5TivcRM6-kHFfr6cA8GaefQIEjQBifn4jXNAxDcwdDEOZ0i-niDQ",
     "IncludeWebProxy": false,
     "WebProxyHost": null,
     "IncludeWebProxyNetworkCredentials": false,
