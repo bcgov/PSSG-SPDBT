@@ -249,6 +249,11 @@ namespace Spd.Utilities.Dynamics
             {"BodyArmourSales", Guid.Parse("61f0a63c-3a62-ee11-b843-005056830319")},
         }.ToImmutableDictionary();
 
+        public static readonly ImmutableDictionary<string, Guid> PositionDictionary = new Dictionary<string, Guid>()
+        {
+            {"PrivateInvestigatorManager", Guid.Parse("70bc0f0c-dc34-ef11-b850-00505683fbf4")}
+        }.ToImmutableDictionary();
+
         public static spd_licencecategory? LookupLicenceCategory(this DynamicsContext context, string? key)
         {
             if (key == null) return null;
