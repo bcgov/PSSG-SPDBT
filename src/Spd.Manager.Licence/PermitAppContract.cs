@@ -10,7 +10,7 @@ public interface IPermitAppManager
     public Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(PermitUpsertCommand command, CancellationToken ct);
     public Task<PermitAppCommandResponse> Handle(PermitSubmitCommand command, CancellationToken ct);
-    public Task<PermitLicenceAppResponse> Handle(GetLatestPermitApplicationQuery query, CancellationToken ct);
+    public Task<Guid> Handle(GetLatestPermitApplicationIdQuery query, CancellationToken ct);
 }
 
 public record PermitLicenceAppBase : PersonalLicenceAppBase
@@ -31,7 +31,7 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
 public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitAppCommandResponse>;
 public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest)
     : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitAppCommandResponse>;
-public record GetLatestPermitApplicationQuery(Guid ApplicantId, WorkerLicenceTypeCode WorkerLicenceTypeCode) : IRequest<PermitLicenceAppResponse>;
+public record GetLatestPermitApplicationIdQuery(Guid ApplicantId, WorkerLicenceTypeCode WorkerLicenceTypeCode) : IRequest<Guid>;
 public record PermitAppUpsertRequest : PermitLicenceAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }

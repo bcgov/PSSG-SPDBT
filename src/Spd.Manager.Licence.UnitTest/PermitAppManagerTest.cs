@@ -66,14 +66,14 @@ public class PermitAppManagerTest
             .ReturnsAsync(new List<LicenceAppListResp> { });
 
         //Act
-        Func<Task> act = () => sut.Handle(new GetLatestPermitApplicationQuery(applicantId, WorkerLicenceTypeCode.SecurityBusinessLicence), CancellationToken.None);
+        Func<Task> act = () => sut.Handle(new GetLatestPermitApplicationIdQuery(applicantId, WorkerLicenceTypeCode.SecurityBusinessLicence), CancellationToken.None);
 
         //Assert
         await Assert.ThrowsAsync<ApiException>(act);
     }
 
     [Fact]
-    public async void Handle_GetLatestPermitApplicationQuery_ReturnCorrect()
+    public async void Handle_GetLatestPermitApplicationIdQuery_ReturnCorrect()
     {
         //Arrange
         Guid applicantId = Guid.NewGuid();
@@ -88,10 +88,10 @@ public class PermitAppManagerTest
             .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp>() });
 
         //Act
-        var viewResult = await sut.Handle(new GetLatestPermitApplicationQuery(applicantId, WorkerLicenceTypeCode.BodyArmourPermit), CancellationToken.None);
+        var viewResult = await sut.Handle(new GetLatestPermitApplicationIdQuery(applicantId, WorkerLicenceTypeCode.BodyArmourPermit), CancellationToken.None);
 
         //Assert
-        Assert.Equal(applicationId, viewResult.LicenceAppId);
+        Assert.Equal(applicationId, viewResult);
     }
 
     [Fact]
