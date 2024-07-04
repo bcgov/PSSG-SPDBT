@@ -401,5 +401,16 @@ namespace Spd.Utilities.Dynamics
                     throw;
             }
         }
+
+        public static spd_position? LookupPosition(this DynamicsContext context, string? key)
+        {
+            if (key == null) return null;
+            var keyExisted = PositionDictionary.TryGetValue(key, out Guid guid);
+            if (!keyExisted) return null;
+            return context.spd_positions
+                .Where(s => s.spd_positionid == guid)
+                .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefault();
+        }
     }
 }
