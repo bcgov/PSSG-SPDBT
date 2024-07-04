@@ -1,13 +1,13 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepWorkerLicenceMailingAddressAnonymousComponent } from '@app/modules/licence-application/components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 import { CommonApplicationService } from '../../services/common-application.service';
+import { StepWorkerLicenceMailingAddressReplacementAnonymousComponent } from '../shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-replacement-anonymous.component';
 
 @Component({
 	selector: 'app-worker-licence-wizard-anonymous-replacement',
@@ -22,9 +22,7 @@ import { CommonApplicationService } from '../../services/common-application.serv
 
 			<mat-step>
 				<ng-template matStepLabel>Address Update</ng-template>
-				<app-step-worker-licence-mailing-address-anonymous
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-mailing-address-anonymous>
+				<app-step-worker-licence-mailing-address-replacement-anonymous></app-step-worker-licence-mailing-address-replacement-anonymous>
 
 				<app-wizard-footer
 					nextButtonLabel="Pay"
@@ -41,11 +39,10 @@ import { CommonApplicationService } from '../../services/common-application.serv
 	styles: [],
 })
 export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizardComponent implements OnInit {
-	applicationTypeCode = ApplicationTypeCode.Replacement;
 	newLicenceAppId: string | null = null;
 
-	@ViewChild(StepWorkerLicenceMailingAddressAnonymousComponent)
-	stepAddressComponent!: StepWorkerLicenceMailingAddressAnonymousComponent;
+	@ViewChild(StepWorkerLicenceMailingAddressReplacementAnonymousComponent)
+	stepAddressComponent!: StepWorkerLicenceMailingAddressReplacementAnonymousComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,

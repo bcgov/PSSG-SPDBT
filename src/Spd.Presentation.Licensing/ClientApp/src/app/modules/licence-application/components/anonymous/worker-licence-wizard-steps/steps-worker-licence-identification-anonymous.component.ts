@@ -106,7 +106,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showMailingAddressStep">
+			<mat-step>
 				<app-step-worker-licence-mailing-address-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-mailing-address-anonymous>
@@ -159,7 +159,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isFormValid = false;
-	@Input() showMailingAddressStep!: boolean;
 	@Input() showCitizenshipStep!: boolean;
 	@Input() showPhotographOfYourself = true;
 	@Input() hasGenderChanged = false;
