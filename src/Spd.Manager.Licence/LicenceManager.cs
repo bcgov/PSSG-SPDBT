@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
@@ -47,30 +47,30 @@ internal class LicenceManager :
 
     public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken cancellationToken)
     {
-        var response = await _licenceRepository.QueryAsync(
-            new LicenceQry
-            {
-                LicenceNumber = query.LicenceNumber,
-                AccessCode = query.AccessCode,
-                IncludeInactive = true
-            }, cancellationToken);
+        LicenceListResp response = await _licenceRepository.QueryAsync(
+                new LicenceQry
+                {
+                    LicenceNumber = query.LicenceNumber,
+                    AccessCode = query.AccessCode,
+                    IncludeInactive = query.isLatestInactive,
+                }, cancellationToken);
 
         if (!response.Items.Any())
         {
             _logger.LogDebug("No licence found.");
             return null;
         }
-        LicenceResp lic = response.Items.First();
+        LicenceResp lic = response.Items.OrderByDescending(i => i.ExpiryDate).First();
         DocumentListResp? docResp = null;
         if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.ArmouredVehiclePermit)
             docResp = await _documentRepository.QueryAsync(
-                new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
-                cancellationToken);
+                    new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
+                    cancellationToken);
         if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit)
             docResp = await _documentRepository.QueryAsync(
                 new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.BodyArmourRationale },
                 cancellationToken);
-        LicenceResponse result = _mapper.Map<LicenceResponse>(response.Items.First());
+        LicenceResponse result = _mapper.Map<LicenceResponse>(lic);
         result.RationalDocumentInfos = _mapper.Map<IEnumerable<Document>>(docResp?.Items);
         return result;
     }
