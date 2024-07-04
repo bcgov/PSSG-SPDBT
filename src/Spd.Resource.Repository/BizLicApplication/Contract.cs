@@ -1,4 +1,5 @@
 ﻿using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.BizLicApplication;
@@ -35,7 +36,7 @@ public record BizLicApplication
     public bool? UseDogs { get; set; }
     public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
-    public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
+    public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
 }
 
@@ -46,7 +47,6 @@ public record SaveBizLicApplicationCmd() : BizLicApplication
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
-    public SwlContactInfo PrivateInvestigatorSwlInfo { get; set; } = new();
 }
 
 public record CreateBizLicApplicationCmd() : BizLicApplication
@@ -67,4 +67,14 @@ public record BizLicApplicationResp() : BizLicApplication
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+}
+
+public record PrivateInvestigatorSwlContactInfo : ContactInfo
+{
+    public Guid? BizContactId { get; set; }
+}
+
+public enum PositionEnum
+{
+    PrivateInvestigatorEnum
 }
