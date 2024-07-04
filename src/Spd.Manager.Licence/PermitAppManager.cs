@@ -1,7 +1,6 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -19,7 +18,7 @@ namespace Spd.Manager.Licence;
 internal class PermitAppManager :
         LicenceAppManagerBase,
         IRequestHandler<GetPermitApplicationQuery, PermitLicenceAppResponse>,
-        IRequestHandler<GetLatestPermitApplicationQuery, PermitLicenceAppResponse>,
+        IRequestHandler<GetLatestPermitApplicationIdQuery, Guid>,
         IRequestHandler<PermitUpsertCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitSubmitCommand, PermitAppCommandResponse>,
         IRequestHandler<PermitAppNewCommand, PermitAppCommandResponse>,
@@ -91,26 +90,14 @@ internal class PermitAppManager :
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
-    public async Task<PermitLicenceAppResponse> Handle(GetLatestPermitApplicationQuery query, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(GetLatestPermitApplicationIdQuery query, CancellationToken cancellationToken)
     {
         if (query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.ArmouredVehiclePermit && query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.BodyArmourPermit)
             throw new ApiException(HttpStatusCode.BadRequest, $"Invalid WorkerLicenceTypeCode");
-
-        //get the latest app id
-        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
-            new LicenceAppQuery(
-                query.ApplicantId,
-                null,
-                new List<WorkerLicenceTypeEnum> { Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()) },
-                null),
+        return await GetLatestApplicationId(query.ApplicantId,
+            null,
+            Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()),
             cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
-            .OrderByDescending(a => a.SubmittedOn)
-            .FirstOrDefault();
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"there is no {query.WorkerLicenceTypeCode} for this applicant.");
-
-        return await Handle(new GetPermitApplicationQuery(app.LicenceAppId), cancellationToken);
     }
     #endregion
 
