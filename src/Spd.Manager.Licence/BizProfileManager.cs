@@ -12,7 +12,7 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence;
-internal class BizProfileManager :
+public class BizProfileManager :
         IRequestHandler<BizLoginCommand, BizUserLoginResponse>,
         IRequestHandler<GetBizProfileQuery, BizProfileResponse>,
         IRequestHandler<BizTermAgreeCommand, Unit>,
