@@ -208,14 +208,13 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 	);
 
 	businessMailingAddressFormGroup: FormGroup = this.formBuilder.group({
-		addressSelected: new FormControl(false, [Validators.requiredTrue]),
-		addressLine1: new FormControl('', [FormControlValidators.required]),
+		addressSelected: new FormControl(false),
+		addressLine1: new FormControl(''),
 		addressLine2: new FormControl(''),
-		city: new FormControl('', [FormControlValidators.required]),
-		postalCode: new FormControl('', [FormControlValidators.required]),
-		province: new FormControl('', [FormControlValidators.required]),
-		country: new FormControl('', [FormControlValidators.required]),
-		isMailingTheSame: new FormControl(false),
+		city: new FormControl(''),
+		postalCode: new FormControl(''),
+		province: new FormControl(''),
+		country: new FormControl(''),
 	});
 
 	businessAddressFormGroup: FormGroup = this.formBuilder.group(
@@ -227,32 +226,33 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			postalCode: new FormControl(''),
 			province: new FormControl(''),
 			country: new FormControl(''),
+			isAddressTheSame: new FormControl(false),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
 					'addressSelected',
-					(_form) => this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressLine1',
-					(_form) => this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'city',
-					(_form) => this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'postalCode',
-					(_form) => this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'province',
-					(_form) => this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'country',
-					(_form) => this.businessMailingAddressFormGroup.get('isMailingTheSame')?.value == false
+					(_form) => _form.get('isAddressTheSame')?.value != true
 				),
 			],
 		}

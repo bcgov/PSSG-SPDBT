@@ -426,7 +426,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
 			residentialAddress: residentialAddress,
 		};
 
@@ -786,7 +786,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 		const documentInfos: Array<Document> = [];
 
 		// default the flag
-		residentialAddress.isMailingTheSameAsResidential = !!residentialAddress.isMailingTheSameAsResidential;
+		mailingAddress.isAddressTheSame = !!mailingAddress.isAddressTheSame; // default to boolean
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		let dogsAuthorizationData = {};
@@ -1057,8 +1057,8 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			isMailingTheSameAsResidential: residentialAddress.isMailingTheSameAsResidential,
-			mailingAddress: residentialAddress.isMailingTheSameAsResidential ? residentialAddress : mailingAddress,
+			isMailingTheSameAsResidential: mailingAddress.isAddressTheSame,
+			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
 			residentialAddress,
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),

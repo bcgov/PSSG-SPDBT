@@ -153,11 +153,11 @@ import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-steps/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-steps/step-permit-reprint.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/step-components/common-access-code-anonymous.component';
+import { CommonAddressAndIsSameFlagComponent } from './components/shared/step-components/common-address-and-is-same-flag.component';
 import { CommonAddressComponent } from './components/shared/step-components/common-address.component';
 import { CommonAliasListComponent } from './components/shared/step-components/common-alias-list.component';
 import { CommonAliasesComponent } from './components/shared/step-components/common-aliases.component';
 import { CommonBcDriverLicenceComponent } from './components/shared/step-components/common-bc-driver-licence.component';
-import { CommonBusinessMailingAddressComponent } from './components/shared/step-components/common-business-mailing-address.component';
 import { CommonBusinessTermsComponent } from './components/shared/step-components/common-business-terms.component';
 import { CommonContactInformationComponent } from './components/shared/step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
@@ -168,7 +168,6 @@ import { CommonPersonalInformationRenewAnonymousComponent } from './components/s
 import { CommonPhotographOfYourselfComponent } from './components/shared/step-components/common-photograph-of-yourself.component';
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/step-components/common-physical-characteristics.component';
 import { CommonReprintComponent } from './components/shared/step-components/common-reprint.component';
-import { CommonResidentialAddressComponent } from './components/shared/step-components/common-residential-address.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/step-components/common-swl-permit-terms.component';
 import { CommonUpdateRenewalAlertComponent } from './components/shared/step-components/common-update-renewal-alert.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './components/shared/worker-licence-wizard-steps/licence-category-armoured-car-guard.component';
@@ -202,6 +201,7 @@ import { StepWorkerLicenceDogsAuthorizationComponent } from './components/shared
 import { StepWorkerLicenceExpiredComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-expired.component';
 import { StepWorkerLicenceFingerprintsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-fingerprints.component';
 import { StepWorkerLicenceMailingAddressAnonymousComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-anonymous.component';
+import { StepWorkerLicenceMailingAddressReplacementAnonymousComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mailing-address-replacement-anonymous.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-mental-health-conditions.component';
 import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-anonymous.component';
 import { StepWorkerLicencePhotographOfYourselfNewComponent } from './components/shared/worker-licence-wizard-steps/step-worker-licence-photograph-of-yourself-new.component';
@@ -246,7 +246,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonAliasListComponent,
 		CommonAliasesComponent,
 		CommonBcDriverLicenceComponent,
-		CommonBusinessMailingAddressComponent,
+		CommonAddressAndIsSameFlagComponent,
 		CommonBusinessBcBranchesComponent,
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,
@@ -262,7 +262,6 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonPhotographOfYourselfComponent,
 		CommonPhysicalCharacteristicsComponent,
 		CommonReprintComponent,
-		CommonResidentialAddressComponent,
 		CommonSwlPermitTermsComponent,
 		CommonUpdateRenewalAlertComponent,
 		CommonUserProfileComponent,
@@ -384,6 +383,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepWorkerLicenceExpiredComponent,
 		StepWorkerLicenceFingerprintsComponent,
 		StepWorkerLicenceMailingAddressAnonymousComponent,
+		StepWorkerLicenceMailingAddressReplacementAnonymousComponent,
 		StepWorkerLicenceMentalHealthConditionsComponent,
 		StepWorkerLicencePersonalInformationAnonymousComponent,
 		StepWorkerLicencePhotographOfYourselfAnonymousComponent,
