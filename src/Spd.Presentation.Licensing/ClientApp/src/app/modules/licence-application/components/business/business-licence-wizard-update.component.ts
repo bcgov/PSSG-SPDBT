@@ -64,6 +64,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 							[licenceCost]="newLicenceCost"
 							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
+							[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onSubmitStep()"
 							(nextPayStep)="onNextPayStep()"

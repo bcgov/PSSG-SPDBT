@@ -62,7 +62,7 @@ import { BusinessApplicationService } from '../../services/business-application.
 										</div>
 										<ng-container *ngIf="isUpdate">
 											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Print Permit</div>
+												<div class="text-label d-block text-muted">Print Licence</div>
 												<div class="summary-text-data">{{ isReprint }}</div>
 											</div>
 											<div class="col-lg-4 col-md-12" *ngIf="licenceFee">
@@ -421,6 +421,7 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	categoryTypeCodes = WorkerCategoryTypeCode;
 
 	@Input() isStaticDataView: boolean = false;
+	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -598,7 +599,9 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	get isReprint(): string {
-		return this.businessModelData.reprintLicenceData.reprintLicence ?? '';
+		return this.isUpdateFlowWithHideReprintStep
+			? BooleanTypeCode.Yes
+			: this.businessModelData.reprintLicenceData.reprintLicence ?? BooleanTypeCode.No;
 	}
 
 	get isUpdate(): boolean {

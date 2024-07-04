@@ -17,6 +17,7 @@ export interface BizLicAppSubmitRequest {
   bizTypeCode?: BizTypeCode;
   categoryCodes?: null | Array<WorkerCategoryTypeCode>;
   documentKeyCodes?: null | Array<string>;
+  latestApplicationId?: null | string;
   licenceTermCode?: LicenceTermCode;
   members?: Members;
   noBranding?: null | boolean;
