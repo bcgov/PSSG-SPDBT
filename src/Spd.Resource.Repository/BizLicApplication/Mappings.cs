@@ -69,6 +69,14 @@ internal class Mappings : Profile
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
          //.ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => GetPrivateInvestigatorLicenceId(s.spd_application_spd_licence_manager))) //comment out temporary: when Dynamics complete the schema change, redo this part.
          .IncludeBase<spd_application, BizLicApplication>();
+
+        _ = CreateMap<PrivateInvestigatorSwlContactInfo, spd_businesscontact>()
+         .ForMember(d => d.spd_businesscontactid, opt => opt.MapFrom(s => Guid.NewGuid()))
+         .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
+         .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.Surname))
+         .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
+         .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
+         .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.EmailAddress));
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
