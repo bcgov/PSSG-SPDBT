@@ -1,4 +1,5 @@
 # PSSG-SPDBT
 
 ## front-end commands
-### regnerate api 
+### regenerate api 
+npm run gen-api-all-local
