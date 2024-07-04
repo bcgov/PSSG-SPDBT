@@ -21,7 +21,7 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
-        IRequestHandler<GetLatestWorkerLicenceQuery, WorkerLicenceAppResponse>,
+        IRequestHandler<GetLatestWorkerLicenceApplicationIdQuery, Guid>,
         IRequestHandler<GetLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<WorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
@@ -131,23 +131,13 @@ internal class SecurityWorkerAppManager :
         return result;
     }
 
-    public async Task<WorkerLicenceAppResponse> Handle(GetLatestWorkerLicenceQuery query, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(GetLatestWorkerLicenceApplicationIdQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
-            new LicenceAppQuery(
-                query.ApplicantId,
+        return await GetLatestApplicationId(query.ApplicantId,
                 null,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityWorkerLicence },
-                null),
-            cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
-            .OrderByDescending(a => a.SubmittedOn)
-            .FirstOrDefault();
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "there is no SecurityWorkerLicence for this applicant.");
-
-        return await Handle(new GetWorkerLicenceQuery(app.LicenceAppId), cancellationToken);
+                Enum.Parse<WorkerLicenceTypeEnum>(WorkerLicenceTypeEnum.SecurityWorkerLicence.ToString()),
+                cancellationToken);
     }
 
     #region anonymous new

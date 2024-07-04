@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
@@ -81,20 +80,8 @@ internal class BizLicAppManager :
     public async Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
-            new LicenceAppQuery(
-                null,
-                query.BizId,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
-                null),
-            cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
-            .OrderByDescending(a => a.SubmittedOn)
-            .FirstOrDefault();
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"there is no Security Business Licence Application for this business.");
-
-        return await Handle(new GetBizLicAppQuery(app.LicenceAppId), cancellationToken);
+        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, WorkerLicenceTypeEnum.SecurityBusinessLicence, cancellationToken);
+        return await Handle(new GetBizLicAppQuery(latestAppId), cancellationToken);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)

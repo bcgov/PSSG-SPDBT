@@ -7,7 +7,7 @@ public interface ISecurityWorkerAppManager
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
-    public Task<WorkerLicenceAppResponse> Handle(GetLatestWorkerLicenceQuery query, CancellationToken ct);
+    public Task<Guid> Handle(GetLatestWorkerLicenceApplicationIdQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppNewCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppReplaceCommand command, CancellationToken ct);
@@ -42,7 +42,7 @@ public record WorkerLicenceAppUpdateCommand(
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
-public record GetLatestWorkerLicenceQuery(Guid ApplicantId) : IRequest<WorkerLicenceAppResponse>;
+public record GetLatestWorkerLicenceApplicationIdQuery(Guid ApplicantId) : IRequest<Guid>;
 public record GetLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceAppListResponse>>;
 
 public record WorkerLicenceAppResponse : WorkerLicenceAppBase
