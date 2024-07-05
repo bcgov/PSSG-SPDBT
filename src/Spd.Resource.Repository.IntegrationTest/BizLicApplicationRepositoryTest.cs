@@ -345,7 +345,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     } */
 
     [Fact]
-    public async Task SaveBizLicApplicationAsync_WithNewPrivateInvestigator_Run_Correctly()
+    public async Task SaveBizLicApplicationAsync_AddNewPrivateInvestigator_Run_Correctly()
     {
         // Arrange
         PrivateInvestigatorSwlContactInfo privateInvestigator = new()
@@ -473,7 +473,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     }
 
     [Fact]
-    public async Task SaveBizLicApplicationAsync_WithPrivateInvestigator_Run_Correctly()
+    public async Task SaveBizLicApplicationAsync_AddNewPrivateInvestigatorWithExistingPrivateInvestigator_Run_Correctly()
     {
         // Arrange
         PrivateInvestigatorSwlContactInfo privateInvestigator = new()
