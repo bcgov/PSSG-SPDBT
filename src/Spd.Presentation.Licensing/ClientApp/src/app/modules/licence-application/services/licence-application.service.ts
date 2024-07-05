@@ -70,13 +70,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	photographOfYourself: string | null = null;
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(null),
-		applicantId: new FormControl(null), // when authenticated, the applicant id
-		caseNumber: new FormControl(null), // placeholder to save info for display purposes
+		licenceAppId: new FormControl(),
+		applicantId: new FormControl(), // when authenticated, the applicant id
+		caseNumber: new FormControl(), // placeholder to save info for display purposes
+		latestApplicationId: new FormControl(), // placeholder for id
 
 		originalLicenceData: this.originalLicenceFormGroup,
-
-		applicationPortalStatus: new FormControl(null),
 
 		personalInformationData: this.personalInformationFormGroup,
 		reprintLicenceData: this.reprintLicenceFormGroup,
@@ -1697,8 +1696,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.licenceModelFormGroup.patchValue(
 			{
 				licenceAppId: workerLicenceAppl.licenceAppId,
+				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
-				applicationPortalStatus: workerLicenceAppl.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
 				soleProprietorData,
