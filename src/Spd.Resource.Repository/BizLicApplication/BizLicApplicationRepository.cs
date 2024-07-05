@@ -186,6 +186,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
             _mapper.Map(privateInvestigatorInfo, bizContact);
             _context.UpdateObject(bizContact);
+            _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
         }
     }
 
