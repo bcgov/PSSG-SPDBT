@@ -40,7 +40,7 @@ public record LicenceResponse : LicenceBasicResponse
     public IEnumerable<Document> RationalDocumentInfos { get; set; } = [];
 };
 
-public record LicenceQuery(string? LicenceNumber, string? AccessCode, bool isLatestInactive = true) : IRequest<LicenceResponse>;
+public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
 public record LicenceByIdQuery(Guid LicenceId) : IRequest<LicenceResponse>;
 public record LicenceListQuery(Guid? ApplicantId, Guid? BizId) : IRequest<IEnumerable<LicenceBasicResponse>>;
 public record LicencePhotoQuery(Guid LicenceId) : IRequest<FileResponse>;
