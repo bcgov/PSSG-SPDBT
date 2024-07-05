@@ -56,10 +56,9 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get licence by licence number.
-        /// If isLatestInactive = true, it means return the latest inactive licence. If isLatestInactive=false, it will return the active licence.
+        /// Get latest licence by licence number.
         /// There should be only one active licence for each licenceNumber.
-        /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST&isLatestInactive=false
+        /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
         /// </summary>
         /// <param name="licenceNumber"></param>
         /// <param name="accessCode"></param>
@@ -67,9 +66,9 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
         [Authorize(Policy = "BcscBCeID")]
-        public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string? accessCode = null, [FromQuery] bool isLatestInactive = true)
+        public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string? accessCode = null)
         {
-            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode, isLatestInactive));
+            return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
         }
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
-            LicenceResponse response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode, isLatestInactive));
+            LicenceResponse response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId;
             if (response.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
