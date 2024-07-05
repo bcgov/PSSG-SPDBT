@@ -60,7 +60,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         LinkOrganization(applicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+            InsertPrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
         else
             DeletePrivateInvestigatorLink(app);
 
@@ -106,7 +106,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         LinkOrganization(cmd.ApplicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            LinkPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+            InsertPrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
         else
             DeletePrivateInvestigatorLink(app);
 
@@ -160,7 +160,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         }
     }
 
-    private void LinkPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
+    private void InsertPrivateInvestigatorLink(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
     {
         DeletePrivateInvestigatorLink(app);
         Guid? bizContactId = privateInvestigatorInfo?.BizContactId;
@@ -168,6 +168,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (bizContactId == null)
         {
             spd_businesscontact privateInvestigatorContact = _mapper.Map<spd_businesscontact>(privateInvestigatorInfo);
+            privateInvestigatorContact.spd_businesscontactid = Guid.NewGuid();
             _context.AddTospd_businesscontacts(privateInvestigatorContact);
             _context.AddLink(privateInvestigatorContact, nameof(spd_application.spd_businesscontact_spd_application), app);
 
