@@ -156,11 +156,6 @@ export class LicenceService extends BaseService {
   static readonly ApiLicenceLookupLicenceNumberGetPath = '/api/licence-lookup/{licenceNumber}';
 
   /**
-   * Get licence by licence number
-   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
-   *
-   *
-   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiLicenceLookupLicenceNumberGet()` instead.
    *
@@ -169,6 +164,7 @@ export class LicenceService extends BaseService {
   apiLicenceLookupLicenceNumberGet$Response(params: {
     licenceNumber: string;
     accessCode?: string;
+    isLatestInactive?: boolean;
   },
   context?: HttpContext
 
@@ -178,6 +174,7 @@ export class LicenceService extends BaseService {
     if (params) {
       rb.path('licenceNumber', params.licenceNumber, {});
       rb.query('accessCode', params.accessCode, {});
+      rb.query('isLatestInactive', params.isLatestInactive, {});
     }
 
     return this.http.request(rb.build({
@@ -193,11 +190,6 @@ export class LicenceService extends BaseService {
   }
 
   /**
-   * Get licence by licence number
-   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
-   *
-   *
-   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiLicenceLookupLicenceNumberGet$Response()` instead.
    *
@@ -206,6 +198,7 @@ export class LicenceService extends BaseService {
   apiLicenceLookupLicenceNumberGet(params: {
     licenceNumber: string;
     accessCode?: string;
+    isLatestInactive?: boolean;
   },
   context?: HttpContext
 
@@ -223,6 +216,8 @@ export class LicenceService extends BaseService {
 
   /**
    * Get licence by licence number with google recaptcha for anonymous
+   * If isLatestInactive = true, it means return the latest inactive licence. If isLatestInactive=false, it will return the active licence.
+   * There should be only one active licence for each licenceNumber.
    * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
    *
    *
@@ -235,6 +230,7 @@ export class LicenceService extends BaseService {
   apiLicenceLookupAnonymousLicenceNumberPost$Response(params: {
     licenceNumber: string;
     accessCode?: string;
+    isLatestInactive?: boolean;
     body?: GoogleRecaptcha
   },
   context?: HttpContext
@@ -245,6 +241,7 @@ export class LicenceService extends BaseService {
     if (params) {
       rb.path('licenceNumber', params.licenceNumber, {});
       rb.query('accessCode', params.accessCode, {});
+      rb.query('isLatestInactive', params.isLatestInactive, {});
       rb.body(params.body, 'application/*+json');
     }
 
@@ -262,6 +259,8 @@ export class LicenceService extends BaseService {
 
   /**
    * Get licence by licence number with google recaptcha for anonymous
+   * If isLatestInactive = true, it means return the latest inactive licence. If isLatestInactive=false, it will return the active licence.
+   * There should be only one active licence for each licenceNumber.
    * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
    *
    *
@@ -274,6 +273,7 @@ export class LicenceService extends BaseService {
   apiLicenceLookupAnonymousLicenceNumberPost(params: {
     licenceNumber: string;
     accessCode?: string;
+    isLatestInactive?: boolean;
     body?: GoogleRecaptcha
   },
   context?: HttpContext

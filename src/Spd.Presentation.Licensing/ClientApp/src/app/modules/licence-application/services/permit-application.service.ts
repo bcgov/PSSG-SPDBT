@@ -72,13 +72,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(null),
-		applicantId: new FormControl(null), // when authenticated, the applicant id
-		caseNumber: new FormControl(null), // placeholder to save info for display purposes
+		licenceAppId: new FormControl(),
+		applicantId: new FormControl(), // when authenticated, the applicant id
+		caseNumber: new FormControl(), // placeholder to save info for display purposes
 
 		originalLicenceData: this.originalLicenceFormGroup,
-
-		applicationPortalStatus: new FormControl(null),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -1401,7 +1399,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				licenceAppId: permitLicenceAppl.licenceAppId,
 				caseNumber: permitLicenceAppl.caseNumber,
-				applicationPortalStatus: permitLicenceAppl.applicationPortalStatus,
 				workerLicenceTypeData,
 				permitRequirementData,
 				permitRationaleData,

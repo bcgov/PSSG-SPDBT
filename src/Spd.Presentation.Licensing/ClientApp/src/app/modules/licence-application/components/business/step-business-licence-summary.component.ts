@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonBusinessLicenceSummaryComponent } from './common-business-licence-summary.component';
 
 @Component({
@@ -11,7 +11,10 @@ import { CommonBusinessLicenceSummaryComponent } from './common-business-licence
 					subtitle="Review your information before submitting your application"
 				></app-step-title>
 
-				<app-common-business-licence-summary (editStep)="onEditStep($event)"></app-common-business-licence-summary>
+				<app-common-business-licence-summary
+					(editStep)="onEditStep($event)"
+					[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
+				></app-common-business-licence-summary>
 			</div>
 		</section>
 	`,
@@ -19,6 +22,8 @@ import { CommonBusinessLicenceSummaryComponent } from './common-business-licence
 })
 export class StepBusinessLicenceSummaryComponent {
 	@ViewChild(CommonBusinessLicenceSummaryComponent) summaryComponent!: CommonBusinessLicenceSummaryComponent;
+
+	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
