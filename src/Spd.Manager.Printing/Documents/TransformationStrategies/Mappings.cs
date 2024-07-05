@@ -2,8 +2,9 @@
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.PersonLicApplication;
+using System.Collections.Immutable;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies
 {
@@ -56,7 +57,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine1))
                 .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine2))
                 .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.City))
-                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Province))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : GetProvinceStateAbbr(s.MailingAddressData.Province)))
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Country))
                 .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.PostalCode));
 
@@ -85,5 +86,83 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 WeightUnitEnum.Pounds => $"{Convert.ToInt32(resp.Weight * 0.454)}kg"
             };
         }
+
+        private string GetProvinceStateAbbr(string province)
+        {
+            bool existed = NorthAmericaProvinceStateDict.TryGetValue(province, out var abbr);
+            if (existed) { return abbr; }
+            else return province;
+        }
+
+        private static readonly ImmutableDictionary<string, string> NorthAmericaProvinceStateDict = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            //canada
+            {"British Columbia", "BC" },
+            {"Alberta", "AB"},
+            {"Manitoba", "MB"},
+            {"New Brunswick", "NB"},
+            {"Newfoundland and Labrador", "NL"},
+            {"Northwest Territories", "NT" },
+            {"Nova Scotia", "NS" },
+            {"Nunavut", "NU" },
+            {"Ontario", "ON" },
+            {"Prince Edward Island", "PE"},
+            {"Québec", "QC" },
+            {"Saskatchewan", "SK" },
+            {"Yukon Territory", "YT" },
+            //usa
+            {"Alaska", "AK"},
+            {"Alabama", "AL"},
+            {"Arizona", "AZ"},
+            {"Arkansas", "AR"},
+            {"California", "CA"},
+            {"Colorado", "CO"},
+            {"Connecticut", "CT"},
+            {"Delaware", "DE"},
+            {"District of Columbia", "DC"},
+            {"Florida", "FL"},
+            {"Georgia", "GA"},
+            {"Hawaii", "HI"},
+            {"Idaho", "ID"},
+            {"Illinois", "IL"},
+            {"Indiana", "IN"},
+            {"Iowa", "IA"},
+            {"Kansas", "KS"},
+            {"Kentucky", "KY"},
+            {"Louisiana", "LA"},
+            {"Maine", "ME"},
+            {"Maryland", "MD"},
+            {"Massachusetts", "MA"},
+            {"Michigan", "MI"},
+            {"Minnesota", "MN"},
+            {"Mississippi", "MS"},
+            {"Missouri", "MO"},
+            {"Montana", "MT"},
+            {"Nebraska", "NE"},
+            {"Nevada", "NV"},
+            {"New Hampshire", "NH"},
+            {"New Jersey", "NJ"},
+            {"New Mexico", "NM"},
+            {"New York", "NY"},
+            {"North Carolina", "NC"},
+            {"North Dakota", "ND"},
+            {"Ohio", "OH"},
+            {"Oklahoma", "OK"},
+            {"Oregon", "OR"},
+            {"Pennsylvania", "PA"},
+            {"Puerto Rico", "PR"},
+            {"Rhode Island", "RI"},
+            {"South Carolina", "SC"},
+            {"South Dakota", "SD"},
+            {"Tennessee", "TN"},
+            {"Texas", "TX"},
+            {"Utah", "UT"},
+            {"Vermont", "VT"},
+            {"Virginia", "VA"},
+            {"Washington", "WA"},
+            {"West Virginia", "WV"},
+            {"Wisconsin", "WI"},
+            {"Wyoming", "WY"},
+        }.ToImmutableDictionary();
     }
 }
