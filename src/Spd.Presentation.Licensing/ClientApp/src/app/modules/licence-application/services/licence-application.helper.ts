@@ -1022,6 +1022,7 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 
 		const body = {
 			licenceAppId,
+			latestApplicationId: licenceModelFormValue.latestApplicationId,
 			originalApplicationId: originalLicenceData.originalApplicationId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
