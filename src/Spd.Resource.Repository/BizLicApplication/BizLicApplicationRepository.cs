@@ -173,14 +173,14 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddTospd_businesscontacts(privateInvestigatorContact);
             _context.AddLink(privateInvestigatorContact, nameof(spd_application.spd_businesscontact_spd_application), app);
 
-            var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorEnum.ToString());
+            var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
             if (position != null)
                 _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), privateInvestigatorContact);
         }
         else
         {
-            spd_businesscontact? bizContact = _context.spd_businesscontacts.FirstOrDefault(b => b.spd_businesscontactid == bizContactId);
+            spd_businesscontact? bizContact = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId).FirstOrDefault();
 
             if (bizContact == null)
                 throw new ArgumentException("business contact not found");
@@ -199,7 +199,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         _context.DeleteLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
 
-        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorEnum.ToString());
+        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
         if (position == null)
             return;
