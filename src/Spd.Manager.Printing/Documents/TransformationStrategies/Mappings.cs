@@ -4,7 +4,6 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PersonLicApplication;
-using System.Collections.Immutable;
 
 namespace Spd.Manager.Printing.Documents.TransformationStrategies
 {
@@ -25,7 +24,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine1))
                 .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine2))
                 .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.City))
-                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Province))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddress == null ? null : GetProvinceStateAbbr(s.MailingAddress.Province)))
                 .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.PostalCode))
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Country));
 
@@ -57,7 +56,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                 .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine1))
                 .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.AddressLine2))
                 .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.City))
-                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : GetProvinceStateAbbr(s.MailingAddressData.Province)))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Province))
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.Country))
                 .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddressData == null ? null : s.MailingAddressData.PostalCode));
 
@@ -94,7 +93,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             else return province;
         }
 
-        private static readonly ImmutableDictionary<string, string> NorthAmericaProvinceStateDict = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        private static readonly Dictionary<string, string> NorthAmericaProvinceStateDict = new(StringComparer.InvariantCultureIgnoreCase)
         {
             //canada
             {"British Columbia", "BC" },
@@ -163,6 +162,6 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             {"West Virginia", "WV"},
             {"Wisconsin", "WI"},
             {"Wyoming", "WY"},
-        }.ToImmutableDictionary();
+        };
     }
 }
