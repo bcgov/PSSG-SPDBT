@@ -76,5 +76,5 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
 
 public enum PositionEnum
 {
-    PrivateInvestigatorEnum
+    PrivateInvestigatorManager
 }
