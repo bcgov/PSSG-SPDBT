@@ -49,6 +49,7 @@ export interface WorkerLicenceAppSubmitRequest {
   isMailingTheSameAsResidential?: null | boolean;
   isPoliceOrPeaceOfficer?: null | boolean;
   isTreatedForMHC?: null | boolean;
+  latestApplicationId?: null | string;
   licenceTermCode?: LicenceTermCode;
   mailingAddress?: MailingAddress;
   middleName1?: null | string;

@@ -543,6 +543,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			bizId,
 			bizTypeCode,
 			licenceAppId,
+			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			licenceTermCode: businessModelFormValue.licenceTermData.licenceTermCode,
