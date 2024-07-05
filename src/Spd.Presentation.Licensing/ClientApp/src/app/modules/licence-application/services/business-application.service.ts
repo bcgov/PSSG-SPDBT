@@ -68,13 +68,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
-		bizId: new FormControl(null),
-		licenceAppId: new FormControl(null),
+		bizId: new FormControl(),
+		licenceAppId: new FormControl(),
+		latestApplicationId: new FormControl(), // placeholder for id
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
 		isRenewalShortForm: new FormControl(), // placeholder for flag
-		caseNumber: new FormControl(null), // placeholder to save info for display purposes
+		caseNumber: new FormControl(), // placeholder to save info for display purposes
 
 		originalLicenceData: this.originalBusinessLicenceFormGroup,
 
@@ -232,8 +233,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
@@ -257,8 +257,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const documentsToSave = this.getDocsToSaveBlobs(businessModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		// Create list of APIs to call for the newly added documents
 		const documentsToSaveApis: Observable<any>[] = [];
@@ -1242,6 +1241,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: businessLicenceAppl.licenceAppId,
+				latestApplicationId: businessLicenceAppl.licenceAppId,
 				workerLicenceTypeData,
 				applicationTypeData,
 				originalLicenceData,
