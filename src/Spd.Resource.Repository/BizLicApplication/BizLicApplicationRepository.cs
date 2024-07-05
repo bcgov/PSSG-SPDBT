@@ -60,7 +60,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         LinkOrganization(applicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            InsertPrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
+            UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         else
             DeletePrivateInvestigatorLink(app);
 
@@ -106,7 +106,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         LinkOrganization(cmd.ApplicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            InsertPrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo, app);
+            UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
         else
             DeletePrivateInvestigatorLink(app);
 
@@ -160,7 +160,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         }
     }
 
-    private void InsertPrivateInvestigatorLink(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
+    private void UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
     {
         DeletePrivateInvestigatorLink(app);
         Guid? bizContactId = privateInvestigatorInfo?.BizContactId;
