@@ -408,8 +408,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .FirstOrDefault();
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
-            .Where(b => b.spd_firstname == privateInvestigator.GivenName)
-            .Where(b => b.spd_surname == privateInvestigator.Surname)
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
             .FirstOrDefault();
 
         // Assert
@@ -452,6 +452,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(app.spd_ServiceTypeId);
         Assert.NotEmpty(app.spd_application_spd_licencecategory);
         Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(bizContact.spd_position_spd_businesscontact);
 
         //Innihilate
         _context.DeleteObject(account);
@@ -541,8 +542,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .FirstOrDefault();
 
         spd_businesscontact? newBizContact = _context.spd_businesscontacts
-            .Where(b => b.spd_firstname == privateInvestigator.GivenName)
-            .Where(b => b.spd_surname == privateInvestigator.Surname)
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
             .FirstOrDefault();
 
         // Assert
@@ -584,10 +585,12 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(updatedApp.spd_ServiceTypeId);
         Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
         Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(newBizContact.spd_position_spd_businesscontact);
 
         //Innihilate
         _context.DeleteObject(account);
         _context.DeleteObject(bizContact);
+        _context.DeleteObject(newBizContact);
 
         // Remove all links to the application before removing it
         foreach (var appCategory in updatedApp.spd_application_spd_licencecategory)
@@ -677,8 +680,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .FirstOrDefault();
 
         spd_businesscontact? newBizContact = _context.spd_businesscontacts
-            .Where(b => b.spd_firstname == privateInvestigator.GivenName)
-            .Where(b => b.spd_surname == privateInvestigator.Surname)
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
             .FirstOrDefault();
 
         // Assert
@@ -720,10 +723,12 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(updatedApp.spd_ServiceTypeId);
         Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
         Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(newBizContact.spd_position_spd_businesscontact);
 
         //Innihilate
         _context.DeleteObject(account);
         _context.DeleteObject(bizContact);
+        _context.DeleteObject(newBizContact);
 
         // Remove all links to the application before removing it
         foreach (var appCategory in updatedApp.spd_application_spd_licencecategory)
@@ -943,8 +948,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .FirstOrDefault();
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
-            .Where(b => b.spd_firstname == privateInvestigator.GivenName)
-            .Where(b => b.spd_surname == privateInvestigator.Surname)
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
             .FirstOrDefault();
 
         // Assert
@@ -978,6 +983,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(originalApp.spd_businesstype, app.spd_businesstype);
         Assert.NotEmpty(app.spd_application_spd_licencecategory);
         Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(bizContact.spd_position_spd_businesscontact);
 
         // Annihilate
         _context.DeleteObject(bizContact);
