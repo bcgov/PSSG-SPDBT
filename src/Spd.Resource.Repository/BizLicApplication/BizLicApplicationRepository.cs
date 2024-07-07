@@ -170,12 +170,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             spd_businesscontact privateInvestigatorContact = _mapper.Map<spd_businesscontact>(privateInvestigatorInfo);
             privateInvestigatorContact.spd_businesscontactid = Guid.NewGuid();
             _context.AddTospd_businesscontacts(privateInvestigatorContact);
-            _context.AddLink(privateInvestigatorContact, nameof(spd_application.spd_businesscontact_spd_application), app);
-
-            var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
-
-            if (position != null)
-                _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), privateInvestigatorContact);
+            AddPrivateInvestigatorLink(privateInvestigatorContact, app);
         }
         else
         {
@@ -186,8 +181,21 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
             _mapper.Map(privateInvestigatorInfo, bizContact);
             _context.UpdateObject(bizContact);
-            _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+
+            // Must save changes before adding link that has navigation relationship, otherwise the transaction fails
+            _context.SaveChanges();
+            AddPrivateInvestigatorLink(bizContact, app);
         }
+    }
+
+    private void AddPrivateInvestigatorLink(spd_businesscontact privateInvestigatorContact, spd_application app)
+    {
+        _context.AddLink(privateInvestigatorContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+
+        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
+
+        if (position != null)
+            _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), privateInvestigatorContact);
     }
 
     private void DeletePrivateInvestigatorLink(spd_application app)
