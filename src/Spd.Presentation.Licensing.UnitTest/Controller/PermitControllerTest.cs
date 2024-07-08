@@ -61,8 +61,10 @@ public class PermitControllerTest
                .ReturnsAsync(new PermitAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<PermitAppUpdateCommand>(), CancellationToken.None))
                .ReturnsAsync(new PermitAppCommandResponse());
-        mockMediator.Setup(m => m.Send(It.IsAny<GetLatestPermitApplicationQuery>(), CancellationToken.None))
-                .ReturnsAsync(new PermitLicenceAppResponse());
+        mockMediator.Setup(m => m.Send(It.IsAny<GetLatestPermitApplicationIdQuery>(), CancellationToken.None))
+                .ReturnsAsync(Guid.NewGuid());
+        mockMediator.Setup(m => m.Send(It.IsAny<GetPermitApplicationQuery>(), CancellationToken.None))
+        .ReturnsAsync(new PermitLicenceAppResponse());
 
         var validationResults = fixture.Build<ValidationResult>()
             .With(r => r.Errors, [])

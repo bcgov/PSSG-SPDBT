@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
-import { CommonResidentialAddressComponent } from '@app/modules/licence-application/components/shared/step-components/common-residential-address.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 
@@ -12,7 +11,7 @@ import { PermitApplicationService } from '@app/modules/licence-application/servi
 			<div class="step">
 				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
 
-				<app-common-residential-address [form]="form"></app-common-residential-address>
+				<app-common-address [form]="form"></app-common-address>
 			</div>
 		</section>
 	`,
@@ -27,8 +26,6 @@ export class StepPermitResidentialAddressComponent implements OnInit, LicenceChi
 	form: FormGroup = this.permitApplicationService.residentialAddressFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
-	@ViewChild(CommonResidentialAddressComponent) residentialAddressComponent!: CommonResidentialAddressComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 

@@ -92,6 +92,7 @@ export interface BranchResponse {
 										style="color: var(--color-green);"
 										aria-label="Edit branch"
 										(click)="onEditBranch(branch)"
+										*ngIf="!isReadonly"
 									>
 										<mat-icon>edit</mat-icon>Edit
 									</button>
@@ -107,6 +108,7 @@ export interface BranchResponse {
 										style="color: var(--color-red);"
 										aria-label="Remove branch"
 										(click)="onRemoveBranch(i)"
+										*ngIf="!isReadonly"
 									>
 										<mat-icon>delete_outline</mat-icon>Remove
 									</button>
@@ -117,7 +119,7 @@ export interface BranchResponse {
 							<mat-row class="mat-data-row" *matRowDef="let row; columns: columns"></mat-row>
 						</mat-table>
 
-						<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto">
+						<button mat-stroked-button (click)="onAddBranch()" class="large mt-3 w-auto" *ngIf="!isReadonly">
 							<mat-icon class="add-icon">add_circle</mat-icon>Add Branch
 						</button>
 					</div>
@@ -153,11 +155,18 @@ export class CommonBusinessBcBranchesComponent implements OnInit, LicenceChildSt
 	columns: string[] = ['addressLine1', 'city', 'branchManager', 'action1', 'action2'];
 
 	@Input() form!: FormGroup;
+	@Input() isReadonly!: boolean;
 
 	constructor(private formBuilder: FormBuilder, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
 		this.dataSource = new MatTableDataSource(this.branchesArray.value);
+
+		if (this.isReadonly) {
+			this.hasBranchesInBc.disable({ emitEvent: false });
+		} else {
+			this.hasBranchesInBc.enable();
+		}
 	}
 
 	onHasBranchesInBcChange(): void {

@@ -8,6 +8,7 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Licence;
 
@@ -161,6 +162,38 @@ internal abstract class LicenceAppManagerBase
                     cancellationToken);
             }
         }
+    }
+
+    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, WorkerLicenceTypeEnum licenceTypeEnum, CancellationToken cancellationToken)
+    {
+        if (licenceTypeEnum == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        {
+            contactId = null;
+            if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is SecurityBusinessLicence.");
+        }
+        else
+        {
+            bizId = null;
+            if (contactId == null) throw new ApiException(HttpStatusCode.BadRequest, $"contactId should not be null if it is peronal Licence.");
+        }
+
+        //get the latest app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                contactId,
+                bizId,
+                new List<WorkerLicenceTypeEnum> { licenceTypeEnum },
+                new List<ApplicationPortalStatusEnum>
+                {
+                    ApplicationPortalStatusEnum.Completed,
+                }),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.SubmittedOn)
+            .FirstOrDefault();
+        if (app == null)
+            throw new ApiException(HttpStatusCode.BadRequest, $"there is no {licenceTypeEnum}.");
+        return app.LicenceAppId;
     }
 
     protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)

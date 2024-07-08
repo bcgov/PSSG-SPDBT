@@ -227,7 +227,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Replacement, licence)
+			.getBusinessLicenceWithSelection(ApplicationTypeCode.Replacement, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -244,7 +244,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Renewal, licence)
+			.getBusinessLicenceWithSelection(ApplicationTypeCode.Renewal, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -261,7 +261,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(licence.licenceAppId!, ApplicationTypeCode.Update, licence)
+			.getBusinessLicenceWithSelection(ApplicationTypeCode.Update, licence)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

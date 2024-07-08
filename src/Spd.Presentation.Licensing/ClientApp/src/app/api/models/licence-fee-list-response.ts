@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { LicenceFeeResponse } from './licence-fee-response';
+import { LicenceFeeResponse } from '../models/licence-fee-response';
 export interface LicenceFeeListResponse {
-  licenceFees?: null | Array<LicenceFeeResponse>;
+  licenceFees?: Array<LicenceFeeResponse> | null;
 }

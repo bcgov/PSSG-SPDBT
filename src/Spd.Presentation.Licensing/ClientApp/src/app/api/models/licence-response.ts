@@ -1,31 +1,31 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Address } from './address';
-import { ArmouredVehiclePermitReasonCode } from './armoured-vehicle-permit-reason-code';
-import { BodyArmourPermitReasonCode } from './body-armour-permit-reason-code';
-import { Document } from './document';
-import { LicenceStatusCode } from './licence-status-code';
-import { LicenceTermCode } from './licence-term-code';
-import { WorkerLicenceTypeCode } from './worker-licence-type-code';
+import { Address } from '../models/address';
+import { ArmouredVehiclePermitReasonCode } from '../models/armoured-vehicle-permit-reason-code';
+import { BodyArmourPermitReasonCode } from '../models/body-armour-permit-reason-code';
+import { Document } from '../models/document';
+import { LicenceStatusCode } from '../models/licence-status-code';
+import { LicenceTermCode } from '../models/licence-term-code';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceResponse {
-  armouredVehiclePermitReasonCodes?: null | Array<ArmouredVehiclePermitReasonCode>;
-  bodyArmourPermitReasonCodes?: null | Array<BodyArmourPermitReasonCode>;
-  employerName?: null | string;
+  armouredVehiclePermitReasonCodes?: Array<ArmouredVehiclePermitReasonCode> | null;
+  bodyArmourPermitReasonCodes?: Array<BodyArmourPermitReasonCode> | null;
+  employerName?: string | null;
   employerPrimaryAddress?: Address;
   expiryDate?: string;
-  licenceAppId?: null | string;
-  licenceHolderId?: null | string;
-  licenceHolderName?: null | string;
-  licenceId?: null | string;
-  licenceNumber?: null | string;
+  licenceAppId?: string | null;
+  licenceHolderId?: string | null;
+  licenceHolderName?: string | null;
+  licenceId?: string | null;
+  licenceNumber?: string | null;
   licenceStatusCode?: LicenceStatusCode;
   licenceTermCode?: LicenceTermCode;
-  nameOnCard?: null | string;
-  permitOtherRequiredReason?: null | string;
-  rationalDocumentInfos?: null | Array<Document>;
-  rationale?: null | string;
-  supervisorEmailAddress?: null | string;
-  supervisorName?: null | string;
-  supervisorPhoneNumber?: null | string;
+  nameOnCard?: string | null;
+  permitOtherRequiredReason?: string | null;
+  rationalDocumentInfos?: Array<Document> | null;
+  rationale?: string | null;
+  supervisorEmailAddress?: string | null;
+  supervisorName?: string | null;
+  supervisorPhoneNumber?: string | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

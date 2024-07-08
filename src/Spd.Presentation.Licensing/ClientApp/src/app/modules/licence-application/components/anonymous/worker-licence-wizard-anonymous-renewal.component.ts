@@ -59,7 +59,6 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showMailingAddressStep]="showMailingAddressStep"
 					[showCitizenshipStep]="showCitizenshipStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
@@ -116,7 +115,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showMailingAddressStep = false;
 	showCitizenshipStep = false;
 	policeOfficerRoleCode: string | null = null;
 
@@ -147,10 +145,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 				this.showStepDogsAndRestraints =
 					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				this.showMailingAddressStep = !this.licenceApplicationService.licenceModelFormGroup.get(
-					'residentialAddress.isMailingTheSameAsResidential'
-				)?.value;
 
 				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
