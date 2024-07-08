@@ -125,6 +125,12 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.Equal(bizContactId, result.PrivateInvestigatorSwlInfo?.BizContactId);
         Assert.Equal(bizContact.spd_firstname, result.PrivateInvestigatorSwlInfo?.GivenName);
         Assert.Equal(bizContact.spd_surname, result.PrivateInvestigatorSwlInfo?.Surname);
+
+        // Annihilate
+        _context.DeleteObject(biz);
+        _context.DeleteObject(app);
+        _context.DeleteObject(bizContact);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
