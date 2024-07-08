@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-import { LicenceFeeResponse } from './licence-fee-response';
-import { OidcConfiguration } from './oidc-configuration';
-import { RecaptchaConfiguration } from './recaptcha-configuration';
-import { WorkerCategoryTypeCode } from './worker-category-type-code';
+import { LicenceFeeResponse } from '../models/licence-fee-response';
+import { OidcConfiguration } from '../models/oidc-configuration';
+import { RecaptchaConfiguration } from '../models/recaptcha-configuration';
+import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 export interface ConfigurationResponse {
   bcscConfiguration?: OidcConfiguration;
-  invalidWorkerLicenceCategoryMatrixConfiguration?: null | {
+  invalidWorkerLicenceCategoryMatrixConfiguration?: ({
 'ArmouredCarGuard'?: Array<WorkerCategoryTypeCode>;
 'BodyArmourSales'?: Array<WorkerCategoryTypeCode>;
 'ClosedCircuitTelevisionInstaller'?: Array<WorkerCategoryTypeCode>;
@@ -24,9 +24,9 @@ export interface ConfigurationResponse {
 'SecurityAlarmResponse'?: Array<WorkerCategoryTypeCode>;
 'SecurityAlarmSales'?: Array<WorkerCategoryTypeCode>;
 'SecurityConsultant'?: Array<WorkerCategoryTypeCode>;
-};
-  licenceFees?: null | Array<LicenceFeeResponse>;
+}) | null;
+  licenceFees?: Array<LicenceFeeResponse> | null;
   oidcConfiguration?: OidcConfiguration;
   recaptchaConfiguration?: RecaptchaConfiguration;
-  replacementProcessingTime?: null | string;
+  replacementProcessingTime?: string | null;
 }

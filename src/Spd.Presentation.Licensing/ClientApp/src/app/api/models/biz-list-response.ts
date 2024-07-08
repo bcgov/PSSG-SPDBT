@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface BizListResponse {
-  bizGuid?: null | string;
+  bizGuid?: string | null;
   bizId?: string;
-  bizLegalName?: null | string;
-  bizName?: null | string;
+  bizLegalName?: string | null;
+  bizName?: string | null;
 }

@@ -1,38 +1,47 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { apiBusinessBizIdAppLatestGet } from '../fn/biz-licensing/api-business-biz-id-app-latest-get';
+import { ApiBusinessBizIdAppLatestGet$Params } from '../fn/biz-licensing/api-business-biz-id-app-latest-get';
+import { apiBusinessLicenceApplicationBizIdMembersGet } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-get';
+import { ApiBusinessLicenceApplicationBizIdMembersGet$Params } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-get';
+import { apiBusinessLicenceApplicationBizIdMembersPost } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-post';
+import { ApiBusinessLicenceApplicationBizIdMembersPost$Params } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-post';
+import { apiBusinessLicenceApplicationBrandImageDocumentIdGet } from '../fn/biz-licensing/api-business-licence-application-brand-image-document-id-get';
+import { ApiBusinessLicenceApplicationBrandImageDocumentIdGet$Params } from '../fn/biz-licensing/api-business-licence-application-brand-image-document-id-get';
+import { apiBusinessLicenceApplicationChangePost } from '../fn/biz-licensing/api-business-licence-application-change-post';
+import { ApiBusinessLicenceApplicationChangePost$Params } from '../fn/biz-licensing/api-business-licence-application-change-post';
+import { apiBusinessLicenceApplicationFilesPost } from '../fn/biz-licensing/api-business-licence-application-files-post';
+import { ApiBusinessLicenceApplicationFilesPost$Params } from '../fn/biz-licensing/api-business-licence-application-files-post';
+import { apiBusinessLicenceApplicationLicenceAppIdFilesPost } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-files-post';
+import { ApiBusinessLicenceApplicationLicenceAppIdFilesPost$Params } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-files-post';
+import { apiBusinessLicenceApplicationLicenceAppIdGet } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-get';
+import { ApiBusinessLicenceApplicationLicenceAppIdGet$Params } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-get';
+import { apiBusinessLicenceApplicationPost } from '../fn/biz-licensing/api-business-licence-application-post';
+import { ApiBusinessLicenceApplicationPost$Params } from '../fn/biz-licensing/api-business-licence-application-post';
+import { apiBusinessLicenceApplicationSubmitPost } from '../fn/biz-licensing/api-business-licence-application-submit-post';
+import { ApiBusinessLicenceApplicationSubmitPost$Params } from '../fn/biz-licensing/api-business-licence-application-submit-post';
 import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
 import { BizLicAppResponse } from '../models/biz-lic-app-response';
-import { BizLicAppSubmitRequest } from '../models/biz-lic-app-submit-request';
-import { BizLicAppUpsertRequest } from '../models/biz-lic-app-upsert-request';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
-import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 import { Members } from '../models/members';
-import { MembersRequest } from '../models/members-request';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class BizLicensingService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationLicenceAppIdGet
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationLicenceAppIdGet()` */
   static readonly ApiBusinessLicenceApplicationLicenceAppIdGetPath = '/api/business-licence-application/{licenceAppId}';
 
   /**
@@ -45,28 +54,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationLicenceAppIdGet$Response(params: {
-    licenceAppId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizLicAppResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationLicenceAppIdGetPath, 'get');
-    if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizLicAppResponse>;
-      })
-    );
+  apiBusinessLicenceApplicationLicenceAppIdGet$Response(params: ApiBusinessLicenceApplicationLicenceAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizLicAppResponse>> {
+    return apiBusinessLicenceApplicationLicenceAppIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -79,21 +68,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationLicenceAppIdGet(params: {
-    licenceAppId: string;
-  },
-  context?: HttpContext
-
-): Observable<BizLicAppResponse> {
-
-    return this.apiBusinessLicenceApplicationLicenceAppIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizLicAppResponse>) => r.body as BizLicAppResponse)
+  apiBusinessLicenceApplicationLicenceAppIdGet(params: ApiBusinessLicenceApplicationLicenceAppIdGet$Params, context?: HttpContext): Observable<BizLicAppResponse> {
+    return this.apiBusinessLicenceApplicationLicenceAppIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizLicAppResponse>): BizLicAppResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessBizIdAppLatestGet
-   */
+  /** Path part for operation `apiBusinessBizIdAppLatestGet()` */
   static readonly ApiBusinessBizIdAppLatestGetPath = '/api/business/{bizId}/app-latest';
 
   /**
@@ -106,28 +87,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessBizIdAppLatestGet$Response(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizLicAppResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessBizIdAppLatestGetPath, 'get');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizLicAppResponse>;
-      })
-    );
+  apiBusinessBizIdAppLatestGet$Response(params: ApiBusinessBizIdAppLatestGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizLicAppResponse>> {
+    return apiBusinessBizIdAppLatestGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -140,21 +101,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessBizIdAppLatestGet(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<BizLicAppResponse> {
-
-    return this.apiBusinessBizIdAppLatestGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizLicAppResponse>) => r.body as BizLicAppResponse)
+  apiBusinessBizIdAppLatestGet(params: ApiBusinessBizIdAppLatestGet$Params, context?: HttpContext): Observable<BizLicAppResponse> {
+    return this.apiBusinessBizIdAppLatestGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizLicAppResponse>): BizLicAppResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationPost
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationPost()` */
   static readonly ApiBusinessLicenceApplicationPostPath = '/api/business-licence-application';
 
   /**
@@ -167,28 +120,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationPost$Response(params: {
-    body: BizLicAppUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizLicAppCommandResponse>;
-      })
-    );
+  apiBusinessLicenceApplicationPost$Response(params: ApiBusinessLicenceApplicationPost$Params, context?: HttpContext): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+    return apiBusinessLicenceApplicationPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -201,21 +134,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationPost(params: {
-    body: BizLicAppUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<BizLicAppCommandResponse> {
-
-    return this.apiBusinessLicenceApplicationPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizLicAppCommandResponse>) => r.body as BizLicAppCommandResponse)
+  apiBusinessLicenceApplicationPost(params: ApiBusinessLicenceApplicationPost$Params, context?: HttpContext): Observable<BizLicAppCommandResponse> {
+    return this.apiBusinessLicenceApplicationPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizLicAppCommandResponse>): BizLicAppCommandResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationLicenceAppIdFilesPost
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationLicenceAppIdFilesPost()` */
   static readonly ApiBusinessLicenceApplicationLicenceAppIdFilesPostPath = '/api/business-licence-application/{licenceAppId}/files';
 
   /**
@@ -228,33 +153,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response(params: {
-    licenceAppId: string;
-    body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationLicenceAppIdFilesPostPath, 'post');
-    if (params) {
-      rb.path('licenceAppId', params.licenceAppId, {});
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceAppDocumentResponse>>;
-      })
-    );
+  apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response(params: ApiBusinessLicenceApplicationLicenceAppIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+    return apiBusinessLicenceApplicationLicenceAppIdFilesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -267,25 +167,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiBusinessLicenceApplicationLicenceAppIdFilesPost(params: {
-    licenceAppId: string;
-    body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<Array<LicenceAppDocumentResponse>> {
-
-    return this.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>) => r.body as Array<LicenceAppDocumentResponse>)
+  apiBusinessLicenceApplicationLicenceAppIdFilesPost(params: ApiBusinessLicenceApplicationLicenceAppIdFilesPost$Params, context?: HttpContext): Observable<Array<LicenceAppDocumentResponse>> {
+    return this.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>): Array<LicenceAppDocumentResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationChangePost
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationChangePost()` */
   static readonly ApiBusinessLicenceApplicationChangePostPath = '/api/business-licence-application/change';
 
   /**
@@ -299,32 +187,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationChangePost$Response(params?: {
-
-    /**
-     * BizLicAppSubmitRequest data
-     */
-    body?: BizLicAppSubmitRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationChangePostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizLicAppCommandResponse>;
-      })
-    );
+  apiBusinessLicenceApplicationChangePost$Response(params?: ApiBusinessLicenceApplicationChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+    return apiBusinessLicenceApplicationChangePost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -338,25 +202,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationChangePost(params?: {
-
-    /**
-     * BizLicAppSubmitRequest data
-     */
-    body?: BizLicAppSubmitRequest
-  },
-  context?: HttpContext
-
-): Observable<BizLicAppCommandResponse> {
-
-    return this.apiBusinessLicenceApplicationChangePost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizLicAppCommandResponse>) => r.body as BizLicAppCommandResponse)
+  apiBusinessLicenceApplicationChangePost(params?: ApiBusinessLicenceApplicationChangePost$Params, context?: HttpContext): Observable<BizLicAppCommandResponse> {
+    return this.apiBusinessLicenceApplicationChangePost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizLicAppCommandResponse>): BizLicAppCommandResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationBizIdMembersGet
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationBizIdMembersGet()` */
   static readonly ApiBusinessLicenceApplicationBizIdMembersGetPath = '/api/business-licence-application/{bizId}/members';
 
   /**
@@ -370,28 +222,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationBizIdMembersGet$Response(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Members>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBizIdMembersGetPath, 'get');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Members>;
-      })
-    );
+  apiBusinessLicenceApplicationBizIdMembersGet$Response(params: ApiBusinessLicenceApplicationBizIdMembersGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Members>> {
+    return apiBusinessLicenceApplicationBizIdMembersGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -405,21 +237,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationBizIdMembersGet(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<Members> {
-
-    return this.apiBusinessLicenceApplicationBizIdMembersGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Members>) => r.body as Members)
+  apiBusinessLicenceApplicationBizIdMembersGet(params: ApiBusinessLicenceApplicationBizIdMembersGet$Params, context?: HttpContext): Observable<Members> {
+    return this.apiBusinessLicenceApplicationBizIdMembersGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Members>): Members => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationBizIdMembersPost
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationBizIdMembersPost()` */
   static readonly ApiBusinessLicenceApplicationBizIdMembersPostPath = '/api/business-licence-application/{bizId}/members';
 
   /**
@@ -432,30 +256,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationBizIdMembersPost$Response(params: {
-    bizId: string;
-    body?: MembersRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBizIdMembersPostPath, 'post');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiBusinessLicenceApplicationBizIdMembersPost$Response(params: ApiBusinessLicenceApplicationBizIdMembersPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiBusinessLicenceApplicationBizIdMembersPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -468,22 +270,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationBizIdMembersPost(params: {
-    bizId: string;
-    body?: MembersRequest
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiBusinessLicenceApplicationBizIdMembersPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiBusinessLicenceApplicationBizIdMembersPost(params: ApiBusinessLicenceApplicationBizIdMembersPost$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiBusinessLicenceApplicationBizIdMembersPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationFilesPost
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationFilesPost()` */
   static readonly ApiBusinessLicenceApplicationFilesPostPath = '/api/business-licence-application/files';
 
   /**
@@ -497,31 +290,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiBusinessLicenceApplicationFilesPost$Response(params?: {
-    body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<string>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationFilesPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<string>;
-      })
-    );
+  apiBusinessLicenceApplicationFilesPost$Response(params?: ApiBusinessLicenceApplicationFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return apiBusinessLicenceApplicationFilesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -535,24 +305,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiBusinessLicenceApplicationFilesPost(params?: {
-    body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<string> {
-
-    return this.apiBusinessLicenceApplicationFilesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<string>) => r.body as string)
+  apiBusinessLicenceApplicationFilesPost(params?: ApiBusinessLicenceApplicationFilesPost$Params, context?: HttpContext): Observable<string> {
+    return this.apiBusinessLicenceApplicationFilesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationSubmitPost
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationSubmitPost()` */
   static readonly ApiBusinessLicenceApplicationSubmitPostPath = '/api/business-licence-application/submit';
 
   /**
@@ -565,28 +324,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationSubmitPost$Response(params: {
-    body: BizLicAppUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationSubmitPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizLicAppCommandResponse>;
-      })
-    );
+  apiBusinessLicenceApplicationSubmitPost$Response(params: ApiBusinessLicenceApplicationSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+    return apiBusinessLicenceApplicationSubmitPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -599,21 +338,13 @@ export class BizLicensingService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBusinessLicenceApplicationSubmitPost(params: {
-    body: BizLicAppUpsertRequest
-  },
-  context?: HttpContext
-
-): Observable<BizLicAppCommandResponse> {
-
-    return this.apiBusinessLicenceApplicationSubmitPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizLicAppCommandResponse>) => r.body as BizLicAppCommandResponse)
+  apiBusinessLicenceApplicationSubmitPost(params: ApiBusinessLicenceApplicationSubmitPost$Params, context?: HttpContext): Observable<BizLicAppCommandResponse> {
+    return this.apiBusinessLicenceApplicationSubmitPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizLicAppCommandResponse>): BizLicAppCommandResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBusinessLicenceApplicationBrandImageDocumentIdGet
-   */
+  /** Path part for operation `apiBusinessLicenceApplicationBrandImageDocumentIdGet()` */
   static readonly ApiBusinessLicenceApplicationBrandImageDocumentIdGetPath = '/api/business-licence-application/brand-image/{documentId}';
 
   /**
@@ -626,28 +357,8 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationBrandImageDocumentIdGet$Response(params: {
-    documentId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Blob>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizLicensingService.ApiBusinessLicenceApplicationBrandImageDocumentIdGetPath, 'get');
-    if (params) {
-      rb.path('documentId', params.documentId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
-      })
-    );
+  apiBusinessLicenceApplicationBrandImageDocumentIdGet$Response(params: ApiBusinessLicenceApplicationBrandImageDocumentIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiBusinessLicenceApplicationBrandImageDocumentIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -660,15 +371,9 @@ export class BizLicensingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBusinessLicenceApplicationBrandImageDocumentIdGet(params: {
-    documentId: string;
-  },
-  context?: HttpContext
-
-): Observable<Blob> {
-
-    return this.apiBusinessLicenceApplicationBrandImageDocumentIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+  apiBusinessLicenceApplicationBrandImageDocumentIdGet(params: ApiBusinessLicenceApplicationBrandImageDocumentIdGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiBusinessLicenceApplicationBrandImageDocumentIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 

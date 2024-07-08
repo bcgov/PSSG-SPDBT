@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface BizLicAppCommandResponse {
-  cost?: null | number;
-  licenceAppId?: null | string;
+  cost?: number | null;
+  licenceAppId?: string | null;
 }
