@@ -60,7 +60,7 @@ public class BizLicAppSubmitRequestValidator : BizLicAppBaseValidator<BizLicAppS
     public BizLicAppSubmitRequestValidator()
     {
         // General validations
-        RuleFor(r => r.OriginalApplicationId).NotEmpty();
+        RuleFor(r => r.LatestApplicationId).NotEmpty();
         RuleFor(r => r.OriginalLicenceId).NotEmpty();
         RuleFor(r => r.PreviousDocumentIds)
             .Must(r => r != null && r.Any())

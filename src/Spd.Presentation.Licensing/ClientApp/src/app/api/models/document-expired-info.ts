@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
-import { LicenceDocumentTypeCode } from './licence-document-type-code';
+import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 export interface DocumentExpiredInfo {
-  expiryDate?: null | string;
+  expiryDate?: string | null;
   licenceDocumentTypeCode?: LicenceDocumentTypeCode;
 }

@@ -11,6 +11,7 @@ import {
 } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { UtilService } from '@app/core/services/util.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
@@ -63,6 +64,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 							[licenceCost]="newLicenceCost"
 							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
+							[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onSubmitStep()"
 							(nextPayStep)="onNextPayStep()"
@@ -105,6 +107,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -148,8 +151,8 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 					// If the user has not changed the selected categories,
 					// then prompt whether or not to reprint
-					currentCategoriesList.sort((a: string, b: string) => a.localeCompare(b));
-					originalCategoriesList.sort((a: string, b: string) => a.localeCompare(b));
+					currentCategoriesList.sort((a: string, b: string) => this.utilService.sort(a, b));
+					originalCategoriesList.sort((a: string, b: string) => this.utilService.sort(a, b));
 
 					isUpdateFlowWithHideReprintStep = currentCategoriesList.join() != originalCategoriesList.join();
 				}

@@ -1,16 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Address } from './address';
-import { BizTypeCode } from './biz-type-code';
-import { BranchInfo } from './branch-info';
+import { Address } from '../models/address';
+import { BizTypeCode } from '../models/biz-type-code';
+import { BranchInfo } from '../models/branch-info';
 export interface BizProfileUpdateRequest {
   bizAddress?: Address;
   bizBCAddress?: Address;
-  bizMailingAddress?: Address;
-  bizTradeName?: null | string;
+  bizTradeName?: string | null;
   bizTypeCode?: BizTypeCode;
-  branches?: null | Array<BranchInfo>;
-  soleProprietorLicenceId?: null | string;
-  soleProprietorSwlEmailAddress?: null | string;
-  soleProprietorSwlPhoneNumber?: null | string;
+  branches?: Array<BranchInfo> | null;
+  soleProprietorLicenceId?: string | null;
+  soleProprietorSwlEmailAddress?: string | null;
+  soleProprietorSwlPhoneNumber?: string | null;
 }

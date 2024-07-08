@@ -1,35 +1,35 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationPortalStatusCode } from './application-portal-status-code';
-import { ApplicationTypeCode } from './application-type-code';
-import { BizTypeCode } from './biz-type-code';
-import { ContactInfo } from './contact-info';
-import { Document } from './document';
-import { LicenceTermCode } from './licence-term-code';
-import { Members } from './members';
-import { SwlContactInfo } from './swl-contact-info';
-import { WorkerCategoryTypeCode } from './worker-category-type-code';
-import { WorkerLicenceTypeCode } from './worker-licence-type-code';
+import { ApplicationPortalStatusCode } from '../models/application-portal-status-code';
+import { ApplicationTypeCode } from '../models/application-type-code';
+import { BizTypeCode } from '../models/biz-type-code';
+import { ContactInfo } from '../models/contact-info';
+import { Document } from '../models/document';
+import { LicenceTermCode } from '../models/licence-term-code';
+import { Members } from '../models/members';
+import { SwlContactInfo } from '../models/swl-contact-info';
+import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface BizLicAppResponse {
-  agreeToCompleteAndAccurate?: null | boolean;
+  agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
-  applicantIsBizManager?: null | boolean;
+  applicantIsBizManager?: boolean | null;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
-  bizId?: null | string;
+  bizId?: string | null;
   bizManagerContactInfo?: ContactInfo;
   bizTypeCode?: BizTypeCode;
-  caseNumber?: null | string;
-  categoryCodes?: null | Array<WorkerCategoryTypeCode>;
-  documentInfos?: null | Array<Document>;
-  expiredLicenceId?: null | string;
-  expiryDate?: null | string;
-  hasExpiredLicence?: null | boolean;
+  caseNumber?: string | null;
+  categoryCodes?: Array<WorkerCategoryTypeCode> | null;
+  documentInfos?: Array<Document> | null;
+  expiredLicenceId?: string | null;
+  expiryDate?: string | null;
+  hasExpiredLicence?: boolean | null;
   licenceAppId?: string;
   licenceTermCode?: LicenceTermCode;
   members?: Members;
-  noBranding?: null | boolean;
+  noBranding?: boolean | null;
   privateInvestigatorSwlInfo?: SwlContactInfo;
-  useDogs?: null | boolean;
+  useDogs?: boolean | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

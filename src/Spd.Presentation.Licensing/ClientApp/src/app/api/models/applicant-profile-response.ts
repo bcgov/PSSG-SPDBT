@@ -1,30 +1,30 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Address } from './address';
-import { Alias } from './alias';
-import { Document } from './document';
-import { GenderEnum } from './gender-enum';
-import { IdentityProviderTypeCode } from './identity-provider-type-code';
-import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
+import { Address } from '../models/address';
+import { Alias } from '../models/alias';
+import { Document } from '../models/document';
+import { GenderEnum } from '../models/gender-enum';
+import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
+import { PoliceOfficerRoleEnum } from '../models/police-officer-role-enum';
 export interface ApplicantProfileResponse {
-  aliases?: null | Array<Alias>;
+  aliases?: Array<Alias> | null;
   applicantId?: string;
   dateOfBirth?: string;
-  documentInfos?: null | Array<Document>;
-  emailAddress?: null | string;
+  documentInfos?: Array<Document> | null;
+  emailAddress?: string | null;
   genderCode?: GenderEnum;
-  givenName?: null | string;
-  hasCriminalHistory?: null | boolean;
+  givenName?: string | null;
+  hasCriminalHistory?: boolean | null;
   identityProviderTypeCode?: IdentityProviderTypeCode;
-  isPoliceOrPeaceOfficer?: null | boolean;
-  isTreatedForMHC?: null | boolean;
+  isPoliceOrPeaceOfficer?: boolean | null;
+  isTreatedForMHC?: boolean | null;
   mailingAddress?: Address;
-  middleName1?: null | string;
-  middleName2?: null | string;
-  otherOfficerRole?: null | string;
-  phoneNumber?: null | string;
+  middleName1?: string | null;
+  middleName2?: string | null;
+  otherOfficerRole?: string | null;
+  phoneNumber?: string | null;
   policeOfficerRoleCode?: PoliceOfficerRoleEnum;
   residentialAddress?: Address;
-  sub?: null | string;
-  surname?: null | string;
+  sub?: string | null;
+  surname?: string | null;
 }

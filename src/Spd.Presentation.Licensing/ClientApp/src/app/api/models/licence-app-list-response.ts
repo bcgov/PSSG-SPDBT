@@ -1,15 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationPortalStatusCode } from './application-portal-status-code';
-import { ApplicationTypeCode } from './application-type-code';
-import { WorkerLicenceTypeCode } from './worker-licence-type-code';
+import { ApplicationPortalStatusCode } from '../models/application-portal-status-code';
+import { ApplicationTypeCode } from '../models/application-type-code';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceAppListResponse {
   applicationPortalStatusCode?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
-  caseNumber?: null | string;
+  caseNumber?: string | null;
   createdOn?: string;
   licenceAppId?: string;
   serviceTypeCode?: WorkerLicenceTypeCode;
-  submittedOn?: null | string;
-  updatedOn?: null | string;
+  submittedOn?: string | null;
+  updatedOn?: string | null;
 }

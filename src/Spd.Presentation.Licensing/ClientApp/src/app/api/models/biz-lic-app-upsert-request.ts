@@ -1,31 +1,31 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationTypeCode } from './application-type-code';
-import { BizTypeCode } from './biz-type-code';
-import { ContactInfo } from './contact-info';
-import { Document } from './document';
-import { LicenceTermCode } from './licence-term-code';
-import { Members } from './members';
-import { SwlContactInfo } from './swl-contact-info';
-import { WorkerCategoryTypeCode } from './worker-category-type-code';
-import { WorkerLicenceTypeCode } from './worker-licence-type-code';
+import { ApplicationTypeCode } from '../models/application-type-code';
+import { BizTypeCode } from '../models/biz-type-code';
+import { ContactInfo } from '../models/contact-info';
+import { Document } from '../models/document';
+import { LicenceTermCode } from '../models/licence-term-code';
+import { Members } from '../models/members';
+import { SwlContactInfo } from '../models/swl-contact-info';
+import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface BizLicAppUpsertRequest {
-  agreeToCompleteAndAccurate?: null | boolean;
+  agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
-  applicantIsBizManager?: null | boolean;
+  applicantIsBizManager?: boolean | null;
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: string;
   bizManagerContactInfo?: ContactInfo;
   bizTypeCode?: BizTypeCode;
-  categoryCodes?: null | Array<WorkerCategoryTypeCode>;
-  documentInfos?: null | Array<Document>;
-  expiredLicenceId?: null | string;
-  hasExpiredLicence?: null | boolean;
-  licenceAppId?: null | string;
+  categoryCodes?: Array<WorkerCategoryTypeCode> | null;
+  documentInfos?: Array<Document> | null;
+  expiredLicenceId?: string | null;
+  hasExpiredLicence?: boolean | null;
+  licenceAppId?: string | null;
   licenceTermCode?: LicenceTermCode;
   members?: Members;
-  noBranding?: null | boolean;
+  noBranding?: boolean | null;
   privateInvestigatorSwlInfo?: SwlContactInfo;
-  useDogs?: null | boolean;
+  useDogs?: boolean | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

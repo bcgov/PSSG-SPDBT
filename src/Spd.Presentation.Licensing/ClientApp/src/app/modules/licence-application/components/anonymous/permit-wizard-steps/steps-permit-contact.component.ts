@@ -25,7 +25,7 @@ import { StepPermitResidentialAddressComponent } from './step-permit-residential
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="showMailingAddressStep">
+			<mat-step>
 				<app-step-permit-mailing-address [applicationTypeCode]="applicationTypeCode"></app-step-permit-mailing-address>
 
 				<app-wizard-footer
@@ -65,7 +65,6 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
-	@Input() showMailingAddressStep = false;
 
 	@ViewChild(StepPermitResidentialAddressComponent)
 	stepResidentialAddressComponent!: StepPermitResidentialAddressComponent;

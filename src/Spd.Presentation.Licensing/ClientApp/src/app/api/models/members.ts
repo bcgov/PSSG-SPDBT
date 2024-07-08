@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
-import { NonSwlContactInfo } from './non-swl-contact-info';
-import { SwlContactInfo } from './swl-contact-info';
+import { NonSwlContactInfo } from '../models/non-swl-contact-info';
+import { SwlContactInfo } from '../models/swl-contact-info';
 export interface Members {
-  employees?: null | Array<SwlContactInfo>;
-  nonSwlControllingMembers?: null | Array<NonSwlContactInfo>;
-  swlControllingMembers?: null | Array<SwlContactInfo>;
+  employees?: Array<SwlContactInfo> | null;
+  nonSwlControllingMembers?: Array<NonSwlContactInfo> | null;
+  swlControllingMembers?: Array<SwlContactInfo> | null;
 }
