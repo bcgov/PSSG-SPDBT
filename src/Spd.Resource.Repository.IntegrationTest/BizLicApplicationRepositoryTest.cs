@@ -79,6 +79,55 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     } */
 
     [Fact]
+    public async Task GetBizLicApplicationAsync_WithPrivateInvestigator_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        account biz = new();
+        biz.name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}";
+        biz.accountid = bizId;
+        _context.AddToaccounts(biz);
+
+        Guid licenceApplicationId = Guid.NewGuid();
+        spd_application app = new();
+        app.spd_firstname = "firstName";
+        app.spd_lastname = "lastName";
+        app.spd_middlename1 = "middleName1";
+        app.spd_middlename2 = "middleName2";
+        app.spd_applicationid = licenceApplicationId;
+        app.spd_licenceterm = 100000000;
+
+        _context.AddTospd_applications(app);
+        _context.SetLink(app, nameof(app.spd_ApplicantId_account), biz);
+
+        Guid bizContactId = Guid.NewGuid();
+        spd_businesscontact bizContact = new()
+        {
+            spd_businesscontactid = bizContactId,
+            spd_firstname = "InvestigatorGivenName",
+            spd_surname = "InvestigatorSurname"
+        };
+        _context.AddTospd_businesscontacts(bizContact);
+        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+
+        spd_position position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
+        _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _bizLicAppRepository.GetBizLicApplicationAsync(licenceApplicationId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<BizLicApplicationResp>(result);
+        Assert.Equal(bizId, result.BizId);
+        Assert.Equal(app.spd_applicationid, result.LicenceAppId);
+        Assert.Equal(bizContactId, result.PrivateInvestigatorSwlInfo?.BizContactId);
+        Assert.Equal(bizContact.spd_firstname, result.PrivateInvestigatorSwlInfo?.GivenName);
+        Assert.Equal(bizContact.spd_surname, result.PrivateInvestigatorSwlInfo?.Surname);
+    }
+
+    [Fact]
     public async Task GetBizLicApplicationAsync_BizNotFound_Throw_Exception()
     {
         // Act and Assert
