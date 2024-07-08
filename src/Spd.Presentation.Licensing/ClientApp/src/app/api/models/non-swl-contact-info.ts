@@ -1,11 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface NonSwlContactInfo {
-  bizContactId?: null | string;
-  emailAddress?: null | string;
-  givenName?: null | string;
-  middleName1?: null | string;
-  middleName2?: null | string;
-  phoneNumber?: null | string;
-  surname?: null | string;
+  bizContactId?: string | null;
+  emailAddress?: string | null;
+  givenName?: string | null;
+  middleName1?: string | null;
+  middleName2?: string | null;
+  phoneNumber?: string | null;
+  surname?: string | null;
 }

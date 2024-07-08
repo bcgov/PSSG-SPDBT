@@ -1,34 +1,35 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiApplicantApplicantIdPut } from '../fn/applicant-profile/api-applicant-applicant-id-put';
+import { ApiApplicantApplicantIdPut$Params } from '../fn/applicant-profile/api-applicant-applicant-id-put';
+import { apiApplicantFilesPost } from '../fn/applicant-profile/api-applicant-files-post';
+import { ApiApplicantFilesPost$Params } from '../fn/applicant-profile/api-applicant-files-post';
+import { apiApplicantIdGet } from '../fn/applicant-profile/api-applicant-id-get';
+import { ApiApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-id-get';
+import { apiApplicantMergeOldApplicantIdNewApplicantIdGet } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
+import { ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
+import { apiApplicantSearchGet } from '../fn/applicant-profile/api-applicant-search-get';
+import { ApiApplicantSearchGet$Params } from '../fn/applicant-profile/api-applicant-search-get';
 import { ApplicantListResponse } from '../models/applicant-list-response';
 import { ApplicantProfileResponse } from '../models/applicant-profile-response';
-import { ApplicantUpdateRequest } from '../models/applicant-update-request';
 import { IActionResult } from '../models/i-action-result';
-import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ApplicantProfileService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiApplicantIdGet
-   */
+  /** Path part for operation `apiApplicantIdGet()` */
   static readonly ApiApplicantIdGetPath = '/api/applicant/{id}';
 
   /**
@@ -41,28 +42,8 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantIdGet$Response(params: {
-    id: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantIdGetPath, 'get');
-    if (params) {
-      rb.path('id', params.id, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantProfileResponse>;
-      })
-    );
+  apiApplicantIdGet$Response(params: ApiApplicantIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
+    return apiApplicantIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -75,21 +56,13 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantIdGet(params: {
-    id: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicantProfileResponse> {
-
-    return this.apiApplicantIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantProfileResponse>) => r.body as ApplicantProfileResponse)
+  apiApplicantIdGet(params: ApiApplicantIdGet$Params, context?: HttpContext): Observable<ApplicantProfileResponse> {
+    return this.apiApplicantIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantProfileResponse>): ApplicantProfileResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantFilesPost
-   */
+  /** Path part for operation `apiApplicantFilesPost()` */
   static readonly ApiApplicantFilesPostPath = '/api/applicant/files';
 
   /**
@@ -102,31 +75,8 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiApplicantFilesPost$Response(params?: {
-    body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<string>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantFilesPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<string>;
-      })
-    );
+  apiApplicantFilesPost$Response(params?: ApiApplicantFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return apiApplicantFilesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -139,24 +89,13 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiApplicantFilesPost(params?: {
-    body?: {
-'Documents'?: Array<Blob>;
-'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<string> {
-
-    return this.apiApplicantFilesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<string>) => r.body as string)
+  apiApplicantFilesPost(params?: ApiApplicantFilesPost$Params, context?: HttpContext): Observable<string> {
+    return this.apiApplicantFilesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantApplicantIdPut
-   */
+  /** Path part for operation `apiApplicantApplicantIdPut()` */
   static readonly ApiApplicantApplicantIdPutPath = '/api/applicant/{applicantId}';
 
   /**
@@ -169,34 +108,8 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantApplicantIdPut$Response(params: {
-    applicantId: string;
-
-    /**
-     * ApplicantUpdateRequest request
-     */
-    body?: ApplicantUpdateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<string>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantApplicantIdPutPath, 'put');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<string>;
-      })
-    );
+  apiApplicantApplicantIdPut$Response(params: ApiApplicantApplicantIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return apiApplicantApplicantIdPut(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -209,26 +122,13 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantApplicantIdPut(params: {
-    applicantId: string;
-
-    /**
-     * ApplicantUpdateRequest request
-     */
-    body?: ApplicantUpdateRequest
-  },
-  context?: HttpContext
-
-): Observable<string> {
-
-    return this.apiApplicantApplicantIdPut$Response(params,context).pipe(
-      map((r: StrictHttpResponse<string>) => r.body as string)
+  apiApplicantApplicantIdPut(params: ApiApplicantApplicantIdPut$Params, context?: HttpContext): Observable<string> {
+    return this.apiApplicantApplicantIdPut$Response(params, context).pipe(
+      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantSearchGet
-   */
+  /** Path part for operation `apiApplicantSearchGet()` */
   static readonly ApiApplicantSearchGetPath = '/api/applicant/search';
 
   /**
@@ -241,26 +141,8 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantSearchGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<ApplicantListResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantSearchGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<ApplicantListResponse>>;
-      })
-    );
+  apiApplicantSearchGet$Response(params?: ApiApplicantSearchGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<ApplicantListResponse>>> {
+    return apiApplicantSearchGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -273,20 +155,13 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantSearchGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<Array<ApplicantListResponse>> {
-
-    return this.apiApplicantSearchGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<ApplicantListResponse>>) => r.body as Array<ApplicantListResponse>)
+  apiApplicantSearchGet(params?: ApiApplicantSearchGet$Params, context?: HttpContext): Observable<Array<ApplicantListResponse>> {
+    return this.apiApplicantSearchGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<ApplicantListResponse>>): Array<ApplicantListResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantMergeOldApplicantIdNewApplicantIdGet
-   */
+  /** Path part for operation `apiApplicantMergeOldApplicantIdNewApplicantIdGet()` */
   static readonly ApiApplicantMergeOldApplicantIdNewApplicantIdGetPath = '/api/applicant/merge/{oldApplicantId}/{newApplicantId}';
 
   /**
@@ -299,30 +174,8 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params: {
-    oldApplicantId: string;
-    newApplicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<IActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantProfileService.ApiApplicantMergeOldApplicantIdNewApplicantIdGetPath, 'get');
-    if (params) {
-      rb.path('oldApplicantId', params.oldApplicantId, {});
-      rb.path('newApplicantId', params.newApplicantId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<IActionResult>;
-      })
-    );
+  apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params: ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<IActionResult>> {
+    return apiApplicantMergeOldApplicantIdNewApplicantIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -335,16 +188,9 @@ export class ApplicantProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantMergeOldApplicantIdNewApplicantIdGet(params: {
-    oldApplicantId: string;
-    newApplicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<IActionResult> {
-
-    return this.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<IActionResult>) => r.body as IActionResult)
+  apiApplicantMergeOldApplicantIdNewApplicantIdGet(params: ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params, context?: HttpContext): Observable<IActionResult> {
+    return this.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<IActionResult>): IActionResult => r.body)
     );
   }
 

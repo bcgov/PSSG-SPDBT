@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface MailingAddress {
-  addressLine1?: null | string;
-  addressLine2?: null | string;
-  city?: null | string;
-  country?: null | string;
-  postalCode?: null | string;
-  province?: null | string;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  country?: string | null;
+  postalCode?: string | null;
+  province?: string | null;
 }

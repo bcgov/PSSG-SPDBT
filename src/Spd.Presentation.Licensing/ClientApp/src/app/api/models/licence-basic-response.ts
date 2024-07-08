@@ -1,17 +1,17 @@
 /* tslint:disable */
 /* eslint-disable */
-import { LicenceStatusCode } from './licence-status-code';
-import { LicenceTermCode } from './licence-term-code';
-import { WorkerLicenceTypeCode } from './worker-licence-type-code';
+import { LicenceStatusCode } from '../models/licence-status-code';
+import { LicenceTermCode } from '../models/licence-term-code';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceBasicResponse {
   expiryDate?: string;
-  licenceAppId?: null | string;
-  licenceHolderId?: null | string;
-  licenceHolderName?: null | string;
-  licenceId?: null | string;
-  licenceNumber?: null | string;
+  licenceAppId?: string | null;
+  licenceHolderId?: string | null;
+  licenceHolderName?: string | null;
+  licenceId?: string | null;
+  licenceNumber?: string | null;
   licenceStatusCode?: LicenceStatusCode;
   licenceTermCode?: LicenceTermCode;
-  nameOnCard?: null | string;
+  nameOnCard?: string | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

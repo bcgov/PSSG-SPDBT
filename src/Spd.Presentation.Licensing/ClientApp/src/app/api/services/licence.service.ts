@@ -1,32 +1,38 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
-import { GoogleRecaptcha } from '../models/google-recaptcha';
+import { apiApplicantsApplicantIdLicencesGet } from '../fn/licence/api-applicants-applicant-id-licences-get';
+import { ApiApplicantsApplicantIdLicencesGet$Params } from '../fn/licence/api-applicants-applicant-id-licences-get';
+import { apiBizsBizIdLicencesGet } from '../fn/licence/api-bizs-biz-id-licences-get';
+import { ApiBizsBizIdLicencesGet$Params } from '../fn/licence/api-bizs-biz-id-licences-get';
+import { apiLicenceLookupAnonymousLicenceNumberPost } from '../fn/licence/api-licence-lookup-anonymous-licence-number-post';
+import { ApiLicenceLookupAnonymousLicenceNumberPost$Params } from '../fn/licence/api-licence-lookup-anonymous-licence-number-post';
+import { apiLicenceLookupLicenceNumberGet } from '../fn/licence/api-licence-lookup-licence-number-get';
+import { ApiLicenceLookupLicenceNumberGet$Params } from '../fn/licence/api-licence-lookup-licence-number-get';
+import { apiLicencesLicenceIdGet } from '../fn/licence/api-licences-licence-id-get';
+import { ApiLicencesLicenceIdGet$Params } from '../fn/licence/api-licences-licence-id-get';
+import { apiLicencesLicencePhotoGet } from '../fn/licence/api-licences-licence-photo-get';
+import { ApiLicencesLicencePhotoGet$Params } from '../fn/licence/api-licences-licence-photo-get';
+import { apiLicencesLicencePhotoLicenceIdGet } from '../fn/licence/api-licences-licence-photo-licence-id-get';
+import { ApiLicencesLicencePhotoLicenceIdGet$Params } from '../fn/licence/api-licences-licence-photo-licence-id-get';
 import { LicenceBasicResponse } from '../models/licence-basic-response';
 import { LicenceResponse } from '../models/licence-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class LicenceService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiBizsBizIdLicencesGet
-   */
+  /** Path part for operation `apiBizsBizIdLicencesGet()` */
   static readonly ApiBizsBizIdLicencesGetPath = '/api/bizs/{bizId}/licences';
 
   /**
@@ -40,28 +46,8 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizsBizIdLicencesGet$Response(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiBizsBizIdLicencesGetPath, 'get');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceBasicResponse>>;
-      })
-    );
+  apiBizsBizIdLicencesGet$Response(params: ApiBizsBizIdLicencesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+    return apiBizsBizIdLicencesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -75,21 +61,13 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizsBizIdLicencesGet(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<Array<LicenceBasicResponse>> {
-
-    return this.apiBizsBizIdLicencesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>) => r.body as Array<LicenceBasicResponse>)
+  apiBizsBizIdLicencesGet(params: ApiBizsBizIdLicencesGet$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+    return this.apiBizsBizIdLicencesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsApplicantIdLicencesGet
-   */
+  /** Path part for operation `apiApplicantsApplicantIdLicencesGet()` */
   static readonly ApiApplicantsApplicantIdLicencesGetPath = '/api/applicants/{applicantId}/licences';
 
   /**
@@ -103,28 +81,8 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdLicencesGet$Response(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiApplicantsApplicantIdLicencesGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceBasicResponse>>;
-      })
-    );
+  apiApplicantsApplicantIdLicencesGet$Response(params: ApiApplicantsApplicantIdLicencesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceBasicResponse>>> {
+    return apiApplicantsApplicantIdLicencesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -138,80 +96,50 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdLicencesGet(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<Array<LicenceBasicResponse>> {
-
-    return this.apiApplicantsApplicantIdLicencesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>) => r.body as Array<LicenceBasicResponse>)
+  apiApplicantsApplicantIdLicencesGet(params: ApiApplicantsApplicantIdLicencesGet$Params, context?: HttpContext): Observable<Array<LicenceBasicResponse>> {
+    return this.apiApplicantsApplicantIdLicencesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceBasicResponse>>): Array<LicenceBasicResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiLicenceLookupLicenceNumberGet
-   */
+  /** Path part for operation `apiLicenceLookupLicenceNumberGet()` */
   static readonly ApiLicenceLookupLicenceNumberGetPath = '/api/licence-lookup/{licenceNumber}';
 
   /**
+   * Get latest licence by licence number.
+   * There should be only one active licence for each licenceNumber.
+   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   *
+   *
+   *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `apiLicenceLookupLicenceNumberGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiLicenceLookupLicenceNumberGet$Response(params: {
-    licenceNumber: string;
-    accessCode?: string;
-    isLatestInactive?: boolean;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<LicenceResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicenceLookupLicenceNumberGetPath, 'get');
-    if (params) {
-      rb.path('licenceNumber', params.licenceNumber, {});
-      rb.query('accessCode', params.accessCode, {});
-      rb.query('isLatestInactive', params.isLatestInactive, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<LicenceResponse>;
-      })
-    );
+  apiLicenceLookupLicenceNumberGet$Response(params: ApiLicenceLookupLicenceNumberGet$Params, context?: HttpContext): Observable<StrictHttpResponse<LicenceResponse>> {
+    return apiLicenceLookupLicenceNumberGet(this.http, this.rootUrl, params, context);
   }
 
   /**
+   * Get latest licence by licence number.
+   * There should be only one active licence for each licenceNumber.
+   * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
+   *
+   *
+   *
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiLicenceLookupLicenceNumberGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiLicenceLookupLicenceNumberGet(params: {
-    licenceNumber: string;
-    accessCode?: string;
-    isLatestInactive?: boolean;
-  },
-  context?: HttpContext
-
-): Observable<LicenceResponse> {
-
-    return this.apiLicenceLookupLicenceNumberGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
+  apiLicenceLookupLicenceNumberGet(params: ApiLicenceLookupLicenceNumberGet$Params, context?: HttpContext): Observable<LicenceResponse> {
+    return this.apiLicenceLookupLicenceNumberGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<LicenceResponse>): LicenceResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiLicenceLookupAnonymousLicenceNumberPost
-   */
+  /** Path part for operation `apiLicenceLookupAnonymousLicenceNumberPost()` */
   static readonly ApiLicenceLookupAnonymousLicenceNumberPostPath = '/api/licence-lookup/anonymous/{licenceNumber}';
 
   /**
@@ -227,34 +155,8 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicenceLookupAnonymousLicenceNumberPost$Response(params: {
-    licenceNumber: string;
-    accessCode?: string;
-    isLatestInactive?: boolean;
-    body?: GoogleRecaptcha
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<LicenceResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicenceLookupAnonymousLicenceNumberPostPath, 'post');
-    if (params) {
-      rb.path('licenceNumber', params.licenceNumber, {});
-      rb.query('accessCode', params.accessCode, {});
-      rb.query('isLatestInactive', params.isLatestInactive, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<LicenceResponse>;
-      })
-    );
+  apiLicenceLookupAnonymousLicenceNumberPost$Response(params: ApiLicenceLookupAnonymousLicenceNumberPost$Params, context?: HttpContext): Observable<StrictHttpResponse<LicenceResponse>> {
+    return apiLicenceLookupAnonymousLicenceNumberPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -270,24 +172,13 @@ export class LicenceService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiLicenceLookupAnonymousLicenceNumberPost(params: {
-    licenceNumber: string;
-    accessCode?: string;
-    isLatestInactive?: boolean;
-    body?: GoogleRecaptcha
-  },
-  context?: HttpContext
-
-): Observable<LicenceResponse> {
-
-    return this.apiLicenceLookupAnonymousLicenceNumberPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
+  apiLicenceLookupAnonymousLicenceNumberPost(params: ApiLicenceLookupAnonymousLicenceNumberPost$Params, context?: HttpContext): Observable<LicenceResponse> {
+    return this.apiLicenceLookupAnonymousLicenceNumberPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<LicenceResponse>): LicenceResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiLicencesLicencePhotoLicenceIdGet
-   */
+  /** Path part for operation `apiLicencesLicencePhotoLicenceIdGet()` */
   static readonly ApiLicencesLicencePhotoLicenceIdGetPath = '/api/licences/licence-photo/{licenceId}';
 
   /**
@@ -301,28 +192,8 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesLicencePhotoLicenceIdGet$Response(params: {
-    licenceId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Blob>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicencePhotoLicenceIdGetPath, 'get');
-    if (params) {
-      rb.path('licenceId', params.licenceId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
-      })
-    );
+  apiLicencesLicencePhotoLicenceIdGet$Response(params: ApiLicencesLicencePhotoLicenceIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiLicencesLicencePhotoLicenceIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -336,21 +207,13 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesLicencePhotoLicenceIdGet(params: {
-    licenceId: string;
-  },
-  context?: HttpContext
-
-): Observable<Blob> {
-
-    return this.apiLicencesLicencePhotoLicenceIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+  apiLicencesLicencePhotoLicenceIdGet(params: ApiLicencesLicencePhotoLicenceIdGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiLicencesLicencePhotoLicenceIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiLicencesLicencePhotoGet
-   */
+  /** Path part for operation `apiLicencesLicencePhotoGet()` */
   static readonly ApiLicencesLicencePhotoGetPath = '/api/licences/licence-photo';
 
   /**
@@ -364,26 +227,8 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesLicencePhotoGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Blob>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicencePhotoGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
-      })
-    );
+  apiLicencesLicencePhotoGet$Response(params?: ApiLicencesLicencePhotoGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiLicencesLicencePhotoGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -397,20 +242,13 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesLicencePhotoGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<Blob> {
-
-    return this.apiLicencesLicencePhotoGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+  apiLicencesLicencePhotoGet(params?: ApiLicencesLicencePhotoGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiLicencesLicencePhotoGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiLicencesLicenceIdGet
-   */
+  /** Path part for operation `apiLicencesLicenceIdGet()` */
   static readonly ApiLicencesLicenceIdGetPath = '/api/licences/{licenceId}';
 
   /**
@@ -424,28 +262,8 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesLicenceIdGet$Response(params: {
-    licenceId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<LicenceResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceService.ApiLicencesLicenceIdGetPath, 'get');
-    if (params) {
-      rb.path('licenceId', params.licenceId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<LicenceResponse>;
-      })
-    );
+  apiLicencesLicenceIdGet$Response(params: ApiLicencesLicenceIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<LicenceResponse>> {
+    return apiLicencesLicenceIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -459,15 +277,9 @@ export class LicenceService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiLicencesLicenceIdGet(params: {
-    licenceId: string;
-  },
-  context?: HttpContext
-
-): Observable<LicenceResponse> {
-
-    return this.apiLicencesLicenceIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<LicenceResponse>) => r.body as LicenceResponse)
+  apiLicencesLicenceIdGet(params: ApiLicencesLicenceIdGet$Params, context?: HttpContext): Observable<LicenceResponse> {
+    return this.apiLicencesLicenceIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<LicenceResponse>): LicenceResponse => r.body)
     );
   }
 
