@@ -130,6 +130,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(a => a.spd_ApplicantId_contact)
                 .Expand(a => a.spd_application_spd_licencecategory)
                 .Expand(a => a.spd_CurrentExpiredLicenceId)
+                .Expand(a => a.spd_businesscontact_spd_application)
                 .Where(a => a.spd_applicationid == licenceApplicationId)
                 .FirstOrDefaultAsync(ct);
         }
