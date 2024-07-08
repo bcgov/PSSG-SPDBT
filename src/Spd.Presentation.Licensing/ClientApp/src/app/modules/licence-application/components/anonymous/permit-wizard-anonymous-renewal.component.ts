@@ -72,7 +72,6 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-steps/steps
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showSaveAndExit]="false"
-					[showMailingAddressStep]="showMailingAddressStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -132,7 +131,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 
 	isFormValid = false;
 	showEmployerInformation = false;
-	showMailingAddressStep = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -178,9 +176,6 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 				}
-				this.showMailingAddressStep = !this.permitApplicationService.permitModelFormGroup.get(
-					'residentialAddress.isMailingTheSameAsResidential'
-				)?.value;
 
 				this.updateCompleteStatus();
 			}

@@ -31,29 +31,25 @@ import { CommonEmployeesComponent } from './common-employees.component';
 							</div>
 						</div>
 						<div class="col-12 mb-3">
-							Your business must have valid security worker licence holders in B.C. that support the various licence
-							categories the business wishes to be licensed for. If your controlling members don't meet this
-							requirement, add employees who do.
+							<p>
+								Your business must have valid security worker licence holders in B.C. that support the various licence
+								categories the business wishes to be licensed for. If your controlling members don't meet this
+								requirement, add employees who do.
+							</p>
+
+							<p>
+								If your controlling members or your employees, who are licence holders for the business, change during
+								the business licence term, update their information here.
+							</p>
 						</div>
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="fs-4 mb-2">Controlling Members Updates</div>
-					<div class="mb-3">
-						If your controlling members change during the business licence term, update their information here.
-					</div>
-
 					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
 
-					<mat-divider class="mat-divider-primary my-4"></mat-divider>
-
-					<div class="fs-4 mb-2">Employee Updates</div>
-					<div class="mb-3">
-						If your employees, who are licence holders for the business, change during the business licence term, update
-						their information here.
+					<div class="mt-3">
+						<app-common-employees [defaultExpanded]="true"></app-common-employees>
 					</div>
-
-					<app-common-employees [defaultExpanded]="true"></app-common-employees>
 				</div>
 			</div>
 		</section>

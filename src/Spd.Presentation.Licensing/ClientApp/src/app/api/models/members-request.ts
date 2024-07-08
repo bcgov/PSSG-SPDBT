@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { NonSwlContactInfo } from './non-swl-contact-info';
-import { SwlContactInfo } from './swl-contact-info';
+import { NonSwlContactInfo } from '../models/non-swl-contact-info';
+import { SwlContactInfo } from '../models/swl-contact-info';
 export interface MembersRequest {
-  controllingMemberDocumentKeyCodes?: null | Array<string>;
-  employees?: null | Array<SwlContactInfo>;
-  nonSwlControllingMembers?: null | Array<NonSwlContactInfo>;
-  swlControllingMembers?: null | Array<SwlContactInfo>;
+  controllingMemberDocumentKeyCodes?: Array<string> | null;
+  employees?: Array<SwlContactInfo> | null;
+  nonSwlControllingMembers?: Array<NonSwlContactInfo> | null;
+  swlControllingMembers?: Array<SwlContactInfo> | null;
 }

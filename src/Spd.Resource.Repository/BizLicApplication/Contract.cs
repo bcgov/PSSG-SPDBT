@@ -53,7 +53,7 @@ public record CreateBizLicApplicationCmd() : BizLicApplication
 {
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
-    public Guid? OriginalLicenceId { get; set; }    // * Might be redundant, check with Peggy
+    public Guid? OriginalLicenceId { get; set; }
 };
 
 public record BizLicApplicationResp() : BizLicApplication

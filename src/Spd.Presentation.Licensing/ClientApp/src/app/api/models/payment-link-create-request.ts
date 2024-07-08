@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { PaymentMethodCode } from './payment-method-code';
+import { PaymentMethodCode } from '../models/payment-method-code';
 export interface PaymentLinkCreateRequest {
-  applicationId?: null | string;
-  description?: null | string;
+  applicationId?: string | null;
+  description?: string | null;
   paymentMethod?: PaymentMethodCode;
 }

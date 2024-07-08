@@ -70,13 +70,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	photographOfYourself: string | null = null;
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(null),
-		applicantId: new FormControl(null), // when authenticated, the applicant id
-		caseNumber: new FormControl(null), // placeholder to save info for display purposes
+		licenceAppId: new FormControl(),
+		applicantId: new FormControl(), // when authenticated, the applicant id
+		caseNumber: new FormControl(), // placeholder to save info for display purposes
+		latestApplicationId: new FormControl(), // placeholder for id
 
 		originalLicenceData: this.originalLicenceFormGroup,
-
-		applicationPortalStatus: new FormControl(null),
 
 		personalInformationData: this.personalInformationFormGroup,
 		reprintLicenceData: this.reprintLicenceFormGroup,
@@ -547,11 +546,10 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	getLicenceWithSelectionAuthenticated(
-		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: MainLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
-		return this.getLicenceOfTypeAuthenticated(licenceAppId, applicationTypeCode!, userLicenceInformation).pipe(
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, userLicenceInformation).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -778,24 +776,57 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				const workerLicenceResponse = resps[0];
 				const profileResponse = resps[1];
 
-				if (workerLicenceResponse.expiredLicenceId) {
-					return this.licenceService
-						.apiLicencesLicenceIdGet({ licenceId: workerLicenceResponse.expiredLicenceId })
-						.pipe(
-							switchMap((licenceResponse: LicenceResponse) => {
-								return this.applyLicenceAndProfileIntoModel(
-									workerLicenceResponse,
-									profileResponse,
-									userLicenceInformation,
-									licenceResponse
-								);
-							})
-						);
-				} else {
-					return this.applyLicenceAndProfileIntoModel(workerLicenceResponse, profileResponse, userLicenceInformation);
-				}
+				return this.loadLicenceAppAndProfile(workerLicenceResponse, profileResponse, userLicenceInformation);
 			})
 		);
+	}
+
+	private loadExistingLicenceWithLatestAuthenticated(
+		applicantId: string,
+		userLicenceInformation?: MainLicenceResponse
+	): Observable<any> {
+		this.reset();
+
+		const apis: Observable<any>[] = [
+			this.securityWorkerLicensingService.apiApplicantsApplicantIdSwlLatestGet({ applicantId }),
+			this.applicantProfileService.apiApplicantIdGet({
+				id: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+			}),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: any[]) => {
+				const workerLicenceResponse = resps[0];
+				const profileResponse = resps[1];
+
+				return this.loadLicenceAppAndProfile(workerLicenceResponse, profileResponse, userLicenceInformation);
+			})
+		);
+	}
+
+	/**
+	 * Loads the a business application and profile into the business model
+	 * @returns
+	 */
+	private loadLicenceAppAndProfile(
+		workerLicenceApp: WorkerLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse,
+		userLicenceInformation?: MainLicenceResponse
+	) {
+		if (workerLicenceApp.expiredLicenceId) {
+			return this.licenceService.apiLicencesLicenceIdGet({ licenceId: workerLicenceApp.expiredLicenceId }).pipe(
+				switchMap((licenceResponse: LicenceResponse) => {
+					return this.applyLicenceAndProfileIntoModel(
+						workerLicenceApp,
+						applicantProfile,
+						userLicenceInformation,
+						licenceResponse
+					);
+				})
+			);
+		}
+
+		return this.applyLicenceAndProfileIntoModel(workerLicenceApp, applicantProfile, userLicenceInformation);
 	}
 
 	private applyLicenceAndProfileIntoModel(
@@ -821,15 +852,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private getLicenceOfTypeAuthenticated(
-		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
 		userLicenceInformation: MainLicenceResponse
 	): Observable<any> {
+		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
+
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation),
+					this.loadExistingLicenceWithLatestAuthenticated(applicantId, userLicenceInformation),
 					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -848,7 +880,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 			default: {
 				// ApplicationTypeCode.Replacement
-				return this.loadExistingLicenceWithIdAuthenticated(licenceAppId, userLicenceInformation).pipe(
+				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
 						return this.applyReplacementDataUpdatesToModel(_resp);
 					})
@@ -1179,7 +1211,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const residentialAddress = {
 			addressSelected: true,
-			isMailingTheSameAsResidential: false,
 			addressLine1: profile.residentialAddress?.addressLine1,
 			addressLine2: profile.residentialAddress?.addressLine2,
 			city: profile.residentialAddress?.city,
@@ -1190,7 +1221,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		const mailingAddress = {
 			addressSelected: !!profile.mailingAddress,
-			isMailingTheSameAsResidential: false,
+			isAddressTheSame: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
 			addressLine2: profile.mailingAddress?.addressLine2,
 			city: profile.mailingAddress?.city,
@@ -1665,8 +1696,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.licenceModelFormGroup.patchValue(
 			{
 				licenceAppId: workerLicenceAppl.licenceAppId,
+				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
-				applicationPortalStatus: workerLicenceAppl.applicationPortalStatus,
 				workerLicenceTypeData,
 				applicationTypeData,
 				soleProprietorData,
@@ -1864,8 +1895,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
-		const residentialAddress = {
-			isMailingTheSameAsResidential: false, // Mailing address validation will only show when this is false.
+		const mailingAddress = {
+			isAddressTheSame: false, // Mailing address validation will only show when this is false.
 		};
 
 		this.licenceModelFormGroup.patchValue(
@@ -1874,7 +1905,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				residentialAddress: { ...residentialAddress },
+				mailingAddress: { ...mailingAddress },
 			},
 			{
 				emitEvent: false,

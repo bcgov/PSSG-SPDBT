@@ -56,7 +56,8 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get licence by licence number
+        /// Get latest licence by licence number.
+        /// There should be only one active licence for each licenceNumber.
         /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
         /// </summary>
         /// <param name="licenceNumber"></param>
@@ -72,6 +73,8 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Get licence by licence number with google recaptcha for anonymous
+        /// If isLatestInactive = true, it means return the latest inactive licence. If isLatestInactive=false, it will return the active licence.
+        /// There should be only one active licence for each licenceNumber.
         /// Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST
         /// </summary>
         /// <param name="licenceNumber"></param>
@@ -82,15 +85,22 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/licence-lookup/anonymous/{licenceNumber}")]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<LicenceResponse?> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, [FromBody] GoogleRecaptcha recaptcha, CancellationToken ct, [FromQuery] string? accessCode = null)
+        public async Task<LicenceResponse?> GetLicenceLookupAnonymously([FromRoute][Required] string licenceNumber, [FromBody] GoogleRecaptcha recaptcha, CancellationToken ct, [FromQuery] string? accessCode = null, [FromQuery] bool isLatestInactive = false)
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
             LicenceResponse response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            Guid latestAppId;
+            if (response.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
+                latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
+            else if (response.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence)
+                throw new ApiException(HttpStatusCode.BadRequest, "Biz licensing does not support anonymous.");
+            else
+                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (WorkerLicenceTypeCode)response.WorkerLicenceTypeCode));
 
             if (response != null)
             {
-                string str = $"{response.LicenceId}*{response.LicenceAppId}";
+                string str = $"{response.LicenceId}*{latestAppId}";
                 SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, str);
             }
             return response;

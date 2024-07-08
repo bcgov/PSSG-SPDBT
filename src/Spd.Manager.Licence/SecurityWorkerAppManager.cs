@@ -21,7 +21,7 @@ internal class SecurityWorkerAppManager :
         IRequestHandler<WorkerLicenceUpsertCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceSubmitCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<GetWorkerLicenceQuery, WorkerLicenceAppResponse>,
-        IRequestHandler<GetLatestWorkerLicenceQuery, WorkerLicenceAppResponse>,
+        IRequestHandler<GetLatestWorkerLicenceApplicationIdQuery, Guid>,
         IRequestHandler<GetLicenceAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<WorkerLicenceAppNewCommand, WorkerLicenceCommandResponse>,
         IRequestHandler<WorkerLicenceAppReplaceCommand, WorkerLicenceCommandResponse>,
@@ -131,23 +131,13 @@ internal class SecurityWorkerAppManager :
         return result;
     }
 
-    public async Task<WorkerLicenceAppResponse> Handle(GetLatestWorkerLicenceQuery query, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(GetLatestWorkerLicenceApplicationIdQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
-            new LicenceAppQuery(
-                query.ApplicantId,
+        return await GetLatestApplicationId(query.ApplicantId,
                 null,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityWorkerLicence },
-                null),
-            cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
-            .OrderByDescending(a => a.SubmittedOn)
-            .FirstOrDefault();
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, "there is no SecurityWorkerLicence for this applicant.");
-
-        return await Handle(new GetWorkerLicenceQuery(app.LicenceAppId), cancellationToken);
+                Enum.Parse<WorkerLicenceTypeEnum>(WorkerLicenceTypeEnum.SecurityWorkerLicence.ToString()),
+                cancellationToken);
     }
 
     #region anonymous new
@@ -184,11 +174,11 @@ internal class SecurityWorkerAppManager :
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
 
         //add photo file copying here.
-        if (cmd.LicenceAnonymousRequest.OriginalApplicationId == null)
+        if (cmd.LicenceAnonymousRequest.LatestApplicationId == null)
             throw new ArgumentException("replacement request must have original application id");
         var photos = await _documentRepository.QueryAsync(
             new DocumentQry(
-                ApplicationId: cmd.LicenceAnonymousRequest.OriginalApplicationId,
+                ApplicationId: cmd.LicenceAnonymousRequest.LatestApplicationId,
                 FileType: DocumentTypeEnum.Photograph),
             cancellationToken);
         if (photos.Items.Any())
@@ -238,7 +228,7 @@ internal class SecurityWorkerAppManager :
                 || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles.ToList(),
@@ -309,14 +299,14 @@ internal class SecurityWorkerAppManager :
         if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
 
-        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.OriginalApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             existingFiles,
             cmd.IsAuthenticated,
             cancellationToken);
 
-        LicenceApplicationResp originalApp = await _personLicAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.OriginalApplicationId, cancellationToken);
+        LicenceApplicationResp originalApp = await _personLicAppRepository.GetLicenceApplicationAsync((Guid)cmd.LicenceAnonymousRequest.LatestApplicationId, cancellationToken);
         ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, originalLic, cancellationToken);
 
         LicenceApplicationCmdResp? createLicResponse = null;

@@ -1,33 +1,36 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
 import { ActionResult } from '../models/action-result';
+import { apiApplicantApplicantIdTermAgreeGet } from '../fn/login/api-applicant-applicant-id-term-agree-get';
+import { ApiApplicantApplicantIdTermAgreeGet$Params } from '../fn/login/api-applicant-applicant-id-term-agree-get';
+import { apiApplicantLoginGet } from '../fn/login/api-applicant-login-get';
+import { ApiApplicantLoginGet$Params } from '../fn/login/api-applicant-login-get';
+import { apiBizBizIdManagerBizUserIdTermAgreeGet } from '../fn/login/api-biz-biz-id-manager-biz-user-id-term-agree-get';
+import { ApiBizBizIdManagerBizUserIdTermAgreeGet$Params } from '../fn/login/api-biz-biz-id-manager-biz-user-id-term-agree-get';
+import { apiBizLoginGet } from '../fn/login/api-biz-login-get';
+import { ApiBizLoginGet$Params } from '../fn/login/api-biz-login-get';
+import { apiBizsGet } from '../fn/login/api-bizs-get';
+import { ApiBizsGet$Params } from '../fn/login/api-bizs-get';
 import { ApplicantLoginResponse } from '../models/applicant-login-response';
 import { BizListResponse } from '../models/biz-list-response';
 import { BizUserLoginResponse } from '../models/biz-user-login-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class LoginService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiApplicantLoginGet
-   */
+  /** Path part for operation `apiApplicantLoginGet()` */
   static readonly ApiApplicantLoginGetPath = '/api/applicant/login';
 
   /**
@@ -40,26 +43,8 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantLoginGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantLoginResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiApplicantLoginGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantLoginResponse>;
-      })
-    );
+  apiApplicantLoginGet$Response(params?: ApiApplicantLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantLoginResponse>> {
+    return apiApplicantLoginGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -72,20 +57,13 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantLoginGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantLoginResponse> {
-
-    return this.apiApplicantLoginGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantLoginResponse>) => r.body as ApplicantLoginResponse)
+  apiApplicantLoginGet(params?: ApiApplicantLoginGet$Params, context?: HttpContext): Observable<ApplicantLoginResponse> {
+    return this.apiApplicantLoginGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantLoginResponse>): ApplicantLoginResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantApplicantIdTermAgreeGet
-   */
+  /** Path part for operation `apiApplicantApplicantIdTermAgreeGet()` */
   static readonly ApiApplicantApplicantIdTermAgreeGetPath = '/api/applicant/{applicantId}/term-agree';
 
   /**
@@ -98,28 +76,8 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantApplicantIdTermAgreeGet$Response(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiApplicantApplicantIdTermAgreeGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiApplicantApplicantIdTermAgreeGet$Response(params: ApiApplicantApplicantIdTermAgreeGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiApplicantApplicantIdTermAgreeGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -132,21 +90,13 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantApplicantIdTermAgreeGet(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiApplicantApplicantIdTermAgreeGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiApplicantApplicantIdTermAgreeGet(params: ApiApplicantApplicantIdTermAgreeGet$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiApplicantApplicantIdTermAgreeGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBizsGet
-   */
+  /** Path part for operation `apiBizsGet()` */
   static readonly ApiBizsGetPath = '/api/bizs';
 
   /**
@@ -159,26 +109,8 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizsGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<BizListResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizsGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<BizListResponse>>;
-      })
-    );
+  apiBizsGet$Response(params?: ApiBizsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<BizListResponse>>> {
+    return apiBizsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -191,20 +123,13 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizsGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<Array<BizListResponse>> {
-
-    return this.apiBizsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<BizListResponse>>) => r.body as Array<BizListResponse>)
+  apiBizsGet(params?: ApiBizsGet$Params, context?: HttpContext): Observable<Array<BizListResponse>> {
+    return this.apiBizsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<BizListResponse>>): Array<BizListResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBizLoginGet
-   */
+  /** Path part for operation `apiBizLoginGet()` */
   static readonly ApiBizLoginGetPath = '/api/biz/login';
 
   /**
@@ -218,28 +143,8 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizLoginGet$Response(params?: {
-    bizId?: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizUserLoginResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizLoginGetPath, 'get');
-    if (params) {
-      rb.query('bizId', params.bizId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizUserLoginResponse>;
-      })
-    );
+  apiBizLoginGet$Response(params?: ApiBizLoginGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizUserLoginResponse>> {
+    return apiBizLoginGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -253,21 +158,13 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizLoginGet(params?: {
-    bizId?: string;
-  },
-  context?: HttpContext
-
-): Observable<BizUserLoginResponse> {
-
-    return this.apiBizLoginGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizUserLoginResponse>) => r.body as BizUserLoginResponse)
+  apiBizLoginGet(params?: ApiBizLoginGet$Params, context?: HttpContext): Observable<BizUserLoginResponse> {
+    return this.apiBizLoginGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizUserLoginResponse>): BizUserLoginResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBizBizIdManagerBizUserIdTermAgreeGet
-   */
+  /** Path part for operation `apiBizBizIdManagerBizUserIdTermAgreeGet()` */
   static readonly ApiBizBizIdManagerBizUserIdTermAgreeGetPath = '/api/biz/{bizId}/manager/{bizUserId}/term-agree';
 
   /**
@@ -280,30 +177,8 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizBizIdManagerBizUserIdTermAgreeGet$Response(params: {
-    bizId: string;
-    bizUserId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ActionResult>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LoginService.ApiBizBizIdManagerBizUserIdTermAgreeGetPath, 'get');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-      rb.path('bizUserId', params.bizUserId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ActionResult>;
-      })
-    );
+  apiBizBizIdManagerBizUserIdTermAgreeGet$Response(params: ApiBizBizIdManagerBizUserIdTermAgreeGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiBizBizIdManagerBizUserIdTermAgreeGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -316,16 +191,9 @@ export class LoginService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizBizIdManagerBizUserIdTermAgreeGet(params: {
-    bizId: string;
-    bizUserId: string;
-  },
-  context?: HttpContext
-
-): Observable<ActionResult> {
-
-    return this.apiBizBizIdManagerBizUserIdTermAgreeGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ActionResult>) => r.body as ActionResult)
+  apiBizBizIdManagerBizUserIdTermAgreeGet(params: ApiBizBizIdManagerBizUserIdTermAgreeGet$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiBizBizIdManagerBizUserIdTermAgreeGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
