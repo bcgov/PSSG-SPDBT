@@ -1,30 +1,27 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiApplicantsApplicantIdLicenceApplicationsGet } from '../fn/licence-app/api-applicants-applicant-id-licence-applications-get';
+import { ApiApplicantsApplicantIdLicenceApplicationsGet$Params } from '../fn/licence-app/api-applicants-applicant-id-licence-applications-get';
+import { apiBizsBizIdLicenceApplicationsGet } from '../fn/licence-app/api-bizs-biz-id-licence-applications-get';
+import { ApiBizsBizIdLicenceApplicationsGet$Params } from '../fn/licence-app/api-bizs-biz-id-licence-applications-get';
 import { LicenceAppListResponse } from '../models/licence-app-list-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class LicenceAppService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiApplicantsApplicantIdLicenceApplicationsGet
-   */
+  /** Path part for operation `apiApplicantsApplicantIdLicenceApplicationsGet()` */
   static readonly ApiApplicantsApplicantIdLicenceApplicationsGetPath = '/api/applicants/{applicantId}/licence-applications';
 
   /**
@@ -37,28 +34,8 @@ export class LicenceAppService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdLicenceApplicationsGet$Response(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceAppService.ApiApplicantsApplicantIdLicenceApplicationsGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceAppListResponse>>;
-      })
-    );
+  apiApplicantsApplicantIdLicenceApplicationsGet$Response(params: ApiApplicantsApplicantIdLicenceApplicationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
+    return apiApplicantsApplicantIdLicenceApplicationsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -71,21 +48,13 @@ export class LicenceAppService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdLicenceApplicationsGet(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<Array<LicenceAppListResponse>> {
-
-    return this.apiApplicantsApplicantIdLicenceApplicationsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>) => r.body as Array<LicenceAppListResponse>)
+  apiApplicantsApplicantIdLicenceApplicationsGet(params: ApiApplicantsApplicantIdLicenceApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
+    return this.apiApplicantsApplicantIdLicenceApplicationsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBizsBizIdLicenceApplicationsGet
-   */
+  /** Path part for operation `apiBizsBizIdLicenceApplicationsGet()` */
   static readonly ApiBizsBizIdLicenceApplicationsGetPath = '/api/bizs/{bizId}/licence-applications';
 
   /**
@@ -98,28 +67,8 @@ export class LicenceAppService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizsBizIdLicenceApplicationsGet$Response(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, LicenceAppService.ApiBizsBizIdLicenceApplicationsGetPath, 'get');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<LicenceAppListResponse>>;
-      })
-    );
+  apiBizsBizIdLicenceApplicationsGet$Response(params: ApiBizsBizIdLicenceApplicationsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppListResponse>>> {
+    return apiBizsBizIdLicenceApplicationsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -132,15 +81,9 @@ export class LicenceAppService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizsBizIdLicenceApplicationsGet(params: {
-    bizId: string;
-  },
-  context?: HttpContext
-
-): Observable<Array<LicenceAppListResponse>> {
-
-    return this.apiBizsBizIdLicenceApplicationsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>) => r.body as Array<LicenceAppListResponse>)
+  apiBizsBizIdLicenceApplicationsGet(params: ApiBizsBizIdLicenceApplicationsGet$Params, context?: HttpContext): Observable<Array<LicenceAppListResponse>> {
+    return this.apiBizsBizIdLicenceApplicationsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppListResponse>>): Array<LicenceAppListResponse> => r.body)
     );
   }
 
