@@ -67,7 +67,7 @@ internal class Mappings : Profile
          .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
-         .ForPath(d => d.PrivateInvestigatorSwlInfo, opt => opt.MapFrom(s => GetPrivateInvestigatorInformation(s.spd_businesscontact_spd_application)))
+         .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.MapFrom(s => GetPrivateInvestigatorInformation(s.spd_businesscontact_spd_application)))
          .IncludeBase<spd_application, BizLicApplication>();
 
         _ = CreateMap<PrivateInvestigatorSwlContactInfo, spd_businesscontact>()
