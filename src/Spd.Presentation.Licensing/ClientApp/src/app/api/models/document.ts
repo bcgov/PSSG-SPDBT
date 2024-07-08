@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-import { LicenceDocumentTypeCode } from './licence-document-type-code';
+import { LicenceDocumentTypeCode } from '../models/licence-document-type-code';
 export interface Document {
-  documentExtension?: null | string;
-  documentName?: null | string;
+  documentExtension?: string | null;
+  documentName?: string | null;
   documentUrlId?: string;
-  expiryDate?: null | string;
-  licenceAppId?: null | string;
+  expiryDate?: string | null;
+  licenceAppId?: string | null;
   licenceDocumentTypeCode?: LicenceDocumentTypeCode;
   uploadedDateTime?: string;
 }

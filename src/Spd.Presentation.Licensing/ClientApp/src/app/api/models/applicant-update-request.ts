@@ -1,32 +1,32 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Address } from './address';
-import { Alias } from './alias';
-import { ApplicationTypeCode } from './application-type-code';
-import { GenderEnum } from './gender-enum';
-import { PoliceOfficerRoleEnum } from './police-officer-role-enum';
+import { Address } from '../models/address';
+import { Alias } from '../models/alias';
+import { ApplicationTypeCode } from '../models/application-type-code';
+import { GenderEnum } from '../models/gender-enum';
+import { PoliceOfficerRoleEnum } from '../models/police-officer-role-enum';
 export interface ApplicantUpdateRequest {
-  aliases?: null | Array<Alias>;
+  aliases?: Array<Alias> | null;
   applicationTypeCode?: ApplicationTypeCode;
-  criminalChargeDescription?: null | string;
+  criminalChargeDescription?: string | null;
   dateOfBirth?: string;
-  documentKeyCodes?: null | Array<string>;
-  emailAddress?: null | string;
+  documentKeyCodes?: Array<string> | null;
+  emailAddress?: string | null;
   genderCode?: GenderEnum;
-  givenName?: null | string;
-  hasCriminalHistory?: null | boolean;
-  hasNewCriminalRecordCharge?: null | boolean;
-  hasNewMentalHealthCondition?: null | boolean;
-  isPoliceOrPeaceOfficer?: null | boolean;
-  isTreatedForMHC?: null | boolean;
-  licenceId?: null | string;
+  givenName?: string | null;
+  hasCriminalHistory?: boolean | null;
+  hasNewCriminalRecordCharge?: boolean | null;
+  hasNewMentalHealthCondition?: boolean | null;
+  isPoliceOrPeaceOfficer?: boolean | null;
+  isTreatedForMHC?: boolean | null;
+  licenceId?: string | null;
   mailingAddress?: Address;
-  middleName1?: null | string;
-  middleName2?: null | string;
-  otherOfficerRole?: null | string;
-  phoneNumber?: null | string;
+  middleName1?: string | null;
+  middleName2?: string | null;
+  otherOfficerRole?: string | null;
+  phoneNumber?: string | null;
   policeOfficerRoleCode?: PoliceOfficerRoleEnum;
-  previousDocumentIds?: null | Array<string>;
+  previousDocumentIds?: Array<string> | null;
   residentialAddress?: Address;
-  surname?: null | string;
+  surname?: string | null;
 }

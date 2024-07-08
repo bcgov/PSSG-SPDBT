@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface LicenceAppDocumentResponse {
-  documentExtension?: null | string;
-  documentName?: null | string;
+  documentExtension?: string | null;
+  documentName?: string | null;
   documentUrlId?: string;
-  licenceAppId?: null | string;
+  licenceAppId?: string | null;
   uploadedDateTime?: string;
 }
