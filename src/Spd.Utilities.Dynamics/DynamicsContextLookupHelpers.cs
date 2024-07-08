@@ -414,7 +414,5 @@ namespace Spd.Utilities.Dynamics
                     throw;
             }
         }
-
-        
     }
 }
