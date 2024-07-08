@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Address } from './address';
+import { Address } from '../models/address';
 export interface BranchInfo {
   branchAddress?: Address;
-  branchEmailAddr?: null | string;
-  branchId?: null | string;
-  branchManager?: null | string;
-  branchPhoneNumber?: null | string;
+  branchEmailAddr?: string | null;
+  branchId?: string | null;
+  branchManager?: string | null;
+  branchPhoneNumber?: string | null;
 }

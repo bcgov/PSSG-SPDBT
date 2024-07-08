@@ -1,14 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationTypeCode } from './application-type-code';
-import { BizTypeCode } from './biz-type-code';
-import { LicenceTermCode } from './licence-term-code';
-import { WorkerLicenceTypeCode } from './worker-licence-type-code';
+import { ApplicationTypeCode } from '../models/application-type-code';
+import { BizTypeCode } from '../models/biz-type-code';
+import { LicenceTermCode } from '../models/licence-term-code';
+import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceFeeResponse {
-  amount?: null | number;
+  amount?: number | null;
   applicationTypeCode?: ApplicationTypeCode;
   bizTypeCode?: BizTypeCode;
-  hasValidSwl90DayLicence?: null | boolean;
+  hasValidSwl90DayLicence?: boolean | null;
   licenceTermCode?: LicenceTermCode;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

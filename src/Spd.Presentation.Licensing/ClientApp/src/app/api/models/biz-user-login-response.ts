@@ -1,11 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ContactRoleCode } from './contact-role-code';
+import { ContactRoleCode } from '../models/contact-role-code';
 export interface BizUserLoginResponse {
   bizId?: string;
   bizUserId?: string;
   contactRoleCode?: ContactRoleCode;
-  firstName?: null | string;
-  isFirstTimeLogin?: null | boolean;
-  lastName?: null | string;
+  firstName?: string | null;
+  isFirstTimeLogin?: boolean | null;
+  lastName?: string | null;
 }
