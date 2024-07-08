@@ -102,14 +102,6 @@ export class CommonAliasListComponent implements OnInit {
 	@Input() isWizardStep = true;
 	@Input() isReadonly = false;
 
-	private aliasFields = {
-		id: new FormControl(),
-		givenName: new FormControl(),
-		middleName1: new FormControl(),
-		middleName2: new FormControl(),
-		surname: new FormControl('', [FormControlValidators.required]),
-	};
-
 	constructor(private formBuilder: FormBuilder, private utilService: UtilService, private dialog: MatDialog) {}
 
 	ngOnInit(): void {
@@ -162,7 +154,13 @@ export class CommonAliasListComponent implements OnInit {
 	private newAliasRow(): FormGroup {
 		this.form.patchValue({ previousNameFlag: BooleanTypeCode.Yes });
 
-		return this.formBuilder.group({ ...this.aliasFields });
+		return this.formBuilder.group({
+			id: new FormControl(),
+			givenName: new FormControl(),
+			middleName1: new FormControl(),
+			middleName2: new FormControl(),
+			surname: new FormControl('', [FormControlValidators.required]),
+		});
 	}
 
 	get previousNameFlag(): FormControl {

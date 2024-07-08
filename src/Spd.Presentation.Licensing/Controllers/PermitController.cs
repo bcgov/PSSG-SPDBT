@@ -82,8 +82,10 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<PermitLicenceAppResponse> GetLatestPermitApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] WorkerLicenceTypeCode typeCode)
         {
-            return await _mediator.Send(new GetLatestPermitApplicationQuery(applicantId, typeCode));
+            Guid licenceAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery(applicantId, typeCode));
+            return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));
         }
+
         /// <summary>
         /// Upload permit application files to transient storage
         /// </summary>

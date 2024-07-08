@@ -68,12 +68,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
-		bizId: new FormControl(null),
-		licenceAppId: new FormControl(null),
+		bizId: new FormControl(),
+		licenceAppId: new FormControl(),
+		latestApplicationId: new FormControl(), // placeholder for id
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
 		isRenewalShortForm: new FormControl(), // placeholder for flag
+		caseNumber: new FormControl(), // placeholder to save info for display purposes
 
 		originalLicenceData: this.originalBusinessLicenceFormGroup,
 
@@ -127,8 +129,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					this.hasValueChanged = true;
 
 					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
-					const province = this.businessModelFormGroup.get('businessAddressData.province')?.value;
-					const country = this.businessModelFormGroup.get('businessAddressData.country')?.value;
+					const isAddressTheSame = this.businessModelFormGroup.get('businessAddressData.isAddressTheSame')?.value;
+					const province = isAddressTheSame
+						? this.businessModelFormGroup.get('businessMailingAddressData.province')?.value
+						: this.businessModelFormGroup.get('businessAddressData.province')?.value;
+					const country = isAddressTheSame
+						? this.businessModelFormGroup.get('businessMailingAddressData.country')?.value
+						: this.businessModelFormGroup.get('businessAddressData.country')?.value;
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
@@ -226,8 +233,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
@@ -251,8 +257,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const documentsToSave = this.getDocsToSaveBlobs(businessModelFormValue);
 
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+		body.agreeToCompleteAndAccurate = true;
 
 		// Create list of APIs to call for the newly added documents
 		const documentsToSaveApis: Observable<any>[] = [];
@@ -563,11 +568,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	getBusinessLicenceWithSelection(
-		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
 		originalLicence: MainLicenceResponse
 	): Observable<BizLicAppResponse> {
-		return this.getBusinessLicenceOfType(licenceAppId, applicationTypeCode, originalLicence).pipe(
+		return this.getBusinessLicenceOfType(applicationTypeCode, originalLicence).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -650,6 +654,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private saveBusinessProfile(): Observable<StrictHttpResponse<string>> {
 		const modelFormValue = this.businessModelFormGroup.getRawValue();
 
+		const bizTypeCode = modelFormValue.businessInformationData.bizTypeCode;
+		const isSoleProprietor = this.isSoleProprietor(bizTypeCode);
+
 		const branches: Array<BranchInfo> = [];
 		if (modelFormValue.branchesInBcData.hasBranchesInBc === BooleanTypeCode.Yes) {
 			modelFormValue.branchesInBcData.branches.forEach((item: any) => {
@@ -672,19 +679,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		const bizBCAddress = modelFormValue.isBcBusinessAddress ? {} : { ...modelFormValue.bcBusinessAddressData };
-
-		const bizMailingAddress = modelFormValue.businessAddressData.isMailingTheSame
-			? { ...modelFormValue.businessAddressData }
-			: { ...modelFormValue.businessMailingAddressData };
-
-		const bizTypeCode = modelFormValue.businessInformationData.bizTypeCode;
+		const bizAddress = modelFormValue.businessAddressData.isAddressTheSame
+			? { ...modelFormValue.businessMailingAddressData }
+			: { ...modelFormValue.businessAddressData };
 
 		let soleProprietorLicenceId: null | string = null;
 		let soleProprietorSwlEmailAddress: null | string = null;
 		let soleProprietorSwlPhoneNumber: null | string = null;
 
-		if (this.isSoleProprietor(bizTypeCode)) {
+		if (isSoleProprietor) {
 			soleProprietorLicenceId = modelFormValue.businessInformationData.soleProprietorLicenceId;
 			soleProprietorSwlEmailAddress = modelFormValue.businessInformationData.soleProprietorSwlEmailAddress;
 			soleProprietorSwlPhoneNumber = modelFormValue.businessInformationData.soleProprietorSwlPhoneNumber;
@@ -702,9 +705,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		const body: BizProfileUpdateRequest = {
-			bizAddress: { ...modelFormValue.businessAddressData },
-			bizBCAddress,
-			bizMailingAddress,
+			bizAddress,
+			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : { ...modelFormValue.bcBusinessAddressData },
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
 			bizTypeCode,
 			branches,
@@ -805,12 +807,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	private getBusinessLicenceOfType(
-		licenceAppId: string,
 		applicationTypeCode: ApplicationTypeCode,
 		originalLicence: MainLicenceResponse
 	): Observable<any> {
-		return this.loadExistingBusinessLicenceWithId({
-			licenceAppId,
+		return this.loadExistingBusinessLicenceWithLatestApp({
 			originalLicence,
 			applicationTypeCode,
 		}).pipe(
@@ -852,107 +852,157 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessLicenceAppl = resps[0];
 				const businessProfile = resps[1];
 
-				const apis: Observable<any>[] = [];
-				if (businessLicenceAppl.expiredLicenceId) {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: businessLicenceAppl.expiredLicenceId,
-						})
-					);
-				}
-				if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
-						})
-					);
-				}
-				if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId,
-						})
-					);
-				}
-
-				businessLicenceAppl.members.employees?.forEach((item: SwlContactInfo) => {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: item.licenceId!,
-						})
-					);
-				});
-				businessLicenceAppl.members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-					apis.push(
-						this.licenceService.apiLicencesLicenceIdGet({
-							licenceId: item.licenceId!,
-						})
-					);
-				});
-
-				const brandingDocumentInfos =
-					applicationTypeCode === ApplicationTypeCode.New || applicationTypeCode === ApplicationTypeCode.Renewal
-						? businessLicenceAppl.documentInfos?.filter(
-								(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding
-						  )
-						: [];
-
-				this.applyControllingMembersWithoutSwl(businessLicenceAppl.members.nonSwlControllingMembers ?? []);
-
-				if (apis.length > 0) {
-					return forkJoin(apis).pipe(
-						switchMap((licenceResponses: Array<LicenceResponse>) => {
-							if (businessLicenceAppl.members) {
-								this.applyControllingMembersWithSwl(
-									businessLicenceAppl.members.swlControllingMembers ?? [],
-									licenceResponses
-								);
-								this.applyEmployees(businessLicenceAppl.members.employees ?? [], licenceResponses);
-							}
-
-							let associatedExpiredLicence: LicenceResponse | undefined = undefined;
-							if (businessLicenceAppl.expiredLicenceId) {
-								associatedExpiredLicence = licenceResponses.find(
-									(item: LicenceResponse) => item.licenceId === businessLicenceAppl.expiredLicenceId
-								);
-							}
-
-							let soleProprietorSwlLicence: LicenceResponse | undefined = undefined;
-							if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
-								soleProprietorSwlLicence = licenceResponses.find(
-									(item: LicenceResponse) => item.licenceId === businessProfile.soleProprietorSwlContactInfo?.licenceId
-								);
-							}
-
-							let privateInvestigatorSwlLicence: LicenceResponse | undefined = undefined;
-							if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
-								privateInvestigatorSwlLicence = licenceResponses.find(
-									(item: LicenceResponse) =>
-										item.licenceId === businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId
-								);
-							}
-
-							return this.applyLicenceAndProfileIntoModel({
-								businessLicenceAppl,
-								businessProfile,
-								originalLicence,
-								associatedExpiredLicence,
-								soleProprietorSwlLicence,
-								privateInvestigatorSwlLicence,
-								brandingDocumentInfos,
-							});
-						})
-					);
-				}
-
-				return this.applyLicenceAndProfileIntoModel({
+				return this.loadBusinessAppAndProfile(
+					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
-					originalLicence,
-					brandingDocumentInfos,
-				});
+					originalLicence
+				);
 			})
 		);
+	}
+
+	/**
+	 * Loads the current profile and a licence with the latest application.
+	 * @returns
+	 */
+	private loadExistingBusinessLicenceWithLatestApp({
+		originalLicence,
+		applicationTypeCode,
+	}: {
+		originalLicence?: MainLicenceResponse;
+		applicationTypeCode: ApplicationTypeCode;
+	}): Observable<any> {
+		this.reset();
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return forkJoin([
+			this.bizLicensingService.apiBusinessBizIdAppLatestGet({ bizId }),
+			this.bizProfileService.apiBizIdGet({ id: bizId }),
+		]).pipe(
+			switchMap((resps: any[]) => {
+				const businessLicenceAppl = resps[0];
+				const businessProfile = resps[1];
+
+				return this.loadBusinessAppAndProfile(
+					applicationTypeCode,
+					businessLicenceAppl,
+					businessProfile,
+					originalLicence
+				);
+			})
+		);
+	}
+
+	/**
+	 * Loads the a business application and profile into the business model
+	 * @returns
+	 */
+	private loadBusinessAppAndProfile(
+		applicationTypeCode: ApplicationTypeCode,
+		businessLicenceAppl: BizLicAppResponse,
+		businessProfile: BizProfileResponse,
+		originalLicence?: MainLicenceResponse
+	) {
+		const apis: Observable<any>[] = [];
+		if (businessLicenceAppl.expiredLicenceId) {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: businessLicenceAppl.expiredLicenceId,
+				})
+			);
+		}
+		if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId,
+				})
+			);
+		}
+		if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId,
+				})
+			);
+		}
+
+		businessLicenceAppl.members?.employees?.forEach((item: SwlContactInfo) => {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: item.licenceId!,
+				})
+			);
+		});
+		businessLicenceAppl.members?.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+			apis.push(
+				this.licenceService.apiLicencesLicenceIdGet({
+					licenceId: item.licenceId!,
+				})
+			);
+		});
+
+		const brandingDocumentInfos =
+			applicationTypeCode === ApplicationTypeCode.New || applicationTypeCode === ApplicationTypeCode.Renewal
+				? businessLicenceAppl.documentInfos?.filter(
+						(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding
+				  )
+				: [];
+
+		this.applyControllingMembersWithoutSwl(businessLicenceAppl.members?.nonSwlControllingMembers ?? []);
+
+		if (apis.length > 0) {
+			return forkJoin(apis).pipe(
+				switchMap((licenceResponses: Array<LicenceResponse>) => {
+					if (businessLicenceAppl.members) {
+						this.applyControllingMembersWithSwl(
+							businessLicenceAppl.members.swlControllingMembers ?? [],
+							licenceResponses
+						);
+						this.applyEmployees(businessLicenceAppl.members.employees ?? [], licenceResponses);
+					}
+
+					let associatedExpiredLicence: LicenceResponse | undefined = undefined;
+					if (businessLicenceAppl.expiredLicenceId) {
+						associatedExpiredLicence = licenceResponses.find(
+							(item: LicenceResponse) => item.licenceId === businessLicenceAppl.expiredLicenceId
+						);
+					}
+
+					let soleProprietorSwlLicence: LicenceResponse | undefined = undefined;
+					if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+						soleProprietorSwlLicence = licenceResponses.find(
+							(item: LicenceResponse) => item.licenceId === businessProfile.soleProprietorSwlContactInfo?.licenceId
+						);
+					}
+
+					let privateInvestigatorSwlLicence: LicenceResponse | undefined = undefined;
+					if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
+						privateInvestigatorSwlLicence = licenceResponses.find(
+							(item: LicenceResponse) => item.licenceId === businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId
+						);
+					}
+
+					return this.applyLicenceAndProfileIntoModel({
+						businessLicenceAppl,
+						businessProfile,
+						originalLicence,
+						associatedExpiredLicence,
+						soleProprietorSwlLicence,
+						privateInvestigatorSwlLicence,
+						brandingDocumentInfos,
+					});
+				})
+			);
+		}
+
+		return this.applyLicenceAndProfileIntoModel({
+			businessLicenceAppl,
+			businessProfile,
+			originalLicence,
+			brandingDocumentInfos,
+		});
 	}
 
 	/**
@@ -1191,9 +1241,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: businessLicenceAppl.licenceAppId,
+				latestApplicationId: businessLicenceAppl.licenceAppId,
 				workerLicenceTypeData,
 				applicationTypeData,
 				originalLicenceData,
+				caseNumber: businessLicenceAppl.caseNumber,
 
 				expiredLicenceData,
 				licenceTermData,
@@ -1264,7 +1316,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			postalCode: bizAddress?.postalCode,
 			province: bizAddress?.province,
 			country: bizAddress?.country,
-			isMailingTheSame: false,
+			isAddressTheSame: false,
 		};
 
 		const bizBCAddress = businessProfile.bizBCAddress;

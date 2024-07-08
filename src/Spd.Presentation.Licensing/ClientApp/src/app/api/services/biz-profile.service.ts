@@ -1,31 +1,27 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiBizBizIdPut } from '../fn/biz-profile/api-biz-biz-id-put';
+import { ApiBizBizIdPut$Params } from '../fn/biz-profile/api-biz-biz-id-put';
+import { apiBizIdGet } from '../fn/biz-profile/api-biz-id-get';
+import { ApiBizIdGet$Params } from '../fn/biz-profile/api-biz-id-get';
 import { BizProfileResponse } from '../models/biz-profile-response';
-import { BizProfileUpdateRequest } from '../models/biz-profile-update-request';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class BizProfileService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiBizIdGet
-   */
+  /** Path part for operation `apiBizIdGet()` */
   static readonly ApiBizIdGetPath = '/api/biz/{id}';
 
   /**
@@ -38,28 +34,8 @@ export class BizProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizIdGet$Response(params: {
-    id: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<BizProfileResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizProfileService.ApiBizIdGetPath, 'get');
-    if (params) {
-      rb.path('id', params.id, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<BizProfileResponse>;
-      })
-    );
+  apiBizIdGet$Response(params: ApiBizIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizProfileResponse>> {
+    return apiBizIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -72,21 +48,13 @@ export class BizProfileService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBizIdGet(params: {
-    id: string;
-  },
-  context?: HttpContext
-
-): Observable<BizProfileResponse> {
-
-    return this.apiBizIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<BizProfileResponse>) => r.body as BizProfileResponse)
+  apiBizIdGet(params: ApiBizIdGet$Params, context?: HttpContext): Observable<BizProfileResponse> {
+    return this.apiBizIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizProfileResponse>): BizProfileResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiBizBizIdPut
-   */
+  /** Path part for operation `apiBizBizIdPut()` */
   static readonly ApiBizBizIdPutPath = '/api/biz/{bizId}';
 
   /**
@@ -99,30 +67,8 @@ export class BizProfileService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBizBizIdPut$Response(params: {
-    bizId: string;
-    body?: BizProfileUpdateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<string>> {
-
-    const rb = new RequestBuilder(this.rootUrl, BizProfileService.ApiBizBizIdPutPath, 'put');
-    if (params) {
-      rb.path('bizId', params.bizId, {});
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<string>;
-      })
-    );
+  apiBizBizIdPut$Response(params: ApiBizBizIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
+    return apiBizBizIdPut(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -135,16 +81,9 @@ export class BizProfileService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBizBizIdPut(params: {
-    bizId: string;
-    body?: BizProfileUpdateRequest
-  },
-  context?: HttpContext
-
-): Observable<string> {
-
-    return this.apiBizBizIdPut$Response(params,context).pipe(
-      map((r: StrictHttpResponse<string>) => r.body as string)
+  apiBizBizIdPut(params: ApiBizBizIdPut$Params, context?: HttpContext): Observable<string> {
+    return this.apiBizBizIdPut$Response(params, context).pipe(
+      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 

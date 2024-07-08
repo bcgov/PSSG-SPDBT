@@ -7,7 +7,7 @@ public interface ISecurityWorkerAppManager
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceSubmitCommand command, CancellationToken ct);
     public Task<WorkerLicenceAppResponse> Handle(GetWorkerLicenceQuery query, CancellationToken ct);
-    public Task<WorkerLicenceAppResponse> Handle(GetLatestWorkerLicenceQuery query, CancellationToken ct);
+    public Task<Guid> Handle(GetLatestWorkerLicenceApplicationIdQuery query, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetLicenceAppListQuery query, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppNewCommand command, CancellationToken ct);
     public Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceAppReplaceCommand command, CancellationToken ct);
@@ -42,7 +42,7 @@ public record WorkerLicenceAppUpdateCommand(
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record GetWorkerLicenceQuery(Guid LicenceApplicationId) : IRequest<WorkerLicenceAppResponse>;
-public record GetLatestWorkerLicenceQuery(Guid ApplicantId) : IRequest<WorkerLicenceAppResponse>;
+public record GetLatestWorkerLicenceApplicationIdQuery(Guid ApplicantId) : IRequest<Guid>;
 public record GetLicenceAppListQuery(Guid ApplicantId) : IRequest<IEnumerable<LicenceAppListResponse>>;
 
 public record WorkerLicenceAppResponse : WorkerLicenceAppBase
@@ -104,6 +104,7 @@ public record WorkerLicenceAppSubmitRequest : WorkerLicenceAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
+    public Guid? LatestApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be latest application id. 
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }

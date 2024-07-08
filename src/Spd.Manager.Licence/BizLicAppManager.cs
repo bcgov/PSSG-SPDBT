@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
@@ -81,20 +80,8 @@ internal class BizLicAppManager :
     public async Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
-            new LicenceAppQuery(
-                null,
-                query.BizId,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
-                null),
-            cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
-            .OrderByDescending(a => a.SubmittedOn)
-            .FirstOrDefault();
-        if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"there is no Security Business Licence Application for this business.");
-
-        return await Handle(new GetBizLicAppQuery(app.LicenceAppId), cancellationToken);
+        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, WorkerLicenceTypeEnum.SecurityBusinessLicence, cancellationToken);
+        return await Handle(new GetBizLicAppQuery(latestAppId), cancellationToken);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
@@ -151,7 +138,7 @@ internal class BizLicAppManager :
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
 
-        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
@@ -190,12 +177,12 @@ internal class BizLicAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
-        BizLicApplicationResp originaBizlLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        BizLicApplicationResp originaBizlLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
         if (originaBizlLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
         var existingFiles = await GetExistingFileInfo(
-            cmd.LicenceRequest.OriginalApplicationId,
+            cmd.LicenceRequest.LatestApplicationId,
             cmd.LicenceRequest.PreviousDocumentIds,
             cancellationToken);
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceRequest,
@@ -254,7 +241,7 @@ internal class BizLicAppManager :
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.OriginalApplicationId, cancellationToken);
+        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
@@ -266,7 +253,7 @@ internal class BizLicAppManager :
         if ((request.Reprint != null && request.Reprint.Value) || changes.CategoriesChanged || changes.UseDogsChanged)
         {
             var existingFiles = await GetExistingFileInfo(
-                cmd.LicenceRequest.OriginalApplicationId,
+                cmd.LicenceRequest.LatestApplicationId,
                 cmd.LicenceRequest.PreviousDocumentIds,
                 cancellationToken);
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
@@ -443,7 +430,7 @@ internal class BizLicAppManager :
         IList<LicAppFileInfo> newFileInfos,
         CancellationToken ct)
     {
-        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.OriginalApplicationId), ct);
+        DocumentListResp docListResps = await _documentRepository.QueryAsync(new DocumentQry(request.LatestApplicationId), ct);
         IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
 
         if (request.PreviousDocumentIds != null)
