@@ -71,6 +71,7 @@ public record BizLicApplicationResp() : BizLicApplication
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo
 {
+    public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
 }
 
