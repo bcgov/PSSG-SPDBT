@@ -60,7 +60,11 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         LinkOrganization(applicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        {
+            contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
+            spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+            _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
+        }
         else
             DeletePrivateInvestigatorLink(app);
 
@@ -105,8 +109,12 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         LinkOrganization(cmd.ApplicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
-            UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && cmd.PrivateInvestigatorSwlInfo?.ContactId != null)
+        {
+            contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
+            spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+            _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
+        }
         else
             DeletePrivateInvestigatorLink(app);
 
@@ -161,21 +169,22 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         }
     }
 
-    private void UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
+    private spd_businesscontact UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
     {
+        spd_businesscontact? bizContact = null;
         DeletePrivateInvestigatorLink(app);
         Guid? bizContactId = privateInvestigatorInfo?.BizContactId;
 
         if (bizContactId == null)
         {
-            spd_businesscontact privateInvestigatorContact = _mapper.Map<spd_businesscontact>(privateInvestigatorInfo);
-            privateInvestigatorContact.spd_businesscontactid = Guid.NewGuid();
-            _context.AddTospd_businesscontacts(privateInvestigatorContact);
-            AddPrivateInvestigatorLink(privateInvestigatorContact, app);
+            bizContact = _mapper.Map<spd_businesscontact>(privateInvestigatorInfo);
+            bizContact.spd_businesscontactid = Guid.NewGuid();
+            _context.AddTospd_businesscontacts(bizContact);
+            AddPrivateInvestigatorLink(bizContact, app);
         }
         else
         {
-            spd_businesscontact? bizContact = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId).FirstOrDefault();
+            bizContact = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId).FirstOrDefault();
 
             if (bizContact == null)
                 throw new ArgumentException("business contact not found");
@@ -187,16 +196,17 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.SaveChanges();
             AddPrivateInvestigatorLink(bizContact, app);
         }
+        return bizContact;
     }
 
-    private void AddPrivateInvestigatorLink(spd_businesscontact privateInvestigatorContact, spd_application app)
+    private void AddPrivateInvestigatorLink(spd_businesscontact bizContact, spd_application app)
     {
-        _context.AddLink(privateInvestigatorContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
 
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
         if (position != null)
-            _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), privateInvestigatorContact);
+            _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
     }
 
     private void DeletePrivateInvestigatorLink(spd_application app)
@@ -207,6 +217,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             return;
 
         _context.DeleteLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
+        _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), null);
 
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
@@ -250,5 +261,16 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             throw new ArgumentException("service team not found");
 
         _context.SetLink(app, nameof(app.ownerid), serviceTeam);
+    }
+
+    private contact GetContact(Guid contactId)
+    {
+        contact? contact = _context.contacts
+            .Where(c => c.contactid == contactId)
+            .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+        if (contact == null) throw new ArgumentException($"cannot find the contact with contactId : {contactId}");
+
+        return contact;
     }
 }
