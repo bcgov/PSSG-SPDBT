@@ -4,29 +4,27 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-const includedURLs = [/^\/api\/.+$/];
-
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
-	requestsInProgressCount = 0;
-	constructor(private spinnerService: NgxSpinnerService) {}
+  requestsInProgressCount = 0;
+  constructor(private spinnerService: NgxSpinnerService) { }
 
-	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-		const isIncluded = includedURLs.some((regexp) => regexp.test(request.url));
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const isIncluded = request.url.toLowerCase().includes('/api/');
 
-		// If the URL is NOT in the included list then DO NOT show the loading spinner.
-		if (!isIncluded) {
-			return next.handle(request);
-		}
+    // If the URL is NOT in the included list then DO NOT show the loading spinner.
+    if (!isIncluded) {
+      return next.handle(request);
+    }
 
-		this.requestsInProgressCount++;
-		this.spinnerService.show('loaderSpinner');
+    this.requestsInProgressCount++;
+    this.spinnerService.show('loaderSpinner');
 
-		return next.handle(request).pipe(
-			finalize(() => {
-				this.requestsInProgressCount--;
-				if (this.requestsInProgressCount <= 0) this.spinnerService.hide('loaderSpinner');
-			})
-		);
-	}
+    return next.handle(request).pipe(
+      finalize(() => {
+        this.requestsInProgressCount--;
+        if (this.requestsInProgressCount <= 0) this.spinnerService.hide('loaderSpinner');
+      })
+    );
+  }
 }
