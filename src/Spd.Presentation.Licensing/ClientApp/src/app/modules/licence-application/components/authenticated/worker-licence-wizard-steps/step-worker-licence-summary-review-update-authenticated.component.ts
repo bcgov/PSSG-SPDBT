@@ -6,6 +6,7 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
@@ -22,19 +23,19 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 				></app-step-title>
 
 				<div class="row">
-					<div class="col-xxl-6 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="col-xxl-8 col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row mt-0 mb-4">
-							<div class="col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">
 									Licence Holder Name <span *ngIf="hasBcscNameChanged">(New Name)</span>
 								</div>
 								<div class="summary-text-data">{{ licenceHolderName }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Number</div>
 								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
+							<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
 								<div class="text-label d-block text-muted">Photograph of Yourself</div>
 								<div class="summary-text-data">
 									<ul class="m-0">
@@ -44,7 +45,13 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 									</ul>
 								</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Expiry Date</div>
+								<div class="summary-text-data">
+									{{ originalExpiryDate | formatDate : formalDateFormat }}
+								</div>
+							</div>
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Categories</div>
 								<div class="summary-text-data">
 									<ul class="m-0">
@@ -54,21 +61,64 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 									</ul>
 								</div>
 							</div>
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Expiry Date</div>
-								<div class="summary-text-data">
-									{{ originalExpiryDate | formatDate : formalDateFormat }}
+
+							<ng-container *ngIf="showDogsAndRestraints">
+								<div class="col-xl-4 col-lg-6 col-md-12">
+									<div class="text-label d-block text-muted">Request to use restraints?</div>
+									<div class="summary-text-data">
+										{{ carryAndUseRestraints | options : 'BooleanTypes' }}
+									</div>
 								</div>
-							</div>
-							<div class="col-lg-6 col-md-12">
+								<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodeYes">
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">
+											{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
+										</div>
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</ng-container>
+
+								<div class="col-xl-4 col-lg-6 col-md-12">
+									<div class="text-label d-block text-muted">Request to use dogs?</div>
+									<div class="summary-text-data">{{ useDogs }}</div>
+								</div>
+								<ng-container *ngIf="useDogs === booleanTypeCodeYes">
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Reason</div>
+										<div class="summary-text-data">
+											<div *ngIf="isDogsPurposeProtection">Protection</div>
+											<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+											<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+										</div>
+									</div>
+									<div class="col-xl-4 col-lg-6 col-md-12">
+										<div class="text-label d-block text-muted">Dog Validation Certificate</div>
+										<div class="summary-text-data">
+											<ul class="m-0">
+												<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+													<li>{{ doc.name }}</li>
+												</ng-container>
+											</ul>
+										</div>
+									</div>
+								</ng-container>
+							</ng-container>
+
+							<div class="col-xl-4 col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Licence Term</div>
 								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="isReprint">
+							<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="isReprint">
 								<div class="text-label d-block text-muted">Reprint Licence</div>
 								<div class="summary-text-data">{{ isReprint }}</div>
 							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="licenceFee">
+							<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="licenceFee">
 								<div class="text-label d-block text-muted">Reprint Fee</div>
 								<div class="summary-text-data">
 									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
@@ -85,6 +135,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
 	licenceModelData: any = {};
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+	booleanTypeCodeYes = BooleanTypeCode.Yes;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
 	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
@@ -248,5 +299,32 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		}
 
 		return list;
+	}
+	get showDogsAndRestraints(): boolean {
+		return this.licenceModelData.categorySecurityGuardFormGroup.isInclude;
+	}
+	get carryAndUseRestraints(): string {
+		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
+	}
+	get carryAndUseRestraintsDocument(): string {
+		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraintsDocument ?? '';
+	}
+	get carryAndUseRestraintsAttachments(): File[] {
+		return this.licenceModelData.restraintsAuthorizationData.attachments ?? [];
+	}
+	get useDogs(): string {
+		return this.licenceModelData.dogsAuthorizationData.useDogs ?? '';
+	}
+	get isDogsPurposeProtection(): string {
+		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+	}
+	get isDogsPurposeDetectionDrugs(): string {
+		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
+	}
+	get isDogsPurposeDetectionExplosives(): string {
+		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
+	}
+	get dogsPurposeAttachments(): File[] {
+		return this.licenceModelData.dogsAuthorizationData.attachments ?? [];
 	}
 }
