@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Web;
 
@@ -10,10 +11,13 @@ namespace Spd.Utilities.FileStorage
     {
         protected readonly AmazonS3Client _amazonS3Client;
         protected readonly IOptions<S3Settings> _config;
-        public FileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config)
+        private readonly ILogger<IFileStorageService> _logger;
+
+        public FileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, ILogger<IFileStorageService> logger)
         {
             _amazonS3Client = amazonS3Client;
             _config = config;
+            _logger = logger;
         }
         public async Task<string> HandleCommand(StorageCommand cmd, CancellationToken cancellationToken)
         {
@@ -194,6 +198,7 @@ namespace Spd.Utilities.FileStorage
             }
             catch (AmazonS3Exception ex)
             {
+                _logger.LogError(ex, ex.Message, null);
                 if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
                     return null;
 

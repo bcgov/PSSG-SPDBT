@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Spd.Manager.Printing.Documents;
 using Spd.Manager.Printing.Documents.TransformationStrategies;
 using Spd.Resource.Repository.Event;
@@ -21,18 +22,21 @@ internal class PrintingManager
     private readonly IEventRepository _eventRepo;
     private readonly ILicenceRepository _licenceRepository;
     private readonly IMapper _mapper;
+    private readonly ILogger<IPrintingManager> _logger;
 
     public PrintingManager(IDocumentTransformationEngine documentTransformationEngine,
         IPrinter printer,
         IEventRepository eventRepo,
         ILicenceRepository licenceRepository,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<IPrintingManager> logger)
     {
         this._documentTransformationEngine = documentTransformationEngine;
         this._printer = printer;
         this._eventRepo = eventRepo;
         this._licenceRepository = licenceRepository;
         this._mapper = mapper;
+        this._logger = logger;
     }
     public async Task<ResultResponse> Handle(StartPrintJobCommand request, CancellationToken cancellationToken)
     {
@@ -66,6 +70,7 @@ internal class PrintingManager
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message, null);
                 ResultResponse result = new()
                 {
                     PrintJobId = null,
