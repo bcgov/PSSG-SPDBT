@@ -64,11 +64,8 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
             spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
+            await _context.SaveChangesAsync(ct);
         }
-        else
-            DeletePrivateInvestigatorLink(app);
-
-        await _context.SaveChangesAsync(ct);
 
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
