@@ -123,6 +123,7 @@ internal class Mappings : Profile
             .ForMember(d => d.ManagerMiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
             .ForMember(d => d.ManagerEmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
             .ForMember(d => d.ManagerPhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.ContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.ContactId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.BizContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.BizContactId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.GivenName, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.GivenName))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.Surname, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.Surname))
