@@ -1,5 +1,6 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.FileStorage
@@ -8,8 +9,8 @@ namespace Spd.Utilities.FileStorage
     {
         private IOptions<S3Settings> _transientConfig;
 
-        public MainFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, IOptions<S3Settings> transientConfig)
-            : base(amazonS3Client, config)
+        public MainFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, IOptions<S3Settings> transientConfig, ILogger<FileStorageService> logger)
+            : base(amazonS3Client, config, logger)
         {
             _transientConfig = transientConfig;
         }
