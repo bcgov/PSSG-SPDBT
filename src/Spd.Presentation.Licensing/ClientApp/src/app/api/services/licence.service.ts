@@ -143,9 +143,7 @@ export class LicenceService extends BaseService {
   static readonly ApiLicenceLookupAnonymousLicenceNumberPostPath = '/api/licence-lookup/anonymous/{licenceNumber}';
 
   /**
-   * Get licence by licence number with google recaptcha for anonymous
-   * If isLatestInactive = true, it means return the latest inactive licence. If isLatestInactive=false, it will return the active licence.
-   * There should be only one active licence for each licenceNumber.
+   * Get latest licence by licence number with google recaptcha for anonymous
    * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
    *
    *
@@ -160,9 +158,7 @@ export class LicenceService extends BaseService {
   }
 
   /**
-   * Get licence by licence number with google recaptcha for anonymous
-   * If isLatestInactive = true, it means return the latest inactive licence. If isLatestInactive=false, it will return the active licence.
-   * There should be only one active licence for each licenceNumber.
+   * Get latest licence by licence number with google recaptcha for anonymous
    * Example: http://localhost:5114/api/licence-lookup/TEST-02?accessCode=TEST.
    *
    *

@@ -2,10 +2,11 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
+import { LoginService } from '@app/api/services';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { CommonBusinessTermsComponent } from '../shared/step-components/common-business-terms.component';
 
 @Component({
 	selector: 'app-business-first-time-user-terms-of-use',
@@ -17,10 +18,10 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 					subtitle="Read, download, and accept the Terms of Use to continue"
 				></app-step-title>
 
-				<app-common-swl-permit-terms
+				<app-common-business-terms
 					[form]="form"
 					[applicationTypeCode]="applicationTypeCodes.New"
-				></app-common-swl-permit-terms>
+				></app-common-business-terms>
 
 				<div class="row">
 					<div class="offset-xxl-8 col-xxl-3 offset-xl-7 col-xl-4 offset-lg-7 col-lg-5 col-md-12 col-sm-12 mb-2">
@@ -38,16 +39,16 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
 	});
 
-	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
+	@ViewChild(CommonBusinessTermsComponent) commonTermsComponent!: CommonBusinessTermsComponent;
 
 	@Input() inWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	constructor(
-		private formBuilder: FormBuilder,
 		private router: Router,
-		// private loginService: LoginService,
+		private formBuilder: FormBuilder,
+		private loginService: LoginService,
 		private authUserBceidService: AuthUserBceidService
 	) {}
 
@@ -65,23 +66,20 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 	}
 
 	onContinue(): void {
-		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence());
-		// this.form.markAllAsTouched();
-		// if (!this.isFormValid()) return;
-		// this.loginService
-		// 	.apiApplicantApplicantIdTermAgreeGet({
-		// 		applicantId: this.authUserBceidService.bceidUserProfile?.bizId!,
-		// 	})
-		// 	.pipe()
-		// 	.subscribe((_resp: any) => {
-		// 		if (this.authUserBceidService.bceidUserProfile) {
-		// 			this.authUserBceidService.bceidUserProfile.isFirstTimeLogin = false;
-		// 		}
-		// 		this.router.navigateByUrl(
-		// 			LicenceApplicationRoutes.pathBusinessLicence(
-		// 				LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_SELECTION
-		// 			)
-		// 		);
-		// 	});
+		this.form.markAllAsTouched();
+		if (!this.isFormValid()) return;
+
+		this.loginService
+			.apiBizBizIdManagerBizUserIdTermAgreeGet({
+				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+				bizUserId: this.authUserBceidService.bceidUserProfile?.bizUserId!,
+			})
+			.pipe()
+			.subscribe((_resp: any) => {
+				if (this.authUserBceidService.bceidUserProfile) {
+					this.authUserBceidService.bceidUserProfile.isFirstTimeLogin = false;
+				}
+				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence());
+			});
 	}
 }

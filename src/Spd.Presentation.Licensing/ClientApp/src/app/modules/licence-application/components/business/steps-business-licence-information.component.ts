@@ -17,13 +17,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				</ng-container>
 
 				<ng-container *ngIf="isRenewal">
-					<!--//TODO update checklist -->
-					<app-step-business-licence-checklist-new></app-step-business-licence-checklist-new>
-				</ng-container>
-
-				<ng-container *ngIf="isUpdate">
-					<!--//TODO update checklist -->
-					<app-step-business-licence-checklist-new></app-step-business-licence-checklist-new>
+					<app-step-business-licence-checklist-renew></app-step-business-licence-checklist-renew>
 				</ng-container>
 
 				<app-wizard-footer
