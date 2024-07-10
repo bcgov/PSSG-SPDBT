@@ -11,7 +11,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 				<div class="row">
 					<div class="col-xxl-4 col-xl-4 col-lg-8 col-md-12 col-sm-12 mx-auto">
 						<div class="mb-3">
-							A {{ licenceCost | currency : 'CAD' : 'symbol-narrow' : '1.0' }} fee applies to updates made to:
+							A {{ licenceCost | currency : 'CAD' : 'symbol-narrow' : '1.0' }} fee applies to any of these updates:
 						</div>
 						<ul>
 							<li>Name change</li>
