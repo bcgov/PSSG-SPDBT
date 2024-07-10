@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { UtilService } from 'src/app/core/services/util.service';
+import { CaptchaResponse } from 'src/app/shared/components/captcha-v2.component';
 
 export interface OrgRegDuplicateDialogData {
 	title: string;
@@ -51,17 +52,14 @@ export class OrgRegDuplicateModalComponent {
 	captchaResponse: CaptchaResponse | null = null;
 
 	constructor(
+		private utilService: UtilService,
 		private dialogRef: MatDialogRef<OrgRegDuplicateModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public dialogData: OrgRegDuplicateDialogData
 	) {}
 
 	onTokenResponse($event: CaptchaResponse) {
 		this.captchaResponse = $event;
-		if ($event.type === CaptchaResponseType.success) {
-			this.captchaPassed = true;
-		} else {
-			this.captchaPassed = false;
-		}
+		this.captchaPassed = this.utilService.captchaTokenResponse($event);
 	}
 
 	onConfirm(): void {

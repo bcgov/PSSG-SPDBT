@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ServiceTypeCode } from 'src/app/api/models';
+import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import { FormErrorStateMatcher } from 'src/app/shared/directives/form-error-state-matcher.directive';
+import { CaptchaResponse } from '../../captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 @Component({
@@ -49,6 +51,15 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							</mat-form-field>
 						</div>
 					</div>
+
+					<div class="row mb-4" *ngIf="displayCaptcha">
+						<div class="offset-md-2 col-md-8 col-sm-12">
+							<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
+							<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
+								This is required
+							</mat-error>
+						</div>
+					</div>
 				</div>
 			</form>
 		</section>
@@ -90,13 +101,29 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 		return this._orgData;
 	}
 
+	displayValidationErrors = false;
+	displayCaptcha = false;
+	captchaPassed = false;
+	captchaResponse: CaptchaResponse | null = null;
+
 	form!: FormGroup;
 
-	constructor(private formBuilder: FormBuilder, private utilService: UtilService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private utilService: UtilService,
+		private authProcessService: AuthProcessService
+	) {}
+
+	ngOnInit(): void {
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.displayCaptcha = !isLoggedIn;
+		});
+	}
 
 	getDataToSave(): any {
 		return {
 			...this.form.value,
+			recaptcha: this.displayCaptcha && this.captchaPassed ? this.captchaResponse?.resolved : null,
 		};
 	}
 
@@ -105,7 +132,8 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 			this.utilService.scrollToCheckbox();
 		}
 
-		return this.form.valid;
+		this.displayValidationErrors = !this.captchaPassed;
+		return this.form.valid && ((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha);
 	}
 
 	onCheckboxChange(): void {
@@ -138,6 +166,11 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 				this.form.controls['dateSigned'].setValue('');
 			}
 		}
+	}
+
+	onTokenResponse($event: CaptchaResponse) {
+		this.captchaResponse = $event;
+		this.captchaPassed = this.utilService.captchaTokenResponse($event);
 	}
 
 	get isMcfd(): boolean {
