@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicantApplicationResponse } from './applicant-application-response';
+import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 export interface ApplicantApplicationListResponse {
-  applications?: null | Array<ApplicantApplicationResponse>;
+  applications?: Array<ApplicantApplicationResponse> | null;
 }

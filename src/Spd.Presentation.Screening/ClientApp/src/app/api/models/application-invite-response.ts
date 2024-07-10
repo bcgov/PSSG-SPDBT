@@ -1,17 +1,17 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationInviteStatusCode } from './application-invite-status-code';
-import { PayerPreferenceTypeCode } from './payer-preference-type-code';
+import { ApplicationInviteStatusCode } from '../models/application-invite-status-code';
+import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
 export interface ApplicationInviteResponse {
   createdOn?: string;
-  email?: null | string;
-  errorMsg?: null | string;
-  firstName?: null | string;
+  email?: string | null;
+  errorMsg?: string | null;
+  firstName?: string | null;
   id?: string;
-  jobTitle?: null | string;
-  lastName?: null | string;
+  jobTitle?: string | null;
+  lastName?: string | null;
   orgId?: string;
   payeeType?: PayerPreferenceTypeCode;
   status?: ApplicationInviteStatusCode;
-  viewed?: null | boolean;
+  viewed?: boolean | null;
 }

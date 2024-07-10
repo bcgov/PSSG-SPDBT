@@ -43,7 +43,7 @@ import { AppRoutes } from 'src/app/app-routing.module';
 
 		<div class="d-flex justify-content-center">
 			<div class="payment__image text-center">
-				<img class="payment__image__item" src="/assets/payment-fail.png" alt="Payment fail" />
+				<img class="payment__image__item" src="./assets/payment-fail.png" alt="Payment fail" />
 			</div>
 		</div>
 
