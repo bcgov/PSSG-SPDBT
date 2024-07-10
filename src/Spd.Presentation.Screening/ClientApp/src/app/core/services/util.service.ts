@@ -6,6 +6,7 @@ import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
+import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { ApplicationPortalStatusTypes, ScreeningTypes, SelectOptions } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
@@ -211,6 +212,10 @@ export class UtilService {
 		}
 
 		return ScreeningTypes; // show all values
+	}
+
+	captchaTokenResponse(captchaResponse: CaptchaResponse): boolean {
+		return !!(captchaResponse.type === CaptchaResponseType.success && captchaResponse.resolved);
 	}
 
 	/**
