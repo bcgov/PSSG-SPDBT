@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-import { IdentityProviderTypeCode } from './identity-provider-type-code';
-import { UserInfo } from './user-info';
+import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
+import { UserInfo } from '../models/user-info';
 export interface OrgUserProfileResponse {
   identityProviderType?: IdentityProviderTypeCode;
-  userDisplayName?: null | string;
-  userGuid?: null | string;
-  userInfos?: null | Array<UserInfo>;
+  userDisplayName?: string | null;
+  userGuid?: string | null;
+  userInfos?: Array<UserInfo> | null;
 }

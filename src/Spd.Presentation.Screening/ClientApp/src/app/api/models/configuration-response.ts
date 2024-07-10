@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-import { OidcConfiguration } from './oidc-configuration';
-import { RecaptchaConfiguration } from './recaptcha-configuration';
+import { OidcConfiguration } from '../models/oidc-configuration';
+import { RecaptchaConfiguration } from '../models/recaptcha-configuration';
 export interface ConfigurationResponse {
-  bannerMessage?: null | string;
+  bannerMessage?: string | null;
   bceidConfiguration?: OidcConfiguration;
   bcscConfiguration?: OidcConfiguration;
-  environment?: null | string;
+  environment?: string | null;
   idirConfiguration?: OidcConfiguration;
-  payBcSearchInvoiceUrl?: null | string;
+  payBcSearchInvoiceUrl?: string | null;
   recaptchaConfiguration?: RecaptchaConfiguration;
 }

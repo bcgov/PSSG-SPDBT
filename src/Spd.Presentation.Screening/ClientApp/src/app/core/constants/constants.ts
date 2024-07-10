@@ -46,10 +46,10 @@ export const SPD_CONSTANTS = {
 	},
 	maxNumberOfAliases: 3,
 	files: {
-		pssoTerms: '/assets/files/Psso-terms-and-conditions.pdf',
-		pssoFirstTimeTerms: '/assets/files/Psso-pe-crc-org-terms-and-conditions.pdf',
-		peCrcOrPeCrcVsTerms: '/assets/files/Pe-crc-terms-and-conditions.pdf',
-		crrpTerms: '/assets/files/Crrp-terms-and-conditions.pdf',
+		pssoTerms: './assets/files/Psso-terms-and-conditions.pdf',
+		pssoFirstTimeTerms: './assets/files/Psso-pe-crc-org-terms-and-conditions.pdf',
+		peCrcOrPeCrcVsTerms: './assets/files/Pe-crc-terms-and-conditions.pdf',
+		crrpTerms: './assets/files/Crrp-terms-and-conditions.pdf',
 	},
 	closeRedirects: {
 		crrpApplication:

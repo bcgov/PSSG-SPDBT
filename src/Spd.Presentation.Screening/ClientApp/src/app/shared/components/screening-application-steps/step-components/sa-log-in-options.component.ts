@@ -19,7 +19,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 									<td class="pr-2 pb-2">
 										<img
 											class="step-container__box__title__checkbox"
-											src="/assets/checkbox.svg"
+											src="./assets/checkbox.svg"
 											alt="SkSkip the identity confirmation step with your employerip"
 										/>
 									</td>
@@ -27,7 +27,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 								</tr>
 								<tr>
 									<td class="pr-2 pb-2">
-										<img class="step-container__box__title__checkbox" src="/assets/checkbox.svg" alt="Apply faster" />
+										<img class="step-container__box__title__checkbox" src="./assets/checkbox.svg" alt="Apply faster" />
 									</td>
 									<td>Apply faster</td>
 								</tr>
@@ -35,7 +35,7 @@ import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 									<td class="pr-2 pb-2">
 										<img
 											class="step-container__box__title__checkbox"
-											src="/assets/checkbox.svg"
+											src="./assets/checkbox.svg"
 											alt="See your application progress in real time"
 										/>
 									</td>
