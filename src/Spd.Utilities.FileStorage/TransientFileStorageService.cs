@@ -1,13 +1,14 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.FileStorage
 {
     internal class TransientFileStorageService : FileStorageService, ITransientFileStorageService
     {
-        public TransientFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config)
-            : base(amazonS3Client, config)
+        public TransientFileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, ILogger<FileStorageService> logger)
+            : base(amazonS3Client, config, logger)
         {
         }
 
