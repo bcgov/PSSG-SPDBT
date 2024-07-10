@@ -115,8 +115,8 @@ import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 			</ng-template>
 		</ng-template>
 
-		<div class="row mt-4">
-			<div class="offset-lg-4 col-lg-4 offset-md-4 col-md-4 col-sm-12">
+		<div class="row mt-4" *ngIf="showCloseButton">
+			<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
 				<button mat-flat-button color="primary" class="large mb-2" (click)="onClose()">Close</button>
 			</div>
 		</div>
@@ -128,6 +128,7 @@ export class PaymentSuccessComponent implements OnInit {
 	appConstants = SPD_CONSTANTS;
 
 	@Input() isApplicationReceived = false;
+	@Input() showCloseButton = true;
 
 	private _payment: PaymentResponse | null = null;
 	@Input()
