@@ -33,7 +33,7 @@ import { CommonApplicationService } from '@app/modules/licence-application/servi
 
 				<div class="d-flex justify-content-center">
 					<div class="payment__image text-center">
-						<img class="payment__image__item" src="/assets/payment-success.png" alt="Payment success" />
+						<img class="payment__image__item" src="./assets/payment-success.png" alt="Payment success" />
 					</div>
 				</div>
 
