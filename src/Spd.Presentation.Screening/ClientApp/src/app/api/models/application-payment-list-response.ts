@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationPaymentResponse } from './application-payment-response';
-import { PaginationResponse } from './pagination-response';
+import { ApplicationPaymentResponse } from '../models/application-payment-response';
+import { PaginationResponse } from '../models/pagination-response';
 export interface ApplicationPaymentListResponse {
-  applications?: null | Array<ApplicationPaymentResponse>;
+  applications?: Array<ApplicationPaymentResponse> | null;
   pagination?: PaginationResponse;
 }
