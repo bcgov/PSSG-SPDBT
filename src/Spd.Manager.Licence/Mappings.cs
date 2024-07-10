@@ -297,6 +297,12 @@ internal class Mappings : Profile
            .ForMember(d => d.BranchAddresses, opt => opt.MapFrom(s => GetBranchAddr(s.Branches)))
            .ForMember(d => d.Email, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlEmailAddress : null))
            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => IsSoleProprietor(s.BizTypeCode) == true ? s.SoleProprietorSwlPhoneNumber : null))
+           .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+           .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+           .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+           .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+           .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2))
+           .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorLicenceId));
 
         CreateMap<BizLicAppSubmitRequest, UpdateBizCmd>()
