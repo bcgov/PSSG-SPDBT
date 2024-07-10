@@ -278,6 +278,7 @@ namespace Spd.Presentation.Screening.Controllers
                         }
                         catch (Exception ex)
                         {
+                            _logger.LogError(ex, ex.Message, null);
                             ValidationErr err = new(lineNo, ex.Message);
                             errors.Add(err);
                         }

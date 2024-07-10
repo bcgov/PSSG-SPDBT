@@ -1,13 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Spd.Utilities.Payment.TokenProviders;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Spd.Utilities.Payment
 {
@@ -26,7 +22,7 @@ namespace Spd.Utilities.Payment
                 if (string.IsNullOrWhiteSpace(accessToken))
                     throw new InvalidOperationException("cannot get access token from paybc");
 
-                HttpClient requestHttpClient = new HttpClient();
+                HttpClient requestHttpClient = new();
                 requestHttpClient.DefaultRequestHeaders.Clear();
                 requestHttpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 requestHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
@@ -68,9 +64,10 @@ namespace Spd.Utilities.Payment
                         Message = $"{requestResponse.StatusCode.ToString()}:{resp.Message}-{String.Join(";", resp.Errors)}"
                     };
                 }
-            }catch(Exception ex)    
+            }
+            catch (Exception ex)
             {
-                _logger.LogError($"PaymentService {ex}");
+                _logger.LogError(ex, ex.Message, null);
                 return new RefundPaymentResult
                 {
                     IsSuccess = false,

@@ -12,7 +12,6 @@ import { LicenceResponse } from '../../models/licence-response';
 export interface ApiLicenceLookupAnonymousLicenceNumberPost$Params {
   licenceNumber: string;
   accessCode?: string;
-  isLatestInactive?: boolean;
       body?: GoogleRecaptcha
 }
 
@@ -21,7 +20,6 @@ export function apiLicenceLookupAnonymousLicenceNumberPost(http: HttpClient, roo
   if (params) {
     rb.path('licenceNumber', params.licenceNumber, {});
     rb.query('accessCode', params.accessCode, {});
-    rb.query('isLatestInactive', params.isLatestInactive, {});
     rb.body(params.body, 'application/*+json');
   }
 

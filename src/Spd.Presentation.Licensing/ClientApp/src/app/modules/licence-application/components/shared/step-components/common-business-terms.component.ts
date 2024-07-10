@@ -311,7 +311,7 @@ import { UtilService } from '@app/core/services/util.service';
 						color="primary"
 						class="large w-100"
 						aria-label="Download Terms of Use"
-						download="Security Services Applicant Terms"
+						download="Security Services Business Applicant Terms of Use"
 						[href]="downloadFilePath"
 					>
 						<mat-icon>file_download</mat-icon>Terms of Use
@@ -343,7 +343,7 @@ export class CommonBusinessTermsComponent implements OnInit {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
-	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantTerms;
+	downloadFilePath = SPD_CONSTANTS.files.securityServicesBusinessApplicantTerms;
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
