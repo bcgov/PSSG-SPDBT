@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,14 +30,22 @@ import { SharedModule } from './shared/shared.module';
 		NgxSpinnerModule,
 		OAuthModule.forRoot({
 			resourceServer: {
-				customUrlValidation: (url) => url.startsWith('/api') && !url.endsWith('/configuration'),
+				customUrlValidation: (url) =>
+					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
 				sendAccessToken: true,
 			},
 		}),
-		ApiModule.forRoot({ rootUrl: '' }),
+		ApiModule,
 		SharedModule,
 	],
-	providers: [provideHotToastConfig()],
+	providers: [
+		provideHotToastConfig(),
+		{
+			provide: APP_BASE_HREF,
+			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
+			deps: [PlatformLocation],
+		},
+	],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
