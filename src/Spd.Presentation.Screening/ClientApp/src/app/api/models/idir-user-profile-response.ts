@@ -1,17 +1,17 @@
 /* tslint:disable */
 /* eslint-disable */
-import { IdentityProviderTypeCode } from './identity-provider-type-code';
+import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
 export interface IdirUserProfileResponse {
-  firstName?: null | string;
+  firstName?: string | null;
   identityProviderType?: IdentityProviderTypeCode;
-  idirUserName?: null | string;
+  idirUserName?: string | null;
   isFirstTimeLogin?: boolean;
   isPSA?: boolean;
-  lastName?: null | string;
-  orgCodeFromIdir?: null | string;
+  lastName?: string | null;
+  orgCodeFromIdir?: string | null;
   orgId?: string;
-  orgName?: null | string;
-  userDisplayName?: null | string;
-  userGuid?: null | string;
-  userId?: null | string;
+  orgName?: string | null;
+  userDisplayName?: string | null;
+  userGuid?: string | null;
+  userId?: string | null;
 }

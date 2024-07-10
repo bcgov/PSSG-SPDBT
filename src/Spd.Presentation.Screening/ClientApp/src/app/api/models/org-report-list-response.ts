@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { OrgReportResponse } from './org-report-response';
+import { OrgReportResponse } from '../models/org-report-response';
 export interface OrgReportListResponse {
-  reports?: null | Array<OrgReportResponse>;
+  reports?: Array<OrgReportResponse> | null;
 }

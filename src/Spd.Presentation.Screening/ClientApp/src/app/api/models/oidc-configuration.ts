@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface OidcConfiguration {
-  clientId?: null | string;
-  identityProvider?: null | string;
-  issuer?: null | string;
-  postLogoutRedirectUri?: null | string;
-  responseType?: null | string;
-  scope?: null | string;
+  clientId?: string | null;
+  identityProvider?: string | null;
+  issuer?: string | null;
+  postLogoutRedirectUri?: string | null;
+  responseType?: string | null;
+  scope?: string | null;
 }

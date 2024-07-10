@@ -50,7 +50,7 @@ export class InvitationUserComponent implements OnInit {
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
 
-		await this.authProcessService.initializeCrrpUserInvitation(location.pathname);
+		await this.authProcessService.initializeCrrpUserInvitation(id!);
 
 		this.authProcessService.waitUntilAuthentication$
 			.pipe(takeWhile(() => this.subscribeAlive))
@@ -70,7 +70,7 @@ export class InvitationUserComponent implements OnInit {
 							} else {
 								const defaultOrgId = resp.orgId;
 
-								await this.authProcessService.initializeCrrp(defaultOrgId, location.pathname);
+								await this.authProcessService.initializeCrrp(defaultOrgId);
 								this.router.navigate([CrrpRoutes.path(CrrpRoutes.HOME)], { queryParams: { orgId: defaultOrgId } });
 							}
 						});
