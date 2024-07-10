@@ -83,6 +83,7 @@ public record BizProfileUpdateRequest
     public Guid? SoleProprietorLicenceId { get; set; }
     public string? SoleProprietorSwlPhoneNumber { get; set; }
     public string? SoleProprietorSwlEmailAddress { get; set; }
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public enum BizTypeCode
