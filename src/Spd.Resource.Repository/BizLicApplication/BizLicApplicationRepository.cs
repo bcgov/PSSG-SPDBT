@@ -208,19 +208,23 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private void DeletePrivateInvestigatorLink(spd_application app)
     {
-        spd_businesscontact? bizContact = app.spd_businesscontact_spd_application.FirstOrDefault();
+        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
+
+        if (position == null)
+            return;
+
+        spd_businesscontact? bizContact = _context.spd_businesscontacts
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .Expand(b => b.spd_businesscontact_spd_application)
+            .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
+            .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
+            .FirstOrDefault();
 
         if (bizContact == null)
             return;
 
         _context.DeleteLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
         _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), null);
-
-        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
-
-        if (position == null)
-            return;
-
         _context.DeleteLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
     }
 
