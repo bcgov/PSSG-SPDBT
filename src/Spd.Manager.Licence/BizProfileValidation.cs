@@ -32,5 +32,6 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .When(r => r.Branches != null &&
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
+        RuleFor(r => r.BizManagerContactInfo).NotEmpty();
     }
 }
