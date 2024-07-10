@@ -2,6 +2,7 @@
 using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.FileStorage
@@ -28,7 +29,9 @@ namespace Spd.Utilities.FileStorage
             services.AddSingleton<IMainFileStorageService>(sp => new MainFileStorageService(
                 mainClient,
                 Options.Create(options.MainBucketSettings),
-                Options.Create(options.TransientBucketSettings)));
+                Options.Create(options.TransientBucketSettings),
+                sp.GetService<ILogger<FileStorageService>>()
+                ));
 
             //create transient bucket
             if (options.TransientBucketSettings?.Url != null && !string.IsNullOrWhiteSpace(options.TransientBucketSettings?.Url.ToString()))
@@ -44,7 +47,8 @@ namespace Spd.Utilities.FileStorage
                 var transientClient = new AmazonS3Client(new BasicAWSCredentials(options.TransientBucketSettings.AccessKey, options.TransientBucketSettings.Secret), transientBucketConfig);
                 services.AddSingleton<ITransientFileStorageService>(sp => new TransientFileStorageService(
                     transientClient,
-                    Options.Create(options.TransientBucketSettings)));
+                    Options.Create(options.TransientBucketSettings),
+                    sp.GetService<ILogger<FileStorageService>>()));
             }
 
             return services;
