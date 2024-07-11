@@ -593,7 +593,6 @@ internal class BizLicAppManager :
             createApp.PhoneNumber = request.ApplicantContactInfo?.PhoneNumber;
         }
 
-        //_mapper.Map(bizResult, createApp);
         return createApp;
     }
 
