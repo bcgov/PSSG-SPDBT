@@ -316,7 +316,8 @@ public class BizLicenceAppManagerTest
             NoBranding = false,
             UseDogs = true,
             ApplicantIsBizManager = false,
-            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard },
+            PrivateInvestigatorSwlInfo = new()
         };
         List<LicAppFileInfo> files = new();
         List<LicAppFileInfo> branding = fixture.Build<LicAppFileInfo>()
@@ -511,7 +512,8 @@ public class BizLicenceAppManagerTest
             UseDogs = true,
             Reprint = true,
             ApplicantIsBizManager = false,
-            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard },
+            PrivateInvestigatorSwlInfo = new()
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
 
@@ -675,7 +677,8 @@ public class BizLicenceAppManagerTest
             NoBranding = true,
             UseDogs = false,
             ApplicantIsBizManager = false,
-            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
+            CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard },
+            PrivateInvestigatorSwlInfo = new()
         };
 
         List<LicAppFileInfo> files = new();
