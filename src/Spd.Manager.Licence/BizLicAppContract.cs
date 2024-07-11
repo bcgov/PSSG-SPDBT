@@ -77,6 +77,7 @@ public record BizLicAppResponse : BizLicenceApp
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public abstract record BizLicenceApp : LicenceAppBase
