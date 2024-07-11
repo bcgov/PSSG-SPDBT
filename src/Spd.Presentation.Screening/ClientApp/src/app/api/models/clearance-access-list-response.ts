@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ClearanceAccessResponse } from './clearance-access-response';
-import { PaginationResponse } from './pagination-response';
+import { ClearanceAccessResponse } from '../models/clearance-access-response';
+import { PaginationResponse } from '../models/pagination-response';
 export interface ClearanceAccessListResponse {
-  clearances?: null | Array<ClearanceAccessResponse>;
+  clearances?: Array<ClearanceAccessResponse> | null;
   pagination?: PaginationResponse;
 }
