@@ -1,10 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BooleanTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
-import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
-import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
 import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application.model';
 
 export class DeclarationModel {
@@ -68,31 +65,16 @@ export class DeclarationModel {
 					</div>
 				</div>
 			</form>
-
-			<div class="row mb-4" *ngIf="displayCaptcha">
-				<div class="offset-lg-3 col-lg-9 col-md-12 col-sm-12">
-					<app-captcha-v2 (captchaResponse)="onTokenResponse($event)"></app-captcha-v2>
-					<mat-error class="mat-option-error" *ngIf="displayValidationErrors && !captchaPassed">
-						This is required
-					</mat-error>
-				</div>
-			</div>
 		</section>
 	`,
 	styles: [],
 })
-export class SaDeclarationComponent implements OnInit, CrcFormStepComponent {
+export class SaDeclarationComponent implements CrcFormStepComponent {
 	appConstants = SPD_CONSTANTS;
-	booleanTypeCodes = BooleanTypeCode;
 	form!: FormGroup;
-	displayValidationErrors = false;
 
 	shareCrcWorksWith: string | undefined = undefined;
 	shareCrcGrantedDate: string | undefined = undefined;
-
-	displayCaptcha = false;
-	captchaPassed = false;
-	captchaResponse: CaptchaResponse | null = null;
 
 	private _orgData: AppInviteOrgData | null = null;
 	@Input()
@@ -122,32 +104,13 @@ export class SaDeclarationComponent implements OnInit, CrcFormStepComponent {
 		return this._orgData;
 	}
 
-	constructor(private formBuilder: FormBuilder, private authProcessService: AuthProcessService) {}
-
-	ngOnInit(): void {
-		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			this.displayCaptcha = !isLoggedIn;
-		});
-	}
+	constructor(private formBuilder: FormBuilder) {}
 
 	getDataToSave(): DeclarationModel {
-		return {
-			...this.form.value,
-			recaptcha: this.displayCaptcha && this.captchaPassed ? this.captchaResponse?.resolved : null,
-		};
+		return { ...this.form.value };
 	}
 
 	isFormValid(): boolean {
-		this.displayValidationErrors = !this.captchaPassed;
-		return this.form.valid && ((this.displayCaptcha && this.captchaPassed) || !this.displayCaptcha);
-	}
-
-	onTokenResponse($event: CaptchaResponse) {
-		this.captchaResponse = $event;
-		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
-			this.captchaPassed = true;
-		} else {
-			this.captchaPassed = false;
-		}
+		return this.form.valid;
 	}
 }

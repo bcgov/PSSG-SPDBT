@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationResponse } from './application-response';
-import { PaginationResponse } from './pagination-response';
+import { ApplicationResponse } from '../models/application-response';
+import { PaginationResponse } from '../models/pagination-response';
 export interface ApplicationListResponse {
-  applications?: null | Array<ApplicationResponse>;
+  applications?: Array<ApplicationResponse> | null;
   pagination?: PaginationResponse;
 }
