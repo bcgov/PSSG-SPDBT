@@ -26,9 +26,14 @@ public class BizProfileValidationTest
             .With(a => a.PostalCode, new string('a', 20))
             .Create();
 
+        var bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .Create();
+
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
             .With(r => r.BizAddress, address)
+            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
         var result = validator.TestValidate(model);
@@ -50,10 +55,15 @@ public class BizProfileValidationTest
             .With(b => b.BranchAddress, address)
             .Create();
 
+        var bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .Create();
+
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.Corporation)
             .With(r => r.Branches, new List<BranchInfo>() { branch })
             .With(r => r.BizAddress, address)
+            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
         var result = validator.TestValidate(model);
