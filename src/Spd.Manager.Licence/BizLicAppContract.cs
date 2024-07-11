@@ -91,12 +91,18 @@ public abstract record BizLicenceApp : LicenceAppBase
     public bool? ApplicantIsBizManager { get; set; }
     public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
-    public SwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
+    public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
     public bool? AgreeToCompleteAndAccurate { get; set; }
 }
 
 public record NonSwlContactInfo : ContactInfo
 {
+    public Guid? BizContactId { get; set; }
+}
+
+public record PrivateInvestigatorSwlContactInfo : ContactInfo
+{
+    public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
 }
 
