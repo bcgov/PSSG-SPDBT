@@ -1,22 +1,22 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ContactAuthorizationTypeCode } from './contact-authorization-type-code';
-import { OrgRegistrationStatusCode } from './org-registration-status-code';
-import { OrgSettings } from './org-settings';
-import { UserInfoMsgTypeCode } from './user-info-msg-type-code';
+import { ContactAuthorizationTypeCode } from '../models/contact-authorization-type-code';
+import { OrgRegistrationStatusCode } from '../models/org-registration-status-code';
+import { OrgSettings } from '../models/org-settings';
+import { UserInfoMsgTypeCode } from '../models/user-info-msg-type-code';
 export interface UserInfo {
   contactAuthorizationTypeCode?: ContactAuthorizationTypeCode;
-  email?: null | string;
-  firstName?: null | string;
+  email?: string | null;
+  firstName?: string | null;
   isFirstTimeLogin?: boolean;
-  lastName?: null | string;
-  orgId?: null | string;
-  orgName?: null | string;
-  orgRegistrationId?: null | string;
-  orgRegistrationNumber?: null | string;
+  lastName?: string | null;
+  orgId?: string | null;
+  orgName?: string | null;
+  orgRegistrationId?: string | null;
+  orgRegistrationNumber?: string | null;
   orgRegistrationStatusCode?: OrgRegistrationStatusCode;
   orgSettings?: OrgSettings;
-  userGuid?: null | string;
+  userGuid?: string | null;
   userId?: string;
   userInfoMsgType?: UserInfoMsgTypeCode;
 }

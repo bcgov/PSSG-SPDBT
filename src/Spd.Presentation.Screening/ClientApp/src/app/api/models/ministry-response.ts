@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ServiceTypeCode } from './service-type-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 export interface MinistryResponse {
   id?: string;
   isActive?: boolean;
-  name?: null | string;
-  serviceTypeCodes?: null | Array<ServiceTypeCode>;
+  name?: string | null;
+  serviceTypeCodes?: Array<ServiceTypeCode> | null;
 }

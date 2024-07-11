@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface ApplicationStatisticsResponse {
-  statistics?: null | {
+  statistics?: ({
 'Draft'?: number;
 'VerifyIdentity'?: number;
 'InProgress'?: number;
@@ -18,5 +18,5 @@ export interface ApplicationStatisticsResponse {
 'CancelledByOrganization'?: number;
 'ClearedLastSevenDays'?: number;
 'NotClearedLastSevenDays'?: number;
-};
+}) | null;
 }
