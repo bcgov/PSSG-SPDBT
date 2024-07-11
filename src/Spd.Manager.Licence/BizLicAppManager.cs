@@ -288,12 +288,6 @@ internal class BizLicAppManager :
 
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
-        else // *** To remove, test first ***
-        {
-            UpdateBizCmd updateBizCmd = _mapper.Map<UpdateBizCmd>(request);
-            updateBizCmd.Id = (Guid)originalLic.BizId;
-            await _bizRepository.ManageBizAsync(updateBizCmd, cancellationToken);
-        }
 
         // Update members
         if (cmd.LicenceRequest.Members != null)
