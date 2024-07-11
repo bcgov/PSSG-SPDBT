@@ -274,9 +274,6 @@ public class BizLicAppValidationTest
         };
 
         // Contact info
-        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
-            .With(c => c.EmailAddress, "test@test.com")
-            .Create();
         ContactInfo applicantContactInfo = fixture.Build<ContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
             .Create();
@@ -316,7 +313,6 @@ public class BizLicAppValidationTest
                 .With(r => r.NoBranding, false)
                 .With(r => r.DocumentInfos, documentInfos)
                 .With(r => r.CategoryCodes, categories)
-                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
                 .With(r => r.Members, members)
                 .Create();
@@ -330,7 +326,6 @@ public class BizLicAppValidationTest
                 .With(r => r.UseDogs, true)
                 .With(r => r.NoBranding, false)
                 .With(r => r.CategoryCodes, categories)
-                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
                 .With(r => r.Members, members)
                 .Create();
