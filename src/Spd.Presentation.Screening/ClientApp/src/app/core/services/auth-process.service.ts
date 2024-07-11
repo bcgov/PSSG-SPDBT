@@ -141,10 +141,10 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Security Screening Portal
 	// *
-	async initializeSecurityScreening(): Promise<string | null> {
+	async initializeSecurityScreening(defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const nextRoute = SecurityScreeningRoutes.path();
+		const nextRoute = defaultRoute ?? SecurityScreeningRoutes.path();
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('[initializeSecurityScreening] nextUrl', nextUrl);
 
