@@ -122,4 +122,28 @@ public class BizProfileValidationTest
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlEmailAddress);
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlPhoneNumber);
     }
+
+    [Fact]
+    public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
+    {
+        var address = fixture.Build<Address>()
+            .With(a => a.AddressLine1, new string('a', 100))
+            .With(a => a.City, new string('a', 100))
+            .With(a => a.Country, new string('a', 100))
+            .With(a => a.PostalCode, new string('a', 20))
+            .Create();
+
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
+            .With(r => r.BizAddress, address)
+            .Create();
+
+        model.BizManagerContactInfo.GivenName = string.Empty;
+        model.BizManagerContactInfo.Surname = string.Empty;
+        model.BizManagerContactInfo.PhoneNumber = string.Empty;
+        model.BizManagerContactInfo.EmailAddress = string.Empty;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo);
+    }
 }
