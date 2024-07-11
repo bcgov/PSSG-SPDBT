@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { FileTypeCode } from './file-type-code';
+import { FileTypeCode } from '../models/file-type-code';
 export interface ApplicantApplicationFileResponse {
-  fileName?: null | string;
+  fileName?: string | null;
   fileTypeCode?: FileTypeCode;
   uploadedDateTime?: string;
 }

@@ -1,30 +1,27 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
+import { apiOrgsOrgIdReportsGet } from '../fn/org-report/api-orgs-org-id-reports-get';
+import { ApiOrgsOrgIdReportsGet$Params } from '../fn/org-report/api-orgs-org-id-reports-get';
+import { apiOrgsOrgIdReportsReportIdFileGet } from '../fn/org-report/api-orgs-org-id-reports-report-id-file-get';
+import { ApiOrgsOrgIdReportsReportIdFileGet$Params } from '../fn/org-report/api-orgs-org-id-reports-report-id-file-get';
 import { OrgReportListResponse } from '../models/org-report-list-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class OrgReportService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdReportsGet
-   */
+  /** Path part for operation `apiOrgsOrgIdReportsGet()` */
   static readonly ApiOrgsOrgIdReportsGetPath = '/api/orgs/{orgId}/reports';
 
   /**
@@ -33,28 +30,8 @@ export class OrgReportService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdReportsGet$Response(params: {
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<OrgReportListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgReportService.ApiOrgsOrgIdReportsGetPath, 'get');
-    if (params) {
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<OrgReportListResponse>;
-      })
-    );
+  apiOrgsOrgIdReportsGet$Response(params: ApiOrgsOrgIdReportsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<OrgReportListResponse>> {
+    return apiOrgsOrgIdReportsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -63,21 +40,13 @@ export class OrgReportService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdReportsGet(params: {
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<OrgReportListResponse> {
-
-    return this.apiOrgsOrgIdReportsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<OrgReportListResponse>) => r.body as OrgReportListResponse)
+  apiOrgsOrgIdReportsGet(params: ApiOrgsOrgIdReportsGet$Params, context?: HttpContext): Observable<OrgReportListResponse> {
+    return this.apiOrgsOrgIdReportsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<OrgReportListResponse>): OrgReportListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiOrgsOrgIdReportsReportIdFileGet
-   */
+  /** Path part for operation `apiOrgsOrgIdReportsReportIdFileGet()` */
   static readonly ApiOrgsOrgIdReportsReportIdFileGetPath = '/api/orgs/{orgId}/reports/{reportId}/file';
 
   /**
@@ -90,30 +59,8 @@ export class OrgReportService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdReportsReportIdFileGet$Response(params: {
-    reportId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Blob>> {
-
-    const rb = new RequestBuilder(this.rootUrl, OrgReportService.ApiOrgsOrgIdReportsReportIdFileGetPath, 'get');
-    if (params) {
-      rb.path('reportId', params.reportId, {});
-      rb.path('orgId', params.orgId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
-      })
-    );
+  apiOrgsOrgIdReportsReportIdFileGet$Response(params: ApiOrgsOrgIdReportsReportIdFileGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiOrgsOrgIdReportsReportIdFileGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -126,16 +73,9 @@ export class OrgReportService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiOrgsOrgIdReportsReportIdFileGet(params: {
-    reportId: string;
-    orgId: string;
-  },
-  context?: HttpContext
-
-): Observable<Blob> {
-
-    return this.apiOrgsOrgIdReportsReportIdFileGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+  apiOrgsOrgIdReportsReportIdFileGet(params: ApiOrgsOrgIdReportsReportIdFileGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiOrgsOrgIdReportsReportIdFileGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 

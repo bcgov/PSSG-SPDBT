@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "gen-api": "ng-openapi-gen -i https://frontend-dev.apps.emerald.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/app/api --ignoreUnusedModels false",
+    "gen-api": "ng-openapi-gen -i https://dev-spd-screening-portal.apps.emerald.devops.gov.bc.ca/swagger/v1/swagger.json -o ./src/app/api --ignoreUnusedModels false",
     "gen-api-all-local": "ng-openapi-gen -i http://localhost:5114/swagger/v1/swagger.json -o ./src/app/api",
     "gen-api-tags-local": "ng-openapi-gen -i http://localhost:5114/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
     "start": "ng serve --port 4200 --proxy-config proxy.conf.json",
@@ -35,7 +35,7 @@
     "jquery": "^3.7.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
-    "ng-openapi-gen": "^0.24.1",
+    "ng-openapi-gen": "^0.51.0",
     "ng-recaptcha": "^12.0.1",
     "ngx-dropzone": "^3.1.0",
     "ngx-mask": "^16.0.4",

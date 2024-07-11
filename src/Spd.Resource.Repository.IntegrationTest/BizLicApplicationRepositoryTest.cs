@@ -78,6 +78,62 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         await _context.SaveChangesAsync();
     } */
 
+    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    [Fact]
+    public async Task GetBizLicApplicationAsync_WithPrivateInvestigator_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        account biz = new();
+        biz.name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}";
+        biz.accountid = bizId;
+        _context.AddToaccounts(biz);
+
+        Guid licenceApplicationId = Guid.NewGuid();
+        spd_application app = new();
+        app.spd_firstname = "firstName";
+        app.spd_lastname = "lastName";
+        app.spd_middlename1 = "middleName1";
+        app.spd_middlename2 = "middleName2";
+        app.spd_applicationid = licenceApplicationId;
+        app.spd_licenceterm = 100000000;
+
+        _context.AddTospd_applications(app);
+        _context.SetLink(app, nameof(app.spd_ApplicantId_account), biz);
+
+        Guid bizContactId = Guid.NewGuid();
+        spd_businesscontact bizContact = new()
+        {
+            spd_businesscontactid = bizContactId,
+            spd_firstname = "InvestigatorGivenName",
+            spd_surname = "InvestigatorSurname"
+        };
+        _context.AddTospd_businesscontacts(bizContact);
+        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+
+        spd_position position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
+        _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _bizLicAppRepository.GetBizLicApplicationAsync(licenceApplicationId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<BizLicApplicationResp>(result);
+        Assert.Equal(bizId, result.BizId);
+        Assert.Equal(app.spd_applicationid, result.LicenceAppId);
+        Assert.Equal(bizContactId, result.PrivateInvestigatorSwlInfo?.BizContactId);
+        Assert.Equal(bizContact.spd_firstname, result.PrivateInvestigatorSwlInfo?.GivenName);
+        Assert.Equal(bizContact.spd_surname, result.PrivateInvestigatorSwlInfo?.Surname);
+
+        // Annihilate
+        _context.DeleteObject(biz);
+        _context.DeleteObject(app);
+        _context.DeleteObject(bizContact);
+        await _context.SaveChangesAsync();
+    } */
+
     [Fact]
     public async Task GetBizLicApplicationAsync_BizNotFound_Throw_Exception()
     {
@@ -344,6 +400,408 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         await _context.SaveChangesAsync();
     } */
 
+    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    [Fact]
+    public async Task SaveBizLicApplicationAsync_AddNewPrivateInvestigator_Run_Correctly()
+    {
+        // Arrange
+        PrivateInvestigatorSwlContactInfo privateInvestigator = new()
+        {
+            GivenName = "InvestigatorGivenName",
+            Surname = "InvestigatorSurname"
+        };
+
+        SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
+            .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
+            .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
+            .With(a => a.MiddleName1, IntegrationTestSetup.DataPrefix + "MiddleName1")
+            .With(a => a.MiddleName2, IntegrationTestSetup.DataPrefix + "MiddleName2")
+            .With(a => a.PhoneNumber, "1234567")
+            .With(a => a.ManagerGivenName, IntegrationTestSetup.DataPrefix + "ManagerGiveName")
+            .With(a => a.ManagerSurname, IntegrationTestSetup.DataPrefix + "ManagerSurname")
+            .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
+            .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
+            .With(a => a.ManagerPhoneNumber, "1234567")
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.HasExpiredLicence, false)
+            .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
+            .With(a => a.NoBranding, false)
+            .With(a => a.UseDogs, false)
+            .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, false)
+            .Without(a => a.LicenceAppId)
+            .Create();
+
+        account account = new()
+        {
+            accountid = cmd.ApplicantId,
+            address1_line1 = "MailingAddressLine1",
+            address1_line2 = "MailingAddressLine2",
+            address1_city = "MailingAddressCity",
+            address1_stateorprovince = "MailingAddressProvince",
+            address1_country = "MailingAddressCountry",
+            address1_postalcode = "abc123",
+            address2_line1 = "ResidentialAddressLine1",
+            address2_line2 = "ResidentialAddressLine2",
+            address2_city = "ResidentialAddressCity",
+            address2_stateorprovince = "ResidentialAddressProvince",
+            address2_country = "ResidentialAddressCountry",
+            address2_postalcode = "xyz789",
+            statecode = DynamicsConstants.StateCode_Active
+        };
+        _context.AddToaccounts(account);
+        await _context.SaveChangesAsync();
+
+        // Action
+        BizLicApplicationCmdResp? resp = await _bizLicAppRepository.SaveBizLicApplicationAsync(cmd, CancellationToken.None);
+        spd_application? app = _context.spd_applications
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_businesscontact_spd_application)
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+
+        spd_businesscontact? bizContact = _context.spd_businesscontacts
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(resp);
+        Assert.NotNull(bizContact);
+        Assert.Equal(cmd.GivenName, app.spd_firstname);
+        Assert.Equal(cmd.Surname, app.spd_lastname);
+        Assert.Equal(cmd.MiddleName1, app.spd_middlename1);
+        Assert.Equal(cmd.MiddleName2, app.spd_middlename2);
+        Assert.Equal(cmd.EmailAddress, app.spd_emailaddress1);
+        Assert.Equal(cmd.PhoneNumber, app.spd_phonenumber);
+        Assert.Equal(cmd.ManagerGivenName, app.spd_businessmanagerfirstname);
+        Assert.Equal(cmd.ManagerSurname, app.spd_businessmanagersurname);
+        Assert.Equal(cmd.ManagerMiddleName1, app.spd_businessmanagermiddlename1);
+        Assert.Equal(cmd.ManagerMiddleName2, app.spd_businessmanagermiddlename2);
+        Assert.Equal(cmd.ManagerEmailAddress, app.spd_businessmanageremail);
+        Assert.Equal(cmd.ManagerPhoneNumber, app.spd_businessmanagerphone);
+        Assert.Equal("100000000,100000001", app.spd_uploadeddocuments);
+        Assert.Equal(100000004, app.spd_businesstype);
+        Assert.Equal(100000000, app.spd_nologoorbranding);
+        Assert.Equal(100000000, app.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, app.spd_declaration);
+        Assert.Equal(account.address1_line1, app.spd_addressline1);
+        Assert.Equal(account.address1_line2, app.spd_addressline2);
+        Assert.Equal(account.address1_city, app.spd_city);
+        Assert.Equal(account.address1_stateorprovince, app.spd_province);
+        Assert.Equal(account.address1_country, app.spd_country);
+        Assert.Equal(account.address1_postalcode, app.spd_postalcode);
+        Assert.Equal(account.address2_line1, app.spd_residentialaddress1);
+        Assert.Equal(account.address2_line2, app.spd_residentialaddress2);
+        Assert.Equal(account.address2_city, app.spd_residentialcity);
+        Assert.Equal(account.address2_stateorprovince, app.spd_residentialprovince);
+        Assert.Equal(account.address2_country, app.spd_residentialcountry);
+        Assert.Equal(account.address2_postalcode, app.spd_residentialpostalcode);
+        Assert.Null(app.spd_declarationdate);
+        Assert.Null(app.spd_CurrentExpiredLicenceId);
+        Assert.NotNull(app.spd_origin);
+        Assert.NotNull(app.spd_payer);
+        Assert.NotNull(app.spd_portalmodifiedon);
+        Assert.NotNull(app.spd_ServiceTypeId);
+        Assert.NotEmpty(app.spd_application_spd_licencecategory);
+        Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(bizContact.spd_position_spd_businesscontact);
+
+        //Innihilate
+        _context.DeleteObject(account);
+        _context.DeleteObject(bizContact);
+
+        // Remove all links to the application before removing it
+        _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
+        foreach (var appCategory in app.spd_application_spd_licencecategory)
+            _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .FirstOrDefault();
+
+        _context.DeleteObject(appToRemove);
+        await _context.SaveChangesAsync();
+    }*/
+
+    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    [Fact]
+    public async Task SaveBizLicApplicationAsync_AddNewPrivateInvestigatorWithExistingPrivateInvestigator_Run_Correctly()
+    {
+        // Arrange
+        PrivateInvestigatorSwlContactInfo privateInvestigator = new()
+        {
+            GivenName = "InvestigatorGivenName",
+            Surname = "InvestigatorSurname"
+        };
+
+        SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
+            .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
+            .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
+            .With(a => a.MiddleName1, IntegrationTestSetup.DataPrefix + "MiddleName1")
+            .With(a => a.MiddleName2, IntegrationTestSetup.DataPrefix + "MiddleName2")
+            .With(a => a.PhoneNumber, "1234567")
+            .With(a => a.ManagerGivenName, IntegrationTestSetup.DataPrefix + "ManagerGiveName")
+            .With(a => a.ManagerSurname, IntegrationTestSetup.DataPrefix + "ManagerSurname")
+            .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
+            .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
+            .With(a => a.ManagerPhoneNumber, "1234567")
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.HasExpiredLicence, false)
+            .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
+            .With(a => a.NoBranding, false)
+            .With(a => a.UseDogs, false)
+            .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, true)
+            .Create();
+
+        spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
+        _context.AddTospd_applications(app);
+        spd_businesscontact bizContact = new();
+        _context.AddTospd_businesscontacts(bizContact);
+        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+
+        account account = new()
+        {
+            accountid = cmd.ApplicantId,
+            address1_line1 = "MailingAddressLine1",
+            address1_line2 = "MailingAddressLine2",
+            address1_city = "MailingAddressCity",
+            address1_stateorprovince = "MailingAddressProvince",
+            address1_country = "MailingAddressCountry",
+            address1_postalcode = "abc123",
+            address2_line1 = "ResidentialAddressLine1",
+            address2_line2 = "ResidentialAddressLine2",
+            address2_city = "ResidentialAddressCity",
+            address2_stateorprovince = "ResidentialAddressProvince",
+            address2_country = "ResidentialAddressCountry",
+            address2_postalcode = "xyz789",
+            statecode = DynamicsConstants.StateCode_Active
+        };
+        _context.AddToaccounts(account);
+        await _context.SaveChangesAsync();
+
+        // Action
+        BizLicApplicationCmdResp? resp = await _bizLicAppRepository.SaveBizLicApplicationAsync(cmd, CancellationToken.None);
+        spd_application? updatedApp = _context.spd_applications
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_businesscontact_spd_application)
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+
+        spd_businesscontact? newBizContact = _context.spd_businesscontacts
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(resp);
+        Assert.NotNull(newBizContact);
+        Assert.Equal(cmd.GivenName, updatedApp.spd_firstname);
+        Assert.Equal(cmd.Surname, updatedApp.spd_lastname);
+        Assert.Equal(cmd.MiddleName1, updatedApp.spd_middlename1);
+        Assert.Equal(cmd.MiddleName2, updatedApp.spd_middlename2);
+        Assert.Equal(cmd.EmailAddress, updatedApp.spd_emailaddress1);
+        Assert.Equal(cmd.PhoneNumber, updatedApp.spd_phonenumber);
+        Assert.Equal(cmd.ManagerGivenName, updatedApp.spd_businessmanagerfirstname);
+        Assert.Equal(cmd.ManagerSurname, updatedApp.spd_businessmanagersurname);
+        Assert.Equal(cmd.ManagerMiddleName1, updatedApp.spd_businessmanagermiddlename1);
+        Assert.Equal(cmd.ManagerMiddleName2, updatedApp.spd_businessmanagermiddlename2);
+        Assert.Equal(cmd.ManagerEmailAddress, updatedApp.spd_businessmanageremail);
+        Assert.Equal(cmd.ManagerPhoneNumber, updatedApp.spd_businessmanagerphone);
+        Assert.Equal("100000000,100000001", updatedApp.spd_uploadeddocuments);
+        Assert.Equal(100000004, updatedApp.spd_businesstype);
+        Assert.Equal(100000000, updatedApp.spd_nologoorbranding);
+        Assert.Equal(100000000, updatedApp.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, updatedApp.spd_declaration);
+        Assert.Equal(account.address1_line1, app.spd_addressline1);
+        Assert.Equal(account.address1_line2, app.spd_addressline2);
+        Assert.Equal(account.address1_city, app.spd_city);
+        Assert.Equal(account.address1_stateorprovince, app.spd_province);
+        Assert.Equal(account.address1_country, app.spd_country);
+        Assert.Equal(account.address1_postalcode, app.spd_postalcode);
+        Assert.Equal(account.address2_line1, app.spd_residentialaddress1);
+        Assert.Equal(account.address2_line2, app.spd_residentialaddress2);
+        Assert.Equal(account.address2_city, app.spd_residentialcity);
+        Assert.Equal(account.address2_stateorprovince, app.spd_residentialprovince);
+        Assert.Equal(account.address2_country, app.spd_residentialcountry);
+        Assert.Equal(account.address2_postalcode, app.spd_residentialpostalcode);
+        Assert.NotNull(updatedApp.spd_declarationdate);
+        Assert.NotNull(updatedApp.spd_origin);
+        Assert.NotNull(updatedApp.spd_payer);
+        Assert.NotNull(updatedApp.spd_portalmodifiedon);
+        Assert.NotNull(updatedApp.spd_ServiceTypeId);
+        Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
+        Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(newBizContact.spd_position_spd_businesscontact);
+
+        //Innihilate
+        _context.DeleteObject(account);
+        _context.DeleteObject(bizContact);
+        _context.DeleteObject(newBizContact);
+
+        // Remove all links to the application before removing it
+        foreach (var appCategory in updatedApp.spd_application_spd_licencecategory)
+            _context.DeleteLink(updatedApp, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .FirstOrDefault();
+
+        _context.DeleteObject(appToRemove);
+        await _context.SaveChangesAsync();
+    }*/
+
+    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    [Fact]
+    public async Task SaveBizLicApplicationAsync_UpdateExistingPrivateInvestigator_Run_Correctly()
+    {
+        // Arrange
+        PrivateInvestigatorSwlContactInfo privateInvestigator = new()
+        {
+            BizContactId = Guid.NewGuid(),
+            GivenName = "InvestigatorGivenName",
+            Surname = "InvestigatorSurname"
+        };
+
+        SaveBizLicApplicationCmd cmd = fixture.Build<SaveBizLicApplicationCmd>()
+            .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
+            .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
+            .With(a => a.MiddleName1, IntegrationTestSetup.DataPrefix + "MiddleName1")
+            .With(a => a.MiddleName2, IntegrationTestSetup.DataPrefix + "MiddleName2")
+            .With(a => a.PhoneNumber, "1234567")
+            .With(a => a.ManagerGivenName, IntegrationTestSetup.DataPrefix + "ManagerGiveName")
+            .With(a => a.ManagerSurname, IntegrationTestSetup.DataPrefix + "ManagerSurname")
+            .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
+            .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
+            .With(a => a.ManagerPhoneNumber, "1234567")
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.HasExpiredLicence, false)
+            .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
+            .With(a => a.NoBranding, false)
+            .With(a => a.UseDogs, false)
+            .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.AgreeToCompleteAndAccurate, true)
+            .Create();
+
+        spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
+        _context.AddTospd_applications(app);
+        spd_businesscontact bizContact = new()
+        {
+            spd_businesscontactid = privateInvestigator.BizContactId,
+            spd_firstname = "test",
+            spd_surname = "test",
+        };
+        _context.AddTospd_businesscontacts(bizContact);
+        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
+
+        account account = new()
+        {
+            accountid = cmd.ApplicantId,
+            address1_line1 = "MailingAddressLine1",
+            address1_line2 = "MailingAddressLine2",
+            address1_city = "MailingAddressCity",
+            address1_stateorprovince = "MailingAddressProvince",
+            address1_country = "MailingAddressCountry",
+            address1_postalcode = "abc123",
+            address2_line1 = "ResidentialAddressLine1",
+            address2_line2 = "ResidentialAddressLine2",
+            address2_city = "ResidentialAddressCity",
+            address2_stateorprovince = "ResidentialAddressProvince",
+            address2_country = "ResidentialAddressCountry",
+            address2_postalcode = "xyz789",
+            statecode = DynamicsConstants.StateCode_Active
+        };
+        _context.AddToaccounts(account);
+        await _context.SaveChangesAsync();
+
+        // Action
+        BizLicApplicationCmdResp? resp = await _bizLicAppRepository.SaveBizLicApplicationAsync(cmd, CancellationToken.None);
+        spd_application? updatedApp = _context.spd_applications
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_businesscontact_spd_application)
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+
+        spd_businesscontact? newBizContact = _context.spd_businesscontacts
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(resp);
+        Assert.NotNull(newBizContact);
+        Assert.Equal(cmd.GivenName, updatedApp.spd_firstname);
+        Assert.Equal(cmd.Surname, updatedApp.spd_lastname);
+        Assert.Equal(cmd.MiddleName1, updatedApp.spd_middlename1);
+        Assert.Equal(cmd.MiddleName2, updatedApp.spd_middlename2);
+        Assert.Equal(cmd.EmailAddress, updatedApp.spd_emailaddress1);
+        Assert.Equal(cmd.PhoneNumber, updatedApp.spd_phonenumber);
+        Assert.Equal(cmd.ManagerGivenName, updatedApp.spd_businessmanagerfirstname);
+        Assert.Equal(cmd.ManagerSurname, updatedApp.spd_businessmanagersurname);
+        Assert.Equal(cmd.ManagerMiddleName1, updatedApp.spd_businessmanagermiddlename1);
+        Assert.Equal(cmd.ManagerMiddleName2, updatedApp.spd_businessmanagermiddlename2);
+        Assert.Equal(cmd.ManagerEmailAddress, updatedApp.spd_businessmanageremail);
+        Assert.Equal(cmd.ManagerPhoneNumber, updatedApp.spd_businessmanagerphone);
+        Assert.Equal("100000000,100000001", updatedApp.spd_uploadeddocuments);
+        Assert.Equal(100000004, updatedApp.spd_businesstype);
+        Assert.Equal(100000000, updatedApp.spd_nologoorbranding);
+        Assert.Equal(100000000, updatedApp.spd_requestdogs);
+        Assert.Equal(cmd.AgreeToCompleteAndAccurate, updatedApp.spd_declaration);
+        Assert.Equal(account.address1_line1, app.spd_addressline1);
+        Assert.Equal(account.address1_line2, app.spd_addressline2);
+        Assert.Equal(account.address1_city, app.spd_city);
+        Assert.Equal(account.address1_stateorprovince, app.spd_province);
+        Assert.Equal(account.address1_country, app.spd_country);
+        Assert.Equal(account.address1_postalcode, app.spd_postalcode);
+        Assert.Equal(account.address2_line1, app.spd_residentialaddress1);
+        Assert.Equal(account.address2_line2, app.spd_residentialaddress2);
+        Assert.Equal(account.address2_city, app.spd_residentialcity);
+        Assert.Equal(account.address2_stateorprovince, app.spd_residentialprovince);
+        Assert.Equal(account.address2_country, app.spd_residentialcountry);
+        Assert.Equal(account.address2_postalcode, app.spd_residentialpostalcode);
+        Assert.NotNull(updatedApp.spd_declarationdate);
+        Assert.NotNull(updatedApp.spd_origin);
+        Assert.NotNull(updatedApp.spd_payer);
+        Assert.NotNull(updatedApp.spd_portalmodifiedon);
+        Assert.NotNull(updatedApp.spd_ServiceTypeId);
+        Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
+        Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(newBizContact.spd_position_spd_businesscontact);
+
+        //Innihilate
+        _context.DeleteObject(account);
+        _context.DeleteObject(bizContact);
+        _context.DeleteObject(newBizContact);
+
+        // Remove all links to the application before removing it
+        foreach (var appCategory in updatedApp.spd_application_spd_licencecategory)
+            _context.DeleteLink(updatedApp, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .FirstOrDefault();
+
+        _context.DeleteObject(appToRemove);
+        await _context.SaveChangesAsync();
+    }*/
+
     [Fact]
     public async Task SaveBizLicApplicationAsync_ApplicationNotFound_Throw_Exception()
     {
@@ -472,6 +930,140 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         spd_application? originalAppToRemove = _context.spd_applications
             .Where(a => a.spd_applicationid == latestApplicationId)
+            .FirstOrDefault();
+        _context.DeleteObject(originalAppToRemove);
+
+        await _context.SaveChangesAsync();
+    } */
+
+    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    [Fact]
+    public async Task CreateBizLicApplicationAsync_WithNewPrivateInvestigator_Run_Correctly()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        account biz = new()
+        {
+            accountid = bizId,
+            name = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}",
+            address1_line1 = "MailingAddressLine1",
+            address1_line2 = "MailingAddressLine2",
+            address1_city = "MailingAddressCity",
+            address1_stateorprovince = "MailingAddressProvince",
+            address1_country = "MailingAddressCountry",
+            address1_postalcode = "abc123",
+            address2_line1 = "ResidentialAddressLine1",
+            address2_line2 = "ResidentialAddressLine2",
+            address2_city = "ResidentialAddressCity",
+            address2_stateorprovince = "ResidentialAddressProvince",
+            address2_country = "ResidentialAddressCountry",
+            address2_postalcode = "xyz789",
+            statecode = DynamicsConstants.StateCode_Active
+        };
+        _context.AddToaccounts(biz);
+
+        Guid originalApplicationId = Guid.NewGuid();
+        spd_application originalApp = new();
+        originalApp.spd_applicationid = originalApplicationId;
+        originalApp.spd_businesstype = (int?)BizTypeOptionSet.Corporation;
+
+        _context.AddTospd_applications(originalApp);
+        _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), biz);
+        await _context.SaveChangesAsync();
+
+        PrivateInvestigatorSwlContactInfo privateInvestigator = new()
+        {
+            GivenName = "InvestigatorGivenName",
+            Surname = "InvestigatorSurname"
+        };
+
+        CreateBizLicApplicationCmd cmd = fixture.Build<CreateBizLicApplicationCmd>()
+            .With(a => a.ApplicationTypeCode, ApplicationTypeEnum.Renewal)
+            .With(a => a.GivenName, IntegrationTestSetup.DataPrefix + "GiveName")
+            .With(a => a.Surname, IntegrationTestSetup.DataPrefix + "Surname")
+            .With(a => a.MiddleName1, IntegrationTestSetup.DataPrefix + "MiddleName1")
+            .With(a => a.MiddleName2, IntegrationTestSetup.DataPrefix + "MiddleName2")
+            .With(a => a.PhoneNumber, "1234567")
+            .With(a => a.ManagerGivenName, IntegrationTestSetup.DataPrefix + "ManagerGiveName")
+            .With(a => a.ManagerSurname, IntegrationTestSetup.DataPrefix + "ManagerSurname")
+            .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
+            .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
+            .With(a => a.ManagerPhoneNumber, "1234567")
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.WorkPermit })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.OriginalApplicationId, originalApplicationId)
+            .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
+            .Without(a => a.OriginalLicenceId)
+            .Create();
+
+        // Action
+        var result = await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None);
+        spd_application? app = _context.spd_applications
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_businesscontact_spd_application)
+            .Where(a => a.spd_applicationid == result.LicenceAppId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefault();
+
+        spd_businesscontact? bizContact = _context.spd_businesscontacts
+            .Expand(b => b.spd_position_spd_businesscontact)
+            .OrderByDescending(b => b.createdon)
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(bizContact);
+        Assert.Equal(cmd.GivenName, app.spd_firstname);
+        Assert.Equal(cmd.Surname, app.spd_lastname);
+        Assert.Equal(cmd.MiddleName1, app.spd_middlename1);
+        Assert.Equal(cmd.MiddleName2, app.spd_middlename2);
+        Assert.Equal(cmd.EmailAddress, app.spd_emailaddress1);
+        Assert.Equal(cmd.PhoneNumber, app.spd_phonenumber);
+        Assert.Equal(cmd.ManagerGivenName, app.spd_businessmanagerfirstname);
+        Assert.Equal(cmd.ManagerSurname, app.spd_businessmanagersurname);
+        Assert.Equal(cmd.ManagerMiddleName1, app.spd_businessmanagermiddlename1);
+        Assert.Equal(cmd.ManagerMiddleName2, app.spd_businessmanagermiddlename2);
+        Assert.Equal(cmd.ManagerEmailAddress, app.spd_businessmanageremail);
+        Assert.Equal(cmd.ManagerPhoneNumber, app.spd_businessmanagerphone);
+        Assert.Equal("100000002", app.spd_uploadeddocuments);
+        Assert.Equal(biz.address1_line1, app.spd_addressline1);
+        Assert.Equal(biz.address1_line2, app.spd_addressline2);
+        Assert.Equal(biz.address1_city, app.spd_city);
+        Assert.Equal(biz.address1_stateorprovince, app.spd_province);
+        Assert.Equal(biz.address1_country, app.spd_country);
+        Assert.Equal(biz.address1_postalcode, app.spd_postalcode);
+        Assert.Equal(biz.address2_line1, app.spd_residentialaddress1);
+        Assert.Equal(biz.address2_line2, app.spd_residentialaddress2);
+        Assert.Equal(biz.address2_city, app.spd_residentialcity);
+        Assert.Equal(biz.address2_stateorprovince, app.spd_residentialprovince);
+        Assert.Equal(biz.address2_country, app.spd_residentialcountry);
+        Assert.Equal(biz.address2_postalcode, app.spd_residentialpostalcode);
+        Assert.Equal(originalApp.spd_businesstype, app.spd_businesstype);
+        Assert.NotEmpty(app.spd_application_spd_licencecategory);
+        Assert.NotEmpty(app.spd_businesscontact_spd_application);
+        Assert.NotEmpty(bizContact.spd_position_spd_businesscontact);
+
+        // Annihilate
+        _context.DeleteObject(bizContact);
+        _context.DeleteObject(biz);
+
+        // Remove all links to the application before removing it
+        _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), null);
+        _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
+
+        foreach (var appCategory in app.spd_application_spd_licencecategory)
+            _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
+        await _context.SaveChangesAsync();
+
+        spd_application? appToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == result.LicenceAppId)
+            .FirstOrDefault();
+        _context.DeleteObject(appToRemove);
+
+        spd_application? originalAppToRemove = _context.spd_applications
+            .Where(a => a.spd_applicationid == originalApplicationId)
             .FirstOrDefault();
         _context.DeleteObject(originalAppToRemove);
 
