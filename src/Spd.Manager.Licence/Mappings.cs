@@ -110,7 +110,15 @@ internal class Mappings : Profile
 
         CreateMap<BizLicenceApp, BizLicApplication>()
             .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
-            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)));
+            .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.ContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.ContactId))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.BizContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.BizContactId))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.GivenName, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.GivenName))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.Surname, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.Surname))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.EmailAddress, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.EmailAddress))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.MiddleName1, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.MiddleName1))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.MiddleName2, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.MiddleName2))
+            .ForPath(d => d.PrivateInvestigatorSwlInfo.PhoneNumber, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.PhoneNumber));
 
         CreateMap<BizLicAppSubmitRequest, CreateBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
