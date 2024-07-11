@@ -266,6 +266,24 @@ namespace Spd.Utilities.Dynamics
         }
         #endregion
 
+        #region position
+        public static readonly ImmutableDictionary<string, Guid> PositionDictionary = new Dictionary<string, Guid>()
+        {
+            {"PrivateInvestigatorManager", Guid.Parse("70bc0f0c-dc34-ef11-b850-00505683fbf4")}
+        }.ToImmutableDictionary();
+
+        public static spd_position? LookupPosition(this DynamicsContext context, string? key)
+        {
+            if (key == null) return null;
+            var keyExisted = PositionDictionary.TryGetValue(key, out Guid guid);
+            if (!keyExisted) return null;
+            return context.spd_positions
+                .Where(s => s.spd_positionid == guid)
+                .Where(s => s.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefault();
+        }
+        #endregion
+
         public static async Task<spd_application?> GetApplicationById(this DynamicsContext context, Guid appId, CancellationToken ct)
         {
             try
