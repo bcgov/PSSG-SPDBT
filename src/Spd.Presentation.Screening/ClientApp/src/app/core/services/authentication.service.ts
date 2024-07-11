@@ -1,11 +1,20 @@
-import { Injectable } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { IdentityProviderTypeCode } from '../code-types/code-types.models';
 import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	constructor(private oauthService: OAuthService, private configService: ConfigService) {}
+	private href: string;
+
+	constructor(
+		@Inject(APP_BASE_HREF) href: string,
+		private oauthService: OAuthService,
+		private configService: ConfigService
+	) {
+		this.href = href;
+	}
 
 	//----------------------------------------------------------
 	// *
@@ -13,8 +22,8 @@ export class AuthenticationService {
 	public async tryLogin(
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string
-	): Promise<{ state: any; loggedIn: boolean }> {
-		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+	): Promise<{ state: string | null; loggedIn: boolean }> {
+		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndTryLogin()
@@ -24,7 +33,7 @@ export class AuthenticationService {
 		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
 		return {
-			state: this.oauthService.state || null,
+			state: this.oauthService.state ?? null,
 			loggedIn: isLoggedIn,
 		};
 	}
@@ -36,10 +45,10 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
-		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
 
-		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
+		const returnRoute = returnComponentRoute;
+		console.debug('[AuthenticationService] LOGIN', returnRoute);
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndLogin({
@@ -51,7 +60,7 @@ export class AuthenticationService {
 		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
 
 		if (isLoggedIn) {
-			return Promise.resolve(this.oauthService.state || returnRoute);
+			return Promise.resolve(this.oauthService.state || returnRoute || null);
 		}
 
 		return Promise.resolve(null);
@@ -69,5 +78,13 @@ export class AuthenticationService {
 	// *
 	public isLoggedIn(): boolean {
 		return this.oauthService.hasValidAccessToken();
+	}
+
+	private createRedirectUrl(componentUrl: string): string {
+		let baseUrl = `${location.origin}${this.href}`;
+		if (baseUrl.endsWith('/')) {
+			baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+		}
+		return `${baseUrl}${componentUrl}`;
 	}
 }
