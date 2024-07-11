@@ -1,11 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface DuplicateCheckResult {
-  firstName?: null | string;
+  firstName?: string | null;
   hasPotentialDuplicate?: boolean;
   hasPotentialDuplicateInDb?: boolean;
   hasPotentialDuplicateInTsv?: boolean;
-  lastName?: null | string;
+  lastName?: string | null;
   lineNumber?: number;
-  msg?: null | string;
+  msg?: string | null;
 }

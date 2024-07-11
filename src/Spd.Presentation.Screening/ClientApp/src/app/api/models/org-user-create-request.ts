@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ContactAuthorizationTypeCode } from './contact-authorization-type-code';
+import { ContactAuthorizationTypeCode } from '../models/contact-authorization-type-code';
 export interface OrgUserCreateRequest {
   contactAuthorizationTypeCode?: ContactAuthorizationTypeCode;
-  email?: null | string;
-  firstName?: null | string;
-  jobTitle?: null | string;
-  lastName?: null | string;
+  email?: string | null;
+  firstName?: string | null;
+  jobTitle?: string | null;
+  lastName?: string | null;
   organizationId?: string;
-  phoneNumber?: null | string;
+  phoneNumber?: string | null;
 }

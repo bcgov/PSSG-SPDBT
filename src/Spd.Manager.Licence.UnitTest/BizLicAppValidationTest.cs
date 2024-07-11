@@ -204,7 +204,8 @@ public class BizLicAppValidationTest
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
         model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.PrivateInvestigator };
-        model.PrivateInvestigatorSwlInfo.LicenceId = null;
+        model.PrivateInvestigatorSwlInfo.GivenName = null;
+        model.PrivateInvestigatorSwlInfo.Surname = null;
 
         var result = validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(r => r.PrivateInvestigatorSwlInfo);

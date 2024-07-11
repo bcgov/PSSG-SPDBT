@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface OrgInviteVerifyResponse {
-  errMsg?: null | string;
+  errMsg?: string | null;
   linkIsValid?: boolean;
-  orgId?: null | string;
+  orgId?: string | null;
 }

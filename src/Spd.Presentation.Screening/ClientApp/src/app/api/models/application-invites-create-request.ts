@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationInviteCreateRequest } from './application-invite-create-request';
+import { ApplicationInviteCreateRequest } from '../models/application-invite-create-request';
 export interface ApplicationInvitesCreateRequest {
-  applicationInviteCreateRequests?: null | Array<ApplicationInviteCreateRequest>;
-  hostUrl?: null | string;
+  applicationInviteCreateRequests?: Array<ApplicationInviteCreateRequest> | null;
+  hostUrl?: string | null;
   requireDuplicateCheck?: boolean;
 }

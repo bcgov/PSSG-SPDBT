@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface AddressFindResponse {
-  cursor?: null | number;
-  description?: null | string;
-  highlight?: null | string;
-  id?: null | string;
-  next?: null | string;
-  text?: null | string;
+  cursor?: number | null;
+  description?: string | null;
+  highlight?: string | null;
+  id?: string | null;
+  next?: string | null;
+  text?: string | null;
 }
