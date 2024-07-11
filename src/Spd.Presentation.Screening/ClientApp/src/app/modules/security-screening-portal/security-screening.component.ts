@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
+import { SecurityScreeningRoutes } from './security-screening-routing.module';
 
 @Component({
 	selector: 'app-security-screening',
@@ -19,7 +20,14 @@ export class SecurityScreeningComponent implements OnInit {
 	constructor(private authProcessService: AuthProcessService, private router: Router) {}
 
 	async ngOnInit(): Promise<void> {
-		const nextRoute = await this.authProcessService.initializeSecurityScreening();
+		const currentPath = location.pathname;
+		// to handle relative urls, look for '/security-screening/' to get the default route
+		const startOfRoute = currentPath.indexOf('/' + SecurityScreeningRoutes.MODULE_PATH + '/');
+		const defaultRoute = currentPath.substring(startOfRoute);
+
+		console.debug('currentPath', currentPath, 'defaultRoute', defaultRoute);
+
+		const nextRoute = await this.authProcessService.initializeSecurityScreening(defaultRoute);
 
 		if (nextRoute) {
 			await this.router.navigate([nextRoute]);
