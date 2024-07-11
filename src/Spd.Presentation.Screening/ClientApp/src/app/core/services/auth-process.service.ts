@@ -54,9 +54,9 @@ export class AuthProcessService {
 	async initializeCrrp(defaultOrgId: string | null = null, defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextRoute = defaultRoute ?? CrrpRoutes.path(CrrpRoutes.HOME);
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
-		console.debug('initializeCrrp nextUrl', nextUrl);
+		console.debug('[initializeCrrp] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultOrgId);
@@ -82,7 +82,7 @@ export class AuthProcessService {
 	async initializeCrrpOrgLinkBceid(defaultOrgId: string, defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextRoute = defaultRoute ?? CrrpRoutes.path(CrrpRoutes.HOME);
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
 		console.debug('[initializeCrrpOrgLinkBceid] nextUrl', nextUrl);
 
@@ -120,12 +120,12 @@ export class AuthProcessService {
 	// * CRRP Portal - User Invitation
 	// * sign in but do not call whoami/org endpoints
 	//
-	async initializeCrrpUserInvitation(defaultRoute: string | null = null): Promise<string | null> {
+	async initializeCrrpUserInvitation(invitationId: string): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextRoute = defaultRoute ? defaultRoute : CrrpRoutes.path(CrrpRoutes.HOME);
+		const nextRoute = CrrpRoutes.path(`${CrrpRoutes.INVITATION}/${invitationId}`);
 		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
-		console.debug('initializeCrrpUserInvitation nextUrl', nextUrl);
+		console.debug('[initializeCrrpUserInvitation] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			this.notify(true);
@@ -141,11 +141,12 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Security Screening Portal
 	// *
-	async initializeSecurityScreening(): Promise<string | null> {
+	async initializeSecurityScreening(defaultRoute: string | null = null): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, SecurityScreeningRoutes.path());
-		console.debug('initializeSecurityScreening nextUrl', nextUrl);
+		const nextRoute = defaultRoute ?? SecurityScreeningRoutes.path();
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('[initializeSecurityScreening] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBcscService.whoAmIAsync();
@@ -192,8 +193,9 @@ export class AuthProcessService {
 	async initializeCrrpa(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, CrrpaRoutes.path());
-		console.debug('initializeCrrpa nextUrl', nextUrl);
+		const nextRoute = CrrpaRoutes.path();
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('[initializeCrrpa] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBcscService.applicantUserInfoAsync();
@@ -213,11 +215,9 @@ export class AuthProcessService {
 	async initializePsso(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.Idir;
 
-		const nextUrl = await this.authenticationService.login(
-			this.identityProvider,
-			PssoRoutes.path(PssoRoutes.SCREENING_STATUSES)
-		);
-		console.debug('initializePsso nextUrl', nextUrl);
+		const nextRoute = PssoRoutes.path(PssoRoutes.SCREENING_STATUSES);
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('[initializePsso] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserIdirService.whoAmIAsync();
@@ -251,7 +251,7 @@ export class AuthProcessService {
 			if (this.authUserIdirService.idirUserWhoamiProfile?.isFirstTimeLogin) {
 				nextRoute = PssoRoutes.path(PssoRoutes.ORG_TERMS_AND_CONDITIONS);
 			}
-
+			console.debug('[initializePsso] nextRoute', nextRoute);
 			return Promise.resolve(nextRoute);
 		}
 
@@ -292,8 +292,9 @@ export class AuthProcessService {
 	async initializePssoa(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, PssoaRoutes.path());
-		console.debug('initializePssoa nextUrl', nextUrl);
+		const nextRoute = PssoaRoutes.path();
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('[initializePssoa] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBcscService.applicantUserInfoAsync();
@@ -351,8 +352,9 @@ export class AuthProcessService {
 	async initializeOrgReg(): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, OrgRegistrationRoutes.path());
-		console.debug('initializeOrgReg nextUrl', nextUrl);
+		const nextRoute = OrgRegistrationRoutes.path();
+		const nextUrl = await this.authenticationService.login(this.identityProvider, nextRoute);
+		console.debug('[initializeOrgReg] nextUrl', nextUrl);
 
 		if (nextUrl) {
 			// User is already logged in and clicks Login button.

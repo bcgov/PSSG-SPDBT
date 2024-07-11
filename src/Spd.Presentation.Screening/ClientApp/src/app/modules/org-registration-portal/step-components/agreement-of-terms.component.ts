@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
-import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
+import { UtilService } from 'src/app/core/services/util.service';
+import { CaptchaResponse } from 'src/app/shared/components/captcha-v2.component';
 import { RegistrationFormStepComponent } from '../org-registration.component';
 
 export class AgreementOfTermsModel {
@@ -143,7 +144,11 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 	captchaPassed = false;
 	captchaResponse: CaptchaResponse | null = null;
 
-	constructor(private formBuilder: FormBuilder, private authProcessService: AuthProcessService) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private utilService: UtilService,
+		private authProcessService: AuthProcessService
+	) {}
 
 	ngOnInit(): void {
 		this.form = this.formBuilder.group({
@@ -192,10 +197,6 @@ export class AgreementOfTermsComponent implements OnInit, RegistrationFormStepCo
 
 	onTokenResponse($event: CaptchaResponse) {
 		this.captchaResponse = $event;
-		if ($event.type === CaptchaResponseType.success && this.captchaResponse?.resolved) {
-			this.captchaPassed = true;
-		} else {
-			this.captchaPassed = false;
-		}
+		this.captchaPassed = this.utilService.captchaTokenResponse($event);
 	}
 }

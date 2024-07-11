@@ -1,27 +1,27 @@
 /* tslint:disable */
 /* eslint-disable */
-import { ApplicationPortalStatusCode } from './application-portal-status-code';
-import { CaseSubStatusCode } from './case-sub-status-code';
-import { PayerPreferenceTypeCode } from './payer-preference-type-code';
-import { ServiceTypeCode } from './service-type-code';
+import { ApplicationPortalStatusCode } from '../models/application-portal-status-code';
+import { CaseSubStatusCode } from '../models/case-sub-status-code';
+import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 export interface ApplicantApplicationResponse {
-  applicationNumber?: null | string;
+  applicationNumber?: string | null;
   caseSubStatus?: CaseSubStatusCode;
-  contractedCompanyName?: null | string;
-  createdOn?: null | string;
-  dateOfBirth?: null | string;
-  emailAddress?: null | string;
+  contractedCompanyName?: string | null;
+  createdOn?: string | null;
+  dateOfBirth?: string | null;
+  emailAddress?: string | null;
   failedPaymentAttempts?: number;
-  givenName?: null | string;
-  haveVerifiedIdentity?: null | boolean;
+  givenName?: string | null;
+  haveVerifiedIdentity?: boolean | null;
   id?: string;
-  jobTitle?: null | string;
-  middleName1?: null | string;
-  middleName2?: null | string;
+  jobTitle?: string | null;
+  middleName1?: string | null;
+  middleName2?: string | null;
   orgId?: string;
-  orgName?: null | string;
+  orgName?: string | null;
   payeeType?: PayerPreferenceTypeCode;
   serviceType?: ServiceTypeCode;
   status?: ApplicationPortalStatusCode;
-  surname?: null | string;
+  surname?: string | null;
 }

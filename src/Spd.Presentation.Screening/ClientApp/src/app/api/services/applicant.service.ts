@@ -1,43 +1,50 @@
 /* tslint:disable */
 /* eslint-disable */
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
-import { RequestBuilder } from '../request-builder';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
 
-import { AnonymousApplicantAppCreateRequest } from '../models/anonymous-applicant-app-create-request';
-import { AppInviteVerifyRequest } from '../models/app-invite-verify-request';
-import { AppOrgResponse } from '../models/app-org-response';
-import { ApplicantAppCreateRequest } from '../models/applicant-app-create-request';
+import { apiApplicantsApplicantIdScreeningsApplicationIdGet } from '../fn/applicant/api-applicants-applicant-id-screenings-application-id-get';
+import { ApiApplicantsApplicantIdScreeningsApplicationIdGet$Params } from '../fn/applicant/api-applicants-applicant-id-screenings-application-id-get';
+import { apiApplicantsApplicantIdScreeningsGet } from '../fn/applicant/api-applicants-applicant-id-screenings-get';
+import { ApiApplicantsApplicantIdScreeningsGet$Params } from '../fn/applicant/api-applicants-applicant-id-screenings-get';
+import { apiApplicantsClearancesShareableGet } from '../fn/applicant/api-applicants-clearances-shareable-get';
+import { ApiApplicantsClearancesShareableGet$Params } from '../fn/applicant/api-applicants-clearances-shareable-get';
+import { apiApplicantsInvitesPost } from '../fn/applicant/api-applicants-invites-post';
+import { ApiApplicantsInvitesPost$Params } from '../fn/applicant/api-applicants-invites-post';
+import { apiApplicantsScreeningsAnonymousPost } from '../fn/applicant/api-applicants-screenings-anonymous-post';
+import { ApiApplicantsScreeningsAnonymousPost$Params } from '../fn/applicant/api-applicants-screenings-anonymous-post';
+import { apiApplicantsScreeningsApplicationIdFilesGet } from '../fn/applicant/api-applicants-screenings-application-id-files-get';
+import { ApiApplicantsScreeningsApplicationIdFilesGet$Params } from '../fn/applicant/api-applicants-screenings-application-id-files-get';
+import { apiApplicantsScreeningsApplicationIdFilesPost } from '../fn/applicant/api-applicants-screenings-application-id-files-post';
+import { ApiApplicantsScreeningsApplicationIdFilesPost$Params } from '../fn/applicant/api-applicants-screenings-application-id-files-post';
+import { apiApplicantsScreeningsApplicationIdFileTemplatesGet } from '../fn/applicant/api-applicants-screenings-application-id-file-templates-get';
+import { ApiApplicantsScreeningsApplicationIdFileTemplatesGet$Params } from '../fn/applicant/api-applicants-screenings-application-id-file-templates-get';
+import { apiApplicantsScreeningsPost } from '../fn/applicant/api-applicants-screenings-post';
+import { ApiApplicantsScreeningsPost$Params } from '../fn/applicant/api-applicants-screenings-post';
+import { apiApplicantsUserinfoGet } from '../fn/applicant/api-applicants-userinfo-get';
+import { ApiApplicantsUserinfoGet$Params } from '../fn/applicant/api-applicants-userinfo-get';
 import { ApplicantAppFileCreateResponse } from '../models/applicant-app-file-create-response';
 import { ApplicantApplicationFileListResponse } from '../models/applicant-application-file-list-response';
 import { ApplicantApplicationListResponse } from '../models/applicant-application-list-response';
 import { ApplicantApplicationResponse } from '../models/applicant-application-response';
 import { ApplicantUserInfo } from '../models/applicant-user-info';
 import { ApplicationCreateResponse } from '../models/application-create-response';
-import { FileTemplateTypeCode } from '../models/file-template-type-code';
-import { FileTypeCode } from '../models/file-type-code';
-import { ServiceTypeCode } from '../models/service-type-code';
+import { AppOrgResponse } from '../models/app-org-response';
 import { ShareableClearanceResponse } from '../models/shareable-clearance-response';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ApplicantService extends BaseService {
-  constructor(
-    config: ApiConfiguration,
-    http: HttpClient
-  ) {
+  constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
 
-  /**
-   * Path part for operation apiApplicantsInvitesPost
-   */
+  /** Path part for operation `apiApplicantsInvitesPost()` */
   static readonly ApiApplicantsInvitesPostPath = '/api/applicants/invites';
 
   /**
@@ -50,32 +57,8 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsInvitesPost$Response(params: {
-
-    /**
-     * which include InviteEncryptedCode
-     */
-    body: AppInviteVerifyRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<AppOrgResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsInvitesPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AppOrgResponse>;
-      })
-    );
+  apiApplicantsInvitesPost$Response(params: ApiApplicantsInvitesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<AppOrgResponse>> {
+    return apiApplicantsInvitesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -88,25 +71,13 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsInvitesPost(params: {
-
-    /**
-     * which include InviteEncryptedCode
-     */
-    body: AppInviteVerifyRequest
-  },
-  context?: HttpContext
-
-): Observable<AppOrgResponse> {
-
-    return this.apiApplicantsInvitesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<AppOrgResponse>) => r.body as AppOrgResponse)
+  apiApplicantsInvitesPost(params: ApiApplicantsInvitesPost$Params, context?: HttpContext): Observable<AppOrgResponse> {
+    return this.apiApplicantsInvitesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<AppOrgResponse>): AppOrgResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsScreeningsPost
-   */
+  /** Path part for operation `apiApplicantsScreeningsPost()` */
   static readonly ApiApplicantsScreeningsPostPath = '/api/applicants/screenings';
 
   /**
@@ -119,28 +90,8 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsScreeningsPost$Response(params?: {
-    body?: ApplicantAppCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationCreateResponse>;
-      })
-    );
+  apiApplicantsScreeningsPost$Response(params?: ApiApplicantsScreeningsPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
+    return apiApplicantsScreeningsPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -153,21 +104,13 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsScreeningsPost(params?: {
-    body?: ApplicantAppCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<ApplicationCreateResponse> {
-
-    return this.apiApplicantsScreeningsPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+  apiApplicantsScreeningsPost(params?: ApiApplicantsScreeningsPost$Params, context?: HttpContext): Observable<ApplicationCreateResponse> {
+    return this.apiApplicantsScreeningsPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationCreateResponse>): ApplicationCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsScreeningsAnonymousPost
-   */
+  /** Path part for operation `apiApplicantsScreeningsAnonymousPost()` */
   static readonly ApiApplicantsScreeningsAnonymousPostPath = '/api/applicants/screenings/anonymous';
 
   /**
@@ -180,28 +123,8 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsScreeningsAnonymousPost$Response(params?: {
-    body?: AnonymousApplicantAppCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsAnonymousPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicationCreateResponse>;
-      })
-    );
+  apiApplicantsScreeningsAnonymousPost$Response(params?: ApiApplicantsScreeningsAnonymousPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicationCreateResponse>> {
+    return apiApplicantsScreeningsAnonymousPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -214,21 +137,13 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiApplicantsScreeningsAnonymousPost(params?: {
-    body?: AnonymousApplicantAppCreateRequest
-  },
-  context?: HttpContext
-
-): Observable<ApplicationCreateResponse> {
-
-    return this.apiApplicantsScreeningsAnonymousPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicationCreateResponse>) => r.body as ApplicationCreateResponse)
+  apiApplicantsScreeningsAnonymousPost(params?: ApiApplicantsScreeningsAnonymousPost$Params, context?: HttpContext): Observable<ApplicationCreateResponse> {
+    return this.apiApplicantsScreeningsAnonymousPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicationCreateResponse>): ApplicationCreateResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsClearancesShareableGet
-   */
+  /** Path part for operation `apiApplicantsClearancesShareableGet()` */
   static readonly ApiApplicantsClearancesShareableGetPath = '/api/applicants/clearances/shareable';
 
   /**
@@ -237,30 +152,8 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsClearancesShareableGet$Response(params?: {
-    withOrgId?: string;
-    serviceType?: ServiceTypeCode;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ShareableClearanceResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsClearancesShareableGetPath, 'get');
-    if (params) {
-      rb.query('withOrgId', params.withOrgId, {});
-      rb.query('serviceType', params.serviceType, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ShareableClearanceResponse>;
-      })
-    );
+  apiApplicantsClearancesShareableGet$Response(params?: ApiApplicantsClearancesShareableGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ShareableClearanceResponse>> {
+    return apiApplicantsClearancesShareableGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -269,22 +162,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsClearancesShareableGet(params?: {
-    withOrgId?: string;
-    serviceType?: ServiceTypeCode;
-  },
-  context?: HttpContext
-
-): Observable<ShareableClearanceResponse> {
-
-    return this.apiApplicantsClearancesShareableGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ShareableClearanceResponse>) => r.body as ShareableClearanceResponse)
+  apiApplicantsClearancesShareableGet(params?: ApiApplicantsClearancesShareableGet$Params, context?: HttpContext): Observable<ShareableClearanceResponse> {
+    return this.apiApplicantsClearancesShareableGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ShareableClearanceResponse>): ShareableClearanceResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsApplicantIdScreeningsGet
-   */
+  /** Path part for operation `apiApplicantsApplicantIdScreeningsGet()` */
   static readonly ApiApplicantsApplicantIdScreeningsGetPath = '/api/applicants/{applicantId}/screenings';
 
   /**
@@ -293,28 +177,8 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdScreeningsGet$Response(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantApplicationListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdScreeningsGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantApplicationListResponse>;
-      })
-    );
+  apiApplicantsApplicantIdScreeningsGet$Response(params: ApiApplicantsApplicantIdScreeningsGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantApplicationListResponse>> {
+    return apiApplicantsApplicantIdScreeningsGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -323,21 +187,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdScreeningsGet(params: {
-    applicantId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicantApplicationListResponse> {
-
-    return this.apiApplicantsApplicantIdScreeningsGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantApplicationListResponse>) => r.body as ApplicantApplicationListResponse)
+  apiApplicantsApplicantIdScreeningsGet(params: ApiApplicantsApplicantIdScreeningsGet$Params, context?: HttpContext): Observable<ApplicantApplicationListResponse> {
+    return this.apiApplicantsApplicantIdScreeningsGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationListResponse>): ApplicantApplicationListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsApplicantIdScreeningsApplicationIdGet
-   */
+  /** Path part for operation `apiApplicantsApplicantIdScreeningsApplicationIdGet()` */
   static readonly ApiApplicantsApplicantIdScreeningsApplicationIdGetPath = '/api/applicants/{applicantId}/screenings/{applicationId}';
 
   /**
@@ -346,30 +202,8 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params: {
-    applicantId: string;
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantApplicationResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsApplicantIdScreeningsApplicationIdGetPath, 'get');
-    if (params) {
-      rb.path('applicantId', params.applicantId, {});
-      rb.path('applicationId', params.applicationId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantApplicationResponse>;
-      })
-    );
+  apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params: ApiApplicantsApplicantIdScreeningsApplicationIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantApplicationResponse>> {
+    return apiApplicantsApplicantIdScreeningsApplicationIdGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -378,22 +212,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsApplicantIdScreeningsApplicationIdGet(params: {
-    applicantId: string;
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicantApplicationResponse> {
-
-    return this.apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantApplicationResponse>) => r.body as ApplicantApplicationResponse)
+  apiApplicantsApplicantIdScreeningsApplicationIdGet(params: ApiApplicantsApplicantIdScreeningsApplicationIdGet$Params, context?: HttpContext): Observable<ApplicantApplicationResponse> {
+    return this.apiApplicantsApplicantIdScreeningsApplicationIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationResponse>): ApplicantApplicationResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsUserinfoGet
-   */
+  /** Path part for operation `apiApplicantsUserinfoGet()` */
   static readonly ApiApplicantsUserinfoGetPath = '/api/applicants/userinfo';
 
   /**
@@ -406,26 +231,8 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsUserinfoGet$Response(params?: {
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantUserInfo>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsUserinfoGetPath, 'get');
-    if (params) {
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantUserInfo>;
-      })
-    );
+  apiApplicantsUserinfoGet$Response(params?: ApiApplicantsUserinfoGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantUserInfo>> {
+    return apiApplicantsUserinfoGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -438,20 +245,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsUserinfoGet(params?: {
-  },
-  context?: HttpContext
-
-): Observable<ApplicantUserInfo> {
-
-    return this.apiApplicantsUserinfoGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantUserInfo>) => r.body as ApplicantUserInfo)
+  apiApplicantsUserinfoGet(params?: ApiApplicantsUserinfoGet$Params, context?: HttpContext): Observable<ApplicantUserInfo> {
+    return this.apiApplicantsUserinfoGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantUserInfo>): ApplicantUserInfo => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsScreeningsApplicationIdFilesGet
-   */
+  /** Path part for operation `apiApplicantsScreeningsApplicationIdFilesGet()` */
   static readonly ApiApplicantsScreeningsApplicationIdFilesGetPath = '/api/applicants/screenings/{applicationId}/files';
 
   /**
@@ -464,28 +264,8 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdFilesGet$Response(params: {
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<ApplicantApplicationFileListResponse>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFilesGetPath, 'get');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<ApplicantApplicationFileListResponse>;
-      })
-    );
+  apiApplicantsScreeningsApplicationIdFilesGet$Response(params: ApiApplicantsScreeningsApplicationIdFilesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantApplicationFileListResponse>> {
+    return apiApplicantsScreeningsApplicationIdFilesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -498,21 +278,13 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdFilesGet(params: {
-    applicationId: string;
-  },
-  context?: HttpContext
-
-): Observable<ApplicantApplicationFileListResponse> {
-
-    return this.apiApplicantsScreeningsApplicationIdFilesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<ApplicantApplicationFileListResponse>) => r.body as ApplicantApplicationFileListResponse)
+  apiApplicantsScreeningsApplicationIdFilesGet(params: ApiApplicantsScreeningsApplicationIdFilesGet$Params, context?: HttpContext): Observable<ApplicantApplicationFileListResponse> {
+    return this.apiApplicantsScreeningsApplicationIdFilesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantApplicationFileListResponse>): ApplicantApplicationFileListResponse => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsScreeningsApplicationIdFilesPost
-   */
+  /** Path part for operation `apiApplicantsScreeningsApplicationIdFilesPost()` */
   static readonly ApiApplicantsScreeningsApplicationIdFilesPostPath = '/api/applicants/screenings/{applicationId}/files';
 
   /**
@@ -525,33 +297,8 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiApplicantsScreeningsApplicationIdFilesPost$Response(params: {
-    applicationId: string;
-    body?: {
-'Files'?: Array<Blob>;
-'FileType'?: FileTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFilesPostPath, 'post');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.body(params.body, 'multipart/form-data');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>;
-      })
-    );
+  apiApplicantsScreeningsApplicationIdFilesPost$Response(params: ApiApplicantsScreeningsApplicationIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>> {
+    return apiApplicantsScreeningsApplicationIdFilesPost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -564,25 +311,13 @@ export class ApplicantService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiApplicantsScreeningsApplicationIdFilesPost(params: {
-    applicationId: string;
-    body?: {
-'Files'?: Array<Blob>;
-'FileType'?: FileTypeCode;
-}
-  },
-  context?: HttpContext
-
-): Observable<Array<ApplicantAppFileCreateResponse>> {
-
-    return this.apiApplicantsScreeningsApplicationIdFilesPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>) => r.body as Array<ApplicantAppFileCreateResponse>)
+  apiApplicantsScreeningsApplicationIdFilesPost(params: ApiApplicantsScreeningsApplicationIdFilesPost$Params, context?: HttpContext): Observable<Array<ApplicantAppFileCreateResponse>> {
+    return this.apiApplicantsScreeningsApplicationIdFilesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<ApplicantAppFileCreateResponse>>): Array<ApplicantAppFileCreateResponse> => r.body)
     );
   }
 
-  /**
-   * Path part for operation apiApplicantsScreeningsApplicationIdFileTemplatesGet
-   */
+  /** Path part for operation `apiApplicantsScreeningsApplicationIdFileTemplatesGet()` */
   static readonly ApiApplicantsScreeningsApplicationIdFileTemplatesGetPath = '/api/applicants/screenings/{applicationId}/file-templates';
 
   /**
@@ -595,30 +330,8 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params: {
-    applicationId: string;
-    fileTemplateType: FileTemplateTypeCode;
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<Blob>> {
-
-    const rb = new RequestBuilder(this.rootUrl, ApplicantService.ApiApplicantsScreeningsApplicationIdFileTemplatesGetPath, 'get');
-    if (params) {
-      rb.path('applicationId', params.applicationId, {});
-      rb.query('fileTemplateType', params.fileTemplateType, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: 'application/pdf',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Blob>;
-      })
-    );
+  apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params: ApiApplicantsScreeningsApplicationIdFileTemplatesGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Blob>> {
+    return apiApplicantsScreeningsApplicationIdFileTemplatesGet(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -631,16 +344,9 @@ export class ApplicantService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiApplicantsScreeningsApplicationIdFileTemplatesGet(params: {
-    applicationId: string;
-    fileTemplateType: FileTemplateTypeCode;
-  },
-  context?: HttpContext
-
-): Observable<Blob> {
-
-    return this.apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+  apiApplicantsScreeningsApplicationIdFileTemplatesGet(params: ApiApplicantsScreeningsApplicationIdFileTemplatesGet$Params, context?: HttpContext): Observable<Blob> {
+    return this.apiApplicantsScreeningsApplicationIdFileTemplatesGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Blob>): Blob => r.body)
     );
   }
 
