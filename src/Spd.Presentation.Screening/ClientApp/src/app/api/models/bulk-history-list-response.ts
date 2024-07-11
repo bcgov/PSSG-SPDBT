@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
-import { BulkHistoryResponse } from './bulk-history-response';
-import { PaginationResponse } from './pagination-response';
+import { BulkHistoryResponse } from '../models/bulk-history-response';
+import { PaginationResponse } from '../models/pagination-response';
 export interface BulkHistoryListResponse {
-  bulkUploadHistorys?: null | Array<BulkHistoryResponse>;
+  bulkUploadHistorys?: Array<BulkHistoryResponse> | null;
   pagination?: PaginationResponse;
 }
