@@ -169,8 +169,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				this.applicationIsInProgress =
 					this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
 
-				// this.applicationIsInProgress = false; // TODO REMOVE
-
 				// Set flags that determine if NEW licences/permits can be created
 				let activeLicenceExist = activeLicences.length > 0;
 				if (!activeLicenceExist) {

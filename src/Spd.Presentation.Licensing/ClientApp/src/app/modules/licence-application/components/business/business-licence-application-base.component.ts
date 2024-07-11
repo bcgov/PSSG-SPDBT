@@ -33,11 +33,9 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		this.authProcessService.logoutBcsc();
 		await this.authProcessService.initializeLicencingBCeID(defaultBizId);
 
-		// TODO handle first time login
+		// handle first time login
 		if (this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
-			this.router.navigateByUrl(
-				LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS)
-			);
+			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS));
 			return;
 		}
 
