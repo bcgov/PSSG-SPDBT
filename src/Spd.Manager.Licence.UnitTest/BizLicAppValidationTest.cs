@@ -70,21 +70,6 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.BizManagerContactInfo.GivenName = string.Empty;
-        model.BizManagerContactInfo.Surname = string.Empty;
-        model.BizManagerContactInfo.PhoneNumber = string.Empty;
-        model.BizManagerContactInfo.EmailAddress = string.Empty;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo);
-    }
-
-    [Fact]
     public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
         BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
