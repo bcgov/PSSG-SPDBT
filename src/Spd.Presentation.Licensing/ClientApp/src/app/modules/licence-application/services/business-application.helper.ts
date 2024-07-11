@@ -11,6 +11,7 @@ import {
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -266,7 +267,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue('British Columbia'),
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
 	});
@@ -311,7 +312,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue('British Columbia'),
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
