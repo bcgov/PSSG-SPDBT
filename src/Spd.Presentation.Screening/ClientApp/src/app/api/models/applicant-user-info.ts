@@ -1,16 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
-import { GenderCode } from './gender-code';
+import { GenderCode } from '../models/gender-code';
 export interface ApplicantUserInfo {
-  age?: null | string;
-  birthDate?: null | string;
-  displayName?: null | string;
-  email?: null | string;
-  emailVerified?: null | boolean;
-  firstName?: null | string;
+  age?: string | null;
+  birthDate?: string | null;
+  displayName?: string | null;
+  email?: string | null;
+  emailVerified?: boolean | null;
+  firstName?: string | null;
   genderCode?: GenderCode;
-  lastName?: null | string;
-  middleName1?: null | string;
-  middleName2?: null | string;
-  sub?: null | string;
+  lastName?: string | null;
+  middleName1?: string | null;
+  middleName2?: string | null;
+  sub?: string | null;
 }

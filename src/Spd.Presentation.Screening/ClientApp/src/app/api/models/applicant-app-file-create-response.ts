@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface ApplicantAppFileCreateResponse {
-  applicationId?: null | string;
+  applicationId?: string | null;
   documentUrlId?: string;
   uploadedDateTime?: string;
 }

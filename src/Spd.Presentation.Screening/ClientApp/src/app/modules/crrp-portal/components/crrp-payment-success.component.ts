@@ -15,6 +15,7 @@ import { CrrpRoutes } from '../crrp-routing.module';
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<app-payment-success
 				[payment]="payment"
+				[showCloseButton]="false"
 				(backRoute)="onBackRoute()"
 				(downloadReceipt)="onDownloadReceipt()"
 			></app-payment-success>

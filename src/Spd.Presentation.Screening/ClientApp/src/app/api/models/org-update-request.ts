@@ -1,18 +1,18 @@
 /* tslint:disable */
 /* eslint-disable */
-import { BooleanTypeCode } from './boolean-type-code';
-import { PayerPreferenceTypeCode } from './payer-preference-type-code';
+import { BooleanTypeCode } from '../models/boolean-type-code';
+import { PayerPreferenceTypeCode } from '../models/payer-preference-type-code';
 export interface OrgUpdateRequest {
-  addressCity?: null | string;
-  addressCountry?: null | string;
-  addressLine1?: null | string;
-  addressLine2?: null | string;
-  addressPostalCode?: null | string;
-  addressProvince?: null | string;
+  addressCity?: string | null;
+  addressCountry?: string | null;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  addressPostalCode?: string | null;
+  addressProvince?: string | null;
   contractorsNeedVulnerableSectorScreening?: BooleanTypeCode;
-  email?: null | string;
+  email?: string | null;
   id?: string;
   licenseesNeedVulnerableSectorScreening?: BooleanTypeCode;
   payerPreference?: PayerPreferenceTypeCode;
-  phoneNumber?: null | string;
+  phoneNumber?: string | null;
 }

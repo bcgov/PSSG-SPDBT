@@ -63,7 +63,7 @@ export class InvitationLinkOrganizationComponent implements OnInit {
 				}
 
 				defaultOrgId = resp.orgId!;
-				await this.authProcessService.initializeCrrpOrgLinkBceid(defaultOrgId!, location.pathname);
+				await this.authProcessService.initializeCrrpOrgLinkBceid(defaultOrgId!);
 			});
 
 		this.authProcessService.waitUntilAuthentication$

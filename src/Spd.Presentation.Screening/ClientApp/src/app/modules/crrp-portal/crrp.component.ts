@@ -5,13 +5,6 @@ import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { CrrpRoutes } from './crrp-routing.module';
 
-// export const DefaultRouterLinkActiveOptions: IsActiveMatchOptions = {
-// 	matrixParams: 'ignored',
-// 	paths: 'exact',
-// 	fragment: 'ignored',
-// 	queryParams: 'ignored',
-// };
-
 export interface NavigationItemType {
 	label: string;
 	path: string;
@@ -203,16 +196,14 @@ export class CrrpComponent implements OnInit {
 		const queryParams = await lastValueFrom(this.route.queryParams.pipe(take(1)));
 		const defaultOrgId: string | undefined = queryParams['orgId'];
 
-		const nextRoute = await this.authProcessService.initializeCrrp(defaultOrgId);
+		const currentPath = location.pathname;
+		// to handle relative urls, look for '/crrp/' to get the default route
+		const startOfRoute = currentPath.indexOf('/' + CrrpRoutes.MODULE_PATH + '/');
+		const defaultRoute = currentPath.substring(startOfRoute);
 
-		// console.debug(
-		// 	'CrrpComponent initialize defaultOrgId',
-		// 	defaultOrgId,
-		// 	'nextRoute',
-		// 	nextRoute,
-		// 	'bceidUserInfoProfile',
-		// 	this.authUserService.bceidUserInfoProfile
-		// );
+		console.debug('currentPath', currentPath, 'defaultRoute', defaultRoute);
+
+		const nextRoute = await this.authProcessService.initializeCrrp(defaultOrgId, defaultRoute);
 
 		if (this.authUserService.bceidUserInfoProfile?.isFirstTimeLogin) {
 			this.router.navigateByUrl(CrrpRoutes.path(CrrpRoutes.ORG_TERMS_AND_CONDITIONS));
