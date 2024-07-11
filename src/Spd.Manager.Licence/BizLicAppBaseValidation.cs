@@ -17,12 +17,6 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
         RuleFor(r => r.ApplicantIsBizManager)
             .NotEmpty()
             .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
-        RuleFor(r => r.BizManagerContactInfo)
-            .Must(r => r.GivenName.IsNullOrEmpty() != true &&
-                r.Surname.IsNullOrEmpty() != true &&
-                r.PhoneNumber.IsNullOrEmpty() != true &&
-                r.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(r.EmailAddress))
-            .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.ApplicantContactInfo)
             .Must(r => r.GivenName.IsNullOrEmpty() != true &&
                 r.Surname.IsNullOrEmpty() != true &&
