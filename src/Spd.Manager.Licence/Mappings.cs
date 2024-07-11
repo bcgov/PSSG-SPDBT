@@ -124,8 +124,7 @@ internal class Mappings : Profile
             .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName1))
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.ApplicantContactInfo.MiddleName2))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.ApplicantContactInfo.EmailAddress))
-            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ApplicantContactInfo.PhoneNumber))
-            .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo == null ? null : s.PrivateInvestigatorSwlInfo.LicenceId));
+            .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ApplicantContactInfo.PhoneNumber));
 
         CreateMap<BizLicAppSubmitRequest, SaveBizLicApplicationCmd>()
             .IncludeBase<BizLicenceApp, BizLicApplication>()
