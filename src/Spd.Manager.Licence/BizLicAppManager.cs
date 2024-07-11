@@ -567,21 +567,21 @@ internal class BizLicAppManager :
     {
         BizResult bizResult = await _bizRepository.GetBizAsync(bizId, ct);
 
-        createApp.ManagerGivenName = bizResult.BizManagerContactInfo?.GivenName;
-        createApp.ManagerSurname = bizResult.BizManagerContactInfo?.Surname;
-        createApp.ManagerMiddleName1 = bizResult.BizManagerContactInfo?.MiddleName1;
-        createApp.ManagerMiddleName2 = bizResult.BizManagerContactInfo?.MiddleName2;
-        createApp.ManagerEmailAddress = bizResult.BizManagerContactInfo?.EmailAddress;
-        createApp.ManagerPhoneNumber = bizResult.BizManagerContactInfo?.PhoneNumber;
+        createApp.ManagerGivenName = bizResult?.BizManagerContactInfo?.GivenName;
+        createApp.ManagerSurname = bizResult?.BizManagerContactInfo?.Surname;
+        createApp.ManagerMiddleName1 = bizResult?.BizManagerContactInfo?.MiddleName1;
+        createApp.ManagerMiddleName2 = bizResult?.BizManagerContactInfo?.MiddleName2;
+        createApp.ManagerEmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
+        createApp.ManagerPhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
 
         if ((bool)request.ApplicantIsBizManager)
         {
-            createApp.GivenName = bizResult.BizManagerContactInfo?.GivenName;
-            createApp.Surname = bizResult.BizManagerContactInfo?.Surname;
-            createApp.MiddleName1 = bizResult.BizManagerContactInfo?.MiddleName1;
-            createApp.MiddleName2 = bizResult.BizManagerContactInfo?.MiddleName2;
-            createApp.EmailAddress = bizResult.BizManagerContactInfo?.EmailAddress;
-            createApp.PhoneNumber = bizResult.BizManagerContactInfo?.PhoneNumber;
+            createApp.GivenName = bizResult?.BizManagerContactInfo?.GivenName;
+            createApp.Surname = bizResult?.BizManagerContactInfo?.Surname;
+            createApp.MiddleName1 = bizResult?.BizManagerContactInfo?.MiddleName1;
+            createApp.MiddleName2 = bizResult?.BizManagerContactInfo?.MiddleName2;
+            createApp.EmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
+            createApp.PhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
         }
         else
         {
