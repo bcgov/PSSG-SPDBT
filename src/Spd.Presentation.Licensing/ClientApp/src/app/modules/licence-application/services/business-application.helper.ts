@@ -233,27 +233,24 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredTrueValidator(
 					'addressSelected',
-					(_form) => _form.get('isAddressTheSame')?.value != true
+					(form) => form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'addressLine1',
-					(_form) => _form.get('isAddressTheSame')?.value != true
+					(form) => form.get('isAddressTheSame')?.value != true
 				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'city',
-					(_form) => _form.get('isAddressTheSame')?.value != true
-				),
+				FormGroupValidators.conditionalRequiredValidator('city', (form) => form.get('isAddressTheSame')?.value != true),
 				FormGroupValidators.conditionalRequiredValidator(
 					'postalCode',
-					(_form) => _form.get('isAddressTheSame')?.value != true
+					(form) => form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'province',
-					(_form) => _form.get('isAddressTheSame')?.value != true
+					(form) => form.get('isAddressTheSame')?.value != true
 				),
 				FormGroupValidators.conditionalRequiredValidator(
 					'country',
-					(_form) => _form.get('isAddressTheSame')?.value != true
+					(form) => form.get('isAddressTheSame')?.value != true
 				),
 			],
 		}
