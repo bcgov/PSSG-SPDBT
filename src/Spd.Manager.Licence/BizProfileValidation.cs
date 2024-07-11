@@ -1,10 +1,14 @@
 using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpdateRequest>
 {
     public BizProfileUpdateRequestValidator()
     {
+        Regex emailRegex = new(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", RegexOptions.NonBacktracking);
+
         RuleFor(r => r.BizTradeName).NotEmpty();
         RuleFor(r => r.BizTypeCode).NotEmpty().IsInEnum();
         RuleFor(r => r.BizAddress).NotEmpty();
@@ -33,5 +37,10 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.BizManagerContactInfo).NotEmpty();
+        RuleFor(r => r.BizManagerContactInfo)
+            .Must(r => r.GivenName.IsNullOrEmpty() != true &&
+                r.Surname.IsNullOrEmpty() != true &&
+                r.PhoneNumber.IsNullOrEmpty() != true &&
+                r.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(r.EmailAddress));
     }
 }
