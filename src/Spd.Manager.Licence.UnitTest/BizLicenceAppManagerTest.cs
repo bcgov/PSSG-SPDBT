@@ -305,6 +305,8 @@ public class BizLicenceAppManagerTest
             .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
             .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None))
+            .ReturnsAsync(new BizResult());
 
         BizLicAppSubmitRequest request = new()
         {
@@ -313,6 +315,7 @@ public class BizLicenceAppManagerTest
             LatestApplicationId = licAppId,
             NoBranding = false,
             UseDogs = true,
+            ApplicantIsBizManager = false,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
         };
         List<LicAppFileInfo> files = new();
@@ -496,6 +499,8 @@ public class BizLicenceAppManagerTest
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
             .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None))
+            .ReturnsAsync(new BizResult());
 
         BizLicAppSubmitRequest request = new()
         {
@@ -505,6 +510,7 @@ public class BizLicenceAppManagerTest
             NoBranding = false,
             UseDogs = true,
             Reprint = true,
+            ApplicantIsBizManager = false,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
         };
         BizLicAppUpdateCommand cmd = new(request, new List<LicAppFileInfo>());
@@ -658,6 +664,8 @@ public class BizLicenceAppManagerTest
            .ReturnsAsync(new BizLicApplicationCmdResp(newLicAppId, bizId));
         mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), CancellationToken.None))
             .ReturnsAsync(new LicenceFeeListResp() { LicenceFees = new List<LicenceFeeResp> { licenceFeeResp } });
+        mockBizRepo.Setup(a => a.GetBizAsync(It.Is<Guid>(m => m == bizId), CancellationToken.None))
+            .ReturnsAsync(new BizResult());
 
         BizLicAppSubmitRequest request = new()
         {
@@ -666,6 +674,7 @@ public class BizLicenceAppManagerTest
             LatestApplicationId = licAppId,
             NoBranding = true,
             UseDogs = false,
+            ApplicantIsBizManager = false,
             CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.ArmouredCarGuard }
         };
 
