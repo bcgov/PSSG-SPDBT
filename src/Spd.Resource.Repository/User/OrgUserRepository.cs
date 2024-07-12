@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
@@ -6,8 +7,6 @@ using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using System.Collections.ObjectModel;
-using System.Net;
 
 namespace Spd.Resource.Repository.User
 {
@@ -17,6 +16,7 @@ namespace Spd.Resource.Repository.User
         private readonly IMapper _mapper;
         private readonly ILogger<OrgUserRepository> _logger;
         private readonly ITimeLimitedDataProtector _dataProtector;
+
         public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger, IDataProtectionProvider dpProvider)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
@@ -120,7 +120,7 @@ namespace Spd.Resource.Repository.User
 
             var organization = await _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, ct);
 
-            // create user 
+            // create user
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
             user.spd_portaluserid = Guid.NewGuid();
             _dynaContext.AddTospd_portalusers(user);
@@ -167,7 +167,7 @@ namespace Spd.Resource.Repository.User
             await _dynaContext.SaveChangesAsync(ct);
 
             user._spd_organizationid_value = createUserCmd.User.OrganizationId;
-            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = role.spd_roleid } };
+            user.spd_spd_role_spd_portaluser = new DataServiceCollection<spd_role> { new() { spd_roleid = role.spd_roleid } };
 
             return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
@@ -201,7 +201,7 @@ namespace Spd.Resource.Repository.User
             _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = newRole.spd_roleid } };
+            user.spd_spd_role_spd_portaluser = new DataServiceCollection<spd_role> { new() { spd_roleid = newRole.spd_roleid } };
             return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
 
@@ -255,7 +255,7 @@ namespace Spd.Resource.Repository.User
                     .Where(r => r.spd_portaluserid == user.spd_portaluserid)
                     .FirstOrDefault();
                 if (role != null)
-                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = role.spd_roleid } };
+                    user.spd_spd_role_spd_portaluser = new DataServiceCollection<spd_role> { new() { spd_roleid = role.spd_roleid } };
             });
 
             return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
