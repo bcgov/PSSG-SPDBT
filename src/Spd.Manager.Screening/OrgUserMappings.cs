@@ -1,4 +1,5 @@
 using AutoMapper;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.LogonUser;
 

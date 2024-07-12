@@ -167,4 +167,25 @@ namespace Spd.Manager.Shared
         Expired,
         Suspended
     }
+
+    public enum PortalUserServiceCategoryCode
+    {
+        Screening,
+        Licensing
+    }
+
+    public enum ContactAuthorizationTypeCode
+    {
+        [Description("Primary Authorized Contact")]
+        Primary,
+
+        [Description("Authorized Contact")]
+        Contact,
+
+        [Description("Primary Authorized Business Manager Contact")]
+        PrimaryBusinessManager,
+
+        [Description("Authorized Business Manager Contact")]
+        BusinessManager
+    }
 }
