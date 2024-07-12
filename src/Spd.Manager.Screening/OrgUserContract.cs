@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Spd.Utilities.LogonUser;
-using System.ComponentModel;
+using Spd.Manager.Shared;
 
 namespace Spd.Manager.Screening
 {
@@ -65,15 +65,6 @@ namespace Spd.Manager.Screening
 
     public record InvitationRequest(string InviteEncryptedCode);
     public record InvitationResponse(Guid OrgId);
-
-    public enum ContactAuthorizationTypeCode
-    {
-        [Description("Primary Authorized Contact")]
-        Primary,
-
-        [Description("Authorized Contact")]
-        Contact
-    }
 
     public class OrgUserCreateRequestValidator<T> : AbstractValidator<T> where T : OrgUserUpsertRequest
     {
