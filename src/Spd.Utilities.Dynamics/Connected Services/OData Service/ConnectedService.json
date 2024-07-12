@@ -1,43 +1,42 @@
 {
-  "ProviderId": "Microsoft.OData.ConnectedService",
-  "Version": "1.1.0.0",
-  "GettingStartedDocument": {
-    "Uri": "http://odata.github.io/odata.net/"
-  },
-  "ExtendedData": {
-    "EnableNamingAlias": false,
-    "IgnoreUnexpectedElementsAndAttributes": true,
-    "IncludeT4File": false,
-    "ExcludedOperationImports": [],
-    "ExcludedBoundOperations": [],
-    "OmitVersioningInfo": false,
-    "ServiceName": "OData Service",
-    "Endpoint": "https://spd-sparc.dev.jag.gov.bc.ca/api/data/v9.0/$metadata",
-    "EdmxVersion": {
-      "Major": 4,
-      "Minor": 0,
-      "Build": 0,
-      "Revision": 0,
-      "MajorRevision": 0,
-      "MinorRevision": 0
+    "ProviderId": "Microsoft.OData.ConnectedService",
+    "Version": "1.1.0.0",
+    "GettingStartedDocument": {
+        "Uri": "http://odata.github.io/odata.net/"
     },
-    "GeneratedFileNamePrefix": "Reference",
-    "UseNamespacePrefix": false,
-    "NamespacePrefix": null,
-    "UseDataServiceCollection": true,
-    "MakeTypesInternal": false,
-    "OpenGeneratedFilesInIDE": false,
-    "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSIsImtpZCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSJ9.eyJhdWQiOiJodHRwczovL3NwZC1zcGFyYy5kZXYuamFnLmdvdi5iYy5jYS9hcGkvZGF0YS92OS4wLyIsImlzcyI6Imh0dHA6Ly9zdHN0ZXN0Lmdvdi5iYy5jYS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNzIwNzM5MDc1LCJuYmYiOjE3MjA3MzkwNzUsImV4cCI6MTcyMDc0MjY3NSwidXBuIjoic3BkX29zYWRAZ292LmJjLmNhIiwidW5pcXVlX25hbWUiOiJJRElSXFxTUERfT1NBRCIsImFwcHR5cGUiOiJDb25maWRlbnRpYWwiLCJhcHBpZCI6IjAxNzRiMjAzLWNkY2YtNDE2NC04NTMyLTBhNGM0ZmRmZGY2MiIsImF1dGhtZXRob2QiOiJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YWM6Y2xhc3NlczpQYXNzd29yZFByb3RlY3RlZFRyYW5zcG9ydCIsImF1dGhfdGltZSI6IjIwMjQtMDctMTFUMjM6MDQ6MzUuNzU5WiIsInZlciI6IjEuMCIsInNjcCI6Im9wZW5pZCJ9.k61pzG2sgohNhRivpnvx15JbDY7Pk464FKaZm_2gG4bXtzd-buSOiCYf0WYBrUeKl2f_BdfTzSHncXYcfKJZSVGk4yDgDeGhP0FJQ4x4FedRPu9t6CEPNwmRAt39I4_dKh7uV9zHRzmXoE58bDIcoYkMOAFXrTEPsDBdTanO-0FKXe_qEot79wi08RYJ72UpUhlr-Ugo4QP_EyU0qZqXooCTMeTtNdgi65tfbk4IV1iNhqFZ9qQLrPCEkSpmANi8zCOOc4uQpQ5hu4jxK0DAnn_EYMutMnl9DvqT8tcgxHiYYon8P99HeHaNYw8guVEck1W-7aZHbHdtCNGGD5chUA",
-    "IncludeWebProxy": false,
-    "WebProxyHost": null,
-    "IncludeWebProxyNetworkCredentials": false,
-    "StoreWebProxyNetworkCredentials": false,
-    "WebProxyNetworkCredentialsUsername": null,
-    "WebProxyNetworkCredentialsPassword": null,
-    "WebProxyNetworkCredentialsDomain": null,
-    "IncludeCustomHeaders": true,
-    "StoreCustomHttpHeaders": true,
-    "ExcludedSchemaTypes": []
-  }
+    "ExtendedData": {
+        "EnableNamingAlias": false,
+        "IgnoreUnexpectedElementsAndAttributes": true,
+        "IncludeT4File": false,
+        "ExcludedOperationImports": [],
+        "ExcludedBoundOperations": [],
+        "OmitVersioningInfo": false,
+        "ServiceName": "OData Service",
+        "Endpoint": "https://spd-sparc.dev.jag.gov.bc.ca/api/data/v9.0/$metadata",
+        "EdmxVersion": {
+            "Major": 4,
+            "Minor": 0,
+            "Build": 0,
+            "Revision": 0,
+            "MajorRevision": 0,
+            "MinorRevision": 0
+        },
+        "GeneratedFileNamePrefix": "Reference",
+        "UseNamespacePrefix": false,
+        "NamespacePrefix": null,
+        "UseDataServiceCollection": true,
+        "MakeTypesInternal": false,
+        "OpenGeneratedFilesInIDE": false,
+        "GenerateMultipleFiles": false,
+        "IncludeWebProxy": false,
+        "WebProxyHost": null,
+        "IncludeWebProxyNetworkCredentials": false,
+        "StoreWebProxyNetworkCredentials": false,
+        "WebProxyNetworkCredentialsUsername": null,
+        "WebProxyNetworkCredentialsPassword": null,
+        "WebProxyNetworkCredentialsDomain": null,
+        "IncludeCustomHeaders": true,
+        "StoreCustomHttpHeaders": false,
+        "ExcludedSchemaTypes": []
+    }
 }
