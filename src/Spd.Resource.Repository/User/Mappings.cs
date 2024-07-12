@@ -18,7 +18,6 @@ namespace Spd.Resource.Repository.User
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_servicecategory, opt => opt.MapFrom(s => (int)PortalUserServiceCategoryOptionSet.Screening))
             .ReverseMap()
-            .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ContactAuthorizationTypeCode, opt => opt.MapFrom(s => GetAuthorizationTypeCode(s.spd_spd_role_spd_portaluser)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value));
 
