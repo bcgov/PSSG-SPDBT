@@ -43,8 +43,8 @@ public class OrgManagerTest
 
         //Assert
         Assert.IsType<OrgInvitationLinkResponse>(result);
-        Assert.StartsWith("localhost?encodedOrgId=", result.OrgInvitationLinkUrl);
-        this.encodedOrgId = result.OrgInvitationLinkUrl.Split("=")[1];
+        Assert.StartsWith("localhost/", result.OrgInvitationLinkUrl);
+        this.encodedOrgId = result.OrgInvitationLinkUrl.Split("/")[1];
         this.orgId = orgId;
     }
 
