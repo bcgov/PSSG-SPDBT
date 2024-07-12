@@ -166,13 +166,14 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             spd_businesscontact? bizContact = _context.spd_businesscontacts
                 .Expand(b => b.spd_position_spd_businesscontact)
                 .Expand(b => b.spd_businesscontact_spd_application)
+                .Expand(b => b.spd_ContactId)
                 .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
                 .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
                 .FirstOrDefault();
-
+            
             PrivateInvestigatorSwlContactInfo privateInvestigatorInfo = new()
             {
-                ContactId = response.ContactId,
+                ContactId = bizContact?.spd_ContactId?.contactid,
                 BizContactId = bizContact?.spd_businesscontactid,
                 GivenName = bizContact?.spd_firstname,
                 Surname = bizContact?.spd_surname,
