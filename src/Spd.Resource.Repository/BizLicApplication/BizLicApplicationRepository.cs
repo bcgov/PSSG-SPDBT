@@ -270,6 +270,16 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _context.DeleteLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
         _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), null);
         _context.DeleteLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
+
+        spd_licence? licence = _context.spd_licences
+            .Where(l => l.spd_licenceid == licenceId)
+            .Where(l => l.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+
+        if (licence == null)
+            return;
+
+        _context.DeleteLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), bizContact);
     }
 
     private async Task SetAddresses(Guid accountId, spd_application app, CancellationToken ct)
