@@ -69,7 +69,7 @@ internal class Mappings : Profile
          .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
-         .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.MapFrom(s => GetPrivateInvestigatorInformation(s.spd_businesscontact_spd_application)))
+         .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.Ignore())
          .IncludeBase<spd_application, BizLicApplication>();
 
         _ = CreateMap<PrivateInvestigatorSwlContactInfo, spd_businesscontact>()
@@ -85,24 +85,6 @@ internal class Mappings : Profile
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
-    }
-
-    private static PrivateInvestigatorSwlContactInfo? GetPrivateInvestigatorInformation(IEnumerable<spd_businesscontact>? businessContacts)
-    {
-        if (businessContacts == null || !businessContacts.Any())
-            return null;
-
-        spd_businesscontact? privateInvestigator = businessContacts.FirstOrDefault();
-
-        return new()
-        {
-            BizContactId = privateInvestigator?.spd_businesscontactid,
-            GivenName = privateInvestigator?.spd_firstname,
-            Surname = privateInvestigator?.spd_surname,
-            MiddleName1 = privateInvestigator?.spd_middlename1,
-            MiddleName2 = privateInvestigator?.spd_middlename2,
-            EmailAddress = privateInvestigator?.spd_email
-        };
     }
 
     private static bool IsApplicantBizManager(spd_application application)
