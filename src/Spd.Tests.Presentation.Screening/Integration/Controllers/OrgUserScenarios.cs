@@ -1,6 +1,7 @@
 ﻿using Alba;
 using Microsoft.Dynamics.CRM;
 using Spd.Manager.Screening;
+using Spd.Manager.Shared;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
