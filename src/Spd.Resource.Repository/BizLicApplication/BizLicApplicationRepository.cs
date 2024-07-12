@@ -64,6 +64,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
             spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
+
+            spd_licence licence = GetLicence((Guid)cmd.PrivateInvestigatorSwlInfo.LicenceId);
+            _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), businessContact);
         }
 
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
@@ -110,6 +113,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
             spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
+
+            spd_licence licence = GetLicence((Guid)cmd.PrivateInvestigatorSwlInfo.LicenceId);
+            _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), businessContact);
         }
         else
             DeletePrivateInvestigatorLink(app);
