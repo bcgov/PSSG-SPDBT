@@ -149,7 +149,45 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the application for application id = {licenceApplicationId} ");
 
-        return _mapper.Map<BizLicApplicationResp>(app);
+        var response = _mapper.Map<BizLicApplicationResp>(app);
+        var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
+
+        if (position == null)
+            return response;
+
+        try
+        {
+            spd_businesscontact? bizContact = _context.spd_businesscontacts
+                .Expand(b => b.spd_position_spd_businesscontact)
+                .Expand(b => b.spd_businesscontact_spd_application)
+                .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
+                .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
+                .FirstOrDefault();
+
+            PrivateInvestigatorSwlContactInfo privateInvestigatorInfo = new()
+            {
+                ContactId = response.ContactId,
+                BizContactId = bizContact?.spd_businesscontactid,
+                GivenName = bizContact?.spd_firstname,
+                Surname = bizContact?.spd_surname,
+                MiddleName1 = bizContact?.spd_middlename1,
+                MiddleName2 = bizContact?.spd_middlename2,
+                EmailAddress = bizContact?.spd_email,
+                LicenceId = bizContact?._spd_swlnumber_value
+            };
+
+            response.PrivateInvestigatorSwlInfo = privateInvestigatorInfo;
+
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                return response;
+            else
+                throw;
+        }
+
+        return response;
     }
 
     private void LinkOrganization(Guid? accountId, spd_application app)
@@ -269,8 +307,21 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             .Where(c => c.contactid == contactId)
             .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
             .FirstOrDefault();
+
         if (contact == null) throw new ArgumentException($"cannot find the contact with contactId : {contactId}");
 
         return contact;
+    }
+
+    private spd_licence GetLicence(Guid licenceId) 
+    { 
+        spd_licence? licence = _context.spd_licences
+            .Where(l => l.spd_licenceid == licenceId)
+            .Where(l => l.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+
+        if (licence == null) throw new ArgumentException($"cannot find the licence with licenceId : {licenceId}");
+
+        return licence;
     }
 }
