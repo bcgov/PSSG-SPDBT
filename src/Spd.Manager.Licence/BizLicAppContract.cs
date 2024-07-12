@@ -104,6 +104,7 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
 {
     public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
+    public Guid? LicenceId { get; set; }
 }
 
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
