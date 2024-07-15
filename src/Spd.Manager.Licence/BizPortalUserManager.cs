@@ -11,6 +11,7 @@ using System.Net;
 namespace Spd.Manager.Licence;
 internal class BizPortalUserManager
     : IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
+    IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
@@ -49,6 +50,40 @@ internal class BizPortalUserManager
 
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
+
+        return _mapper.Map<BizPortalUserResponse>(response);
+    }
+
+    public async Task<BizPortalUserResponse> Handle(BizPortalUserUpdateCommand request, CancellationToken ct)
+    {
+        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+            new PortalUserQry()
+            {
+                OrgId = request.BizPortalUserUpdateRequest.BizId,
+                ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager }
+            },
+            ct);
+
+        //check if email already exists for the user
+        if (existingUsersResult.Items.Any(u => u.UserEmail != null && u.UserEmail.Equals(request.BizPortalUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.BizPortalUserUpdateRequest.Email} has been used by another user");
+        }
+
+        //check if user id in request exists in result list
+        var existingUser = existingUsersResult.Items.FirstOrDefault(u => u.Id == request.BizPortalUserUpdateRequest.Id);
+        if (existingUser == null)
+            throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
+
+        _mapper.Map(request.BizPortalUserUpdateRequest, existingUser);
+
+        //var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserUpdateRequest.OrganizationId), ct);
+        BizResult biz = await _bizRepository.GetBizAsync(request.BizPortalUserUpdateRequest.BizId, ct);
+        int primaryUserNo = existingUsersResult.Items.Count(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, existingUsersResult.Items.Count());
+
+        var updatePortalUserCmd = _mapper.Map<UpdatePortalUserCmd>(request.BizPortalUserUpdateRequest);
+        var response = await _portalUserRepository.ManageAsync(updatePortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
     }
