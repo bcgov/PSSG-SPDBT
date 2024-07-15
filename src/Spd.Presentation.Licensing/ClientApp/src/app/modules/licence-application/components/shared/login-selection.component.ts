@@ -54,7 +54,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
-										<img class="image" src="/assets/security-worker-licence.png" alt="Security worker licence" />
+										<img class="image" src="./assets/security-worker-licence.png" alt="Security worker licence" />
 										<div class="my-auto"><strong>Security Worker</strong> licence:</div>
 									</div>
 
@@ -82,7 +82,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
-										<img class="image" src="/assets/security-business-licence.png" alt="Security business licence" />
+										<img class="image" src="./assets/security-business-licence.png" alt="Security business licence" />
 										<div class="my-auto"><strong>Security Business</strong> licence:</div>
 									</div>
 
@@ -110,7 +110,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
-										<img class="image" src="/assets/body-armour.png" alt="Body armour" />
+										<img class="image" src="./assets/body-armour.png" alt="Body armour" />
 										<div class="my-auto"><strong>Body Armour</strong> permit:</div>
 									</div>
 
@@ -138,7 +138,7 @@ import { PermitApplicationService } from '../../services/permit-application.serv
 							<div class="row m-3">
 								<div class="col-lg-6 col-md-12 col-12">
 									<div class="d-flex justify-content-start">
-										<img class="image" src="/assets/armoured-vehicle.png" alt="Armoured vehicle" />
+										<img class="image" src="./assets/armoured-vehicle.png" alt="Armoured vehicle" />
 										<div class="my-auto"><strong>Armoured Vehicle</strong> permit:</div>
 									</div>
 
