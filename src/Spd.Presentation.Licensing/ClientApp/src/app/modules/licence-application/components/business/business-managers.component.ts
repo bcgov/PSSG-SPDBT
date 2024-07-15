@@ -150,9 +150,7 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 												style="color: var(--color-primary-light);"
 												aria-label="Cancel invitation"
 												(click)="onCancelInvitation(user)"
-												*ngIf="allowDeleteRow(user)"
 											>
-												<!-- TODO cancel permissions? -->
 												<mat-icon>cancel</mat-icon>Cancel
 											</button>
 										</ng-template>
