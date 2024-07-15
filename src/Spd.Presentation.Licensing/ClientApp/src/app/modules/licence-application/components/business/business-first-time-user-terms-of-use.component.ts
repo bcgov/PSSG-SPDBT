@@ -79,7 +79,9 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 				if (this.authUserBceidService.bceidUserProfile) {
 					this.authUserBceidService.bceidUserProfile.isFirstTimeLogin = false;
 				}
-				this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence());
+				this.router.navigate([LicenceApplicationRoutes.pathBusinessLicence()], {
+					queryParams: { bizId: this.authUserBceidService.bceidUserProfile?.bizId },
+				});
 			});
 	}
 }
