@@ -15,8 +15,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 	) {}
 
 	private checkUrl(url: string): boolean {
-		const isIncluded = includedURLs.some((regexp) => regexp.test(url));
-		return isIncluded;
+		return url.toLowerCase().includes('/api/');
 	}
 
 	public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

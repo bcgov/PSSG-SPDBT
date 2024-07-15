@@ -112,11 +112,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		const isValid = this.consentAndDeclarationComponent.isFormValid();
 		if (!isValid) return;
 
-		// if (this.applicationTypeCode === ApplicationTypeCode.Update) { // TODO handle submit vs pay
-		// this.nextSubmitStep.emit();
-		// } else {
 		this.nextPayStep.emit();
-		// }
 	}
 
 	onGoToStep(step: number): void {
