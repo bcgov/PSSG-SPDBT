@@ -324,7 +324,7 @@ export class BusinessManagersComponent implements OnInit {
 		const numberOfPrimary = this.usersList.filter(
 			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager
 		)?.length;
-		this.isAllowedAddPrimary = !(numberOfPrimary >= this.maximumNumberOfPrimaryContacts);
+		this.isAllowedAddPrimary = numberOfPrimary < this.maximumNumberOfPrimaryContacts;
 	}
 
 	private sortUsers(): void {
