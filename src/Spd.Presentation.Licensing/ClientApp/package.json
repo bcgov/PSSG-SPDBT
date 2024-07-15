@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "gen-api": "ng-openapi-gen -i https://frontend-dev.apps.emerald.devops.gov.bc.ca/api/openapi/v1/openapi.json -o ./src/app/api --ignoreUnusedModels false",
+    "gen-api": "ng-openapi-gen -i https://dev-spd-licensing-portal.apps.emerald.devops.gov.bc.ca/swagger/v1/swagger.json -o ./src/app/api --ignoreUnusedModels false",
     "gen-api-all-local": "ng-openapi-gen -i http://localhost:5114/swagger/v1/swagger.json -o ./src/app/api",
     "gen-api-tags-local": "ng-openapi-gen -i http://localhost:5114/swagger/v1/swagger.json -o ./src/app/api --includeTags $TAGS --removeStaleFiles false",
     "start": "ng serve --port 4200 --proxy-config proxy.conf.json",
