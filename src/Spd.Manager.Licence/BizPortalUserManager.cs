@@ -11,7 +11,7 @@ using System.Net;
 namespace Spd.Manager.Licence;
 internal class BizPortalUserManager
     : IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
-    IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>
+    IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>,
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
