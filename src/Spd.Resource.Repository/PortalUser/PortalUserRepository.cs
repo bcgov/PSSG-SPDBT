@@ -138,5 +138,3 @@ internal class PortalUserRepository : IPortalUserRepository
         return userResp;
     }
 }
-
-
