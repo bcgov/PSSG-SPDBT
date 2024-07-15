@@ -32,7 +32,7 @@ spec:
           values: ["true"]
       params:
         - name: sourceImage
-          value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov/pssg-spdbt/screening-portal
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/screening-portal
         - name: sourceTag
           value: $(params.imageTag)
         - name: destinationImage
@@ -54,7 +54,7 @@ spec:
           values: ["true"]
       params:
         - name: sourceImage
-          value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov/pssg-spdbt/licensing-portal
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/licensing-portal
         - name: sourceTag
           value: $(params.imageTag)
         - name: destinationImage
@@ -76,7 +76,7 @@ spec:
           values: ["true"]
       params:
         - name: sourceImage
-          value: artifacts.developer.gov.bc.ca/sfe7-dev/bcgov/pssg-spdbt/dynamics-helper
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/dynamics-helper
         - name: sourceTag
           value: $(params.imageTag)
         - name: destinationImage
