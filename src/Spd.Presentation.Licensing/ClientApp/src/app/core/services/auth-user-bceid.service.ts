@@ -14,6 +14,9 @@ export class AuthUserBceidService {
 
 	constructor(private loginService: LoginService, private dialog: MatDialog) {}
 
+	//----------------------------------------------------------
+	// *
+	// * get data related to login
 	async whoAmIAsync(defaultBizId: string | null | undefined = undefined): Promise<boolean> {
 		this.clearUserData();
 
@@ -36,6 +39,9 @@ export class AuthUserBceidService {
 		}
 	}
 
+	//----------------------------------------------------------
+	// *
+	// * clear data on logout
 	public clearUserData(): void {
 		this.bceidUserProfile = null;
 	}

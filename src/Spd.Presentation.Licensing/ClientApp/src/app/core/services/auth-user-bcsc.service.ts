@@ -9,6 +9,9 @@ export class AuthUserBcscService {
 
 	constructor(private loginService: LoginService) {}
 
+	//----------------------------------------------------------
+	// *
+	// * get data related to login
 	async applicantLoginAsync(): Promise<boolean> {
 		this.clearUserData();
 
@@ -21,6 +24,9 @@ export class AuthUserBcscService {
 		return Promise.resolve(false);
 	}
 
+	//----------------------------------------------------------
+	// *
+	// * clear data on logout
 	public clearUserData(): void {
 		this.applicantLoginProfile = null;
 	}
