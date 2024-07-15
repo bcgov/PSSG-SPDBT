@@ -35,7 +35,7 @@ public class BizProfileManager :
         IAddressRepository addressRepository,
         IBCeIDService bceidService,
         IMapper mapper,
-        ILogger<BizProfileManager> logger)
+        ILogger<IBizProfileManager> logger)
     {
         _mapper = mapper;
         _logger = logger;

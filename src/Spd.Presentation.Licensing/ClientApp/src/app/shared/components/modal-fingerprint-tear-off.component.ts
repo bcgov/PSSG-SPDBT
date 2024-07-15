@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 			<mat-divider></mat-divider>
 		</div>
 		<div mat-dialog-content>
-			<img class="image mt-4" src="/assets/fingerprint-tear-off.svg" alt="Fingerprint tear off section" />
+			<img class="image mt-4" src="./assets/fingerprint-tear-off.svg" alt="Fingerprint tear off section" />
 		</div>
 		<div mat-dialog-actions>
 			<div class="row m-0 w-100">
