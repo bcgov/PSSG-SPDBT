@@ -88,7 +88,8 @@ export class LicenceApplicationRoutes {
 	public static readonly WORKER_LICENCE_UPDATE_AUTHENTICATED = 'worker-licence-update';
 	public static readonly WORKER_LICENCE_REPLACEMENT_AUTHENTICATED = 'worker-licence-replacement';
 
-	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
+	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'business-licence-terms-and-conditions';
+
 	public static readonly BUSINESS_BASE = 'business-licence';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
 	public static readonly BUSINESS_USER_APPLICATIONS = 'applications';
@@ -181,6 +182,10 @@ const routes: Routes = [
 				component: LoginSelectionComponent,
 			},
 			{
+				path: LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
+				component: BusinessFirstTimeUserTermsOfUseComponent,
+			},
+			{
 				/**************************************************** */
 				// SECURITY WORKER LICENCE - ANONYMOUS
 				/**************************************************** */
@@ -249,10 +254,6 @@ const routes: Routes = [
 				path: LicenceApplicationRoutes.BUSINESS_BASE,
 				component: BusinessLicenceApplicationBaseComponent,
 				children: [
-					{
-						path: LicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
-						component: BusinessFirstTimeUserTermsOfUseComponent,
-					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,
 						component: BusinessUserApplicationsComponent,

@@ -74,4 +74,8 @@ export const SPD_CONSTANTS = {
 			'./assets/files/Security Services Business Applicant Update Terms of Use.pdf',
 		requestForFingerprintingForm: './assets/files/SPD Request for Fingerprinting Form.pdf',
 	},
+	address: {
+		provinceBC: 'British Columbia',
+		countryCanada: 'Canada',
+	},
 };
