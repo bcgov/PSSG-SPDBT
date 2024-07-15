@@ -58,13 +58,13 @@ public class BizPortalUserController : ControllerBase
     [HttpPut]
     public async Task<BizPortalUserResponse> Put([FromRoute] Guid userId, [FromBody][Required] BizPortalUserUpdateRequest bizPortalUserUpdateRequest, [FromRoute] Guid bizId)
     {
-        //if role is contact, can only change his own phone number, job title
-        if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString() &&
+        //if role is manager, can only change his own phone number, job title
+        if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.BusinessManager.ToString() &&
             userId.ToString() != _currentUser.GetUserId())
         {
             throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
         }
-        if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.Contact.ToString())
+        if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.BusinessManager.ToString())
             return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest, true));
         return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest, false));
     }
