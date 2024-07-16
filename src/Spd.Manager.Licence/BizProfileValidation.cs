@@ -7,8 +7,6 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
 {
     public BizProfileUpdateRequestValidator()
     {
-        Regex emailRegex = new(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", RegexOptions.NonBacktracking);
-
         RuleFor(r => r.BizTradeName).NotEmpty();
         RuleFor(r => r.BizTypeCode).NotEmpty().IsInEnum();
         RuleFor(r => r.BizAddress).NotEmpty();
@@ -20,6 +18,7 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.SoleProprietorSwlEmailAddress)
             .NotEmpty()
+            .EmailAddress()
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.SoleProprietorSwlPhoneNumber)
             .NotEmpty()
