@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { ApiConfiguration } from './api/api-configuration';
 import { ConfigService } from './core/services/config.service';
 
 @Component({
@@ -22,5 +24,15 @@ import { ConfigService } from './core/services/config.service';
 export class AppComponent {
 	configs$ = this.configService.getConfigs();
 
-	constructor(private configService: ConfigService) {}
+	constructor(
+		private _apiConfig: ApiConfiguration,
+		@Inject(APP_BASE_HREF) href: string,
+		private configService: ConfigService
+	) {
+		_apiConfig.rootUrl = `${location.origin}${href}`;
+		if (_apiConfig.rootUrl.endsWith('/')) {
+			_apiConfig.rootUrl = _apiConfig.rootUrl.substring(0, _apiConfig.rootUrl.length - 1);
+		}
+		console.debug('[API rootUrl]', _apiConfig.rootUrl);
+	}
 }
