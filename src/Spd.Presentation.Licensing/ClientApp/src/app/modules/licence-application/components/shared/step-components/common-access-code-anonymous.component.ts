@@ -1,7 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, WorkerLicenceTypeCode } from '@app/api/models';
+import {
+	ApplicationTypeCode,
+	LicenceResponse,
+	LicenceStatusCode,
+	LicenceTermCode,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
@@ -200,7 +206,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			//  access code matches licence, but the WorkerLicenceType does not match
 			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			this.errorMessage = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
-		} else if (!this.utilService.getIsTodayOrFutureDate(resp.expiryDate)) {
+		} else if (resp.licenceStatusCode != LicenceStatusCode.Active) {
 			// access code matches licence, but the licence is expired
 			this.isExpired = true;
 			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
@@ -215,10 +221,10 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			daysBetween <= replacementPeriodPreventionDays
 		) {
 			// access code matches licence, but the licence is not within the replacement period
-			this.errorMessage = `This ${this.label} is too close to its expiry date to allow replacement.`;
+			this.errorMessage = `This ${this.label} is too close to its expiry date to allow replacement. Please renew it instead.`;
 		} else if (this.applicationTypeCode === ApplicationTypeCode.Update && daysBetween <= updatePeriodPreventionDays) {
 			// access code matches licence, but the licence is not within the update period
-			this.errorMessage = `This ${this.label} is too close to its expiry date to allow update.`;
+			this.errorMessage = `This ${this.label} is too close to its expiry date to allow update. Please renew it instead.`;
 		} else if (this.applicationTypeCode === ApplicationTypeCode.Renewal && daysBetween > renewPeriodDays) {
 			//  Renewal-specific error: access code matches licence, but the licence is not within the expiry period
 			this.errorMessage = `This ${this.label} is still valid. Please renew it when it is within ${renewPeriodDays} days of the expiry date.`;
