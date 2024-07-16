@@ -241,12 +241,6 @@ internal class Mappings : Profile
             .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes(s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
         CreateMap<BizLicApplicationResp, BizLicAppResponse>()
-            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.ManagerGivenName))
-            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.ManagerSurname))
-            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.ManagerPhoneNumber))
-            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.ManagerEmailAddress))
-            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.ManagerMiddleName1))
-            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.ManagerMiddleName2))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.ContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.ContactId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.BizContactId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.BizContactId))
             .ForPath(d => d.PrivateInvestigatorSwlInfo.LicenceId, opt => opt.MapFrom(s => s.PrivateInvestigatorSwlInfo.LicenceId))
