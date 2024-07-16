@@ -1,6 +1,8 @@
 using AutoFixture;
 using AutoMapper;
+using MediatR;
 using Moq;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
@@ -15,7 +17,6 @@ public class OrgUserManagerTest
     private readonly IFixture fixture;
     private Mock<IOrgUserRepository> mockOrgUserRepo = new();
     private Mock<IOrgRepository> mockOrgRepo = new();
-    private Mock<IMapper> mockMapper = new();
     private Mock<IIdentityRepository> mockIdRepo = new();
     private OrgUserManager sut;
 
@@ -25,8 +26,14 @@ public class OrgUserManagerTest
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
+        var mapperConfig = new MapperConfiguration(x =>
+        {
+            x.AddProfile<OrgUserMappings>();
+        });
+        var mapper = mapperConfig.CreateMapper();
+
         sut = new OrgUserManager(mockOrgUserRepo.Object,
-            mockMapper.Object,
+            mapper,
             mockOrgRepo.Object,
             mockIdRepo.Object);
     }
@@ -50,10 +57,6 @@ public class OrgUserManagerTest
                 It.IsAny<UserCreateCmd>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrgUserManageResult(fixture.Create<UserResult>()));
-        mockMapper.Setup(m => m.Map<User>(It.IsAny<BceidIdentityInfo>()))
-            .Returns(fixture.Create<User>());
-        mockMapper.Setup(m => m.Map<OrgUserResponse>(It.IsAny<UserResult>()))
-            .Returns(fixture.Create<OrgUserResponse>());
         mockOrgRepo.Setup(org => org.ManageOrgAsync(
             It.IsAny<OrgGuidUpdateCmd>(),
             It.IsAny<CancellationToken>()))
@@ -98,10 +101,7 @@ public class OrgUserManagerTest
                 It.IsAny<UserCreateCmd>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrgUserManageResult(fixture.Create<UserResult>()));
-        mockMapper.Setup(m => m.Map<User>(It.IsAny<BceidIdentityInfo>()))
-            .Returns(fixture.Create<User>());
-        mockMapper.Setup(m => m.Map<OrgUserResponse>(It.IsAny<UserResult>()))
-            .Returns(fixture.Create<OrgUserResponse>());
+        
         var bceid = fixture.Build<BceidIdentityInfo>()
             .With(b => b.UserGuid, userGuid)
             .With(b => b.BizGuid, orgGuid)
@@ -182,4 +182,185 @@ public class OrgUserManagerTest
         await Assert.ThrowsAsync<ApiException>(act);
     }
 
+    [Fact]
+    public async void Handle_OrgUserCreateCommand_Return_Correct_OrgUserResponse()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        UserResult user = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.Email, "test1@test1.com")
+            .Create();
+        List<UserResult> userResults = new() { user };
+        OrgResult org = new();
+        OrgQryResult orgQryResult = new(org);
+        OrgUserManageResult orgUserManageResult = new(new UserResult());
+
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+        mockOrgRepo.Setup(o => o.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgQryResult);
+        mockOrgUserRepo.Setup(u => u.ManageOrgUserAsync(It.Is<UserCreateCmd>(c => c.User.OrganizationId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgUserManageResult);
+
+        OrgUserCreateRequest orgUserCreateRequest = fixture.Build<OrgUserCreateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test2@test2.com")
+            .Create();
+        OrgUserCreateCommand cmd = new(orgUserCreateRequest, "test.com", Guid.NewGuid());
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<OrgUserResponse>(result);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserCreateCommand_WithExistingEmail_ThrowDuplicateException()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        UserResult user = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.Email, "test1@test1.com")
+            .Create();
+        List<UserResult> userResults = new() { user };
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+
+        OrgUserCreateRequest orgUserCreateRequest = fixture.Build<OrgUserCreateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test1@test1.com")
+            .Create();
+        OrgUserCreateCommand cmd = new(orgUserCreateRequest, "test.com", Guid.NewGuid());
+
+        // Act
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<DuplicateException>(act);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserUpdateCommand_Return_Correct_OrgUserResponse()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        UserResult user = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.Email, "test1@test1.com")
+            .With(u => u.Id, userId)
+            .Create();
+        List<UserResult> userResults = new() { user };
+        OrgResult org = new();
+        OrgQryResult orgQryResult = new(org);
+        OrgUserManageResult orgUserManageResult = new(new UserResult());
+
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+        mockOrgRepo.Setup(o => o.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgQryResult);
+        mockOrgUserRepo.Setup(u => u.ManageOrgUserAsync(It.Is<UserUpdateCmd>(c => c.User.OrganizationId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgUserManageResult);
+
+        OrgUserUpdateRequest orgUserUpdateRequest = fixture.Build<OrgUserUpdateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test2@test2.com")
+            .With(r => r.Id, userId)
+            .Create();
+        OrgUserUpdateCommand cmd = new(Guid.NewGuid(), orgUserUpdateRequest);
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<OrgUserResponse>(result);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserUpdateCommand_WithExistingEmail_ThrowDuplicateException()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        UserResult user = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.Email, "test1@test1.com")
+            .Create();
+        List<UserResult> userResults = new() { user };
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+
+        OrgUserUpdateRequest orgUserUpdateRequest = fixture.Build<OrgUserUpdateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test1@test1.com")
+            .Create();
+        OrgUserUpdateCommand cmd = new(Guid.NewGuid(), orgUserUpdateRequest);
+
+        // Act
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<DuplicateException>(act);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserUpdateCommand_UserNotFound_ThrowDuplicateException()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        List<UserResult> userResults = new();
+
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+
+        OrgUserUpdateRequest orgUserUpdateRequest = fixture.Build<OrgUserUpdateRequest>()
+            .With(r => r.OrganizationId, orgId)
+            .With(r => r.ContactAuthorizationTypeCode, ContactAuthorizationTypeCode.Primary)
+            .With(r => r.Email, "test1@test1.com")
+            .Create();
+        OrgUserUpdateCommand cmd = new(Guid.NewGuid(), orgUserUpdateRequest);
+
+        // Act
+        Func<Task> act = () => sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<NotFoundException>(act);
+    }
+
+    [Fact]
+    public async void Handle_OrgUserDeleteCommand_Return_Correct_OrgUserResponse()
+    {
+        // Arrange
+        Guid orgId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        UserResult existingUser = new() { ContactAuthorizationTypeCode = ContactRoleCode.Primary };
+        UserResult userToDelete = fixture.Build<UserResult>()
+            .With(u => u.OrganizationId, orgId)
+            .With(u => u.ContactAuthorizationTypeCode, ContactRoleCode.Primary)
+            .With(u => u.Id, userId)
+            .Create();
+        List<UserResult> userResults = new() { userToDelete, existingUser };
+        OrgResult org = new();
+        OrgQryResult orgQryResult = new(org);
+        OrgUserManageResult orgUserManageResult = new(new UserResult());
+
+        mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(It.Is<OrgUsersSearch>(s => s.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrgUsersResult(userResults));
+        mockOrgRepo.Setup(o => o.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == orgId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgQryResult);
+
+        OrgUserDeleteCommand cmd = new(userId, orgId);
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Unit>(result);
+    }
 }

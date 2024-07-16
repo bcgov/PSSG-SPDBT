@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -74,7 +75,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<input matInput formControlName="province" maxlength="100" />
 									<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
 									<mat-error *ngIf="form.get('province')?.hasError('requiredValue')"
-										>This must be 'British Columbia'</mat-error
+										>This must be '{{ provinceOfBC }}'</mat-error
 									>
 								</mat-form-field>
 							</div>
@@ -96,6 +97,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 })
 export class CommonAddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
+	provinceOfBC = SPD_CONSTANTS.address.provinceBC;
 
 	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
