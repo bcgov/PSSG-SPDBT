@@ -1,9 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import {
@@ -30,7 +29,7 @@ export interface LookupByLicenceNumberDialogData {
 			<div class="fs-6 fw-normal pb-3" *ngIf="subtitle">{{ subtitle }}</div>
 			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-lg-6 col-md-12">
+					<div class="col-lg-12" [ngClass]="isLoggedIn ? 'col-xl-10' : 'col-xl-6'">
 						<mat-form-field>
 							<mat-label>Licence Number</mat-label>
 							<input
@@ -54,14 +53,12 @@ export interface LookupByLicenceNumberDialogData {
 							<mat-error *ngIf="form.get('licenceNumberLookup')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
-				</div>
 
-				<div class="row">
-					<div class="col-xl-6 col-lg-12 mt-2" *ngIf="!isLoggedIn">
+					<div class="col-xl-6 col-lg-12" *ngIf="!isLoggedIn">
 						<div formGroupName="captchaFormGroup" class="mb-3">
 							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup" [resetControl]="resetRecaptcha"></app-captcha-v2>
 							<mat-error
-								class="mat-option-error"
+								class="mat-option-error-small"
 								*ngIf="
 									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
 									captchaFormGroup.get('token')?.invalid &&
@@ -105,9 +102,6 @@ export interface LookupByLicenceNumberDialogData {
 						<div *ngIf="!isFoundValid">
 							<ng-container *ngIf="isExpiredLicenceSearch; else LicenceSearchNotValid">
 								<div class="mt-3">
-									<app-alert type="info" icon="check_circle" *ngIf="messageInfo">
-										{{ messageInfo }}
-									</app-alert>
 									<app-alert type="warning" *ngIf="messageWarn">
 										<div [innerHTML]="messageWarn"></div>
 									</app-alert>
@@ -186,10 +180,8 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	isFoundValid = false;
 	isFound = false;
 
-	messageInfo: string | null = '';
 	messageError: string | null = '';
 	messageWarn: string | null = '';
-	label = 'licenceTODO';
 
 	isExpiredLicenceSearch = false;
 	isLoggedIn = false;
@@ -281,7 +273,6 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	}
 
 	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
-		this.messageInfo = null;
 		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
 			resp.searchResult,
 			this.lookupWorkerLicenceTypeCode,
@@ -293,20 +284,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.isFound = resp.isFound;
 		this.searchResult = resp.searchResult;
 
-		if (resp.searchResult && resp.isExpired && !this.messageWarn && !this.messageError) {
-			this.isFoundValid = true;
-			this.handleValidExpiredLicence(resp.searchResult);
-		} else {
-			this.isFoundValid = false;
-		}
-	}
-
-	private handleValidExpiredLicence(licence: LicenceResponse): void {
-		this.isFound = true;
-		this.isFoundValid = true;
-
-		const formattedExpiryDate = this.formatDatePipe.transform(licence.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
-		this.messageInfo = `This is a valid expired ${this.label} with an expiry date of ${formattedExpiryDate}.`;
+		this.isFoundValid = this.searchResult && resp.isExpired && !this.messageWarn && !this.messageError;
 	}
 
 	onSave(): void {
