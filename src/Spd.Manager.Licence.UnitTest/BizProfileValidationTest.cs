@@ -34,6 +34,7 @@ public class BizProfileValidationTest
             .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
             .With(r => r.BizAddress, address)
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+            .With(r => r.SoleProprietorSwlEmailAddress, "test@test.com")
             .Create();
 
         var result = validator.TestValidate(model);
