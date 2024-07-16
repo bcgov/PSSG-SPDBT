@@ -61,6 +61,7 @@ public record BizListResponse
 public record BizProfileResponse : BizInfo
 {
     public Guid BizId { get; set; } //which is accountid in account
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public record BizUserLoginResponse
@@ -83,6 +84,7 @@ public record BizProfileUpdateRequest
     public Guid? SoleProprietorLicenceId { get; set; }
     public string? SoleProprietorSwlPhoneNumber { get; set; }
     public string? SoleProprietorSwlEmailAddress { get; set; }
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public enum BizTypeCode

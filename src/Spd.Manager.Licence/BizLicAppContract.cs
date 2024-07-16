@@ -86,7 +86,6 @@ public abstract record BizLicenceApp : LicenceAppBase
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
 
     //non sole proprietor properties
-    public ContactInfo? BizManagerContactInfo { get; set; }
     public ContactInfo? ApplicantContactInfo { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
     public Members? Members { get; set; }
@@ -104,6 +103,7 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
 {
     public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
+    public Guid? LicenceId { get; set; }
 }
 
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
