@@ -108,7 +108,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         LinkOrganization(cmd.ApplicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && cmd.PrivateInvestigatorSwlInfo?.ContactId != null)
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && 
+            cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
+            cmd.PrivateInvestigatorSwlInfo?.LicenceId != null)
         {
             contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
             spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
@@ -118,7 +120,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), businessContact);
         }
         else
-            DeletePrivateInvestigatorLink((Guid)cmd.PrivateInvestigatorSwlInfo.LicenceId, app);
+            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo?.LicenceId, app);
 
         await _context.SaveChangesAsync(ct);
 
@@ -213,7 +215,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     private spd_businesscontact UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
     {
         spd_businesscontact? bizContact = null;
-        DeletePrivateInvestigatorLink((Guid)privateInvestigatorInfo.LicenceId, app);
+        DeletePrivateInvestigatorLink(privateInvestigatorInfo.LicenceId, app);
         Guid? bizContactId = privateInvestigatorInfo?.BizContactId;
 
         if (bizContactId == null)
@@ -250,11 +252,11 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
     }
 
-    private void DeletePrivateInvestigatorLink(Guid licenceId, spd_application app)
+    private void DeletePrivateInvestigatorLink(Guid? licenceId, spd_application app)
     {
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
-        if (position == null)
+        if (position == null || licenceId == null)
             return;
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
