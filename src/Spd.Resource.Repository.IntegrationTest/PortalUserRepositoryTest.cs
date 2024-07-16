@@ -82,18 +82,19 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Arrange
         Guid identityId = Guid.NewGuid();
         Guid accountId = Guid.NewGuid();
-        Guid bizContactId = Guid.NewGuid();
+        Guid portalUserId = Guid.NewGuid();
 
         spd_identity identity = new spd_identity() { spd_identityid = identityId };
         _context.AddTospd_identities(identity);
         account account = new account() { accountid = accountId };
         _context.AddToaccounts(account);
-        spd_businesscontact businessContact = new spd_businesscontact() { spd_businesscontactid = bizContactId };
-        _context.AddTospd_businesscontacts(businessContact);
+        spd_portaluser portalUser = new spd_portaluser() { spd_portaluserid = portalUserId };
+        _context.AddTospd_portalusers(portalUser);
         _context.SaveChanges();
 
         UpdatePortalUserCmd cmd = new()
         {
+            Id = portalUserId,
             FirstName = IntegrationTestSetup.DataPrefix + "firstName",
             LastName = IntegrationTestSetup.DataPrefix + "lastName",
             EmailAddress = "test@test.com",
@@ -107,12 +108,15 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         // Assert
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, response.Id);
+        Assert.Equal(cmd.Id, response.Id);
         Assert.Equal(cmd.OrgId, response.OrganizationId);
-        Assert.Equal(response.ContactRoleCode, ContactRoleCode.BusinessManager);
+        Assert.Equal(cmd.FirstName, response.FirstName);
+        Assert.Equal(cmd.LastName, response.LastName);
+        Assert.Equal(cmd.EmailAddress, response.UserEmail);
+        Assert.Equal(ContactRoleCode.BusinessManager, response.ContactRoleCode);
 
         // Annihilate
-        spd_portaluser? portalUser = _context.spd_portalusers.Where(u => u.spd_portaluserid == response.Id).FirstOrDefault();
+        spd_portaluser? updatedPortalUser = _context.spd_portalusers.Where(u => u.spd_portaluserid == response.Id).FirstOrDefault();
 
         _context.SetLink(portalUser, nameof(portalUser.spd_OrganizationId), null);
         _context.SetLink(portalUser, nameof(portalUser.spd_IdentityId), null);
