@@ -141,9 +141,10 @@ internal class BizLicAppManager :
         BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
-
+        
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, request, cancellationToken);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
@@ -177,8 +178,8 @@ internal class BizLicAppManager :
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
-        BizLicApplicationResp originaBizlLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        if (originaBizlLic.BizId == null)
+        BizLicApplicationResp originalBizLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
+        if (originalBizLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
 
         var existingFiles = await GetExistingFileInfo(
@@ -191,14 +192,15 @@ internal class BizLicAppManager :
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+        createApp = await SetBizManagerInfo((Guid)originalBizLic.BizId, createApp, request, cancellationToken);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
         // Update members
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originaBizlLic.BizId,
-                (Guid)originaBizlLic.LicenceAppId,
+                (Guid)originalBizLic.BizId,
+                (Guid)originalBizLic.LicenceAppId,
                 cancellationToken);
 
         // Upload new files
@@ -257,6 +259,7 @@ internal class BizLicAppManager :
                 cmd.LicenceRequest.PreviousDocumentIds,
                 cancellationToken);
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
+            createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, request, cancellationToken);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
@@ -284,12 +287,6 @@ internal class BizLicAppManager :
             }
 
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
-        }
-        else
-        {
-            UpdateBizCmd updateBizCmd = _mapper.Map<UpdateBizCmd>(request);
-            updateBizCmd.Id = (Guid)originalLic.BizId;
-            await _bizRepository.ManageBizAsync(updateBizCmd, cancellationToken);
         }
 
         // Update members
@@ -564,6 +561,39 @@ internal class BizLicAppManager :
         }
 
         return changes;
+    }
+
+    private async Task<CreateBizLicApplicationCmd> SetBizManagerInfo(Guid bizId, CreateBizLicApplicationCmd createApp, BizLicenceApp request, CancellationToken ct)
+    {
+        BizResult bizResult = await _bizRepository.GetBizAsync(bizId, ct);
+
+        createApp.ManagerGivenName = bizResult?.BizManagerContactInfo?.GivenName;
+        createApp.ManagerSurname = bizResult?.BizManagerContactInfo?.Surname;
+        createApp.ManagerMiddleName1 = bizResult?.BizManagerContactInfo?.MiddleName1;
+        createApp.ManagerMiddleName2 = bizResult?.BizManagerContactInfo?.MiddleName2;
+        createApp.ManagerEmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
+        createApp.ManagerPhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
+
+        if ((bool)request.ApplicantIsBizManager)
+        {
+            createApp.GivenName = bizResult?.BizManagerContactInfo?.GivenName;
+            createApp.Surname = bizResult?.BizManagerContactInfo?.Surname;
+            createApp.MiddleName1 = bizResult?.BizManagerContactInfo?.MiddleName1;
+            createApp.MiddleName2 = bizResult?.BizManagerContactInfo?.MiddleName2;
+            createApp.EmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
+            createApp.PhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
+        }
+        else
+        {
+            createApp.GivenName = request.ApplicantContactInfo?.GivenName;
+            createApp.Surname = request.ApplicantContactInfo?.Surname;
+            createApp.MiddleName1 = request.ApplicantContactInfo?.MiddleName1;
+            createApp.MiddleName2 = request.ApplicantContactInfo?.MiddleName2;
+            createApp.EmailAddress = request.ApplicantContactInfo?.EmailAddress;
+            createApp.PhoneNumber = request.ApplicantContactInfo?.PhoneNumber;
+        }
+
+        return createApp;
     }
 
     private sealed record ChangeSpec

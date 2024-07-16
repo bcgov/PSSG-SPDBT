@@ -26,9 +26,15 @@ public class BizProfileValidationTest
             .With(a => a.PostalCode, new string('a', 20))
             .Create();
 
+        var bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .Create();
+
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
             .With(r => r.BizAddress, address)
+            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+            .With(r => r.SoleProprietorSwlEmailAddress, "test@test.com")
             .Create();
 
         var result = validator.TestValidate(model);
@@ -50,10 +56,15 @@ public class BizProfileValidationTest
             .With(b => b.BranchAddress, address)
             .Create();
 
+        var bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test@test.com")
+            .Create();
+
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.Corporation)
             .With(r => r.Branches, new List<BranchInfo>() { branch })
             .With(r => r.BizAddress, address)
+            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
         var result = validator.TestValidate(model);
@@ -121,5 +132,55 @@ public class BizProfileValidationTest
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorLicenceId);
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlEmailAddress);
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlPhoneNumber);
+    }
+
+    [Fact]
+    public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
+    {
+        var address = fixture.Build<Address>()
+            .With(a => a.AddressLine1, new string('a', 100))
+            .With(a => a.City, new string('a', 100))
+            .With(a => a.Country, new string('a', 100))
+            .With(a => a.PostalCode, new string('a', 20))
+            .Create();
+
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
+            .With(r => r.BizAddress, address)
+            .Create();
+
+        model.BizManagerContactInfo.GivenName = string.Empty;
+        model.BizManagerContactInfo.Surname = string.Empty;
+        model.BizManagerContactInfo.PhoneNumber = string.Empty;
+        model.BizManagerContactInfo.EmailAddress = string.Empty;
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo);
+    }
+
+    [Fact]
+    public void BizManagerContactInfo_WithInvalidEmails_ShouldThrowException()
+    {
+        var address = fixture.Build<Address>()
+            .With(a => a.AddressLine1, new string('a', 100))
+            .With(a => a.City, new string('a', 100))
+            .With(a => a.Country, new string('a', 100))
+            .With(a => a.PostalCode, new string('a', 20))
+            .Create();
+
+        var bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.EmailAddress, "test")
+            .Create();
+
+        var model = fixture.Build<BizProfileUpdateRequest>()
+            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
+            .With(r => r.BizAddress, address)
+            .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
+            .With(r => r.SoleProprietorSwlEmailAddress, "test")
+            .Create();
+
+        var result = validator.TestValidate(model);
+        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo.EmailAddress);
+        result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlEmailAddress);
     }
 }
