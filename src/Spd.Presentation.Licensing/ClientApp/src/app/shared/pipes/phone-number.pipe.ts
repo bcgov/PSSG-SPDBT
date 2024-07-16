@@ -13,6 +13,9 @@ export class FormatPhoneNumberPipe implements PipeTransform {
 			return null;
 		}
 
+		// if the phone number has 10 digits, then format it.
+		// otherwise, return it as is.
+
 		const strippedPhoneNumber = phoneNumber.replace(/\D/g, '');
 		if (strippedPhoneNumber.length === 10) {
 			return this.ngxMaskPipe.transform(phoneNumber, SPD_CONSTANTS.phone.displayMask);

@@ -7,6 +7,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AddressAutoCompleteService } from './services/address-auto-complete.service';
 import { ApplicantProfileService } from './services/applicant-profile.service';
 import { BizLicensingService } from './services/biz-licensing.service';
+import { BizPortalUserService } from './services/biz-portal-user.service';
 import { BizProfileService } from './services/biz-profile.service';
 import { ConfigurationService } from './services/configuration.service';
 import { LicenceService } from './services/licence.service';
@@ -28,6 +29,7 @@ import { SecurityWorkerLicensingService } from './services/security-worker-licen
     AddressAutoCompleteService,
     ApplicantProfileService,
     BizLicensingService,
+    BizPortalUserService,
     BizProfileService,
     ConfigurationService,
     LicenceService,
