@@ -41,6 +41,9 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .Must(r => r.GivenName.IsNullOrEmpty() != true &&
                 r.Surname.IsNullOrEmpty() != true &&
                 r.PhoneNumber.IsNullOrEmpty() != true &&
-                r.EmailAddress.IsNullOrEmpty() != true && emailRegex.IsMatch(r.EmailAddress));
+                r.EmailAddress.IsNullOrEmpty() != true);
+        RuleFor(r => r.BizManagerContactInfo.EmailAddress)
+            .EmailAddress()
+            .When(r => r.BizManagerContactInfo != null);
     }
 }
