@@ -9,8 +9,9 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Manager.Licence;
-internal class BizPortalUserManager
-    : IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
+internal class BizPortalUserManager : 
+    IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
+    IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
@@ -51,5 +52,21 @@ internal class BizPortalUserManager
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
+    }
+
+    public async Task<BizPortalUserListResponse> Handle(BizPortalUserListQuery query, CancellationToken ct)
+    {
+        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+            new PortalUserQry()
+            {
+                OrgId = query.BizId,
+                IncludeInactive = !query.OnlyReturnActiveUsers
+            },
+            ct);
+
+        var userResps = _mapper.Map<IEnumerable<BizPortalUserListResponse>>(existingUsersResult.Items);
+        
+
+        return new BizPortalUserListResponse();
     }
 }
