@@ -61,6 +61,7 @@ public record BizListResponse
 public record BizProfileResponse : BizInfo
 {
     public Guid BizId { get; set; } //which is accountid in account
+    public ContactInfo? BizManagerContactInfo { get; set; }
 }
 
 public record BizUserLoginResponse
