@@ -29,3 +29,10 @@ public record BizPortalUserResponse : BizPortalUserUpsertRequest
 {
     public Guid Id { get; set; }
 }
+
+public record BizPortalUserListResponse
+{
+    public int? MaximumNumberOfAuthorizedContacts { get; set; }
+    public int? MaximumNumberOfPrimaryAuthorizedContacts { get; set; }
+    public IEnumerable<BizPortalUserResponse> Users { get; set; } = Array.Empty<BizPortalUserResponse>();
+}
