@@ -7,9 +7,12 @@ import {
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
 	BizLicAppSubmitRequest,
+	BizPortalUserCreateRequest,
+	BizPortalUserResponse,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
+	ContactAuthorizationTypeCode,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -21,7 +24,7 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { BizLicensingService, BizProfileService, LicenceService } from '@app/api/services';
+import { BizLicensingService, BizPortalUserService, BizProfileService, LicenceService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
@@ -117,6 +120,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
+		private bizPortalUserService: BizPortalUserService,
 		private commonApplicationService: CommonApplicationService,
 		private hotToastService: HotToastService
 	) {
@@ -445,6 +449,71 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.continueToNextStep(applicationTypeCode);
 			})
 		);
+	}
+
+	/**
+	 * Save a business manager
+	 * @returns
+	 */
+	getBizPortalUsers(): Observable<BizPortalUserResponse[]> {
+		// const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return of([
+			// TODO get getBizPortalUsers
+			{
+				id: 'd64ecf3b-e2f3-483e-b7f7-337dbec86da3',
+				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.BusinessManager,
+				firstName: 'Test',
+				lastName: 'Test',
+				email: 'victoria.charity@quartech.com',
+				jobTitle: 'test',
+				phoneNumber: '444-444-4444',
+				isActive: true,
+			},
+			{
+				id: '985f7251-daa2-4f35-abef-882c70690acc',
+				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.BusinessManager,
+				firstName: 'Test',
+				lastName: 'Test',
+				email: 'nick.nanson@test.com',
+				jobTitle: 'Test',
+				phoneNumber: '250-888-9999',
+				isActive: false,
+			},
+			{
+				id: '5992a33b-5805-4496-9b80-80aa2cf97fa0',
+				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.PrimaryBusinessManager,
+				firstName: 'Test',
+				lastName: 'Test',
+				email: 'jim.brad@gov.bc.ca',
+				jobTitle: null,
+				phoneNumber: null,
+				isActive: true,
+			},
+		]);
+	}
+
+	/**
+	 * Save a business manager
+	 * @returns
+	 */
+	saveBizPortalUser(body: BizPortalUserCreateRequest): Observable<BizPortalUserResponse> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+		body.bizId = bizId;
+
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersPost({
+			bizId,
+			body,
+		});
+	}
+
+	/**
+	 * Delete a business manager
+	 * @returns
+	 */
+	deleteBizPortalUser(id: string): Observable<string> {
+		// TODO delete BizPortalUser
+		return of(id);
 	}
 
 	/**
