@@ -64,9 +64,14 @@ internal class BizPortalUserManager :
             },
             ct);
 
-        var userResps = _mapper.Map<IEnumerable<BizPortalUserListResponse>>(existingUsersResult.Items);
-        
+        var userResps = _mapper.Map<IEnumerable<BizPortalUserResponse>>(existingUsersResult.Items);
+        BizResult? biz = await _bizRepository.GetBizAsync(query.BizId, ct);
 
-        return new BizPortalUserListResponse();
+        return new BizPortalUserListResponse
+        {
+            MaximumNumberOfAuthorizedContacts = biz != null ? biz.MaxContacts : 0,
+            MaximumNumberOfPrimaryAuthorizedContacts = biz != null ? biz.MaxPrimaryContacts : 0,
+            Users = userResps
+        };
     }
 }
