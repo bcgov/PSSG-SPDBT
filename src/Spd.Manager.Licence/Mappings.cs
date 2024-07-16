@@ -277,7 +277,13 @@ internal class Mappings : Profile
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
             .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => s.Email))
-            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId));
+            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId))
+            .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
+            .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
+            .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
+            .ForPath(d => d.BizManagerContactInfo.EmailAddress, opt => opt.MapFrom(s => s.BizManagerContactInfo.EmailAddress))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName1, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName1))
+            .ForPath(d => d.BizManagerContactInfo.MiddleName2, opt => opt.MapFrom(s => s.BizManagerContactInfo.MiddleName2));
 
         CreateMap<PermitAppSubmitRequest, PermitLicence>()
           .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => GetPurposeEnums(s.BodyArmourPermitReasonCodes, s.ArmouredVehiclePermitReasonCodes)))
