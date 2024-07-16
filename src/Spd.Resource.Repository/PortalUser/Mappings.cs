@@ -32,13 +32,5 @@ namespace Spd.Resource.Repository.PortalUser
                 s.PortalUserServiceCategory == PortalUserServiceCategoryEnum.Licensing ?
                 (int)PortalUserServiceCategoryOptionSet.Licensing : (int)PortalUserServiceCategoryOptionSet.Screening));
         }
-
-        private ContactRoleCode? GetContactRoleCode(IEnumerable<spd_role> spdRoles)
-        {
-            spd_role role = spdRoles.FirstOrDefault();
-            if (role == null) return null;
-            return Enum.Parse<ContactRoleCode>(
-               DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == role.spd_roleid).Key);
-        }
     }
 }
