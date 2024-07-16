@@ -347,15 +347,12 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 
 	managerFormGroup: FormGroup = this.formBuilder.group({
 		id: new FormControl(''),
-		managerRoleCode: new FormControl(''),
-		givenName: new FormControl('', [FormControlValidators.required]),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
+		contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
+		firstName: new FormControl('', [FormControlValidators.required]),
+		lastName: new FormControl('', [FormControlValidators.required]),
 		phoneNumber: new FormControl('', [FormControlValidators.required]),
-		emailAddress: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
+		email: new FormControl('', [FormControlValidators.required, FormControlValidators.email]),
 		jobTitle: new FormControl(''),
-		isActive: new FormControl(''),
 	});
 
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({

@@ -306,15 +306,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onBusinessManagers(): void {
-		// this.businessApplicationService
-		// 	.loadUserProfile()
-		// 	.pipe(
-		// 		tap((_resp: any) => {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_MANAGERS));
-		// 		}),
-		// 		take(1)
-		// 	)
-		// 	.subscribe();
 	}
 
 	onConnectToExpiredLicence(): void {

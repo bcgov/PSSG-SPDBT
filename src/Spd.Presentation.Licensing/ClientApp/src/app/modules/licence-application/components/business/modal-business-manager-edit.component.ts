@@ -1,10 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { BizPortalUserCreateRequest, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
+import { ContactAuthorizationTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
-export interface UserDialogData {
-	// user: OrgUserResponse;
+export interface BizPortalUserDialogData {
+	user: BizPortalUserResponse;
 	isAllowedPrimary: boolean;
 }
 
@@ -17,28 +19,28 @@ export interface UserDialogData {
 				<div class="row">
 					<div class="col-lg-6 col-md-12">
 						<mat-form-field>
+							<mat-label>Authorization Type</mat-label>
+							<mat-select formControlName="contactAuthorizationTypeCode">
+								<mat-option *ngFor="let auth of authorizationTypes" [value]="auth.code">
+									{{ auth.desc }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div class="col-lg-6 col-md-12">
+						<mat-form-field>
 							<mat-label>Given Name</mat-label>
-							<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-							<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
+							<input matInput formControlName="firstName" [errorStateMatcher]="matcher" maxlength="40" />
+							<mat-error *ngIf="form.get('firstName')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
-					<div class="col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName1" maxlength="40" />
-						</mat-form-field>
-					</div>
-					<div class="col-lg-6 col-md-12">
-						<mat-form-field>
-							<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-							<input matInput formControlName="middleName2" maxlength="40" />
-						</mat-form-field>
-					</div>
+
 					<div class="col-lg-6 col-md-12">
 						<mat-form-field>
 							<mat-label>Surname</mat-label>
-							<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-							<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
+							<input matInput formControlName="lastName" [errorStateMatcher]="matcher" maxlength="40" />
+							<mat-error *ngIf="form.get('lastName')?.hasError('required')"> This is required </mat-error>
 						</mat-form-field>
 					</div>
 
@@ -61,13 +63,13 @@ export interface UserDialogData {
 							<mat-label>Email</mat-label>
 							<input
 								matInput
-								formControlName="emailAddress"
+								formControlName="email"
 								placeholder="name@domain.com"
 								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('email')"> Must be a valid email address </mat-error>
-							<mat-error *ngIf="form.get('emailAddress')?.hasError('required')">This is required</mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -92,6 +94,11 @@ export interface UserDialogData {
 export class ModalBusinessManagerEditComponent implements OnInit {
 	title = '';
 	isEdit = false;
+	authorizationTypes = ContactAuthorizationTypes.filter(
+		(item: SelectOptions) =>
+			item.code === ContactAuthorizationTypeCode.BusinessManager ||
+			item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager
+	);
 
 	form = this.businessApplicationService.managerFormGroup;
 
@@ -115,8 +122,16 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 		this.form.markAllAsTouched();
 		if (!this.form.valid) return;
 
-		this.dialogRef.close({
-			data: this.form.value,
-		});
+		const formData = this.form.value;
+		const body: BizPortalUserCreateRequest = { ...formData };
+
+		this.businessApplicationService
+			.saveBizPortalUser(body)
+			.pipe()
+			.subscribe((resp: BizPortalUserResponse) => {
+				this.dialogRef.close({
+					data: resp,
+				});
+			});
 	}
 }

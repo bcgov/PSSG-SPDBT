@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { LicenceApplicationRoutes } from '../../licence-application-routing.module';
-import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
+import { BusinessApplicationService } from '../../services/business-application.service';
+import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
 @Component({
 	selector: 'app-business-managers',
@@ -51,7 +54,8 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 									type="button"
 									color="primary"
 									class="large w-auto mb-2"
-									(click)="onAddManager()"
+									aria-label="Add user"
+									(click)="onAddUser()"
 									*ngIf="showAdd"
 								>
 									Add Manager
@@ -65,9 +69,9 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 							<mat-table [dataSource]="dataSource">
 								<ng-container matColumnDef="status">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Status</mat-header-cell>
-									<mat-cell *matCellDef="let manager">
+									<mat-cell *matCellDef="let user">
 										<span class="mobile-label">Status:</span>
-										<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="manager.isActive; else notactive">
+										<mat-chip-row aria-label="Status" class="mat-chip-green" *ngIf="user.isActive; else notactive">
 											Active
 										</mat-chip-row>
 										<ng-template #notactive>
@@ -76,68 +80,65 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 									</mat-cell>
 								</ng-container>
 
-								<ng-container matColumnDef="managerRoleCode">
+								<ng-container matColumnDef="contactAuthorizationTypeCode">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Authorization Type</mat-header-cell>
-									<mat-cell *matCellDef="let manager">
+									<mat-cell *matCellDef="let user">
 										<span class="mobile-label">Authorization Type:</span>
-										{{ manager.managerRoleCode }}
+										{{ user.contactAuthorizationTypeCode | options : 'ContactAuthorizationTypes' }}
 									</mat-cell>
 								</ng-container>
 
 								<ng-container matColumnDef="branchManager">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Applicant Name</mat-header-cell>
-									<mat-cell *matCellDef="let manager">
-										<span class="mobile-label">Applicant Name:</span>
-										{{ manager | fullname | default }}
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Manager Name</mat-header-cell>
+									<mat-cell *matCellDef="let user">
+										<span class="mobile-label">Manager Name:</span>
+										{{ user | fullname | default }}
 									</mat-cell>
 								</ng-container>
 
-								<ng-container matColumnDef="emailAddress">
+								<ng-container matColumnDef="email">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Email</mat-header-cell>
-									<mat-cell class="mat-cell-email" *matCellDef="let manager">
+									<mat-cell class="mat-cell-email" *matCellDef="let user">
 										<span class="mobile-label">Email:</span>
-										{{ manager.emailAddress | default }}
+										{{ user.email | default }}
 									</mat-cell>
 								</ng-container>
 
 								<ng-container matColumnDef="phoneNumber">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Phone Number</mat-header-cell>
-									<mat-cell *matCellDef="let manager">
+									<mat-cell *matCellDef="let user">
 										<span class="mobile-label">Phone Number:</span>
-										{{ manager.phoneNumber | formatPhoneNumber | default }}
+										{{ user.phoneNumber | formatPhoneNumber | default }}
 									</mat-cell>
 								</ng-container>
 
 								<ng-container matColumnDef="action1">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-									<mat-cell *matCellDef="let manager">
+									<mat-cell *matCellDef="let user">
 										<button
 											mat-flat-button
 											class="table-button"
 											style="color: var(--color-green);"
-											aria-label="Edit manager"
-											(click)="onMaintainManager(manager)"
+											aria-label="Edit user"
+											*ngIf="allowEditRow(user)"
+											(click)="onMaintainUser(user)"
 										>
 											<mat-icon>edit</mat-icon>Edit
 										</button>
 									</mat-cell>
 								</ng-container>
 
-								<!--
-									*ngIf="allowEditRow(manager)"
-									*ngIf="allowDeleteRow(manager)"
-								-->
-
 								<ng-container matColumnDef="action2">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-									<mat-cell *matCellDef="let manager">
-										<ng-container *ngIf="manager.isActive; else notactiveactions">
+									<mat-cell *matCellDef="let user">
+										<ng-container *ngIf="user.isActive; else notactiveactions">
 											<button
 												mat-flat-button
 												class="table-button"
 												style="color: var(--color-red);"
-												aria-label="Remove manager"
-												(click)="onDeleteManager(manager)"
+												aria-label="Remove user"
+												(click)="onDeleteUser(user)"
+												*ngIf="allowDeleteRow(user)"
 											>
 												<mat-icon>delete_outline</mat-icon>Remove
 											</button>
@@ -147,8 +148,8 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 												mat-flat-button
 												class="table-button"
 												style="color: var(--color-primary-light);"
-												aria-label="Cancel manager invitation"
-												(click)="OnCancelManager(manager)"
+												aria-label="Cancel invitation"
+												(click)="onCancelInvitation(user)"
 											>
 												<mat-icon>cancel</mat-icon>Cancel
 											</button>
@@ -172,8 +173,8 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 				.mat-column-status {
 					max-width: 130px;
 				}
-				.mat-column-managerRoleCode {
-					max-width: 130px;
+				.mat-column-contactAuthorizationTypeCode {
+					min-width: 180px;
 				}
 			}
 
@@ -194,181 +195,188 @@ import { ModalBusinessManagerEditComponent } from './modal-business-manager-edit
 	],
 })
 export class BusinessManagersComponent implements OnInit {
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+	readonly DEFAULT_MAX_NUMBER_OF_CONTACTS = 6;
+	readonly DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS = 2;
+
+	dataSource: MatTableDataSource<BizPortalUserResponse> = new MatTableDataSource<BizPortalUserResponse>([]);
 	columns: string[] = [
 		'status',
-		'managerRoleCode',
+		'contactAuthorizationTypeCode',
 		'branchManager',
-		'emailAddress',
+		'email',
 		'phoneNumber',
 		'action1',
 		'action2',
 	];
 
-	maximumNumberOfManagers = 6;
-	maximumNumberOfPrimaryManagers = 1;
+	maximumNumberOfContacts = this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+	maximumNumberOfPrimaryContacts = this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
 
 	showAdd = false;
 	isAllowedAddManager = false;
 	isAllowedAddPrimary = false;
 
-	managersList: any[] = [];
+	usersList: any[] = [];
 
-	constructor(private router: Router, private hotToastService: HotToastService, private dialog: MatDialog) {}
+	constructor(
+		private router: Router,
+		private dialog: MatDialog,
+		private hotToastService: HotToastService,
+		private authUserBceidService: AuthUserBceidService,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	ngOnInit(): void {
-		this.managersList = [
-			{
-				id: '7ca9f3fa-92a1-4682-bf47-02a9f5d6a7d9',
-				managerRoleCode: 'Contact',
-				givenName: 'Bengal',
-				surname: 'Benny',
-				emailAddress: 'asdf23@asdf.com',
-				jobTitle: 'Test',
-				phoneNumber: '345-345-3453',
-				isActive: true,
-			},
-			{
-				id: 'd64ecf3b-e2f3-483e-b7f7-337dbec86da3',
-				managerRoleCode: 'Primary',
-				givenName: 'Victoria',
-				surname: 'Charity',
-				emailAddress: 'victoria.charity@quartech.com',
-				jobTitle: 'test',
-				phoneNumber: '444-444-4444',
-				isActive: true,
-			},
-			{
-				id: '985f7251-daa2-4f35-abef-882c70690acc',
-				managerRoleCode: 'Contact',
-				givenName: 'Nick',
-				surname: 'Nanson',
-				emailAddress: 'nick.nanson@test.com',
-				jobTitle: 'Test',
-				phoneNumber: '250-888-9999',
-				isActive: false,
-			},
-			{
-				id: '8343b143-c09f-427a-8673-9cfc62cd3ef3',
-				managerRoleCode: 'Primary',
-				givenName: 'Jim',
-				surname: 'Brad',
-				emailAddress: 'jim.brad@gov.bc.ca',
-				jobTitle: null,
-				phoneNumber: null,
-				isActive: true,
-			},
-		];
-
-		this.sortUsers();
-		this.setFlags();
-		this.dataSource = new MatTableDataSource(this.managersList);
+		this.loadList();
 	}
 
 	onCancel(): void {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessApplications());
 	}
 
-	onMaintainManager(manager: any): void {
-		this.openManagerDialog(manager, false);
+	onMaintainUser(user: BizPortalUserResponse): void {
+		let isAllowedPrimary = this.isAllowedAddPrimary;
+		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary) {
+			isAllowedPrimary = true;
+		}
+		const dialogOptions: BizPortalUserDialogData = {
+			user,
+			isAllowedPrimary,
+		};
+		this.openManagerDialog(dialogOptions, false);
 	}
 
-	onAddManager(): void {
-		this.openManagerDialog(null, true);
+	onAddUser(): void {
+		const newUser: BizPortalUserResponse = {};
+		const dialogOptions: BizPortalUserDialogData = {
+			user: newUser,
+			isAllowedPrimary: this.isAllowedAddPrimary,
+		};
+		this.openManagerDialog(dialogOptions, true);
 	}
 
-	onDeleteManager(manager: any): void {
-		this.deleteManager({
-			manager,
+	onDeleteUser(user: BizPortalUserResponse): void {
+		this.deleteUser({
+			user,
 			title: 'Confirmation',
-			message: `Are you sure you want to permanently remove '${manager.givenName} ${manager.surname}'?`,
+			message: `Are you sure you want to permanently remove '${user.firstName} ${user.lastName}'?`,
 			actionText: 'Yes, remove',
 			success: 'Manager was successfully removed',
 		});
 	}
 
-	OnCancelManager(manager: any) {
-		const data: DialogOptions = {
-			icon: 'warning',
+	onCancelInvitation(user: BizPortalUserResponse) {
+		this.deleteUser({
+			user,
 			title: 'Confirmation',
-			message: `Are you sure you want to cancel the request for '${manager.givenName} ${manager.surname}'?`,
-			actionText: 'Yes',
-			cancelText: 'Cancel',
-		};
-
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					// this.applicationService
-					// 	.apiOrgsOrgIdApplicationInvitesApplicationInviteIdDelete({
-					// 		applicationInviteId: application.id!,
-					// 		orgId: application.orgId!,
-					// 	})
-					// 	.pipe()
-					// 	.subscribe((_res) => {
-					// 		this.hotToast.success('The request was successfully cancelled');
-					// 		this.loadList();
-					// 	});
-				}
-			});
-	}
-
-	private setFlags(): void {
-		this.showAdd = this.isUserPrimaryManager();
-		this.isAllowedAddManager = this.managersList.length < this.maximumNumberOfManagers;
-
-		const numberOfPrimary = this.managersList.filter(
-			(manager) => manager.managerRoleCode == 'Primary' // TODO update to use code
-		)?.length;
-		this.isAllowedAddPrimary = !(numberOfPrimary >= this.maximumNumberOfPrimaryManagers);
-	}
-
-	private sortUsers(): void {
-		this.managersList.sort((a: any, b: any) => {
-			const a1 = a.isActive ? 'a' : 'b';
-			const b1 = b.isActive ? 'a' : 'b';
-			const a2 = a.managerRoleCode?.toString() ?? '';
-			const b2 = b.managerRoleCode?.toString() ?? '';
-			const a3 = a.givenName?.toUpperCase() ?? '';
-			const b3 = b.givenName?.toUpperCase() ?? '';
-			const a4 = a.surname?.toUpperCase() ?? '';
-			const b4 = b.surname?.toUpperCase() ?? '';
-			return a1.localeCompare(b1) || a2.localeCompare(b2) * -1 || a3.localeCompare(b3) || a4.localeCompare(b4);
+			message: 'Are you sure you want to cancel this invitation?',
+			actionText: 'Yes, cancel',
+			success: 'Invitation was successfully cancelled',
 		});
 	}
 
-	private openManagerDialog(manager: any | null, isCreate: boolean): void {
-		const data: DialogOptions = { data: manager ? { ...manager } : null };
+	allowEditRow(user: BizPortalUserResponse): boolean {
+		// if row is current user, allow edit
+		if (this.authUserBceidService.bceidUserProfile?.bizUserId == user.id) {
+			return true;
+		}
+
+		// if row is not active user, prevent edit
+		// if (!user.isActive) {
+		// 	return false;
+		// }
+
+		// if current user is a Primary Authorized User, allow edit
+		return this.isUserPrimaryAuthorizedUser();
+	}
+
+	allowDeleteRow(user: BizPortalUserResponse): boolean {
+		if (this.usersList.length <= 1) {
+			return false;
+		}
+
+		// if row is current user, prevent delete
+		if (this.authUserBceidService.bceidUserProfile?.bizUserId == user.id) {
+			return false;
+		}
+
+		// if current user is a Primary Authorized User, allow delete
+		return this.isUserPrimaryAuthorizedUser();
+	}
+
+	private loadList(): void {
+		this.businessApplicationService.getBizPortalUsers().subscribe((resp: BizPortalUserResponse[]) => {
+			// this.maximumNumberOfContacts = resp.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+			// this.maximumNumberOfPrimaryContacts = resp.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
+
+			this.usersList = resp ?? [];
+
+			this.sortUsers();
+			this.setFlags();
+			this.dataSource = new MatTableDataSource(this.usersList);
+		});
+	}
+
+	private setFlags(): void {
+		this.showAdd = this.isUserPrimaryAuthorizedUser();
+		this.isAllowedAddManager = this.usersList.length < this.maximumNumberOfContacts;
+
+		const numberOfPrimary = this.usersList.filter(
+			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager
+		)?.length;
+		this.isAllowedAddPrimary = numberOfPrimary < this.maximumNumberOfPrimaryContacts;
+	}
+
+	private sortUsers(): void {
+		this.usersList.sort((a: BizPortalUserResponse, b: BizPortalUserResponse) => {
+			// const a1 = a.isActive ? 'a' : 'b';
+			// const b1 = b.isActive ? 'a' : 'b';
+			const a2 = a.contactAuthorizationTypeCode?.toString() ?? '';
+			const b2 = b.contactAuthorizationTypeCode?.toString() ?? '';
+			const a3 = a.firstName?.toUpperCase() ?? '';
+			const b3 = b.firstName?.toUpperCase() ?? '';
+			const a4 = a.lastName?.toUpperCase() ?? '';
+			const b4 = b.lastName?.toUpperCase() ?? '';
+			// return a1.localeCompare(b1) || a2.localeCompare(b2) * -1 || a3.localeCompare(b3) || a4.localeCompare(b4);
+			return a2.localeCompare(b2) * -1 || a3.localeCompare(b3) || a4.localeCompare(b4);
+		});
+	}
+
+	private openManagerDialog(dialogOptions: BizPortalUserDialogData, isCreate: boolean): void {
 		this.dialog
 			.open(ModalBusinessManagerEditComponent, {
 				width: '800px',
-				data,
+				data: dialogOptions,
 				autoFocus: true,
 			})
 			.afterClosed()
 			.subscribe((resp) => {
 				if (resp) {
 					if (isCreate) {
-						this.managersList.push(resp.data);
+						this.usersList.push(resp.data);
 						this.hotToastService.success('Business Manager was successfully added');
 					} else {
-						const branchIndex = this.managersList.findIndex((item) => item.id == manager.id!);
+						const branchIndex = this.usersList.findIndex((item) => item.id == dialogOptions.user?.id!);
 						if (branchIndex >= 0) {
-							this.managersList[branchIndex] = resp.data;
-							this.dataSource.data = this.managersList;
+							this.usersList[branchIndex] = resp.data;
+							this.dataSource.data = this.usersList;
 						}
 						this.hotToastService.success('Business Manager was successfully updated');
 					}
 					this.sortUsers();
 					this.setFlags();
-					this.dataSource = new MatTableDataSource(this.managersList);
+					this.dataSource = new MatTableDataSource(this.usersList);
 				}
 			});
 	}
 
-	private deleteManager(params: { manager: any; title: string; message: string; actionText: string; success: string }) {
+	private deleteUser(params: {
+		user: BizPortalUserResponse;
+		title: string;
+		message: string;
+		actionText: string;
+		success: string;
+	}) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: params.title,
@@ -382,29 +390,32 @@ export class BusinessManagersComponent implements OnInit {
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					// this.orgUserService
-					// 	.apiOrgsOrgIdUsersUserIdDelete({ userId: params.user.id!, orgId: params.user.organizationId! })
-					// 	.pipe()
-					// 	.subscribe((_res) => {
-					this.managersList.splice(
-						this.managersList.findIndex((item) => item.id == params.manager.id!),
-						1
-					);
-					this.setFlags();
-					this.hotToastService.success(params.success);
-					this.dataSource = new MatTableDataSource(this.managersList);
-					// 	});
+					this.businessApplicationService
+						.deleteBizPortalUser(params.user.id!)
+						.pipe()
+						.subscribe((_res) => {
+							this.usersList.splice(
+								this.usersList.findIndex((item) => item.id == params.user.id!),
+								1
+							);
+							this.setFlags();
+							this.hotToastService.success(params.success);
+							this.dataSource = new MatTableDataSource(this.usersList);
+						});
 				}
 			});
 	}
 
-	private isUserPrimaryManager(): boolean {
-		if (!this.managersList) {
+	private isUserPrimaryAuthorizedUser(): boolean {
+		if (!this.usersList) {
 			return false;
 		}
 
-		// const currUser = this.managersList.find((item) => item.id == this.authUserService.bceidUserInfoProfile?.userId);
-		// return currUser ? currUser.contactAuthorizationTypeCode == 'Primary' : false;
-		return true; // TODO remove harcode.
+		const currUser = this.usersList.find(
+			(item: BizPortalUserResponse) => item.id == this.authUserBceidService.bceidUserProfile?.bizUserId
+		);
+		return currUser
+			? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager
+			: false;
 	}
 }
