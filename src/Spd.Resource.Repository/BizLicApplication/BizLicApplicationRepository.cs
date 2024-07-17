@@ -328,12 +328,20 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
     private contact GetContact(Guid contactId)
     {
-        contact? contact = _context.contacts
-            .Where(c => c.contactid == contactId)
-            .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
-            .FirstOrDefault();
+        contact? contact;
 
-        if (contact == null) throw new ArgumentException($"cannot find the contact with contactId : {contactId}");
+        try
+        {
+            contact = _context.contacts
+                .Where(c => c.contactid == contactId)
+                .FirstOrDefault();
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                throw new ArgumentException($"cannot find the contact with contactId : {contactId}");
+            throw;
+        }
 
         return contact;
     }
