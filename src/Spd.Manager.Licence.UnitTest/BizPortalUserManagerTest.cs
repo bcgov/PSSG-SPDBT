@@ -46,7 +46,7 @@ public class BizPortalUserManagerTest
         // Arrange
         Guid bizId = Guid.NewGuid();
         BizPortalUserListQuery qry = new(bizId);
-        PortalUserResp portalUserResp = new() { OrganizationId = bizId};
+        PortalUserResp portalUserResp = new() { OrganizationId = bizId, ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager};
         PortalUserListResp portalUserListResp = new()
         {
             Items = new List<PortalUserResp>() { portalUserResp }
