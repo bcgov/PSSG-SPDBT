@@ -120,7 +120,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), businessContact);
         }
         else
-            DeletePrivateInvestigatorLink(cmd.PrivateInvestigatorSwlInfo?.LicenceId, app);
+            DeletePrivateInvestigatorLink(app);
 
         await _context.SaveChangesAsync(ct);
 
@@ -215,7 +215,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
     private spd_businesscontact UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
     {
         spd_businesscontact? bizContact = null;
-        DeletePrivateInvestigatorLink(privateInvestigatorInfo.LicenceId, app);
+        DeletePrivateInvestigatorLink(app);
         Guid? bizContactId = privateInvestigatorInfo?.BizContactId;
 
         if (bizContactId == null)
@@ -252,26 +252,32 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
     }
 
-    private void DeletePrivateInvestigatorLink(Guid? licenceId, spd_application app)
+    private void DeletePrivateInvestigatorLink(spd_application app)
     {
         var position = _context.LookupPosition(PositionEnum.PrivateInvestigatorManager.ToString());
 
-        if (position == null || licenceId == null)
+        if (position == null)
             return;
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
             .Expand(b => b.spd_position_spd_businesscontact)
             .Expand(b => b.spd_businesscontact_spd_application)
+            .Expand(b => b.spd_SWLNumber)
             .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
             .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
             .FirstOrDefault();
-
+        
         if (bizContact == null)
             return;
 
         _context.DeleteLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
         _context.SetLink(bizContact, nameof(spd_businesscontact.spd_ContactId), null);
         _context.DeleteLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
+
+        Guid? licenceId = bizContact.spd_SWLNumber.spd_licenceid;
+
+        if (licenceId == null)
+            return;
 
         spd_licence? licence = _context.spd_licences
             .Where(l => l.spd_licenceid == licenceId)
