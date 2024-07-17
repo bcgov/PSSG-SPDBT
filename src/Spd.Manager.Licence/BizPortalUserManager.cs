@@ -60,7 +60,8 @@ internal class BizPortalUserManager :
             new PortalUserQry()
             {
                 OrgId = query.BizId,
-                IncludeInactive = !query.OnlyReturnActiveUsers
+                IncludeInactive = !query.OnlyReturnActiveUsers,
+                ContactRoleCode = new List<ContactRoleCode>() { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager }
             },
             ct);
 
