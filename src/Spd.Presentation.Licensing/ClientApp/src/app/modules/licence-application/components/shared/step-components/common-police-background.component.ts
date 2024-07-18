@@ -6,7 +6,6 @@ import { BooleanTypeCode, PoliceOfficerRoleTypes } from '@app/core/code-types/mo
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-common-police-background',
@@ -55,7 +54,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 							</div>
 							<div
 								class="col-xl-5 col-lg-12 col-md-12 col-sm-12"
-								*ngIf="policeOfficerRoleCode.value === policeOfficerRoleCodes.Other"
+								*ngIf="policeOfficerRoleCode.value === policeOfficerRoleCodeOther"
 							>
 								<mat-form-field>
 									<mat-label>Describe Role</mat-label>
@@ -114,7 +113,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 })
 export class CommonPoliceBackgroundComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	policeOfficerRoleCodes = PoliceOfficerRoleCode;
+	policeOfficerRoleCodeOther = PoliceOfficerRoleCode.Other;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
 
 	matcher = new FormErrorStateMatcher();
@@ -124,40 +123,27 @@ export class CommonPoliceBackgroundComponent {
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
-
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService
-				.addUploadDocument(LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict, file)
-				.subscribe({
-					next: (resp: any) => {
-						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-						matchingFile.documentUrlId = resp.body[0].documentUrlId;
-					},
-					error: (error: any) => {
-						console.log('An error occurred during file upload', error);
-						this.hotToastService.error('An error occurred during the file upload. Please try again.');
-						this.fileUploadComponent.removeFailedFile(file);
-					},
-				});
-		}
+		this.licenceApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.licenceApplicationService.fileRemoved();
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {
 		return this.form.get('isPoliceOrPeaceOfficer') as FormControl;
 	}
-
 	get policeOfficerRoleCode(): FormControl {
 		return this.form.get('policeOfficerRoleCode') as FormControl;
 	}
-
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}

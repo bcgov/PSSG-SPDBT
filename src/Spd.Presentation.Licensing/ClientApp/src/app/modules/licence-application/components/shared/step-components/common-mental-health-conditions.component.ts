@@ -5,7 +5,6 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-common-mental-health-conditions',
@@ -76,38 +75,27 @@ export class CommonMentalHealthConditionsComponent {
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
-
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.MentalHealthCondition, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
-		}
+		this.licenceApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.MentalHealthCondition,
+			file,
+			this.attachments,
+			this.fileUploadComponent
+		);
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.licenceApplicationService.fileRemoved();
 	}
 
 	get isTreatedForMHC(): FormControl {
 		return this.form.get('isTreatedForMHC') as FormControl;
 	}
-
 	get hasPreviousMhcFormUpload(): FormControl {
 		return this.form.get('hasPreviousMhcFormUpload') as FormControl;
 	}
-
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
 	}
