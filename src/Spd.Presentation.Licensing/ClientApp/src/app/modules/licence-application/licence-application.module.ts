@@ -164,10 +164,12 @@ import { CommonContactInformationComponent } from './components/shared/step-comp
 import { CommonCriminalHistoryComponent } from './components/shared/step-components/common-criminal-history.component';
 import { CommonExpiredLicenceComponent } from './components/shared/step-components/common-expired-licence.component';
 import { CommonFingerprintsComponent } from './components/shared/step-components/common-fingerprints.component';
+import { CommonMentalHealthConditionsComponent } from './components/shared/step-components/common-mental-health-conditions.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/step-components/common-personal-information-new-anonymous.component';
 import { CommonPersonalInformationRenewAnonymousComponent } from './components/shared/step-components/common-personal-information-renew-anonymous.component';
 import { CommonPhotographOfYourselfComponent } from './components/shared/step-components/common-photograph-of-yourself.component';
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/step-components/common-physical-characteristics.component';
+import { CommonPoliceBackgroundComponent } from './components/shared/step-components/common-police-background.component';
 import { CommonReprintComponent } from './components/shared/step-components/common-reprint.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/step-components/common-swl-permit-terms.component';
 import { CommonUpdateRenewalAlertComponent } from './components/shared/step-components/common-update-renewal-alert.component';
@@ -257,6 +259,8 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		CommonControllingMembersComponent,
 		CommonEmployeesComponent,
 		CommonCriminalHistoryComponent,
+		CommonPoliceBackgroundComponent,
+		CommonMentalHealthConditionsComponent,
 		CommonExpiredLicenceComponent,
 		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,
