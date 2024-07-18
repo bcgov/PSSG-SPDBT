@@ -61,7 +61,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
         {
-            contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
+            contact? contact = await _context.GetContactById((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId, ct);
+            if (contact == null)
+                throw new ArgumentException($"cannot find the contact with contactId : {cmd.PrivateInvestigatorSwlInfo.ContactId}");
+
             spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
 
@@ -112,7 +115,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
             cmd.PrivateInvestigatorSwlInfo?.LicenceId != null)
         {
-            contact contact = GetContact((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId);
+            contact? contact = await _context.GetContactById((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId, ct);
+            if (contact == null)
+                throw new ArgumentException($"cannot find the contact with contactId : {cmd.PrivateInvestigatorSwlInfo.ContactId}");
+
             spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
             _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
 
@@ -324,26 +330,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             throw new ArgumentException("service team not found");
 
         _context.SetLink(app, nameof(app.ownerid), serviceTeam);
-    }
-
-    private contact GetContact(Guid contactId)
-    {
-        contact? contact;
-
-        try
-        {
-            contact = _context.contacts
-                .Where(c => c.contactid == contactId)
-                .FirstOrDefault();
-        }
-        catch (DataServiceQueryException ex)
-        {
-            if (ex.Response.StatusCode == 404)
-                throw new ArgumentException($"cannot find the contact with contactId : {contactId}");
-            throw;
-        }
-
-        return contact;
     }
 
     private spd_licence GetLicence(Guid licenceId) 
