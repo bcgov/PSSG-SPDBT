@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polly;
@@ -13,9 +14,9 @@ using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
 using Spd.Resource.Repository.Invoice;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Payment;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
 using Spd.Utilities.Cache;
 using Spd.Utilities.FileStorage;
@@ -54,6 +55,7 @@ namespace Spd.Manager.Payment
         private readonly IPersonLicApplicationRepository _personLicAppRepository;
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ILogger<IPaymentManager> _logger;
+        private readonly IConfiguration _configuration;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public PaymentManager(IPaymentService paymentService,
@@ -70,7 +72,8 @@ namespace Spd.Manager.Payment
             ILicenceFeeRepository licFeeRepository,
             IPersonLicApplicationRepository personLicAppRepository,
             IServiceTypeRepository serviceTypeRepository,
-            ILogger<IPaymentManager> logger)
+            ILogger<IPaymentManager> logger,
+            IConfiguration configuration)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
@@ -86,6 +89,7 @@ namespace Spd.Manager.Payment
             _personLicAppRepository = personLicAppRepository;
             _serviceTypeRepository = serviceTypeRepository;
             _logger = logger;
+            _configuration = configuration;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
@@ -285,25 +289,7 @@ namespace Spd.Manager.Payment
             var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
             foreach (var invoice in invoiceList.Items)
             {
-                var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
-                var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
-                UpdateInvoiceCmd update = new()
-                {
-                    InvoiceId = invoice.Id,
-                    CasResponse = result.Message
-                };
-                if (result.IsSuccess)
-                {
-                    update.InvoiceNumber = result.InvoiceNumber;
-                    update.InvoiceStatus = InvoiceStatusEnum.Sent;
-                    update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
-                    await _invoiceRepository.ManageAsync(update, ct);
-                }
-                else
-                {
-                    update.InvoiceStatus = InvoiceStatusEnum.Failed;
-                    await _invoiceRepository.ManageAsync(update, ct);
-                }
+                await CreateOneInvoice(invoice, ct);
             }
             return new CreateInvoicesInCasResponse(true);
         }
@@ -317,26 +303,7 @@ namespace Spd.Manager.Payment
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "invoice is not found or not in pending state.");
             }
-
-            var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
-            var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
-            UpdateInvoiceCmd update = new()
-            {
-                InvoiceId = invoice.Id,
-                CasResponse = result.Message
-            };
-            if (result.IsSuccess)
-            {
-                update.InvoiceNumber = result.InvoiceNumber;
-                update.InvoiceStatus = InvoiceStatusEnum.Sent;
-                update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
-                await _invoiceRepository.ManageAsync(update, ct);
-            }
-            else
-            {
-                update.InvoiceStatus = InvoiceStatusEnum.Failed;
-                await _invoiceRepository.ManageAsync(update, ct);
-            }
+            await CreateOneInvoice(invoice, ct);
             return new CreateOneInvoiceInCasResponse(true);
         }
 
@@ -437,6 +404,43 @@ namespace Spd.Manager.Payment
                 };
                 return spdPaymentConfig;
             }
+        }
+
+        private async Task CreateOneInvoice(InvoiceResp invoice, CancellationToken ct)
+        {
+            var createInvoice = _mapper.Map<CreateInvoiceCmd>(invoice);
+            createInvoice = UpdateCmd(createInvoice);
+
+            var result = (InvoiceResult)await _paymentService.HandleCommand(createInvoice);
+            UpdateInvoiceCmd update = new()
+            {
+                InvoiceId = invoice.Id,
+                CasResponse = result.Message
+            };
+            if (result.IsSuccess)
+            {
+                update.InvoiceNumber = result.InvoiceNumber;
+                update.InvoiceStatus = InvoiceStatusEnum.Sent;
+                update.CasResponse = CutOffResponse(update.CasResponse); // dynamics team do not want full json, as it is too big and no use.
+                await _invoiceRepository.ManageAsync(update, ct);
+            }
+            else
+            {
+                update.InvoiceStatus = InvoiceStatusEnum.Failed;
+                await _invoiceRepository.ManageAsync(update, ct);
+            }
+        }
+
+        private CreateInvoiceCmd UpdateCmd(CreateInvoiceCmd cmd)
+        {
+            cmd.BatchSource = _configuration.GetValue<string>("PayBC:ARInvoice:BatchSource") ?? "SECURITY PROGRAMS";
+            cmd.CustTrxType = _configuration.GetValue<string>("PayBC:ARInvoice:CustTransactionType") ?? "Security Screening";
+            foreach (InvoiceLine line in cmd.Lines)
+            {
+                line.MemoLineName = _configuration.GetValue<string>("PayBC:ARInvoice:MemoLineName") ?? "Security Screening";
+                line.Description = _configuration.GetValue<string>("PayBC:ARInvoice:Description") ?? string.Empty;
+            }
+            return cmd;
         }
 
         private record SpdPaymentConfig
