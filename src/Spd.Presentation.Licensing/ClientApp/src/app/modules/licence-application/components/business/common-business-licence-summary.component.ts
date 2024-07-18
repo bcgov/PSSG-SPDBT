@@ -566,25 +566,25 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	get isBusinessManager(): string {
-		return this.businessModelData.businessManagerData.isBusinessManager ?? '';
+		return this.businessModelData.applicantData.isBusinessManager ?? '';
 	}
 	get yourContactGivenName(): string {
-		return this.businessModelData.businessManagerData.applicantGivenName ?? '';
+		return this.businessModelData.applicantData.givenName ?? '';
 	}
 	get yourContactMiddleName1(): string {
-		return this.businessModelData.businessManagerData.applicantMiddleName1 ?? '';
+		return this.businessModelData.applicantData.middleName1 ?? '';
 	}
 	get yourContactMiddleName2(): string {
-		return this.businessModelData.businessManagerData.applicantMiddleName2 ?? '';
+		return this.businessModelData.applicantData.middleName2 ?? '';
 	}
 	get yourContactSurname(): string {
-		return this.businessModelData.businessManagerData.applicantSurname ?? '';
+		return this.businessModelData.applicantData.surname ?? '';
 	}
 	get yourContactEmailAddress(): string {
-		return this.businessModelData.businessManagerData.applicantEmailAddress ?? '';
+		return this.businessModelData.applicantData.emailAddress ?? '';
 	}
 	get yourContactPhoneNumber(): string {
-		return this.businessModelData.businessManagerData.applicantPhoneNumber ?? '';
+		return this.businessModelData.applicantData.phoneNumber ?? '';
 	}
 
 	get membersWithSwlList(): Array<any> {

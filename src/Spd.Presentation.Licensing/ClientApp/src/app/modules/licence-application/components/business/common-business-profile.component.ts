@@ -218,6 +218,25 @@ import {
 				</mat-accordion>
 			</div>
 
+			<div class="col-12" *ngIf="!isBusinessLicenceSoleProprietor">
+				<mat-accordion>
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title>Business Manager</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="mt-3">
+							<section>
+								<app-common-business-manager
+									[form]="businessManagerFormGroup"
+									[isReadonly]="isReadonly"
+								></app-common-business-manager>
+							</section>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
 			<div class="col-lg-6 col-md-12">
 				<mat-accordion>
 					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
@@ -323,6 +342,7 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 	businessTypes = BusinessLicenceTypes;
 
 	@Input() businessInformationFormGroup!: FormGroup;
+	@Input() businessManagerFormGroup!: FormGroup;
 	@Input() businessAddressFormGroup!: FormGroup;
 	@Input() bcBusinessAddressFormGroup!: FormGroup;
 	@Input() businessMailingAddressFormGroup!: FormGroup;
@@ -365,17 +385,24 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 	}
 
 	isFormValid(): boolean {
-		this.businessInformationFormGroup.markAllAsTouched();
-
-		const isValid1 = this.businessInformationFormGroup.valid;
+		const isValid1 = this.isFormGroupValid(this.businessInformationFormGroup);
 		const isValid2 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid3 = this.isBcBusinessAddress ? true : this.isFormGroupValid(this.bcBusinessAddressFormGroup);
 		const isValid4 = this.isFormGroupValid(this.businessAddressFormGroup);
 		const isValid5 = this.isBusinessLicenceSoleProprietor ? true : this.businessBcBranchesComponent.isFormValid();
+		const isValid6 = this.isBusinessLicenceSoleProprietor ? true : this.isFormGroupValid(this.businessManagerFormGroup);
 
-		console.debug('[CommonBusinessProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4, isValid5);
+		console.debug(
+			'[CommonBusinessProfileComponent] isFormValid',
+			isValid1,
+			isValid2,
+			isValid3,
+			isValid4,
+			isValid5,
+			isValid6
+		);
 
-		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5;
+		return isValid1 && isValid2 && isValid3 && isValid4 && isValid5 && isValid6;
 	}
 
 	onLookupSoleProprietor(): void {
