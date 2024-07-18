@@ -64,9 +64,7 @@ public class BizPortalUserController : ControllerBase
         {
             throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
         }
-        if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.BusinessManager.ToString())
-            return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest, true));
-        return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest, false));
+        return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest));
     }
 
     /// <summary>

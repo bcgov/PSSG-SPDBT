@@ -10,7 +10,7 @@ public interface IBizPortalUserManager
 }
 
 public record BizPortalUserCreateCommand(BizPortalUserCreateRequest BizPortalUserCreateRequest, string HostUrl, Guid? CreatedByUserId) : IRequest<BizPortalUserResponse>;
-public record BizPortalUserUpdateCommand(Guid UserId, BizPortalUserUpdateRequest BizPortalUserUpdateRequest, bool OnlyChangePhoneJob = false) : IRequest<BizPortalUserResponse>;
+public record BizPortalUserUpdateCommand(Guid UserId, BizPortalUserUpdateRequest BizPortalUserUpdateRequest) : IRequest<BizPortalUserResponse>;
 
 public record BizPortalUserCreateRequest : BizPortalUserUpsertRequest { }
 
