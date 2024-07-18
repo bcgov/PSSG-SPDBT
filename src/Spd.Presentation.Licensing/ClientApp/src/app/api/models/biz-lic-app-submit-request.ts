@@ -5,7 +5,7 @@ import { BizTypeCode } from '../models/biz-type-code';
 import { ContactInfo } from '../models/contact-info';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { Members } from '../models/members';
-import { SwlContactInfo } from '../models/swl-contact-info';
+import { PrivateInvestigatorSwlContactInfo } from '../models/private-investigator-swl-contact-info';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface BizLicAppSubmitRequest {
@@ -13,7 +13,6 @@ export interface BizLicAppSubmitRequest {
   applicantContactInfo?: ContactInfo;
   applicantIsBizManager?: boolean | null;
   applicationTypeCode?: ApplicationTypeCode;
-  bizManagerContactInfo?: ContactInfo;
   bizTypeCode?: BizTypeCode;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   documentKeyCodes?: Array<string> | null;
@@ -24,7 +23,7 @@ export interface BizLicAppSubmitRequest {
   originalApplicationId?: string | null;
   originalLicenceId?: string | null;
   previousDocumentIds?: Array<string> | null;
-  privateInvestigatorSwlInfo?: SwlContactInfo;
+  privateInvestigatorSwlInfo?: PrivateInvestigatorSwlContactInfo;
   reprint?: boolean | null;
   useDogs?: boolean | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;

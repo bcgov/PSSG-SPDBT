@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessApplicationService } from '../../services/business-application.service';
@@ -15,105 +15,54 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="summary-heading mb-2">Business Manager Information</div>
+					<app-common-business-manager
+						[form]="businessManagerFormGroup"
+						[isReadonly]="true"
+					></app-common-business-manager>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<mat-divider class="mt-2 mb-3 mat-divider-primary"></mat-divider>
 					<form [formGroup]="form" novalidate>
-						<div class="summary-heading mb-2">Business Manager Information</div>
 						<div class="row">
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Given Name</mat-label>
-									<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput formControlName="middleName1" maxlength="40" />
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-									<input matInput formControlName="middleName2" maxlength="40" />
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Surname</mat-label>
-									<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
-									<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Email Address</mat-label>
-									<input
-										matInput
-										formControlName="emailAddress"
-										[errorStateMatcher]="matcher"
-										placeholder="name@domain.com"
-										maxlength="75"
-									/>
-									<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
-									<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
-										Must be a valid email address
-									</mat-error>
-								</mat-form-field>
-							</div>
-
-							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-form-field>
-									<mat-label>Phone Number</mat-label>
-									<input
-										matInput
-										formControlName="phoneNumber"
-										[errorStateMatcher]="matcher"
-										maxlength="30"
-										appPhoneNumberTransform
-									/>
-									<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
-								</mat-form-field>
-							</div>
-
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-checkbox formControlName="isBusinessManager"> I am the business manager </mat-checkbox>
 							</div>
 						</div>
 
 						<ng-container *ngIf="isBusinessManager.value !== true">
-							<mat-divider class="my-3 mat-divider-primary"></mat-divider>
-							<div class="summary-heading mb-2">Your Information</div>
+							<div class="summary-heading my-2">Your Information</div>
 							<div class="row">
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Given Name</mat-label>
-										<input matInput formControlName="applicantGivenName" [errorStateMatcher]="matcher" maxlength="40" />
+										<input matInput formControlName="givenName" [errorStateMatcher]="matcher" maxlength="40" />
+										<mat-error *ngIf="form.get('givenName')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Middle Name 1 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="applicantMiddleName1" maxlength="40" />
+										<input matInput formControlName="middleName1" maxlength="40" />
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Middle Name 2 <span class="optional-label">(optional)</span></mat-label>
-										<input matInput formControlName="applicantMiddleName2" maxlength="40" />
+										<input matInput formControlName="middleName2" maxlength="40" />
 									</mat-form-field>
 								</div>
 
 								<div class="col-xl-6 col-lg-6 col-md-12">
 									<mat-form-field>
 										<mat-label>Surname</mat-label>
-										<input matInput formControlName="applicantSurname" [errorStateMatcher]="matcher" maxlength="40" />
-										<mat-error *ngIf="form.get('applicantSurname')?.hasError('required')"> This is required </mat-error>
+										<input matInput formControlName="surname" [errorStateMatcher]="matcher" maxlength="40" />
+										<mat-error *ngIf="form.get('surname')?.hasError('required')"> This is required </mat-error>
 									</mat-form-field>
 								</div>
 
@@ -122,15 +71,13 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										<mat-label>Email Address</mat-label>
 										<input
 											matInput
-											formControlName="applicantEmailAddress"
+											formControlName="emailAddress"
 											[errorStateMatcher]="matcher"
 											placeholder="name@domain.com"
 											maxlength="75"
 										/>
-										<mat-error *ngIf="form.get('applicantEmailAddress')?.hasError('required')">
-											This is required
-										</mat-error>
-										<mat-error *ngIf="form.get('applicantEmailAddress')?.hasError('email')">
+										<mat-error *ngIf="form.get('emailAddress')?.hasError('required')"> This is required </mat-error>
+										<mat-error *ngIf="form.get('emailAddress')?.hasError('email')">
 											Must be a valid email address
 										</mat-error>
 									</mat-form-field>
@@ -141,14 +88,12 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 										<mat-label>Phone Number</mat-label>
 										<input
 											matInput
-											formControlName="applicantPhoneNumber"
+											formControlName="phoneNumber"
 											[errorStateMatcher]="matcher"
 											maxlength="30"
 											appPhoneNumberTransform
 										/>
-										<mat-error *ngIf="form.get('applicantPhoneNumber')?.hasError('required')"
-											>This is required</mat-error
-										>
+										<mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 							</div>
@@ -172,7 +117,8 @@ export class StepBusinessLicenceManagerInformationComponent implements OnInit, L
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	form: FormGroup = this.businessApplicationService.businessManagerFormGroup;
+	businessManagerFormGroup = this.businessApplicationService.businessManagerFormGroup;
+	form = this.businessApplicationService.applicantFormGroup;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
@@ -192,6 +138,7 @@ export class StepBusinessLicenceManagerInformationComponent implements OnInit, L
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
+		console.log('*******', this.form.valid, this.form.value, this.form);
 		return this.form.valid;
 	}
 
