@@ -68,4 +68,17 @@ public class BizPortalUserController : ControllerBase
             return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest, true));
         return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest, false));
     }
+
+    /// <summary>
+    /// Get Business Portal User list
+    /// </summary>
+    /// <param name="bizId"></param>
+    /// <returns></returns>
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Route("api/business/{bizId}/portal-users")]
+    [HttpGet]
+    public async Task<BizPortalUserListResponse> GetBizPortalUserList([FromRoute] Guid bizId)
+    {
+        return await _mediator.Send(new BizPortalUserListQuery(bizId));
+    }
 }

@@ -315,7 +315,7 @@ export class UtilService {
 	}
 
 	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
-		return province === 'British Columbia' && country === 'Canada';
+		return province === SPD_CONSTANTS.address.provinceBC && country === SPD_CONSTANTS.address.countryCanada;
 	}
 
 	//------------------------------------

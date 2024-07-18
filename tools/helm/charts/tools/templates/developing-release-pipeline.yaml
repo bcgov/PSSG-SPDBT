@@ -1,0 +1,89 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: developing-release-pipeline
+  labels:
+    DataClass: Low
+
+spec:
+  params:
+    - name: imageTag
+      description: ""
+      default: "develop"
+    - name: promoteScreening
+      description: ""
+      default: "true"
+    - name: promoteLicensing
+      description: ""
+      default: "true"
+    - name: promoteDynamicsHelper
+      description: ""
+      default: "true"
+
+  tasks:
+    ## Promote dev ##
+    - name: developing-screening-portal
+      when:
+        - input: "$(params.promoteScreening)"
+          operator: in
+          values: ["true"]
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/screening-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
+          value: screening-portal
+        - name: destinationTag
+          value: developing
+        - name: scheduled
+          value: true
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: developing-licensing-portal
+      when:
+        - input: "$(params.promoteLicensing)"
+          operator: in
+          values: ["true"]
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/licensing-portal
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
+          value: licensing-portal
+        - name: destinationTag
+          value: developing
+        - name: scheduled
+          value: true
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: tag-image-task
+
+    - name: developing-dynamics-helper
+      when:
+        - input: "$(params.promoteDynamicsHelper)"
+          operator: in
+          values: ["true"]
+      params:
+        - name: sourceImage
+          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/dynamics-helper
+        - name: sourceTag
+          value: $(params.imageTag)
+        - name: destinationImage
+          value: dynamics-helper
+        - name: destinationTag
+          value: developing
+        - name: scheduled
+          value: true
+        - name: referencePolicy
+          value: local
+      taskRef:
+        kind: Task
+        name: tag-image-task

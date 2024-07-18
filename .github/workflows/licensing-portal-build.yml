@@ -1,10 +1,12 @@
 name: Licensing Portal Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
       - 'release/**'
+      - develop
     paths:
       - src/**
       - '!src/Spd.Presentation.Dynamics/**'
@@ -33,10 +35,10 @@ jobs:
       IMAGE_CONTEXT: src
       IMAGE_FILE: src/licensing-portal.dockerfile
       IMAGE_NAME: ${{ github.repository }}/licensing-portal
-      # REGISTRY: ghcr.io
-      REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev/
+      REGISTRY: ghcr.io
+      # REGISTRY: artifacts.developer.gov.bc.ca/sfe7-dev/
     secrets:
-      # REGISTRY_USER: ${{ github.actor }}
-      # REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      REGISTRY_USER: ${{ github.actor }}
+      REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      # REGISTRY_USER: ${{ secrets.DOCKER_USERNAME }}
+      # REGISTRY_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

@@ -169,8 +169,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				this.applicationIsInProgress =
 					this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
 
-				// this.applicationIsInProgress = false; // TODO REMOVE
-
 				// Set flags that determine if NEW licences/permits can be created
 				let activeLicenceExist = activeLicences.length > 0;
 				if (!activeLicenceExist) {
@@ -308,15 +306,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onBusinessManagers(): void {
-		// this.businessApplicationService
-		// 	.loadUserProfile()
-		// 	.pipe(
-		// 		tap((_resp: any) => {
 		this.router.navigateByUrl(LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_MANAGERS));
-		// 		}),
-		// 		take(1)
-		// 	)
-		// 	.subscribe();
 	}
 
 	onConnectToExpiredLicence(): void {

@@ -29,76 +29,6 @@ export class AuthProcessService {
 	) {}
 
 	//----------------------------------------------------------
-	// * Try - BCSC
-	// *
-	async tryInitializeBCSC(): Promise<boolean | null> {
-		// this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
-
-		const authInfo = await this.authenticationService.tryLogin(
-			IdentityProviderTypeCode.BcServicesCard,
-			LicenceApplicationRoutes.pathUserApplications()
-		);
-
-		const identityClaims = this.oauthService.getIdentityClaims();
-		console.debug('tryInitializeBCSC', authInfo, identityClaims);
-
-		const isValidLogin = this.checkLoginIdentityIsValid(
-			authInfo.loggedIn,
-			IdentityProviderTypeCode.BcServicesCard,
-			identityClaims ? identityClaims['preferred_username'] : undefined
-		);
-
-		if (!isValidLogin) {
-			return Promise.resolve(null);
-		}
-
-		if (authInfo.loggedIn) {
-			this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
-			this.notify(true);
-			return Promise.resolve(true);
-		}
-
-		this.notify(false);
-		return Promise.resolve(null);
-	}
-
-	//----------------------------------------------------------
-	// * Try - BCeID
-	// *
-	async tryInitializeBCeID(): Promise<boolean | null> {
-		// this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
-
-		const authInfo = await this.authenticationService.tryLogin(
-			IdentityProviderTypeCode.BusinessBceId,
-			LicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous()
-		);
-
-		const identityClaims = this.oauthService.getIdentityClaims();
-		console.debug('tryInitializeBCeID', authInfo, identityClaims);
-
-		const isValidLogin = this.checkLoginIdentityIsValid(
-			authInfo.loggedIn,
-			IdentityProviderTypeCode.BusinessBceId,
-			identityClaims ? identityClaims['preferred_username'] : undefined
-		);
-
-		if (!isValidLogin) {
-			this.logout();
-			this.notify(false);
-			return Promise.resolve(null);
-		}
-
-		if (authInfo.loggedIn) {
-			this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
-			this.notify(true);
-			return Promise.resolve(true);
-		}
-
-		this.notify(false);
-		return Promise.resolve(null);
-	}
-
-	//----------------------------------------------------------
 	// * Licencing Portal - BCSC
 	// *
 	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
@@ -108,7 +38,7 @@ export class AuthProcessService {
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
-			returnComponentRoute ? returnComponentRoute : returningRoute
+			returnComponentRoute ?? returningRoute
 		);
 		console.debug('initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
@@ -169,6 +99,9 @@ export class AuthProcessService {
 		}
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public logoutBcsc(): void {
 		console.debug('logoutBcsc');
 
@@ -179,6 +112,9 @@ export class AuthProcessService {
 		}
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	public logoutBceid(): void {
 		console.debug('logoutBceid');
 
@@ -189,6 +125,9 @@ export class AuthProcessService {
 		}
 	}
 
+	//----------------------------------------------------------
+	// *
+	// *
 	private notify(isLoggedIn: boolean): void {
 		const hasValidAccessToken = this.oauthService.hasValidAccessToken();
 
@@ -201,26 +140,5 @@ export class AuthProcessService {
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}
-	}
-
-	//----------------------------------------------------------
-	// * check that loginType matches oauthservice login type
-	// *
-	private checkLoginIdentityIsValid(
-		isLoggedIn: boolean,
-		loginType: IdentityProviderTypeCode,
-		preferredUsername: string | undefined
-	): boolean {
-		if (!isLoggedIn) return true;
-
-		let isValid = false;
-		if (loginType == IdentityProviderTypeCode.BusinessBceId) {
-			isValid = preferredUsername?.endsWith('bceidbusiness') ?? false;
-		} else {
-			// IdentityProviderTypeCode.BcServicesCard
-			isValid = !preferredUsername;
-		}
-
-		return isValid;
 	}
 }

@@ -7,9 +7,12 @@ import {
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
 	BizLicAppSubmitRequest,
+	BizPortalUserCreateRequest,
+	BizPortalUserResponse,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
+	ContactAuthorizationTypeCode,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -21,7 +24,7 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { BizLicensingService, BizProfileService, LicenceService } from '@app/api/services';
+import { BizLicensingService, BizPortalUserService, BizProfileService, LicenceService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
@@ -93,6 +96,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
+		applicantData: this.applicantFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
 		businessMailingAddressData: this.businessMailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
@@ -117,6 +121,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
+		private bizPortalUserService: BizPortalUserService,
 		private commonApplicationService: CommonApplicationService,
 		private hotToastService: HotToastService
 	) {
@@ -448,6 +453,71 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
+	 * Save a business manager
+	 * @returns
+	 */
+	getBizPortalUsers(): Observable<BizPortalUserResponse[]> {
+		// const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return of([
+			// TODO get getBizPortalUsers
+			{
+				id: 'd64ecf3b-e2f3-483e-b7f7-337dbec86da3',
+				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.BusinessManager,
+				firstName: 'Test',
+				lastName: 'Test',
+				email: 'victoria.charity@quartech.com',
+				jobTitle: 'test',
+				phoneNumber: '444-444-4444',
+				isActive: true,
+			},
+			{
+				id: '985f7251-daa2-4f35-abef-882c70690acc',
+				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.BusinessManager,
+				firstName: 'Test',
+				lastName: 'Test',
+				email: 'nick.nanson@test.com',
+				jobTitle: 'Test',
+				phoneNumber: '250-888-9999',
+				isActive: false,
+			},
+			{
+				id: '5992a33b-5805-4496-9b80-80aa2cf97fa0',
+				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.PrimaryBusinessManager,
+				firstName: 'Test',
+				lastName: 'Test',
+				email: 'jim.brad@gov.bc.ca',
+				jobTitle: null,
+				phoneNumber: null,
+				isActive: true,
+			},
+		]);
+	}
+
+	/**
+	 * Save a business manager
+	 * @returns
+	 */
+	saveBizPortalUser(body: BizPortalUserCreateRequest): Observable<BizPortalUserResponse> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+		body.bizId = bizId;
+
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersPost({
+			bizId,
+			body,
+		});
+	}
+
+	/**
+	 * Delete a business manager
+	 * @returns
+	 */
+	deleteBizPortalUser(id: string): Observable<string> {
+		// TODO delete BizPortalUser
+		return of(id);
+	}
+
+	/**
 	 * Save the user profile in a flow
 	 * @returns
 	 */
@@ -679,6 +749,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
+		const bizManagerContactInfo = isSoleProprietor ? {} : modelFormValue.businessManagerData;
+
 		const bizAddress = modelFormValue.businessAddressData.isAddressTheSame
 			? { ...modelFormValue.businessMailingAddressData }
 			: { ...modelFormValue.businessAddressData };
@@ -707,6 +779,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const body: BizProfileUpdateRequest = {
 			bizAddress,
 			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : { ...modelFormValue.bcBusinessAddressData },
+			bizManagerContactInfo,
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
 			bizTypeCode,
 			branches,
@@ -1185,20 +1258,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			licenceTermCode: businessLicenceAppl.licenceTermCode,
 		};
 
-		const businessManagerData = {
-			givenName: businessLicenceAppl.bizManagerContactInfo?.givenName,
-			middleName1: businessLicenceAppl.bizManagerContactInfo?.middleName1,
-			middleName2: businessLicenceAppl.bizManagerContactInfo?.middleName2,
-			surname: businessLicenceAppl.bizManagerContactInfo?.surname,
-			emailAddress: businessLicenceAppl.bizManagerContactInfo?.emailAddress,
-			phoneNumber: businessLicenceAppl.bizManagerContactInfo?.phoneNumber,
+		const applicantData = {
 			isBusinessManager: businessLicenceAppl.applicantIsBizManager,
-			applicantGivenName: businessLicenceAppl.applicantContactInfo?.givenName,
-			applicantMiddleName1: businessLicenceAppl.applicantContactInfo?.middleName1,
-			applicantMiddleName2: businessLicenceAppl.applicantContactInfo?.middleName2,
-			applicantSurname: businessLicenceAppl.applicantContactInfo?.surname,
-			applicantEmailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress,
-			applicantPhoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber,
+			givenName: businessLicenceAppl.applicantContactInfo?.givenName ?? null,
+			middleName1: businessLicenceAppl.applicantContactInfo?.middleName1 ?? null,
+			middleName2: businessLicenceAppl.applicantContactInfo?.middleName2 ?? null,
+			surname: businessLicenceAppl.applicantContactInfo?.surname ?? null,
+			emailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress ?? null,
+			phoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber ?? null,
 		};
 
 		const categoryData: any = {};
@@ -1251,7 +1318,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceTermData,
 				companyBrandingData,
 				liabilityData,
-				businessManagerData,
+				applicantData,
 
 				categoryData,
 				categoryPrivateInvestigatorFormGroup,
@@ -1300,11 +1367,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorSwlEmailAddress: businessProfile.soleProprietorSwlEmailAddress,
 		};
 
-		const bceidUserProfile = this.authUserBceidService.bceidUserProfile;
 		const businessManagerData = {
-			givenName: bceidUserProfile?.firstName,
-			surname: bceidUserProfile?.lastName,
-			isBusinessManager: true,
+			givenName: businessProfile.bizManagerContactInfo?.givenName,
+			middleName1: businessProfile.bizManagerContactInfo?.middleName1,
+			middleName2: businessProfile.bizManagerContactInfo?.middleName2,
+			surname: businessProfile.bizManagerContactInfo?.surname,
+			emailAddress: businessProfile.bizManagerContactInfo?.emailAddress,
+			phoneNumber: businessProfile.bizManagerContactInfo?.phoneNumber,
 		};
 
 		const bizAddress = businessProfile.bizAddress;
