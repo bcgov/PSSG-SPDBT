@@ -33,7 +33,7 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 				<mat-accordion>
 					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
-							<mat-panel-title>Aliases or Previous Names</mat-panel-title>
+							<mat-panel-title>Previous Names or Aliases</mat-panel-title>
 						</mat-expansion-panel-header>
 
 						<div class="my-3">

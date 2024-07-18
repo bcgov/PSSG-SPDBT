@@ -26,6 +26,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
@@ -205,6 +206,41 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.licenceModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
+		});
+	}
+
+	/**
+	 * When removing a file, set the value as changed
+	 * @returns
+	 */
+	fileRemoved(): void {
+		this.hasValueChanged = true;
+	}
+
+	/**
+	 * When uploading a file, set the value as changed, and perform the upload
+	 * @returns
+	 */
+	fileUploaded(
+		documentCode: LicenceDocumentTypeCode, // type of the document
+		document: File,
+		attachments: FormControl, // the FormControl containing the documents
+		fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
+	) {
+		this.hasValueChanged = true;
+
+		if (!this.isAutoSave()) return;
+
+		this.addUploadDocument(documentCode, document).subscribe({
+			next: (resp: any) => {
+				const matchingFile = attachments.value.find((item: File) => item.name == document.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				fileUploadComponent.removeFailedFile(document);
+			},
 		});
 	}
 
@@ -1367,8 +1403,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
 		let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
 
-		let restraintsAuthorizationData: any = {};
-		let dogsAuthorizationData: any = {};
+		let restraintsAuthorizationData: any = {
+			carryAndUseRestraints: BooleanTypeCode.No,
+			carryAndUseRestraintsDocument: null,
+			attachments: [],
+		};
+		let dogsAuthorizationData: any = {
+			useDogs: BooleanTypeCode.No,
+			dogsPurposeFormGroup: {
+				isDogsPurposeDetectionDrugs: null,
+				isDogsPurposeDetectionExplosives: null,
+				isDogsPurposeProtection: null,
+			},
+			attachments: [],
+		};
 
 		let categoryArmouredCarGuardFormGroup: {
 			isInclude: boolean;
