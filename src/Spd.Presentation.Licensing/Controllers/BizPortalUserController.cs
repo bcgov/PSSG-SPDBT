@@ -44,4 +44,17 @@ public class BizPortalUserController : ControllerBase
         Guid? userId = _currentUser.GetUserId() != null ? Guid.Parse(_currentUser.GetUserId()) : null;
         return await _mediator.Send(new BizPortalUserCreateCommand(bizPortalUserCreateRequest, hostUrl, userId));
     }
+
+    /// <summary>
+    /// Get Business Portal User list
+    /// </summary>
+    /// <param name="bizId"></param>
+    /// <returns></returns>
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Route("api/business/{bizId}/portal-users")]
+    [HttpGet]
+    public async Task<BizPortalUserListResponse> GetBizPortalUserList([FromRoute] Guid bizId)
+    {
+        return await _mediator.Send(new BizPortalUserListQuery(bizId));
+    }
 }
