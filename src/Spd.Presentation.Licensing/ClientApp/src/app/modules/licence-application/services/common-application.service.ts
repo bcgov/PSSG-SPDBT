@@ -682,6 +682,18 @@ export class CommonApplicationService {
 		return [warningMessages, errorMessages];
 	}
 
+	/**
+	 * Get the title for the CriminalHistory page
+	 * @returns
+	 */
+	getCriminalHistoryTitle(applicationTypeCode: ApplicationTypeCode | null): string {
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return 'Do you have any new criminal charges or convictions?';
+		} else {
+			return 'Have you previously been charged or convicted of a crime?';
+		}
+	}
+
 	private setApplicationFlags(item: MainApplicationResponse) {
 		const applicationNotSubmittedWarningDays = SPD_CONSTANTS.periods.applicationNotSubmittedWarningDays;
 		const applicationNotSubmittedErrorDays = SPD_CONSTANTS.periods.applicationNotSubmittedErrorDays;
