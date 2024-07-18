@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,20 +35,17 @@ import { SharedModule } from './shared/shared.module';
 				sendAccessToken: true,
 			},
 		}),
-		ApiModule.forRoot({ rootUrl: '' }),
-		// ApiModule, // TODO base href
+		ApiModule,
 		SharedModule,
 	],
-	providers: [provideHotToastConfig()],
-	// TODO base href
-	// providers: [
-	// 	provideHotToastConfig(),
-	// 	{
-	// 		provide: APP_BASE_HREF,
-	// 		useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
-	// 		deps: [PlatformLocation],
-	// 	},
-	// ],
+	providers: [
+		provideHotToastConfig(),
+		{
+			provide: APP_BASE_HREF,
+			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
+			deps: [PlatformLocation],
+		},
+	],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
