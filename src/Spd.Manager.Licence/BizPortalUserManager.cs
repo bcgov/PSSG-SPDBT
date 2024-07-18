@@ -77,9 +77,6 @@ internal class BizPortalUserManager :
         if (existingUser == null)
             throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
 
-        _mapper.Map(request.BizPortalUserUpdateRequest, existingUser);
-
-        //var org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.BizPortalUserUpdateRequest.OrganizationId), ct);
         BizResult biz = await _bizRepository.GetBizAsync(request.BizPortalUserUpdateRequest.BizId, ct);
         int primaryUserNo = existingUsersResult.Items.Count(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager);
         SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, existingUsersResult.Items.Count());
