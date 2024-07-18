@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: develop-release-pipeline
+  name: developing-release-pipeline
   labels:
     DataClass: Low
 
@@ -22,7 +22,7 @@ spec:
 
   tasks:
     ## Promote dev ##
-    - name: develop-screening-portal
+    - name: developing-screening-portal
       when:
         - input: "$(params.promoteScreening)"
           operator: in
@@ -35,7 +35,7 @@ spec:
         - name: destinationImage
           value: screening-portal
         - name: destinationTag
-          value: develop
+          value: developing
         - name: scheduled
           value: true
         - name: referencePolicy
@@ -44,7 +44,7 @@ spec:
         kind: Task
         name: tag-image-task
 
-    - name: develop-licensing-portal
+    - name: developing-licensing-portal
       when:
         - input: "$(params.promoteLicensing)"
           operator: in
@@ -57,7 +57,7 @@ spec:
         - name: destinationImage
           value: licensing-portal
         - name: destinationTag
-          value: develop
+          value: developing
         - name: scheduled
           value: true
         - name: referencePolicy
@@ -66,7 +66,7 @@ spec:
         kind: Task
         name: tag-image-task
 
-    - name: develop-dynamics-helper
+    - name: developing-dynamics-helper
       when:
         - input: "$(params.promoteDynamicsHelper)"
           operator: in
@@ -79,7 +79,7 @@ spec:
         - name: destinationImage
           value: dynamics-helper
         - name: destinationTag
-          value: develop
+          value: developing
         - name: scheduled
           value: true
         - name: referencePolicy
