@@ -60,7 +60,7 @@ import { StepWorkerLicenceUserProfileComponent } from './components/shared/worke
 import { LicenceApplicationComponent } from './licence-application.component';
 
 export class LicenceApplicationRoutes {
-	public static readonly LICENCE_APPLICATION = 'licensing';
+	public static readonly LICENCE_APPLICATION = 'spd-licence';
 
 	public static readonly LOGIN_SELECTION = 'login-selection';
 
