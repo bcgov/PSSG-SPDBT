@@ -51,7 +51,8 @@
 									"maximumError": "4kb"
 								}
 							],
-							"outputHashing": "all"
+							"outputHashing": "all",
+							"baseHref": "/licensing/"
 						},
 						"development": {
 							"buildOptimizer": false,
