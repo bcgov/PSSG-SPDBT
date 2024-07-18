@@ -297,8 +297,7 @@ namespace Spd.Manager.Payment
         public async Task<CreateOneInvoiceInCasResponse> Handle(CreateOneInvoiceInCasCommand command, CancellationToken ct)
         {
             _logger.LogInformation("PaymentManager get CreateOneInvoiceInCasCommand");
-            //var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceId = command.InvoiceId, InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
-            var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceId = command.InvoiceId }, ct);
+            var invoiceList = await _invoiceRepository.QueryAsync(new InvoiceQry() { InvoiceId = command.InvoiceId, InvoiceStatus = InvoiceStatusEnum.Pending }, ct);
             var invoice = invoiceList.Items.FirstOrDefault();
             if (invoice == null)
             {
