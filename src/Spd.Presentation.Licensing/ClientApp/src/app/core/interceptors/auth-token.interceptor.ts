@@ -5,8 +5,6 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 
-const includedURLs = [/^\/api\/.+$/];
-
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 	constructor(
