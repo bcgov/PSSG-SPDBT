@@ -22,7 +22,7 @@ export interface BizSelectionDialogData {
 })
 export class BizSelectionModalComponent implements OnInit {
 	bizsList: Array<BizListResponse> = [];
-	title = 'Business selection';
+	title = 'Business Selection';
 
 	constructor(
 		private dialogRef: MatDialogRef<BizSelectionModalComponent>,
