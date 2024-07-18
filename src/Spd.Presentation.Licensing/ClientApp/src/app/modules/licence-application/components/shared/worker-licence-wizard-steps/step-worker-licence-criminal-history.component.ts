@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
@@ -22,7 +22,7 @@ import { LicenceApplicationService } from '@app/modules/licence-application/serv
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceCriminalHistoryComponent implements LicenceChildStepperStepComponent {
+export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
 	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
