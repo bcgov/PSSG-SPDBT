@@ -36,7 +36,7 @@ public class BizPortalUserController : ControllerBase
     [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpPost]
-    public async Task<BizPortalUserResponse> Add([FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest, [FromRoute] Guid bizId)
+    public async Task<BizPortalUserResponse> Add([FromRoute] Guid bizId, [FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest)
     {
         bizPortalUserCreateRequest.BizId = bizId;
 
