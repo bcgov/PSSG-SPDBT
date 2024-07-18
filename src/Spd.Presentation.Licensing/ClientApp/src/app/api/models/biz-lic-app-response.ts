@@ -7,7 +7,7 @@ import { ContactInfo } from '../models/contact-info';
 import { Document } from '../models/document';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { Members } from '../models/members';
-import { SwlContactInfo } from '../models/swl-contact-info';
+import { PrivateInvestigatorSwlContactInfo } from '../models/private-investigator-swl-contact-info';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface BizLicAppResponse {
@@ -17,7 +17,6 @@ export interface BizLicAppResponse {
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: string | null;
-  bizManagerContactInfo?: ContactInfo;
   bizTypeCode?: BizTypeCode;
   caseNumber?: string | null;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
@@ -29,7 +28,7 @@ export interface BizLicAppResponse {
   licenceTermCode?: LicenceTermCode;
   members?: Members;
   noBranding?: boolean | null;
-  privateInvestigatorSwlInfo?: SwlContactInfo;
+  privateInvestigatorSwlInfo?: PrivateInvestigatorSwlContactInfo;
   useDogs?: boolean | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

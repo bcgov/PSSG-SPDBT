@@ -170,39 +170,42 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		}
 	);
 
-	businessManagerFormGroup: FormGroup = this.formBuilder.group(
+	businessManagerFormGroup: FormGroup = this.formBuilder.group({
+		givenName: new FormControl('', [FormControlValidators.required]),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+	});
+
+	applicantFormGroup: FormGroup = this.formBuilder.group(
 		{
-			givenName: new FormControl('', [FormControlValidators.required]),
+			isBusinessManager: new FormControl(''),
+			givenName: new FormControl(''),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
-			surname: new FormControl('', [FormControlValidators.required]),
-			emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-			phoneNumber: new FormControl('', [Validators.required]),
-			isBusinessManager: new FormControl(),
-			applicantGivenName: new FormControl(''),
-			applicantMiddleName1: new FormControl(''),
-			applicantMiddleName2: new FormControl(''),
-			applicantSurname: new FormControl(''),
-			applicantEmailAddress: new FormControl('', [FormControlValidators.email]),
-			applicantPhoneNumber: new FormControl(''),
+			surname: new FormControl(''),
+			emailAddress: new FormControl('', [FormControlValidators.email]),
+			phoneNumber: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'applicantGivenName',
-					(form) => !form.get('isBusinessManager')?.value
+					'givenName',
+					(form) => form.get('isBusinessManager')?.value === false
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'applicantSurname',
-					(form) => !form.get('isBusinessManager')?.value
+					'surname',
+					(form) => form.get('isBusinessManager')?.value === false
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'applicantEmailAddress',
-					(form) => !form.get('isBusinessManager')?.value
+					'emailAddress',
+					(form) => form.get('isBusinessManager')?.value === false
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'applicantPhoneNumber',
-					(form) => !form.get('isBusinessManager')?.value
+					'phoneNumber',
+					(form) => form.get('isBusinessManager')?.value === false
 				),
 			],
 		}
@@ -460,7 +463,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
-		const businessManagerData = { ...businessModelFormValue.businessManagerData };
+		const applicantData = { ...businessModelFormValue.applicantData };
 		const originalLicenceData = { ...businessModelFormValue.originalLicenceData };
 
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
@@ -474,27 +477,17 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		// Business Manager information is only supplied in non-sole proprietor flow
 		let applicantContactInfo: ContactInfo = {};
 		let applicantIsBizManager: boolean | null = null;
-		let bizManagerContactInfo: ContactInfo = {};
 
 		if (!this.isSoleProprietor(bizTypeCode)) {
-			applicantIsBizManager = businessManagerData.isBusinessManager;
-			bizManagerContactInfo = {
-				emailAddress: businessManagerData.emailAddress,
-				givenName: businessManagerData.givenName,
-				middleName1: businessManagerData.middleName1,
-				middleName2: businessManagerData.middleName2,
-				phoneNumber: businessManagerData.phoneNumber,
-				surname: businessManagerData.surname,
-			};
-
-			if (!applicantIsBizManager) {
+			applicantIsBizManager = applicantData.isBusinessManager;
+			if (applicantData.isBusinessManager === false) {
 				applicantContactInfo = {
-					emailAddress: businessManagerData.applicantEmailAddress,
-					givenName: businessManagerData.applicantGivenName,
-					middleName1: businessManagerData.applicantMiddleName1,
-					middleName2: businessManagerData.applicantMiddleName2,
-					phoneNumber: businessManagerData.applicantPhoneNumber,
-					surname: businessManagerData.applicantSurname,
+					emailAddress: applicantData.emailAddress,
+					givenName: applicantData.givenName,
+					middleName1: applicantData.middleName1,
+					middleName2: applicantData.middleName2,
+					phoneNumber: applicantData.phoneNumber,
+					surname: applicantData.surname,
 				};
 			}
 		}
@@ -547,9 +540,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			licenceTermCode: businessModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
 			noBranding: companyBrandingData.noLogoOrBranding ?? false,
-			applicantContactInfo,
 			applicantIsBizManager,
-			bizManagerContactInfo,
+			applicantContactInfo,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
