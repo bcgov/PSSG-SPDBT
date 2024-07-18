@@ -54,15 +54,18 @@ public class BizPortalUserController : ControllerBase
     /// <param name="bizId"></param>
     /// <returns></returns>
     [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
-    [Route("api/business/{bizId}/portal-users")]
+    [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpPut]
-    public async Task<BizPortalUserResponse> Put([FromRoute] Guid userId, [FromBody][Required] BizPortalUserUpdateRequest bizPortalUserUpdateRequest, [FromRoute] Guid bizId)
+    public async Task<BizPortalUserResponse> Put([FromRoute] Guid bizId, [FromRoute] Guid userId, [FromBody][Required] BizPortalUserUpdateRequest bizPortalUserUpdateRequest)
     {
-        //if role is manager, can only change his own phone number, job title
+        bizPortalUserUpdateRequest.Id = userId;
+        bizPortalUserUpdateRequest.BizId = bizId;
+
+        //if role is manager, can only change his own information
         if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.BusinessManager.ToString() &&
             userId.ToString() != _currentUser.GetUserId())
         {
-            throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own phone number and job title.");
+            throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own information.");
         }
         return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest));
     }
@@ -72,7 +75,7 @@ public class BizPortalUserController : ControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    //[Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpGet]
     public async Task<BizPortalUserListResponse> GetBizPortalUserList([FromRoute] Guid bizId)
