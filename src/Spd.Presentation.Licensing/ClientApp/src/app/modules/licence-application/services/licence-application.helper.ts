@@ -849,14 +849,13 @@ export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
 			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
 			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
 			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+			const useDogs = this.utilService.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs);
 
 			dogsAuthorizationData = {
-				useDogs: this.utilService.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs),
-				isDogsPurposeDetectionDrugs: licenceModelFormValue.dogsAuthorizationData.useDogs ? isDetectionDrugs : null,
-				isDogsPurposeDetectionExplosives: licenceModelFormValue.dogsAuthorizationData.useDogs
-					? isDetectionExplosives
-					: null,
-				isDogsPurposeProtection: licenceModelFormValue.dogsAuthorizationData.useDogs ? isProtection : null,
+				useDogs,
+				isDogsPurposeDetectionDrugs: useDogs ? isDetectionDrugs : null,
+				isDogsPurposeDetectionExplosives: useDogs ? isDetectionExplosives : null,
+				isDogsPurposeProtection: useDogs ? isProtection : null,
 			};
 
 			restraintsAuthorizationData = {

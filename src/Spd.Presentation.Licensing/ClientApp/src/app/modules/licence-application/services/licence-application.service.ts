@@ -1367,8 +1367,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
 		let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
 
-		let restraintsAuthorizationData: any = {};
-		let dogsAuthorizationData: any = {};
+		let restraintsAuthorizationData: any = {
+			carryAndUseRestraints: BooleanTypeCode.No,
+			carryAndUseRestraintsDocument: null,
+			attachments: [],
+		};
+		let dogsAuthorizationData: any = {
+			useDogs: BooleanTypeCode.No,
+			dogsPurposeFormGroup: {
+				isDogsPurposeDetectionDrugs: null,
+				isDogsPurposeDetectionExplosives: null,
+				isDogsPurposeProtection: null,
+			},
+			attachments: [],
+		};
 
 		let categoryArmouredCarGuardFormGroup: {
 			isInclude: boolean;
