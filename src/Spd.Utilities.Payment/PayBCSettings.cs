@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Spd.Utilities.Payment
+﻿namespace Spd.Utilities.Payment
 {
     internal class PayBCSettings
     {
@@ -28,7 +26,12 @@ namespace Spd.Utilities.Payment
         public string Host { get; set; }
         public string InvoicePath { get; set; }
         public OAuthSettings AuthenticationSettings { get; set; } = new OAuthSettings();
+        public string BatchSource { get; set; } = "SECURITY PROGRAMS";
+        public string CustTransactionType { get; set; } = "Security Screening";
+        public string MemoLineName { get; set; } = "Security Screening";
+        public string Description { get; set; } = string.Empty;
     }
+
     internal class OAuthSettings
     {
         public Uri OAuth2TokenEndpointUrl { get; set; } = null!;
