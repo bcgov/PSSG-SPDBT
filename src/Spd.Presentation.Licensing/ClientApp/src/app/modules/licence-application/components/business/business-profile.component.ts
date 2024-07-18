@@ -33,12 +33,13 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<!-- <ng-container *ngIf="!isReadonly">
+					<ng-container *ngIf="!isReadonly">
 						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
-					</ng-container> -->
+					</ng-container>
 
 					<app-common-business-profile
 						[businessInformationFormGroup]="businessInformationFormGroup"
+						[businessManagerFormGroup]="businessManagerFormGroup"
 						[businessAddressFormGroup]="businessAddressFormGroup"
 						[bcBusinessAddressFormGroup]="bcBusinessAddressFormGroup"
 						[businessMailingAddressFormGroup]="businessMailingAddressFormGroup"
@@ -68,6 +69,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 })
 export class BusinessProfileComponent {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
+	businessManagerFormGroup = this.businessApplicationService.businessManagerFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;
 	businessMailingAddressFormGroup = this.businessApplicationService.businessMailingAddressFormGroup;

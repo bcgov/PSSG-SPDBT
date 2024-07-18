@@ -96,6 +96,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		licenceTermData: this.licenceTermFormGroup,
 		businessManagerData: this.businessManagerFormGroup,
+		applicantData: this.applicantFormGroup,
 		businessAddressData: this.businessAddressFormGroup,
 		businessMailingAddressData: this.businessMailingAddressFormGroup,
 		bcBusinessAddressData: this.bcBusinessAddressFormGroup,
@@ -748,6 +749,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
+		const bizManagerContactInfo = isSoleProprietor ? {} : modelFormValue.businessManagerData;
+
 		const bizAddress = modelFormValue.businessAddressData.isAddressTheSame
 			? { ...modelFormValue.businessMailingAddressData }
 			: { ...modelFormValue.businessAddressData };
@@ -776,6 +779,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const body: BizProfileUpdateRequest = {
 			bizAddress,
 			bizBCAddress: modelFormValue.isBcBusinessAddress ? bizAddress : { ...modelFormValue.bcBusinessAddressData },
+			bizManagerContactInfo,
 			bizTradeName: modelFormValue.businessInformationData.bizTradeName,
 			bizTypeCode,
 			branches,
@@ -1254,20 +1258,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			licenceTermCode: businessLicenceAppl.licenceTermCode,
 		};
 
-		const businessManagerData = {
-			givenName: businessLicenceAppl.bizManagerContactInfo?.givenName,
-			middleName1: businessLicenceAppl.bizManagerContactInfo?.middleName1,
-			middleName2: businessLicenceAppl.bizManagerContactInfo?.middleName2,
-			surname: businessLicenceAppl.bizManagerContactInfo?.surname,
-			emailAddress: businessLicenceAppl.bizManagerContactInfo?.emailAddress,
-			phoneNumber: businessLicenceAppl.bizManagerContactInfo?.phoneNumber,
+		const applicantData = {
 			isBusinessManager: businessLicenceAppl.applicantIsBizManager,
-			applicantGivenName: businessLicenceAppl.applicantContactInfo?.givenName,
-			applicantMiddleName1: businessLicenceAppl.applicantContactInfo?.middleName1,
-			applicantMiddleName2: businessLicenceAppl.applicantContactInfo?.middleName2,
-			applicantSurname: businessLicenceAppl.applicantContactInfo?.surname,
-			applicantEmailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress,
-			applicantPhoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber,
+			givenName: businessLicenceAppl.applicantContactInfo?.givenName ?? null,
+			middleName1: businessLicenceAppl.applicantContactInfo?.middleName1 ?? null,
+			middleName2: businessLicenceAppl.applicantContactInfo?.middleName2 ?? null,
+			surname: businessLicenceAppl.applicantContactInfo?.surname ?? null,
+			emailAddress: businessLicenceAppl.applicantContactInfo?.emailAddress ?? null,
+			phoneNumber: businessLicenceAppl.applicantContactInfo?.phoneNumber ?? null,
 		};
 
 		const categoryData: any = {};
@@ -1320,7 +1318,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceTermData,
 				companyBrandingData,
 				liabilityData,
-				businessManagerData,
+				applicantData,
 
 				categoryData,
 				categoryPrivateInvestigatorFormGroup,
@@ -1369,11 +1367,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorSwlEmailAddress: businessProfile.soleProprietorSwlEmailAddress,
 		};
 
-		const bceidUserProfile = this.authUserBceidService.bceidUserProfile;
 		const businessManagerData = {
-			givenName: bceidUserProfile?.firstName,
-			surname: bceidUserProfile?.lastName,
-			isBusinessManager: true,
+			givenName: businessProfile.bizManagerContactInfo?.givenName,
+			middleName1: businessProfile.bizManagerContactInfo?.middleName1,
+			middleName2: businessProfile.bizManagerContactInfo?.middleName2,
+			surname: businessProfile.bizManagerContactInfo?.surname,
+			emailAddress: businessProfile.bizManagerContactInfo?.emailAddress,
+			phoneNumber: businessProfile.bizManagerContactInfo?.phoneNumber,
 		};
 
 		const bizAddress = businessProfile.bizAddress;
