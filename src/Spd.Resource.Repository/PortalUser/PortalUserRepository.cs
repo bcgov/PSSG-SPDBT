@@ -72,11 +72,7 @@ internal class PortalUserRepository : IPortalUserRepository
 
     private async Task<PortalUserResp> UpdatePortalUserAsync(UpdatePortalUserCmd c, CancellationToken ct)
     {
-        spd_portaluser? portalUser = await _context.GetUserById(c.Id, ct);
-        if (portalUser == null)
-        {
-            throw new ArgumentException($"Cannot find the user for userId {c.Id}");
-        }
+        spd_portaluser portalUser = await _context.GetUserById(c.Id, ct);
         account? org = null;
         spd_identity? identity = null;
         if (c.FirstName != null) portalUser.spd_firstname = c.FirstName;
