@@ -1,20 +1,22 @@
-import { APP_BASE_HREF } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-	private href: string;
+	constructor(private oauthService: OAuthService, private configService: ConfigService) {}
 
-	constructor(
-		@Inject(APP_BASE_HREF) href: string,
-		private oauthService: OAuthService,
-		private configService: ConfigService
-	) {
-		this.href = href;
-	}
+	// TODO base href
+	// private href: string;
+
+	// constructor(
+	// 	@Inject(APP_BASE_HREF) href: string,
+	// 	private oauthService: OAuthService,
+	// 	private configService: ConfigService
+	// ) {
+	// 	this.href = href;
+	// }
 
 	//----------------------------------------------------------
 	// *
@@ -23,7 +25,10 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
-		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
+		await this.configService.configureOAuthService(loginType, window.location.origin + returnComponentRoute);
+
+		// TODO base href
+		// await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
 
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
@@ -61,11 +66,12 @@ export class AuthenticationService {
 	//----------------------------------------------------------
 	// *
 	// *
-	private createRedirectUrl(componentUrl: string): string {
-		let baseUrl = `${location.origin}${this.href}`;
-		if (baseUrl.endsWith('/')) {
-			baseUrl = baseUrl.substring(0, baseUrl.length - 1);
-		}
-		return `${baseUrl}${componentUrl}`;
-	}
+	// TODO base href
+	// private createRedirectUrl(componentUrl: string): string {
+	// 	let baseUrl = `${location.origin}${this.href}`;
+	// 	if (baseUrl.endsWith('/')) {
+	// 		baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+	// 	}
+	// 	return `${baseUrl}${componentUrl}`;
+	// }
 }
