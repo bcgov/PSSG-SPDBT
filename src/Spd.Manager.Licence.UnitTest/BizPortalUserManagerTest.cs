@@ -1,13 +1,8 @@
 ﻿using AutoFixture;
-using Moq;
-using Spd.Resource.Repository.PortalUser;
-using Spd.Resource.Repository.Biz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
+using Moq;
+using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.PortalUser;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizPortalUserManagerTest
@@ -46,7 +41,7 @@ public class BizPortalUserManagerTest
         // Arrange
         Guid bizId = Guid.NewGuid();
         BizPortalUserListQuery qry = new(bizId);
-        PortalUserResp portalUserResp = new() { OrganizationId = bizId, ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager};
+        PortalUserResp portalUserResp = new() { OrganizationId = bizId, ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager };
         PortalUserListResp portalUserListResp = new()
         {
             Items = new List<PortalUserResp>() { portalUserResp }
