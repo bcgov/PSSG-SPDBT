@@ -77,7 +77,7 @@ public class BizPortalUserController : ControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    //[Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpGet]
     public async Task<BizPortalUserListResponse> GetBizPortalUserList([FromRoute] Guid bizId)
