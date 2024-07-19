@@ -42,20 +42,56 @@ public class BizPortalUserManagerTest
         Guid userId = Guid.NewGuid();
         BizPortalUserUpdateRequest bizPortalUserUpdateRequest = new()
         {
+            Id = userId,
             BizId = bizId,
             ContactAuthorizationTypeCode = Shared.ContactAuthorizationTypeCode.PrimaryBusinessManager,
             FirstName = "test",
             LastName = "test",
-            Email = "test@test.com",
+            Email = "user@test.com",
             JobTitle = "dev",
             PhoneNumber = "9001234567"
         };
         BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
-        PortalUserResp portalUserResp = new() { OrganizationId = bizId, ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager };
+        PortalUserResp portalUserResp = new() 
+        {   
+            Id = userId,
+            OrganizationId = bizId, 
+            ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
+            UserEmail = "test@test.com"
+        };
         PortalUserListResp portalUserListResp = new()
         {
             Items = new List<PortalUserResp>() { portalUserResp }
         };
+        PortalUserResp updatedPortalUserResp = new()
+        {
+            Id = userId,
+            OrganizationId = bizId,
+            ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
+            UserEmail = "user@test.com"
+        };
+
+        mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserQry>(q => q.OrgId == bizId), CancellationToken.None))
+            .ReturnsAsync(portalUserListResp);
+        mockBizRepo.Setup(m => m.GetBizAsync(It.Is<Guid>(g => g == bizId), CancellationToken.None))
+            .ReturnsAsync(new BizResult());
+        mockPortalUserRepo.Setup(m => m.ManageAsync(It.Is<UpdatePortalUserCmd>(q => q.Id == userId && q.OrgId == bizId), CancellationToken.None))
+            .ReturnsAsync(updatedPortalUserResp);
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        Assert.IsType<BizPortalUserResponse>(result);
+        Assert.Equal(updatedPortalUserResp.Id.ToString(), result.Id.ToString());
+        Assert.Equal(updatedPortalUserResp.OrganizationId.ToString(), result.BizId.ToString());
+        Assert.Equal(updatedPortalUserResp.UserEmail, result.Email);
+    }
+
+    [Fact]
+    public async void Handle_BizPortalUserUpdateCommand_WithDuplicatedEmail_ShouldThrowException()
+    {
+        // Arrange
+
     }
 
     [Fact]
