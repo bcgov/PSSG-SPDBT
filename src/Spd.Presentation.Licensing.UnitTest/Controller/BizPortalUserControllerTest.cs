@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Controllers;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
@@ -26,7 +27,13 @@ public class BizPortalUserControllerTest
         mockMediator.Setup(m => m.Send(It.IsAny<BizPortalUserListQuery>(), CancellationToken.None))
             .ReturnsAsync(new BizPortalUserListResponse());
 
-        sut = new BizPortalUserController(logger.Object, mockMediator.Object, mockConfig.Object, mockUser.Object);
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new Claim("birthdate", "2000-01-01"),
+                new Claim("sub", "test"),
+            ], "mock"));
+
+        sut = new BizPortalUserController(logger.Object, mockMediator.Object, mockConfig.Object, user);
     }
 
     [Fact]
