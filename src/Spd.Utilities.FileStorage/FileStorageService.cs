@@ -198,7 +198,6 @@ namespace Spd.Utilities.FileStorage
             }
             catch (AmazonS3Exception ex)
             {
-                _logger.LogError(ex, ex.Message, null);
                 if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
                     return null;
 
