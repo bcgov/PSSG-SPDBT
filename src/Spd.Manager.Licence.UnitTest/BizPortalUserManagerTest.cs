@@ -127,7 +127,7 @@ public class BizPortalUserManagerTest
     }
 
     [Fact]
-    public async void Handle_BizPortalUserUpdateCommand_WithoutUser_ShouldThrowException()
+    public async void Handle_BizPortalUserUpdateCommand_UserNotFound_ShouldThrowException()
     {
         // Arrange
         Guid bizId = Guid.NewGuid();
@@ -141,7 +141,6 @@ public class BizPortalUserManagerTest
             LastName = "test",
             Email = "user@test.com"
         };
-        //BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
         PortalUserResp portalUserResp = new()
         {
             Id = Guid.NewGuid(),
