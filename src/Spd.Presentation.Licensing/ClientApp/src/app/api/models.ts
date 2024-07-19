@@ -18,6 +18,7 @@ export { BizLicAppSubmitRequest } from './models/biz-lic-app-submit-request';
 export { BizLicAppUpsertRequest } from './models/biz-lic-app-upsert-request';
 export { BizListResponse } from './models/biz-list-response';
 export { BizPortalUserCreateRequest } from './models/biz-portal-user-create-request';
+export { BizPortalUserListResponse } from './models/biz-portal-user-list-response';
 export { BizPortalUserResponse } from './models/biz-portal-user-response';
 export { BizProfileResponse } from './models/biz-profile-response';
 export { BizProfileUpdateRequest } from './models/biz-profile-update-request';

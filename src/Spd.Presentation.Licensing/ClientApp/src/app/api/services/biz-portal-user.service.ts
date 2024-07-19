@@ -9,14 +9,50 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { apiBusinessBizIdPortalUsersGet } from '../fn/biz-portal-user/api-business-biz-id-portal-users-get';
+import { ApiBusinessBizIdPortalUsersGet$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-get';
 import { apiBusinessBizIdPortalUsersPost } from '../fn/biz-portal-user/api-business-biz-id-portal-users-post';
 import { ApiBusinessBizIdPortalUsersPost$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-post';
+import { BizPortalUserListResponse } from '../models/biz-portal-user-list-response';
 import { BizPortalUserResponse } from '../models/biz-portal-user-response';
 
 @Injectable({ providedIn: 'root' })
 export class BizPortalUserService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `apiBusinessBizIdPortalUsersGet()` */
+  static readonly ApiBusinessBizIdPortalUsersGetPath = '/api/business/{bizId}/portal-users';
+
+  /**
+   * Get Business Portal User list.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdPortalUsersGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdPortalUsersGet$Response(params: ApiBusinessBizIdPortalUsersGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizPortalUserListResponse>> {
+    return apiBusinessBizIdPortalUsersGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get Business Portal User list.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPortalUsersGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdPortalUsersGet(params: ApiBusinessBizIdPortalUsersGet$Params, context?: HttpContext): Observable<BizPortalUserListResponse> {
+    return this.apiBusinessBizIdPortalUsersGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizPortalUserListResponse>): BizPortalUserListResponse => r.body)
+    );
   }
 
   /** Path part for operation `apiBusinessBizIdPortalUsersPost()` */

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
+import { BizPortalUserListResponse, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -305,11 +305,12 @@ export class BusinessManagersComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		this.businessApplicationService.getBizPortalUsers().subscribe((resp: BizPortalUserResponse[]) => {
-			// this.maximumNumberOfContacts = resp.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
-			// this.maximumNumberOfPrimaryContacts = resp.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
+		this.businessApplicationService.getBizPortalUsers().subscribe((resp: BizPortalUserListResponse) => {
+			this.maximumNumberOfContacts = resp.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+			this.maximumNumberOfPrimaryContacts =
+				resp.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
 
-			this.usersList = resp ?? [];
+			this.usersList = resp.users ?? [];
 
 			this.sortUsers();
 			this.setFlags();

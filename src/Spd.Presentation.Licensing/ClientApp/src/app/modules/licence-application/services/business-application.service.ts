@@ -8,11 +8,11 @@ import {
 	BizLicAppResponse,
 	BizLicAppSubmitRequest,
 	BizPortalUserCreateRequest,
+	BizPortalUserListResponse,
 	BizPortalUserResponse,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
-	ContactAuthorizationTypeCode,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -456,42 +456,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save a business manager
 	 * @returns
 	 */
-	getBizPortalUsers(): Observable<BizPortalUserResponse[]> {
-		// const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+	getBizPortalUsers(): Observable<BizPortalUserListResponse> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return of([
-			// TODO get getBizPortalUsers
-			{
-				id: 'd64ecf3b-e2f3-483e-b7f7-337dbec86da3',
-				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.BusinessManager,
-				firstName: 'Test',
-				lastName: 'Test',
-				email: 'victoria.charity@quartech.com',
-				jobTitle: 'test',
-				phoneNumber: '444-444-4444',
-				isActive: true,
-			},
-			{
-				id: '985f7251-daa2-4f35-abef-882c70690acc',
-				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.BusinessManager,
-				firstName: 'Test',
-				lastName: 'Test',
-				email: 'nick.nanson@test.com',
-				jobTitle: 'Test',
-				phoneNumber: '250-888-9999',
-				isActive: false,
-			},
-			{
-				id: '5992a33b-5805-4496-9b80-80aa2cf97fa0',
-				contactAuthorizationTypeCode: ContactAuthorizationTypeCode.PrimaryBusinessManager,
-				firstName: 'Test',
-				lastName: 'Test',
-				email: 'jim.brad@gov.bc.ca',
-				jobTitle: null,
-				phoneNumber: null,
-				isActive: true,
-			},
-		]);
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersGet({
+			bizId,
+		});
 	}
 
 	/**
