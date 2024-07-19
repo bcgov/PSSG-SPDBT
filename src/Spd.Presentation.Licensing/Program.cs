@@ -80,6 +80,7 @@ builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UsePathBase(builder.Configuration.GetValue("BASE_PATH", string.Empty));
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
