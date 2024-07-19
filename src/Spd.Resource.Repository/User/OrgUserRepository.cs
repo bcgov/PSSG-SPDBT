@@ -1,4 +1,3 @@
-using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
@@ -7,6 +6,7 @@ using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.User
 {
@@ -247,18 +247,7 @@ namespace Spd.Resource.Repository.User
             if (identityId != null)
                 users = users.Where(a => a._spd_identityid_value == identityId);
 
-            var userList = users.ToList();
-            await Parallel.ForEachAsync(userList, cancellationToken, async (user, cancellationToken) =>
-            {
-                var role = _dynaContext
-                    .spd_spd_role_spd_portaluserset
-                    .Where(r => r.spd_portaluserid == user.spd_portaluserid)
-                    .FirstOrDefault();
-                if (role != null)
-                    user.spd_spd_role_spd_portaluser = new DataServiceCollection<spd_role> { new() { spd_roleid = role.spd_roleid } };
-            });
-
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
         }
 
         private async Task<OrgUserManageResult> UpdateUserLoginAsync(Guid userId, CancellationToken cancellationToken)
