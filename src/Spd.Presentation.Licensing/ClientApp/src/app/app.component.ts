@@ -1,5 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ApiConfiguration } from './api/api-configuration';
 import { ConfigService } from './core/services/config.service';
 
@@ -22,7 +23,7 @@ import { ConfigService } from './core/services/config.service';
 	styles: [],
 })
 export class AppComponent {
-	configs$ = this.configService.getConfigs();
+	configs$: Observable<any>;
 
 	constructor(
 		private _apiConfig: ApiConfiguration,
@@ -34,5 +35,7 @@ export class AppComponent {
 			_apiConfig.rootUrl = _apiConfig.rootUrl.substring(0, _apiConfig.rootUrl.length - 1);
 		}
 		console.debug('[API rootUrl]', _apiConfig.rootUrl);
+
+		this.configs$ = this.configService.getConfigs();
 	}
 }
