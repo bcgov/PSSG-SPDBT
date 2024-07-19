@@ -53,16 +53,24 @@ public class BizPortalUserManagerTest
             PhoneNumber = "9001234567"
         };
         BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
-        PortalUserResp portalUserResp = new() 
+        PortalUserResp portalUserResp1 = new() 
         {   
             Id = userId,
             OrganizationId = bizId, 
             ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
-            UserEmail = "test@test.com"
+            UserEmail = "test1@test.com"
         };
+        PortalUserResp portalUserResp2 = new()
+        {
+            Id = Guid.NewGuid(),
+            OrganizationId = bizId,
+            ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
+            UserEmail = "test2@test.com"
+        };
+
         PortalUserListResp portalUserListResp = new()
         {
-            Items = new List<PortalUserResp>() { portalUserResp }
+            Items = new List<PortalUserResp>() { portalUserResp1, portalUserResp2 }
         };
         PortalUserResp updatedPortalUserResp = new()
         {
@@ -103,16 +111,23 @@ public class BizPortalUserManagerTest
             LastName = "test",
             Email = "test@test.com"
         };
-        PortalUserResp portalUserResp = new()
+        PortalUserResp portalUserResp1 = new()
         {
             Id = userId,
+            OrganizationId = bizId,
+            ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
+            UserEmail = "test1@test.com"
+        };
+        PortalUserResp portalUserResp2 = new()
+        {
+            Id = Guid.NewGuid(),
             OrganizationId = bizId,
             ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
             UserEmail = "test@test.com"
         };
         PortalUserListResp portalUserListResp = new()
         {
-            Items = new List<PortalUserResp>() { portalUserResp }
+            Items = new List<PortalUserResp>() { portalUserResp1, portalUserResp2 }
         };
 
         mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserQry>(q => q.OrgId == bizId), CancellationToken.None))
