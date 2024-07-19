@@ -38,4 +38,17 @@ public class BizPortalUserControllerTest
         Assert.IsType<BizPortalUserListResponse>(result);
         mockMediator.Verify();
     }
+
+    [Fact]
+    public async void Put_ReturnBizPortalUserResponse()
+    {
+        Guid bizId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        BizPortalUserUpdateRequest request = new();
+
+        var result = await sut.Put(bizId, userId, request);
+
+        Assert.IsType<BizPortalUserResponse>(result);
+        mockMediator.Verify();
+    }
 }
