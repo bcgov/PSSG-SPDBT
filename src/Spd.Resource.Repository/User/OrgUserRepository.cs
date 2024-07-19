@@ -174,7 +174,16 @@ namespace Spd.Resource.Repository.User
 
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
-            var user = await GetUserById(updateUserCmd.Id, cancellationToken);
+            DataServiceCollection<spd_portaluser> users = new(_dynaContext.spd_portalusers
+                    .Expand(m => m.spd_spd_role_spd_portaluser)
+                    .Expand(m => m.spd_IdentityId)
+                    .Where(a => a.spd_portaluserid == updateUserCmd.Id)
+                    .Where(u => u.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening || u.spd_servicecategory == null));
+            spd_portaluser? user = users.Any() ? users[0] : null;
+            if (user == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the updating user with userId = {updateUserCmd.Id}");
+            }
             if (updateUserCmd.OnlyChangePhoneJob)
             {
                 user.spd_phonenumber = updateUserCmd.User.PhoneNumber;
@@ -198,7 +207,6 @@ namespace Spd.Resource.Repository.User
                     _dynaContext.AddLink(newRole, nameof(newRole.spd_spd_role_spd_portaluser), user);
                 }
             }
-            _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
             UserResult userResult = _mapper.Map<UserResult>(user);
