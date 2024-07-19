@@ -3,6 +3,7 @@ using AutoMapper;
 using Moq;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizPortalUserManagerTest
@@ -91,7 +92,76 @@ public class BizPortalUserManagerTest
     public async void Handle_BizPortalUserUpdateCommand_WithDuplicatedEmail_ShouldThrowException()
     {
         // Arrange
+        Guid bizId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        BizPortalUserUpdateRequest bizPortalUserUpdateRequest = new()
+        {
+            Id = userId,
+            BizId = bizId,
+            ContactAuthorizationTypeCode = Shared.ContactAuthorizationTypeCode.PrimaryBusinessManager,
+            FirstName = "test",
+            LastName = "test",
+            Email = "test@test.com"
+        };
+        //BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
+        PortalUserResp portalUserResp = new()
+        {
+            Id = userId,
+            OrganizationId = bizId,
+            ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
+            UserEmail = "test@test.com"
+        };
+        PortalUserListResp portalUserListResp = new()
+        {
+            Items = new List<PortalUserResp>() { portalUserResp }
+        };
 
+        mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserQry>(q => q.OrgId == bizId), CancellationToken.None))
+            .ReturnsAsync(portalUserListResp);
+
+        // Act
+        Func<Task> act = () => sut.Handle(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest), CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<DuplicateException>(act);
+    }
+
+    [Fact]
+    public async void Handle_BizPortalUserUpdateCommand_WithoutUser_ShouldThrowException()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        BizPortalUserUpdateRequest bizPortalUserUpdateRequest = new()
+        {
+            Id = userId,
+            BizId = bizId,
+            ContactAuthorizationTypeCode = Shared.ContactAuthorizationTypeCode.PrimaryBusinessManager,
+            FirstName = "test",
+            LastName = "test",
+            Email = "user@test.com"
+        };
+        //BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
+        PortalUserResp portalUserResp = new()
+        {
+            Id = Guid.NewGuid(),
+            OrganizationId = bizId,
+            ContactRoleCode = Resource.Repository.ContactRoleCode.PrimaryBusinessManager,
+            UserEmail = "test@test.com"
+        };
+        PortalUserListResp portalUserListResp = new()
+        {
+            Items = new List<PortalUserResp>() { portalUserResp }
+        };
+
+        mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserQry>(q => q.OrgId == bizId), CancellationToken.None))
+            .ReturnsAsync(portalUserListResp);
+
+        // Act
+        Func<Task> act = () => sut.Handle(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest), CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<NotFoundException>(act);
     }
 
     [Fact]
