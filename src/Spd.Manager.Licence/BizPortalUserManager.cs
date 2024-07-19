@@ -80,8 +80,6 @@ internal class BizPortalUserManager :
             throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
 
         BizResult biz = await _bizRepository.GetBizAsync(request.BizPortalUserUpdateRequest.BizId, ct);
-        int primaryUserNo = existingUsersResult.Items.Count(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager);
-        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, existingUsersResult.Items.Count());
 
         var updatePortalUserCmd = _mapper.Map<UpdatePortalUserCmd>(request.BizPortalUserUpdateRequest);
         var response = await _portalUserRepository.ManageAsync(updatePortalUserCmd, ct);
