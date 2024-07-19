@@ -52,6 +52,8 @@ public class BizPortalUserController : ControllerBase
     /// Update Business Portal User
     /// </summary>
     /// <param name="bizId"></param>
+    /// <param name="userId"></param>
+    /// <param name="bizPortalUserUpdateRequest"></param>
     /// <returns></returns>
     [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
     [Route("api/business/{bizId}/portal-users/{userId}")]
