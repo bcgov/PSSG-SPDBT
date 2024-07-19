@@ -66,8 +66,10 @@ internal class BizPortalUserManager :
             },
             ct);
 
-        //check if email already exists for the user
-        if (existingUsersResult.Items.Any(u => u.UserEmail != null && u.UserEmail.Equals(request.BizPortalUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
+        //check if email already exists for the other users
+        if (existingUsersResult.Items
+            .Where(u => u.Id != request.BizPortalUserUpdateRequest.Id)
+            .Any(u => u.UserEmail != null && u.UserEmail.Equals(request.BizPortalUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
         {
             throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.BizPortalUserUpdateRequest.Email} has been used by another user");
         }
