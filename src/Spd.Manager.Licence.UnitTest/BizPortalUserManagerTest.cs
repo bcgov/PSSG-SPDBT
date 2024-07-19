@@ -103,7 +103,6 @@ public class BizPortalUserManagerTest
             LastName = "test",
             Email = "test@test.com"
         };
-        //BizPortalUserUpdateCommand cmd = new(userId, bizPortalUserUpdateRequest);
         PortalUserResp portalUserResp = new()
         {
             Id = userId,
