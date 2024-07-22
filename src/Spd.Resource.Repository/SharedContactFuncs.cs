@@ -80,8 +80,10 @@ internal static class SharedContactFuncs
             }
         }
         //update current contact
-        UpdateExistingContact(existingContact, newContact);
+        existingContact = UpdateExistingContact(existingContact, newContact);
+        existingContact.spd_peaceofficerstatus = null;
         context.UpdateObject(existingContact);
+        await context.SaveChangesAsync();
 
         if (aliases.Any())
         {
@@ -203,7 +205,7 @@ internal static class SharedContactFuncs
         existingContact.spd_mentalhealthcondition = newContact.spd_mentalhealthcondition ?? existingContact.spd_mentalhealthcondition;
         existingContact.spd_peaceofficer = newContact.spd_peaceofficer ?? existingContact.spd_peaceofficer;
         existingContact.spd_peaceofficerother = newContact.spd_peaceofficerother ?? existingContact.spd_peaceofficerother;
-        existingContact.spd_peaceofficerstatus = newContact.spd_peaceofficerstatus ?? existingContact.spd_peaceofficerstatus;
+        existingContact.spd_peaceofficerstatus = newContact.spd_peaceofficerstatus;
         existingContact.spd_selfdisclosure = newContact.spd_selfdisclosure ?? existingContact.spd_selfdisclosure;
         existingContact.spd_selfdisclosuredetails = newContact.spd_selfdisclosuredetails ?? existingContact.spd_selfdisclosuredetails;
         existingContact.spd_lastloggedinlicensingportal = newContact.spd_lastloggedinlicensingportal ?? existingContact.spd_lastloggedinlicensingportal;
