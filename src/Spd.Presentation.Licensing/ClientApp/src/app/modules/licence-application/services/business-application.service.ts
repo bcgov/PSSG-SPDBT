@@ -10,6 +10,7 @@ import {
 	BizPortalUserCreateRequest,
 	BizPortalUserListResponse,
 	BizPortalUserResponse,
+	BizPortalUserUpdateRequest,
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
@@ -468,12 +469,27 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Save a business manager
 	 * @returns
 	 */
-	saveBizPortalUser(body: BizPortalUserCreateRequest): Observable<BizPortalUserResponse> {
+	saveBizPortalUserCreate(body: BizPortalUserCreateRequest): Observable<BizPortalUserResponse> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		body.bizId = bizId;
 
 		return this.bizPortalUserService.apiBusinessBizIdPortalUsersPost({
 			bizId,
+			body,
+		});
+	}
+
+	/**
+	 * Save a business manager
+	 * @returns
+	 */
+	saveBizPortalUserUpdate(userId: string, body: BizPortalUserUpdateRequest): Observable<BizPortalUserResponse> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+		body.bizId = bizId;
+
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersUserIdPut({
+			bizId,
+			userId,
 			body,
 		});
 	}

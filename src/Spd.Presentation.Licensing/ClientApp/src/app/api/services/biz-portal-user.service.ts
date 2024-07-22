@@ -13,6 +13,8 @@ import { apiBusinessBizIdPortalUsersGet } from '../fn/biz-portal-user/api-busine
 import { ApiBusinessBizIdPortalUsersGet$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-get';
 import { apiBusinessBizIdPortalUsersPost } from '../fn/biz-portal-user/api-business-biz-id-portal-users-post';
 import { ApiBusinessBizIdPortalUsersPost$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-post';
+import { apiBusinessBizIdPortalUsersUserIdPut } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-put';
+import { ApiBusinessBizIdPortalUsersUserIdPut$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-put';
 import { BizPortalUserListResponse } from '../models/biz-portal-user-list-response';
 import { BizPortalUserResponse } from '../models/biz-portal-user-response';
 
@@ -84,6 +86,39 @@ export class BizPortalUserService extends BaseService {
    */
   apiBusinessBizIdPortalUsersPost(params: ApiBusinessBizIdPortalUsersPost$Params, context?: HttpContext): Observable<BizPortalUserResponse> {
     return this.apiBusinessBizIdPortalUsersPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizPortalUserResponse>): BizPortalUserResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBusinessBizIdPortalUsersUserIdPut()` */
+  static readonly ApiBusinessBizIdPortalUsersUserIdPutPath = '/api/business/{bizId}/portal-users/{userId}';
+
+  /**
+   * Update Business Portal User.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdPortalUsersUserIdPut()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdPortalUsersUserIdPut$Response(params: ApiBusinessBizIdPortalUsersUserIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<BizPortalUserResponse>> {
+    return apiBusinessBizIdPortalUsersUserIdPut(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Update Business Portal User.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPortalUsersUserIdPut$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessBizIdPortalUsersUserIdPut(params: ApiBusinessBizIdPortalUsersUserIdPut$Params, context?: HttpContext): Observable<BizPortalUserResponse> {
+    return this.apiBusinessBizIdPortalUsersUserIdPut$Response(params, context).pipe(
       map((r: StrictHttpResponse<BizPortalUserResponse>): BizPortalUserResponse => r.body)
     );
   }

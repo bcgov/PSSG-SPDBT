@@ -20,6 +20,7 @@ export { BizListResponse } from './models/biz-list-response';
 export { BizPortalUserCreateRequest } from './models/biz-portal-user-create-request';
 export { BizPortalUserListResponse } from './models/biz-portal-user-list-response';
 export { BizPortalUserResponse } from './models/biz-portal-user-response';
+export { BizPortalUserUpdateRequest } from './models/biz-portal-user-update-request';
 export { BizProfileResponse } from './models/biz-profile-response';
 export { BizProfileUpdateRequest } from './models/biz-profile-update-request';
 export { BizTypeCode } from './models/biz-type-code';

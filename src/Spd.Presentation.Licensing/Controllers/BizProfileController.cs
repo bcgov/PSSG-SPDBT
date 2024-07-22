@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 using System.Text.Json;
@@ -10,7 +11,7 @@ using System.Text.Json;
 namespace Spd.Presentation.Licensing.Controllers;
 
 [ApiController]
-public class BizProfileController : ControllerBase
+public class BizProfileController : SpdControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IValidator<BizProfileUpdateRequest> _bizProfileUpdateRequestValidator;
