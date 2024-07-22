@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="MediatR" />
-    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
   </ItemGroup>
 
   <ItemGroup>
