@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BizPortalUserCreateRequest, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
+import { BizPortalUserResponse, BizPortalUserUpdateRequest, ContactAuthorizationTypeCode } from '@app/api/models';
 import { ContactAuthorizationTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -94,11 +94,7 @@ export interface BizPortalUserDialogData {
 export class ModalBusinessManagerEditComponent implements OnInit {
 	title = '';
 	isEdit = false;
-	authorizationTypes = ContactAuthorizationTypes.filter(
-		(item: SelectOptions) =>
-			item.code === ContactAuthorizationTypeCode.BusinessManager ||
-			item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager
-	);
+	authorizationTypes!: SelectOptions[];
 
 	form = this.businessApplicationService.managerFormGroup;
 
@@ -107,15 +103,22 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 	constructor(
 		private dialogRef: MatDialogRef<ModalBusinessManagerEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: any
+		@Inject(MAT_DIALOG_DATA) public dialogData: BizPortalUserDialogData
 	) {}
 
 	ngOnInit(): void {
-		const data = this.dialogData.data;
+		const data = this.dialogData.user;
 		this.form.reset();
 		this.form.patchValue(data);
-		this.isEdit = data && data.id;
+		this.isEdit = !!data?.id;
 		this.title = this.isEdit ? 'Edit Business Manager' : 'Add Business Manager';
+
+		this.authorizationTypes = ContactAuthorizationTypes.filter((item: SelectOptions) => {
+			return (
+				item.code === ContactAuthorizationTypeCode.BusinessManager ||
+				(this.dialogData.isAllowedPrimary && item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager)
+			);
+		});
 	}
 
 	onSave(): void {
@@ -123,15 +126,27 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 		if (!this.form.valid) return;
 
 		const formData = this.form.value;
-		const body: BizPortalUserCreateRequest = { ...formData };
+		const body: BizPortalUserUpdateRequest = { ...formData };
 
-		this.businessApplicationService
-			.saveBizPortalUser(body)
-			.pipe()
-			.subscribe((resp: BizPortalUserResponse) => {
-				this.dialogRef.close({
-					data: resp,
+		if (this.isEdit) {
+			body.id = this.dialogData.user.id as string;
+			this.businessApplicationService
+				.saveBizPortalUserUpdate(body.id, body)
+				.pipe()
+				.subscribe((resp: BizPortalUserResponse) => {
+					this.dialogRef.close({
+						data: resp,
+					});
 				});
-			});
+		} else {
+			this.businessApplicationService
+				.saveBizPortalUserCreate(body)
+				.pipe()
+				.subscribe((resp: BizPortalUserResponse) => {
+					this.dialogRef.close({
+						data: resp,
+					});
+				});
+		}
 	}
 }
