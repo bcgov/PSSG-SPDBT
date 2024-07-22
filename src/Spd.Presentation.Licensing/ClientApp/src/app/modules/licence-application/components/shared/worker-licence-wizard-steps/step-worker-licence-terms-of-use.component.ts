@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-terms-of-use',
@@ -24,16 +24,13 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	styles: [],
 })
 export class StepWorkerLicenceTermsOfUseComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.formBuilder.group({
-		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
-		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
-	});
+	form = this.licenceApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private formBuilder: FormBuilder) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();
