@@ -197,4 +197,12 @@ internal static class SharedMappingFuncs
         string[] strs = optionsetStr.Split(',');
         return strs.Select(s => Enum.Parse<UploadedDocumentEnum>(Enum.GetName(typeof(UploadedDocumentOptionSet), Int32.Parse(s)))).ToList();
     }
+
+    internal static ContactRoleCode? GetContactRoleCode(IEnumerable<spd_role> spdRoles)
+    {
+        spd_role role = spdRoles.FirstOrDefault();
+        if (role == null) return null;
+        return Enum.Parse<ContactRoleCode>(
+           DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == role.spd_roleid).Key);
+    }
 }
