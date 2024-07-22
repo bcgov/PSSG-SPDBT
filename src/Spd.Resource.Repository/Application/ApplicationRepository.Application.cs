@@ -139,7 +139,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
         _context.UpdateObject(contact);
 
-        Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
+        Guid teamGuid = Guid.Parse(DynamicsConstants.Screening_Risk_Assessment_Coordinator_Team_Guid);
         team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
         spd_clearanceaccess clearanceaccess = new() { spd_clearanceaccessid = Guid.NewGuid() };
         clearanceaccess.statecode = DynamicsConstants.StateCode_Active;
