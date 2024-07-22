@@ -32,7 +32,8 @@ internal class BizPortalUserManager :
             new PortalUserQry() 
             { 
                 OrgId = request.BizPortalUserCreateRequest.BizId, 
-                ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager } 
+                ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
+                PortalUserServiceCategory =  PortalUserServiceCategoryEnum.Licensing
             },
             ct);
 
