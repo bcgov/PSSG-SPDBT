@@ -72,11 +72,7 @@ internal class PortalUserRepository : IPortalUserRepository
 
     private async Task<PortalUserResp> UpdatePortalUserAsync(UpdatePortalUserCmd c, CancellationToken ct)
     {
-        spd_portaluser? portalUser = await _context.GetUserById(c.Id, ct);
-        if (portalUser == null)
-        {
-            throw new ArgumentException($"Cannot find the user for userId {c.Id}");
-        }
+        spd_portaluser portalUser = await _context.GetUserById(c.Id, ct);
         account? org = null;
         spd_identity? identity = null;
         if (c.FirstName != null) portalUser.spd_firstname = c.FirstName;
@@ -95,7 +91,25 @@ internal class PortalUserRepository : IPortalUserRepository
             identity = await _context.GetIdentityById((Guid)c.IdentityId, ct);
             _context.SetLink(portalUser, nameof(portalUser.spd_IdentityId), identity);
         }
+
+        ContactRoleCode? currentContactRoleCode = SharedMappingFuncs.GetContactRoleCode(portalUser.spd_spd_role_spd_portaluser);
+
+        if (c.ContactRoleCode != null && currentContactRoleCode != c.ContactRoleCode)
+        {
+            spd_role? currentRole = portalUser.spd_spd_role_spd_portaluser.FirstOrDefault();
+            if (currentRole != null)
+            {
+                _context.DeleteLink(portalUser, nameof(portalUser.spd_spd_role_spd_portaluser), currentRole);
+            }
+            spd_role? role = _context.LookupRole(c.ContactRoleCode.ToString());
+            if (role != null)
+            {
+                _context.AddLink(portalUser, nameof(portalUser.spd_spd_role_spd_portaluser), role);
+            }
+        }
         await _context.SaveChangesAsync(ct);
+
+        portalUser = await _context.GetUserById(c.Id, ct);
         return _mapper.Map<PortalUserResp>(portalUser);
     }
 
@@ -138,5 +152,3 @@ internal class PortalUserRepository : IPortalUserRepository
         return userResp;
     }
 }
-
-
