@@ -67,7 +67,7 @@ public class BizPortalUserController : ControllerBase
         if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.BusinessManager.ToString() &&
             userId.ToString() != _currentUser.GetUserId())
         {
-            throw new ApiException(HttpStatusCode.Forbidden, "Authorized Contact can only change his own information.");
+            throw new ApiException(HttpStatusCode.Forbidden, "Business Manager can only change his own information.");
         }
         return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest));
     }
