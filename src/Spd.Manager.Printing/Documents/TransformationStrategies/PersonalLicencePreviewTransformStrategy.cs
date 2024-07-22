@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SkiaSharp;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
@@ -10,9 +11,6 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Printing.BCMailPlus;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Net;
 using System.Text.Json.Serialization;
 
@@ -86,9 +84,9 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             cancellationToken);
         using (var ms = new MemoryStream(fileResult.File.Content))
         {
-            Image photo = Image.FromStream(ms);
-            Image finalPhoto;
-            if (photo.Size.Width <= 600 && photo.Size.Height <= 800)
+            SKImage photo = SKImage.FromEncodedData(ms);
+            SKImage finalPhoto;
+            if (photo.Width <= 600 && photo.Height <= 800)
             {
                 //no need to resize as it is within 600 x 800 scope
                 finalPhoto = photo;
@@ -96,9 +94,9 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
             else
             {
                 //resize the image
-                decimal widthRatio = Convert.ToDecimal(photo.Size.Width) / 600;
-                decimal heightRatio = Convert.ToDecimal(photo.Size.Height) / 800;
-                decimal existingImageRatio = Convert.ToDecimal(photo.Size.Width) / Convert.ToDecimal(photo.Size.Height);
+                decimal widthRatio = Convert.ToDecimal(photo.Width) / 600;
+                decimal heightRatio = Convert.ToDecimal(photo.Height) / 800;
+                decimal existingImageRatio = Convert.ToDecimal(photo.Width) / Convert.ToDecimal(photo.Height);
                 if (widthRatio > heightRatio)
                 {
                     finalPhoto = ResizeImage(photo, 600, (int)(600 / existingImageRatio));
@@ -109,9 +107,9 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
                 }
             }
 
-            Stream memoryStream = new MemoryStream();
-            finalPhoto.Save(memoryStream, ImageFormat.Png);
-
+            SKData encoded = finalPhoto.Encode(); //default is png
+            // get a stream over the encoded data
+            Stream memoryStream = encoded.AsStream();
             return memoryStream.ConvertToBase64();
         }
     }
@@ -123,29 +121,20 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
     /// <param name="width">The width to resize to.</param>
     /// <param name="height">The height to resize to.</param>
     /// <returns>The resized image.</returns>
-    private static Bitmap ResizeImage(Image image, int width, int height)
+    private static SKImage ResizeImage(SKImage image, int width, int height)
     {
-        var destRect = new Rectangle(0, 0, width, height);
-        var destImage = new Bitmap(width, height);
-
-        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-        using (var graphics = Graphics.FromImage(destImage))
+        using (var surface = SKSurface.Create(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul))
+        using (var paint = new SKPaint())
         {
-            graphics.CompositingMode = CompositingMode.SourceCopy;
-            graphics.CompositingQuality = CompositingQuality.HighQuality;
-            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            // high quality with antialiasing
+            paint.IsAntialias = true;
+            paint.FilterQuality = SKFilterQuality.High;
 
-            using (var wrapMode = new ImageAttributes())
-            {
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-            }
+            // draw the bitmap to fill the surface
+            surface.Canvas.DrawImage(image, new SKRectI(0, 0, width, height), paint);
+            surface.Canvas.Flush();
+            return surface.Snapshot();
         }
-
-        return destImage;
     }
 }
 
