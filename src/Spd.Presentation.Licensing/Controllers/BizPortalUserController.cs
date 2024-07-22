@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Net;
 using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.Controllers;
@@ -33,7 +36,7 @@ public class BizPortalUserController : ControllerBase
     [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpPost]
-    public async Task<BizPortalUserResponse> Add([FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest, [FromRoute] Guid bizId)
+    public async Task<BizPortalUserResponse> Add([FromRoute] Guid bizId, [FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest)
     {
         bizPortalUserCreateRequest.BizId = bizId;
 
@@ -43,6 +46,30 @@ public class BizPortalUserController : ControllerBase
 
         Guid? userId = _currentUser.GetUserId() != null ? Guid.Parse(_currentUser.GetUserId()) : null;
         return await _mediator.Send(new BizPortalUserCreateCommand(bizPortalUserCreateRequest, hostUrl, userId));
+    }
+
+    /// <summary>
+    /// Update Business Portal User
+    /// </summary>
+    /// <param name="bizId"></param>
+    /// <param name="userId"></param>
+    /// <param name="bizPortalUserUpdateRequest"></param>
+    /// <returns></returns>
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Route("api/business/{bizId}/portal-users/{userId}")]
+    [HttpPut]
+    public async Task<BizPortalUserResponse> Put([FromRoute] Guid bizId, [FromRoute] Guid userId, [FromBody][Required] BizPortalUserUpdateRequest bizPortalUserUpdateRequest)
+    {
+        bizPortalUserUpdateRequest.Id = userId;
+        bizPortalUserUpdateRequest.BizId = bizId;
+
+        //if role is manager, can only change his own information
+        if (_currentUser.GetUserRole() == ContactAuthorizationTypeCode.BusinessManager.ToString() &&
+            userId.ToString() != _currentUser.GetUserId())
+        {
+            throw new ApiException(HttpStatusCode.Forbidden, "Business Manager can only change his own information.");
+        }
+        return await _mediator.Send(new BizPortalUserUpdateCommand(userId, bizPortalUserUpdateRequest));
     }
 
     /// <summary>

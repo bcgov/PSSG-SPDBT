@@ -11,6 +11,7 @@ using System.Net;
 namespace Spd.Manager.Licence;
 internal class BizPortalUserManager : 
     IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
+    IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
     IBizPortalUserManager
 {
@@ -31,7 +32,8 @@ internal class BizPortalUserManager :
             new PortalUserQry() 
             { 
                 OrgId = request.BizPortalUserCreateRequest.BizId, 
-                ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager } 
+                ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
+                PortalUserServiceCategory =  PortalUserServiceCategoryEnum.Licensing
             },
             ct);
 
@@ -50,6 +52,38 @@ internal class BizPortalUserManager :
 
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
+
+        return _mapper.Map<BizPortalUserResponse>(response);
+    }
+
+    public async Task<BizPortalUserResponse> Handle(BizPortalUserUpdateCommand request, CancellationToken ct)
+    {
+        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+            new PortalUserQry()
+            {
+                OrgId = request.BizPortalUserUpdateRequest.BizId,
+                ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
+                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+            },
+            ct);
+
+        //check if email already exists for the other users
+        if (existingUsersResult.Items
+            .Where(u => u.Id != request.BizPortalUserUpdateRequest.Id)
+            .Any(u => u.UserEmail != null && u.UserEmail.Equals(request.BizPortalUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.BizPortalUserUpdateRequest.Email} has been used by another user");
+        }
+
+        //check if user id in request exists in result list
+        var existingUser = existingUsersResult.Items.FirstOrDefault(u => u.Id == request.BizPortalUserUpdateRequest.Id);
+        if (existingUser == null)
+            throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
+
+        BizResult biz = await _bizRepository.GetBizAsync(request.BizPortalUserUpdateRequest.BizId, ct);
+
+        var updatePortalUserCmd = _mapper.Map<UpdatePortalUserCmd>(request.BizPortalUserUpdateRequest);
+        var response = await _portalUserRepository.ManageAsync(updatePortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
     }
