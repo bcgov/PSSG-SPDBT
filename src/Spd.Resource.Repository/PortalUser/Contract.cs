@@ -24,6 +24,7 @@ namespace Spd.Resource.Repository.PortalUser
         public bool? IsPSA { get; set; }
         public ContactRoleCode? ContactRoleCode { get; set; }
         public bool? IsFirstTimeLogin { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     public record PortalUserQry

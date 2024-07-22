@@ -19,7 +19,8 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.IsPSA, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_psa)))
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ContactRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetContactRoleCode(s.spd_spd_role_spd_portaluser)))
-            .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.spd_lastloggedin == null));
+            .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.spd_lastloggedin == null))
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value == null ? false : true));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))
