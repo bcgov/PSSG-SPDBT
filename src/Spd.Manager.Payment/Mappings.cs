@@ -27,23 +27,23 @@ namespace Spd.Manager.Payment
                 .ForMember(d => d.TransactionDate, opt => opt.MapFrom(s => s.TransactionDate ?? DateTimeOffset.Now))
                 .ForMember(d => d.GlDate, opt => opt.MapFrom(s => s.GlDate ?? DateTimeOffset.Now))
                 .ForMember(d => d.BatchSource, opt => opt.MapFrom(s => "SECURITY PROGRAMS"))
-                .ForMember(d => d.CustTrxType, opt => opt.MapFrom(s => "Security Programs"))
+                .ForMember(d => d.CustTrxType, opt => opt.MapFrom(s => "Security Screening"))
                 .ForMember(d => d.LateChargesFlag, opt => opt.MapFrom(s => "N"))
                 .ForMember(d => d.TermName, opt => opt.MapFrom(s => "IMMEDIATE"))
                 .ForMember(d => d.Lines, opt => opt.MapFrom(s => GetInvoiceLines(s)));
 
-            CreateMap<InvoiceResp, InvoiceStatusQuery>();              
+            CreateMap<InvoiceResp, InvoiceStatusQuery>();
         }
 
         private List<InvoiceLine> GetInvoiceLines(InvoiceResp invoiceResp)
         {
             return new List<InvoiceLine> {
-                new InvoiceLine()
+                new()
                 {
                     LineNumber = 1,
                     LineType = "LINE",
-                    MemoLineName = "Security Programs Division",
-                    Description = "description",
+                    MemoLineName = "Security Screening",
+                    Description = "Criminal Record Checks",
                     UnitPrice = invoiceResp.TotalAmount,
                     Quantity = 1
                 }
