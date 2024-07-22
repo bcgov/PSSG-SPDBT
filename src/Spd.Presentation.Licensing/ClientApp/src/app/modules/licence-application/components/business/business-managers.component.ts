@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
+import { BizPortalUserListResponse, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -44,11 +44,19 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 					<mat-divider class="mat-divider-main my-3"></mat-divider>
 
 					<div class="row mb-3">
-						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 my-auto">
-							Your organization must have one primary business manager, and may have up to five other business managers.
+						<div class="col-xl-9 col-lg-8 col-md-8 col-sm-6 my-auto">
+							<div class="mt-2">
+								<ul>
+									<li class="mb-1">
+										Your organization may have up to {{ maximumNumberOfPrimaryContacts }} primary business managers and
+										up to {{ maximumNumberOfContacts }} business managers
+									</li>
+									<li class="mb-1">Invitations will expire 7 days after being sent</li>
+								</ul>
+							</div>
 						</div>
-						<div class="col-xl-4 col-lg-4 col-md-12">
-							<div class="d-flex justify-content-end">
+						<div class="col-xl-3 col-lg-4 col-md-12" *ngIf="showAdd">
+							<div class="d-flex justify-content-end" *ngIf="isAllowedAddManager === true; else addNotAllowed">
 								<button
 									mat-flat-button
 									type="button"
@@ -61,6 +69,11 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 									Add Manager
 								</button>
 							</div>
+							<ng-template #addNotAllowed>
+								<div class="alert alert-warning d-flex" role="alert">
+									<div>The maximum number of business managers has been reached</div>
+								</div>
+							</ng-template>
 						</div>
 					</div>
 
@@ -236,7 +249,7 @@ export class BusinessManagersComponent implements OnInit {
 
 	onMaintainUser(user: BizPortalUserResponse): void {
 		let isAllowedPrimary = this.isAllowedAddPrimary;
-		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.Primary) {
+		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager) {
 			isAllowedPrimary = true;
 		}
 		const dialogOptions: BizPortalUserDialogData = {
@@ -305,11 +318,12 @@ export class BusinessManagersComponent implements OnInit {
 	}
 
 	private loadList(): void {
-		this.businessApplicationService.getBizPortalUsers().subscribe((resp: BizPortalUserResponse[]) => {
-			// this.maximumNumberOfContacts = resp.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
-			// this.maximumNumberOfPrimaryContacts = resp.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
+		this.businessApplicationService.getBizPortalUsers().subscribe((resp: BizPortalUserListResponse) => {
+			this.maximumNumberOfContacts = resp.maximumNumberOfAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_CONTACTS;
+			this.maximumNumberOfPrimaryContacts =
+				resp.maximumNumberOfPrimaryAuthorizedContacts ?? this.DEFAULT_MAX_NUMBER_OF_PRIMARY_CONTACTS;
 
-			this.usersList = resp ?? [];
+			this.usersList = resp.users ?? [];
 
 			this.sortUsers();
 			this.setFlags();
@@ -329,7 +343,7 @@ export class BusinessManagersComponent implements OnInit {
 
 	private sortUsers(): void {
 		this.usersList.sort((a: BizPortalUserResponse, b: BizPortalUserResponse) => {
-			// const a1 = a.isActive ? 'a' : 'b';
+			// const a1 = a.isActive ? 'a' : 'b'; // TODO add is active
 			// const b1 = b.isActive ? 'a' : 'b';
 			const a2 = a.contactAuthorizationTypeCode?.toString() ?? '';
 			const b2 = b.contactAuthorizationTypeCode?.toString() ?? '';
