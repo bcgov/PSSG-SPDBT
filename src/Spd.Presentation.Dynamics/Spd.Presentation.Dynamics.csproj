@@ -28,8 +28,4 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="Spd.Tests.Presentation.Dynamics" />
 	</ItemGroup>
-
-	<Target Name="CopyFilesAfterPublish" AfterTargets="PostBuildEvent">
-		<Copy SourceFiles="$(TargetDir)runtimes\linux-x64\native\libSkiaSharp.so" DestinationFolder="$(TargetDir)\bin\" />
-	</Target>
 </Project>
