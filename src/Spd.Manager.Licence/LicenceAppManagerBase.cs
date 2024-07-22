@@ -169,12 +169,12 @@ internal abstract class LicenceAppManagerBase
         if (licenceTypeEnum == WorkerLicenceTypeEnum.SecurityBusinessLicence)
         {
             contactId = null;
-            if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is SecurityBusinessLicence.");
+            if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is a Security Business Licence.");
         }
         else
         {
             bizId = null;
-            if (contactId == null) throw new ApiException(HttpStatusCode.BadRequest, $"contactId should not be null if it is peronal Licence.");
+            if (contactId == null) throw new ApiException(HttpStatusCode.BadRequest, $"contactId should not be null if it is a Personal Licence.");
         }
 
         //get the latest app id
