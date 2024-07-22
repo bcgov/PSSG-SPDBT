@@ -95,12 +95,13 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         UpdatePortalUserCmd cmd = new()
         {
             Id = portalUserId,
+            OrgId = accountId,
             FirstName = IntegrationTestSetup.DataPrefix + "firstName",
             LastName = IntegrationTestSetup.DataPrefix + "lastName",
             EmailAddress = "test@test.com",
             IdentityId = identityId,
             ContactRoleCode = ContactRoleCode.BusinessManager,
-            OrgId = accountId
+            PhoneNumber = "8002223333"
         };
 
         // Act
@@ -114,6 +115,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.Equal(cmd.LastName, response.LastName);
         Assert.Equal(cmd.EmailAddress, response.UserEmail);
         Assert.Equal(ContactRoleCode.BusinessManager, response.ContactRoleCode);
+        Assert.Equal(cmd.PhoneNumber, response.PhoneNumber);
 
         // Annihilate
         spd_portaluser? updatedPortalUser = _context.spd_portalusers.Where(u => u.spd_portaluserid == response.Id).FirstOrDefault();
