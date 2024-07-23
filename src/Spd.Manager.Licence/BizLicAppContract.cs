@@ -74,6 +74,7 @@ public record BizLicAppResponse : BizLicenceApp
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
@@ -87,7 +88,6 @@ public abstract record BizLicenceApp : LicenceAppBase
 
     //non sole proprietor properties
     public ContactInfo? ApplicantContactInfo { get; set; }
-    public bool? ApplicantIsBizManager { get; set; }
     public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
