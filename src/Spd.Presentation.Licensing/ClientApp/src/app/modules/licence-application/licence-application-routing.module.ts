@@ -41,6 +41,7 @@ import { BusinessManagersComponent } from './components/business/business-manage
 import { BusinessProfileComponent } from './components/business/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business/business-user-applications.component';
 import { StepBusinessLicenceProfileComponent } from './components/business/step-business-licence-profile.component';
+import { StepBusinessLicenceUpdateTermsComponent } from './components/business/step-business-licence-update-terms.component';
 import { BusinessLicencePaymentCancelComponent } from './components/shared/business-licence-payment-cancel.component';
 import { BusinessLicencePaymentErrorComponent } from './components/shared/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/shared/business-licence-payment-fail.component';
@@ -91,6 +92,7 @@ export class LicenceApplicationRoutes {
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'business-licence-terms-and-conditions';
 
 	public static readonly BUSINESS_BASE = 'business-licence';
+	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
 	public static readonly BUSINESS_USER_APPLICATIONS = 'applications';
 	public static readonly BUSINESS_NEW = 'business-licence-new';
@@ -257,6 +259,10 @@ const routes: Routes = [
 					{
 						path: LicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,
 						component: BusinessUserApplicationsComponent,
+					},
+					{
+						path: LicenceApplicationRoutes.BUSINESS_LICENCE_UPDATE_TERMS,
+						component: StepBusinessLicenceUpdateTermsComponent,
 					},
 					{
 						path: LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE,

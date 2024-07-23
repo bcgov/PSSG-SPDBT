@@ -670,6 +670,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.initialized = false;
 		this.hasValueChanged = false;
 
+		this.resetCommon();
+
 		this.profileConfirmationFormGroup.reset();
 		this.consentAndDeclarationFormGroup.reset();
 		this.businessModelFormGroup.reset();
