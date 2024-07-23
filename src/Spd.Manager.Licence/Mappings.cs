@@ -684,9 +684,6 @@ internal class Mappings : Profile
 
     private ContactInfo? GetApplicantInfo(BizLicApplicationResp bizLicApplicationResp)
     {
-        if ((bool)bizLicApplicationResp.ApplicantIsBizManager)
-            return null;
-
         return new ContactInfo()
         {
             GivenName = bizLicApplicationResp.GivenName,
