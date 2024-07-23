@@ -82,18 +82,18 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 ];
 
 export const ServiceTypes: SelectOptions[] = [
-	{ desc: 'CRC', code: ServiceTypeCode.Psso },
-	{ desc: 'CRC + CRRA', code: ServiceTypeCode.PssoVs },
+	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
+	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
 	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'MCFD Contracted Care Providers - CSH only', code: ServiceTypeCode.Mcfd },
+	{ desc: 'CSH Only - Consolidated Criminal Record Check', code: ServiceTypeCode.PssoVs },
 	{ desc: 'MDRA', code: ServiceTypeCode.Mdra },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC + Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
+	{ desc: 'Public Service Employment Check', code: ServiceTypeCode.Psso },
+	{ desc: 'Residential Care Provider Check', code: ServiceTypeCode.Mcfd },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
-	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
-	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
 	{
 		desc: 'Security Business Licence Controlling Member CRC',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
