@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
@@ -7,6 +6,7 @@ import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/licence-application/components/shared/step-components/common-swl-permit-terms.component';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceApplicationService } from '../../services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-first-time-user-terms-of-use',
@@ -34,10 +34,7 @@ import { LicenceChildStepperStepComponent } from '@app/modules/licence-applicati
 	styles: [],
 })
 export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.formBuilder.group({
-		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
-		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
-	});
+	form = this.licenceApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
@@ -46,10 +43,10 @@ export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceC
 	applicationTypeCodes = ApplicationTypeCode;
 
 	constructor(
-		private formBuilder: FormBuilder,
 		private router: Router,
 		private loginService: LoginService,
-		private authUserBcscService: AuthUserBcscService
+		private authUserBcscService: AuthUserBcscService,
+		private licenceApplicationService: LicenceApplicationService
 	) {}
 
 	ngOnInit(): void {
