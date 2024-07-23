@@ -100,6 +100,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
         }
+        // Save changes done to the application, given that these are lost further down the logic (method "DeletePrivateInvestigatorLink")
+        // when the business contact table is joined with application
+        await _context.SaveChangesAsync(ct);
         await SetAddresses(cmd.ApplicantId, app, ct);
         await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
