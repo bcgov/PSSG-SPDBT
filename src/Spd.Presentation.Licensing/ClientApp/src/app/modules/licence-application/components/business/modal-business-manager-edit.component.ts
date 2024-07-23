@@ -8,6 +8,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export interface BizPortalUserDialogData {
 	user: BizPortalUserResponse;
 	isAllowedPrimary: boolean;
+	emails: string[]; // used to determine if email is unique within the set
 }
 
 @Component({
@@ -25,6 +26,9 @@ export interface BizPortalUserDialogData {
 									{{ auth.desc }}
 								</mat-option>
 							</mat-select>
+							<mat-error *ngIf="form.get('contactAuthorizationTypeCode')?.hasError('required')">
+								This is required
+							</mat-error>
 						</mat-form-field>
 					</div>
 
@@ -68,10 +72,11 @@ export interface BizPortalUserDialogData {
 								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('email')">Must be a valid email address</mat-error>
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
+					<mat-error *ngIf="emailNotUnique">This email has been used by another manager</mat-error>
 				</div>
 			</form>
 		</mat-dialog-content>
@@ -94,6 +99,7 @@ export interface BizPortalUserDialogData {
 export class ModalBusinessManagerEditComponent implements OnInit {
 	title = '';
 	isEdit = false;
+	emailNotUnique = false;
 	authorizationTypes!: SelectOptions[];
 
 	form = this.businessApplicationService.managerFormGroup;
@@ -122,10 +128,17 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 	}
 
 	onSave(): void {
-		this.form.markAllAsTouched();
-		if (!this.form.valid) return;
-
 		const formData = this.form.value;
+
+		this.form.markAllAsTouched();
+
+		// is the email unique?
+		const findIndex = this.dialogData.emails.findIndex((item: string) => item === formData.email);
+
+		this.emailNotUnique = findIndex >= 0;
+
+		if (!this.form.valid || this.emailNotUnique) return;
+
 		const body: BizPortalUserUpdateRequest = { ...formData };
 
 		if (this.isEdit) {
