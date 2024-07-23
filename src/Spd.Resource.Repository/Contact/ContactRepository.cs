@@ -148,7 +148,7 @@ internal class ContactRepository : IContactRepository
             if (identity == null)
             {
                 _logger.LogError($"no valid identity for {c.IdentityId}");
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid identity.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The identity cannot be found.");
             }
         }
         //two saveChanges because "Associate of 1:N navigation property with Create of Update is not supported in CRM"
@@ -165,7 +165,7 @@ internal class ContactRepository : IContactRepository
         if (existingContact == null)
         {
             _logger.LogError($"no valid contact for {c.Id}");
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid contact id.");
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The contact cannot be found.");
         }
         existingContact.spd_lastloggedinlicensingportal = DateTimeOffset.UtcNow;
         _context.UpdateObject(existingContact);

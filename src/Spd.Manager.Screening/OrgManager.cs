@@ -58,7 +58,7 @@ namespace Spd.Manager.Screening
         {
             OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(cmd.OrgId), cancellationToken);
             if (org == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "org does not exist.");
+                throw new ApiException(HttpStatusCode.BadRequest, "Organization does not exist.");
 
             //business said we just use the same value as user invite valid days
             var encryptedOrgId = WebUtility.UrlEncode(_dataProtector.Protect(cmd.OrgId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
