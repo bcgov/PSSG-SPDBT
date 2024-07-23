@@ -7,6 +7,7 @@ export interface BizPortalUserResponse {
   email?: string | null;
   firstName?: string | null;
   id?: string;
+  isActive?: boolean | null;
   jobTitle?: string | null;
   lastName?: string | null;
   phoneNumber?: string | null;
