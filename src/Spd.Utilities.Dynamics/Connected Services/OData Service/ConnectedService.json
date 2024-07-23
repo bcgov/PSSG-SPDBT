@@ -24,11 +24,11 @@
     "GeneratedFileNamePrefix": "Reference",
     "UseNamespacePrefix": false,
     "NamespacePrefix": null,
-    "UseDataServiceCollection": false,
+    "UseDataServiceCollection": true,
     "MakeTypesInternal": false,
     "OpenGeneratedFilesInIDE": false,
     "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": "Authorization: Bearer REMOVED",
+    "CustomHttpHeaders": null,
     "IncludeWebProxy": false,
     "WebProxyHost": null,
     "IncludeWebProxyNetworkCredentials": false,
@@ -37,7 +37,7 @@
     "WebProxyNetworkCredentialsPassword": null,
     "WebProxyNetworkCredentialsDomain": null,
     "IncludeCustomHeaders": true,
-    "StoreCustomHttpHeaders": true,
+    "StoreCustomHttpHeaders": false,
     "ExcludedSchemaTypes": []
   }
 }

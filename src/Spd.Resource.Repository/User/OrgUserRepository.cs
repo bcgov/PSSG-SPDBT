@@ -6,7 +6,6 @@ using Microsoft.OData.Client;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using System.Collections.ObjectModel;
 using System.Net;
 
 namespace Spd.Resource.Repository.User
@@ -17,6 +16,7 @@ namespace Spd.Resource.Repository.User
         private readonly IMapper _mapper;
         private readonly ILogger<OrgUserRepository> _logger;
         private readonly ITimeLimitedDataProtector _dataProtector;
+
         public OrgUserRepository(IDynamicsContextFactory ctx, IMapper mapper, ILogger<OrgUserRepository> logger, IDataProtectionProvider dpProvider)
         {
             _dynaContext = ctx.CreateChangeOverwrite();
@@ -120,7 +120,7 @@ namespace Spd.Resource.Repository.User
 
             var organization = await _dynaContext.GetOrgById((Guid)createUserCmd.User.OrganizationId, ct);
 
-            // create user 
+            // create user
             spd_portaluser user = _mapper.Map<spd_portaluser>(createUserCmd.User);
             user.spd_portaluserid = Guid.NewGuid();
             _dynaContext.AddTospd_portalusers(user);
@@ -166,15 +166,24 @@ namespace Spd.Resource.Repository.User
 
             await _dynaContext.SaveChangesAsync(ct);
 
-            user._spd_organizationid_value = createUserCmd.User.OrganizationId;
-            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = role.spd_roleid } };
-
+            UserResult userResult = _mapper.Map<UserResult>(user);
+            userResult.OrganizationId = createUserCmd.User.OrganizationId;
+            userResult.ContactAuthorizationTypeCode = createUserCmd.User.ContactAuthorizationTypeCode;
             return new OrgUserManageResult(_mapper.Map<UserResult>(user));
         }
 
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
         {
-            var user = await GetUserById(updateUserCmd.Id, cancellationToken);
+            DataServiceCollection<spd_portaluser> users = new(_dynaContext.spd_portalusers
+                    .Expand(m => m.spd_spd_role_spd_portaluser)
+                    .Expand(m => m.spd_IdentityId)
+                    .Where(a => a.spd_portaluserid == updateUserCmd.Id)
+                    .Where(u => u.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Screening || u.spd_servicecategory == null));
+            spd_portaluser? user = users.Any() ? users[0] : null;
+            if (user == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the updating user with userId = {updateUserCmd.Id}");
+            }
             if (updateUserCmd.OnlyChangePhoneJob)
             {
                 user.spd_phonenumber = updateUserCmd.User.PhoneNumber;
@@ -186,23 +195,23 @@ namespace Spd.Resource.Repository.User
             }
 
             spd_role existingRole = user.spd_spd_role_spd_portaluser.First();
-            spd_role newRole = existingRole;
+
             string existingRoleName = _dynaContext.LookupRoleKeyById((Guid)existingRole.spd_roleid);
             if (existingRoleName != updateUserCmd.User.ContactAuthorizationTypeCode.ToString()) //role changed
             {
                 _dynaContext.DeleteLink(existingRole, nameof(existingRole.spd_spd_role_spd_portaluser), user);
 
-                newRole = _dynaContext.LookupRole(updateUserCmd.User.ContactAuthorizationTypeCode.ToString());
+                spd_role newRole = _dynaContext.LookupRole(updateUserCmd.User.ContactAuthorizationTypeCode.ToString());
                 if (newRole != null)
                 {
                     _dynaContext.AddLink(newRole, nameof(newRole.spd_spd_role_spd_portaluser), user);
                 }
             }
-            _dynaContext.UpdateObject(user);
             await _dynaContext.SaveChangesAsync(cancellationToken);
 
-            user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = newRole.spd_roleid } };
-            return new OrgUserManageResult(_mapper.Map<UserResult>(user));
+            UserResult userResult = _mapper.Map<UserResult>(user);
+            userResult.ContactAuthorizationTypeCode = updateUserCmd.User.ContactAuthorizationTypeCode;
+            return new OrgUserManageResult(userResult);
         }
 
         private async Task<OrgUserManageResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
@@ -247,18 +256,7 @@ namespace Spd.Resource.Repository.User
             if (identityId != null)
                 users = users.Where(a => a._spd_identityid_value == identityId);
 
-            var userList = users.ToList();
-            await Parallel.ForEachAsync(userList, cancellationToken, async (user, cancellationToken) =>
-            {
-                var role = _dynaContext
-                    .spd_spd_role_spd_portaluserset
-                    .Where(r => r.spd_portaluserid == user.spd_portaluserid)
-                    .FirstOrDefault();
-                if (role != null)
-                    user.spd_spd_role_spd_portaluser = new Collection<spd_role> { new() { spd_roleid = role.spd_roleid } };
-            });
-
-            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(userList));
+            return new OrgUsersResult(_mapper.Map<IEnumerable<UserResult>>(users));
         }
 
         private async Task<OrgUserManageResult> UpdateUserLoginAsync(Guid userId, CancellationToken cancellationToken)
