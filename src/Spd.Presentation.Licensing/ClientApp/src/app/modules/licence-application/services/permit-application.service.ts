@@ -160,7 +160,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.hasValueChanged = false;
 		this.photographOfYourself = null;
 
-		this.accessCodeFormGroup.reset();
+		this.resetCommon();
+
 		this.consentAndDeclarationFormGroup.reset();
 		this.permitModelFormGroup.reset();
 

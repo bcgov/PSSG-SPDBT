@@ -19,14 +19,14 @@ import {
 	template: `
 		<div class="row mt-3">
 			<div class="col-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Business Information</mat-panel-title>
-						</mat-expansion-panel-header>
+				<section>
+					<mat-accordion>
+						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title>Business Information</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="mt-3">
-							<section>
+							<div class="mt-3">
 								<form [formGroup]="businessInformationFormGroup" novalidate>
 									<div class="row">
 										<div class="col-lg-6 col-md-12">
@@ -89,7 +89,12 @@ import {
 										<div class="row mb-3">
 											<div class="col-md-6 col-sm-12"><div class="text-minor-heading">Sole Proprietor</div></div>
 											<div class="col-md-6 col-sm-12 text-end" *ngIf="!isReadonly">
-												<button mat-flat-button color="primary" class="large w-auto" (click)="onLookupSoleProprietor()">
+												<button
+													mat-flat-button
+													color="primary"
+													class="large w-auto mt-2 mt-lg-0"
+													(click)="onLookupSoleProprietor()"
+												>
 													Search for Sole Proprietor
 												</button>
 											</div>
@@ -212,69 +217,69 @@ import {
 										</div>
 									</div>
 								</form>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</section>
 			</div>
 
 			<div class="col-12" *ngIf="!isBusinessLicenceSoleProprietor">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Business Manager</mat-panel-title>
-						</mat-expansion-panel-header>
+				<section>
+					<mat-accordion>
+						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title>Business Manager</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="mt-3">
-							<section>
+							<div class="mt-3">
 								<app-common-business-manager
 									[form]="businessManagerFormGroup"
 									[isReadonly]="isReadonly"
 								></app-common-business-manager>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</section>
 			</div>
 
 			<div class="col-lg-6 col-md-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Mailing Address</mat-panel-title>
-						</mat-expansion-panel-header>
+				<section>
+					<mat-accordion>
+						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title>Mailing Address</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="mt-3">
-							<div class="mb-4 text-primary-color">
-								This address is from your Business BCeID. If you need to make any updates, please
-								<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
-							</div>
+							<div class="mt-3">
+								<div class="mb-4 text-primary-color">
+									This address is from your Business BCeID. If you need to make any updates, please
+									<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
+								</div>
 
-							<section>
 								<app-common-address
 									[form]="businessMailingAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="true"
 								></app-common-address>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</section>
 			</div>
 
 			<div class="col-lg-6 col-md-12">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Business Address</mat-panel-title>
-						</mat-expansion-panel-header>
+				<section>
+					<mat-accordion>
+						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title>Business Address</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="mt-3">
-							<div class="mb-4 text-primary-color">
-								Provide your business address, if different from your mailing address
-							</div>
+							<div class="mt-3">
+								<div class="mb-4 text-primary-color">
+									Provide your business address, if different from your mailing address
+								</div>
 
-							<section>
 								<app-common-address-and-is-same-flag
 									[form]="businessAddressFormGroup"
 									[isWizardStep]="false"
@@ -282,53 +287,53 @@ import {
 									[isCheckboxReadOnly]="isReadonly"
 									isAddressTheSameLabel="The business address and mailing address are the same"
 								></app-common-address-and-is-same-flag>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</section>
 			</div>
 
 			<div class="col-lg-6 col-md-12" *ngIf="!isBcBusinessAddress">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>B.C. Business Address</mat-panel-title>
-						</mat-expansion-panel-header>
+				<section>
+					<mat-accordion>
+						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title>B.C. Business Address</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="mt-3">
-							<app-alert type="info" icon="" [showBorder]="false">
-								Provide an address in British Columbia for document service
-							</app-alert>
+							<div class="mt-3">
+								<app-alert type="info" icon="" [showBorder]="false">
+									Provide an address in British Columbia for document service
+								</app-alert>
 
-							<section>
 								<app-common-address
 									[form]="bcBusinessAddressFormGroup"
 									[isWizardStep]="false"
 									[isReadonly]="isReadonly"
 								></app-common-address>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</section>
 			</div>
 
 			<div class="col-12" *ngIf="!isBusinessLicenceSoleProprietor">
-				<mat-accordion>
-					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
-						<mat-expansion-panel-header>
-							<mat-panel-title>Branches in B.C.</mat-panel-title>
-						</mat-expansion-panel-header>
+				<section>
+					<mat-accordion>
+						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+							<mat-expansion-panel-header>
+								<mat-panel-title>Branches in B.C.</mat-panel-title>
+							</mat-expansion-panel-header>
 
-						<div class="mt-3">
-							<section>
+							<div class="mt-3">
 								<app-common-business-bc-branches
 									[form]="branchesInBcFormGroup"
 									[isReadonly]="isReadonly"
 								></app-common-business-bc-branches>
-							</section>
-						</div>
-					</mat-expansion-panel>
-				</mat-accordion>
+							</div>
+						</mat-expansion-panel>
+					</mat-accordion>
+				</section>
 			</div>
 		</div>
 	`,
