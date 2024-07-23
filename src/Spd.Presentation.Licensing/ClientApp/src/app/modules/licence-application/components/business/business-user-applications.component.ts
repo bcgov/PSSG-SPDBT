@@ -263,8 +263,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE),
-						{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
+						LicenceApplicationRoutes.pathBusinessLicence(LicenceApplicationRoutes.BUSINESS_LICENCE_UPDATE_TERMS)
 					);
 				}),
 				take(1)
