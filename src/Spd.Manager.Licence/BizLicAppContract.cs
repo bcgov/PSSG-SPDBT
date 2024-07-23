@@ -41,7 +41,7 @@ public record BizLicAppUpdateCommand(
 
 public record BrandImageQuery(Guid DocumentId) : IRequest<FileResponse>;
 
-public record BizLicAppUpsertRequest : BizLicenceApp
+public record BizLicAppUpsertRequest : LicenceAppBase
 {
     public Guid? LicenceAppId { get; set; }
     public Guid BizId { get; set; }
@@ -50,6 +50,17 @@ public record BizLicAppUpsertRequest : BizLicenceApp
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
+
+    //branding
+    public bool? NoBranding { get; set; } //wait
+    public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
+
+    //non sole proprietor properties
+    public ContactInfo? ApplicantContactInfo { get; set; }
+    public Members? Members { get; set; }
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
+    public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
+    public bool? AgreeToCompleteAndAccurate { get; set; }
 };
 
 public record BizLicAppSubmitRequest : BizLicenceApp
