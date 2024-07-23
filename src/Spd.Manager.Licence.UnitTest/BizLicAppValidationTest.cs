@@ -75,14 +75,16 @@ public class BizLicAppValidationTest
         BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.ApplicantIsBizManager = false;
         model.ApplicantContactInfo.GivenName = string.Empty;
         model.ApplicantContactInfo.Surname = string.Empty;
         model.ApplicantContactInfo.PhoneNumber = string.Empty;
         model.ApplicantContactInfo.EmailAddress = string.Empty;
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.GivenName);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.Surname);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.PhoneNumber);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.EmailAddress);
     }
 
     [Fact]
