@@ -47,6 +47,7 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
             .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.HasCriminalHistory).NotNull().When(r => r.LicenceId != null);
         RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull().When(r => r.LicenceId != null);
+        RuleFor(r => r.PoliceOfficerRoleCode).NotNull().When(r => r.IsPoliceOrPeaceOfficer == true);
         RuleFor(r => r.IsTreatedForMHC).NotNull().When(r => r.LicenceId != null);
         RuleFor(r => r.HasNewMentalHealthCondition).NotNull()
             .When(r => r.LicenceId != null &&
