@@ -144,7 +144,7 @@ internal class BizLicAppManager :
         
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-        createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, request, cancellationToken);
+        createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
@@ -192,7 +192,7 @@ internal class BizLicAppManager :
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-        createApp = await SetBizManagerInfo((Guid)originalBizLic.BizId, createApp, request, cancellationToken);
+        createApp = await SetBizManagerInfo((Guid)originalBizLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
@@ -259,7 +259,7 @@ internal class BizLicAppManager :
                 cmd.LicenceRequest.PreviousDocumentIds,
                 cancellationToken);
             CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-            createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, request, cancellationToken);
+            createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
@@ -563,7 +563,12 @@ internal class BizLicAppManager :
         return changes;
     }
 
-    private async Task<CreateBizLicApplicationCmd> SetBizManagerInfo(Guid bizId, CreateBizLicApplicationCmd createApp, BizLicenceApp request, CancellationToken ct)
+    private async Task<CreateBizLicApplicationCmd> SetBizManagerInfo(
+        Guid bizId, 
+        CreateBizLicApplicationCmd createApp, 
+        bool applicantIsBizManager, 
+        ContactInfo? applicantContactInfo, 
+        CancellationToken ct)
     {
         BizResult bizResult = await _bizRepository.GetBizAsync(bizId, ct);
 
@@ -574,7 +579,7 @@ internal class BizLicAppManager :
         createApp.ManagerEmailAddress = bizResult?.BizManagerContactInfo?.EmailAddress;
         createApp.ManagerPhoneNumber = bizResult?.BizManagerContactInfo?.PhoneNumber;
 
-        if ((bool)request.ApplicantIsBizManager)
+        if (applicantIsBizManager)
         {
             createApp.GivenName = bizResult?.BizManagerContactInfo?.GivenName;
             createApp.Surname = bizResult?.BizManagerContactInfo?.Surname;
@@ -585,12 +590,12 @@ internal class BizLicAppManager :
         }
         else
         {
-            createApp.GivenName = request.ApplicantContactInfo?.GivenName;
-            createApp.Surname = request.ApplicantContactInfo?.Surname;
-            createApp.MiddleName1 = request.ApplicantContactInfo?.MiddleName1;
-            createApp.MiddleName2 = request.ApplicantContactInfo?.MiddleName2;
-            createApp.EmailAddress = request.ApplicantContactInfo?.EmailAddress;
-            createApp.PhoneNumber = request.ApplicantContactInfo?.PhoneNumber;
+            createApp.GivenName = applicantContactInfo?.GivenName;
+            createApp.Surname = applicantContactInfo?.Surname;
+            createApp.MiddleName1 = applicantContactInfo?.MiddleName1;
+            createApp.MiddleName2 = applicantContactInfo?.MiddleName2;
+            createApp.EmailAddress = applicantContactInfo?.EmailAddress;
+            createApp.PhoneNumber = applicantContactInfo?.PhoneNumber;
         }
 
         return createApp;

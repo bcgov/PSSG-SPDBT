@@ -125,6 +125,7 @@ import { StepBusinessLicenceStaticSummaryComponent } from './components/business
 import { StepBusinessLicenceSummaryComponent } from './components/business/step-business-licence-summary.component';
 import { StepBusinessLicenceTermComponent } from './components/business/step-business-licence-term.component';
 import { StepBusinessLicenceUpdateFeeComponent } from './components/business/step-business-licence-update-fee.component';
+import { StepBusinessLicenceUpdateTermsComponent } from './components/business/step-business-licence-update-terms.component';
 import { StepsBusinessLicenceContactInformationComponent } from './components/business/steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './components/business/steps-business-licence-controlling-members.component';
 import { StepsBusinessLicenceInformationComponent } from './components/business/steps-business-licence-information.component';
@@ -334,6 +335,7 @@ import { LicenceApplicationService } from './services/licence-application.servic
 		StepBusinessLicenceControllingMemberInvitesComponent,
 		StepBusinessLicenceLiabilityComponent,
 		StepBusinessLicenceProfileComponent,
+		StepBusinessLicenceUpdateTermsComponent,
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,
 		StepBusinessLicenceStaticSummaryComponent,

@@ -175,7 +175,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.hasValueChanged = false;
 		this.photographOfYourself = null;
 
-		this.accessCodeFormGroup.reset();
+		this.resetCommon();
+
 		this.consentAndDeclarationFormGroup.reset();
 		this.licenceModelFormGroup.reset();
 

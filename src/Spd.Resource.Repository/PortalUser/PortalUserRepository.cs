@@ -78,6 +78,7 @@ internal class PortalUserRepository : IPortalUserRepository
         if (c.FirstName != null) portalUser.spd_firstname = c.FirstName;
         if (c.LastName != null) portalUser.spd_surname = c.LastName;
         if (c.EmailAddress != null) portalUser.spd_emailaddress1 = c.EmailAddress;
+        if (c.PhoneNumber != null) portalUser.spd_phonenumber = c.PhoneNumber;
         if (c.TermAgreeTime != null) portalUser.spd_lastloggedin = c.TermAgreeTime;
         _context.UpdateObject(portalUser);
 
