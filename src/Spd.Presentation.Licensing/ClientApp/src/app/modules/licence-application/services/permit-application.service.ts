@@ -1044,7 +1044,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			dateOfBirth: profileData.dateOfBirth,
 			genderCode: profileData.genderCode,
 			hasGenderChanged: false,
-			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged === true ? true : false,
+			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged ?? false,
 			origGivenName: profileData.givenName,
 			origMiddleName1: profileData.middleName1,
 			origMiddleName2: profileData.middleName2,
