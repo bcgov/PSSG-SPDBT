@@ -35,6 +35,7 @@ public abstract record BizPortalUserUpsertRequest
 public record BizPortalUserResponse : BizPortalUserUpsertRequest
 {
     public Guid Id { get; set; }
+    public bool? IsActive { get; set; }
 }
 
 public record BizPortalUserListResponse

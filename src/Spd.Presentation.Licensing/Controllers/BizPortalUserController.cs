@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -13,7 +14,7 @@ using System.Security.Principal;
 namespace Spd.Presentation.Licensing.Controllers;
 
 [ApiController]
-public class BizPortalUserController : ControllerBase
+public class BizPortalUserController : SpdControllerBase
 {
     private readonly ILogger<BizPortalUserController> _logger;
     private readonly IMediator _mediator;
@@ -33,7 +34,7 @@ public class BizPortalUserController : ControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager")]
+    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpPost]
     public async Task<BizPortalUserResponse> Add([FromRoute] Guid bizId, [FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest)
@@ -55,7 +56,7 @@ public class BizPortalUserController : ControllerBase
     /// <param name="userId"></param>
     /// <param name="bizPortalUserUpdateRequest"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager")]
     [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpPut]
     public async Task<BizPortalUserResponse> Put([FromRoute] Guid bizId, [FromRoute] Guid userId, [FromBody][Required] BizPortalUserUpdateRequest bizPortalUserUpdateRequest)
@@ -77,7 +78,7 @@ public class BizPortalUserController : ControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager,Manager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpGet]
     public async Task<BizPortalUserListResponse> GetBizPortalUserList([FromRoute] Guid bizId)

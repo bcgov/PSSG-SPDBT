@@ -290,6 +290,11 @@ export abstract class CommonApplicationHelper {
 		isProfileUpToDate: new FormControl('', [Validators.requiredTrue]),
 	});
 
+	termsAndConditionsFormGroup: FormGroup = this.formBuilder.group({
+		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
+		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
+	});
+
 	constructor(protected formBuilder: FormBuilder) {}
 
 	clearExpiredLicenceModelData(): void {
@@ -301,5 +306,10 @@ export abstract class CommonApplicationHelper {
 			expiredLicenceExpiryDate: null,
 			expiredLicenceStatusCode: null,
 		});
+	}
+
+	resetCommon(): void {
+		this.termsAndConditionsFormGroup.reset();
+		this.accessCodeFormGroup.reset();
 	}
 }
