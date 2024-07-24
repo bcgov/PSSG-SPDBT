@@ -81,9 +81,7 @@ internal static class SharedContactFuncs
         }
         //update current contact
         existingContact = UpdateExistingContact(existingContact, newContact);
-        existingContact.spd_peaceofficerstatus = null;
         context.UpdateObject(existingContact);
-        await context.SaveChangesAsync();
 
         if (aliases.Any())
         {
