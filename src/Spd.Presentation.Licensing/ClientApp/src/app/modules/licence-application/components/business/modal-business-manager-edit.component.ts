@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BizPortalUserCreateRequest, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
+import { BizPortalUserResponse, BizPortalUserUpdateRequest, ContactAuthorizationTypeCode } from '@app/api/models';
 import { ContactAuthorizationTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '@app/modules/licence-application/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -8,6 +8,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export interface BizPortalUserDialogData {
 	user: BizPortalUserResponse;
 	isAllowedPrimary: boolean;
+	emails: string[]; // used to determine if email is unique within the set
 }
 
 @Component({
@@ -25,6 +26,9 @@ export interface BizPortalUserDialogData {
 									{{ auth.desc }}
 								</mat-option>
 							</mat-select>
+							<mat-error *ngIf="form.get('contactAuthorizationTypeCode')?.hasError('required')">
+								This is required
+							</mat-error>
 						</mat-form-field>
 					</div>
 
@@ -68,10 +72,11 @@ export interface BizPortalUserDialogData {
 								maxlength="75"
 								[errorStateMatcher]="matcher"
 							/>
-							<mat-error *ngIf="form.get('email')?.hasError('email')"> Must be a valid email address </mat-error>
+							<mat-error *ngIf="form.get('email')?.hasError('email')">Must be a valid email address</mat-error>
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
+					<mat-error *ngIf="emailNotUnique">This email has been used by another manager</mat-error>
 				</div>
 			</form>
 		</mat-dialog-content>
@@ -94,11 +99,8 @@ export interface BizPortalUserDialogData {
 export class ModalBusinessManagerEditComponent implements OnInit {
 	title = '';
 	isEdit = false;
-	authorizationTypes = ContactAuthorizationTypes.filter(
-		(item: SelectOptions) =>
-			item.code === ContactAuthorizationTypeCode.BusinessManager ||
-			item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager
-	);
+	emailNotUnique = false;
+	authorizationTypes!: SelectOptions[];
 
 	form = this.businessApplicationService.managerFormGroup;
 
@@ -107,31 +109,57 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 	constructor(
 		private dialogRef: MatDialogRef<ModalBusinessManagerEditComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		@Inject(MAT_DIALOG_DATA) public dialogData: any
+		@Inject(MAT_DIALOG_DATA) public dialogData: BizPortalUserDialogData
 	) {}
 
 	ngOnInit(): void {
-		const data = this.dialogData.data;
+		const data = this.dialogData.user;
 		this.form.reset();
 		this.form.patchValue(data);
-		this.isEdit = data && data.id;
+		this.isEdit = !!data?.id;
 		this.title = this.isEdit ? 'Edit Business Manager' : 'Add Business Manager';
+
+		this.authorizationTypes = ContactAuthorizationTypes.filter((item: SelectOptions) => {
+			return (
+				item.code === ContactAuthorizationTypeCode.BusinessManager ||
+				(this.dialogData.isAllowedPrimary && item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager)
+			);
+		});
 	}
 
 	onSave(): void {
-		this.form.markAllAsTouched();
-		if (!this.form.valid) return;
-
 		const formData = this.form.value;
-		const body: BizPortalUserCreateRequest = { ...formData };
 
-		this.businessApplicationService
-			.saveBizPortalUser(body)
-			.pipe()
-			.subscribe((resp: BizPortalUserResponse) => {
-				this.dialogRef.close({
-					data: resp,
+		this.form.markAllAsTouched();
+
+		// is the email unique?
+		const findIndex = this.dialogData.emails.findIndex((item: string) => item === formData.email);
+
+		this.emailNotUnique = findIndex >= 0;
+
+		if (!this.form.valid || this.emailNotUnique) return;
+
+		const body: BizPortalUserUpdateRequest = { ...formData };
+
+		if (this.isEdit) {
+			body.id = this.dialogData.user.id as string;
+			this.businessApplicationService
+				.saveBizPortalUserUpdate(body.id, body)
+				.pipe()
+				.subscribe((resp: BizPortalUserResponse) => {
+					this.dialogRef.close({
+						data: resp,
+					});
 				});
-			});
+		} else {
+			this.businessApplicationService
+				.saveBizPortalUserCreate(body)
+				.pipe()
+				.subscribe((resp: BizPortalUserResponse) => {
+					this.dialogRef.close({
+						data: resp,
+					});
+				});
+		}
 	}
 }

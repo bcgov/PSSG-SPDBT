@@ -1,17 +1,17 @@
 images:
   licensing-portal:
-    image: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/licensing-portal
+    image: ghcr.io/bcgov/pssg-spdbt/licensing-portal
     tags:
       dev: main
   screening-portal:
-    image: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/screening-portal
+    image: ghcr.io/bcgov/pssg-spdbt/screening-portal
     tags:
       dev: main
   dynamics-helper:
-    image: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/dynamics-helper
+    image: ghcr.io/bcgov/pssg-spdbt/dynamics-helper
     tags:
       dev: main
   jag-jobscheduler:
-    image: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/jag-jobscheduler
+    image: ghcr.io/bcgov/jag-jobscheduler
     tags:
       dev: main

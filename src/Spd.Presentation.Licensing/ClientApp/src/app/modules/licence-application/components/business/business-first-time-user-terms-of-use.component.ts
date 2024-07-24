@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonBusinessTermsComponent } from '../shared/step-components/common-business-terms.component';
 
 @Component({
@@ -34,10 +34,7 @@ import { CommonBusinessTermsComponent } from '../shared/step-components/common-b
 	styles: [],
 })
 export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.formBuilder.group({
-		agreeToTermsAndConditions: new FormControl('', [Validators.requiredTrue]),
-		dateSigned: new FormControl({ value: null, disabled: true }, [Validators.requiredTrue]),
-	});
+	form = this.businessApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonBusinessTermsComponent) commonTermsComponent!: CommonBusinessTermsComponent;
 
@@ -47,8 +44,8 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 
 	constructor(
 		private router: Router,
-		private formBuilder: FormBuilder,
 		private loginService: LoginService,
+		private businessApplicationService: BusinessApplicationService,
 		private authUserBceidService: AuthUserBceidService
 	) {}
 
