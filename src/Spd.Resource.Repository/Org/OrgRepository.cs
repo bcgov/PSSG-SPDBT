@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Client;
 using Spd.Resource.Repository.Registration;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -41,7 +42,12 @@ namespace Spd.Resource.Repository.Org
 
         private async Task<OrgManageResult?> OrgUpdateAsync(OrgUpdateCmd updateOrgCmd, CancellationToken ct)
         {
-            var org = await _dynaContext.GetOrgById(updateOrgCmd.Org.Id, ct);
+            DataServiceCollection<account> orgs = new(_dynaContext.accounts.Where(p => p.accountid == updateOrgCmd.Org.Id));
+            account? org = orgs.Any() ? orgs[0] : null;
+            if (org == null)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the updating org with orgId = {updateOrgCmd.Org.Id}");
+            }
             var response = _mapper.Map<OrgResult>(org);
 
             if (updateOrgCmd.Org.LicenseesNeedVulnerableSectorScreening == null)
@@ -51,7 +57,6 @@ namespace Spd.Resource.Repository.Org
                 {
                     String[] employeeTypes = new string[] { EmployeeOrganizationTypeCode.Childcare.ToString(), EmployeeOrganizationTypeCode.Healthcare.ToString(), EmployeeOrganizationTypeCode.GovnBody.ToString(), EmployeeOrganizationTypeCode.ProvGovt.ToString() };
                     licenseeIsRequired = employeeTypes.Contains(response.EmployeeOrganizationTypeCode);
-
                 }
                 else if (response.VolunteerOrganizationTypeCode != null)
                 {
@@ -66,8 +71,6 @@ namespace Spd.Resource.Repository.Org
             }
 
             _mapper.Map(updateOrgCmd.Org, org);
-
-            _dynaContext.UpdateObject(org);
             await _dynaContext.SaveChangesAsync(ct);
 
             return new OrgManageResult(_mapper.Map<OrgResult>(org));
@@ -77,7 +80,7 @@ namespace Spd.Resource.Repository.Org
         {
             var org = await _dynaContext.GetOrgById(updateOrgGuidCmd.OrgId, ct);
             if (org == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the organization");
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the organization.");
 
             if (updateOrgGuidCmd.OrgGuid != null)
             {

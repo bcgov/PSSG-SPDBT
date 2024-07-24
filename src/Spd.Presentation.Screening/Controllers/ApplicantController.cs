@@ -69,12 +69,12 @@ namespace Spd.Presentation.Screening.Controllers
 
             //bcsc user name and birth date must be the same as name inside ApplicantAppCreateRequest
             if (appCreateRequest.DateOfBirth == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "DateOfBirth cannot be null");
+                throw new ApiException(HttpStatusCode.BadRequest, "Date Of Birth cannot be empty.");
             DateOnly requestBirthDate = (DateOnly)appCreateRequest.DateOfBirth;
             if (!string.Equals(applicantInfo.FirstName, appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
                 !string.Equals(applicantInfo.LastName, appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
                 applicantInfo.BirthDate != requestBirthDate)
-                throw new ApiException(HttpStatusCode.BadRequest, "Submitted user pi data is different than bscs identity info data.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The submitted user identitiy data is different than BCSC identity data.");
 
             return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, applicantInfo.Sub));
         }
@@ -90,12 +90,12 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<ApplicationCreateResponse> CreateApplicantAppAnonymous([FromBody] AnonymousApplicantAppCreateRequest anonymAppCreateRequest, CancellationToken ct)
         {
             if (anonymAppCreateRequest == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "Request cannot be null");
+                throw new ApiException(HttpStatusCode.BadRequest, "The request cannot be null.");
 
             var isValid = await _verificationService.VerifyAsync(anonymAppCreateRequest.Recaptcha, ct);
             if (!isValid)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "Invalid recaptcha value");
+                throw new ApiException(HttpStatusCode.BadRequest, "The recaptcha is invalid.");
             }
 
             anonymAppCreateRequest.OriginTypeCode = ApplicationOriginTypeCode.WebForm;
@@ -212,7 +212,7 @@ namespace Spd.Presentation.Screening.Controllers
                 string? fileexe = FileHelper.GetFileExtension(file.FileName);
                 if (!fileUploadConfig.AllowedExtensions.Split(",").Contains(fileexe, StringComparer.InvariantCultureIgnoreCase))
                 {
-                    throw new ApiException(HttpStatusCode.BadRequest, $"{file.FileName} file type is not supported.");
+                    throw new ApiException(HttpStatusCode.BadRequest, "The file type is not supported.");
                 }
                 long fileSize = file.Length;
                 if (fileSize > fileUploadConfig.MaxFileSizeMB * 1024 * 1024)
