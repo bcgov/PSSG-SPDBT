@@ -80,7 +80,7 @@ namespace Spd.Resource.Repository.Org
         {
             var org = await _dynaContext.GetOrgById(updateOrgGuidCmd.OrgId, ct);
             if (org == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the organization");
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the organization.");
 
             if (updateOrgGuidCmd.OrgGuid != null)
             {
