@@ -169,7 +169,7 @@ namespace Spd.Resource.Repository.User
             UserResult userResult = _mapper.Map<UserResult>(user);
             userResult.OrganizationId = createUserCmd.User.OrganizationId;
             userResult.ContactAuthorizationTypeCode = createUserCmd.User.ContactAuthorizationTypeCode;
-            return new OrgUserManageResult(_mapper.Map<UserResult>(user));
+            return new OrgUserManageResult(userResult);
         }
 
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
