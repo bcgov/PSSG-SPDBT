@@ -98,9 +98,9 @@ namespace Spd.Manager.Payment
             _logger.LogInformation("PaymentManager get PrePaymentLinkCreateCommand");
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(command.ApplicationId), ct);
             if (app == null)
-                throw new ApiException(HttpStatusCode.BadRequest, "application does not exist.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The application does not exist.");
             if (app.PaidOn != null)
-                throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The application has already been paid.");
 
             var encryptedApplicationId = WebUtility.UrlEncode(_dataProtector.Protect(command.ApplicationId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.PrePaymentLinkValidDays)));
 
@@ -148,9 +148,9 @@ namespace Spd.Manager.Payment
             //validation
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(applicationId), ct);
             if (app.PaidOn != null)
-                throw new ApiException(HttpStatusCode.BadRequest, "application has already been paid.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The application has already been paid.");
             if (app.NumberOfAttempts > command.MaxFailedTimes && !isFromSecurePaymentLink)
-                throw new ApiException(HttpStatusCode.BadRequest, $"Payment can only be tried no more than {command.MaxFailedTimes} times.");
+                throw new ApiException(HttpStatusCode.BadRequest, $"The payment cannot be tried more than {command.MaxFailedTimes} times.");
 
             //get config from cache or Dynamics
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentInfoAsync(app, ct);
@@ -182,7 +182,7 @@ namespace Spd.Manager.Payment
             PaymentValidationResult validated = (PaymentValidationResult)await _paymentService.HandleCommand(new ValidatePaymentResultStrCommand() { QueryStr = command.QueryStr });
             if (!validated.ValidationPassed)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "payment result from paybc is not validated.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The payment result from paybc is not validated.");
             }
 
             var createCmd = _mapper.Map<CreatePaymentCmd>(command.PaybcPaymentResult);
@@ -197,9 +197,9 @@ namespace Spd.Manager.Payment
             _logger.LogInformation("PaymentManager get PaymentRefundCommand");
             var paymentList = await _paymentRepository.QueryAsync(new PaymentQry(null, command.PaymentId), ct);
             if (!paymentList.Items.Any())
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the payment");
+                throw new ApiException(HttpStatusCode.BadRequest, "The payment cannot be found.");
             if (!paymentList.Items.First().PaidSuccess || paymentList.Items.First().Refunded == true)
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot do refund for non-successful or refunded payment.");
+                throw new ApiException(HttpStatusCode.BadRequest, "A refund cannot be made for a non-successful or refunded payment.");
 
             //ask paybc to do direct refund
             var app = await _appRepository.QueryApplicationAsync(new ApplicationQry(paymentList.Items.First().ApplicationId), ct);
@@ -301,7 +301,7 @@ namespace Spd.Manager.Payment
             var invoice = invoiceList.Items.FirstOrDefault();
             if (invoice == null)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "invoice is not found or not in pending state.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The invoice is not found or not in pending state.");
             }
             await CreateOneInvoice(invoice, ct);
             return new CreateOneInvoiceInCasResponse(true);

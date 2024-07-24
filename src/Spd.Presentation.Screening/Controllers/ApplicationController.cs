@@ -103,7 +103,7 @@ namespace Spd.Presentation.Screening.Controllers
                 }
                 catch
                 {
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid filtering string.");
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid filtering string.");
                 }
             }
             AppInviteListFilterBy filterBy = new(orgId, EmailOrNameContains: filterValue);
@@ -179,12 +179,12 @@ namespace Spd.Presentation.Screening.Controllers
             string exe = fileName.Split(".").Last();
             if (!SpdConstants.BulkAppUploadFileExtensions.Contains(exe))
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"file uploaded is not supported.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The uploaded file type is not supported.");
             }
             long fileSize = bulkUploadRequest.File.Length;
             if (fileSize > SpdConstants.UploadFileMaxSize)
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"max supported file size is {SpdConstants.UploadFileMaxSize}.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"The maximum supported file size is {SpdConstants.UploadFileMaxSize}.");
             }
 
             //parse file
@@ -378,12 +378,12 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 //PSSO
                 if (createApplication.ConsentFormFile != null)
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no need for consent file.");
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The consent file should not be supplied.");
             }
             else
             {
                 if (createApplication.ConsentFormFile == null)
-                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "must have consent file.");
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The consent file must be supplied.");
             }
 
             var userId = this.HttpContext.User.GetUserId();
