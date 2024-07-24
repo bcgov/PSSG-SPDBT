@@ -126,13 +126,13 @@ internal class PortalUserRepository : IPortalUserRepository
             if (identity == null)
             {
                 _logger.LogError($"no valid identity for {c.IdentityId}");
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid identity.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The identity is not valid.");
             }
         }
         if (org == null)
         {
             _logger.LogError($"no valid org is found by orgId {c.OrgId}");
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "not valid org.");
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The organization is not valid.");
         }
         _context.SetLink(portaluser, nameof(portaluser.spd_OrganizationId), org);
         if (identity != null)

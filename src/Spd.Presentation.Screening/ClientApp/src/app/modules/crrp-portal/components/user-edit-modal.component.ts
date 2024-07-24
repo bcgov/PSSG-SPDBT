@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NgxMaskPipe } from 'ngx-mask';
 import { ContactAuthorizationTypeCode, OrgUserResponse, OrgUserUpdateRequest } from 'src/app/api/models';
 import { OrgUserService } from 'src/app/api/services';
@@ -13,6 +13,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 export interface UserDialogData {
 	user: OrgUserResponse;
 	isAllowedPrimary: boolean;
+	emails: string[]; // used to determine if email is unique within the set
 }
 
 @Component({
@@ -39,9 +40,6 @@ export interface UserDialogData {
 							<mat-error *ngIf="form.get('firstName')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-				</div>
-
-				<div class="row">
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Surname</mat-label>
@@ -57,9 +55,6 @@ export interface UserDialogData {
 							<mat-error *ngIf="form.get('email')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
-				</div>
-
-				<div class="row">
 					<div class="col-md-6">
 						<mat-form-field>
 							<mat-label>Phone Number</mat-label>
@@ -75,6 +70,7 @@ export interface UserDialogData {
 							<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
+					<mat-error class="mb-2" *ngIf="emailNotUnique">The email has been used by another manager</mat-error>
 				</div>
 			</form>
 		</mat-dialog-content>
@@ -96,6 +92,7 @@ export class UserEditModalComponent implements OnInit {
 	phoneMask = SPD_CONSTANTS.phone.displayMask;
 	title = '';
 	isEdit = false;
+	emailNotUnique = false;
 	form: FormGroup = this.formBuilder.group(
 		{
 			contactAuthorizationTypeCode: new FormControl('', [FormControlValidators.required]),
@@ -136,36 +133,42 @@ export class UserEditModalComponent implements OnInit {
 
 	onSave(): void {
 		this.form.markAllAsTouched();
-		if (this.form.valid) {
-			const formData = this.form.value;
 
-			const body: OrgUserUpdateRequest = { ...formData };
-			if (body.phoneNumber) {
-				body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
-			}
+		const formData = this.form.value;
 
-			if (this.isEdit) {
-				body.id = this.dialogData.user.id as string;
-				body.organizationId = this.dialogData.user.organizationId;
-				this.orgUserService
-					.apiOrgsOrgIdUsersUserIdPut({ userId: body.id, orgId: body.organizationId!, body })
-					.pipe()
-					.subscribe((resp: OrgUserResponse) => {
-						this.dialogRef.close({
-							data: resp,
-						});
+		// is the email unique?
+		const findIndex = this.dialogData.emails.findIndex((item: string) => item === formData.email);
+
+		this.emailNotUnique = findIndex >= 0;
+
+		if (!this.form.valid || this.emailNotUnique) return;
+
+		const body: OrgUserUpdateRequest = { ...formData };
+		if (body.phoneNumber) {
+			body.phoneNumber = this.maskPipe.transform(body.phoneNumber, SPD_CONSTANTS.phone.backendMask);
+		}
+
+		if (this.isEdit) {
+			body.id = this.dialogData.user.id as string;
+			body.organizationId = this.dialogData.user.organizationId;
+			this.orgUserService
+				.apiOrgsOrgIdUsersUserIdPut({ userId: body.id, orgId: body.organizationId!, body })
+				.pipe()
+				.subscribe((resp: OrgUserResponse) => {
+					this.dialogRef.close({
+						data: resp,
 					});
-			} else {
-				body.organizationId = this.authUserService.bceidUserInfoProfile?.orgId!;
-				this.orgUserService
-					.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
-					.pipe()
-					.subscribe((resp: OrgUserResponse) => {
-						this.dialogRef.close({
-							data: resp,
-						});
+				});
+		} else {
+			body.organizationId = this.authUserService.bceidUserInfoProfile?.orgId!;
+			this.orgUserService
+				.apiOrgsOrgIdUsersPost({ orgId: body.organizationId, body })
+				.pipe()
+				.subscribe((resp: OrgUserResponse) => {
+					this.dialogRef.close({
+						data: resp,
 					});
-			}
+				});
 		}
 	}
 }

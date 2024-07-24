@@ -101,7 +101,7 @@ internal class LicenceRepository : ILicenceRepository
             .Where(i => i.spd_licenceid == cmd.LicenceID);
         spd_licence? lic = lics.FirstOrDefault();
         if (lic == null)
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "invalid licenceId");
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid licenceId");
         _mapper.Map<PermitLicence, spd_licence>(cmd.PermitLicence, lic);
         _context.UpdateObject(lic);
         await _context.SaveChangesAsync(ct);

@@ -84,6 +84,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
 				const dialogOptions: DialogOopsOptions = {
 					message,
+					is400Error: errorResponse.status === 400,
 				};
 
 				this.dialog.open(DialogOopsComponent, { data: dialogOptions });
