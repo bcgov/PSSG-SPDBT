@@ -357,7 +357,7 @@ namespace Spd.Manager.Screening
         {
             var clearanceListResp = await _applicationRepository.QueryAsync(new ClearanceQry(ClearanceId: request.ClearanceId), ct);
             if (!clearanceListResp.Clearances.Any())
-                throw new ApiException(HttpStatusCode.BadRequest, "do active clearance associated with the clearance id");
+                throw new ApiException(HttpStatusCode.BadRequest, "No active clearance associated with the clearance id");
             Guid appId = clearanceListResp.Clearances.First().ApplicationId;
             var application = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(appId), ct);
             return _mapper.Map<ApplicationInvitePrepopulateDataResponse>(application);
@@ -580,7 +580,7 @@ namespace Spd.Manager.Screening
             //get caseId from applicationId
             var incidents = await _incidentRepository.QueryAsync(new IncidentQry { ApplicationId = query.ApplicationId }, ct);
             if (incidents.Items.Count() <= 0)
-                throw new ApiException(HttpStatusCode.BadRequest, "cannot find the case for this application.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The case cannot be found for this application.");
 
             //dynamics will put the pre-popluated template file in S3 and add record in documentUrl. so, download file from there.
             DocumentQry qry = new()

@@ -43,7 +43,7 @@ namespace Spd.Manager.Screening
             //check if email already exists for the user
             if (existingUsersResult.UserResults.Any(u => u.Email != null && u.Email.Equals(request.OrgUserCreateRequest.Email, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserCreateRequest.Email} has been used by another user");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"This email '{request.OrgUserCreateRequest.Email}' has been used by another user.");
             }
 
             //check if role is withing the maxium number scope
@@ -69,13 +69,13 @@ namespace Spd.Manager.Screening
                 u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
-                throw new DuplicateException(HttpStatusCode.BadRequest, $"User email {request.OrgUserUpdateRequest.Email} has been used by another user");
+                throw new DuplicateException(HttpStatusCode.BadRequest, $"This email '{request.OrgUserUpdateRequest.Email}' has been used by another user.");
             }
 
             //check max role number rule
             var existingUser = existingUsersResult.UserResults.FirstOrDefault(u => u.Id == request.OrgUserUpdateRequest.Id);
             if (existingUser == null)
-                throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user");
+                throw new NotFoundException(HttpStatusCode.BadRequest, $"The user cannot be found.");
 
             _mapper.Map(request.OrgUserUpdateRequest, existingUser);
             await CheckMaxRoleNumberRuleAsync(
@@ -182,11 +182,11 @@ namespace Spd.Manager.Screening
             OrgUsersResult orgUser = (OrgUsersResult)await _orgUserRepository.QueryOrgUserAsync(new OrgUsersSearch(request.OrganizationId, null), ct);
             if (orgUser != null && orgUser.UserResults.Any(u => u.UserGuid == request.IdentityInfo.UserGuid))
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "You are already a user of the organization.");
+                throw new ApiException(HttpStatusCode.BadRequest, "You are already a registered user of this organization.");
             }
             if (orgUser != null && orgUser.UserResults.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary) >= 2)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, "The maximum number of primary contacts has already been reached. We cannnot add another one.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The maximum number of primary contacts has already been reached. We cannot add another contact.");
             }
 
             User user = _mapper.Map<User>(request.IdentityInfo);
@@ -212,7 +212,7 @@ namespace Spd.Manager.Screening
             }
             if (primaryUserNo < 1)
             {
-                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There must be at least one primary user");
+                throw new OutOfRangeException(HttpStatusCode.BadRequest, "There must be at least one primary user.");
             }
         }
     }
