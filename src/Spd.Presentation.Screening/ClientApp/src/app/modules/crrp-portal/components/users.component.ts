@@ -228,6 +228,7 @@ export class UsersComponent implements OnInit {
 		const dialogOptions: UserDialogData = {
 			user: newUser,
 			isAllowedPrimary: this.isAllowedAddPrimary,
+			emails: this.dataSource.data.map((item: OrgUserResponse) => item.email!),
 		};
 		this.userDialog(dialogOptions, true);
 	}
@@ -240,6 +241,9 @@ export class UsersComponent implements OnInit {
 		const dialogOptions: UserDialogData = {
 			user,
 			isAllowedPrimary,
+			emails: this.dataSource.data
+				.filter((item: OrgUserResponse) => item.id != user.id)
+				.map((item: OrgUserResponse) => item.email!),
 		};
 		this.userDialog(dialogOptions, false);
 	}
