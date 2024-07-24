@@ -169,7 +169,7 @@ namespace Spd.Resource.Repository.User
             UserResult userResult = _mapper.Map<UserResult>(user);
             userResult.OrganizationId = createUserCmd.User.OrganizationId;
             userResult.ContactAuthorizationTypeCode = createUserCmd.User.ContactAuthorizationTypeCode;
-            return new OrgUserManageResult(_mapper.Map<UserResult>(user));
+            return new OrgUserManageResult(userResult);
         }
 
         private async Task<OrgUserManageResult> UpdateUserAsync(UserUpdateCmd updateUserCmd, CancellationToken cancellationToken)
@@ -182,7 +182,7 @@ namespace Spd.Resource.Repository.User
             spd_portaluser? user = users.Any() ? users[0] : null;
             if (user == null)
             {
-                throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the updating user with userId = {updateUserCmd.Id}");
+                throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the user with userId = {updateUserCmd.Id}");
             }
             if (updateUserCmd.OnlyChangePhoneJob)
             {
@@ -289,12 +289,12 @@ namespace Spd.Resource.Repository.User
                     .FirstOrDefaultAsync(ct);
 
                 if (user?.statecode == DynamicsConstants.StateCode_Inactive)
-                    throw new InactiveException(HttpStatusCode.BadRequest, $"User {userId} is inactive");
+                    throw new InactiveException(HttpStatusCode.BadRequest, $"User '{userId}' is inactive.");
 
                 if (user != null)
                     return user;
                 else
-                    throw new NotFoundException(HttpStatusCode.BadRequest, $"Cannot find the user with userId {userId}");
+                    throw new NotFoundException(HttpStatusCode.BadRequest, $"The user with userId '{userId}' cannot be found.");
             }
             catch (DataServiceQueryException ex)
             {

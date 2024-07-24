@@ -51,7 +51,7 @@ internal class PaymentRepository : IPaymentRepository
             throw new ArgumentException("invalid application id");
         spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
         if (payment != null)
-            throw new ApiException(HttpStatusCode.BadRequest, "the payment result has been updated.");
+            throw new ApiException(HttpStatusCode.BadRequest, "The payment result has been updated.");
 
         payment = _mapper.Map<spd_payment>(cmd);
         _context.AddTospd_payments(payment);
@@ -63,7 +63,7 @@ internal class PaymentRepository : IPaymentRepository
     private async Task<Guid> PaymentUpdateAsync(UpdatePaymentCmd cmd, CancellationToken ct)
     {
         spd_payment? payment = await _context.GetPaymentById(cmd.PaymentId, ct);
-        if (payment == null) throw new ApiException(HttpStatusCode.BadRequest, "payment does not exist.");
+        if (payment == null) throw new ApiException(HttpStatusCode.BadRequest, "The payment does not exist.");
         payment = _mapper.Map(cmd, payment);
         if (cmd.PaymentStatus != null)
         {

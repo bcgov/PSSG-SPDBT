@@ -255,7 +255,7 @@ namespace Spd.Manager.Screening
             }
             else
             {
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "no email from idir.");
+                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The IDIR does not contain an email.");
             }
         }
 
