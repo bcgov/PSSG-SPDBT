@@ -72,7 +72,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 				<app-step-permit-reprint [applicationTypeCode]="applicationTypeCode"></app-step-permit-reprint>
 
 				<app-wizard-footer
-					(previousStepperStep)="onStepUpdatePrevious(STEP_REPRINT)"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_REPRINT)"
 				></app-wizard-footer>
 			</mat-step>

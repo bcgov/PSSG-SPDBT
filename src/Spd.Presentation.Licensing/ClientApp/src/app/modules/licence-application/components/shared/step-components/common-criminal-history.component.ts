@@ -31,7 +31,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 
 			<div class="row mt-4" *ngIf="isYesAndUpdate" @showHideTriggerSlideAnimation>
-				<div class="offset-md-2 col-md-8 col-sm-12">
+				<div [ngClass]="isCalledFromStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 					<div class="text-minor-heading mb-2">Brief Description of New Charges or Convictions</div>
