@@ -1221,7 +1221,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
 			hasGenderChanged: false,
-			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged === true ? true : false,
+			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged ?? false,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,

@@ -721,7 +721,7 @@ export class CommonApplicationService {
 	}
 
 	private getLicence(resp: any, bizTypeCode: BizTypeCode, matchingLicence: LicenceBasicResponse): MainLicenceResponse {
-		const licence = resp;
+		const licence = resp as MainLicenceResponse;
 
 		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
 		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
@@ -742,7 +742,7 @@ export class CommonApplicationService {
 			licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
 			licence.licenceId = matchingLicence.licenceId;
 			licence.licenceNumber = matchingLicence.licenceNumber;
-			licence.hasBcscNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
+			licence.hasLoginNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
 
 			if (licence.licenceExpiryNumberOfDays >= 0) {
 				if (
