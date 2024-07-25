@@ -7,6 +7,7 @@ public interface IBizPortalUserManager
     public Task<BizPortalUserResponse> Handle(BizPortalUserCreateCommand request, CancellationToken ct);
     public Task<BizPortalUserResponse> Handle(BizPortalUserUpdateCommand request, CancellationToken ct);
     public Task<BizPortalUserListResponse> Handle(BizPortalUserListQuery request, CancellationToken ct);
+    public Task<BizPortalUserResponse> Handle(BizPortalUserQuery request, CancellationToken ct);
 }
 
 public record BizPortalUserCreateCommand(BizPortalUserCreateRequest BizPortalUserCreateRequest, string HostUrl, Guid? CreatedByUserId) : IRequest<BizPortalUserResponse>;
@@ -14,13 +15,13 @@ public record BizPortalUserUpdateCommand(Guid UserId, BizPortalUserUpdateRequest
 
 public record BizPortalUserCreateRequest : BizPortalUserUpsertRequest { }
 
-public record BizPortalUserUpdateRequest : BizPortalUserUpsertRequest 
+public record BizPortalUserUpdateRequest : BizPortalUserUpsertRequest
 {
     public Guid Id { get; set; }
 }
 
 public record BizPortalUserListQuery(Guid BizId, bool OnlyReturnActiveUsers = false) : IRequest<BizPortalUserListResponse>;
-
+public record BizPortalUserQuery(Guid BizId, Guid? UserGuid, Guid? UserId) : IRequest<BizPortalUserResponse>;
 public abstract record BizPortalUserUpsertRequest
 {
     public Guid BizId { get; set; }

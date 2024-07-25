@@ -1,10 +1,10 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Manager.Licence;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
+using System.Net;
 using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing
@@ -40,16 +40,15 @@ namespace Spd.Presentation.Licensing
             if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
             {
                 //bceid user
-
-                //todo: do not know what biz user would be like yet.
                 //var userIdInfo = context.User.GetBceidUserIdentityInfo();
-                ////validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-                //OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}");
-                //if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
-                //{
-                //    userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                //    await cache.Set<OrgUserProfileResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
-                //}
+                if (context.Request.Headers.TryGetValue("business", out var bizIdStr))
+                {
+                    bool isSuccess = await ProcessBceidUser(bizIdStr, context, mediator);
+                    if (isSuccess)
+                    {
+                        await next(context);
+                    }
+                }
 
                 //if (userProfile != null)
                 {
@@ -65,6 +64,35 @@ namespace Spd.Presentation.Licensing
             {
                 await next(context);
             }
+        }
+
+        private async Task<bool> ProcessBceidUser(string bizIdStr, HttpContext context, IMediator mediator)
+        {
+            if (!Guid.TryParse(bizIdStr, out Guid bizId))
+            {
+                await ReturnUnauthorized(context, "business is not a valid guid");
+                return false;
+            }
+
+            var userIdInfo = context.User.GetBceidUserIdentityInfo();
+            //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
+            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}");
+            if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
+            {
+                userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
+                await cache.Set($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
+            }
+
+            //add ui to claims
+            context.User.UpdateUserClaims(ui.UserId.ToString(), orgId.ToString(), ui.ContactAuthorizationTypeCode.ToString());
+            return true;
+        }
+
+        private async Task ReturnUnauthorized(HttpContext context, string msg)
+        {
+            context.Response.Clear();
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            await context.Response.WriteAsync(msg);
         }
     }
 }

@@ -9,10 +9,11 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Manager.Licence;
-internal class BizPortalUserManager : 
+internal class BizPortalUserManager :
     IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
+    IRequestHandler<BizPortalUserQuery, BizPortalUserResponse>,
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
@@ -29,11 +30,11 @@ internal class BizPortalUserManager :
     public async Task<BizPortalUserResponse> Handle(BizPortalUserCreateCommand request, CancellationToken ct)
     {
         PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
-            new PortalUserQry() 
-            { 
-                OrgId = request.BizPortalUserCreateRequest.BizId, 
+            new PortalUserQry()
+            {
+                OrgId = request.BizPortalUserCreateRequest.BizId,
                 ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
-                PortalUserServiceCategory =  PortalUserServiceCategoryEnum.Licensing
+                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
             },
             ct);
 
@@ -109,5 +110,19 @@ internal class BizPortalUserManager :
             MaximumNumberOfPrimaryAuthorizedContacts = biz != null ? biz.MaxPrimaryContacts : 0,
             Users = userResps
         };
+    }
+
+    public async Task<BizPortalUserResponse> Handle(BizPortalUserQuery query, CancellationToken ct)
+    {
+        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+            new PortalUserQry()
+            {
+                OrgId = query.BizId,
+                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+            },
+            ct);
+
+        var userResps = _mapper.Map<IEnumerable<BizPortalUserResponse>>(existingUsersResult.Items);
+
     }
 }
