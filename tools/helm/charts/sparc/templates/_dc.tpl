@@ -45,6 +45,13 @@ spec:
       {{- end -}}
       {{- end }}
     spec:
+      hostAliases:
+        - ip: "142.34.159.58"
+          hostnames:
+          - "ststest.gov.bc.ca"
+        - ip: "142.34.159.59"
+          hostnames:
+          - "sts.gov.bc.ca"
       containers:
         - name: {{ .name }}
           image: {{ .Values.image.name }}:{{ .Values.image.tag }}
