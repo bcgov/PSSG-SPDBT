@@ -37,9 +37,9 @@ public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppU
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard))
             .WithMessage("Missing armoured car guard registrar document.");
         RuleFor(r => r.DocumentInfos)
-            .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) == 1)
+            .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) <= 10)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ArmourCarGuardRegistrar) > 0)
-            .WithMessage("No more than 1 armoured car guard registrar document is allowed.");
+            .WithMessage("No more than 10 armoured car guard registrar document is allowed.");
 
         // Document required for "Security guard"
         RuleFor(r => r.DocumentInfos)
