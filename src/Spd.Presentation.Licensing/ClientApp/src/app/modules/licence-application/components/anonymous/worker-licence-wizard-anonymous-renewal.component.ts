@@ -158,8 +158,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
 
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
-
 				this.updateCompleteStatus();
 			}
 		);

@@ -124,7 +124,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
-	showSaveAndExit = false;
+	showSaveAndExit = true;
 	showEmployerInformation = false;
 
 	private permitModelChangedSubscription!: Subscription;
@@ -169,8 +169,6 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 				}
-
-				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
 
 				this.updateCompleteStatus();
 			}

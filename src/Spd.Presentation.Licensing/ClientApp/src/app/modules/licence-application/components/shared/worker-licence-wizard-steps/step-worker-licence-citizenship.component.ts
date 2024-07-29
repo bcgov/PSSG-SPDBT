@@ -251,24 +251,26 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	onFileUploaded(file: File): void {
 		this.licenceApplicationService.hasValueChanged = true;
 
-		if (this.licenceApplicationService.isAutoSave()) {
-			const proofTypeCode =
-				this.isCanadianCitizen.value == BooleanTypeCode.Yes
-					? this.canadianCitizenProofTypeCode.value
-					: this.notCanadianCitizenProofTypeCode.value;
-
-			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+		if (!this.licenceApplicationService.isAutoSave()) {
+			return;
 		}
+
+		const proofTypeCode =
+			this.isCanadianCitizen.value == BooleanTypeCode.Yes
+				? this.canadianCitizenProofTypeCode.value
+				: this.notCanadianCitizenProofTypeCode.value;
+
+		this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				this.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {
@@ -278,21 +280,23 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	onGovernmentIssuedFileUploaded(file: File): void {
 		this.licenceApplicationService.hasValueChanged = true;
 
-		if (this.licenceApplicationService.isAutoSave()) {
-			const proofTypeCode = this.governmentIssuedPhotoTypeCode.value;
-
-			this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.governmentIssuedAttachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+		if (!this.licenceApplicationService.isAutoSave()) {
+			return;
 		}
+
+		const proofTypeCode = this.governmentIssuedPhotoTypeCode.value;
+
+		this.licenceApplicationService.addUploadDocument(proofTypeCode, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.governmentIssuedAttachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				this.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onGovernmentIssuedFileRemoved(): void {

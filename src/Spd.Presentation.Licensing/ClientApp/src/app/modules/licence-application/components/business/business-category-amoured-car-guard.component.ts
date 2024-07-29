@@ -73,21 +73,22 @@ export class BusinessCategoryAmouredCarGuardComponent implements OnInit, Licence
 
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService
-				.addUploadDocument(LicenceDocumentTypeCode.ArmourCarGuardRegistrar, file)
-				.subscribe({
-					next: (resp: any) => {
-						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-						matchingFile.documentUrlId = resp.body[0].documentUrlId;
-					},
-					error: (error: any) => {
-						console.log('An error occurred during file upload', error);
-						this.hotToastService.error('An error occurred during the file upload. Please try again.');
-						this.fileUploadComponent.removeFailedFile(file);
-					},
-				});
+
+		if (!this.businessApplicationService.isAutoSave()) {
+			return;
 		}
+
+		this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.ArmourCarGuardRegistrar, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				this.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {

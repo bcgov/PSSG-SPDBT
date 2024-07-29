@@ -164,8 +164,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 				}
 
-				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
-
 				this.updateCompleteStatus();
 			}
 		);

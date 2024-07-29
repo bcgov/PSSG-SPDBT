@@ -126,7 +126,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	step4Complete = false;
 
 	isFormValid = false;
-	showSaveAndExit = false;
+	showSaveAndExit = true;
 	nonSwlControllingMembersExist = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
@@ -185,8 +185,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 				this.nonSwlControllingMembersExist = membersWithoutSwl?.length > 0;
 
 				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
 
 				this.updateCompleteStatus();
 			}

@@ -108,19 +108,21 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 	onFileUploaded(file: File): void {
 		this.permitApplicationService.hasValueChanged = true;
 
-		if (this.permitApplicationService.isAutoSave()) {
-			this.permitApplicationService.addUploadDocument(this.documentType, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+		if (!this.permitApplicationService.isAutoSave()) {
+			return;
 		}
+
+		this.permitApplicationService.addUploadDocument(this.documentType, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+				this.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {

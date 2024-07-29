@@ -189,8 +189,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 				this.showPhotographOfYourself = this.hasGenderChanged;
 
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
-
 				this.updateCompleteStatus();
 			}
 		);
