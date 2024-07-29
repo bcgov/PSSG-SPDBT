@@ -13,6 +13,9 @@ internal class BizPortalUserManager :
     IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
+    IRequestHandler<BizPortalUserUpdateLoginCommand, Unit>,
+    IRequestHandler<BizPortalUserDeleteCommand, Unit>,
+
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
@@ -28,7 +31,7 @@ internal class BizPortalUserManager :
 
     public async Task<BizPortalUserResponse> Handle(BizPortalUserCreateCommand request, CancellationToken ct)
     {
-        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+        PortalUserListResp existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry() 
             { 
                 OrgId = request.BizPortalUserCreateRequest.BizId, 
@@ -58,7 +61,7 @@ internal class BizPortalUserManager :
 
     public async Task<BizPortalUserResponse> Handle(BizPortalUserUpdateCommand request, CancellationToken ct)
     {
-        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+        PortalUserListResp existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
             new PortalUserQry()
             {
                 OrgId = request.BizPortalUserUpdateRequest.BizId,
@@ -87,10 +90,17 @@ internal class BizPortalUserManager :
 
         return _mapper.Map<BizPortalUserResponse>(response);
     }
+    public async Task<BizPortalUserResponse> Handle(BizPortalUserGetQuery request, CancellationToken ct)
+    {
+        var response = (PortalUserResp) await _portalUserRepository.QueryAsync(
+                new PortalUserByIdQry(request.UserId),
+                ct);
+        return _mapper.Map<BizPortalUserResponse>(response);
+    }
 
     public async Task<BizPortalUserListResponse> Handle(BizPortalUserListQuery query, CancellationToken ct)
     {
-        PortalUserListResp existingUsersResult = await _portalUserRepository.QueryAsync(
+        PortalUserListResp existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
             new PortalUserQry()
             {
                 OrgId = query.BizId,
@@ -109,5 +119,38 @@ internal class BizPortalUserManager :
             MaximumNumberOfPrimaryAuthorizedContacts = biz != null ? biz.MaxPrimaryContacts : 0,
             Users = userResps
         };
+    }
+
+    public async Task<Unit> Handle(BizPortalUserUpdateLoginCommand cmd, CancellationToken ct)
+    {
+        await _portalUserRepository.ManageAsync(
+               new PortalUserUpdateLoginCmd(cmd.UserId),
+               ct);
+        return default;
+    }
+
+    public async Task<Unit> Handle(BizPortalUserDeleteCommand request, CancellationToken cancellationToken)
+    {
+        //check role max number rule
+        
+        //TODO: ask if OrgId should = BizId
+        var existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+            new PortalUserQry() { OrgId = request.BizId},
+            cancellationToken);
+        var toDeleteUser = existingUsersResult.Items.FirstOrDefault(u => u.Id == request.UserId);
+        var newUsers = existingUsersResult.Items.ToList();
+        if (toDeleteUser == null) return default;
+        newUsers.Remove(toDeleteUser);
+        var biz = (BizResult) await _bizRepository.QueryBizAsync(new BizsQry(request.BizId), cancellationToken);
+
+        //TODO: ask what is primaryUserNo and how to fill ContactRoleCode (or ContactAuthorizationTypeCode)
+        //int primaryUserNo = newUsers.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
+        int primaryUserNo = newUsers.Count(u => u.ContactRoleCode == ContactRoleCode.Primary);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, newUsers.Count);
+
+        await _portalUserRepository.ManageAsync(
+            new PortalUserDeleteCmd(request.UserId),
+            cancellationToken);
+        return default;
     }
 }
