@@ -52,6 +52,7 @@ import {
 
 					<app-main-applications
 						[applicationsDataSource]="applicationsDataSource"
+						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
 					></app-main-applications>
 
