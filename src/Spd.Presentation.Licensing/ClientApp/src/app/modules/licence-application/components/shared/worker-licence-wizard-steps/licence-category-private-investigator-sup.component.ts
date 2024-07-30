@@ -4,7 +4,6 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import { PrivateInvestigatorSupRequirementCode } from 'src/app/core/code-types/model-desc.models';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
@@ -117,11 +116,7 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(
@@ -133,19 +128,21 @@ export class LicenceCategoryPrivateInvestigatorSupComponent implements OnInit, L
 	onFileUploaded(file: File): void {
 		this.licenceApplicationService.hasValueChanged = true;
 
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+		if (!this.licenceApplicationService.isAutoSave()) {
+			return;
 		}
+
+		this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+
+				this.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {

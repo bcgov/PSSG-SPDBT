@@ -8,7 +8,6 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 import {
@@ -264,7 +263,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
@@ -355,21 +353,24 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService
-				.addUploadDocument(LicenceDocumentTypeCode.CorporateRegistryDocument, file)
-				.subscribe({
-					next: (resp: any) => {
-						const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-						matchingFile.documentUrlId = resp.body;
-					},
-					error: (error: any) => {
-						console.log('An error occurred during file upload', error);
-						this.hotToastService.error('An error occurred during the file upload. Please try again.');
-						this.fileUploadComponent.removeFailedFile(file);
-					},
-				});
+
+		if (!this.businessApplicationService.isAutoSave()) {
+			return;
 		}
+
+		this.businessApplicationService
+			.addUploadDocument(LicenceDocumentTypeCode.CorporateRegistryDocument, file)
+			.subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
 	}
 
 	onFileRemoved(): void {
