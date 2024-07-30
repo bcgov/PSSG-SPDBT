@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessCategoryTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -29,6 +31,14 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 								*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrue')"
 								>At least one option must be selected</mat-error
 							>
+
+							<div class="mt-2" *ngIf="showInsurance">
+								<app-alert type="warning" icon="warning">
+									Security businesses are required to carry and maintain general liability insurance in an amount not
+									less than $1,000,000. Please ensure you have the appropriate insurance. You may be asked to provide
+									proof of insurance by Security Services at any time while licensed.
+								</app-alert>
+							</div>
 
 							<div class="mt-2" *ngIf="showLocksmithMessage">
 								<app-alert type="info" icon="">
@@ -147,6 +157,28 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 									</div>
 								</ng-container>
 							</mat-accordion>
+
+							<div class="my-2" *ngIf="showInsurance" @showHideTriggerSlideAnimation>
+								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+
+								<div class="text-minor-heading mb-2">Upload proof of insurance</div>
+								<div>The insurance document must also include:</div>
+								<ul>
+									<li>The business name</li>
+									<li>The business locations</li>
+									<li>The expiry date of the insurance</li>
+									<li>Proof that insurance is valid in B.C.</li>
+								</ul>
+
+								<app-file-upload
+									(fileUploaded)="onFileUploaded($event)"
+									(fileRemoved)="onFileRemoved()"
+									[control]="attachments"
+									[maxNumberOfFiles]="10"
+									[files]="attachments.value"
+								></app-file-upload>
+								<mat-error class="mat-option-error" *ngIf="showInsuranceError">This is required</mat-error>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -169,6 +201,7 @@ import { LicenceChildStepperStepComponent } from '../../services/licence-applica
 			}
 		`,
 	],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categoryFormGroup;
@@ -182,6 +215,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	categoryPrivateInvestigatorFormGroup = this.businessApplicationService.categoryPrivateInvestigatorFormGroup;
 	categorySecurityGuardFormGroup = this.businessApplicationService.categorySecurityGuardFormGroup;
 
+	showInsurance = false;
+	showInsuranceError = false;
 	showLocksmithMessage = false;
 	showSecurityAlarmInstallerMessage = false;
 	showSecurityAlarmResponseMessage = false;
@@ -194,6 +229,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	blockArmouredCarGuard = false;
 	blockPrivateInvestigator = false;
 	blockSecurityGuard = false;
+
+	originalCategoryCodes: Array<any> = [];
 
 	title = 'Which categories of business licence are you applying for?';
 	infoTitle = '';
@@ -208,6 +245,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 
@@ -232,15 +271,19 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 		}
 
+		this.setupCategories();
+
 		if (this.isBusinessLicenceSoleProprietor) {
-			this.businessCategoryTypes = BusinessCategoryTypes.filter(
-				(item: SelectOptions) => item.code != WorkerCategoryTypeCode.PrivateInvestigator
-			);
+			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
+			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
+
+			this.soleProprietorCategoryChange();
 		} else {
+			const originalLicenceData = this.businessApplicationService.originalBusinessLicenceFormGroup.value;
+			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
+
 			this.businessCategoryTypes = BusinessCategoryTypes;
 		}
-
-		this.setupCategories();
 	}
 
 	setupCategories(): void {
@@ -304,7 +347,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			case WorkerCategoryTypeCode.SecurityGuard:
 				this.showSecurityGuardMessage = securityGuard;
 				if (securityGuard) {
-					this.showSecurityAlarmResponseMessage = false;
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
 				} else if (!preventDisable) {
@@ -317,7 +359,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			case WorkerCategoryTypeCode.SecurityAlarmInstaller:
 				this.showSecurityAlarmInstallerMessage = securityAlarmInstaller;
 				if (securityAlarmInstaller) {
-					this.showSecurityAlarmResponseMessage = false;
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmSales);
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
@@ -343,12 +384,21 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: privateInvestigator });
 				break;
 		}
+
+		if (securityGuard || securityAlarmInstaller) {
+			this.showSecurityAlarmResponseMessage = false;
+		}
+
+		this.soleProprietorCategoryChange();
+
+		this.checkInsuranceRequirements();
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 
 		const valid1 = this.form.valid;
+
 		let valid2 = true;
 		if (this.ArmouredCarGuard.value) {
 			this.categoryArmouredCarGuardFormGroup.markAllAsTouched();
@@ -365,9 +415,78 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			valid4 = this.categorySecurityGuardFormGroup.valid;
 		}
 
-		console.debug('[StepBusinessLicenceCategoryComponent] isFormValid', valid1, valid2, valid3, valid4);
+		this.showInsuranceError = false;
+		if (this.showInsurance) {
+			const attachments = this.attachments.value ?? [];
+			this.showInsuranceError = attachments.length === 0;
+		}
 
-		return valid1 && valid2 && valid3 && valid4;
+		console.debug(
+			'[StepBusinessLicenceCategoryComponent] isFormValid',
+			valid1,
+			valid2,
+			valid3,
+			valid4,
+			!this.showInsuranceError
+		);
+
+		return valid1 && valid2 && valid3 && valid4 && !this.showInsuranceError;
+	}
+
+	isSelected(option: string): boolean {
+		const item = this.form.get(option) as FormControl;
+		return item.value;
+	}
+
+	onFileUploaded(file: File): void {
+		this.businessApplicationService.hasValueChanged = true;
+
+		if (!this.businessApplicationService.isAutoSave()) {
+			return;
+		}
+
+		this.businessApplicationService
+			.addUploadDocument(LicenceDocumentTypeCode.BizInsurance, file) // TODO is this the correct type?
+			.subscribe({
+				next: (resp: any) => {
+					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
+				},
+				error: (error: any) => {
+					console.log('An error occurred during file upload', error);
+					this.fileUploadComponent.removeFailedFile(file);
+				},
+			});
+	}
+
+	onFileRemoved(): void {
+		this.businessApplicationService.hasValueChanged = true;
+	}
+
+	private soleProprietorCategoryChange(): void {
+		if (!this.isBusinessLicenceSoleProprietor) {
+			return;
+		}
+
+		// Need to display all types that are selected and those in the original set of category codes.
+		this.businessCategoryTypes = BusinessCategoryTypes.filter((item: SelectOptions) => {
+			const itemControl = this.form.get(item.code) as FormControl;
+			return itemControl.value || this.originalCategoryCodes.includes(item.code);
+		});
+	}
+
+	private checkInsuranceRequirements(): void {
+		// Only check during Update flow
+		if (this.applicationTypeCode != ApplicationTypeCode.Update) {
+			return;
+		}
+
+		const hasAdditions = BusinessCategoryTypes.filter((item: SelectOptions) => {
+			const itemControl = this.form.get(item.code) as FormControl;
+			return itemControl.value && !this.originalCategoryCodes.includes(item.code);
+		});
+
+		this.showInsurance = hasAdditions.length > 0;
 	}
 
 	private setAndDisable(itemType: WorkerCategoryTypeCode): void {
@@ -417,5 +536,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	}
 	get SecurityConsultant(): FormControl {
 		return this.form.get(WorkerCategoryTypeCode.SecurityConsultant) as FormControl;
+	}
+	get attachments(): FormControl {
+		return this.form.get('attachments') as FormControl;
 	}
 }
