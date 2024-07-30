@@ -30,7 +30,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
-		originalCategories: new FormControl(null),
+		originalCategoryCodes: new FormControl(null),
 	});
 
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
@@ -58,6 +58,8 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			soleProprietorSwlPhoneNumber: new FormControl(''),
 			isTradeNameTheSameAsLegal: new FormControl(''),
 			soleProprietorLicenceId: new FormControl(''),
+			soleProprietorLicenceAppId: new FormControl(''),
+			soleProprietorCategoryCodes: new FormControl(''),
 			soleProprietorLicenceHolderName: new FormControl(''),
 			soleProprietorLicenceNumber: new FormControl(''),
 			soleProprietorLicenceExpiryDate: new FormControl(''),
@@ -114,6 +116,7 @@ export abstract class BusinessApplicationHelper extends CommonApplicationHelper 
 			SecurityAlarmResponse: new FormControl(false),
 			SecurityAlarmSales: new FormControl(false),
 			SecurityConsultant: new FormControl(false),
+			attachments: new FormControl([]),
 		},
 		{ validators: [FormGroupValidators.atLeastOneTrueValidator()] }
 	);

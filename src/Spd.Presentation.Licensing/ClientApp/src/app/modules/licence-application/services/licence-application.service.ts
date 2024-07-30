@@ -63,9 +63,6 @@ export class LicenceDocumentsToSave {
 	providedIn: 'root',
 })
 export class LicenceApplicationService extends LicenceApplicationHelper {
-	initialized = false;
-	hasValueChanged = false;
-
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	photographOfYourself: string | null = null;
@@ -146,8 +143,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
-					this.hasValueChanged = true;
-
 					const step1Complete = this.isStepLicenceSelectionComplete();
 					const step2Complete = this.isStepBackgroundComplete();
 					const step3Complete = this.isStepIdentificationComplete();
@@ -161,6 +156,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 						this.licenceModelFormGroup.getRawValue()
 					);
 
+					this.updateModelChangeFlags();
+
 					this.licenceModelValueChanges$.next(isValid);
 				}
 			});
@@ -171,8 +168,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	reset(): void {
-		this.initialized = false;
-		this.hasValueChanged = false;
+		this.resetModelFlags();
 		this.photographOfYourself = null;
 
 		this.resetCommon();
@@ -239,7 +235,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				fileUploadComponent.removeFailedFile(document);
 			},
 		});
@@ -1493,6 +1489,11 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			governmentIssuedAttachments: [],
 		};
 
+		citizenshipData.isCanadianCitizen =
+			workerLicenceAppl.isCanadianCitizen === null
+				? null
+				: this.utilService.booleanToBooleanType(workerLicenceAppl.isCanadianCitizen);
+
 		const photographOfYourselfAttachments: Array<File> = [];
 		let photographOfYourselfLastUploadedDateTime = '';
 
@@ -1546,9 +1547,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					citizenshipDataAttachments.push(aFile);
 
-					citizenshipData.isCanadianCitizen = this.utilService.booleanToBooleanType(
-						workerLicenceAppl.isCanadianCitizen
-					);
 					citizenshipData.canadianCitizenProofTypeCode = workerLicenceAppl.isCanadianCitizen
 						? doc.licenceDocumentTypeCode
 						: null;

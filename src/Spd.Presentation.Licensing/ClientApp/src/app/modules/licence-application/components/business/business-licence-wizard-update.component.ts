@@ -139,7 +139,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 				let isUpdateFlowWithHideReprintStep = false;
 				if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 					const originalCategoriesList = this.businessApplicationService.businessModelFormGroup.get(
-						'originalLicenceData.originalCategories'
+						'originalLicenceData.originalCategoryCodes'
 					)?.value;
 					const currentCategoriesData =
 						this.businessApplicationService.businessModelFormGroup.get('categoryData')?.value;
