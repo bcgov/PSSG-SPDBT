@@ -2,7 +2,6 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -60,10 +59,7 @@ export class StepBusinessLicenceLiabilityComponent implements LicenceChildSteppe
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private hotToastService: HotToastService,
-		private businessApplicationService: BusinessApplicationService
-	) {}
+	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
@@ -79,7 +75,7 @@ export class StepBusinessLicenceLiabilityComponent implements LicenceChildSteppe
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.fileUploadComponent.removeFailedFile(file);
 			},
 		});

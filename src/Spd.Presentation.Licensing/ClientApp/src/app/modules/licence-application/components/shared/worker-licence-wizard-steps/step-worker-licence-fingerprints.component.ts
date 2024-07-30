@@ -4,7 +4,6 @@ import { LicenceDocumentTypeCode } from '@app/api/models';
 import { CommonFingerprintsComponent } from '@app/modules/licence-application/components/shared/step-components/common-fingerprints.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-step-worker-licence-fingerprints',
@@ -31,7 +30,7 @@ export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepp
 
 	@ViewChild(CommonFingerprintsComponent) commonFingerprintsComponent!: CommonFingerprintsComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.licenceApplicationService.hasValueChanged = true;
@@ -47,7 +46,7 @@ export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepp
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.commonFingerprintsComponent.fileUploadComponent.removeFailedFile(file);
 			},
 		});

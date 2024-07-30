@@ -5,7 +5,6 @@ import { UtilService } from '@app/core/services/util.service';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	BooleanTypeCode,
@@ -294,11 +293,7 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private permitApplicationService: PermitApplicationService,
-		private utilService: UtilService,
-		private hotToastService: HotToastService
-	) {}
+	constructor(private permitApplicationService: PermitApplicationService, private utilService: UtilService) {}
 
 	ngOnInit(): void {
 		this.title = 'Are you a Canadian citizen?';
@@ -332,7 +327,7 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.fileUploadComponent.removeFailedFile(file);
 			},
 		});
@@ -358,7 +353,7 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.fileUploadComponent.removeFailedFile(file);
 			},
 		});

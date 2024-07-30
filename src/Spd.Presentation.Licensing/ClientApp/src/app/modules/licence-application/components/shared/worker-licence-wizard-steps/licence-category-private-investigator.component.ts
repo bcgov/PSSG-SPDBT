@@ -4,7 +4,6 @@ import { WorkerCategoryTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngneat/hot-toast';
 import { showHideTriggerSlideAnimation } from 'src/app/core/animations';
 import {
 	PrivateInvestigatorRequirementCode,
@@ -229,11 +228,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 	@ViewChild('trainingattachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
 
-	constructor(
-		private optionsPipe: OptionsPipe,
-		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
@@ -253,7 +248,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.fileUploadComponent.removeFailedFile(file);
 			},
 		});
@@ -273,7 +268,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.fileUploadTrainingComponent.removeFailedFile(file);
 			},
 		});

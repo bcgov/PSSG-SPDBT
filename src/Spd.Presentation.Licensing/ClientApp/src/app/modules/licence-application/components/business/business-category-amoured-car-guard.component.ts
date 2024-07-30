@@ -4,7 +4,6 @@ import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -61,11 +60,7 @@ export class BusinessCategoryAmouredCarGuardComponent implements OnInit, Licence
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private hotToastService: HotToastService,
-		private optionsPipe: OptionsPipe,
-		private businessApplicationService: BusinessApplicationService
-	) {}
+	constructor(private optionsPipe: OptionsPipe, private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
@@ -85,7 +80,7 @@ export class BusinessCategoryAmouredCarGuardComponent implements OnInit, Licence
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.fileUploadComponent.removeFailedFile(file);
 			},
 		});

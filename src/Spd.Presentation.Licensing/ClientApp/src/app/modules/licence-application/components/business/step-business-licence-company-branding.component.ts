@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessApplicationService } from '../../services/business-application.service';
 import { LicenceChildStepperStepComponent } from '../../services/licence-application.helper';
 
@@ -70,10 +69,7 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(
-		private hotToastService: HotToastService,
-		private businessApplicationService: BusinessApplicationService
-	) {}
+	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	ngOnInit(): void {
 		this.isRenewalOrUpdate = this.businessApplicationService.isRenewalOrUpdate(this.applicationTypeCode);
@@ -106,7 +102,6 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
 				this.fileUploadComponent.removeFailedFile(file);
 			},
 		});

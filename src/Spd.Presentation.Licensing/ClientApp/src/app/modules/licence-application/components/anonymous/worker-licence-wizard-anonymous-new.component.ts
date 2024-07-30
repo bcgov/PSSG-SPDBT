@@ -239,7 +239,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);
-					this.hotToastService.error('An error occurred during the save. Please try again.');
 				},
 			});
 		}

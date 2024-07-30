@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { CommonPhotographOfYourselfComponent } from '../../shared/step-components/common-photograph-of-yourself.component';
 
 @Component({
@@ -30,7 +29,7 @@ export class StepPermitPhotographOfYourselfNewComponent implements LicenceChildS
 	@ViewChild(CommonPhotographOfYourselfComponent)
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService, private hotToastService: HotToastService) {}
+	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.permitApplicationService.hasValueChanged = true;
@@ -46,7 +45,7 @@ export class StepPermitPhotographOfYourselfNewComponent implements LicenceChildS
 			},
 			error: (error: any) => {
 				console.log('An error occurred during file upload', error);
-				this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 				this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
 			},
 		});
