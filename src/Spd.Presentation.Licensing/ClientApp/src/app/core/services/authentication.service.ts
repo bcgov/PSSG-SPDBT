@@ -26,12 +26,14 @@ export class AuthenticationService {
 		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
 
 		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
+
+		console.debug('[AuthenticationService] LOGIN returnComponentRoute', returnComponentRoute);
+		console.debug('[AuthenticationService] LOGIN returnRoute', returnRoute);
 
 		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
 			state: returnRoute,
 		});
-		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
+		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, 'oauthService.state', this.oauthService.state);
 
 		if (isLoggedIn) {
 			return Promise.resolve(this.oauthService.state || returnRoute || null);

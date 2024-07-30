@@ -11,16 +11,25 @@ import { AlertComponent } from './components/alert.component';
 import { BaseFilterComponent } from './components/base-filter.component';
 import { BizSelectionModalComponent } from './components/biz-selection-modal.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
-import { CommonPaymentCancelComponent } from './components/common-payment-cancel.component';
-import { CommonPaymentErrorComponent } from './components/common-payment-error.component';
-import { CommonPaymentFailComponent } from './components/common-payment-fail.component';
-import { CommonPaymentSuccessComponent } from './components/common-payment-success.component';
+import { CollectionNoticeComponent } from './components/collection-notice.component';
+import { AddressAndIsSameFlagComponent } from './components/address-and-is-same-flag.component';
+import { AddressComponent } from './components/address.component';
+import { ExpiredLicenceComponent } from './components/expired-licence.component';
+import { PaymentCancelComponent } from './components/payment-cancel.component';
+import { PaymentErrorComponent } from './components/payment-error.component';
+import { PaymentFailComponent } from './components/payment-fail.component';
+import { PaymentSuccessComponent } from './components/payment-success.component';
+import { LicenceReprintComponent } from './components/licence-reprint.component';
+import { AlertUpdateOrRenewalComponent } from './components/alert-update-or-renewal.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
 import { FileUploadComponent } from './components/file-upload.component';
+import { ApplicationsListCurrentComponent } from './components/applications-list-current.component';
+import { LicenceListExpiredComponent } from './components/licence-list-expired.component';
 import { ModalAddressComponent } from './components/modal-address.component';
 import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint-tear-off.component';
+import { ModalLookupByLicenceNumberComponent } from './components/modal-lookup-by-licence-number.component';
 import { SpdFooterComponent } from './components/spd-footer.component';
 import { SpdHeaderComponent } from './components/spd-header.component';
 import { StepTitleComponent } from './components/step-title.component';
@@ -55,15 +64,24 @@ const SHARED_COMPONENTS = [
 	FileUploadComponent,
 	AccessDeniedComponent,
 	AlertComponent,
-	CommonPaymentCancelComponent,
-	CommonPaymentSuccessComponent,
-	CommonPaymentErrorComponent,
-	CommonPaymentFailComponent,
+	AddressComponent,
+	PaymentCancelComponent,
+	PaymentSuccessComponent,
+	PaymentErrorComponent,
+	PaymentFailComponent,
 	BaseFilterComponent,
 	ModalFingerprintTearOffComponent,
 	WizardFooterComponent,
 	WizardOutsideFooterComponent,
 	PhoneNumberTransformDirective,
+	CollectionNoticeComponent,
+	ModalLookupByLicenceNumberComponent,
+	LicenceListExpiredComponent,
+	ApplicationsListCurrentComponent,
+	AlertUpdateOrRenewalComponent,
+	LicenceReprintComponent,
+	ExpiredLicenceComponent,
+	AddressAndIsSameFlagComponent,
 ];
 
 @NgModule({

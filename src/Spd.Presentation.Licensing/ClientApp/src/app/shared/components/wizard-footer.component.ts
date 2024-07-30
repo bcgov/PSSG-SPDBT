@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { CommonApplicationService } from '../services/common-application.service';
 
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 

@@ -4,8 +4,8 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
 import { Subscription } from 'rxjs';
+import { CommonApplicationService } from '../services/common-application.service';
 
 @Component({
 	selector: 'app-spd-header',

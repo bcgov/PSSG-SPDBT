@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { AppRoutes } from '@app/app-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { UtilService } from './util.service';
@@ -34,7 +36,7 @@ export class AuthProcessService {
 	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const returningRoute = LicenceApplicationRoutes.pathUserApplications();
+		const returningRoute = PersonalLicenceApplicationRoutes.pathUserApplications();
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
@@ -63,7 +65,9 @@ export class AuthProcessService {
 	): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const returningRoute = LicenceApplicationRoutes.pathBusinessApplications();
+		const returningRoute = BusinessLicenceApplicationRoutes.pathBusinessApplications();
+		console.debug('initializeLicencingBCeID returningRoute', returningRoute);
+		console.debug('initializeLicencingBCeID defaultRoute', defaultRoute);
 
 		const nextUrl = await this.authenticationService.login(this.identityProvider, defaultRoute ?? returningRoute);
 		console.debug('initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
@@ -95,7 +99,7 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
 	}
 

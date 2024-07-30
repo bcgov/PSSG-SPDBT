@@ -1,8 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { LicenceStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { CommonApplicationService } from '@app/shared/services/common-application.service';
 
 @Component({
 	selector: 'app-base-wizard-step',

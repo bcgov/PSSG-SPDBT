@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { CommonApplicationService } from '../services/common-application.service';
 
 @Component({
 	selector: 'app-spd-footer',

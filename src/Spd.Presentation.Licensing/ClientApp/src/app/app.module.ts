@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
+import { CommonApplicationService } from './shared/services/common-application.service';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -45,6 +46,7 @@ import { SharedModule } from './shared/shared.module';
 			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
 			deps: [PlatformLocation],
 		},
+		CommonApplicationService,
 	],
 	bootstrap: [AppComponent],
 })
