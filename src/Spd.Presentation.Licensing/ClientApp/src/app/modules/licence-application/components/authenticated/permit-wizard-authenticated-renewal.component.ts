@@ -164,8 +164,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 					this.showEmployerInformation = !!armouredVehicleRequirement.isMyEmployment;
 				}
 
-				this.showSaveAndExit = this.permitApplicationService.isAutoSave();
-
 				this.updateCompleteStatus();
 			}
 		);
@@ -223,7 +221,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
 	}

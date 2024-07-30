@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload.component';
 import { OptionsPipe } from 'src/app/shared/pipes/options.pipe';
@@ -85,7 +84,6 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	constructor(
 		private optionsPipe: OptionsPipe,
 		private authenticationService: AuthenticationService,
-		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}
 
@@ -106,7 +104,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 					},
 					error: (error: any) => {
 						console.log('An error occurred during file upload', error);
-						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 						this.fileUploadCertificateComponent.removeFailedFile(file);
 					},
 				});
@@ -126,7 +124,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 					},
 					error: (error: any) => {
 						console.log('An error occurred during file upload', error);
-						this.hotToastService.error('An error occurred during the file upload. Please try again.');
+
 						this.fileUploadVerificationComponent.removeFailedFile(file);
 					},
 				});

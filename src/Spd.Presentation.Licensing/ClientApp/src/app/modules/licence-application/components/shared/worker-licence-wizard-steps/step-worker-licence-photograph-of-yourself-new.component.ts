@@ -4,7 +4,6 @@ import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { CommonPhotographOfYourselfComponent } from '@app/modules/licence-application/components/shared/step-components/common-photograph-of-yourself.component';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-new',
@@ -30,24 +29,26 @@ export class StepWorkerLicencePhotographOfYourselfNewComponent implements Licenc
 	@ViewChild(CommonPhotographOfYourselfComponent)
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private hotToastService: HotToastService) {}
+	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.licenceApplicationService.hasValueChanged = true;
 
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.hotToastService.error('An error occurred during the file upload. Please try again.');
-					this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+		if (!this.licenceApplicationService.isAutoSave()) {
+			return;
 		}
+
+		this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.PhotoOfYourself, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+
+				this.commonPhotographOfYourselfComponent.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {

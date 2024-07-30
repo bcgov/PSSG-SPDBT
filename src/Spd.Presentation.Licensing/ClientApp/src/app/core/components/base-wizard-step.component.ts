@@ -38,10 +38,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.nextStepperStep.emit(true);
 	}
 
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
+	onSaveAndExit(_formNumber: number): void {
 		this.saveAndExit.emit(true);
 	}
 
