@@ -8,6 +8,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
+import { BusinessApplicationService } from '../../services/business-application.service';
 import { CommonBusinessBcBranchesComponent } from './common-business-bc-branches.component';
 import {
 	LookupByLicenceNumberDialogData,
@@ -357,7 +358,11 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 
 	@ViewChild(CommonBusinessBcBranchesComponent) businessBcBranchesComponent!: CommonBusinessBcBranchesComponent;
 
-	constructor(private dialog: MatDialog, private hotToastService: HotToastService) {}
+	constructor(
+		private businessApplicationService: BusinessApplicationService,
+		private dialog: MatDialog,
+		private hotToastService: HotToastService
+	) {}
 
 	ngOnInit(): void {
 		// Biz type can only be changed from sole proprietor to non-sole proprietor
@@ -430,6 +435,7 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 					this.businessInformationFormGroup.patchValue(
 						{
 							soleProprietorLicenceId: resp.data.licenceId,
+							soleProprietorLicenceAppId: resp.data.licenceAppId,
 							soleProprietorLicenceHolderName: resp.data.licenceHolderName,
 							soleProprietorLicenceNumber: resp.data.licenceNumber,
 							soleProprietorLicenceExpiryDate: resp.data.expiryDate,
@@ -437,7 +443,12 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 						},
 						{ emitEvent: false }
 					);
-					this.hotToastService.success('A sole proprietor was successfully selected');
+
+					this.businessApplicationService
+						.applyBusinessLicenceSoleProprietorSwl(resp.data.licenceAppId)
+						.subscribe((_resp: any) => {
+							this.hotToastService.success('A sole proprietor was successfully selected');
+						});
 				}
 			});
 	}

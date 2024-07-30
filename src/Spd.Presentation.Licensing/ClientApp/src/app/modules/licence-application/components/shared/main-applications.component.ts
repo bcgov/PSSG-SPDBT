@@ -74,7 +74,8 @@ import { MainApplicationResponse } from '../../services/common-application.servi
 									color="primary"
 									class="large my-2"
 									(click)="onResume(application)"
-									*ngIf="isResumable(application)"
+									[disabled]="isDraftAndNotResumable(application)"
+									*ngIf="isDraft(application)"
 								>
 									<mat-icon>play_arrow</mat-icon>Resume
 								</button>
@@ -125,6 +126,7 @@ export class MainApplicationsComponent {
 	];
 
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
+	@Input() applicationIsInProgress!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
@@ -146,8 +148,16 @@ export class MainApplicationsComponent {
 		this.resumeApplication.emit(appl);
 	}
 
-	isResumable(appl: MainApplicationResponse): boolean {
+	isDraft(appl: MainApplicationResponse): boolean {
 		return (
+			appl.applicationTypeCode === ApplicationTypeCode.New &&
+			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+		);
+	}
+
+	isDraftAndNotResumable(appl: MainApplicationResponse): boolean {
+		return (
+			this.applicationIsInProgress &&
 			appl.applicationTypeCode === ApplicationTypeCode.New &&
 			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 		);

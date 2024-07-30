@@ -66,6 +66,7 @@ export class PermitDocumentsToSave {
 export class PermitApplicationService extends PermitApplicationHelper {
 	initialized = false;
 	hasValueChanged = false;
+	isLoading = true;
 
 	photographOfYourself: string | null = null;
 
@@ -129,8 +130,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
-					this.hasValueChanged = true;
-
 					const step1Complete = this.isStepPermitDetailsComplete();
 					const step2Complete = this.isStepPurposeAndRationaleComplete();
 					const step3Complete = this.isStepIdentificationComplete();
@@ -147,6 +146,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						this.permitModelFormGroup.getRawValue()
 					);
 
+					this.updateModelChangeFlags();
+
 					this.permitModelValueChanges$.next(isValid);
 				}
 			});
@@ -156,8 +157,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Reset the permit data
 	 */
 	reset(): void {
-		this.initialized = false;
-		this.hasValueChanged = false;
+		this.resetModelFlags();
 		this.photographOfYourself = null;
 
 		this.resetCommon();
@@ -172,6 +172,24 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 
 		console.debug('RESET', this.initialized, this.permitModelFormGroup.value);
+	}
+
+	updateModelChangeFlags(): void {
+		if (this.isLoading) {
+			this.isLoading = false;
+		} else {
+			this.hasValueChanged = true;
+		}
+	}
+
+	resetModelChangeFlags(): void {
+		this.hasValueChanged = false;
+	}
+
+	resetModelFlags(): void {
+		this.initialized = false;
+		this.isLoading = true;
+		this.hasValueChanged = false;
 	}
 
 	/**
@@ -349,7 +367,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.permitService.apiPermitApplicationsPost$Response({ body }).pipe(
 			take(1),
 			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
-				this.hasValueChanged = false;
+				this.resetModelChangeFlags();
 
 				let msg = 'Permit information has been saved';
 				if (isSaveAndExit) {
@@ -518,10 +536,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		// console.debug('[saveUserProfile] existingDocumentIds', existingDocumentIds);
 		// console.debug('[saveUserProfile] getProfileSaveBody', body);
 
-		return this.applicantProfileService.apiApplicantApplicantIdPut$Response({
-			applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
-			body,
-		});
+		return this.applicantProfileService
+			.apiApplicantApplicantIdPut$Response({
+				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
+				body,
+			})
+			.pipe(
+				tap((_resp: any) => {
+					this.resetModelChangeFlags();
+				})
+			);
 	}
 
 	/**

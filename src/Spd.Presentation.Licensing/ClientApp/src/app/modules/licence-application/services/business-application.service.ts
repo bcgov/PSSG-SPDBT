@@ -23,9 +23,16 @@ import {
 	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
+	WorkerLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { BizLicensingService, BizPortalUserService, BizProfileService, LicenceService } from '@app/api/services';
+import {
+	BizLicensingService,
+	BizPortalUserService,
+	BizProfileService,
+	LicenceService,
+	SecurityWorkerLicensingService,
+} from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
@@ -68,6 +75,7 @@ export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 export class BusinessApplicationService extends BusinessApplicationHelper {
 	initialized = false;
 	hasValueChanged = false;
+	isLoading = true;
 
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -119,6 +127,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		fileUtilService: FileUtilService,
 		private router: Router,
 		private licenceService: LicenceService,
+		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
@@ -132,8 +141,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
-					this.hasValueChanged = true;
-
 					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
 					const isAddressTheSame = this.businessModelFormGroup.get('businessAddressData.isAddressTheSame')?.value;
 					const province = isAddressTheSame
@@ -167,6 +174,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						this.businessModelFormGroup.getRawValue()
 					);
 
+					this.updateModelChangeFlags();
+
 					this.businessModelValueChanges$.next(isValid);
 				}
 			});
@@ -199,7 +208,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
 			take(1),
 			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hasValueChanged = false;
+				this.resetModelChangeFlags();
 
 				let msg = 'Business Licence information has been saved';
 				if (isSaveAndExit) {
@@ -224,7 +233,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
 	}
@@ -667,9 +675,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	reset(): void {
-		this.initialized = false;
-		this.hasValueChanged = false;
-
+		this.resetModelFlags();
 		this.resetCommon();
 
 		this.profileConfirmationFormGroup.reset();
@@ -699,6 +705,24 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		console.debug('RESET', this.initialized, this.businessModelFormGroup.value);
+	}
+
+	updateModelChangeFlags(): void {
+		if (this.isLoading) {
+			this.isLoading = false;
+		} else {
+			this.hasValueChanged = true;
+		}
+	}
+
+	resetModelChangeFlags(): void {
+		this.hasValueChanged = false;
+	}
+
+	resetModelFlags(): void {
+		this.initialized = false;
+		this.isLoading = true;
+		this.hasValueChanged = false;
 	}
 
 	/*************************************************************/
@@ -755,6 +779,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// Clear out any old data
 			this.businessInformationFormGroup.patchValue({
 				soleProprietorLicenceId: null,
+				soleProprietorLicenceAppId: null,
 				soleProprietorLicenceHolderName: null,
 				soleProprietorLicenceNumber: null,
 				soleProprietorLicenceExpiryDate: null,
@@ -776,10 +801,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorSwlPhoneNumber,
 		};
 
-		return this.bizProfileService.apiBizBizIdPut$Response({
-			bizId: modelFormValue.bizId,
-			body,
-		});
+		return this.bizProfileService
+			.apiBizBizIdPut$Response({
+				bizId: modelFormValue.bizId,
+				body,
+			})
+			.pipe(
+				tap((_resp: any) => {
+					this.resetModelChangeFlags();
+				})
+			);
 	}
 
 	/**
@@ -1193,7 +1224,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			originalExpiryDate: originalLicence?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: originalLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: originalLicence?.bizTypeCode ?? null,
-			originalCategories: businessLicenceAppl.categoryCodes ?? null,
+			originalCategoryCodes: businessLicenceAppl.categoryCodes ?? null,
 		};
 
 		const companyBrandingAttachments: Array<File> = [];
@@ -1264,10 +1295,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			categoryData[item] = false;
 		});
 
-		// mark the appropriate category types as true
-		businessLicenceAppl.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
-			categoryData[item as string] = true;
-		});
+		if (this.isSoleProprietor(businessLicenceAppl.bizTypeCode)) {
+			const businessInformation = this.businessInformationFormGroup.value;
+			businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
+				categoryData[item] = true;
+			});
+		} else {
+			// mark the appropriate category types as true
+			businessLicenceAppl.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
+				categoryData[item as string] = true;
+			});
+		}
 
 		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
 			categoryPrivateInvestigatorFormGroup = {
@@ -1341,12 +1379,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
-		const businessInformationData = {
+		const businessInformationData: any = {
 			bizTypeCode: businessProfile.bizTypeCode,
 			legalBusinessName: businessProfile.bizLegalName,
 			bizTradeName: businessProfile.bizTradeName,
 			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid
 			soleProprietorLicenceId: soleProprietorSwlLicence?.licenceId,
+			soleProprietorLicenceAppId: soleProprietorSwlLicence?.licenceAppId,
+			soleProprietorCategoryCodes: null,
 			soleProprietorLicenceHolderName: soleProprietorSwlLicence?.licenceHolderName,
 			soleProprietorLicenceNumber: soleProprietorSwlLicence?.licenceNumber,
 			soleProprietorLicenceExpiryDate: soleProprietorSwlLicence?.expiryDate,
@@ -1449,8 +1489,39 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
+		if (soleProprietorSwlLicence?.licenceAppId) {
+			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSwlLicence?.licenceAppId);
+		}
+
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
+	}
+
+	applyBusinessLicenceSoleProprietorSwl(licenceAppId: string): Observable<any> {
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
+			tap((resp: WorkerLicenceAppResponse) => {
+				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
+				businessInformationData.soleProprietorCategoryCodes = resp.categoryCodes;
+
+				const categoryData: any = {};
+				const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
+				workerCategoryTypeCodes.forEach((item: string) => {
+					categoryData[item] = false;
+				});
+
+				businessInformationData.soleProprietorCategoryCodes?.forEach((item: string) => {
+					categoryData[item] = true;
+				});
+
+				this.businessModelFormGroup.patchValue({
+					businessInformationData,
+					categoryData,
+				});
+			}),
+			switchMap((_resp: any) => {
+				return of(this.businessModelFormGroup.value);
+			})
+		);
 	}
 
 	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
