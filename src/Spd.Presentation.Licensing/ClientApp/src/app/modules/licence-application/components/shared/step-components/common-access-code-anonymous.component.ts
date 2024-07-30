@@ -9,7 +9,6 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { UtilService } from '@app/core/services/util.service';
 import { LicenceApplicationRoutes } from '@app/modules/licence-application/licence-application-routing.module';
 import { LicenceApplicationService } from '@app/modules/licence-application/services/licence-application.service';
 import { PermitApplicationService } from '@app/modules/licence-application/services/permit-application.service';
@@ -110,8 +109,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		private optionsPipe: OptionsPipe,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService,
-		private permitApplicationService: PermitApplicationService,
-		private utilService: UtilService
+		private permitApplicationService: PermitApplicationService
 	) {}
 
 	ngOnInit(): void {
