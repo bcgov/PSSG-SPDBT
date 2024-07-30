@@ -73,10 +73,6 @@ export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	providedIn: 'root',
 })
 export class BusinessApplicationService extends BusinessApplicationHelper {
-	initialized = false;
-	hasValueChanged = false;
-	isLoading = true;
-
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
@@ -705,24 +701,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		console.debug('RESET', this.initialized, this.businessModelFormGroup.value);
-	}
-
-	updateModelChangeFlags(): void {
-		if (this.isLoading) {
-			this.isLoading = false;
-		} else {
-			this.hasValueChanged = true;
-		}
-	}
-
-	resetModelChangeFlags(): void {
-		this.hasValueChanged = false;
-	}
-
-	resetModelFlags(): void {
-		this.initialized = false;
-		this.isLoading = true;
-		this.hasValueChanged = false;
 	}
 
 	/*************************************************************/

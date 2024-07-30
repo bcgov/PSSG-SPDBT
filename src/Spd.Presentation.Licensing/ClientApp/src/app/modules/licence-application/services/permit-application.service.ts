@@ -64,10 +64,6 @@ export class PermitDocumentsToSave {
 	providedIn: 'root',
 })
 export class PermitApplicationService extends PermitApplicationHelper {
-	initialized = false;
-	hasValueChanged = false;
-	isLoading = true;
-
 	photographOfYourself: string | null = null;
 
 	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -172,24 +168,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 
 		console.debug('RESET', this.initialized, this.permitModelFormGroup.value);
-	}
-
-	updateModelChangeFlags(): void {
-		if (this.isLoading) {
-			this.isLoading = false;
-		} else {
-			this.hasValueChanged = true;
-		}
-	}
-
-	resetModelChangeFlags(): void {
-		this.hasValueChanged = false;
-	}
-
-	resetModelFlags(): void {
-		this.initialized = false;
-		this.isLoading = true;
-		this.hasValueChanged = false;
 	}
 
 	/**
