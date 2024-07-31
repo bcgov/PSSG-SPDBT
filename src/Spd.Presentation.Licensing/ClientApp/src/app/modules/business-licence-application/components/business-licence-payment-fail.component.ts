@@ -5,6 +5,7 @@ import { PaymentService } from '@app/api/services';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { switchMap } from 'rxjs';
 
 @Component({
@@ -27,6 +28,7 @@ export class BusinessLicencePaymentFailComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
+		private authUserBceidService: AuthUserBceidService,
 		private paymentService: PaymentService,
 		private commonApplicationService: ApplicationService
 	) {}
@@ -37,12 +39,15 @@ export class BusinessLicencePaymentFailComponent implements OnInit {
 			console.debug('BusinessLicencePaymentFailComponent - missing paymentId');
 			this.router.navigate([AppRoutes.ACCESS_DENIED]);
 		}
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.paymentService
-			.apiAuthLicencePaymentsPaymentIdGet({ paymentId: paymentId! })
+			.apiBusinessBizIdPaymentsPaymentIdGet({ bizId, paymentId: paymentId! })
 			.pipe(
 				switchMap((paymentResp: PaymentResponse) => {
 					this.payment = paymentResp;
-					return this.paymentService.apiAuthLicenceApplicationIdPaymentAttemptsGet({
+					return this.paymentService.apiBusinessBizIdApplicationsApplicationIdPaymentAttemptsGet({
+						bizId,
 						applicationId: paymentResp.applicationId!,
 					});
 				})
