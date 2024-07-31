@@ -26,7 +26,6 @@ export class BusinessLicenceApplicationRoutes {
 
 	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
-	public static readonly BUSINESS_USER_APPLICATIONS = 'applications';
 	public static readonly BUSINESS_NEW = 'business-licence-new';
 	public static readonly BUSINESS_NEW_SWL_SP = 'business-licence-new-swl-sp';
 	public static readonly BUSINESS_RENEWAL = 'business-licence-renewal';
@@ -60,7 +59,7 @@ export class BusinessLicenceApplicationRoutes {
 	}
 
 	public static pathBusinessApplications(): string {
-		return `/${BusinessLicenceApplicationRoutes.MODULE_PATH}/${BusinessLicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS}`;
+		return `/${BusinessLicenceApplicationRoutes.MODULE_PATH}`;
 	}
 }
 
@@ -72,10 +71,6 @@ const routes: Routes = [
 			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
 				component: BusinessFirstTimeUserTermsOfUseComponent,
-			},
-			{
-				path: BusinessLicenceApplicationRoutes.BUSINESS_USER_APPLICATIONS,
-				component: BusinessUserApplicationsComponent,
 			},
 			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_UPDATE_TERMS,

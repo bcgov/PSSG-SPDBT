@@ -12,11 +12,9 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 @Component({
 	selector: 'app-step-worker-licence-access-code',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Provide your access code"
-					info="<p>
+		<app-step-section
+			title="Provide your access code"
+			info="<p>
 						You need both <strong>your licence number</strong> as it appears on your current licence, plus the <strong>access code number</strong>
 						provided following your initial security worker application or in your renewal letter from the Registrar,
 						Security Services. Enter the two numbers below then click 'Next' to continue.
@@ -25,17 +23,14 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
 						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
 					</p>"
-				>
-				</app-step-title>
-
-				<app-common-access-code-anonymous
-					(linkSuccess)="onLinkSuccess()"
-					[form]="form"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
-				></app-common-access-code-anonymous>
-			</div>
-		</section>
+		>
+			<app-common-access-code-anonymous
+				(linkSuccess)="onLinkSuccess()"
+				[form]="form"
+				[workerLicenceTypeCode]="workerLicenceTypeCode"
+				[applicationTypeCode]="applicationTypeCode"
+			></app-common-access-code-anonymous>
+		</app-step-section>
 
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,

@@ -8,17 +8,13 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 @Component({
 	selector: 'app-step-permit-criminal-history',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title"></app-step-title>
-
-				<app-common-criminal-history
-					[form]="form"
-					[applicationTypeCode]="applicationTypeCode"
-					[isCalledFromStep]="true"
-				></app-common-criminal-history>
-			</div>
-		</section>
+		<app-step-section [title]="title">
+			<app-common-criminal-history
+				[form]="form"
+				[applicationTypeCode]="applicationTypeCode"
+				[isCalledFromStep]="true"
+			></app-common-criminal-history>
+		</app-step-section>
 	`,
 	styles: [],
 })

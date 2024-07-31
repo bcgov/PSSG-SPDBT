@@ -7,16 +7,12 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-police-background',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					[title]="title"
-					subtitle="A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence."
-				></app-step-title>
-
-				<app-common-police-background [form]="form" [isCalledFromStep]="true"></app-common-police-background>
-			</div>
-		</section>
+		<app-step-section
+			[title]="title"
+			subtitle="A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence."
+		>
+			<app-common-police-background [form]="form" [isCalledFromStep]="true"></app-common-police-background>
+		</app-step-section>
 	`,
 	styles: [],
 })

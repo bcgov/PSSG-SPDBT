@@ -15,421 +15,412 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 @Component({
 	selector: 'app-step-worker-licence-summary-review-authenticated',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Application Summary"
-					subtitle="Review your information before submitting your application"
-				></app-step-title>
-
-				<div class="row">
-					<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="row mb-3">
-							<div class="col-12">
-								<mat-accordion multi="true">
-									<mat-expansion-panel class="mb-2" [expanded]="true">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="review-panel-title">
-												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Licence Selection</div>
-													<button
-														mat-mini-fab
-														color="primary"
-														class="go-to-step-button"
-														matTooltip="Go to Step 1"
-														aria-label="Go to Step 1"
-														(click)="$event.stopPropagation(); onEditStep(0)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-												</mat-toolbar>
-											</mat-panel-title>
-										</mat-expansion-panel-header>
-										<div class="panel-body">
-											<div class="text-minor-heading mt-4">Licence Information</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Licence Type</div>
-													<div class="summary-text-data">
-														{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Application Type</div>
-													<div class="summary-text-data">
-														{{ applicationTypeCode | options : 'ApplicationTypes' }}
-													</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
-													<div class="summary-text-data">{{ isSoleProprietor }}</div>
+		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+			<div class="row">
+				<div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="row mb-3">
+						<div class="col-12">
+							<mat-accordion multi="true">
+								<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Licence Selection</div>
+												<button
+													mat-mini-fab
+													color="primary"
+													class="go-to-step-button"
+													matTooltip="Go to Step 1"
+													aria-label="Go to Step 1"
+													(click)="$event.stopPropagation(); onEditStep(0)"
+												>
+													<mat-icon>edit</mat-icon>
+												</button>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
+									<div class="panel-body">
+										<div class="text-minor-heading mt-4">Licence Information</div>
+										<div class="row mt-0">
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Licence Type</div>
+												<div class="summary-text-data">
+													{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
 												</div>
 											</div>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Application Type</div>
+												<div class="summary-text-data">
+													{{ applicationTypeCode | options : 'ApplicationTypes' }}
+												</div>
+											</div>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
+												<div class="summary-text-data">{{ isSoleProprietor }}</div>
+											</div>
+										</div>
+										<div class="row mt-0">
+											<ng-container
+												*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
+											>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">
+														Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
+													</div>
+													<div class="summary-text-data">
+														{{ category | options : 'WorkerCategoryTypes' }}
+													</div>
+												</div>
+											</ng-container>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Licence Term</div>
+												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+											</div>
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Fee</div>
+												<div class="summary-text-data">
+													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+												</div>
+											</div>
+										</div>
+
+										<ng-container *ngIf="isAnyDocuments">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Documents Uploaded</div>
 											<div class="row mt-0">
-												<ng-container
-													*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
-												>
-													<div class="col-lg-4 col-md-12">
+												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container
+																*ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index"
+															>
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+														<ul class="m-0">
+															<ng-container
+																*ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index"
+															>
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of categoryLocksmithAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigator">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+														Documents
+													</div>
+													<div class="summary-text-data">
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+															<ul class="m-0">
+																<ng-container
+																	*ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index"
+																>
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigatorUnderSupervision">
+													<div class="text-label d-block text-muted">
+														{{
+															categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
+														}}
+														Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container
+																*ngFor="
+																	let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
+																	let i = index
+																"
+															>
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12" *ngIf="showSecurityAlarmInstaller">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
+														Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container
+																*ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index"
+															>
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12" *ngIf="showSecurityConsultant">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+														<ul class="m-0">
+															<ng-container
+																*ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index"
+															>
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
+													<div class="text-label d-block text-muted">
+														{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+											</div>
+										</ng-container>
+
+										<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Expired Licence</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Expired Licence Number</div>
+													<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Expiry Date</div>
+													<div class="summary-text-data">
+														{{ expiredLicenceExpiryDate | formatDate | default }}
+													</div>
+												</div>
+											</div>
+										</ng-container>
+
+										<ng-container *ngIf="showDogsAndRestraints">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Restraints Authorization</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Request to use restraints?</div>
+													<div class="summary-text-data">
+														{{ carryAndUseRestraints | options : 'BooleanTypes' }}
+													</div>
+												</div>
+												<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
+													<div class="col-lg-8 col-md-12">
 														<div class="text-label d-block text-muted">
-															Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
+															{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 														</div>
 														<div class="summary-text-data">
-															{{ category | options : 'WorkerCategoryTypes' }}
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
 														</div>
 													</div>
 												</ng-container>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Licence Term</div>
-													<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Fee</div>
-													<div class="summary-text-data">
-														{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
-													</div>
-												</div>
 											</div>
 
-											<ng-container *ngIf="isAnyDocuments">
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-												<div class="text-minor-heading">Documents Uploaded</div>
-												<div class="row mt-0">
-													<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of categoryArmouredCarGuardAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-													<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container
-																	*ngFor="let doc of categoryFireInvestigatorCertificateAttachments; let i = index"
-																>
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-															<ul class="m-0">
-																<ng-container
-																	*ngFor="let doc of categoryFireInvestigatorLetterAttachments; let i = index"
-																>
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-													<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of categoryLocksmithAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigator">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
-															Documents
-														</div>
-														<div class="summary-text-data">
-															<div class="summary-text-data">
-																<ul class="m-0">
-																	<ng-container
-																		*ngFor="let doc of categoryPrivateInvestigatorAttachments; let i = index"
-																	>
-																		<li>{{ doc.name }}</li>
-																	</ng-container>
-																</ul>
-																<ul class="m-0">
-																	<ng-container
-																		*ngFor="let doc of categoryPrivateInvestigatorTrainingAttachments; let i = index"
-																	>
-																		<li>{{ doc.name }}</li>
-																	</ng-container>
-																</ul>
-															</div>
-														</div>
-													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigatorUnderSupervision">
-														<div class="text-label d-block text-muted">
-															{{
-																categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
-															}}
-															Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container
-																	*ngFor="
-																		let doc of categoryPrivateInvestigatorUnderSupervisionAttachments;
-																		let i = index
-																	"
-																>
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="showSecurityAlarmInstaller">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
-															Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container
-																	*ngFor="let doc of categorySecurityAlarmInstallerAttachments; let i = index"
-																>
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="showSecurityConsultant">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of categorySecurityConsultantAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-															<ul class="m-0">
-																<ng-container
-																	*ngFor="let doc of categorySecurityConsultantResumeAttachments; let i = index"
-																>
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-
-													<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
-														<div class="text-label d-block text-muted">
-															{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
-														</div>
-														<div class="summary-text-data">
-															<ul class="m-0">
-																<ng-container *ngFor="let doc of categorySecurityGuardAttachments; let i = index">
-																	<li>{{ doc.name }}</li>
-																</ng-container>
-															</ul>
-														</div>
-													</div>
-												</div>
-											</ng-container>
-
-											<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-												<div class="text-minor-heading">Expired Licence</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expired Licence Number</div>
-														<div class="summary-text-data">{{ expiredLicenceNumber | default }}</div>
-													</div>
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Expiry Date</div>
-														<div class="summary-text-data">
-															{{ expiredLicenceExpiryDate | formatDate | default }}
-														</div>
-													</div>
-												</div>
-											</ng-container>
-
-											<ng-container *ngIf="showDogsAndRestraints">
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-												<div class="text-minor-heading">Restraints Authorization</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Request to use restraints?</div>
-														<div class="summary-text-data">
-															{{ carryAndUseRestraints | options : 'BooleanTypes' }}
-														</div>
-													</div>
-													<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
-														<div class="col-lg-8 col-md-12">
-															<div class="text-label d-block text-muted">
-																{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
-															</div>
-															<div class="summary-text-data">
-																<ul class="m-0">
-																	<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-																		<li>{{ doc.name }}</li>
-																	</ng-container>
-																</ul>
-															</div>
-														</div>
-													</ng-container>
-												</div>
-
-												<mat-divider class="mt-3 mb-2"></mat-divider>
-												<div class="text-minor-heading">Dogs Authorization</div>
-												<div class="row mt-0">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">Request to use dogs?</div>
-														<div class="summary-text-data">{{ useDogs }}</div>
-													</div>
-													<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
-														<div class="col-lg-4 col-md-12">
-															<div class="text-label d-block text-muted">Reason</div>
-															<div class="summary-text-data">
-																<div *ngIf="isDogsPurposeProtection">Protection</div>
-																<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-																<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-															</div>
-														</div>
-														<div class="col-lg-4 col-md-12">
-															<div class="text-label d-block text-muted">Dog Validation Certificate</div>
-															<div class="summary-text-data">
-																<ul class="m-0">
-																	<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
-																		<li>{{ doc.name }}</li>
-																	</ng-container>
-																</ul>
-															</div>
-														</div>
-													</ng-container>
-												</div>
-											</ng-container>
-										</div>
-									</mat-expansion-panel>
-
-									<mat-expansion-panel class="mb-2" [expanded]="true">
-										<mat-expansion-panel-header>
-											<mat-panel-title class="review-panel-title">
-												<mat-toolbar class="d-flex justify-content-between">
-													<div class="panel-header">Identification</div>
-													<button
-														mat-mini-fab
-														color="primary"
-														class="go-to-step-button"
-														matTooltip="Go to Step 3"
-														aria-label="Go to Step 3"
-														(click)="$event.stopPropagation(); onEditStep(1)"
-													>
-														<mat-icon>edit</mat-icon>
-													</button>
-												</mat-toolbar>
-											</mat-panel-title>
-										</mat-expansion-panel-header>
-										<div class="panel-body">
-											<div class="text-minor-heading">Identification</div>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+											<div class="text-minor-heading">Dogs Authorization</div>
 											<div class="row mt-0">
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
-													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Request to use dogs?</div>
+													<div class="summary-text-data">{{ useDogs }}</div>
 												</div>
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">
-														<span *ngIf="canadianCitizenProofTypeCode">
-															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-														</span>
-														<span *ngIf="notCanadianCitizenProofTypeCode">
-															{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
-														</span>
+												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Reason</div>
+														<div class="summary-text-data">
+															<div *ngIf="isDogsPurposeProtection">Protection</div>
+															<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+															<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+														</div>
 													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
+													<div class="col-lg-4 col-md-12">
+														<div class="text-label d-block text-muted">Dog Validation Certificate</div>
+														<div class="summary-text-data">
+															<ul class="m-0">
+																<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+																	<li>{{ doc.name }}</li>
+																</ng-container>
+															</ul>
+														</div>
 													</div>
+												</ng-container>
+											</div>
+										</ng-container>
+									</div>
+								</mat-expansion-panel>
+
+								<mat-expansion-panel class="mb-2" [expanded]="true">
+									<mat-expansion-panel-header>
+										<mat-panel-title class="review-panel-title">
+											<mat-toolbar class="d-flex justify-content-between">
+												<div class="panel-header">Identification</div>
+												<button
+													mat-mini-fab
+													color="primary"
+													class="go-to-step-button"
+													matTooltip="Go to Step 3"
+													aria-label="Go to Step 3"
+													(click)="$event.stopPropagation(); onEditStep(1)"
+												>
+													<mat-icon>edit</mat-icon>
+												</button>
+											</mat-toolbar>
+										</mat-panel-title>
+									</mat-expansion-panel-header>
+									<div class="panel-body">
+										<div class="text-minor-heading">Identification</div>
+										<div class="row mt-0">
+											<div class="col-lg-6 col-md-12">
+												<div class="text-label d-block text-muted">Are you a Canadian citizen?</div>
+												<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+											</div>
+											<div class="col-lg-6 col-md-12">
+												<div class="text-label d-block text-muted">
+													<span *ngIf="canadianCitizenProofTypeCode">
+														{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+													</span>
+													<span *ngIf="notCanadianCitizenProofTypeCode">
+														{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+													</span>
 												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-													<div class="text-label d-block text-muted">
-														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-													</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">BC Driver's Licence</div>
-													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
-													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
-												</div>
-												<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
-													<div class="text-label d-block text-muted">Photograph of Yourself</div>
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
 												</div>
 											</div>
-
-											<div class="row mt-0">
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Height</div>
-													<div class="summary-text-data">
-														{{ height }}
-														{{ heightUnitCode | options : 'HeightUnitTypes' }}
-														{{ heightInches }}
-													</div>
+											<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
+												<div class="text-label d-block text-muted">
+													{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
 												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Weight</div>
-													<div class="summary-text-data">
-														{{ weight }}
-														{{ weightUnitCode | options : 'WeightUnitTypes' }}
-													</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
 												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Hair Colour</div>
-													<div class="summary-text-data">
-														{{ hairColourCode | options : 'HairColourTypes' }}
-													</div>
+											</div>
+											<div class="col-lg-6 col-md-12">
+												<div class="text-label d-block text-muted">BC Driver's Licence</div>
+												<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+											</div>
+											<div class="col-lg-6 col-md-12" *ngIf="isNotRenewal">
+												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
 												</div>
-												<div class="col-lg-3 col-md-12">
-													<div class="text-label d-block text-muted">Eye Colour</div>
-													<div class="summary-text-data">
-														{{ eyeColourCode | options : 'EyeColourTypes' }}
-													</div>
+											</div>
+											<div class="col-lg-6 col-md-12" *ngIf="photoOfYourselfAttachments">
+												<div class="text-label d-block text-muted">Photograph of Yourself</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
 												</div>
 											</div>
 										</div>
-									</mat-expansion-panel>
-								</mat-accordion>
-							</div>
+
+										<div class="row mt-0">
+											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Height</div>
+												<div class="summary-text-data">
+													{{ height }}
+													{{ heightUnitCode | options : 'HeightUnitTypes' }}
+													{{ heightInches }}
+												</div>
+											</div>
+											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Weight</div>
+												<div class="summary-text-data">
+													{{ weight }}
+													{{ weightUnitCode | options : 'WeightUnitTypes' }}
+												</div>
+											</div>
+											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Hair Colour</div>
+												<div class="summary-text-data">
+													{{ hairColourCode | options : 'HairColourTypes' }}
+												</div>
+											</div>
+											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Eye Colour</div>
+												<div class="summary-text-data">
+													{{ eyeColourCode | options : 'EyeColourTypes' }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</mat-expansion-panel>
+							</mat-accordion>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [
 		`

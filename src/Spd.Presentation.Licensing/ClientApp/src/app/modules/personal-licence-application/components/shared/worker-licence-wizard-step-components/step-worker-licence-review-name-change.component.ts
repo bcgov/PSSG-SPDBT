@@ -8,31 +8,24 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-review-name-change',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Review your updated name"
-					subtitle="Your licence will be updated with your new name"
-				></app-step-title>
-
-				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div [formGroup]="form">
-							<div class="row mt-0 mb-3">
-								<div class="offset-lg-3 col-lg-9 col-md-12">
-									<div class="text-label d-block text-muted">New Name</div>
-									<div class="summary-text-data">{{ fullname }}</div>
-								</div>
-								<div class="offset-lg-3 col-lg-9 col-md-12">
-									<div class="text-label d-block text-muted">Previous Name</div>
-									<div class="summary-text-data">{{ cardHolderName.value }}</div>
-								</div>
+		<app-step-section title="Review your updated name" subtitle="Your licence will be updated with your new name">
+			<div class="row">
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div [formGroup]="form">
+						<div class="row mt-0 mb-3">
+							<div class="offset-lg-3 col-lg-9 col-md-12">
+								<div class="text-label d-block text-muted">New Name</div>
+								<div class="summary-text-data">{{ fullname }}</div>
+							</div>
+							<div class="offset-lg-3 col-lg-9 col-md-12">
+								<div class="text-label d-block text-muted">Previous Name</div>
+								<div class="summary-text-data">{{ cardHolderName.value }}</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [],
 })

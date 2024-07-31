@@ -7,21 +7,17 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-bc-driver-licence',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title title="Do you have a BC Driver's Licence?" [subtitle]="subtitle"></app-step-title>
-
-				<div class="row">
-					<div class="offset-md-2 col-md-8 col-sm-12">
-						<app-alert type="info" icon="info">
-							Providing your driver's licence number will speed up processing times
-						</app-alert>
-					</div>
+		<app-step-section title="Do you have a BC Driver's Licence?" [subtitle]="subtitle">
+			<div class="row">
+				<div class="offset-md-2 col-md-8 col-sm-12">
+					<app-alert type="info" icon="info">
+						Providing your driver's licence number will speed up processing times
+					</app-alert>
 				</div>
-
-				<app-common-bc-driver-licence [form]="form"></app-common-bc-driver-licence>
 			</div>
-		</section>
+
+			<app-common-bc-driver-licence [form]="form"></app-common-bc-driver-licence>
+		</app-step-section>
 	`,
 	styles: [],
 })

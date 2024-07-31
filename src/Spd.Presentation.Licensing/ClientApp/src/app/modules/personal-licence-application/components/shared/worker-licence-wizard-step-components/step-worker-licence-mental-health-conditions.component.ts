@@ -7,17 +7,13 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-mental-health-conditions',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<app-common-mental-health-conditions
-					[applicationTypeCode]="applicationTypeCode"
-					[form]="form"
-					[isCalledFromStep]="true"
-				></app-common-mental-health-conditions>
-			</div>
-		</section>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<app-common-mental-health-conditions
+				[applicationTypeCode]="applicationTypeCode"
+				[form]="form"
+				[isCalledFromStep]="true"
+			></app-common-mental-health-conditions>
+		</app-step-section>
 	`,
 	styles: [],
 })

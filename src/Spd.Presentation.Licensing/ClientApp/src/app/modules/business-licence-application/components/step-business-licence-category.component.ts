@@ -10,180 +10,176 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-business-licence-category',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="infoTitle"></app-step-title>
+		<app-step-section [title]="title" [subtitle]="infoTitle">
+			<div class="row">
+				<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
+					<form [formGroup]="form" novalidate>
+						<div class="row mb-4">
+							<ng-container *ngFor="let item of businessCategoryTypes; let i = index">
+								<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 col-sm-12">
+									<mat-checkbox [formControlName]="item.code" (click)="onCategoryChange(item.code)">
+										{{ item.desc }}
+									</mat-checkbox>
+								</div>
+							</ng-container>
+						</div>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrue')"
+							>At least one option must be selected</mat-error
+						>
 
-				<div class="row">
-					<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
-						<form [formGroup]="form" novalidate>
-							<div class="row mb-4">
-								<ng-container *ngFor="let item of businessCategoryTypes; let i = index">
-									<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 col-sm-12">
-										<mat-checkbox [formControlName]="item.code" (click)="onCategoryChange(item.code)">
-											{{ item.desc }}
-										</mat-checkbox>
+						<div class="mt-2" *ngIf="showInsurance">
+							<app-alert type="warning" icon="warning">
+								Security businesses are required to carry and maintain general liability insurance in an amount not less
+								than $1,000,000. Please ensure you have the appropriate insurance. You may be asked to provide proof of
+								insurance by Security Services at any time while licensed.
+							</app-alert>
+						</div>
+
+						<div class="mt-2" *ngIf="showLocksmithMessage">
+							<app-alert type="info" icon="">
+								The <strong>Locksmith</strong> business licence automatically includes Electronic Locking Device
+								Installer.
+							</app-alert>
+						</div>
+
+						<div class="mt-2" *ngIf="showSecurityAlarmInstallerMessage">
+							<app-alert type="info" icon="">
+								The <strong>Security Alarm Installer</strong> business licence automatically includes Security Alarm
+								Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television Installer, and
+								Electronic Locking Device Installer.
+							</app-alert>
+						</div>
+
+						<div class="mt-2" *ngIf="showSecurityAlarmResponseMessage">
+							<app-alert type="info" icon="">
+								The <strong>Security Alarm Response</strong> business licence automatically includes Security Alarm
+								Monitor.
+							</app-alert>
+						</div>
+
+						<div class="mt-2" *ngIf="showSecurityGuardMessage">
+							<app-alert type="info" icon="">
+								The <strong>Security Guard</strong> business licence automatically includes Security Alarm Monitor and
+								Security Alarm Response.
+							</app-alert>
+						</div>
+
+						<mat-accordion multi="false">
+							<ng-container *ngIf="this.ArmouredCarGuard.value">
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel
+											[hideToggle]="blockArmouredCarGuard"
+											class="my-3 w-100"
+											[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
+											[expanded]="expandArmouredCarGuard"
+										>
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													<mat-icon
+														class="error-icon"
+														color="warn"
+														matTooltip="One or more errors exist in this category"
+														*ngIf="
+															categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
+														"
+														>error</mat-icon
+													>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
+
+											<app-business-category-amoured-car-guard></app-business-category-amoured-car-guard>
+										</mat-expansion-panel>
 									</div>
-								</ng-container>
-							</div>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrue')"
-								>At least one option must be selected</mat-error
-							>
+								</div>
+							</ng-container>
 
-							<div class="mt-2" *ngIf="showInsurance">
-								<app-alert type="warning" icon="warning">
-									Security businesses are required to carry and maintain general liability insurance in an amount not
-									less than $1,000,000. Please ensure you have the appropriate insurance. You may be asked to provide
-									proof of insurance by Security Services at any time while licensed.
-								</app-alert>
-							</div>
+							<ng-container *ngIf="this.PrivateInvestigator.value && !isBusinessLicenceSoleProprietor">
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel
+											[hideToggle]="blockPrivateInvestigator"
+											class="my-3 w-100"
+											[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+											[expanded]="expandPrivateInvestigator"
+										>
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													<mat-icon
+														class="error-icon"
+														color="warn"
+														matTooltip="One or more errors exist in this category"
+														*ngIf="
+															categoryPrivateInvestigatorFormGroup?.touched &&
+															categoryPrivateInvestigatorFormGroup?.invalid
+														"
+														>error</mat-icon
+													>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
 
-							<div class="mt-2" *ngIf="showLocksmithMessage">
-								<app-alert type="info" icon="">
-									The <strong>Locksmith</strong> business licence automatically includes Electronic Locking Device
-									Installer.
-								</app-alert>
-							</div>
-
-							<div class="mt-2" *ngIf="showSecurityAlarmInstallerMessage">
-								<app-alert type="info" icon="">
-									The <strong>Security Alarm Installer</strong> business licence automatically includes Security Alarm
-									Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television Installer, and
-									Electronic Locking Device Installer.
-								</app-alert>
-							</div>
-
-							<div class="mt-2" *ngIf="showSecurityAlarmResponseMessage">
-								<app-alert type="info" icon="">
-									The <strong>Security Alarm Response</strong> business licence automatically includes Security Alarm
-									Monitor.
-								</app-alert>
-							</div>
-
-							<div class="mt-2" *ngIf="showSecurityGuardMessage">
-								<app-alert type="info" icon="">
-									The <strong>Security Guard</strong> business licence automatically includes Security Alarm Monitor and
-									Security Alarm Response.
-								</app-alert>
-							</div>
-
-							<mat-accordion multi="false">
-								<ng-container *ngIf="this.ArmouredCarGuard.value">
-									<div class="row">
-										<div class="col-12">
-											<mat-expansion-panel
-												[hideToggle]="blockArmouredCarGuard"
-												class="my-3 w-100"
-												[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
-												[expanded]="expandArmouredCarGuard"
-											>
-												<mat-expansion-panel-header>
-													<mat-panel-title>
-														<mat-icon
-															class="error-icon"
-															color="warn"
-															matTooltip="One or more errors exist in this category"
-															*ngIf="
-																categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
-															"
-															>error</mat-icon
-														>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
-													</mat-panel-title>
-												</mat-expansion-panel-header>
-
-												<app-business-category-amoured-car-guard></app-business-category-amoured-car-guard>
-											</mat-expansion-panel>
-										</div>
+											<app-business-category-private-investigator></app-business-category-private-investigator>
+										</mat-expansion-panel>
 									</div>
-								</ng-container>
+								</div>
+							</ng-container>
 
-								<ng-container *ngIf="this.PrivateInvestigator.value && !isBusinessLicenceSoleProprietor">
-									<div class="row">
-										<div class="col-12">
-											<mat-expansion-panel
-												[hideToggle]="blockPrivateInvestigator"
-												class="my-3 w-100"
-												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
-												[expanded]="expandPrivateInvestigator"
-											>
-												<mat-expansion-panel-header>
-													<mat-panel-title>
-														<mat-icon
-															class="error-icon"
-															color="warn"
-															matTooltip="One or more errors exist in this category"
-															*ngIf="
-																categoryPrivateInvestigatorFormGroup?.touched &&
-																categoryPrivateInvestigatorFormGroup?.invalid
-															"
-															>error</mat-icon
-														>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
-													</mat-panel-title>
-												</mat-expansion-panel-header>
+							<ng-container *ngIf="this.SecurityGuard.value">
+								<div class="row">
+									<div class="col-12">
+										<mat-expansion-panel
+											[hideToggle]="blockSecurityGuard"
+											class="my-3 w-100"
+											[ngClass]="{ 'disabled-pointer': blockSecurityGuard }"
+											[expanded]="expandSecurityGuard"
+										>
+											<mat-expansion-panel-header>
+												<mat-panel-title>
+													<mat-icon
+														class="error-icon"
+														color="warn"
+														matTooltip="One or more errors exist in this category"
+														*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
+														>error</mat-icon
+													>
+													{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
+												</mat-panel-title>
+											</mat-expansion-panel-header>
 
-												<app-business-category-private-investigator></app-business-category-private-investigator>
-											</mat-expansion-panel>
-										</div>
+											<app-business-category-security-guard></app-business-category-security-guard>
+										</mat-expansion-panel>
 									</div>
-								</ng-container>
+								</div>
+							</ng-container>
+						</mat-accordion>
 
-								<ng-container *ngIf="this.SecurityGuard.value">
-									<div class="row">
-										<div class="col-12">
-											<mat-expansion-panel
-												[hideToggle]="blockSecurityGuard"
-												class="my-3 w-100"
-												[ngClass]="{ 'disabled-pointer': blockSecurityGuard }"
-												[expanded]="expandSecurityGuard"
-											>
-												<mat-expansion-panel-header>
-													<mat-panel-title>
-														<mat-icon
-															class="error-icon"
-															color="warn"
-															matTooltip="One or more errors exist in this category"
-															*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
-															>error</mat-icon
-														>
-														{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
-													</mat-panel-title>
-												</mat-expansion-panel-header>
+						<div class="my-2" *ngIf="showInsurance" @showHideTriggerSlideAnimation>
+							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
-												<app-business-category-security-guard></app-business-category-security-guard>
-											</mat-expansion-panel>
-										</div>
-									</div>
-								</ng-container>
-							</mat-accordion>
+							<div class="text-minor-heading mb-2">Upload proof of insurance</div>
+							<div>The insurance document must also include:</div>
+							<ul>
+								<li>The business name</li>
+								<li>The business locations</li>
+								<li>The expiry date of the insurance</li>
+								<li>Proof that insurance is valid in B.C.</li>
+							</ul>
 
-							<div class="my-2" *ngIf="showInsurance" @showHideTriggerSlideAnimation>
-								<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
-								<div class="text-minor-heading mb-2">Upload proof of insurance</div>
-								<div>The insurance document must also include:</div>
-								<ul>
-									<li>The business name</li>
-									<li>The business locations</li>
-									<li>The expiry date of the insurance</li>
-									<li>Proof that insurance is valid in B.C.</li>
-								</ul>
-
-								<app-file-upload
-									(fileUploaded)="onFileUploaded($event)"
-									(fileRemoved)="onFileRemoved()"
-									[control]="attachments"
-									[maxNumberOfFiles]="10"
-									[files]="attachments.value"
-								></app-file-upload>
-								<mat-error class="mat-option-error" *ngIf="showInsuranceError">This is required</mat-error>
-							</div>
-						</form>
-					</div>
+							<app-file-upload
+								(fileUploaded)="onFileUploaded($event)"
+								(fileRemoved)="onFileRemoved()"
+								[control]="attachments"
+								[maxNumberOfFiles]="10"
+								[files]="attachments.value"
+							></app-file-upload>
+							<mat-error class="mat-option-error" *ngIf="showInsuranceError">This is required</mat-error>
+						</div>
+					</form>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [
 		`

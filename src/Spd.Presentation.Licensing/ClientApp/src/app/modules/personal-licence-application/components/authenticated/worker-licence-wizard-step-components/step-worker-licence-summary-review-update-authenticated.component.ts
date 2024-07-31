@@ -15,120 +15,113 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 @Component({
 	selector: 'app-step-worker-licence-summary-review-update-authenticated',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Application Summary"
-					subtitle="Review your information before submitting your application"
-				></app-step-title>
+		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+			<div class="row">
+				<div class="col-xxl-8 col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="row mt-0 mb-4">
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">
+								Licence Holder Name <span *ngIf="hasBcscNameChanged">(New Name)</span>
+							</div>
+							<div class="summary-text-data">{{ licenceHolderName }}</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Number</div>
+							<div class="summary-text-data">{{ originalLicenceNumber }}</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
+							<div class="text-label d-block text-muted">Photograph of Yourself</div>
+							<div class="summary-text-data">
+								<ul class="m-0">
+									<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
+										<li>{{ doc.name }}</li>
+									</ng-container>
+								</ul>
+							</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Expiry Date</div>
+							<div class="summary-text-data">
+								{{ originalExpiryDate | formatDate : formalDateFormat }}
+							</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Categories</div>
+							<div class="summary-text-data">
+								<ul class="m-0">
+									<ng-container *ngFor="let category of categoryList; let i = index">
+										<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+									</ng-container>
+								</ul>
+							</div>
+						</div>
 
-				<div class="row">
-					<div class="col-xxl-8 col-xl-11 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="row mt-0 mb-4">
+						<ng-container *ngIf="showDogsAndRestraints">
 							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">
-									Licence Holder Name <span *ngIf="hasBcscNameChanged">(New Name)</span>
-								</div>
-								<div class="summary-text-data">{{ licenceHolderName }}</div>
-							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Number</div>
-								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
-							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
-								<div class="text-label d-block text-muted">Photograph of Yourself</div>
+								<div class="text-label d-block text-muted">Request to use restraints?</div>
 								<div class="summary-text-data">
-									<ul class="m-0">
-										<ng-container *ngFor="let doc of photoOfYourselfAttachments; let i = index">
-											<li>{{ doc.name }}</li>
-										</ng-container>
-									</ul>
+									{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 								</div>
 							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Expiry Date</div>
-								<div class="summary-text-data">
-									{{ originalExpiryDate | formatDate : formalDateFormat }}
-								</div>
-							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Categories</div>
-								<div class="summary-text-data">
-									<ul class="m-0">
-										<ng-container *ngFor="let category of categoryList; let i = index">
-											<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
-										</ng-container>
-									</ul>
-								</div>
-							</div>
-
-							<ng-container *ngIf="showDogsAndRestraints">
+							<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodeYes">
 								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Request to use restraints?</div>
+									<div class="text-label d-block text-muted">
+										{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
+									</div>
 									<div class="summary-text-data">
-										{{ carryAndUseRestraints | options : 'BooleanTypes' }}
+										<ul class="m-0">
+											<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
+												<li>{{ doc.name }}</li>
+											</ng-container>
+										</ul>
 									</div>
 								</div>
-								<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodeYes">
-									<div class="col-xl-4 col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">
-											{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
-										</div>
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
-										</div>
-									</div>
-								</ng-container>
-
-								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">Request to use dogs?</div>
-									<div class="summary-text-data">{{ useDogs }}</div>
-								</div>
-								<ng-container *ngIf="useDogs === booleanTypeCodeYes">
-									<div class="col-xl-4 col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Reason</div>
-										<div class="summary-text-data">
-											<div *ngIf="isDogsPurposeProtection">Protection</div>
-											<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
-											<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
-										</div>
-									</div>
-									<div class="col-xl-4 col-lg-6 col-md-12">
-										<div class="text-label d-block text-muted">Dog Validation Certificate</div>
-										<div class="summary-text-data">
-											<ul class="m-0">
-												<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
-													<li>{{ doc.name }}</li>
-												</ng-container>
-											</ul>
-										</div>
-									</div>
-								</ng-container>
 							</ng-container>
 
 							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Term</div>
-								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+								<div class="text-label d-block text-muted">Request to use dogs?</div>
+								<div class="summary-text-data">{{ useDogs }}</div>
 							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="isReprint">
-								<div class="text-label d-block text-muted">Reprint Licence</div>
-								<div class="summary-text-data">{{ isReprint }}</div>
-							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="licenceFee">
-								<div class="text-label d-block text-muted">Reprint Fee</div>
-								<div class="summary-text-data">
-									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+							<ng-container *ngIf="useDogs === booleanTypeCodeYes">
+								<div class="col-xl-4 col-lg-6 col-md-12">
+									<div class="text-label d-block text-muted">Reason</div>
+									<div class="summary-text-data">
+										<div *ngIf="isDogsPurposeProtection">Protection</div>
+										<div *ngIf="isDogsPurposeDetectionDrugs">Detection - Drugs</div>
+										<div *ngIf="isDogsPurposeDetectionExplosives">Detection - Explosives</div>
+									</div>
 								</div>
+								<div class="col-xl-4 col-lg-6 col-md-12">
+									<div class="text-label d-block text-muted">Dog Validation Certificate</div>
+									<div class="summary-text-data">
+										<ul class="m-0">
+											<ng-container *ngFor="let doc of dogsPurposeAttachments; let i = index">
+												<li>{{ doc.name }}</li>
+											</ng-container>
+										</ul>
+									</div>
+								</div>
+							</ng-container>
+						</ng-container>
+
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Term</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="isReprint">
+							<div class="text-label d-block text-muted">Reprint Licence</div>
+							<div class="summary-text-data">{{ isReprint }}</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="licenceFee">
+							<div class="text-label d-block text-muted">Reprint Fee</div>
+							<div class="summary-text-data">
+								{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [],
 })

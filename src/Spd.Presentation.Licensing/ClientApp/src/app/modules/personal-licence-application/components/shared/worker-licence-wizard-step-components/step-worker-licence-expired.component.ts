@@ -7,20 +7,16 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-expired',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Do you have an expired licence?"
-					subtitle="Processing time will be reduced if you provide info from your past licence"
-				></app-step-title>
-
-				<app-expired-licence
-					[form]="form"
-					[isLoggedIn]="isLoggedIn"
-					[workerLicenceTypeCode]="securityWorkerLicenceCode"
-				></app-expired-licence>
-			</div>
-		</section>
+		<app-step-section
+			title="Do you have an expired licence?"
+			subtitle="Processing time will be reduced if you provide info from your past licence"
+		>
+			<app-expired-licence
+				[form]="form"
+				[isLoggedIn]="isLoggedIn"
+				[workerLicenceTypeCode]="securityWorkerLicenceCode"
+			></app-expired-licence>
+		</app-step-section>
 	`,
 	styles: [],
 })

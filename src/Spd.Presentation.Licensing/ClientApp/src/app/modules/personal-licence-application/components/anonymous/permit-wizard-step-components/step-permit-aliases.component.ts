@@ -7,13 +7,9 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-aliases',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<app-common-aliases [form]="form"></app-common-aliases>
-			</div>
-		</section>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<app-common-aliases [form]="form"></app-common-aliases>
+		</app-step-section>
 	`,
 	styles: [],
 })

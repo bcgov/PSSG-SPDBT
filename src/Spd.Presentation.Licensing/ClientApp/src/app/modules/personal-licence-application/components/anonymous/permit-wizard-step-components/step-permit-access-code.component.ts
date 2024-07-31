@@ -12,11 +12,9 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 @Component({
 	selector: 'app-step-permit-access-code',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Provide your access code"
-					info="	
+		<app-step-section
+			title="Provide your access code"
+			info="	
 					<p>
 						You need both your permit number as it appears on your current permit, 
 						plus the access code number provided following your initial security worker 
@@ -27,17 +25,14 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 						If you do not know your access code, you may call Security Program's Licensing Unit during regular office
 						hours and answer identifying questions to get your access code: {{ spdPhoneNumber }}.
 					</p>"
-				>
-				</app-step-title>
-
-				<app-common-access-code-anonymous
-					(linkSuccess)="onLinkSuccess($event)"
-					[form]="form"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
-				></app-common-access-code-anonymous>
-			</div>
-		</section>
+		>
+			<app-common-access-code-anonymous
+				(linkSuccess)="onLinkSuccess($event)"
+				[form]="form"
+				[workerLicenceTypeCode]="workerLicenceTypeCode"
+				[applicationTypeCode]="applicationTypeCode"
+			></app-common-access-code-anonymous>
+		</app-step-section>
 
 		<app-wizard-footer (previousStepperStep)="onStepPrevious()" (nextStepperStep)="onStepNext()"></app-wizard-footer>
 	`,

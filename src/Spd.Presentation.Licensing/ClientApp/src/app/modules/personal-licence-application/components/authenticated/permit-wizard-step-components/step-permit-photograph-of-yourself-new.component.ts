@@ -8,18 +8,14 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-photograph-of-yourself-new',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title title="Upload a photo of yourself"></app-step-title>
-
-				<app-common-photograph-of-yourself
-					[form]="form"
-					name="permit"
-					(fileUploaded)="onFileUploaded($event)"
-					(fileRemoved)="onFileRemoved()"
-				></app-common-photograph-of-yourself>
-			</div>
-		</section>
+		<app-step-section title="Upload a photo of yourself">
+			<app-common-photograph-of-yourself
+				[form]="form"
+				name="permit"
+				(fileUploaded)="onFileUploaded($event)"
+				(fileRemoved)="onFileRemoved()"
+			></app-common-photograph-of-yourself>
+		</app-step-section>
 	`,
 	styles: [],
 })

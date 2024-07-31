@@ -8,75 +8,71 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-sole-proprietor',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="infoTitle"> </app-step-title>
+		<app-step-section [title]="title" [subtitle]="infoTitle">
+			<div class="row">
+				<div class="col-md-8 col-sm-12 mx-auto">
+					<app-alert type="warning">
+						If you want to apply for both at the same time, you will need your
+						<a
+							class="large"
+							href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"
+							target="_blank"
+							>Business BCeID</a
+						>
+					</app-alert>
+				</div>
+			</div>
 
+			<form [formGroup]="form" novalidate>
 				<div class="row">
-					<div class="col-md-8 col-sm-12 mx-auto">
-						<app-alert type="warning">
-							If you want to apply for both at the same time, you will need your
-							<a
-								class="large"
-								href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"
-								target="_blank"
-								>Business BCeID</a
-							>
-						</app-alert>
+					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
+						<mat-radio-group
+							aria-label="Select an option"
+							formControlName="isSoleProprietor"
+							(change)="onSoleProprietorChange()"
+						>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
+							<mat-divider class="my-2"></mat-divider>
+							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
+						</mat-radio-group>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('isSoleProprietor')?.dirty || form.get('isSoleProprietor')?.touched) &&
+								form.get('isSoleProprietor')?.invalid &&
+								form.get('isSoleProprietor')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
 					</div>
 				</div>
 
-				<form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-							<mat-radio-group
-								aria-label="Select an option"
-								formControlName="isSoleProprietor"
-								(change)="onSoleProprietorChange()"
+				<div class="row my-4" *ngIf="isSoleProprietor.value === booleanTypeCodes.Yes">
+					<div class="col-xxl-5 col-xl-6 col-lg-8 col-md-12 mx-auto">
+						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+						<div class="text-minor-heading my-2">What is the type of business or company?</div>
+						<mat-radio-group aria-label="Select an option" formControlName="bizTypeCode">
+							<mat-radio-button class="radio-label" [value]="bizTypeCodes.NonRegisteredPartnership"
+								>Non-Registered Sole Proprietor</mat-radio-button
 							>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
-							</mat-radio-group>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('isSoleProprietor')?.dirty || form.get('isSoleProprietor')?.touched) &&
-									form.get('isSoleProprietor')?.invalid &&
-									form.get('isSoleProprietor')?.hasError('required')
-								"
-								>This is required</mat-error
+							<mat-divider class="my-2"></mat-divider>
+							<mat-radio-button class="radio-label" [value]="bizTypeCodes.RegisteredSoleProprietor"
+								>Registered Sole Proprietor</mat-radio-button
 							>
-						</div>
+						</mat-radio-group>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('bizTypeCode')?.dirty || form.get('bizTypeCode')?.touched) &&
+								form.get('bizTypeCode')?.invalid &&
+								form.get('bizTypeCode')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
 					</div>
-
-					<div class="row my-4" *ngIf="isSoleProprietor.value === booleanTypeCodes.Yes">
-						<div class="col-xxl-5 col-xl-6 col-lg-8 col-md-12 mx-auto">
-							<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-							<div class="text-minor-heading my-2">What is the type of business or company?</div>
-							<mat-radio-group aria-label="Select an option" formControlName="bizTypeCode">
-								<mat-radio-button class="radio-label" [value]="bizTypeCodes.NonRegisteredPartnership"
-									>Non-Registered Sole Proprietor</mat-radio-button
-								>
-								<mat-divider class="my-2"></mat-divider>
-								<mat-radio-button class="radio-label" [value]="bizTypeCodes.RegisteredSoleProprietor"
-									>Registered Sole Proprietor</mat-radio-button
-								>
-							</mat-radio-group>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('bizTypeCode')?.dirty || form.get('bizTypeCode')?.touched) &&
-									form.get('bizTypeCode')?.invalid &&
-									form.get('bizTypeCode')?.hasError('required')
-								"
-								>This is required</mat-error
-							>
-						</div>
-					</div>
-				</form>
-			</div>
-		</section>
+				</div>
+			</form>
+		</app-step-section>
 	`,
 	styles: [],
 })

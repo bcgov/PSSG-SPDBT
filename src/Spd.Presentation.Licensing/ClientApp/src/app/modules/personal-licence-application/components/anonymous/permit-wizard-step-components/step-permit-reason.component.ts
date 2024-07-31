@@ -9,81 +9,75 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-reason',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<form [formGroup]="form" novalidate>
-					<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit">
-						<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
-							<div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
-								<mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
-								<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
-								<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
-								<mat-checkbox formControlName="isTravelForConflict">
-									Travel in response to international conflict
-								</mat-checkbox>
-								<mat-checkbox formControlName="isOther">Other</mat-checkbox>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('bodyArmourRequirementFormGroup')?.dirty ||
-											form.get('bodyArmourRequirementFormGroup')?.touched) &&
-										form.get('bodyArmourRequirementFormGroup')?.invalid &&
-										form.get('bodyArmourRequirementFormGroup')?.hasError('atLeastOneCheckbox')
-									"
-									>At least one option must be selected</mat-error
-								>
-							</div>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<form [formGroup]="form" novalidate>
+				<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit">
+					<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
+						<div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
+							<mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
+							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
+							<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
+							<mat-checkbox formControlName="isTravelForConflict">
+								Travel in response to international conflict
+							</mat-checkbox>
+							<mat-checkbox formControlName="isOther">Other</mat-checkbox>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('bodyArmourRequirementFormGroup')?.dirty ||
+										form.get('bodyArmourRequirementFormGroup')?.touched) &&
+									form.get('bodyArmourRequirementFormGroup')?.invalid &&
+									form.get('bodyArmourRequirementFormGroup')?.hasError('atLeastOneCheckbox')
+								"
+								>At least one option must be selected</mat-error
+							>
 						</div>
 					</div>
-					<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit">
-						<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
-							<div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
-								<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
-								<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
-								<mat-checkbox formControlName="isProtectionOfAnotherPerson">
-									Protection of another person
-								</mat-checkbox>
-								<mat-checkbox formControlName="isProtectionOfPersonalProperty">
-									Protection of personal property
-								</mat-checkbox>
-								<mat-checkbox formControlName="isProtectionOfOthersProperty">
-									Protection of other's property
-								</mat-checkbox>
-								<mat-checkbox formControlName="isOther"> Other </mat-checkbox>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(form.get('armouredVehicleRequirementFormGroup')?.dirty ||
-											form.get('armouredVehicleRequirementFormGroup')?.touched) &&
-										form.get('armouredVehicleRequirementFormGroup')?.invalid &&
-										form.get('armouredVehicleRequirementFormGroup')?.hasError('atLeastOneCheckbox')
-									"
-									>At least one option must be selected</mat-error
-								>
-							</div>
+				</div>
+				<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit">
+					<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
+						<div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
+							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
+							<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
+							<mat-checkbox formControlName="isProtectionOfAnotherPerson"> Protection of another person </mat-checkbox>
+							<mat-checkbox formControlName="isProtectionOfPersonalProperty">
+								Protection of personal property
+							</mat-checkbox>
+							<mat-checkbox formControlName="isProtectionOfOthersProperty">
+								Protection of other's property
+							</mat-checkbox>
+							<mat-checkbox formControlName="isOther"> Other </mat-checkbox>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(form.get('armouredVehicleRequirementFormGroup')?.dirty ||
+										form.get('armouredVehicleRequirementFormGroup')?.touched) &&
+									form.get('armouredVehicleRequirementFormGroup')?.invalid &&
+									form.get('armouredVehicleRequirementFormGroup')?.hasError('atLeastOneCheckbox')
+								"
+								>At least one option must be selected</mat-error
+							>
 						</div>
 					</div>
-					<div class="row mt-3" *ngIf="isOther === true">
-						<div class="col-xl-8 col-lg-12 mx-auto">
-							<mat-form-field>
-								<mat-label>Describe Requirement</mat-label>
-								<textarea
-									matInput
-									formControlName="otherReason"
-									style="min-height: 150px"
-									maxlength="500"
-									[errorStateMatcher]="matcher"
-								></textarea>
-								<mat-hint>Maximum 500 characters</mat-hint>
-								<mat-error *ngIf="form.get('otherReason')?.hasError('required')">This is required</mat-error>
-							</mat-form-field>
-						</div>
+				</div>
+				<div class="row mt-3" *ngIf="isOther === true">
+					<div class="col-xl-8 col-lg-12 mx-auto">
+						<mat-form-field>
+							<mat-label>Describe Requirement</mat-label>
+							<textarea
+								matInput
+								formControlName="otherReason"
+								style="min-height: 150px"
+								maxlength="500"
+								[errorStateMatcher]="matcher"
+							></textarea>
+							<mat-hint>Maximum 500 characters</mat-hint>
+							<mat-error *ngIf="form.get('otherReason')?.hasError('required')">This is required</mat-error>
+						</mat-form-field>
 					</div>
-				</form>
-			</div>
-		</section>
+				</div>
+			</form>
+		</app-step-section>
 	`,
 	styles: [],
 })

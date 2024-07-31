@@ -7,19 +7,12 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-terms-of-use',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Terms and Conditions"
-					subtitle="Read, download, and accept the Terms of Use to continue"
-				></app-step-title>
-
-				<app-common-swl-permit-terms
-					[form]="form"
-					[applicationTypeCode]="applicationTypeCode"
-				></app-common-swl-permit-terms>
-			</div>
-		</section>
+		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+			<app-common-swl-permit-terms
+				[form]="form"
+				[applicationTypeCode]="applicationTypeCode"
+			></app-common-swl-permit-terms>
+		</app-step-section>
 	`,
 	styles: [],
 })

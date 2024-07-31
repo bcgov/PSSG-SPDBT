@@ -7,22 +7,18 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-personal-information',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
+				<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
+			</ng-container>
 
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-					<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
-				</ng-container>
-
-				<ng-container *ngIf="isRenewalOrUpdate">
-					<app-common-personal-information-renew-anonymous
-						[applicationTypeCode]="applicationTypeCode"
-						[form]="form"
-					></app-common-personal-information-renew-anonymous>
-				</ng-container>
-			</div>
-		</section>
+			<ng-container *ngIf="isRenewalOrUpdate">
+				<app-common-personal-information-renew-anonymous
+					[applicationTypeCode]="applicationTypeCode"
+					[form]="form"
+				></app-common-personal-information-renew-anonymous>
+			</ng-container>
+		</app-step-section>
 	`,
 	styles: [],
 })

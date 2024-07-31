@@ -6,13 +6,9 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-business-licence-reprint',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title title="Do you need a new licence printed?"></app-step-title>
-
-				<app-licence-reprint [form]="form"></app-licence-reprint>
-			</div>
-		</section>
+		<app-step-section title="Do you need a new licence printed?">
+			<app-licence-reprint [form]="form"></app-licence-reprint>
+		</app-step-section>
 	`,
 	styles: [],
 })

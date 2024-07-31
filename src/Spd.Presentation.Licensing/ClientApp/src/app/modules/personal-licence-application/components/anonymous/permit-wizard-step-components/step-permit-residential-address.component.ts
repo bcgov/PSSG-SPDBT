@@ -7,13 +7,9 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-residential-address',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<app-address [form]="form"></app-address>
-			</div>
-		</section>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<app-address [form]="form"></app-address>
+		</app-step-section>
 	`,
 	styles: [],
 })

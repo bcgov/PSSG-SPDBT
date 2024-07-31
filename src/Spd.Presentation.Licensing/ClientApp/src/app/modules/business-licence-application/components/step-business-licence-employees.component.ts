@@ -6,17 +6,13 @@ import { CommonEmployeesComponent } from './common-employees.component';
 @Component({
 	selector: 'app-step-business-licence-employees',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<div class="row">
-					<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-common-employees [defaultExpanded]="true" [isWizard]="true"></app-common-employees>
-					</div>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<div class="row">
+				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<app-common-employees [defaultExpanded]="true" [isWizard]="true"></app-common-employees>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [],
 })

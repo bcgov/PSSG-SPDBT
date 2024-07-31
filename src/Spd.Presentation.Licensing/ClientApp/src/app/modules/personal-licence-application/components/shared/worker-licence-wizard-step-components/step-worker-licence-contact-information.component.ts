@@ -8,17 +8,13 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-contact-information',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<div class="row">
-					<div class="col-12 mx-auto">
-						<app-common-contact-information [form]="form"></app-common-contact-information>
-					</div>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<div class="row">
+				<div class="col-12 mx-auto">
+					<app-common-contact-information [form]="form"></app-common-contact-information>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [],
 })

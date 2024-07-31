@@ -7,34 +7,30 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-mailing-address-replacement-anonymous',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<app-address [form]="form"></app-address>
 
-				<app-address [form]="form"></app-address>
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
+						<app-collection-notice></app-collection-notice>
 
-				<form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-							<app-collection-notice></app-collection-notice>
-
-							<div formGroupName="captchaFormGroup" *ngIf="displayCaptcha.value">
-								<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
-								<mat-error
-									class="mat-option-error"
-									*ngIf="
-										(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
-										captchaFormGroup.get('token')?.invalid &&
-										captchaFormGroup.get('token')?.hasError('required')
-									"
-									>This is required</mat-error
-								>
-							</div>
+						<div formGroupName="captchaFormGroup" *ngIf="displayCaptcha.value">
+							<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
+							<mat-error
+								class="mat-option-error"
+								*ngIf="
+									(captchaFormGroup.get('token')?.dirty || captchaFormGroup.get('token')?.touched) &&
+									captchaFormGroup.get('token')?.invalid &&
+									captchaFormGroup.get('token')?.hasError('required')
+								"
+								>This is required</mat-error
+							>
 						</div>
 					</div>
-				</form>
-			</div>
-		</section>
+				</div>
+			</form>
+		</app-step-section>
 	`,
 	styles: [],
 })

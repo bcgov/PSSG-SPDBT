@@ -8,11 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-business-licence-manager-information',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-			</div>
-
+		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="summary-heading mb-2">Business Manager Information</div>
@@ -101,7 +97,7 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 					</form>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [],
 })

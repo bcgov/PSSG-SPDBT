@@ -7,20 +7,16 @@ import { PermitApplicationService } from '@app/modules/personal-licence-applicat
 @Component({
 	selector: 'app-step-permit-expired',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Do you have an expired permit?"
-					subtitle="Processing time will be reduced if you provide info from your past permit"
-				></app-step-title>
-
-				<app-expired-licence
-					[form]="form"
-					[isLoggedIn]="isLoggedIn"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
-				></app-expired-licence>
-			</div>
-		</section>
+		<app-step-section
+			title="Do you have an expired permit?"
+			subtitle="Processing time will be reduced if you provide info from your past permit"
+		>
+			<app-expired-licence
+				[form]="form"
+				[isLoggedIn]="isLoggedIn"
+				[workerLicenceTypeCode]="workerLicenceTypeCode"
+			></app-expired-licence>
+		</app-step-section>
 	`,
 	styles: [],
 })

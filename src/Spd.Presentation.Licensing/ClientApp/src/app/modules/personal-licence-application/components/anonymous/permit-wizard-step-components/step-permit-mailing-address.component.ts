@@ -7,16 +7,12 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-mailing-address',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<app-address-and-is-same-flag
-					[form]="form"
-					isAddressTheSameLabel="My residential address and mailing address are the same"
-				></app-address-and-is-same-flag>
-			</div>
-		</section>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<app-address-and-is-same-flag
+				[form]="form"
+				isAddressTheSameLabel="My residential address and mailing address are the same"
+			></app-address-and-is-same-flag>
+		</app-step-section>
 	`,
 	styles: [],
 })

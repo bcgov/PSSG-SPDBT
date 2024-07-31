@@ -8,20 +8,16 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-worker-licence-fingerprints',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Upload proof of fingerprinting request"
-					subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
-				></app-step-title>
-
-				<app-common-fingerprints
-					[form]="form"
-					(fileUploaded)="onFileUploaded($event)"
-					(fileRemoved)="onFileRemoved()"
-				></app-common-fingerprints>
-			</div>
-		</section>
+		<app-step-section
+			title="Upload proof of fingerprinting request"
+			subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
+		>
+			<app-common-fingerprints
+				[form]="form"
+				(fileUploaded)="onFileUploaded($event)"
+				(fileRemoved)="onFileRemoved()"
+			></app-common-fingerprints>
+		</app-step-section>
 	`,
 	styles: [],
 })

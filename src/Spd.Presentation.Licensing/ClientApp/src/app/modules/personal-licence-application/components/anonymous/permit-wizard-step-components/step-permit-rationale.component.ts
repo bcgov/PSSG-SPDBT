@@ -10,44 +10,40 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-rationale',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-							<mat-form-field>
-								<mat-label>Rationale</mat-label>
-								<textarea
-									matInput
-									formControlName="rationale"
-									style="min-height: 200px"
-									[errorStateMatcher]="matcher"
-									maxlength="3000"
-								></textarea>
-								<mat-hint>Maximum 3000 characters</mat-hint>
-								<mat-error *ngIf="form.get('rationale')?.hasError('required')"> This is required </mat-error>
-							</mat-form-field>
-						</div>
-						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto mt-2">
-							<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
-							<div class="my-2">
-								These could be a police report which refers to the safety concern, a protection order, a news article
-								about your concern, etc.
-							</div>
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="5"
-								[files]="attachments.value"
-							></app-file-upload>
-						</div>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+						<mat-form-field>
+							<mat-label>Rationale</mat-label>
+							<textarea
+								matInput
+								formControlName="rationale"
+								style="min-height: 200px"
+								[errorStateMatcher]="matcher"
+								maxlength="3000"
+							></textarea>
+							<mat-hint>Maximum 3000 characters</mat-hint>
+							<mat-error *ngIf="form.get('rationale')?.hasError('required')"> This is required </mat-error>
+						</mat-form-field>
 					</div>
-				</form>
-			</div>
-		</section>
+					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto mt-2">
+						<div class="text-minor-heading">Provide any documents that support your rationale (optional)</div>
+						<div class="my-2">
+							These could be a police report which refers to the safety concern, a protection order, a news article
+							about your concern, etc.
+						</div>
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="5"
+							[files]="attachments.value"
+						></app-file-upload>
+					</div>
+				</div>
+			</form>
+		</app-step-section>
 	`,
 	styles: [],
 })

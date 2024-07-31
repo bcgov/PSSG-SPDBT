@@ -8,19 +8,12 @@ import { CommonBusinessTermsComponent } from './common-business-terms.component'
 @Component({
 	selector: 'app-step-business-licence-update-terms',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Terms and Conditions"
-					subtitle="Read, download, and accept the Terms of Use to continue"
-				></app-step-title>
-
-				<app-common-business-terms
-					[form]="form"
-					[applicationTypeCode]="applicationTypeCodeUpdate"
-				></app-common-business-terms>
-			</div>
-		</section>
+		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
+			<app-common-business-terms
+				[form]="form"
+				[applicationTypeCode]="applicationTypeCodeUpdate"
+			></app-common-business-terms>
+		</app-step-section>
 
 		<app-wizard-footer (nextStepperStep)="onFormValidNextStep()"></app-wizard-footer>
 	`,

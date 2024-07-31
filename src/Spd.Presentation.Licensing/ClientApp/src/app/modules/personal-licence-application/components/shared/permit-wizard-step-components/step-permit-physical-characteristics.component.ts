@@ -7,13 +7,9 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-permit-physical-characteristics',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title [title]="title" [subtitle]="subtitle"></app-step-title>
-
-				<app-common-physical-characteristics [form]="form"></app-common-physical-characteristics>
-			</div>
-		</section>
+		<app-step-section [title]="title" [subtitle]="subtitle">
+			<app-common-physical-characteristics [form]="form"></app-common-physical-characteristics>
+		</app-step-section>
 	`,
 	styles: [],
 })

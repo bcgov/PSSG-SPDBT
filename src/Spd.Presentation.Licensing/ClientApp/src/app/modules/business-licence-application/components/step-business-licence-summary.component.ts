@@ -4,19 +4,12 @@ import { CommonBusinessLicenceSummaryComponent } from './common-business-licence
 @Component({
 	selector: 'app-step-business-licence-summary',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Application Summary"
-					subtitle="Review your information before submitting your application"
-				></app-step-title>
-
-				<app-common-business-licence-summary
-					(editStep)="onEditStep($event)"
-					[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
-				></app-common-business-licence-summary>
-			</div>
-		</section>
+		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
+			<app-common-business-licence-summary
+				(editStep)="onEditStep($event)"
+				[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
+			></app-common-business-licence-summary>
+		</app-step-section>
 	`,
 	styles: [],
 })

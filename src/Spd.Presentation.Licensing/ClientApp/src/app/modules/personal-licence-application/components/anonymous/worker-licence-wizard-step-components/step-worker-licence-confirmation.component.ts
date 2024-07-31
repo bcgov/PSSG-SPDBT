@@ -7,61 +7,57 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 @Component({
 	selector: 'app-step-worker-licence-confirmation',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title title="Confirm your current licence information"></app-step-title>
-
-				<div class="row">
-					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<app-alert type="warning" icon="warning">
-							If any of this information is not correct, please call the Security Program's Licensing Unit during
-							regular office hours: {{ spdPhoneNumber }}
-						</app-alert>
-					</div>
+		<app-step-section title="Confirm your current licence information">
+			<div class="row">
+				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<app-alert type="warning" icon="warning">
+						If any of this information is not correct, please call the Security Program's Licensing Unit during regular
+						office hours: {{ spdPhoneNumber }}
+					</app-alert>
 				</div>
+			</div>
 
-				<div class="row">
-					<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="row mt-0 mb-3">
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Holder Name</div>
-								<div class="summary-text-data">{{ cardHolderName }}</div>
+			<div class="row">
+				<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
+					<div class="row mt-0 mb-3">
+						<div class="col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Holder Name</div>
+							<div class="summary-text-data">{{ cardHolderName }}</div>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Number</div>
+							<div class="summary-text-data">{{ originalLicenceNumber }}</div>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Categories</div>
+							<div class="summary-text-data">
+								<ul class="m-0">
+									<ng-container *ngFor="let category of categoryList; let i = index">
+										<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+									</ng-container>
+								</ul>
 							</div>
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Number</div>
-								<div class="summary-text-data">{{ originalLicenceNumber }}</div>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Expiry Date</div>
+							<div class="summary-text-data">
+								{{ originalExpiryDate | formatDate : formalDateFormat }}
 							</div>
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Categories</div>
-								<div class="summary-text-data">
-									<ul class="m-0">
-										<ng-container *ngFor="let category of categoryList; let i = index">
-											<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
-										</ng-container>
-									</ul>
-								</div>
-							</div>
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Expiry Date</div>
-								<div class="summary-text-data">
-									{{ originalExpiryDate | formatDate : formalDateFormat }}
-								</div>
-							</div>
-							<div class="col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Licence Term</div>
-								<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
-							</div>
-							<div class="col-lg-6 col-md-12" *ngIf="feeAmount">
-								<div class="text-label d-block text-muted">{{ applicationTypeCode }} Fee</div>
-								<div class="summary-text-data">
-									{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
-								</div>
+						</div>
+						<div class="col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Term</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+						</div>
+						<div class="col-lg-6 col-md-12" *ngIf="feeAmount">
+							<div class="text-label d-block text-muted">{{ applicationTypeCode }} Fee</div>
+							<div class="summary-text-data">
+								{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</app-step-section>
 	`,
 	styles: [],
 })

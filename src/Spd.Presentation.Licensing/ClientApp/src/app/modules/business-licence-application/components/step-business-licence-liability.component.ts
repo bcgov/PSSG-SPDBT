@@ -8,47 +8,51 @@ import { LicenceChildStepperStepComponent } from '@app/shared/services/common-ap
 @Component({
 	selector: 'app-step-business-licence-liability',
 	template: `
-		<section class="step-section">
-			<div class="step">
-				<app-step-title
-					title="Provide proof of insurance"
-					subtitle="Provide <a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply' target='_blank'>proof of insurance</a> that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability"
-				></app-step-title>
-
-				<form [formGroup]="form" novalidate>
-					<div class="row">
-						<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-							<div class="text-minor-heading mb-2">Upload proof of insurance</div>
-							<div>The insurance document must also include:</div>
-							<ul>
-								<li>The business name</li>
-								<li>The business locations</li>
-								<li>The expiry date of the insurance</li>
-								<li>Proof that insurance is valid in B.C.</li>
-							</ul>
-
-							<app-file-upload
-								(fileUploaded)="onFileUploaded($event)"
-								(fileRemoved)="onFileRemoved()"
-								[control]="attachments"
-								[maxNumberOfFiles]="10"
-								[files]="attachments.value"
-								[previewImage]="true"
-							></app-file-upload>
-							<mat-error
-								class="mat-option-error"
-								*ngIf="
-									(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-									form.get('attachments')?.invalid &&
-									form.get('attachments')?.hasError('required')
-								"
-								>This is required</mat-error
+		<app-step-section title="Provide proof of insurance">
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
+						<app-alert type="info" icon="info">
+							Provide
+							<a
+								class="large"
+								href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply"
+								target="_blank"
+								>proof of insurance</a
 							>
-						</div>
+							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability
+						</app-alert>
+
+						<div class="text-minor-heading mb-2">Upload proof of insurance</div>
+						<div>The insurance document must also include:</div>
+						<ul>
+							<li>The business name</li>
+							<li>The business locations</li>
+							<li>The expiry date of the insurance</li>
+							<li>Proof that insurance is valid in B.C.</li>
+						</ul>
+
+						<app-file-upload
+							(fileUploaded)="onFileUploaded($event)"
+							(fileRemoved)="onFileRemoved()"
+							[control]="attachments"
+							[maxNumberOfFiles]="10"
+							[files]="attachments.value"
+							[previewImage]="true"
+						></app-file-upload>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+								form.get('attachments')?.invalid &&
+								form.get('attachments')?.hasError('required')
+							"
+							>This is required</mat-error
+						>
 					</div>
-				</form>
-			</div>
-		</section>
+				</div>
+			</form>
+		</app-step-section>
 	`,
 	styles: [],
 })
