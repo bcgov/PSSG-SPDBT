@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { ApplicationService } from './core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { take, tap } from 'rxjs';
 import { WorkerLicenceTypeCode } from './api/models';
 import { SPD_CONSTANTS } from './core/constants/constants';
+import { ApplicationService } from './core/services/application.service';
 import { AuthProcessService } from './core/services/auth-process.service';
 import { LicenceApplicationService } from './core/services/licence-application.service';
 import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-licence-application-routing.module';
@@ -250,7 +250,6 @@ export class LandingComponent implements OnInit {
 							.createNewPermitAnonymous(workerLicenceTypeCode)
 							.pipe(
 								tap((_resp: any) => {
-									console.log('initialized3', this.permitApplicationService.initialized);
 									this.router.navigateByUrl(
 										PersonalLicenceApplicationRoutes.pathPermitAnonymous(
 											PersonalLicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS

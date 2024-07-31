@@ -42,7 +42,7 @@ export class AuthProcessService {
 			this.identityProvider,
 			returnComponentRoute ?? returningRoute
 		);
-		console.debug('initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
+		console.debug('[AuthProcessService] initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBcscService.applicantLoginAsync();
@@ -66,11 +66,10 @@ export class AuthProcessService {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const returningRoute = BusinessLicenceApplicationRoutes.pathBusinessApplications();
-		console.debug('initializeLicencingBCeID returningRoute', returningRoute);
-		console.debug('initializeLicencingBCeID defaultRoute', defaultRoute);
+		console.debug('[AuthProcessService] initializeLicencingBCeID return route', defaultRoute ?? returningRoute);
 
 		const nextUrl = await this.authenticationService.login(this.identityProvider, defaultRoute ?? returningRoute);
-		console.debug('initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
+		console.debug('[AuthProcessService] initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
 
 		if (nextUrl) {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultBizId);
@@ -88,6 +87,8 @@ export class AuthProcessService {
 	// *
 	// *
 	public logout(): void {
+		console.debug('[AuthProcessService] logout');
+
 		const loginType = this.identityProvider;
 
 		this.identityProvider = null;
@@ -106,13 +107,20 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public logoutBcsc(): void {
-		console.debug('logoutBcsc');
+	public logoutBcsc(redirectComponentRoute?: string): void {
+		console.debug('[AuthProcessService] logoutBcsc', redirectComponentRoute);
+
+		let redirectUri = location.origin;
+		if (redirectComponentRoute) {
+			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
+		}
+
+		console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
 
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] === bcscIssuer) {
-			this.oauthService.logOut({ redirectUrl: location.origin });
+			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
 
@@ -120,12 +128,12 @@ export class AuthProcessService {
 	// *
 	// *
 	public logoutBceid(): void {
-		console.debug('logoutBceid');
+		console.debug('[AuthProcessService] logoutBceid');
 
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] !== bcscIssuer) {
-			this.oauthService.logOut({ redirectUrl: location.origin });
+			this.oauthService.logOut();
 		}
 	}
 
@@ -141,6 +149,7 @@ export class AuthProcessService {
 		} else {
 			const token = this.authenticationService.getToken();
 			this.loggedInUserTokenData = this.utilService.getDecodedAccessToken(token);
+
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}

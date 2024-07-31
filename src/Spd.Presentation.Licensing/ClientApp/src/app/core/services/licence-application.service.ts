@@ -24,7 +24,6 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService, MainLicenceResponse } from './application.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
@@ -52,6 +51,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { ApplicationService, MainLicenceResponse } from './application.service';
 import { LicenceApplicationHelper } from './licence-application.helper';
 
 @Injectable({
@@ -1975,8 +1975,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	resetModelFlags(): void {
-		console.log('resetModelFlags');
-
 		this.initialized = false;
 		this.isLoading = true;
 		this.hasValueChanged = false;

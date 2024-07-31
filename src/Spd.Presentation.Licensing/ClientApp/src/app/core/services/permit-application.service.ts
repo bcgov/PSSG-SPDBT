@@ -806,7 +806,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			tap((resp: any) => {
 				this.initialized = true;
 
-				console.log('initialized2', this.initialized);
 				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
 			})
 		);
@@ -1529,8 +1528,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	resetModelFlags(): void {
-		console.log('resetModelFlags');
-
 		this.initialized = false;
 		this.isLoading = true;
 		this.hasValueChanged = false;

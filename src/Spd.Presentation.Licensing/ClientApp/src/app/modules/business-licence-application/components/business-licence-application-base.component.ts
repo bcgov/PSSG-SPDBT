@@ -37,14 +37,22 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		const queryParams = await lastValueFrom(this.route.queryParams.pipe(take(1)));
 		const defaultBizId: string | undefined = queryParams['bizId'];
 
-		console.debug('BusinessLicenceApplicationBaseComponent ngOnInit', location.pathname);
+		const currentPath = location.pathname;
+		let redirectComponentRoute: string | undefined;
+		if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP)) {
+			redirectComponentRoute = BusinessLicenceApplicationRoutes.path(
+				BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP
+			);
+		}
 
-		console.debug('logoutBcsc');
-		this.authProcessService.logoutBcsc();
-		console.debug('initializeLicencingBCeID');
-		const nextRoute = await this.authProcessService.initializeLicencingBCeID(defaultBizId);
+		console.debug('BusinessLicenceApplicationBaseComponent redirectComponentRoute', redirectComponentRoute);
 
-		console.debug('this.authUserBceidService.bceidUserProfile', this.authUserBceidService.bceidUserProfile);
+		this.authProcessService.logoutBcsc(redirectComponentRoute);
+
+		const nextRoute = await this.authProcessService.initializeLicencingBCeID(defaultBizId, redirectComponentRoute);
+
+		// TODO for BUSINESS_NEW_SWL_SP, ignore first time login ??
+
 		// handle first time login
 		if (this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
 			this.router.navigateByUrl(

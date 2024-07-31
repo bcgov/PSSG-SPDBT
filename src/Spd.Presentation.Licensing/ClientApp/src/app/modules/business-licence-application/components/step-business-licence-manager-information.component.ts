@@ -134,7 +134,6 @@ export class StepBusinessLicenceManagerInformationComponent implements OnInit, L
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
-		console.log('*******', this.form.valid, this.form.value, this.form);
 		return this.form.valid;
 	}
 

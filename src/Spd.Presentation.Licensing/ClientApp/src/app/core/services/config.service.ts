@@ -58,7 +58,6 @@ export class ConfigService {
 			scope: resp.scope!,
 			showDebugInformation: true,
 			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
-			// postLogoutRedirectUri: 'http://localhost:4200/spd-licence/login-selection', // TODO remove
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
 		};
 		console.debug('[ConfigService] getBceidConfig', bceIdConfig, 'redirectUri', redirectUri);
@@ -66,6 +65,8 @@ export class ConfigService {
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
+		console.debug('[getBcscConfig] redirectUri', redirectUri);
+
 		const resp = this.configs?.bcscConfiguration!;
 		const bcscConfig = {
 			issuer: resp.issuer!,
@@ -74,8 +75,6 @@ export class ConfigService {
 			responseType: resp.responseType!,
 			scope: resp.scope!,
 			showDebugInformation: true,
-			// postLogoutRedirectUri: 'http://localhost:4200/spd-licence/login-selection', // TODO remove
-			postLogoutRedirectUri: resp.postLogoutRedirectUri!,
 			strictDiscoveryDocumentValidation: false,
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
 		};

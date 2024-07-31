@@ -35,8 +35,8 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ApplicationService, MainLicenceResponse } from '@app/core/services/application.service';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocument, LicenceDocumentsToSave, SpdFile, UtilService } from '@app/core/services/util.service';
@@ -1795,8 +1795,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	resetModelFlags(): void {
-		console.log('resetModelFlags');
-
 		this.initialized = false;
 		this.isLoading = true;
 		this.hasValueChanged = false;
