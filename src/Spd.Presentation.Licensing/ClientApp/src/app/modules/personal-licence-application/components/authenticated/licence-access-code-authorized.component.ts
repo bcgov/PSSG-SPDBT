@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { IActionResult } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({

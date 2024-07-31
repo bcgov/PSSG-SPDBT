@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-worker-licence-review-name-change',

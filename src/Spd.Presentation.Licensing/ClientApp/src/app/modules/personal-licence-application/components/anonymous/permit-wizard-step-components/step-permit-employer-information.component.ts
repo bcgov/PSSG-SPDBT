@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-employer-information',

@@ -3,11 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
+import { ApplicationService, LicenceLookupResult } from '@app/core/services/application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { Subject } from 'rxjs';
-import { CommonApplicationService, LicenceLookupResult } from '../services/common-application.service';
 
 export interface LookupByLicenceNumberDialogData {
 	title: string;
@@ -187,7 +187,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	constructor(
 		private dialogRef: MatDialogRef<ModalLookupByLicenceNumberComponent>,
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private formatDatePipe: FormatDatePipe,
 		@Inject(MAT_DIALOG_DATA) public dialogData: LookupByLicenceNumberDialogData
 	) {}

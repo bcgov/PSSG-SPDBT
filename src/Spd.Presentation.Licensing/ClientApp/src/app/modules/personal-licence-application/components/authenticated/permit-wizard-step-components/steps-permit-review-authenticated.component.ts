@@ -4,7 +4,7 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { StepPermitConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-summary-authenticated.component';
 import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-permit-review-authenticated',
@@ -82,7 +82,7 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

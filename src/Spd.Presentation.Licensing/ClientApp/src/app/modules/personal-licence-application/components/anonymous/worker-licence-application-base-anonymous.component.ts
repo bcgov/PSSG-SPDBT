@@ -1,12 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppRoutes } from '@app/app-routing.module';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 
 @Component({
 	selector: 'app-worker-licence-application-base-anonymous',
-	template: ` <router-outlet></router-outlet> `,
+	template: `
+		<div class="container px-0 my-0 px-md-2 my-md-3">
+			<!-- hide padding/margin on smaller screens -->
+			<div class="row">
+				<div class="col-12">
+					<router-outlet></router-outlet>
+				</div>
+			</div>
+		</div>
+	`,
 	styles: [],
 })
 export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
@@ -22,7 +31,7 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 		this.authProcessService.logoutBcsc();
 
 		if (!this.licenceApplicationService.initialized) {
-			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 			return;
 		}
 	}

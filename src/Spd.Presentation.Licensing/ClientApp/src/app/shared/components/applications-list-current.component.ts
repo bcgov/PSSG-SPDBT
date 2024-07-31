@@ -3,7 +3,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/models';
-import { MainApplicationResponse } from '@app/shared/services/common-application.service';
+import { MainApplicationResponse } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-applications-list-current',

@@ -5,9 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,

@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 @Component({
 	selector: 'app-licence-category-fire-investigator',
 	template: `

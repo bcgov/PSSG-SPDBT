@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutes } from '@app/app-routing.module';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-licence-payment-cancel',
@@ -21,7 +21,7 @@ export class LicencePaymentCancelComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

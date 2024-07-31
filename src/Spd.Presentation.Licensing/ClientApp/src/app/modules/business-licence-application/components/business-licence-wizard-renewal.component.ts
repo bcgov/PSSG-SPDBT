@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsBusinessLicenceContactInformationComponent } from './steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './steps-business-licence-controlling-members.component';

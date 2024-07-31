@@ -3,11 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { PrivateInvestigatorSupRequirementCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-licence-category-private-investigator-sup',

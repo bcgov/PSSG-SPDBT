@@ -8,11 +8,10 @@ import {
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-step-worker-licence-citizenship',

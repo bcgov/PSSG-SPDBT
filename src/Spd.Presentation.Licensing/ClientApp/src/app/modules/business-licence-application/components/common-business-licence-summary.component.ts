@@ -6,9 +6,9 @@ import {
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { ApplicationService } from '@app/core/services/application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { SpdFile } from '@app/core/services/util.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
@@ -427,7 +427,7 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

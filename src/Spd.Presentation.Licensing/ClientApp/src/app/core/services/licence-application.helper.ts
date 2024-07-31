@@ -11,15 +11,15 @@ import {
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
-import { SpdFile, UtilService } from '@app/core/services/util.service';
-import { CommonApplicationHelper, LicenceDocumentsToSave } from '@app/shared/services/common-application.helper';
+import { LicenceDocumentsToSave, SpdFile, UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
+import { ApplicationHelper } from './application.helper';
 
-export abstract class LicenceApplicationHelper extends CommonApplicationHelper {
+export abstract class LicenceApplicationHelper extends ApplicationHelper {
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),

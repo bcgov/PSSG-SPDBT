@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
 import { CommonControllingMembersComponent } from './common-controlling-members.component';

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-confirmation',
@@ -72,7 +72,7 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit() {

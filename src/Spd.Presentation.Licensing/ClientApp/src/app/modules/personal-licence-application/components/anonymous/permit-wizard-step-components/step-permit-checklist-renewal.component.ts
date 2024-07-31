@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-permit-checklist-renewal',

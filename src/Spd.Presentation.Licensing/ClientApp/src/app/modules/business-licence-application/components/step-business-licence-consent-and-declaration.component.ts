@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { UtilService } from '@app/core/services/util.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-business-licence-consent-and-declaration',

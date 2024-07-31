@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitContactInformationComponent } from './step-permit-contact-information.component';
 import { StepPermitMailingAddressComponent } from './step-permit-mailing-address.component';
 import { StepPermitResidentialAddressComponent } from './step-permit-residential-address.component';
@@ -72,7 +72,7 @@ export class StepsPermitContactComponent extends BaseWizardStepComponent {
 	@ViewChild(StepPermitContactInformationComponent)
 	stepContactInformationComponent!: StepPermitContactInformationComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

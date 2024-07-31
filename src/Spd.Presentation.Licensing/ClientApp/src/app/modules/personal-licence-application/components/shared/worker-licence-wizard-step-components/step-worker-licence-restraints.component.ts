@@ -3,9 +3,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-step-worker-licence-restraints',

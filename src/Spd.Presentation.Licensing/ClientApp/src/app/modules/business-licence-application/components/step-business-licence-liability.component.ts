@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-step-business-licence-liability',

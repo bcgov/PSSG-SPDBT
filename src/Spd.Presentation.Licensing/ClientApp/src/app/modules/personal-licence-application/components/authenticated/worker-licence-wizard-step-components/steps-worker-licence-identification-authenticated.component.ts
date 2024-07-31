@@ -6,7 +6,7 @@ import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/personal-lic
 import { StepWorkerLicenceFingerprintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-fingerprints.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-physical-characteristics.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-worker-licence-identification-authenticated',
@@ -110,7 +110,7 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
 	photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
 @Component({

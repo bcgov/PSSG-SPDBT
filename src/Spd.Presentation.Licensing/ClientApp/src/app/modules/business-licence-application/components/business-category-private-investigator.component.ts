@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,

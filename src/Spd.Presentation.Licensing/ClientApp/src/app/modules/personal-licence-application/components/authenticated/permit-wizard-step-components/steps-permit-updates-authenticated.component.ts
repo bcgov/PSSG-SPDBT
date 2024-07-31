@@ -5,7 +5,7 @@ import { StepPermitEmployerInformationComponent } from '@app/modules/personal-li
 import { StepPermitRationaleComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
 import { StepPermitReprintComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-reprint.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-change.component';
 
@@ -105,7 +105,7 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitReprintComponent) stepReprintComponent!: StepPermitReprintComponent;
 	@ViewChild(StepPermitEmployerInformationComponent) stepEmployerComponent!: StepPermitEmployerInformationComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

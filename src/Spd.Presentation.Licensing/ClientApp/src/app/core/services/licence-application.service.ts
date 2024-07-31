@@ -24,12 +24,11 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { ApplicationService, MainLicenceResponse } from './application.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { LicenceDocument, LicenceDocumentsToSave } from '@app/shared/services/common-application.helper';
-import { CommonApplicationService, MainLicenceResponse } from '@app/shared/services/common-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
@@ -51,7 +50,7 @@ import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { UtilService } from 'src/app/core/services/util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { LicenceApplicationHelper } from './licence-application.helper';
 
@@ -59,6 +58,10 @@ import { LicenceApplicationHelper } from './licence-application.helper';
 	providedIn: 'root',
 })
 export class LicenceApplicationService extends LicenceApplicationHelper {
+	initialized = false;
+	hasValueChanged = false;
+	isLoading = true;
+
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	photographOfYourself: string | null = null;
@@ -128,7 +131,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private applicantProfileService: ApplicantProfileService,
 		private domSanitizer: DomSanitizer,
 		private hotToastService: HotToastService
@@ -1957,5 +1960,25 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
 		return of(this.licenceModelFormGroup.value);
+	}
+
+	updateModelChangeFlags(): void {
+		if (this.isLoading) {
+			this.isLoading = false;
+		} else {
+			this.hasValueChanged = true;
+		}
+	}
+
+	resetModelChangeFlags(): void {
+		this.hasValueChanged = false;
+	}
+
+	resetModelFlags(): void {
+		console.log('resetModelFlags');
+
+		this.initialized = false;
+		this.isLoading = true;
+		this.hasValueChanged = false;
 	}
 }

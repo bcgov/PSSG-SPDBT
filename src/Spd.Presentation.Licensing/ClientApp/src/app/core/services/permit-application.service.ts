@@ -48,10 +48,9 @@ import { ApplicantProfileService, LicenceService, PermitService } from 'src/app/
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { UtilService } from 'src/app/core/services/util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { LicenceDocument, LicenceDocumentsToSave } from '../../shared/services/common-application.helper';
-import { CommonApplicationService, MainLicenceResponse } from '../../shared/services/common-application.service';
+import { ApplicationService, MainLicenceResponse } from './application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
 
 export class PermitDocumentsToSave {
@@ -63,6 +62,10 @@ export class PermitDocumentsToSave {
 	providedIn: 'root',
 })
 export class PermitApplicationService extends PermitApplicationHelper {
+	initialized = false;
+	hasValueChanged = false;
+	isLoading = true;
+
 	photographOfYourself: string | null = null;
 
 	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -114,7 +117,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private applicantProfileService: ApplicantProfileService,
 		private domSanitizer: DomSanitizer,
 		private hotToastService: HotToastService
@@ -803,6 +806,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			tap((resp: any) => {
 				this.initialized = true;
 
+				console.log('initialized2', this.initialized);
 				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
 			})
 		);
@@ -1510,5 +1514,25 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		);
 		return of(this.permitModelFormGroup.value);
+	}
+
+	updateModelChangeFlags(): void {
+		if (this.isLoading) {
+			this.isLoading = false;
+		} else {
+			this.hasValueChanged = true;
+		}
+	}
+
+	resetModelChangeFlags(): void {
+		this.hasValueChanged = false;
+	}
+
+	resetModelFlags(): void {
+		console.log('resetModelFlags');
+
+		this.initialized = false;
+		this.isLoading = true;
+		this.hasValueChanged = false;
 	}
 }

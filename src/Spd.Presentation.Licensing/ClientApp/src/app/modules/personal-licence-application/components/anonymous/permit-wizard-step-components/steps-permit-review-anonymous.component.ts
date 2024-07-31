@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitConsentAndDeclarationComponent } from './step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anonymous.component';
 
@@ -47,7 +47,7 @@ export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent
 	@ViewChild(StepPermitConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepPermitConsentAndDeclarationComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

@@ -10,8 +10,8 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-anonymous',
@@ -767,7 +767,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

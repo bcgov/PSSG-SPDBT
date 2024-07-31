@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-common-user-profile-licence-police-background',

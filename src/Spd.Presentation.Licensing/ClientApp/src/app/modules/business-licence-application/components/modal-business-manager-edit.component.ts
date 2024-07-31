@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BizPortalUserResponse, BizPortalUserUpdateRequest, ContactAuthorizationTypeCode } from '@app/api/models';
 import { ContactAuthorizationTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 export interface BizPortalUserDialogData {

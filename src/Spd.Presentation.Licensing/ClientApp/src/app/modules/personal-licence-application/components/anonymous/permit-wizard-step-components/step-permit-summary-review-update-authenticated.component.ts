@@ -8,9 +8,9 @@ import {
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-summary-review-update-authenticated',
@@ -223,7 +223,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe
 	) {}

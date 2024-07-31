@@ -6,10 +6,10 @@ import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/mode
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
@@ -124,7 +124,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
 	}

@@ -3,10 +3,10 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicationTypeCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-step-worker-licence-category',

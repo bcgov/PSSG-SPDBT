@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-business-licence-expired',

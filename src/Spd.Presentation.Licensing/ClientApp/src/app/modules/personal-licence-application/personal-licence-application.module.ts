@@ -159,8 +159,6 @@ import { StepWorkerLicenceUserProfileComponent } from './components/shared/worke
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceBackgroundComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from './components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
-import { LicenceApplicationService } from './licence-application.service';
-import { PermitApplicationService } from './permit-application.service';
 import { PersonalLicenceApplicationBaseComponent } from './personal-licence-application-base.component';
 import { LicenceApplicationRoutingModule } from './personal-licence-application-routing.module';
 
@@ -328,6 +326,6 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		WorkerLicenceWizardAuthenticatedUpdateComponent,
 	],
 	imports: [SharedModule, LicenceApplicationRoutingModule],
-	providers: [LicenceApplicationService, PermitApplicationService],
+	providers: [],
 })
 export class PersonalLicenceApplicationModule {}

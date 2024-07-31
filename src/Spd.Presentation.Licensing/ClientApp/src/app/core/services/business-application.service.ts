@@ -36,9 +36,10 @@ import {
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
+import { ApplicationService, MainLicenceResponse } from '@app/core/services/application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
-import { SpdFile, UtilService } from '@app/core/services/util.service';
+import { LicenceDocument, LicenceDocumentsToSave, SpdFile, UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -54,9 +55,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { BusinessApplicationHelper } from '../../modules/business-licence-application/business-application.helper';
-import { LicenceDocument, LicenceDocumentsToSave } from './common-application.helper';
-import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
+import { BusinessApplicationHelper } from './business-application.helper';
 
 export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
@@ -72,6 +71,10 @@ export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	providedIn: 'root',
 })
 export class BusinessApplicationService extends BusinessApplicationHelper {
+	initialized = false;
+	hasValueChanged = false;
+	isLoading = true;
+
 	businessModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	businessModelFormGroup: FormGroup = this.formBuilder.group({
@@ -127,7 +130,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
 		private bizPortalUserService: BizPortalUserService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private hotToastService: HotToastService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
@@ -1777,5 +1780,25 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			bizId,
 			body,
 		});
+	}
+
+	updateModelChangeFlags(): void {
+		if (this.isLoading) {
+			this.isLoading = false;
+		} else {
+			this.hasValueChanged = true;
+		}
+	}
+
+	resetModelChangeFlags(): void {
+		this.hasValueChanged = false;
+	}
+
+	resetModelFlags(): void {
+		console.log('resetModelFlags');
+
+		this.initialized = false;
+		this.isLoading = true;
+		this.hasValueChanged = false;
 	}
 }

@@ -5,15 +5,15 @@ import { BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 import { HotToastService } from '@ngneat/hot-toast';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
 } from '../../../shared/components/modal-lookup-by-licence-number.component';
-import { CommonBusinessBcBranchesComponent } from './common-business-bc-branches.component';
+import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
 	selector: 'app-common-business-profile',
@@ -327,10 +327,10 @@ import { CommonBusinessBcBranchesComponent } from './common-business-bc-branches
 							</mat-expansion-panel-header>
 
 							<div class="mt-3">
-								<app-common-business-bc-branches
+								<app-business-bc-branches
 									[form]="branchesInBcFormGroup"
 									[isReadonly]="isReadonly"
-								></app-common-business-bc-branches>
+								></app-business-bc-branches>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -356,7 +356,7 @@ export class CommonBusinessProfileComponent implements OnInit, LicenceChildStepp
 	@Input() isReadonly = true;
 	@Input() isBcBusinessAddress = true;
 
-	@ViewChild(CommonBusinessBcBranchesComponent) businessBcBranchesComponent!: CommonBusinessBcBranchesComponent;
+	@ViewChild(BusinessBcBranchesComponent) businessBcBranchesComponent!: BusinessBcBranchesComponent;
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,

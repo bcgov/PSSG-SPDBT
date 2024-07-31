@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonFingerprintsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-fingerprints.component';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-step-worker-licence-fingerprints',

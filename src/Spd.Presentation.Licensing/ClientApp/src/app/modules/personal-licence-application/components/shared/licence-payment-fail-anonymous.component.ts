@@ -4,19 +4,21 @@ import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { switchMap } from 'rxjs';
 
 @Component({
 	selector: 'app-licence-payment-fail-anonymous',
 	template: `
-		<section class="step-section">
-			<app-payment-fail
-				[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
-				(payNow)="onPayNow()"
-				(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
-			></app-payment-fail>
-		</section>
+		<app-container>
+			<section class="step-section">
+				<app-payment-fail
+					[numberOfAttemptsRemaining]="numberOfAttemptsRemaining"
+					(payNow)="onPayNow()"
+					(downloadManualPaymentForm)="onDownloadManualPaymentForm()"
+				></app-payment-fail>
+			</section>
+		</app-container>
 	`,
 	styles: [],
 })
@@ -28,7 +30,7 @@ export class LicencePaymentFailAnonymousComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private paymentService: PaymentService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

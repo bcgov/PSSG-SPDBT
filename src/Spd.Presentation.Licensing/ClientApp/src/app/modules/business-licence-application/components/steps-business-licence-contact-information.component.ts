@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 
 @Component({
@@ -37,7 +37,7 @@ export class StepsBusinessLicenceContactInformationComponent extends BaseWizardS
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerInformationComponent!: StepBusinessLicenceManagerInformationComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

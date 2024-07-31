@@ -3,7 +3,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { MainLicenceResponse } from '@app/shared/services/common-application.service';
+import { MainLicenceResponse } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-licence-active-swl-permit-licences',

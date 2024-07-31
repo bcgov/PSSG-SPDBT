@@ -7,8 +7,8 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
@@ -130,7 +130,7 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);

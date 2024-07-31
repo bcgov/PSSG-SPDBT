@@ -2,13 +2,12 @@ import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
-import { UtilService } from '@app/core/services/util.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-step-worker-licence-user-profile',

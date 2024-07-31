@@ -7,7 +7,7 @@ import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/per
 import { StepWorkerLicenceReprintComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-reprint.component';
 import { StepWorkerLicenceRestraintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-restraints.component';
 import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-review-name-change.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-worker-licence-updates-authenticated',
@@ -107,7 +107,7 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	@ViewChild(StepWorkerLicenceReprintComponent)
 	stepReprintComponent!: StepWorkerLicenceReprintComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

@@ -5,15 +5,16 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceStatusCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ConfigService } from '@app/core/services/config.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import {
-	CommonApplicationService,
+	ApplicationService,
 	MainApplicationResponse,
 	MainLicenceResponse,
-} from '@app/shared/services/common-application.service';
+} from '@app/core/services/application.service';
+import { ConfigService } from '@app/core/services/config.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
@@ -204,7 +205,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private configService: ConfigService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {}

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-business-licence-update-fee',

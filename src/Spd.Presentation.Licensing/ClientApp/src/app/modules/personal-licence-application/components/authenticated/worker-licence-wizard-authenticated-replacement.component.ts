@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
@@ -44,7 +44,7 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private licenceApplicationService: LicenceApplicationService
 	) {
 		super(breakpointObserver);

@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { CommonUserProfileComponent } from './user-profile-components/common-user-profile.component';

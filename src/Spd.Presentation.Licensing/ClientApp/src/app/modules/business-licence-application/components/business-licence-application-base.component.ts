@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { lastValueFrom, take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
 

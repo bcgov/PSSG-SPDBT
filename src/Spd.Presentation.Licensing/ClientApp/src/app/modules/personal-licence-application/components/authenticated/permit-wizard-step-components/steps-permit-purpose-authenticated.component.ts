@@ -4,7 +4,7 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { StepPermitEmployerInformationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-permit-purpose-authenticated',
@@ -78,7 +78,7 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
 
 	constructor(
-		override commonApplicationService: CommonApplicationService // private permitApplicationService: PermitApplicationService
+		override commonApplicationService: ApplicationService // private permitApplicationService: PermitApplicationService
 	) {
 		super(commonApplicationService);
 	}

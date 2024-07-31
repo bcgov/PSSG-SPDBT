@@ -8,9 +8,9 @@ import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } 
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { StepsPermitDetailsNewComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/steps-permit-details-new.component';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitIdentificationAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-identification-authenticated.component';
@@ -133,7 +133,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {
 		super(breakpointObserver);

@@ -9,9 +9,9 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { UtilService } from '@app/core/services/util.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-summary-authenticated',
@@ -384,7 +384,7 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private utilService: UtilService,
 		private optionsPipe: OptionsPipe
 	) {}

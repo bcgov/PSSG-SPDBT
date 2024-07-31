@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-business-licence-term',
@@ -65,7 +65,7 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	isFormValid(): boolean {

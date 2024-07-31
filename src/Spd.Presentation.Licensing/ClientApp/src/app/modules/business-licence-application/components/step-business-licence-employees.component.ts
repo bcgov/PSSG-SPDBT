@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonEmployeesComponent } from './common-employees.component';
 
 @Component({

@@ -34,12 +34,12 @@ import {
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
-import { ConfigService } from '@app/core/services/config.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { UtilService } from '@app/core/services/util.service';
+import { AuthProcessService } from './auth-process.service';
+import { AuthUserBceidService } from './auth-user-bceid.service';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
+import { ConfigService } from './config.service';
+import { FileUtilService } from './file-util.service';
+import { UtilService } from './util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -82,7 +82,7 @@ export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLic
 @Injectable({
 	providedIn: 'root',
 })
-export class CommonApplicationService {
+export class ApplicationService {
 	isLoggedIn = false;
 
 	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([

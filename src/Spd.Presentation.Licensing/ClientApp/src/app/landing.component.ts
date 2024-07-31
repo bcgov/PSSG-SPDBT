@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ApplicationService } from './core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { take, tap } from 'rxjs';
 import { WorkerLicenceTypeCode } from './api/models';
 import { SPD_CONSTANTS } from './core/constants/constants';
 import { AuthProcessService } from './core/services/auth-process.service';
+import { LicenceApplicationService } from './core/services/licence-application.service';
 import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-licence-application-routing.module';
-import { LicenceApplicationService } from './modules/personal-licence-application/licence-application.service';
-import { PermitApplicationService } from './modules/personal-licence-application/permit-application.service';
 import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routing.module';
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
-import { CommonApplicationService } from './shared/services/common-application.service';
 
 @Component({
 	selector: 'app-landing',
@@ -193,7 +193,7 @@ export class LandingComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private licenceApplicationService: LicenceApplicationService,
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -250,6 +250,7 @@ export class LandingComponent implements OnInit {
 							.createNewPermitAnonymous(workerLicenceTypeCode)
 							.pipe(
 								tap((_resp: any) => {
+									console.log('initialized3', this.permitApplicationService.initialized);
 									this.router.navigateByUrl(
 										PersonalLicenceApplicationRoutes.pathPermitAnonymous(
 											PersonalLicenceApplicationRoutes.PERMIT_TYPE_ANONYMOUS

@@ -2,8 +2,8 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { StepPermitPhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { StepPermitAliasesComponent } from './step-permit-aliases.component';
 import { StepPermitBcDriverLicenceComponent } from './step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from './step-permit-citizenship.component';
@@ -135,7 +135,7 @@ export class StepsPermitIdentificationAnonymousComponent extends BaseWizardStepC
 	stepPhotographComponent!: StepPermitPhotographOfYourselfAnonymousComponent;
 
 	constructor(
-		override commonApplicationService: CommonApplicationService,
+		override commonApplicationService: ApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {
 		super(commonApplicationService);

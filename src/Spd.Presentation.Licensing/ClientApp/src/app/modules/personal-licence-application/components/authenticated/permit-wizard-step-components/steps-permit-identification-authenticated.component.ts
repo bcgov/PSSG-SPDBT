@@ -4,8 +4,8 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { StepPermitBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-citizenship.component';
 import { StepPermitPhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
@@ -93,7 +93,7 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
 
 	constructor(
-		override commonApplicationService: CommonApplicationService,
+		override commonApplicationService: ApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {
 		super(commonApplicationService);

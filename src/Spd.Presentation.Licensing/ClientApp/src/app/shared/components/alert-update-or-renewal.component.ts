@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-alert-update-or-renewal',

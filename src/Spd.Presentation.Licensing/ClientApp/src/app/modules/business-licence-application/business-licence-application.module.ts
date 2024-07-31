@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BusinessUserApplicationsComponent } from '../business-licence-application/components/business-user-applications.component';
-import { CommonBusinessBcBranchesComponent } from '../business-licence-application/components/common-business-bc-branches.component';
+import { BusinessBcBranchesComponent } from './components/business-bc-branches.component';
 import { CommonBusinessLicenceSummaryComponent } from '../business-licence-application/components/common-business-licence-summary.component';
 import { CommonBusinessManagerComponent } from '../business-licence-application/components/common-business-manager.component';
 import { CommonBusinessProfileComponent } from '../business-licence-application/components/common-business-profile.component';
@@ -15,7 +15,6 @@ import { StepsBusinessLicenceControllingMembersComponent } from '../business-lic
 import { StepsBusinessLicenceInformationComponent } from '../business-licence-application/components/steps-business-licence-information.component';
 import { StepsBusinessLicenceSelectionComponent } from '../business-licence-application/components/steps-business-licence-selection.component';
 import { StepsBusinessLicenceUpdatesComponent } from '../business-licence-application/components/steps-business-licence-updates.component';
-import { BusinessApplicationService } from './business-application.service';
 import { BusinessLicenceApplicationRoutingModule } from './business-licence-application-routing.module';
 import { BusinessCategoryAmouredCarGuardComponent } from './components/business-category-amoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business-category-private-investigator.component';
@@ -78,7 +77,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepBusinessLicenceReprintComponent,
 		StepBusinessLicenceUpdateFeeComponent,
 		StepsBusinessLicenceUpdatesComponent,
-		CommonBusinessBcBranchesComponent,
+		BusinessBcBranchesComponent,
 		CommonBusinessManagerComponent,
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,
@@ -127,6 +126,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessControllingMembersAndEmployeesComponent,
 	],
 	imports: [SharedModule, BusinessLicenceApplicationRoutingModule],
-	providers: [BusinessApplicationService],
+	providers: [],
 })
 export class BusinessLicenceApplicationModule {}

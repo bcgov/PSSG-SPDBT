@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-confirmation',

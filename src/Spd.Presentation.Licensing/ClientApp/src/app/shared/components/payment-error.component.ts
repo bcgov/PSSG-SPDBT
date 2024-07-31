@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-payment-error',
@@ -37,7 +37,7 @@ import { CommonApplicationService } from '@app/shared/services/common-applicatio
 export class PaymentErrorComponent {
 	@Output() backRoute: EventEmitter<any> = new EventEmitter();
 
-	constructor(private commonApplicationService: CommonApplicationService) {}
+	constructor(private commonApplicationService: ApplicationService) {}
 
 	onBackToHome(): void {
 		this.commonApplicationService.onGoToHome();

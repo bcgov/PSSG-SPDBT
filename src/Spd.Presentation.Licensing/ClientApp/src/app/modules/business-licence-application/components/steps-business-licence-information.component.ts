@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } 
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
@@ -121,7 +121,7 @@ export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComp
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService, private router: Router) {
+	constructor(override commonApplicationService: ApplicationService, private router: Router) {
 		super(commonApplicationService);
 	}
 

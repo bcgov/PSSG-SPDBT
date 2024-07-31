@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, PaymentResponse } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-payment-success',
@@ -162,7 +162,7 @@ export class PaymentSuccessComponent {
 
 	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
-	constructor(private router: Router, private commonApplicationService: CommonApplicationService) {}
+	constructor(private router: Router, private commonApplicationService: ApplicationService) {}
 
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();

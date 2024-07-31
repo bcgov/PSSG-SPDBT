@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
 import { CommonBusinessTermsComponent } from './common-business-terms.component';
 

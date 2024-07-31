@@ -10,7 +10,7 @@ import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from '@app/mo
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicenceReprintComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-reprint.component';
 import { StepWorkerLicenceResidentialAddressComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-residential-address.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-worker-licence-personal-information-anonymous.component';
 
 @Component({
@@ -187,7 +187,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 	stepLicenceReprintComponent!: StepWorkerLicenceReprintComponent;
 
 	constructor(
-		override commonApplicationService: CommonApplicationService // private licenceApplicationService: LicenceApplicationService
+		override commonApplicationService: ApplicationService // private licenceApplicationService: LicenceApplicationService
 	) {
 		super(commonApplicationService);
 	}

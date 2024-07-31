@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
-import { PermitChildStepperStepComponent } from '@app/modules/personal-licence-application/permit-application.helper';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
+import { PermitChildStepperStepComponent } from '@app/core/services/permit-application.helper';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-expired',

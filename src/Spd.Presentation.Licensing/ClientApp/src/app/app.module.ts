@@ -13,12 +13,18 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
-import { CommonApplicationService } from './shared/services/common-application.service';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
 	declarations: [AppComponent, LandingComponent],
 	imports: [
+		OAuthModule.forRoot({
+			resourceServer: {
+				customUrlValidation: (url) =>
+					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
+				sendAccessToken: true,
+			},
+		}),
 		AppRoutingModule,
 		CoreModule,
 		BrowserModule,
@@ -29,13 +35,6 @@ import { SharedModule } from './shared/shared.module';
 		FormsModule,
 		ReactiveFormsModule,
 		NgxSpinnerModule,
-		OAuthModule.forRoot({
-			resourceServer: {
-				customUrlValidation: (url) =>
-					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
-				sendAccessToken: true,
-			},
-		}),
 		ApiModule,
 		SharedModule,
 	],
@@ -46,7 +45,6 @@ import { SharedModule } from './shared/shared.module';
 			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
 			deps: [PlatformLocation],
 		},
-		CommonApplicationService,
 	],
 	bootstrap: [AppComponent],
 })

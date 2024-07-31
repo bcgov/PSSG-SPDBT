@@ -2,8 +2,8 @@ import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { StepPermitTermsOfUseComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-terms-of-use.component';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-update-terms-authenticated',

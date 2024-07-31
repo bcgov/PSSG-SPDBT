@@ -4,8 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
 
 export interface BranchResponse {
@@ -23,7 +23,7 @@ export interface BranchResponse {
 }
 
 @Component({
-	selector: 'app-common-business-bc-branches',
+	selector: 'app-business-bc-branches',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -148,7 +148,7 @@ export interface BranchResponse {
 	],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonBusinessBcBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
+export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
 	dataSource!: MatTableDataSource<BranchResponse>;

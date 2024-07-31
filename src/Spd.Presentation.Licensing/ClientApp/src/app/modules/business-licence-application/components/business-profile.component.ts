@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
 import { CommonBusinessProfileComponent } from './common-business-profile.component';

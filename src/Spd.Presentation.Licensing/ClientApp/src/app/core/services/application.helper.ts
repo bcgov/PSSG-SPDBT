@@ -1,39 +1,10 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 
-export interface LicenceStepperStepComponent {
-	onStepNext(formNumber: number): void;
-	onStepPrevious(): void;
-	onFormValidNextStep(formNumber: number): void;
-	onStepSelectionChange(event: StepperSelectionEvent): void;
-	onGoToNextStep(): void;
-	onGoToFirstStep(): void;
-	onGoToLastStep(): void;
-}
-
-export interface LicenceChildStepperStepComponent {
-	isFormValid(): boolean;
-}
-
-export interface LicenceDocument {
-	Documents?: Array<File>;
-	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
-}
-
-export class LicenceDocumentsToSave {
-	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
-	'documents': Array<Blob>;
-}
-
-export abstract class CommonApplicationHelper {
-	initialized = false;
-	hasValueChanged = false;
-	isLoading = true;
-
+export abstract class ApplicationHelper {
 	booleanTypeCodes = BooleanTypeCode;
 
 	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
@@ -340,23 +311,5 @@ export abstract class CommonApplicationHelper {
 	resetCommon(): void {
 		this.termsAndConditionsFormGroup.reset();
 		this.accessCodeFormGroup.reset();
-	}
-
-	updateModelChangeFlags(): void {
-		if (this.isLoading) {
-			this.isLoading = false;
-		} else {
-			this.hasValueChanged = true;
-		}
-	}
-
-	resetModelChangeFlags(): void {
-		this.hasValueChanged = false;
-	}
-
-	resetModelFlags(): void {
-		this.initialized = false;
-		this.isLoading = true;
-		this.hasValueChanged = false;
 	}
 }

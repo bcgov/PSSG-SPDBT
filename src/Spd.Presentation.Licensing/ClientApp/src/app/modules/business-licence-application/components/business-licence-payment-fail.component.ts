@@ -4,7 +4,7 @@ import { PaymentResponse } from '@app/api/models';
 import { PaymentService } from '@app/api/services';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { switchMap } from 'rxjs';
 
 @Component({
@@ -28,7 +28,7 @@ export class BusinessLicencePaymentFailComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private paymentService: PaymentService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

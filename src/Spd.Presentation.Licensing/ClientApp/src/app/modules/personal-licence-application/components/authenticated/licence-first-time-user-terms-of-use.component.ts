@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-swl-permit-terms.component';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 
 @Component({
 	selector: 'app-licence-first-time-user-terms-of-use',

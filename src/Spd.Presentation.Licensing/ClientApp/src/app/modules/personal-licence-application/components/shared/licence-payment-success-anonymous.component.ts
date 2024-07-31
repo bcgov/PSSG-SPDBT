@@ -9,12 +9,11 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 @Component({
 	selector: 'app-licence-payment-success-anonymous',
 	template: `
-		<section class="step-section">
-			<app-payment-success
-				[payment]="payment"
-				(downloadReceipt)="onDownloadReceipt()"
-			></app-payment-success>
-		</section>
+		<app-container>
+			<section class="step-section">
+				<app-payment-success [payment]="payment" (downloadReceipt)="onDownloadReceipt()"></app-payment-success>
+			</section>
+		</app-container>
 	`,
 	styles: [],
 })

@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 import { StepBusinessLicenceReprintComponent } from './step-business-licence-reprint.component';
@@ -61,7 +61,7 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 	stepManagerComponent!: StepBusinessLicenceManagerInformationComponent;
 	@ViewChild(StepBusinessLicenceReprintComponent) stepReprintComponent!: StepBusinessLicenceReprintComponent;
 
-	constructor(override commonApplicationService: CommonApplicationService) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 

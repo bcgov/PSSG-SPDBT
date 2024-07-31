@@ -2,16 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-licence-application-base-authenticated',
 	template: `
-		<ng-container *ngIf="isAuthenticated$ | async">
-			<router-outlet></router-outlet>
-		</ng-container>
+		<div class="container px-0 my-0 px-md-2 my-md-3" *ngIf="isAuthenticated$ | async">
+			<!-- hide padding/margin on smaller screens -->
+			<div class="row">
+				<div class="col-12">
+					<router-outlet></router-outlet>
+				</div>
+			</div>
+		</div>
 	`,
 	styles: [],
 })

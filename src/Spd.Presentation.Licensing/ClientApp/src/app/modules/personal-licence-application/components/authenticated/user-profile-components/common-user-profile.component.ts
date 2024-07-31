@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonAliasListComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-alias-list.component';
 import { CommonContactInformationComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-contact-information.component';
 import { AddressComponent } from '@app/shared/components/address.component';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
 import { CommonUserProfilePersonalInformationComponent } from './common-user-profile-personal-information.component';
 
 @Component({

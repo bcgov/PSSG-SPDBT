@@ -2,9 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { UtilService } from '@app/core/services/util.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-consent-and-declaration',

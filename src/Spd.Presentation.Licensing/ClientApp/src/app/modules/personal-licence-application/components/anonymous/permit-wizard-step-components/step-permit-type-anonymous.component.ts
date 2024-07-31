@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-type-anonymous',
@@ -85,7 +85,7 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

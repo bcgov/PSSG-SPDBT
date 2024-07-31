@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { LicenceChildStepperStepComponent } from '@app/shared/services/common-application.helper';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-criminal-history',
@@ -27,7 +27,7 @@ export class StepPermitCriminalHistoryComponent implements OnInit, LicenceChildS
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

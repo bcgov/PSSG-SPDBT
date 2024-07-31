@@ -5,8 +5,8 @@ import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitContactComponent } from './permit-wizard-step-components/steps-permit-contact.component';
@@ -141,7 +141,7 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: CommonApplicationService
+		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
 	}

@@ -9,11 +9,11 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import { Subject, take, tap } from 'rxjs';

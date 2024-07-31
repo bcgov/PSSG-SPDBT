@@ -12,16 +12,16 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
-import { UtilService } from '@app/core/services/util.service';
+import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { CommonApplicationHelper, LicenceDocumentsToSave } from '../../shared/services/common-application.helper';
 import { ControllingMemberContactInfo } from './business-application.service';
 
-export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
+export abstract class BusinessApplicationHelper extends ApplicationHelper {
 	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
 		originalApplicationId: new FormControl(null),
 		originalLicenceId: new FormControl(null),

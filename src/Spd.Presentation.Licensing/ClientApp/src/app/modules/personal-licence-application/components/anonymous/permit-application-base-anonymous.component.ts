@@ -1,12 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppRoutes } from '@app/app-routing.module';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { PermitApplicationService } from '@app/modules/personal-licence-application/permit-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-permit-application-base-anonymous',
-	template: ` <router-outlet></router-outlet> `,
+	template: `
+		<div class="container px-0 my-0 px-md-2 my-md-3">
+			<!-- hide padding/margin on smaller screens -->
+			<div class="row">
+				<div class="col-12">
+					<router-outlet></router-outlet>
+				</div>
+			</div>
+		</div>
+	`,
 	styles: [],
 })
 export class PermitApplicationBaseAnonymousComponent implements OnInit {
@@ -18,11 +27,12 @@ export class PermitApplicationBaseAnonymousComponent implements OnInit {
 
 	ngOnInit(): void {
 		// make sure the user is not logged in.
-		this.authProcessService.logoutBceid();
-		this.authProcessService.logoutBcsc();
+		// this.authProcessService.logoutBceid();
+		// this.authProcessService.logoutBcsc();
 
+		console.log('initialized', this.permitApplicationService.initialized);
 		if (!this.permitApplicationService.initialized) {
-			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathPermitAnonymous());
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 			return;
 		}
 	}

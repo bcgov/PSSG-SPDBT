@@ -8,9 +8,9 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { LicenceApplicationService } from '@app/modules/personal-licence-application/licence-application.service';
-import { CommonApplicationService } from '@app/shared/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-update-authenticated',
@@ -157,7 +157,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		private utilService: UtilService
 	) {}
 

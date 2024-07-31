@@ -16,6 +16,7 @@ import { BaseFilterComponent } from './components/base-filter.component';
 import { BizSelectionModalComponent } from './components/biz-selection-modal.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
+import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
 import { DropdownOverlayComponent } from './components/dropdown-overlay.component';
@@ -84,6 +85,7 @@ const SHARED_COMPONENTS = [
 	LicenceReprintComponent,
 	ExpiredLicenceComponent,
 	AddressAndIsSameFlagComponent,
+	ContainerComponent,
 ];
 
 @NgModule({

@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { BizPortalUserListResponse, BizPortalUserResponse, ContactAuthorizationTypeCode } from '@app/api/models';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { BusinessApplicationService } from '@app/modules/business-licence-application/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
