@@ -9,6 +9,8 @@ export abstract class ApplicationHelper {
 	hasValueChanged = false;
 	isLoading = true;
 
+	photographOfYourself: string | ArrayBuffer | null = null;
+
 	booleanTypeCodes = BooleanTypeCode;
 
 	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
@@ -313,6 +315,7 @@ export abstract class ApplicationHelper {
 	}
 
 	resetCommon(): void {
+		this.photographOfYourself = null;
 		this.termsAndConditionsFormGroup.reset();
 		this.accessCodeFormGroup.reset();
 	}
@@ -333,5 +336,22 @@ export abstract class ApplicationHelper {
 		this.initialized = false;
 		this.isLoading = true;
 		this.hasValueChanged = false;
+	}
+
+	/**
+	 * Set the current photo of yourself
+	 * @returns
+	 */
+	setPhotographOfYourself(image: Blob | null): void {
+		if (!image || image.size == 0) {
+			this.photographOfYourself = null;
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.readAsDataURL(image);
+		reader.onload = (_event) => {
+			this.photographOfYourself = reader.result;
+		};
 	}
 }
