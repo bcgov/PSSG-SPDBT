@@ -18,6 +18,13 @@ import { SharedModule } from './shared/shared.module';
 @NgModule({
 	declarations: [AppComponent, LandingComponent],
 	imports: [
+		OAuthModule.forRoot({
+			resourceServer: {
+				customUrlValidation: (url) =>
+					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
+				sendAccessToken: true,
+			},
+		}),
 		AppRoutingModule,
 		CoreModule,
 		BrowserModule,
@@ -28,13 +35,6 @@ import { SharedModule } from './shared/shared.module';
 		FormsModule,
 		ReactiveFormsModule,
 		NgxSpinnerModule,
-		OAuthModule.forRoot({
-			resourceServer: {
-				customUrlValidation: (url) =>
-					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
-				sendAccessToken: true,
-			},
-		}),
 		ApiModule,
 		SharedModule,
 	],

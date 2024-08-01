@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { AppRoutes } from '@app/app-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { LicenceApplicationRoutes } from 'src/app/modules/licence-application/licence-application-routing.module';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { UtilService } from './util.service';
@@ -34,13 +36,13 @@ export class AuthProcessService {
 	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
-		const returningRoute = LicenceApplicationRoutes.pathUserApplications();
+		const returningRoute = PersonalLicenceApplicationRoutes.pathUserApplications();
 
 		const nextUrl = await this.authenticationService.login(
 			this.identityProvider,
 			returnComponentRoute ?? returningRoute
 		);
-		console.debug('initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
+		console.debug('[AuthProcessService] initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
 		if (nextUrl) {
 			const success = await this.authUserBcscService.applicantLoginAsync();
@@ -63,10 +65,11 @@ export class AuthProcessService {
 	): Promise<string | null> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
-		const returningRoute = LicenceApplicationRoutes.pathBusinessApplications();
+		const returningRoute = BusinessLicenceApplicationRoutes.pathBusinessApplications();
+		console.debug('[AuthProcessService] initializeLicencingBCeID return route', defaultRoute ?? returningRoute);
 
 		const nextUrl = await this.authenticationService.login(this.identityProvider, defaultRoute ?? returningRoute);
-		console.debug('initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
+		console.debug('[AuthProcessService] initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
 
 		if (nextUrl) {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultBizId);
@@ -84,6 +87,8 @@ export class AuthProcessService {
 	// *
 	// *
 	public logout(): void {
+		console.debug('[AuthProcessService] logout');
+
 		const loginType = this.identityProvider;
 
 		this.identityProvider = null;
@@ -95,20 +100,27 @@ export class AuthProcessService {
 		this.notify(false);
 
 		if (loginType == IdentityProviderTypeCode.BcServicesCard) {
-			this.router.navigateByUrl(LicenceApplicationRoutes.path(LicenceApplicationRoutes.LOGIN_SELECTION));
+			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 		}
 	}
 
 	//----------------------------------------------------------
 	// *
 	// *
-	public logoutBcsc(): void {
-		console.debug('logoutBcsc');
+	public logoutBcsc(redirectComponentRoute?: string): void {
+		console.debug('[AuthProcessService] logoutBcsc', redirectComponentRoute);
+
+		let redirectUri = location.origin;
+		if (redirectComponentRoute) {
+			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
+		}
+
+		console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
 
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] === bcscIssuer) {
-			this.oauthService.logOut({ redirectUrl: location.origin });
+			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
 
@@ -116,12 +128,12 @@ export class AuthProcessService {
 	// *
 	// *
 	public logoutBceid(): void {
-		console.debug('logoutBceid');
+		console.debug('[AuthProcessService] logoutBceid');
 
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] !== bcscIssuer) {
-			this.oauthService.logOut({ redirectUrl: location.origin });
+			this.oauthService.logOut();
 		}
 	}
 
@@ -137,6 +149,7 @@ export class AuthProcessService {
 		} else {
 			const token = this.authenticationService.getToken();
 			this.loggedInUserTokenData = this.utilService.getDecodedAccessToken(token);
+
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}
