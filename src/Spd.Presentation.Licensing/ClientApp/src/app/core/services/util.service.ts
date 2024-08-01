@@ -1,3 +1,4 @@
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
@@ -9,6 +10,30 @@ import jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
+
+export interface LicenceStepperStepComponent {
+	onStepNext(formNumber: number): void;
+	onStepPrevious(): void;
+	onFormValidNextStep(formNumber: number): void;
+	onStepSelectionChange(event: StepperSelectionEvent): void;
+	onGoToNextStep(): void;
+	onGoToFirstStep(): void;
+	onGoToLastStep(): void;
+}
+
+export interface LicenceChildStepperStepComponent {
+	isFormValid(): boolean;
+}
+
+export interface LicenceDocument {
+	Documents?: Array<File>;
+	LicenceDocumentTypeCode?: LicenceDocumentTypeCode;
+}
+
+export class LicenceDocumentsToSave {
+	'licenceDocumentTypeCode': LicenceDocumentTypeCode;
+	'documents': Array<Blob>;
+}
 
 export interface SpdFile extends File {
 	name: string;

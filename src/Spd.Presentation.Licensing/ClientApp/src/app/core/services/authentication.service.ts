@@ -23,18 +23,21 @@ export class AuthenticationService {
 		loginType: IdentityProviderTypeCode,
 		returnComponentRoute: string | undefined = undefined
 	): Promise<string | null> {
-		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute ?? ''));
+		console.debug('[AuthenticationService] LOGIN loginType', loginType, 'returnComponentRoute', returnComponentRoute);
+
+		const redirectUri = this.createRedirectUrl(returnComponentRoute ?? '');
+
+		console.debug('[AuthenticationService] redirectUrl', redirectUri);
+		await this.configService.configureOAuthService(loginType, redirectUri);
 
 		const returnRoute = location.pathname.substring(1);
-		console.debug('[AuthenticationService] LOGIN', returnComponentRoute, returnRoute);
+		console.debug('[AuthenticationService] LOGIN returnRoute', returnRoute);
 
-		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-			state: returnRoute,
-		});
-		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, this.oauthService.state);
+		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin();
+		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn);
 
 		if (isLoggedIn) {
-			return Promise.resolve(this.oauthService.state || returnRoute || null);
+			return Promise.resolve(returnRoute || null);
 		}
 
 		return Promise.resolve(null);
@@ -61,7 +64,7 @@ export class AuthenticationService {
 	//----------------------------------------------------------
 	// *
 	// *
-	private createRedirectUrl(componentUrl: string): string {
+	public createRedirectUrl(componentUrl: string): string {
 		let baseUrl = `${location.origin}${this.href}`;
 		if (baseUrl.endsWith('/')) {
 			baseUrl = baseUrl.substring(0, baseUrl.length - 1);

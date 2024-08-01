@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-spd-footer',
@@ -54,7 +54,7 @@ import { CommonApplicationService } from '@app/modules/licence-application/servi
 	],
 })
 export class SpdFooterComponent {
-	constructor(private commonApplicationService: CommonApplicationService) {}
+	constructor(private commonApplicationService: ApplicationService) {}
 
 	goHome(): void {
 		this.commonApplicationService.onGoToHome();
