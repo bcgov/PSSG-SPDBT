@@ -1,8 +1,11 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Microsoft.OData.Client;
+using Spd.Resource.Repository.User;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.PortalUser;
 internal class PortalUserRepository : IPortalUserRepository
@@ -20,11 +23,30 @@ internal class PortalUserRepository : IPortalUserRepository
         _logger = logger;
     }
 
-    public async Task<PortalUserListResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken)
+    public async Task<PortalUserQryResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken)
+    {
+        return qry switch
+        {
+            PortalUserByIdQry q => await GetUserAsync(q.UserId, cancellationToken),
+            PortalUserQry  q => await ListUsersAsync(qry, cancellationToken)
+        };
+    }
+    public async Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken)
+    {
+        return cmd switch
+        {
+            UpdatePortalUserCmd c => await UpdatePortalUserAsync(c, cancellationToken),
+            CreatePortalUserCmd c => await CreatePortalUserAsync(c, cancellationToken),
+            PortalUserUpdateLoginCmd c => await UpdatePortalUserLoginAsync(c.Id, cancellationToken),
+            PortalUserDeleteCmd c => await DeleteProtalUserAsync(c.Id, cancellationToken),
+            _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+        };
+    }
+    private async Task<PortalUserListResp> ListUsersAsync(PortalUserQry qry, CancellationToken cancellationToken)
     {
         IQueryable<spd_portaluser> users = _context.spd_portalusers
-            .Expand(u => u.spd_spd_role_spd_portaluser)
-            .Expand(d => d.spd_OrganizationId);
+                    .Expand(u => u.spd_spd_role_spd_portaluser)
+                    .Expand(d => d.spd_OrganizationId);
         IEnumerable<spd_portaluser> userList;
 
         if (!qry.IncludeInactive)
@@ -59,20 +81,49 @@ internal class PortalUserRepository : IPortalUserRepository
             Items = _mapper.Map<IEnumerable<PortalUserResp>>(results)
         };
     }
-
-    public async Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken)
+    private async Task<PortalUserResp> DeleteProtalUserAsync(Guid userId, CancellationToken cancellationToken)
     {
-        return cmd switch
+        var user = await GetUserById(userId, cancellationToken);
+        if (user._spd_identityid_value.HasValue)
         {
-            UpdatePortalUserCmd c => await UpdatePortalUserAsync(c, cancellationToken),
-            CreatePortalUserCmd c => await CreatePortalUserAsync(c, cancellationToken),
-            _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
-        };
+            // Inactivate the user
+            user.statecode = DynamicsConstants.StateCode_Inactive;
+            user.statuscode = DynamicsConstants.StatusCode_Inactive;
+            _context.UpdateObject(user);
+        }
+        else
+        {
+            //TODO: is there any situation user may not have invition? (what is invition and how to assign it to user? or vice versa)
+            var invition = GetPortalInvitationByUserId(userId);
+            if(invition is not null) _context.DeleteObject(invition);
+
+            // Delete user and invitation
+            _context.DeleteObject(user);
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        return new PortalUserResp();
+    }
+    private spd_portalinvitation? GetPortalInvitationByUserId(Guid userId)
+    {
+        var spd_portalinvitation = _context.spd_portalinvitations
+            .Where(a => a._spd_portaluserid_value == userId)
+            .FirstOrDefault();
+
+        return spd_portalinvitation;
     }
 
+    private async Task<PortalUserResp> UpdatePortalUserLoginAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await GetUserById(userId, cancellationToken);
+        user.spd_lastloggedin = DateTimeOffset.UtcNow;
+        _context.UpdateObject(user);
+        await _context.SaveChangesAsync(cancellationToken);
+        return new PortalUserResp();
+    }
     private async Task<PortalUserResp> UpdatePortalUserAsync(UpdatePortalUserCmd c, CancellationToken ct)
     {
-        spd_portaluser portalUser = await _context.GetUserById(c.Id, ct);
+        spd_portaluser portalUser = await GetUserById(c.Id, ct);
         account? org = null;
         spd_identity? identity = null;
         if (c.FirstName != null) portalUser.spd_firstname = c.FirstName;
@@ -110,7 +161,7 @@ internal class PortalUserRepository : IPortalUserRepository
         }
         await _context.SaveChangesAsync(ct);
 
-        portalUser = await _context.GetUserById(c.Id, ct);
+        portalUser = await GetUserById(c.Id, ct);
         return _mapper.Map<PortalUserResp>(portalUser);
     }
 
@@ -151,5 +202,33 @@ internal class PortalUserRepository : IPortalUserRepository
         userResp.OrganizationId = c.OrgId;
         userResp.ContactRoleCode = c.ContactRoleCode;
         return userResp;
+    }
+
+    private async Task<spd_portaluser> GetUserById(Guid userId, CancellationToken ct)
+    {
+        try
+        {
+            var user = await _context.GetUserById(userId, ct);
+
+            if (user?.statecode == DynamicsConstants.StateCode_Inactive)
+                throw new InactiveException(HttpStatusCode.BadRequest, $"User '{userId}' is inactive.");
+
+            if (user != null)
+                return user;
+            else
+                throw new NotFoundException(HttpStatusCode.BadRequest, $"The user with userId '{userId}' cannot be found.");
+        }
+        catch (DataServiceQueryException ex)
+        {
+            //is logger needed?
+            //_logger.LogWarning($"Cannot find the user with userId {userId}, message={ex.Message}");
+            throw;
+        }
+    }
+    private async Task<PortalUserResp> GetUserAsync(Guid userId, CancellationToken ct)
+    {
+        var user = await GetUserById(userId, ct);
+        var response = _mapper.Map<PortalUserResp>(user);
+        return response;
     }
 }

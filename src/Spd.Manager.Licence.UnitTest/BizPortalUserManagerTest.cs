@@ -1,8 +1,13 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using MediatR;
 using Moq;
+using Spd.Manager.Screening;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PortalUser;
+using Spd.Resource.Repository.User;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest;
@@ -200,5 +205,51 @@ public class BizPortalUserManagerTest
         // Assert
         Assert.IsType<BizPortalUserListResponse>(result);
         Assert.True(result.Users.Any(u => u.BizId == bizId));
+    }
+    [Fact]
+    public async void Handle_BizPortalUserGetQuery_Return_BizPortalUserResponse()
+    {
+        // Arrange
+        Guid userId = Guid.NewGuid();
+        BizPortalUserGetQuery qry = new(userId);
+        PortalUserResp portalUserResp = new() { Id = userId, ContactRoleCode = ContactRoleCode.PrimaryBusinessManager };
+       
+        mockPortalUserRepo.Setup(m => m.QueryAsync(It.Is<PortalUserByIdQry>(q => q.UserId == userId), CancellationToken.None))
+            .ReturnsAsync(portalUserResp);
+        // Act
+        var result = await sut.Handle(qry, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<BizPortalUserResponse>(result);
+        Assert.True(result.Id == userId);
+    }
+    [Fact]
+    public async void Handle_BizPortalUserDeleteCommand_Return_Correct_BizPortalUserResponse()
+    {
+        // Arrange
+        Guid bizId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        PortalUserResp existingUser = new() { ContactRoleCode = ContactRoleCode.PrimaryBusinessManager };
+        PortalUserResp userToDelete = fixture.Build<PortalUserResp>()
+            .With(u => u.OrganizationId, bizId)
+            .With(u => u.ContactRoleCode, ContactRoleCode.PrimaryBusinessManager)
+            .With(u => u.Id, userId)
+            .Create();
+        List<PortalUserResp> userResults = new() { userToDelete, existingUser };
+        BizResult bizResult = new() { Id = bizId};
+        List<BizResult> biz = new() { bizResult };
+
+        mockPortalUserRepo.Setup(u => u.QueryAsync(It.Is<PortalUserQry>(s => s.OrgId == bizId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PortalUserListResp() { Items = userResults });
+        mockBizRepo.Setup(o => o.QueryBizAsync(It.Is<BizsQry>(q => q.BizGuid == bizId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(biz);
+
+        BizPortalUserDeleteCommand cmd = new(userId, bizId);
+
+        // Act
+        var result = await sut.Handle(cmd, CancellationToken.None);
+
+        // Assert
+        Assert.IsType<Unit>(result);
     }
 }
