@@ -65,6 +65,8 @@ export class ConfigService {
 	}
 
 	private async getBcscConfig(redirectUri?: string): Promise<AuthConfig> {
+		console.debug('[getBcscConfig] redirectUri', redirectUri);
+
 		const resp = this.configs?.bcscConfiguration!;
 		const bcscConfig = {
 			issuer: resp.issuer!,
