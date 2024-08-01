@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BizListResponse, BizUserLoginResponse } from '@app/api/models';
 import {
 	BizSelectionDialogData,
-	BizSelectionModalComponent,
-} from '@app/shared/components/biz-selection-modal.component';
+	ModalBizSelectionComponent,
+} from '@app/shared/components/modal-biz-selection.component';
 import { lastValueFrom } from 'rxjs';
 import { LoginService } from 'src/app/api/services';
 
@@ -69,7 +69,7 @@ export class AuthUserBceidService {
 
 		return lastValueFrom(
 			this.dialog
-				.open(BizSelectionModalComponent, {
+				.open(ModalBizSelectionComponent, {
 					width: '500px',
 					data: dialogOptions,
 				})
