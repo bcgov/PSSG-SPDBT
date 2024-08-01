@@ -118,14 +118,18 @@ export class FileUploadHelper {
 			</ng-container>
 		</ngx-dropzone>
 
-		<button
-			mat-stroked-button
-			(click)="fileDropzone.showFileSelector()"
-			*ngIf="maxNumberOfFiles > 1 && this.files.length < maxNumberOfFiles"
-			class="large w-auto mt-2"
-		>
-			<mat-icon>file_open</mat-icon> Add file
-		</button>
+		<div class="row">
+			<div class="col-12">
+				<button
+					mat-stroked-button
+					(click)="fileDropzone.showFileSelector()"
+					*ngIf="maxNumberOfFiles > 1 && getNumberOfFiles() < maxNumberOfFiles"
+					class="large w-auto my-2"
+				>
+					<mat-icon>file_open</mat-icon> Add file
+				</button>
+			</div>
+		</div>
 
 		<ng-template #infoText>
 			<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
@@ -203,7 +207,7 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onUploadFile(evt: any) {
-		if (this.maxNumberOfFiles !== 0 && this.files.length >= this.maxNumberOfFiles) {
+		if (this.maxNumberOfFiles !== 0 && this.getNumberOfFiles() >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
 		}
@@ -229,7 +233,11 @@ export class FileUploadComponent implements OnInit {
 				return;
 			}
 
-			dupFile = this.files ? this.files.find((item) => item.name == addedFile.name) : undefined;
+			if (!this.files) {
+				this.files = []; // default to empty array;
+			}
+
+			dupFile = this.files.find((item) => item.name == addedFile.name);
 
 			if (dupFile) {
 				this.hotToastService.error('A file with the same name has already been uploaded');
@@ -273,6 +281,9 @@ export class FileUploadComponent implements OnInit {
 		return FileUploadHelper.getFileIcon(file);
 	}
 
+	getNumberOfFiles(): number {
+		return this.files?.length ?? 0;
+	}
 	// getFileSize(size: number) {
 	// 	size = size / 1000;
 
