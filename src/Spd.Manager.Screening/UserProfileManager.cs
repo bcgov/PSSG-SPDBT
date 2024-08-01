@@ -211,7 +211,7 @@ namespace Spd.Manager.Screening
 
             if (cmd.IdirUserIdentity.Email != null)
             {
-                var existingUser = await _portalUserRepository.QueryAsync(
+                var existingUser = (PortalUserListResp) await _portalUserRepository.QueryAsync(
                     new PortalUserQry() { UserEmail = cmd.IdirUserIdentity.Email, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
 
@@ -266,7 +266,7 @@ namespace Spd.Manager.Screening
             Guid? identityId = identity?.Id;
             if (identity != null)
             {
-                var existingUser = await _portalUserRepository.QueryAsync(
+                var existingUser = (PortalUserListResp) await _portalUserRepository.QueryAsync(
                     new PortalUserQry() { IdentityId = identityId, OrgIdOrParentOrgId = SpdConstants.BcGovOrgId },
                     ct);
                 var result = existingUser.Items.FirstOrDefault();

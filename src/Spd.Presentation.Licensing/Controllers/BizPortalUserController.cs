@@ -85,4 +85,29 @@ public class BizPortalUserController : SpdControllerBase
     {
         return await _mediator.Send(new BizPortalUserListQuery(bizId));
     }
+
+    /// <summary>
+    /// Get Business Portal User
+    /// </summary>
+    /// <param name="bizId"></param>
+    /// <returns></returns>
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Route("api/business/{bizId}/portal-users/{userId}")]
+    [HttpGet]
+    public async Task<BizPortalUserResponse> Get([FromRoute] Guid bizId, Guid userId)
+    {
+        if (_currentUser.GetUserId() == userId.ToString())
+        {
+            await _mediator.Send(new BizPortalUserUpdateLoginCommand(userId));
+        }
+        return await _mediator.Send(new BizPortalUserGetQuery(userId));
+    }
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager")]
+    [Route("api/bizs/{bizId}/portal-users/{userId}")]
+    [HttpDelete]
+    public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid bizId)
+    {
+        await _mediator.Send(new BizPortalUserDeleteCommand(userId, bizId));
+        return Ok();
+    }
 }

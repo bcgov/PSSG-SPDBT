@@ -153,14 +153,10 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for armour car registrar
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.ArmourCarGuardRegistrar)
+            .CreateMany(11)
+            .ToList();
 
         model.DocumentInfos = documentInfos;
 
