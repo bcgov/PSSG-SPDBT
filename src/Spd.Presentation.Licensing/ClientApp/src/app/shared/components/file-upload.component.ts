@@ -304,7 +304,7 @@ export class FileUploadComponent implements OnInit {
 		const objectUrl = URL.createObjectURL(file);
 		const previewFile = this.domSanitizer.sanitize(
 			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.sanitize(SecurityContext.URL, objectUrl)
+			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 
 		this.imagePreviews[index] = previewFile;
