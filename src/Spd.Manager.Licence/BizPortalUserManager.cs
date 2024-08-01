@@ -140,9 +140,8 @@ internal class BizPortalUserManager :
         if (toDeleteUser == null) return default;
         newUsers.Remove(toDeleteUser);
         var biz = await _bizRepository.QueryBizAsync(new BizsQry(request.BizId), cancellationToken);
-
         int primaryUserNo = newUsers.Count(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager);
-        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.FirstOrDefault().MaxContacts, biz.FirstOrDefault().MaxPrimaryContacts, primaryUserNo, newUsers.Count);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.First().MaxContacts, biz.First().MaxPrimaryContacts, primaryUserNo, newUsers.Count);
 
         await _portalUserRepository.ManageAsync(
             new PortalUserDeleteCmd(request.UserId),
