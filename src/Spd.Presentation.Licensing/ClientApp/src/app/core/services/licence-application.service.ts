@@ -58,10 +58,6 @@ import { LicenceApplicationHelper } from './licence-application.helper';
 	providedIn: 'root',
 })
 export class LicenceApplicationService extends LicenceApplicationHelper {
-	initialized = false;
-	hasValueChanged = false;
-	isLoading = true;
-
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	photographOfYourself: string | null = null;
@@ -1960,23 +1956,5 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
 		return of(this.licenceModelFormGroup.value);
-	}
-
-	updateModelChangeFlags(): void {
-		if (this.isLoading) {
-			this.isLoading = false;
-		} else {
-			this.hasValueChanged = true;
-		}
-	}
-
-	resetModelChangeFlags(): void {
-		this.hasValueChanged = false;
-	}
-
-	resetModelFlags(): void {
-		this.initialized = false;
-		this.isLoading = true;
-		this.hasValueChanged = false;
 	}
 }

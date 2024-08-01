@@ -18,10 +18,6 @@ export class AppRoutes {
 }
 
 const routes: Routes = [
-	// {
-	// 	path: AppRoutes.LANDING,
-	// 	component: LandingComponent,
-	// },
 	{
 		path: AppRoutes.PERSONAL_LICENCE_APPLICATION,
 		loadChildren: () =>

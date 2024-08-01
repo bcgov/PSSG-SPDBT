@@ -33,13 +33,11 @@ export class AuthenticationService {
 		const returnRoute = location.pathname.substring(1);
 		console.debug('[AuthenticationService] LOGIN returnRoute', returnRoute);
 
-		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin({
-			state: returnRoute, // TODO needed?
-		});
-		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn, 'oauthService.state', this.oauthService.state);
+		const isLoggedIn = await this.oauthService.loadDiscoveryDocumentAndLogin();
+		console.debug('[AuthenticationService] ISLOGGEDIN', isLoggedIn);
 
 		if (isLoggedIn) {
-			return Promise.resolve(this.oauthService.state || returnRoute || null);
+			return Promise.resolve(returnRoute || null);
 		}
 
 		return Promise.resolve(null);
