@@ -1067,7 +1067,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const objectUrl = URL.createObjectURL(image);
 		this.photographOfYourself = this.domSanitizer.sanitize(
 			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+			this.domSanitizer.sanitize(SecurityContext.URL, objectUrl)
 		);
 	}
 
