@@ -100,7 +100,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	stepReviewAuthenticatedComponent!: StepsWorkerLicenceReviewAuthenticatedComponent;
 
 	applicationTypeCode!: ApplicationTypeCode;
-	showSaveAndExit = false;
+	showSaveAndExit = true;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
@@ -133,8 +133,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 				this.showStepDogsAndRestraints =
 					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
 
 				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
@@ -216,7 +214,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
 	}

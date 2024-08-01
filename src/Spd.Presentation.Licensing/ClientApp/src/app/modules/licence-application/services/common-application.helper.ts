@@ -5,6 +5,10 @@ import { FormControlValidators } from '@app/core/validators/form-control.validat
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 
 export abstract class CommonApplicationHelper {
+	initialized = false;
+	hasValueChanged = false;
+	isLoading = true;
+
 	booleanTypeCodes = BooleanTypeCode;
 
 	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
@@ -311,5 +315,23 @@ export abstract class CommonApplicationHelper {
 	resetCommon(): void {
 		this.termsAndConditionsFormGroup.reset();
 		this.accessCodeFormGroup.reset();
+	}
+
+	updateModelChangeFlags(): void {
+		if (this.isLoading) {
+			this.isLoading = false;
+		} else {
+			this.hasValueChanged = true;
+		}
+	}
+
+	resetModelChangeFlags(): void {
+		this.hasValueChanged = false;
+	}
+
+	resetModelFlags(): void {
+		this.initialized = false;
+		this.isLoading = true;
+		this.hasValueChanged = false;
 	}
 }

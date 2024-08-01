@@ -139,7 +139,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 				let isUpdateFlowWithHideReprintStep = false;
 				if (this.applicationTypeCode === ApplicationTypeCode.Update) {
 					const originalCategoriesList = this.businessApplicationService.businessModelFormGroup.get(
-						'originalLicenceData.originalCategories'
+						'originalLicenceData.originalCategoryCodes'
 					)?.value;
 					const currentCategoriesData =
 						this.businessApplicationService.businessModelFormGroup.get('categoryData')?.value;
@@ -252,7 +252,6 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 					},
 					error: (error: any) => {
 						console.log('An error occurred during save', error);
-						this.hotToastService.error('An error occurred during the save. Please try again.');
 					},
 				});
 		}

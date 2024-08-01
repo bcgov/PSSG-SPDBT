@@ -128,8 +128,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				this.showStepDogsAndRestraints =
 					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
-
 				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
@@ -220,7 +218,6 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
 			},
 		});
 	}
