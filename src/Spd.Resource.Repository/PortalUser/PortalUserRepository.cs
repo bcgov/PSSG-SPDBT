@@ -93,8 +93,9 @@ internal class PortalUserRepository : IPortalUserRepository
         }
         else
         {
+            //TODO: is there any situation user may not have invition? (what is invition and how to assign it to user? or vice versa)
             var invition = GetPortalInvitationByUserId(userId);
-            _context.DeleteObject(invition);
+            if(invition is not null) _context.DeleteObject(invition);
 
             // Delete user and invitation
             _context.DeleteObject(user);
@@ -115,7 +116,7 @@ internal class PortalUserRepository : IPortalUserRepository
     private async Task<PortalUserResp> UpdatePortalUserLoginAsync(Guid userId, CancellationToken cancellationToken)
     {
         var user = await GetUserById(userId, cancellationToken);
-        user.spd_lastloggedin = DateTime.UtcNow;
+        user.spd_lastloggedin = DateTimeOffset.UtcNow;
         _context.UpdateObject(user);
         await _context.SaveChangesAsync(cancellationToken);
         return new PortalUserResp();

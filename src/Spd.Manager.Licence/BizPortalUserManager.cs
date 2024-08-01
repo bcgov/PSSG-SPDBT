@@ -132,8 +132,6 @@ internal class BizPortalUserManager :
     public async Task<Unit> Handle(BizPortalUserDeleteCommand request, CancellationToken cancellationToken)
     {
         //check role max number rule
-        
-        //TODO: ask if OrgId should = BizId
         var existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
             new PortalUserQry() { OrgId = request.BizId},
             cancellationToken);
@@ -141,12 +139,10 @@ internal class BizPortalUserManager :
         var newUsers = existingUsersResult.Items.ToList();
         if (toDeleteUser == null) return default;
         newUsers.Remove(toDeleteUser);
-        var biz = (BizResult) await _bizRepository.QueryBizAsync(new BizsQry(request.BizId), cancellationToken);
+        var biz = await _bizRepository.QueryBizAsync(new BizsQry(request.BizId), cancellationToken);
 
-        //TODO: ask what is primaryUserNo and how to fill ContactRoleCode (or ContactAuthorizationTypeCode)
-        //int primaryUserNo = newUsers.Count(u => u.ContactAuthorizationTypeCode == ContactRoleCode.Primary);
-        int primaryUserNo = newUsers.Count(u => u.ContactRoleCode == ContactRoleCode.Primary);
-        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, newUsers.Count);
+        int primaryUserNo = newUsers.Count(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.FirstOrDefault().MaxContacts, biz.FirstOrDefault().MaxPrimaryContacts, primaryUserNo, newUsers.Count);
 
         await _portalUserRepository.ManageAsync(
             new PortalUserDeleteCmd(request.UserId),
