@@ -2,6 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
@@ -9,6 +10,8 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
@@ -43,12 +46,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-steps-business-licence-swl-sp-information
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
-					(nextReview)="onGoToReview()"
+					(cancelAndExit)="onCancelAndExit()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-steps-business-licence-swl-sp-information>
@@ -61,11 +62,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					[applicationTypeCode]="applicationTypeCode"
 					[bizTypeCode]="bizTypeCode"
 					[isBusinessLicenceSoleProprietor]="true"
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="false"
+					[showSaveAndExit]="false"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
-					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
@@ -108,9 +108,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	step3Complete = false;
 	step4Complete = false;
 
-	isFormValid = false;
-	showSaveAndExit = false;
-
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
@@ -129,6 +126,7 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -153,10 +151,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 				this.bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'businessInformationData.bizTypeCode'
 				)?.value;
-
-				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
 
 				this.updateCompleteStatus();
 			}
@@ -230,24 +224,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 		this.stepper.selectedIndex = step;
 	}
 
-	onGoToReview() {
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-				next: (_resp: any) => {
-					setTimeout(() => {
-						// hack... does not navigate without the timeout
-						// this.goToReviewStep();
-					}, 250);
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
-			});
-		} else {
-			// this.goToReviewStep();
-		}
-	}
-
 	onChildNextStep() {
 		this.saveStep();
 	}
@@ -267,22 +243,29 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 		});
 	}
 
-	private saveStep(stepper?: MatStepper): void {
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-				next: (_resp: any) => {
-					if (stepper) {
-						if (stepper?.selected) stepper.selected.completed = true;
-						stepper.next();
-					} else {
-						this.goToChildNextStep();
-					}
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
+	onCancelAndExit(): void {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: `<p><b>Are you sure you want to cancel your sole proprietor business licence application?</b></p>
+						<p>If yes, you will redirected back to your security worker licence for review and payment.</p>`,
+			actionText: 'Yes',
+			cancelText: 'Close',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					// TODO Combined SP - how to know where to return back to? were they authenticated in bcsc previously?
+					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
+				}
 			});
-		} else if (stepper) {
+	}
+
+	private saveStep(stepper?: MatStepper): void {
+		if (stepper) {
 			if (stepper?.selected) stepper.selected.completed = true;
 			stepper.next();
 		} else {
