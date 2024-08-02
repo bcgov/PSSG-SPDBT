@@ -5,6 +5,7 @@ export {
 	BizTypes,
 	BodyArmourPermitReasonTypes,
 	BooleanTypes,
+	ContactAuthorizationTypes,
 	CountryTypes,
 	DogDocumentTypes,
 	EyeColourTypes,

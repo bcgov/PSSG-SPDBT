@@ -35,7 +35,7 @@ public class BizProfileManager :
         IAddressRepository addressRepository,
         IBCeIDService bceidService,
         IMapper mapper,
-        ILogger<BizProfileManager> logger)
+        ILogger<IBizProfileManager> logger)
     {
         _mapper = mapper;
         _logger = logger;
@@ -148,7 +148,7 @@ public class BizProfileManager :
         if (!biz.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence))
             return true;
 
-        var portalUsers = await _portalUserRepository.QueryAsync(
+        var portalUsers = (PortalUserListResp) await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
         if (portalUsers == null || !portalUsers.Items.Any())
@@ -164,7 +164,7 @@ public class BizProfileManager :
         if (currentUserIdentity == null)
             return null;
 
-        var portalUsers = await _portalUserRepository.QueryAsync(
+        var portalUsers = (PortalUserListResp) await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
         PortalUserResp resp = portalUsers.Items.FirstOrDefault();

@@ -12,7 +12,7 @@ export interface DialogOopsOptions {
 			<div class="d-flex justify-content-center">
 				<img
 					class="error-image"
-					src="/assets/something-went-wrong.png"
+					src="./assets/something-went-wrong.png"
 					(error)="onHandleMissingImage($event)"
 					alt="Something went wrong"
 				/>

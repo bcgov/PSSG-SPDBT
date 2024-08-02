@@ -8,20 +8,20 @@ metadata:
 spec:
   params:
     - name: imageTag
-      description: ''
-      default: 'main'
+      description: ""
+      default: "main"
     - name: promoteScreening
-      description: ''
-      default: 'true'
+      description: ""
+      default: "true"
     - name: promoteLicensing
-      description: ''
-      default: 'true'
+      description: ""
+      default: "true"
     - name: promoteDynamicsHelper
-      description: ''
-      default: 'true'
+      description: ""
+      default: "true"
     - name: promoteJobScheduler
-      description: ''
-      default: 'true'
+      description: ""
+      default: "true"
 
   tasks:
     ## Promote dev ##
@@ -32,7 +32,7 @@ spec:
           values: ["true"]
       params:
         - name: sourceImage
-          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/screening-portal
+          value: ghcr.io/bcgov/pssg-spdbt/screening-portal
         - name: sourceTag
           value: $(params.imageTag)
         - name: destinationImage
@@ -54,7 +54,7 @@ spec:
           values: ["true"]
       params:
         - name: sourceImage
-          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/licensing-portal
+          value: ghcr.io/bcgov/pssg-spdbt/licensing-portal
         - name: sourceTag
           value: $(params.imageTag)
         - name: destinationImage
@@ -76,7 +76,7 @@ spec:
           values: ["true"]
       params:
         - name: sourceImage
-          value: artifacts.developer.gov.bc.ca/github-docker-remote/bcgov/pssg-spdbt/dynamics-helper
+          value: ghcr.io/bcgov/pssg-spdbt/dynamics-helper
         - name: sourceTag
           value: $(params.imageTag)
         - name: destinationImage

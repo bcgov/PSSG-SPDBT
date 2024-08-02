@@ -66,12 +66,16 @@ export const SPD_CONSTANTS = {
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/armoured-vehicles/who-not-require-permit',
 	},
 	files: {
-		businessMemberAuthConsentManualForm: '/assets/files/Business Member Auth Consent.pdf',
-		securityServicesApplicantTerms: '/assets/files/Security Services Applicant Terms of Use.pdf',
-		securityServicesApplicantUpdateTerms: '/assets/files/Security Services Applicant Update Terms of Use.pdf',
-		securityServicesBusinessApplicantTerms: '/assets/files/Security Services Business Applicant Terms of Use .pdf',
+		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
+		securityServicesApplicantTerms: './assets/files/Security Services Applicant Terms of Use.pdf',
+		securityServicesApplicantUpdateTerms: './assets/files/Security Services Applicant Update Terms of Use.pdf',
+		securityServicesBusinessApplicantTerms: './assets/files/Security Services Business Applicant Terms of Use .pdf',
 		securityServicesBusinessApplicantUpdateTerms:
-			'/assets/files/Security Services Business Applicant Update Terms of Use.pdf',
-		requestForFingerprintingForm: '/assets/files/SPD Request for Fingerprinting Form.pdf',
+			'./assets/files/Security Services Business Applicant Update Terms of Use.pdf',
+		requestForFingerprintingForm: './assets/files/SPD Request for Fingerprinting Form.pdf',
+	},
+	address: {
+		provinceBC: 'British Columbia',
+		countryCanada: 'Canada',
 	},
 };

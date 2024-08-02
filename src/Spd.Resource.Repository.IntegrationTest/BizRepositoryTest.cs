@@ -278,6 +278,15 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.PhoneNumber, "80000000")
             .Create();
 
+        ContactInfo updatedBizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.Surname, "updated ManagerSurname")
+            .With(c => c.GivenName, "updated ManagerGivenName")
+            .With(c => c.EmailAddress, "updated manager@test.com")
+            .With(c => c.MiddleName1, "updated ManagerMiddleName1")
+            .With(c => c.MiddleName2, "updated ManagerMiddleName2")
+            .With(c => c.PhoneNumber, "90000000")
+            .Create();
+
         Guid bizId = Guid.NewGuid();
 
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
@@ -290,6 +299,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BCBusinessAddress, address)
             .With(c => c.BusinessAddress, address)
             .With(c => c.MailingAddress, address)
+            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
         UpdateBizCmd updateCmd = fixture.Build<UpdateBizCmd>()
@@ -303,7 +313,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
             .With(c => c.BizType, BizTypeEnum.RegisteredSoleProprietor)
-            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
+            .With(c => c.BizManagerContactInfo, updatedBizManagerContactInfo)
             .Without(c => c.SoleProprietorSwlContactInfo)
             .Create();
 
@@ -383,6 +393,15 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.PhoneNumber, "80000000")
             .Create();
 
+        ContactInfo updatedBizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.Surname, "updated ManagerSurname")
+            .With(c => c.GivenName, "updated ManagerGivenName")
+            .With(c => c.EmailAddress, "updated manager@test.com")
+            .With(c => c.MiddleName1, "updated ManagerMiddleName1")
+            .With(c => c.MiddleName2, "updated ManagerMiddleName2")
+            .With(c => c.PhoneNumber, "90000000")
+            .Create();
+
         Guid bizId = Guid.NewGuid();
 
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
@@ -395,6 +414,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BCBusinessAddress, address)
             .With(c => c.BusinessAddress, address)
             .With(c => c.MailingAddress, address)
+            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
         UpdateBizCmd updateCmd = fixture.Build<UpdateBizCmd>()
@@ -408,7 +428,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
             .With(c => c.BizType, BizTypeEnum.Corporation)
-            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
+            .With(c => c.BizManagerContactInfo, updatedBizManagerContactInfo)
             .Without(c => c.SoleProprietorSwlContactInfo)
             .Create();
 
@@ -450,7 +470,17 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(a => a.PostalCode, "xyz789")
             .Create();
 
+        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
+            .With(c => c.Surname, "ManagerSurname")
+            .With(c => c.GivenName, "ManagerGivenName")
+            .With(c => c.EmailAddress, "manager@test.com")
+            .With(c => c.MiddleName1, "ManagerMiddleName1")
+            .With(c => c.MiddleName2, "ManagerMiddleName2")
+            .With(c => c.PhoneNumber, "80000000")
+            .Create();
+
         Guid bizId = Guid.NewGuid();
+
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
@@ -460,6 +490,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BCBusinessAddress, address)
             .With(c => c.BusinessAddress, address)
             .With(c => c.MailingAddress, address)
+            .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
         UpdateBizServiceTypeCmd updateServiceTypeCmd = new(bizId, ServiceTypeEnum.PSSO);
