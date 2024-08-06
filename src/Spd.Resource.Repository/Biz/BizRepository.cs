@@ -108,7 +108,11 @@ namespace Spd.Resource.Repository.Biz
             _mapper.Map(updateBizCmd, biz);
 
             _context.UpdateObject(biz);
-            if (updateBizCmd.UpdateSoleProprietor)
+
+            //TODO: it means it doesn't need to check this anymore? just check is not soleProprietor?
+            //(also ask if the IsSoleProprietor() method is valid)
+            //if (updateBizCmd.UpdateSoleProprietor)
+            if (!IsSoleProprietor(updateBizCmd.BizType)) 
             {
                 UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
             }
