@@ -14,14 +14,13 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
-import { StepsBusinessLicenceSwlSpContactComponent } from './steps-business-licence-swl-sp-contact.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-new-swl-sp',
+	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
 	template: `
 		<mat-stepper
 			[selectedIndex]="3"
@@ -73,11 +72,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Contact Information</ng-template>
-				<app-steps-business-licence-swl-sp-contact></app-steps-business-licence-swl-sp-contact>
-			</mat-step>
-
-			<mat-step completed="false">
 				<ng-template matStepLabel>Review Business Licence</ng-template>
 				<app-steps-business-licence-review
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
@@ -97,11 +91,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 	`,
 	styles: [],
 })
-export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class BusinessLicenceWizardNewSwlSoleProprietorComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 4;
-	readonly STEP_CONTACT_INFORMATION = 5;
-	readonly STEP_REVIEW_AND_CONFIRM = 6;
+	readonly STEP_REVIEW_AND_CONFIRM = 5;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -113,13 +106,12 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	bizTypeCode!: BizTypeCode;
 
 	private businessModelValueChangedSubscription!: Subscription;
+	private isSwlAnonymous = false;
 
 	@ViewChild(StepsBusinessLicenceSwlSpInformationComponent)
 	stepsBusinessInformationComponent!: StepsBusinessLicenceSwlSpInformationComponent;
 	@ViewChild(StepsBusinessLicenceSelectionComponent)
 	stepsLicenceSelectionComponent!: StepsBusinessLicenceSelectionComponent;
-	@ViewChild(StepsBusinessLicenceSwlSpContactComponent)
-	stepsContactInformationComponent!: StepsBusinessLicenceSwlSpContactComponent;
 	@ViewChild(StepsBusinessLicenceReviewComponent)
 	stepsReviewAndConfirm!: StepsBusinessLicenceReviewComponent;
 
@@ -151,6 +143,7 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 				this.bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'businessInformationData.bizTypeCode'
 				)?.value;
+				this.isSwlAnonymous = this.businessApplicationService.businessModelFormGroup.get('isSwlAnonymous')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -169,9 +162,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToFirstStep();
-				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
 				break;
@@ -189,9 +179,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 				break;
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToLastStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToLastStep();
@@ -219,7 +206,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	onGoToStep(step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepsContactInformationComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
 	}
@@ -258,8 +244,13 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
+					if (this.isSwlAnonymous) {
+						this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+						return;
+					}
+
 					// TODO Combined SP - how to know where to return back to? were they authenticated in bcsc previously?
-					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
+					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
 				}
 			});
 	}
@@ -281,9 +272,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsLicenceSelectionComponent?.onGoToNextStep();
 				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToNextStep();
-				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToNextStep();
 				break;
@@ -293,10 +281,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	private payNow(licenceAppId: string): void {
 		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
 	}
-
-	// private goToReviewStep(): void {
-	// 	this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-	// }
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
 		// only 403s will be here as an error

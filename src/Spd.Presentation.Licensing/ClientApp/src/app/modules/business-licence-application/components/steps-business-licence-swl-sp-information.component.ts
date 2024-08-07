@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepBusinessLicenceBusinessAddressComponent } from './step-business-licence-business-address.component';
+import { StepBusinessLicenceBusinessInformationComponent } from './step-business-licence-business-information.component';
 import { StepBusinessLicenceCompanyBrandingComponent } from './step-business-licence-company-branding.component';
 import { StepBusinessLicenceExpiredComponent } from './step-business-licence-expired.component';
 import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-liability.component';
-import { StepBusinessLicenceSwlSoleProprietorComponent } from './step-business-licence-swl-sole-proprietor.component';
 
 @Component({
 	selector: 'app-steps-business-licence-swl-sp-information',
@@ -72,55 +72,28 @@ import { StepBusinessLicenceSwlSoleProprietorComponent } from './step-business-l
 			</mat-step>
 
 			<mat-step>
-				<app-step-business-licence-swl-sole-proprietor></app-step-business-licence-swl-sole-proprietor>
+				<app-step-business-licence-business-information
+					[isSoleProprietorCombinedFlow]="true"
+				></app-step-business-licence-business-information>
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_BUSINESS_TYPE)"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_INFORMATION)"
 				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
-				Provide your business information <br />Legal business name / phone / email
+				<app-step-business-licence-business-address></app-step-business-licence-business-address>
+
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onGoToNextStep()"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_ADDRESS)"
 				></app-wizard-footer>
 			</mat-step>
-
-			<!-- <mat-step>
-				Business Address
-				<app-wizard-footer 
-					[isSoleProprietorCombinedFlow]="true"
-					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onGoToNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				Mailing Address
-				<app-wizard-footer
-					[isSoleProprietorCombinedFlow]="true"
-					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onGoToNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				BC Address
-				<app-wizard-footer
-					[isSoleProprietorCombinedFlow]="true"
-					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onGoToNextStep()"
-				></app-wizard-footer>
-			</mat-step> -->
 
 			<mat-step *ngIf="!isRenewalShortForm">
 				<app-step-business-licence-company-branding
@@ -130,10 +103,8 @@ import { StepBusinessLicenceSwlSoleProprietorComponent } from './step-business-l
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
 					(cancelAndExit)="onCancelAndExit()"
-					(saveAndExit)="onSaveAndExit(STEP_LICENCE_BRANDING)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_BRANDING)"
-					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_BRANDING)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -145,10 +116,8 @@ import { StepBusinessLicenceSwlSoleProprietorComponent } from './step-business-l
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
 					(cancelAndExit)="onCancelAndExit()"
-					(saveAndExit)="onSaveAndExit(STEP_LICENCE_LIABILITY)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_LIABILITY)"
-					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_LIABILITY)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -159,8 +128,8 @@ import { StepBusinessLicenceSwlSoleProprietorComponent } from './step-business-l
 export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 1;
 	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_BUSINESS_TYPE = 3;
-	readonly STEP_LICENCE_BUSINESS_NAME = 4;
+	readonly STEP_LICENCE_INFORMATION = 3;
+	readonly STEP_LICENCE_ADDRESS = 4;
 	readonly STEP_LICENCE_BRANDING = 5;
 	readonly STEP_LICENCE_LIABILITY = 6;
 
@@ -170,13 +139,15 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 	@Output() renewalShortForm: EventEmitter<boolean> = new EventEmitter();
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	@ViewChild(StepBusinessLicenceSwlSoleProprietorComponent)
-	stepBusinessTypeComponent!: StepBusinessLicenceSwlSoleProprietorComponent;
+	@ViewChild(StepBusinessLicenceBusinessInformationComponent)
+	stepInformationComponent!: StepBusinessLicenceBusinessInformationComponent;
+	@ViewChild(StepBusinessLicenceBusinessAddressComponent)
+	stepAddressComponent!: StepBusinessLicenceBusinessAddressComponent;
 	@ViewChild(StepBusinessLicenceCompanyBrandingComponent)
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(override commonApplicationService: ApplicationService, private router: Router) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
@@ -198,8 +169,10 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 				return true;
 			case this.STEP_LICENCE_EXPIRED:
 				return this.stepExpiredComponent.isFormValid();
-			case this.STEP_LICENCE_BUSINESS_TYPE:
-				return this.stepBusinessTypeComponent.isFormValid();
+			case this.STEP_LICENCE_INFORMATION:
+				return this.stepInformationComponent.isFormValid();
+			case this.STEP_LICENCE_ADDRESS:
+				return this.stepAddressComponent.isFormValid();
 			case this.STEP_LICENCE_BRANDING:
 				return this.stepCompanyBrandingComponent.isFormValid();
 			case this.STEP_LICENCE_LIABILITY:

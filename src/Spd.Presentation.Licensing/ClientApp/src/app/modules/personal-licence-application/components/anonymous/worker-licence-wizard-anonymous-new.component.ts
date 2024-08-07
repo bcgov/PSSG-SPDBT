@@ -2,14 +2,16 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
@@ -73,25 +75,29 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review Worker Licence</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
+					[isSoleProprietor]="isSoleProprietor"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
+					(nextSubmitStep)="onNextSoleProprietor()"
 					(nextPayStep)="onNextPayStep()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
-			<!-- <ng-container *ngIf="isSoleProprietor">
-				<mat-step>
+			<ng-container *ngIf="isSoleProprietor">
+				<mat-step completed="false">
 					<ng-template matStepLabel>Business Information</ng-template>
 				</mat-step>
-				<mat-step>
-					<ng-template matStepLabel>Business Licence</ng-template>
+
+				<mat-step completed="false">
+					<ng-template matStepLabel>Business Selection</ng-template>
 				</mat-step>
-				<mat-step>
-					<ng-template matStepLabel>Review Business</ng-template>
+
+				<mat-step completed="false">
+					<ng-template matStepLabel>Review Business Licence</ng-template>
 				</mat-step>
-			</ng-container> -->
+			</ng-container>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Pay</ng-template>
@@ -105,10 +111,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	readonly STEP_WORKER_LICENCE_BACKGROUND = 1;
 	readonly STEP_WORKER_LICENCE_IDENTIFICATION = 2;
 	readonly STEP_WORKER_LICENCE_REVIEW = 3;
-	// readonly STEP_BUSINESS_LICENCE_SELECTION = 4; // TODO anonymous sole proprietor
-	// readonly STEP_BUSINESS_LICENCE_BACKGROUND = 5;
-	// readonly STEP_BUSINESS_INFORMATION = 6;
-	// readonly STEP_BUSINESS_LICENCE_REVIEW = 7;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -141,6 +143,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private hotToastService: HotToastService,
 		private licenceApplicationService: LicenceApplicationService,
 		private commonApplicationService: ApplicationService
@@ -226,6 +229,14 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	onNextPayStep(): void {
+		this.submitStep();
+	}
+
+	onNextSoleProprietor(): void {
+		this.submitStep(true);
+	}
+
+	private submitStep(isSoleProprietorFlow: boolean = false): void {
 		// If the creation worked and the payment failed, do not post again
 		if (this.licenceAppId) {
 			this.payNow(this.licenceAppId);
@@ -236,7 +247,24 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 					this.licenceAppId = resp.body.licenceAppId!;
 
 					this.hotToastService.success('Your licence has been successfully submitted');
-					this.payNow(this.licenceAppId);
+
+					if (isSoleProprietorFlow) {
+						this.router.navigate(
+							[
+								BusinessLicenceApplicationRoutes.MODULE_PATH,
+								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+							],
+							{
+								queryParams: {
+									// bizId: '26d3d383-5a35-432c-9398-72d8c2522666', // TODO  Combined SP - is there any way to know this?
+									licenceAppId: this.licenceAppId,
+									isSwlAnonymous: 'Y',
+								},
+							}
+						);
+					} else {
+						this.payNow(this.licenceAppId);
+					}
 				},
 				error: (error: any) => {
 					console.log('An error occurred during save', error);

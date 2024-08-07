@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -34,22 +34,39 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		const queryParams = await lastValueFrom(this.route.queryParams.pipe(take(1)));
+		const queryParams: Params = await lastValueFrom(this.route.queryParams.pipe(take(1)));
 		const defaultBizId: string | undefined = queryParams['bizId'];
+		const licenceAppId: string | undefined = queryParams['licenceAppId'];
+		const isSwlAnonymous: string | undefined = queryParams['isSwlAnonymous'];
+
+		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
+
+		const params: URLSearchParams = new URLSearchParams();
+		if (defaultBizId) params.set('bizId', defaultBizId);
+		if (licenceAppId) params.set('licenceAppId', licenceAppId);
+		if (isSwlAnonymous) params.set('isSwlAnonymous', isSwlAnonymous);
+
+		console.debug('BusinessLicenceApplicationBaseComponent params', params.toString());
 
 		const currentPath = location.pathname;
 		let redirectComponentRoute: string | undefined;
-		if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP)) {
-			redirectComponentRoute = BusinessLicenceApplicationRoutes.path(
-				BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP
-			);
+		if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
+			redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
+				BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
+			)}?${params.toString()}`;
 		}
 
 		console.debug('BusinessLicenceApplicationBaseComponent redirectComponentRoute', redirectComponentRoute);
 
 		this.authProcessService.logoutBcsc(redirectComponentRoute);
 
-		const nextRoute = await this.authProcessService.initializeLicencingBCeID(defaultBizId, redirectComponentRoute);
+		const loginInfo = await this.authProcessService.initializeLicencingBCeID(
+			defaultBizId,
+			redirectComponentRoute,
+			params.toString()
+		);
+
+		console.debug('BusinessLicenceApplicationBaseComponent loginInfo', loginInfo);
 
 		// TODO for BUSINESS_NEW_SWL_SP, ignore first time login ??
 
@@ -72,14 +89,24 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			return;
 		}
 
-		if (nextRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP)) {
+		if (
+			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR) &&
+			loginInfo.state
+		) {
 			// handle new business licence creation from swl - for sole proprietor
+
+			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor defaultBizId', defaultBizId);
+			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor licenceAppId', licenceAppId);
+			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor isSwlAnonymous', isSwlAnonymous);
+
 			this.businessApplicationService
-				.createNewBusinessLicenceWithSwl()
+				.createNewBusinessLicenceWithSwl(licenceAppId!, isSwlAnonymous === 'Y')
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
-							BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP)
+							`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
+								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP
+							)}?${loginInfo.state}`
 						);
 					}),
 					take(1)

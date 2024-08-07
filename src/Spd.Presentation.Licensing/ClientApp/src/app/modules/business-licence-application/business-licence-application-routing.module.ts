@@ -7,8 +7,9 @@ import { BusinessLicencePaymentCancelComponent } from './components/business-lic
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
 import { BusinessLicencePaymentSuccessComponent } from './components/business-licence-payment-success.component';
+import { BusinessLicenceSwlSoleProprietorComponent } from './components/business-licence-swl-sole-proprietor.component';
 import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business-licence-update-received-success.component';
-import { BusinessLicenceWizardNewSwlSpComponent } from './components/business-licence-wizard-new-swl-sp.component';
+import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
@@ -24,10 +25,12 @@ export class BusinessLicenceApplicationRoutes {
 
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'business-licence-terms-and-conditions';
 
+	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp';
+	public static readonly BUSINESS_NEW_SWL_SP = 'business-licence-new-swl-sp';
+
 	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
 	public static readonly BUSINESS_NEW = 'business-licence-new';
-	public static readonly BUSINESS_NEW_SWL_SP = 'business-licence-new-swl-sp';
 	public static readonly BUSINESS_RENEWAL = 'business-licence-renewal';
 	public static readonly BUSINESS_UPDATE = 'business-licence-update';
 	public static readonly BUSINESS_REPLACEMENT = 'business-licence-replacement';
@@ -85,8 +88,12 @@ const routes: Routes = [
 				component: BusinessLicenceWizardNewComponent,
 			},
 			{
+				path: BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+				component: BusinessLicenceSwlSoleProprietorComponent,
+			},
+			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP,
-				component: BusinessLicenceWizardNewSwlSpComponent,
+				component: BusinessLicenceWizardNewSwlSoleProprietorComponent,
 			},
 			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL,

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
 import { StepWorkerLicenceSummaryReviewAuthenticatedComponent } from './step-worker-licence-summary-review-authenticated.component';
 import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './step-worker-licence-summary-review-update-authenticated.component';
 
@@ -51,7 +51,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-					<ng-container *ngIf="isSoleProprietor">
+					<ng-container *ngIf="isSoleProprietor; else IsNotSoleProprietor">
 						<app-wizard-footer
 							[isFormValid]="true"
 							[showSaveAndExit]="true"
@@ -60,7 +60,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 							(nextStepperStep)="onSaveSoleProprietor()"
 						></app-wizard-footer>
 					</ng-container>
-					<ng-container *ngIf="!isSoleProprietor">
+					<ng-template #IsNotSoleProprietor>
 						<app-wizard-footer
 							[isFormValid]="true"
 							[showSaveAndExit]="true"
@@ -69,7 +69,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onPayNow()"
 						></app-wizard-footer>
-					</ng-container>
+					</ng-template>
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">

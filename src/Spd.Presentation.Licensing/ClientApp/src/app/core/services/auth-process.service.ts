@@ -38,17 +38,18 @@ export class AuthProcessService {
 
 		const returningRoute = PersonalLicenceApplicationRoutes.pathUserApplications();
 
-		const nextUrl = await this.authenticationService.login(
+		const loginInfo = await this.authenticationService.login(
 			this.identityProvider,
 			returnComponentRoute ?? returningRoute
 		);
-		console.debug('[AuthProcessService] initializeLicencingBCSC nextUrl', returnComponentRoute, nextUrl);
 
-		if (nextUrl) {
+		console.debug('[AuthProcessService] initializeLicencingBCSC loginInfo', returnComponentRoute, loginInfo);
+
+		if (loginInfo.returnRoute) {
 			const success = await this.authUserBcscService.applicantLoginAsync();
 			this.notify(success);
 
-			const nextRoute = decodeURIComponent(nextUrl);
+			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
 			return Promise.resolve(nextRoute);
 		}
 
@@ -61,26 +62,36 @@ export class AuthProcessService {
 	// *
 	async initializeLicencingBCeID(
 		defaultBizId: string | null = null,
-		defaultRoute: string | null = null
-	): Promise<string | null> {
+		defaultRoute: string | null = null,
+		state: string | undefined = undefined
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const returningRoute = BusinessLicenceApplicationRoutes.pathBusinessApplications();
+
+		console.debug('[AuthProcessService] initializeLicencingBCeID defaultBizId', defaultBizId);
 		console.debug('[AuthProcessService] initializeLicencingBCeID return route', defaultRoute ?? returningRoute);
+		console.debug('[AuthProcessService] initializeLicencingBCeID state', state);
 
-		const nextUrl = await this.authenticationService.login(this.identityProvider, defaultRoute ?? returningRoute);
-		console.debug('[AuthProcessService] initializeLicencingBCeID nextUrl', nextUrl, 'defaultBizId', defaultBizId);
+		const loginInfo = await this.authenticationService.login(
+			this.identityProvider,
+			defaultRoute ?? returningRoute,
+			state
+		);
 
-		if (nextUrl) {
+		console.debug('[AuthProcessService] initializeLicencingBCeID loginInfo', loginInfo, 'defaultBizId', defaultBizId);
+
+		if (loginInfo.returnRoute) {
 			const success = await this.authUserBceidService.whoAmIAsync(defaultBizId);
 			this.notify(success);
 
-			const nextRoute = decodeURIComponent(nextUrl);
-			return Promise.resolve(nextRoute);
+			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
+			loginInfo.returnRoute = nextRoute;
+			return Promise.resolve(loginInfo);
 		}
 
 		this.notify(false);
-		return Promise.resolve(null);
+		return Promise.resolve(loginInfo);
 	}
 
 	//----------------------------------------------------------
@@ -127,13 +138,20 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// *
 	// *
-	public logoutBceid(): void {
-		console.debug('[AuthProcessService] logoutBceid');
+	public logoutBceid(redirectComponentRoute?: string): void {
+		console.debug('[AuthProcessService] logoutBceid', redirectComponentRoute);
+
+		let redirectUri = location.origin;
+		if (redirectComponentRoute) {
+			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
+		}
+
+		console.debug('[AuthProcessService] logoutBceid redirectUri', redirectUri);
 
 		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
 		if (claims && claims['iss'] !== bcscIssuer) {
-			this.oauthService.logOut();
+			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
 
