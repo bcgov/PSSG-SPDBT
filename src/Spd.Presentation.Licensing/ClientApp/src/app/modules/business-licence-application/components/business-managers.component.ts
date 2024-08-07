@@ -371,19 +371,11 @@ export class BusinessManagersComponent implements OnInit {
 			.subscribe((resp) => {
 				if (resp) {
 					if (isCreate) {
-						this.usersList.push(resp.data);
 						this.hotToastService.success('Business Manager was successfully added');
 					} else {
-						const branchIndex = this.usersList.findIndex((item) => item.id == dialogOptions.user?.id!);
-						if (branchIndex >= 0) {
-							this.usersList[branchIndex] = resp.data;
-							this.dataSource.data = this.usersList;
-						}
 						this.hotToastService.success('Business Manager was successfully updated');
 					}
-					this.sortUsers();
-					this.setFlags();
-					this.dataSource = new MatTableDataSource(this.usersList);
+					this.loadList();
 				}
 			});
 	}
@@ -412,13 +404,9 @@ export class BusinessManagersComponent implements OnInit {
 						.deleteBizPortalUser(params.user.id!)
 						.pipe()
 						.subscribe((_res) => {
-							this.usersList.splice(
-								this.usersList.findIndex((item) => item.id == params.user.id!),
-								1
-							);
-							this.setFlags();
 							this.hotToastService.success(params.success);
-							this.dataSource = new MatTableDataSource(this.usersList);
+
+							this.loadList();
 						});
 				}
 			});
