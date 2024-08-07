@@ -395,9 +395,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepContactInformationComplete(): boolean {
-		// console.debug('isStepContactInformationComplete', this.businessManagerFormGroup.valid);
+		const isBusinessLicenceSoleProprietor = this.businessModelFormGroup.get('isBusinessLicenceSoleProprietor')?.value;
 
-		return this.businessManagerFormGroup.valid;
+		// console.debug('isStepContactInformationComplete', isBusinessLicenceSoleProprietor, this.applicantFormGroup.valid);
+
+		if (isBusinessLicenceSoleProprietor) return true;
+
+		return this.applicantFormGroup.valid;
 	}
 
 	/**
@@ -405,11 +409,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepControllingMembersAndEmployeesComplete(): boolean {
+		const isBusinessLicenceSoleProprietor = this.businessModelFormGroup.get('isBusinessLicenceSoleProprietor')?.value;
+
 		// console.debug(
 		// 	'isStepControllingMembersAndEmployeesComplete',
+		// 	isBusinessLicenceSoleProprietor,
 		// 	this.controllingMembersFormGroup.valid,
 		// 	this.employeesFormGroup.valid
 		// );
+
+		if (isBusinessLicenceSoleProprietor) return true;
 
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
