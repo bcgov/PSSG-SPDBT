@@ -46,8 +46,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		if (licenceAppId) params.set('licenceAppId', licenceAppId);
 		if (isSwlAnonymous) params.set('isSwlAnonymous', isSwlAnonymous);
 
-		console.debug('BusinessLicenceApplicationBaseComponent params', params.toString());
-
 		const currentPath = location.pathname;
 		let redirectComponentRoute: string | undefined;
 		if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {

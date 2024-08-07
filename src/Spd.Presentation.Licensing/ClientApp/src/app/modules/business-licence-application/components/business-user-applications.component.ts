@@ -10,6 +10,7 @@ import {
 	MainApplicationResponse,
 	MainLicenceResponse,
 } from '@app/core/services/application.service';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';
@@ -129,10 +130,20 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private configService: ConfigService,
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: ApplicationService,
+		private authUserBceidService: AuthUserBceidService
 	) {}
 
 	ngOnInit(): void {
+		// do not allow the user to navigate here (eg. back button)
+		// if they have already agreed to the terms
+		// if (this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
+		// 	this.router.navigateByUrl(
+		// 		BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS)
+		// 	);
+		// 	return;
+		// }
+
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 
 		this.commonApplicationService.setApplicationTitle();

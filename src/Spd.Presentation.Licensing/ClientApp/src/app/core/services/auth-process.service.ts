@@ -34,6 +34,8 @@ export class AuthProcessService {
 	// * Licencing Portal - BCSC
 	// *
 	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+		this.notify(false);
+
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
 
 		const returningRoute = PersonalLicenceApplicationRoutes.pathUserApplications();
@@ -65,6 +67,8 @@ export class AuthProcessService {
 		defaultRoute: string | null = null,
 		state: string | undefined = undefined
 	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
+		this.notify(false);
+
 		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
 
 		const returningRoute = BusinessLicenceApplicationRoutes.pathBusinessApplications();

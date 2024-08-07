@@ -72,10 +72,6 @@ const routes: Routes = [
 		component: BusinessLicenceApplicationBaseComponent,
 		children: [
 			{
-				path: BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
-				component: BusinessFirstTimeUserTermsOfUseComponent,
-			},
-			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_UPDATE_TERMS,
 				component: StepBusinessLicenceUpdateTermsComponent,
 			},
@@ -141,6 +137,11 @@ const routes: Routes = [
 				component: BusinessLicenceUpdateReceivedSuccessComponent,
 			},
 		],
+	},
+
+	{
+		path: BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
+		component: BusinessFirstTimeUserTermsOfUseComponent,
 	},
 	{
 		path: '',
