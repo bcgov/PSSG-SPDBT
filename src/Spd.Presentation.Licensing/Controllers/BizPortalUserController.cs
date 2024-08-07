@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
@@ -91,7 +91,7 @@ public class BizPortalUserController : SpdControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager,Manager")]
     [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpGet]
     public async Task<BizPortalUserResponse> Get([FromRoute] Guid bizId, Guid userId)
@@ -102,8 +102,9 @@ public class BizPortalUserController : SpdControllerBase
         }
         return await _mediator.Send(new BizPortalUserGetQuery(userId));
     }
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager")]
-    [Route("api/bizs/{bizId}/portal-users/{userId}")]
+
+    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager")]
+    [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpDelete]
     public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid bizId)
     {
