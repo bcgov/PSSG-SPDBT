@@ -102,7 +102,8 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            if (!IsSoleProprietor(updateBizCmd.BizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(biz.spd_licensingbusinesstype)))
+            //TODO: updateBizCmd.UpdateSoleProprietor is it a flag for update execution?
+            if (updateBizCmd.BizType != null && !IsSoleProprietor(updateBizCmd.BizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(biz.spd_licensingbusinesstype)))
                 throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
 
             _mapper.Map(updateBizCmd, biz);
@@ -110,9 +111,8 @@ namespace Spd.Resource.Repository.Biz
             _context.UpdateObject(biz);
 
             //TODO: it means it doesn't need to check this anymore? just check is not soleProprietor?
-            //(also ask if the IsSoleProprietor() method is valid)
             //if (updateBizCmd.UpdateSoleProprietor)
-            if (!IsSoleProprietor(updateBizCmd.BizType)) 
+            if (updateBizCmd.UpdateSoleProprietor && !IsSoleProprietor(updateBizCmd.BizType)) 
             {
                 UpdateLicenceLink(biz, updateBizCmd.SoleProprietorSwlContactInfo?.LicenceId, updateBizCmd.BizType);
             }
