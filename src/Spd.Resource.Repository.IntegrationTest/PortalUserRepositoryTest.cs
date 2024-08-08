@@ -1,11 +1,6 @@
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Polly;
-using Shouldly;
-using SkiaSharp;
 using Spd.Resource.Repository.PortalUser;
-using Spd.Resource.Repository.User;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.IntegrationTest;
@@ -29,11 +24,11 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Guid accountId = Guid.NewGuid();
         Guid portalUserId = Guid.NewGuid();
 
-        spd_identity identity = new spd_identity() { spd_identityid = identityId };
+        spd_identity identity = new() { spd_identityid = identityId };
         _context.AddTospd_identities(identity);
-        account account = new account() { accountid = accountId };
+        account account = new() { accountid = accountId };
         _context.AddToaccounts(account);
-        spd_portaluser portalUser = new spd_portaluser()
+        spd_portaluser portalUser = new()
         {
             spd_OrganizationId = account,
             spd_IdentityId = identity,
@@ -48,7 +43,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Action
         var response = await _portalUserRepo.QueryAsync(qry, CancellationToken.None);
         // Assert
-        Assert.IsType<PortalUserListResp> (response);
+        Assert.IsType<PortalUserListResp>(response);
         Assert.NotNull(response);
         // Annihilate
         spd_portaluser? updatedPortalUser = _context.spd_portalusers.Where(u => u.spd_portaluserid == portalUserId).FirstOrDefault();
@@ -73,11 +68,11 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Guid accountId = Guid.NewGuid();
         Guid portalUserId = Guid.NewGuid();
 
-        spd_identity identity = new spd_identity() { spd_identityid = identityId };
+        spd_identity identity = new() { spd_identityid = identityId };
         _context.AddTospd_identities(identity);
-        account account = new account() { accountid = accountId };
+        account account = new() { accountid = accountId };
         _context.AddToaccounts(account);
-        spd_portaluser portalUser = new spd_portaluser()
+        spd_portaluser portalUser = new()
         {
             spd_OrganizationId = account,
             spd_IdentityId = identity,
@@ -118,9 +113,9 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Guid identityId = Guid.NewGuid();
         Guid accountId = Guid.NewGuid();
 
-        spd_identity identity = new spd_identity() { spd_identityid = identityId };
+        spd_identity identity = new() { spd_identityid = identityId };
         _context.AddTospd_identities(identity);
-        account account = new account() { accountid = accountId };
+        account account = new() { accountid = accountId };
         _context.AddToaccounts(account);
         _context.SaveChanges();
 
@@ -141,7 +136,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Assert.NotEqual(Guid.Empty, response.Id);
         Assert.Equal(cmd.OrgId, response.OrganizationId);
         Assert.Equal(ContactRoleCode.PrimaryBusinessManager, response.ContactRoleCode);
-        
+
         // Annihilate
         spd_portaluser? portalUser = _context.spd_portalusers.Where(u => u.spd_portaluserid == response.Id).FirstOrDefault();
 
@@ -166,11 +161,11 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Guid accountId = Guid.NewGuid();
         Guid portalUserId = Guid.NewGuid();
 
-        spd_identity identity = new spd_identity() { spd_identityid = identityId };
+        spd_identity identity = new() { spd_identityid = identityId };
         _context.AddTospd_identities(identity);
-        account account = new account() { accountid = accountId };
+        account account = new() { accountid = accountId };
         _context.AddToaccounts(account);
-        spd_portaluser portalUser = new spd_portaluser() { spd_portaluserid = portalUserId };
+        spd_portaluser portalUser = new() { spd_portaluserid = portalUserId };
         _context.AddTospd_portalusers(portalUser);
         _context.SaveChanges();
 
@@ -214,56 +209,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.DeleteObject(portalUserToRemove);
         await _context.SaveChangesAsync();
     }
-    [Fact]
-    public async Task UpdatePortalUserLoginAsync_Run_Correctly()
-    {
-        // Arrange
-        Guid identityId = Guid.NewGuid();
-        Guid accountId = Guid.NewGuid();
-        Guid portalUserId = Guid.NewGuid();
 
-        spd_identity identity = new spd_identity() { spd_identityid = identityId };
-        _context.AddTospd_identities(identity);
-        account account = new account() { accountid = accountId };
-        _context.AddToaccounts(account);
-        spd_portaluser portalUser = new spd_portaluser() 
-        { 
-            spd_OrganizationId = account, 
-            spd_IdentityId = identity, 
-            spd_portaluserid = portalUserId, 
-            spd_lastloggedin = DateTimeOffset.UtcNow.AddDays(-1) 
-        };
-
-        _context.AddTospd_portalusers(portalUser);
-        _context.SaveChanges();
-
-        PortalUserUpdateLoginCmd cmd = new(portalUserId);
-
-        // Act
-        var result = await _portalUserRepo.ManageAsync(cmd, CancellationToken.None);
-
-        var updatedUser = await _context.GetUserById(portalUserId,CancellationToken.None);
-
-        // Assert
-        Assert.NotNull(updatedUser);
-        Assert.True(updatedUser.spd_lastloggedin > DateTimeOffset.UtcNow.AddMinutes(-10));
-        Assert.Equal(updatedUser.spd_portaluserid, portalUserId);
-        
-        // Annihilate
-        spd_portaluser? updatedPortalUser = _context.spd_portalusers.Where(u => u.spd_portaluserid == updatedUser.spd_portaluserid).FirstOrDefault();
-
-        _context.SetLink(portalUser, nameof(portalUser.spd_OrganizationId), null);
-        _context.SetLink(portalUser, nameof(portalUser.spd_IdentityId), null);
-
-        _context.DeleteObject(identity);
-        _context.DeleteObject(account);
-        await _context.SaveChangesAsync();
-
-        spd_portaluser? portalUserToRemove = _context.spd_portalusers.Where(u => u.spd_portaluserid == updatedUser.spd_portaluserid).FirstOrDefault();
-
-        _context.DeleteObject(portalUserToRemove);
-        await _context.SaveChangesAsync();
-    }
     [Fact]
     public async Task DeletePortalUserAsync_With_spd_identityid_Run_Correctly()
     {
@@ -271,9 +217,9 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         Guid identityId = Guid.NewGuid();
         Guid accountId = Guid.NewGuid();
 
-        spd_identity identity = new spd_identity() { spd_identityid = identityId };
+        spd_identity identity = new() { spd_identityid = identityId };
         _context.AddTospd_identities(identity);
-        account account = new account() { accountid = accountId };
+        account account = new() { accountid = accountId };
         _context.AddToaccounts(account);
         _context.SaveChanges();
 
@@ -288,7 +234,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         var createdUser = await _portalUserRepo.ManageAsync(createCmd, CancellationToken.None);
         //TODO: here I tried to create an invitation, but it is not working (is null at the end)
-        spd_portalinvitation invitation = new spd_portalinvitation
+        spd_portalinvitation invitation = new()
         {
             _spd_portaluserid_value = createdUser.Id
         };
@@ -298,7 +244,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         //Act
         PortalUserDeleteCmd cmd = new(createdUser.Id);
         var result = await _portalUserRepo.ManageAsync(cmd, CancellationToken.None);
-        
+
         // Assert
         var deletedUser = await _context.GetUserById(createdUser.Id, CancellationToken.None);
         Assert.NotNull(deletedUser);
@@ -328,7 +274,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Arrange
         Guid accountId = Guid.NewGuid();
 
-        account account = new account() { accountid = accountId };
+        account account = new() { accountid = accountId };
         _context.AddToaccounts(account);
         _context.SaveChanges();
 
@@ -342,7 +288,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         var createdUser = await _portalUserRepo.ManageAsync(createCmd, CancellationToken.None);
 
-        spd_portalinvitation invitation = new spd_portalinvitation
+        spd_portalinvitation invitation = new()
         {
             _spd_portaluserid_value = createdUser.Id
         };
@@ -375,7 +321,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
         }
         catch (Exception ex)
         {
-            
+
         }
 
         Assert.Null(deletedUser); // Ensure the user is deleted

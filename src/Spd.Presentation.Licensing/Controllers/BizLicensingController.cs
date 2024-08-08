@@ -45,7 +45,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/{licenceAppId}")]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
@@ -58,7 +58,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicantId"></param>
         /// <returns></returns>
         [Route("api/business/{bizId}/app-latest")]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<BizLicAppResponse> GetLatestBizLicenceApplication([FromRoute][Required] Guid bizId)
         {
@@ -71,7 +71,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="bizUpsertRequest"></param>
         /// <returns></returns>
         [Route("api/business-licence-application")]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SaveBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
@@ -90,7 +90,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/{licenceAppId}/files")]
         [HttpPost]
         [RequestSizeLimit(26214400)] //25M
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
         {
             VerifyFiles(fileUploadRequest.Documents);
@@ -106,7 +106,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/change")]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse?> ChangeOnBizLicApp(BizLicAppSubmitRequest request, CancellationToken ct)
         {
@@ -154,7 +154,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/members")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
         {
             return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
@@ -169,7 +169,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/members")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
         {
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
@@ -190,7 +190,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/files")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [RequestSizeLimit(26214400)] //25M
         public async Task<Guid> UploadFilesToCache([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
         {
@@ -209,7 +209,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="bizUpsertRequest"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/submit")]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpPost]
         public async Task<BizLicAppCommandResponse> SubmitBusinessLicenceApplication([FromBody][Required] BizLicAppUpsertRequest bizUpsertRequest, CancellationToken ct)
         {
@@ -226,7 +226,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="documentId"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/brand-image/{documentId}")]
-        [Authorize(Policy = "OnlyBceid")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<FileStreamResult> GetBrandImage([FromRoute][Required] Guid documentId, CancellationToken ct)
         {
