@@ -70,34 +70,21 @@ public class BizLicAppValidationTest
     }
 
     [Fact]
-    public void BizManagerContactInfo_WhenHasEmptyFields_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.BizManagerContactInfo.GivenName = string.Empty;
-        model.BizManagerContactInfo.Surname = string.Empty;
-        model.BizManagerContactInfo.PhoneNumber = string.Empty;
-        model.BizManagerContactInfo.EmailAddress = string.Empty;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo);
-    }
-
-    [Fact]
     public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
         BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.ApplicantIsBizManager = false;
         model.ApplicantContactInfo.GivenName = string.Empty;
         model.ApplicantContactInfo.Surname = string.Empty;
         model.ApplicantContactInfo.PhoneNumber = string.Empty;
         model.ApplicantContactInfo.EmailAddress = string.Empty;
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.GivenName);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.Surname);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.PhoneNumber);
+        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.EmailAddress);
     }
 
     [Fact]
@@ -166,14 +153,10 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for armour car registrar
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.ArmourCarGuardRegistrar)
+            .CreateMany(11)
+            .ToList();
 
         model.DocumentInfos = documentInfos;
 
@@ -274,9 +257,6 @@ public class BizLicAppValidationTest
         };
 
         // Contact info
-        ContactInfo bizManagerContactInfo = fixture.Build<ContactInfo>()
-            .With(c => c.EmailAddress, "test@test.com")
-            .Create();
         ContactInfo applicantContactInfo = fixture.Build<ContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
             .Create();
@@ -316,7 +296,6 @@ public class BizLicAppValidationTest
                 .With(r => r.NoBranding, false)
                 .With(r => r.DocumentInfos, documentInfos)
                 .With(r => r.CategoryCodes, categories)
-                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
                 .With(r => r.Members, members)
                 .Create();
@@ -330,7 +309,6 @@ public class BizLicAppValidationTest
                 .With(r => r.UseDogs, true)
                 .With(r => r.NoBranding, false)
                 .With(r => r.CategoryCodes, categories)
-                .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
                 .With(r => r.Members, members)
                 .Create();

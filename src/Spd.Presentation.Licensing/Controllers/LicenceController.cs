@@ -87,13 +87,13 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
 
-            LicenceResponse response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
-            Guid latestAppId;
-            if (response.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
+            LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
+            Guid latestAppId = Guid.Empty;
+            if (response?.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            else if (response.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence)
+            else if (response?.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence)
                 throw new ApiException(HttpStatusCode.BadRequest, "Biz licensing does not support anonymous.");
-            else
+            else if (response != null)
                 latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (WorkerLicenceTypeCode)response.WorkerLicenceTypeCode));
 
             if (response != null)

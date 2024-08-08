@@ -4,6 +4,7 @@ import {
 	ArmouredVehiclePermitReasonCode,
 	BizTypeCode,
 	BodyArmourPermitReasonCode,
+	ContactAuthorizationTypeCode,
 	EyeColourCode,
 	GenderCode,
 	HairColourCode,
@@ -314,6 +315,13 @@ export const ServiceTypes: SelectOptions[] = [
 		desc: 'Security Business Licence Controlling Member Crc',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
+];
+
+export const ContactAuthorizationTypes: SelectOptions[] = [
+	{ desc: 'Business Manager', code: ContactAuthorizationTypeCode.BusinessManager },
+	{ desc: 'Contact', code: ContactAuthorizationTypeCode.Contact },
+	{ desc: 'Primary', code: ContactAuthorizationTypeCode.Primary },
+	{ desc: 'Primary Business Manager', code: ContactAuthorizationTypeCode.PrimaryBusinessManager },
 ];
 
 export const HairColourTypes: SelectOptions[] = [

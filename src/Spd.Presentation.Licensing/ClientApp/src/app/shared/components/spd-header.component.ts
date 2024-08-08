@@ -4,7 +4,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -98,7 +98,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		private authUserBcscService: AuthUserBcscService,
 		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
-		private commonApplicationService: CommonApplicationService,
+		private commonApplicationService: ApplicationService,
 		// private configService: ConfigService,
 		private utilService: UtilService
 	) {}

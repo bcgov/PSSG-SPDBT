@@ -1,8 +1,8 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { CommonApplicationService } from '@app/modules/licence-application/services/common-application.service';
-import { LicenceStepperStepComponent } from '@app/modules/licence-application/services/licence-application.helper';
+import { ApplicationService } from '@app/core/services/application.service';
+import { LicenceStepperStepComponent } from '../services/util.service';
 
 @Component({
 	selector: 'app-base-wizard-step',
@@ -21,7 +21,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	constructor(protected commonApplicationService: CommonApplicationService) {}
+	constructor(protected commonApplicationService: ApplicationService) {}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
@@ -38,10 +38,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.nextStepperStep.emit(true);
 	}
 
-	onSaveAndExit(formNumber: number): void {
-		const isValid = this.dirtyForm(formNumber);
-		if (!isValid) return;
-
+	onSaveAndExit(_formNumber: number): void {
 		this.saveAndExit.emit(true);
 	}
 

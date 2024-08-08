@@ -47,15 +47,17 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
          .ForMember(d => d.ApplicantIsBizManager, opt => opt.MapFrom(s => IsApplicantBizManager(s)));
 
-        _ = CreateMap<SaveBizLicApplicationCmd, spd_application>()
+        CreateMap<SaveBizLicApplicationCmd, spd_application>()
          .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.LicenceAppId ?? Guid.NewGuid()))
-         .IncludeBase<BizLicApplication, spd_application>();
+         .IncludeBase<BizLicApplication, spd_application>()
+         .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-        _ = CreateMap<CreateBizLicApplicationCmd, spd_application>()
+        CreateMap<CreateBizLicApplicationCmd, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
          .ForMember(d => d.spd_submittedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
-         .IncludeBase<BizLicApplication, spd_application>();
+         .IncludeBase<BizLicApplication, spd_application>()
+         .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         _ = CreateMap<spd_application, BizLicApplicationResp>()
          .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
@@ -67,7 +69,7 @@ internal class Mappings : Profile
          .ForMember(d => d.BizId, opt => opt.MapFrom(s => s.spd_ApplicantId_account == null ? null : s.spd_ApplicantId_account.accountid))
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
-         .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.MapFrom(s => GetPrivateInvestigatorInformation(s.spd_businesscontact_spd_application)))
+         .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.Ignore())
          .IncludeBase<spd_application, BizLicApplication>();
 
         _ = CreateMap<PrivateInvestigatorSwlContactInfo, spd_businesscontact>()
@@ -83,24 +85,6 @@ internal class Mappings : Profile
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
-    }
-
-    private static PrivateInvestigatorSwlContactInfo? GetPrivateInvestigatorInformation(IEnumerable<spd_businesscontact>? businessContacts)
-    {
-        if (businessContacts == null || !businessContacts.Any())
-            return null;
-
-        spd_businesscontact? privateInvestigator = businessContacts.FirstOrDefault();
-
-        return new()
-        {
-            BizContactId = privateInvestigator?.spd_businesscontactid,
-            GivenName = privateInvestigator?.spd_firstname,
-            Surname = privateInvestigator?.spd_surname,
-            MiddleName1 = privateInvestigator?.spd_middlename1,
-            MiddleName2 = privateInvestigator?.spd_middlename2,
-            EmailAddress = privateInvestigator?.spd_email
-        };
     }
 
     private static bool IsApplicantBizManager(spd_application application)

@@ -60,6 +60,7 @@ public record BizLicAppSubmitRequest : BizLicenceApp
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
 }
 public record BizLicAppCommandResponse : LicenceAppUpsertResponse
 {
@@ -74,6 +75,7 @@ public record BizLicAppResponse : BizLicenceApp
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
@@ -86,9 +88,7 @@ public abstract record BizLicenceApp : LicenceAppBase
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
 
     //non sole proprietor properties
-    public ContactInfo? BizManagerContactInfo { get; set; }
     public ContactInfo? ApplicantContactInfo { get; set; }
-    public bool? ApplicantIsBizManager { get; set; }
     public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
@@ -104,6 +104,7 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
 {
     public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
+    public Guid? LicenceId { get; set; }
 }
 
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
