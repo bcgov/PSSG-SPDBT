@@ -30,7 +30,7 @@ public class BizProfileController : SpdControllerBase
     /// <param name="ct"></param>
     /// <returns></returns>
     [Route("api/biz/{id}")]
-    [Authorize(Policy = "OnlyBceid")]
+    [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
     [HttpGet]
     public async Task<BizProfileResponse> GetProfile([FromRoute] Guid id, CancellationToken ct)
     {
@@ -45,7 +45,7 @@ public class BizProfileController : SpdControllerBase
     /// <param name="ct"></param>
     /// <returns></returns>
     [Route("api/biz/{bizId}")]
-    [Authorize(Policy = "OnlyBceid")]
+    [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
     [HttpPut]
     public async Task<Guid> UpdateBizProfile([FromRoute] string bizId, BizProfileUpdateRequest request, CancellationToken ct)
     {

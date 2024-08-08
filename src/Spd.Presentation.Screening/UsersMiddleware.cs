@@ -134,6 +134,7 @@ namespace Spd.Presentation.Screening
         {
             context.Response.Clear();
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            context.Response.ContentType = "text/plain";
             await context.Response.WriteAsync(msg);
         }
 
