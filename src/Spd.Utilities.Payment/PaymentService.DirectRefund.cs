@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Spd.Utilities.Payment.TokenProviders;
-using System.Configuration;
+﻿using System.Configuration;
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Spd.Utilities.Payment
 {
@@ -11,18 +11,16 @@ namespace Spd.Utilities.Payment
     {
         public async Task<RefundPaymentResult> RefundDirectPaymentAsync(RefundPaymentCmd command)
         {
-            _logger.LogInformation("PaymentService get RefundPaymentCmd");
-
             try
             {
                 if (_config?.DirectRefund?.AuthenticationSettings == null || _config?.DirectRefund?.DirectRefundPath == null)
                     throw new ConfigurationErrorsException("Payment Direct Refund Configuration is not correct.");
-                ISecurityTokenProvider tokenProvider = _tokenProviderResolver.GetTokenProviderByName("BasicTokenProvider");
+                var tokenProvider = _tokenProviderResolver.GetTokenProviderByName("BasicTokenProvider");
                 string accessToken = await tokenProvider.AcquireToken();
                 if (string.IsNullOrWhiteSpace(accessToken))
                     throw new InvalidOperationException("cannot get access token from paybc");
 
-                HttpClient requestHttpClient = new();
+                using HttpClient requestHttpClient = new();
                 requestHttpClient.DefaultRequestHeaders.Clear();
                 requestHttpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 requestHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
@@ -36,23 +34,23 @@ namespace Spd.Utilities.Payment
                 };
                 string jsonContent = JsonSerializer.Serialize(command, serializeOptions);
                 byte[] bytes = Encoding.UTF8.GetBytes(jsonContent);
-                var content = new ByteArrayContent(bytes);
+                using var content = new ByteArrayContent(bytes);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var requestResponse = await requestHttpClient.PostAsync(url,
-                    content);
+                var requestResponse = await requestHttpClient.PostAsync(url, content);
                 if (requestResponse.IsSuccessStatusCode)
                 {
                     var resp = await requestResponse.Content.ReadFromJsonAsync<PaybcPaymentRefundSuccessResponse>();
+                    if (resp == null) throw new InvalidOperationException("Failed to read response payload from PayBC");
                     return new RefundPaymentResult
                     {
                         IsSuccess = true,
-                        Message = resp.Message,
-                        Approved = resp.Approved == 1 ? true : false,
-                        OrderNumber = resp.OrderNumber,
+                        Message = resp.Message ?? string.Empty,
+                        Approved = resp.Approved == 1,
+                        OrderNumber = resp.OrderNumber ?? string.Empty,
                         RefundId = resp.Id,
-                        RefundTxnDateTime = DateTimeOffset.Parse(resp.created),
+                        RefundTxnDateTime = DateTimeOffset.Parse(resp.created ?? string.Empty, CultureInfo.InvariantCulture),
                         TxnAmount = resp.Amount,
-                        TxnNumber = resp.TxnNumber
+                        TxnNumber = resp.TxnNumber ?? string.Empty
                     };
                 }
                 else
@@ -67,7 +65,7 @@ namespace Spd.Utilities.Payment
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, null);
+                _logger.LogError(ex, "Error when trying to refund {OrderNumber}", command.OrderNumber);
                 return new RefundPaymentResult
                 {
                     IsSuccess = false,
@@ -80,7 +78,7 @@ namespace Spd.Utilities.Payment
 
     internal class PaybcPaymentRefundSuccessResponse
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
         public int Approved { get; set; }
         public string? Message { get; set; }
         public string? created { get; set; }
@@ -91,7 +89,7 @@ namespace Spd.Utilities.Payment
 
     internal class PaybcPaymentErrorResponse
     {
-        public string Message { get; set; }
-        public IEnumerable<string> Errors { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public IEnumerable<string> Errors { get; set; } = [];
     }
 }

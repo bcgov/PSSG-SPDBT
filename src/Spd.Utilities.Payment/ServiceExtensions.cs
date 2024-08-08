@@ -8,6 +8,7 @@ namespace Spd.Utilities.Payment
     {
         public static IServiceCollection AddPaymentService(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddHttpClient();
             services.Configure<PayBCSettings>(opts => configuration.GetSection("PayBC").Bind(opts));
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddSingleton<ITokenProviderResolver, TokenProviderResolver>();
