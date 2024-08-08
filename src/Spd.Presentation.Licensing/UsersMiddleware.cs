@@ -5,6 +5,7 @@ using Spd.Manager.Licence;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
+using System.Net;
 using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing
@@ -46,8 +47,16 @@ namespace Spd.Presentation.Licensing
                     BizPortalUserResponse? userProfile = await cache.Get<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}");
                     if (userProfile == null)
                     {
-                        userProfile = await mediator.Send(new BizPortalUserGetQuery(Guid.Parse(userIdStr)));
-                        await cache.Set<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
+                        if (Guid.TryParse(userIdStr, out var userId))
+                        {
+                            userProfile = await mediator.Send(new BizPortalUserGetQuery(userId));
+                            await cache.Set<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
+                        }
+                        else
+                        {
+                            await ReturnUnauthorized(context, "bizUserId is not a valid guid");
+                            return;
+                        }
                     }
 
                     if (userProfile != null)
@@ -69,6 +78,14 @@ namespace Spd.Presentation.Licensing
             {
                 await next(context);
             }
+        }
+
+        private static async Task ReturnUnauthorized(HttpContext context, string msg)
+        {
+            context.Response.Clear();
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync(msg);
         }
     }
 }
