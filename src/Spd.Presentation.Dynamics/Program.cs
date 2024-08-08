@@ -2,7 +2,9 @@ using System.Configuration;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Spd.Presentation.Dynamics.Swagger;
 using Spd.Utilities.BCeIDWS;
@@ -98,8 +100,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-app.MapHealthChecks("/health").ShortCircuit();
-
+app.MapHealthChecks("/health/startup", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+}).ShortCircuit();
+app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
+   .ShortCircuit();
+app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
+   .ShortCircuit();
 app.UseDefaultHttpRequestLogging();
 app.MapControllers();
 
