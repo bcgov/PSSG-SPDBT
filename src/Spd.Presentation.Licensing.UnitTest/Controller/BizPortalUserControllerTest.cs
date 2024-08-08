@@ -32,8 +32,6 @@ public class BizPortalUserControllerTest
             .ReturnsAsync(new BizPortalUserListResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<BizPortalUserUpdateCommand>(), CancellationToken.None))
             .ReturnsAsync(new BizPortalUserResponse());
-        mockMediator.Setup(m => m.Send(It.IsAny<BizPortalUserUpdateLoginCommand>(), CancellationToken.None))
-            .ReturnsAsync(Unit.Value);
         mockMediator.Setup(m => m.Send(It.IsAny<BizPortalUserDeleteCommand>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Unit.Value);
 
@@ -84,20 +82,18 @@ public class BizPortalUserControllerTest
     public async void GetBizPortal_By_CurrentUser_ReturnsBizPortalUserResponse()
     {
         Guid bizId = Guid.NewGuid();
-        var result = await sut.Get(bizId,this.userId);
+        var result = await sut.Get(bizId, this.userId);
 
-       mockMediator.Verify(m => m.Send(It.IsAny<BizPortalUserUpdateLoginCommand>(), It.IsAny<CancellationToken>()), Times.Once);
-       mockMediator.Verify(m => m.Send(It.Is<BizPortalUserGetQuery>(query => query.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
+        mockMediator.Verify(m => m.Send(It.Is<BizPortalUserGetQuery>(query => query.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
     }
     [Fact]
     public async void GetBizPortal_By_DifferentUser_ReturnsBizPortalUserResponse()
     {
         Guid bizId = Guid.NewGuid();
         Guid userId = Guid.NewGuid();
-        
+
         var result = await sut.Get(bizId, userId);
 
-        mockMediator.Verify(m => m.Send(It.IsAny<BizPortalUserUpdateLoginCommand>(), It.IsAny<CancellationToken>()), Times.Never);
         mockMediator.Verify(m => m.Send(It.Is<BizPortalUserGetQuery>(query => query.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -106,9 +102,9 @@ public class BizPortalUserControllerTest
     {
         var userId = Guid.NewGuid();
         var bizId = Guid.NewGuid();
-       
+
         var result = await sut.DeleteAsync(userId, bizId);
-       
+
         var okResult = Assert.IsType<OkResult>(result);
         mockMediator.Verify(m => m.Send(It.Is<BizPortalUserDeleteCommand>(cmd => cmd.UserId == userId && cmd.BizId == bizId), It.IsAny<CancellationToken>()), Times.Once);
     }
