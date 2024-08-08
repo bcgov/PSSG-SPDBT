@@ -96,10 +96,6 @@ public class BizPortalUserController : SpdControllerBase
     [HttpGet]
     public async Task<BizPortalUserResponse> Get([FromRoute] Guid bizId, Guid userId)
     {
-        if (_currentUser.GetUserId() == userId.ToString())
-        {
-            await _mediator.Send(new BizPortalUserUpdateLoginCommand(userId));
-        }
         return await _mediator.Send(new BizPortalUserGetQuery(userId));
     }
 

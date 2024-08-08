@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
-using Spd.Resource.Repository.User;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -28,7 +27,7 @@ internal class PortalUserRepository : IPortalUserRepository
         return qry switch
         {
             PortalUserByIdQry q => await GetUserAsync(q.UserId, cancellationToken),
-            PortalUserQry  q => await ListUsersAsync(qry, cancellationToken)
+            PortalUserQry q => await ListUsersAsync(qry, cancellationToken)
         };
     }
     public async Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken)
@@ -37,7 +36,6 @@ internal class PortalUserRepository : IPortalUserRepository
         {
             UpdatePortalUserCmd c => await UpdatePortalUserAsync(c, cancellationToken),
             CreatePortalUserCmd c => await CreatePortalUserAsync(c, cancellationToken),
-            PortalUserUpdateLoginCmd c => await UpdatePortalUserLoginAsync(c.Id, cancellationToken),
             PortalUserDeleteCmd c => await DeleteProtalUserAsync(c.Id, cancellationToken),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
         };
@@ -95,7 +93,7 @@ internal class PortalUserRepository : IPortalUserRepository
         {
             //TODO: is there any situation user may not have invition? (what is invition and how to assign it to user? or vice versa)
             var invition = GetPortalInvitationByUserId(userId);
-            if(invition is not null) _context.DeleteObject(invition);
+            if (invition is not null) _context.DeleteObject(invition);
 
             // Delete user and invitation
             _context.DeleteObject(user);
@@ -113,14 +111,7 @@ internal class PortalUserRepository : IPortalUserRepository
         return spd_portalinvitation;
     }
 
-    private async Task<PortalUserResp> UpdatePortalUserLoginAsync(Guid userId, CancellationToken cancellationToken)
-    {
-        var user = await GetUserById(userId, cancellationToken);
-        user.spd_lastloggedin = DateTimeOffset.UtcNow;
-        _context.UpdateObject(user);
-        await _context.SaveChangesAsync(cancellationToken);
-        return new PortalUserResp();
-    }
+
     private async Task<PortalUserResp> UpdatePortalUserAsync(UpdatePortalUserCmd c, CancellationToken ct)
     {
         spd_portaluser portalUser = await GetUserById(c.Id, ct);
