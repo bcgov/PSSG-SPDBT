@@ -32,6 +32,15 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.spd_servicecategory, opt => opt.MapFrom(s =>
                 s.PortalUserServiceCategory == PortalUserServiceCategoryEnum.Licensing ?
                 (int)PortalUserServiceCategoryOptionSet.Licensing : (int)PortalUserServiceCategoryOptionSet.Screening));
+
+            _ = CreateMap<CreatePortalUserCmd, spd_portalinvitation>()
+            .ForMember(d => d.spd_portalinvitationid, opt => Guid.NewGuid())
+            .ForMember(d => d.organizationid, opt => opt.Ignore())
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
+            .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.EmailAddress))
+            .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
+            .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.PortalUser));
         }
     }
 }
