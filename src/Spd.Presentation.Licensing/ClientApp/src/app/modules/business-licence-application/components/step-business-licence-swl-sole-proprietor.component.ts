@@ -12,7 +12,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 				<div class="row my-4">
 					<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 mx-auto">
 						<mat-radio-group aria-label="Select an option" formControlName="bizTypeCode">
-							<mat-radio-button class="radio-label" [value]="bizTypeCodes.NonRegisteredPartnership"
+							<mat-radio-button class="radio-label" [value]="bizTypeCodes.NonRegisteredSoleProprietor"
 								>Non-Registered Sole Proprietor</mat-radio-button
 							>
 							<mat-divider class="my-2"></mat-divider>

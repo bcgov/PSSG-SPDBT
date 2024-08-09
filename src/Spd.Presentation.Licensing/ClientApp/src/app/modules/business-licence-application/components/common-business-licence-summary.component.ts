@@ -259,7 +259,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</div>
 									</div>
 
-									<ng-container *ngIf="!isBusinessManager">
+									<ng-container *ngIf="!applicantIsBizManager">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading">Your Information</div>
 										<div class="row mt-0">
@@ -565,8 +565,8 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessModelData.businessManagerData.phoneNumber ?? '';
 	}
 
-	get isBusinessManager(): string {
-		return this.businessModelData.applicantData.isBusinessManager ?? '';
+	get applicantIsBizManager(): string {
+		return this.businessModelData.applicantData.applicantIsBizManager ?? '';
 	}
 	get yourContactGivenName(): string {
 		return this.businessModelData.applicantData.givenName ?? '';

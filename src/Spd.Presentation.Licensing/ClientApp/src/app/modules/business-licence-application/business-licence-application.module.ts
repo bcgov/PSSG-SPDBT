@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BusinessUserApplicationsComponent } from '../business-licence-application/components/business-user-applications.component';
-import { BusinessBcBranchesComponent } from './components/business-bc-branches.component';
 import { CommonBusinessLicenceSummaryComponent } from '../business-licence-application/components/common-business-licence-summary.component';
 import { CommonBusinessManagerComponent } from '../business-licence-application/components/common-business-manager.component';
 import { CommonBusinessProfileComponent } from '../business-licence-application/components/common-business-profile.component';
@@ -16,6 +15,7 @@ import { StepsBusinessLicenceInformationComponent } from '../business-licence-ap
 import { StepsBusinessLicenceSelectionComponent } from '../business-licence-application/components/steps-business-licence-selection.component';
 import { StepsBusinessLicenceUpdatesComponent } from '../business-licence-application/components/steps-business-licence-updates.component';
 import { BusinessLicenceApplicationRoutingModule } from './business-licence-application-routing.module';
+import { BusinessBcBranchesComponent } from './components/business-bc-branches.component';
 import { BusinessCategoryAmouredCarGuardComponent } from './components/business-category-amoured-car-guard.component';
 import { BusinessCategoryPrivateInvestigatorComponent } from './components/business-category-private-investigator.component';
 import { BusinessCategorySecurityGuardComponent } from './components/business-category-security-guard.component';
@@ -27,19 +27,23 @@ import { BusinessLicencePaymentCancelComponent } from './components/business-lic
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
 import { BusinessLicencePaymentSuccessComponent } from './components/business-licence-payment-success.component';
+import { BusinessLicenceSwlSoleProprietorComponent } from './components/business-licence-swl-sole-proprietor.component';
 import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business-licence-update-received-success.component';
-import { BusinessLicenceWizardNewSwlSpComponent } from './components/business-licence-wizard-new-swl-sp.component';
+import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
 import { BusinessManagersComponent } from './components/business-managers.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
+import { CommonBusinessInformationComponent } from './components/common-business-information.component';
 import { CommonBusinessTermsComponent } from './components/common-business-terms.component';
 import { ModalBcBranchEditComponent } from './components/modal-bc-branch-edit.component';
 import { ModalBusinessManagerEditComponent } from './components/modal-business-manager-edit.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/modal-member-without-swl-edit.component';
 import { StepBusinessLicenceApplicationOnHoldComponent } from './components/step-business-licence-application-on-hold.component';
+import { StepBusinessLicenceBusinessAddressComponent } from './components/step-business-licence-business-address.component';
+import { StepBusinessLicenceBusinessInformationComponent } from './components/step-business-licence-business-information.component';
 import { StepBusinessLicenceCategoryComponent } from './components/step-business-licence-category.component';
 import { StepBusinessLicenceChecklistNewComponent } from './components/step-business-licence-checklist-new.component';
 import { StepBusinessLicenceChecklistRenewComponent } from './components/step-business-licence-checklist-renew.component';
@@ -59,17 +63,17 @@ import { StepBusinessLicenceSummaryComponent } from './components/step-business-
 import { StepBusinessLicenceTermComponent } from './components/step-business-licence-term.component';
 import { StepBusinessLicenceUpdateTermsComponent } from './components/step-business-licence-update-terms.component';
 import { StepsBusinessLicenceReviewComponent } from './components/steps-business-licence-review.component';
-import { StepsBusinessLicenceSwlSpContactComponent } from './components/steps-business-licence-swl-sp-contact.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './components/steps-business-licence-swl-sp-information.component';
 
 @NgModule({
 	declarations: [
+		BusinessLicenceSwlSoleProprietorComponent,
 		ModalBcBranchEditComponent,
 		ModalBusinessManagerEditComponent,
 		BusinessFirstTimeUserTermsOfUseComponent,
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
-		BusinessLicenceWizardNewSwlSpComponent,
+		BusinessLicenceWizardNewSwlSoleProprietorComponent,
 		BusinessLicenceWizardRenewalComponent,
 		BusinessLicenceWizardUpdateComponent,
 		BusinessLicenceWizardReplacementComponent,
@@ -81,6 +85,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		CommonBusinessManagerComponent,
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,
+		CommonBusinessInformationComponent,
 		CommonBusinessTermsComponent,
 		CommonControllingMembersComponent,
 		CommonEmployeesComponent,
@@ -90,6 +95,8 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessLicencePaymentSuccessComponent,
 		BusinessLicenceListCurrentComponent,
 		ModalMemberWithoutSwlEditComponent,
+		StepBusinessLicenceBusinessAddressComponent,
+		StepBusinessLicenceBusinessInformationComponent,
 		StepBusinessLicenceConfirmationComponent,
 		StepBusinessLicenceControllingMembersComponent,
 		StepBusinessLicenceEmployeesComponent,
@@ -107,7 +114,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepsBusinessLicenceReviewComponent,
 		StepBusinessLicenceSummaryComponent,
 		StepsBusinessLicenceSwlSpInformationComponent,
-		StepsBusinessLicenceSwlSpContactComponent,
 		StepBusinessLicenceStaticSummaryComponent,
 		StepBusinessLicenceTermComponent,
 		StepBusinessLicenceExpiredComponent,

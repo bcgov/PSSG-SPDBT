@@ -32,7 +32,14 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 	) {}
 
 	async ngOnInit(): Promise<void> {
-		this.authProcessService.logoutBceid();
+		const currentPath = location.pathname;
+		let redirectComponentRoute: string | undefined;
+		if (currentPath.includes(PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR)) {
+			redirectComponentRoute = PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAuthenticated();
+		}
+
+		this.authProcessService.logoutBceid(redirectComponentRoute);
+
 		await this.authProcessService.initializeLicencingBCSC();
 
 		if (this.authUserBcscService.applicantLoginProfile?.isFirstTimeLogin) {
@@ -56,7 +63,7 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 		}
 
 		console.debug(
-			'WorkerLicenceApplicationBaseAuthenticatedComponent',
+			'[LicenceApplicationBaseAuthenticatedComponent]',
 			this.licenceApplicationService.initialized,
 			this.permitApplicationService.initialized
 		);
