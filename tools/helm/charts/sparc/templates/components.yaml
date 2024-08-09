@@ -4,11 +4,13 @@
     {{- $values := merge $values $.Values.defaults -}}
     {{- $name := print $.Release.Name "-" $key -}}
     {{- $context := dict "name" $name "labels" $labels "Values" $values "Release" $.Release "Files" $.Files "Template" $.Template -}}
-    {{ include "dc.tpl" $context | nindent 0 }}
+    {{ include "deployment.tpl" $context | nindent 0 }}
     {{ "---" | nindent 0 }}
     {{ include "hpa.tpl" $context | nindent 0 }}
     {{ "---" | nindent 0 }}
     {{ include "pdb.tpl" $context | nindent 0 }}
+    {{ "---" | nindent 0 }}
+    {{ include "configmap.tpl" $context | nindent 0 }}
     {{ "---" | nindent 0 }}
     {{ include "secret.tpl" $context | nindent 0 }}
     {{ "---" | nindent 0 }}

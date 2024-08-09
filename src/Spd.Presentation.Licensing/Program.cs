@@ -97,7 +97,7 @@ app.UseAuthorization();
 app.MapHealthChecks("/health/startup", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-}).ShortCircuit();
+});
 app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
    .ShortCircuit();
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
