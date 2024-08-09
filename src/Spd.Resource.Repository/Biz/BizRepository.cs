@@ -102,9 +102,7 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-            if (!IsSoleProprietor(updateBizCmd.BizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(biz.spd_licensingbusinesstype)))
-                throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
-
+          
             _mapper.Map(updateBizCmd, biz);
 
             _context.UpdateObject(biz);
@@ -184,16 +182,14 @@ namespace Spd.Resource.Repository.Biz
 
             if (licence != null && licence.spd_licenceid == licenceId && IsSoleProprietor(bizType))
                 return;
-
+            if (!IsSoleProprietor(bizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype)))
+                throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
+            
             // Remove link with current licence
             if (licence != null)
             {
                 _context.DeleteLink(account, nameof(account.spd_organization_spd_licence_soleproprietor), licence);
             }
-
-            if (!IsSoleProprietor(bizType))
-                return;
-
             // Add link with new licence
             spd_licence? newLicence = _context.spd_licences
                 .Where(l => l.spd_licenceid == licenceId)
