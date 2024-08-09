@@ -96,7 +96,7 @@ internal class PortalUserRepository : IPortalUserRepository
         }
         else
         {
-            //TODO: is there any situation user may not have invition? (what is invition and how to assign it to user? or vice versa)
+
             var invition = GetPortalInvitationByUserId(userId);
             if (invition is not null) _context.DeleteObject(invition);
 
