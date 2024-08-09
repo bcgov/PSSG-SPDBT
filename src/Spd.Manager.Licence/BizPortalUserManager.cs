@@ -53,6 +53,8 @@ internal class BizPortalUserManager :
         SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, newlist.Count);
 
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
+        createPortalUserCmd.HostUrl = request.HostUrl;
+        createPortalUserCmd.CreatedByUserId = request.CreatedByUserId;
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
