@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepWorkerLicenceConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-consent-and-declaration.component';
 import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-licence-summary-review-anonymous.component';
 
 @Component({
@@ -25,11 +25,20 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-consent-and-declaration>
 
-				<app-wizard-footer
-					[nextButtonLabel]="submitButtonName"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onSubmitNow()"
-				></app-wizard-footer>
+				<ng-container *ngIf="isSoleProprietor; else IsNotSoleProprietor">
+					<app-wizard-footer
+						nextButtonLabel="Next"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onSaveSoleProprietor()"
+					></app-wizard-footer>
+				</ng-container>
+				<ng-template #IsNotSoleProprietor>
+					<app-wizard-footer
+						[nextButtonLabel]="submitButtonName"
+						(previousStepperStep)="onGoToPreviousStep()"
+						(nextStepperStep)="onSubmitNow()"
+					></app-wizard-footer>
+				</ng-template>
 			</mat-step>
 
 			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
@@ -52,6 +61,7 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() licenceCost = 0;
+	@Input() isSoleProprietor = false;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -90,6 +100,14 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 		}
 
 		this.nextPayStep.emit();
+	}
+
+	onSaveSoleProprietor(): void {
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
+
+		this.nextSubmitStep.emit();
 	}
 
 	onGoToStep(step: number): void {

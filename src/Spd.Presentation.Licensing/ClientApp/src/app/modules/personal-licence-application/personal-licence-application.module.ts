@@ -52,6 +52,7 @@ import { LicenceApplicationBaseAuthenticatedComponent } from './components/authe
 import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/licence-first-time-user-terms-of-use.component';
 import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
+import { LicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/licence-return-from-bl-sole-proprietor.component';
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
@@ -164,6 +165,7 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 
 @NgModule({
 	declarations: [
+		LicenceReturnFromBlSoleProprietorComponent,
 		StepPermitUserProfileComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
