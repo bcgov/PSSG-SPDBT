@@ -1,14 +1,11 @@
 ﻿using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
-using Amazon.Runtime;
-using Amazon.S3;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Spd.Manager.Screening;
-using Spd.Presentation.Screening.Health;
 using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Address;
 using Spd.Utilities.BCeIDWS;
@@ -93,27 +90,8 @@ namespace Spd.Presentation.Screening
               .AddDynamicsProxy(configuration)
               .AddAddressAutoComplete(configuration);
 
-            //config component services
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
-
-            //add smart health check
-            if (redisConnection != null)
-                services.AddHealthChecks().AddRedis(redisConnection);
-            services.AddHealthChecks()
-                .AddCheck<DynamicsHealthCheck>("dynamics")
-                .AddS3(options =>
-                {
-                    options.S3Config = new AmazonS3Config
-                    {
-                        ServiceURL = configuration["storage:MainBucketSettings:url"],
-                        ForcePathStyle = true,
-                        SignatureVersion = "2",
-                        SignatureMethod = SigningAlgorithm.HmacSHA1,
-                        UseHttp = false,
-                    };
-                    options.BucketName = configuration["storage:MainBucketSettings:bucket"];
-                    options.Credentials = new BasicAWSCredentials(configuration["storage:MainBucketSettings:accessKey"], configuration["storage:MainBucketSettings:secret"]);
-                });
+            services.AddHealthChecks(configuration);
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)

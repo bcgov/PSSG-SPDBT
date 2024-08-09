@@ -46,10 +46,10 @@ public static class DataServiceContextExtensions
     }
 
     public static async Task<T?> SingleOrDefaultAsync<T>(this IQueryable<T> query, CancellationToken ct = default)
-        where T : crmbaseentity => (await ((DataServiceQuery<T>)query).ExecuteForEditAsync(ct)).SingleOrDefault();
+        where T : crmbaseentity => (await ((DataServiceQuery<T>)query).Take(2).ExecuteForEditAsync(ct)).SingleOrDefault();
 
     public static async Task<T?> FirstOrDefaultAsync<T>(this IQueryable<T> query, CancellationToken ct = default)
-        where T : crmbaseentity => (await ((DataServiceQuery<T>)query).ExecuteForEditAsync(ct)).FirstOrDefault();
+        where T : crmbaseentity => (await ((DataServiceQuery<T>)query).Take(1).ExecuteForEditAsync(ct)).FirstOrDefault();
 
     public static async Task<IEnumerable<T>> GetAllPagesAsync<T>(this IQueryable<T> query, CancellationToken ct = default)
         where T : crmbaseentity => await ((DataServiceQuery<T>)query).GetAllPagesAsync(ct);
