@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -67,7 +67,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 	`,
 	styles: [],
 })
-export class BusinessProfileComponent {
+export class BusinessProfileComponent implements OnInit {
 	businessInformationFormGroup = this.businessApplicationService.businessInformationFormGroup;
 	businessManagerFormGroup = this.businessApplicationService.businessManagerFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
@@ -88,6 +88,13 @@ export class BusinessProfileComponent {
 		// check if isReadonly was passed from 'BusinessUserApplicationsComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.isReadonly = state && state['isReadonly'];
+	}
+
+	ngOnInit(): void {
+		if (!this.businessApplicationService.initialized) {
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
+			return;
+		}
 	}
 
 	onCancel(): void {

@@ -183,7 +183,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 	applicantFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isBusinessManager: new FormControl(''),
+			applicantIsBizManager: new FormControl(''),
 			givenName: new FormControl(''),
 			middleName1: new FormControl(''),
 			middleName2: new FormControl(''),
@@ -195,19 +195,19 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'givenName',
-					(form) => form.get('isBusinessManager')?.value === false
+					(form) => form.get('applicantIsBizManager')?.value != true
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'surname',
-					(form) => form.get('isBusinessManager')?.value === false
+					(form) => form.get('applicantIsBizManager')?.value != true
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'emailAddress',
-					(form) => form.get('isBusinessManager')?.value === false
+					(form) => form.get('applicantIsBizManager')?.value != true
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'phoneNumber',
-					(form) => form.get('isBusinessManager')?.value === false
+					(form) => form.get('applicantIsBizManager')?.value != true
 				),
 			],
 		}
@@ -481,8 +481,8 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		let applicantIsBizManager: boolean | null = null;
 
 		if (!this.isSoleProprietor(bizTypeCode)) {
-			applicantIsBizManager = applicantData.isBusinessManager;
-			if (applicantData.isBusinessManager === false) {
+			applicantIsBizManager = applicantData.applicantIsBizManager;
+			if (applicantData.applicantIsBizManager != true) {
 				applicantContactInfo = {
 					emailAddress: applicantData.emailAddress,
 					givenName: applicantData.givenName,

@@ -1,4 +1,4 @@
-import { Injectable, SecurityContext } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -62,8 +62,6 @@ export class PermitDocumentsToSave {
 	providedIn: 'root',
 })
 export class PermitApplicationService extends PermitApplicationHelper {
-	photographOfYourself: string | null = null;
-
 	permitModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	permitModelFormGroup: FormGroup = this.formBuilder.group({
@@ -152,8 +150,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	reset(): void {
 		this.resetModelFlags();
-		this.photographOfYourself = null;
-
 		this.resetCommon();
 
 		this.consentAndDeclarationFormGroup.reset();
@@ -833,23 +829,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					return this.applyUpdateDataUpdatesToModel(_resp);
 				}
 			})
-		);
-	}
-
-	/**
-	 * Set the current photo of yourself
-	 * @returns
-	 */
-	private setPhotographOfYourself(image: Blob | null): void {
-		if (!image || image.size == 0) {
-			this.photographOfYourself = null;
-			return;
-		}
-
-		const objectUrl = URL.createObjectURL(image);
-		this.photographOfYourself = this.domSanitizer.sanitize(
-			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 	}
 

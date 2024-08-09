@@ -363,7 +363,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body;
+					matchingFile.documentUrlId = resp.body[0].documentUrlId;
 				},
 				error: (error: any) => {
 					console.log('An error occurred during file upload', error);

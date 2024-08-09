@@ -17,6 +17,7 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() scrollIntoView: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() childNextStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() saveAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
+	@Output() cancelAndExit: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -44,6 +45,10 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 
 	onNoSaveAndExit(): void {
 		this.saveAndExit.emit(true);
+	}
+
+	onCancelAndExit(): void {
+		this.cancelAndExit.emit(true);
 	}
 
 	onExit(): void {

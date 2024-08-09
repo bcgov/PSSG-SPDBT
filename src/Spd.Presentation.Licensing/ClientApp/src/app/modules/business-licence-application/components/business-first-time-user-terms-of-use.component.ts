@@ -11,18 +11,27 @@ import { CommonBusinessTermsComponent } from './common-business-terms.component'
 @Component({
 	selector: 'app-business-first-time-user-terms-of-use',
 	template: `
-		<app-step-section title="Terms and Conditions" subtitle="Read, download, and accept the Terms of Use to continue">
-			<app-common-business-terms
-				[form]="form"
-				[applicationTypeCode]="applicationTypeCodes.New"
-			></app-common-business-terms>
-
+		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<div class="row">
-				<div class="offset-xxl-8 col-xxl-3 offset-xl-7 col-xl-4 offset-lg-7 col-lg-5 col-md-12 col-sm-12 mb-2">
-					<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">Continue</button>
+				<div class="col-12">
+					<app-step-section
+						title="Terms and Conditions"
+						subtitle="Read, download, and accept the Terms of Use to continue"
+					>
+						<app-common-business-terms
+							[form]="form"
+							[applicationTypeCode]="applicationTypeCodes.New"
+						></app-common-business-terms>
+
+						<div class="row">
+							<div class="offset-xxl-8 col-xxl-3 offset-xl-7 col-xl-4 offset-lg-7 col-lg-5 col-md-12 col-sm-12 mb-2">
+								<button mat-flat-button color="primary" class="large mb-2" (click)="onContinue()">Continue</button>
+							</div>
+						</div>
+					</app-step-section>
 				</div>
 			</div>
-		</app-step-section>
+		</div>
 	`,
 	styles: [],
 })
