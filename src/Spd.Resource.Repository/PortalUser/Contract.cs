@@ -59,6 +59,9 @@ namespace Spd.Resource.Repository.PortalUser
     public record CreatePortalUserCmd : PortalUserCmd
     {
         public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
+        public string HostUrl { get; set; }
+        public Guid? CreatedByUserId { get; set; } = null;
+
     };
     public record PortalUserDeleteCmd(Guid Id) : PortalUserCmd;
 

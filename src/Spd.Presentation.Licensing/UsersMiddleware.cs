@@ -6,7 +6,6 @@ using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
 using System.Net;
-using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing
 {
@@ -61,7 +60,7 @@ namespace Spd.Presentation.Licensing
 
                     if (userProfile != null)
                     {
-                        context.User.AddUpdateClaim(ClaimTypes.Role, userProfile.ContactAuthorizationTypeCode.ToString());
+                        context.User.UpdateUserClaims(userProfile.Id.ToString(), userProfile.BizId.ToString(), userProfile.ContactAuthorizationTypeCode.ToString());
                     }
                     await next(context);
                 }
