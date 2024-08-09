@@ -60,7 +60,6 @@ public record BizLicAppSubmitRequest : BizLicenceApp
     public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
     public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
     public bool? Reprint { get; set; }
-    public bool? ApplicantIsBizManager { get; set; }
 }
 public record BizLicAppCommandResponse : LicenceAppUpsertResponse
 {
@@ -93,6 +92,7 @@ public abstract record BizLicenceApp : LicenceAppBase
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
     public bool? AgreeToCompleteAndAccurate { get; set; }
+    public bool? ApplicantIsBizManager { get; set; }
 }
 
 public record NonSwlContactInfo : ContactInfo
