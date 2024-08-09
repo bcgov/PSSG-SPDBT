@@ -184,7 +184,8 @@ namespace Spd.Resource.Repository.Biz
                 return;
             if (!IsSoleProprietor(bizType) && IsSoleProprietor(SharedMappingFuncs.GetBizTypeEnum(account.spd_licensingbusinesstype)))
                 throw new ApiException(HttpStatusCode.BadRequest, "Biz type can only be changed from sole proprietor to non-sole proprietor");
-            
+            if (IsSoleProprietor(bizType))
+                return;
             // Remove link with current licence
             if (licence != null)
             {
