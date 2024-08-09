@@ -5,6 +5,7 @@ using Spd.Manager.Licence;
 using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
+using System.Net;
 using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing
@@ -18,7 +19,6 @@ namespace Spd.Presentation.Licensing
         private readonly BCeIDAuthenticationConfiguration? bceidConfig;
         private readonly BcscAuthenticationConfiguration? bcscConfig;
         private readonly string BizUserCacheKeyPrefix = "biz-user-";
-        private readonly string WorkerCacheKeyPrefix = "security-worker-";
 
         public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration, IMapper mapper, ILogger<UsersMiddleware> logger)
         {
@@ -40,22 +40,35 @@ namespace Spd.Presentation.Licensing
             if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
             {
                 //bceid user
-
-                //todo: do not know what biz user would be like yet.
-                //var userIdInfo = context.User.GetBceidUserIdentityInfo();
-                ////validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-                //OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}");
-                //if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
-                //{
-                //    userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                //    await cache.Set<OrgUserProfileResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
-                //}
-
-                //if (userProfile != null)
+                var userIdInfo = context.User.GetBceidUserIdentityInfo();
+                ////validate if the bizUserId in httpHeader is correct and add the user role to claims.
+                if (context.Request.Headers.TryGetValue("bizUserId", out var userIdStr))
                 {
-                    context.User.AddUpdateClaim(ClaimTypes.Role, "BizLicencee");
+                    BizPortalUserResponse? userProfile = await cache.Get<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}");
+                    if (userProfile == null)
+                    {
+                        if (Guid.TryParse(userIdStr, out var userId))
+                        {
+                            userProfile = await mediator.Send(new BizPortalUserGetQuery(userId));
+                            await cache.Set<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
+                        }
+                        else
+                        {
+                            await ReturnUnauthorized(context, "bizUserId is not a valid guid");
+                            return;
+                        }
+                    }
+
+                    if (userProfile != null)
+                    {
+                        context.User.AddUpdateClaim(ClaimTypes.Role, userProfile.ContactAuthorizationTypeCode.ToString());
+                    }
+                    await next(context);
                 }
-                await next(context);
+                else
+                {
+                    await next(context);
+                }
             }
             else if (context.User.GetIssuer() == bcscConfig.Issuer)
             {
@@ -65,6 +78,14 @@ namespace Spd.Presentation.Licensing
             {
                 await next(context);
             }
+        }
+
+        private static async Task ReturnUnauthorized(HttpContext context, string msg)
+        {
+            context.Response.Clear();
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync(msg);
         }
     }
 }

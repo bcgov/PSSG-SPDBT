@@ -56,7 +56,6 @@ namespace Spd.Resource.Repository.PortalUser
         public Guid Id { get; set; }
         public DateTimeOffset? TermAgreeTime { get; set; }
     };
-    public record PortalUserUpdateLoginCmd(Guid Id) : PortalUserCmd;
     public record CreatePortalUserCmd : PortalUserCmd
     {
         public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }

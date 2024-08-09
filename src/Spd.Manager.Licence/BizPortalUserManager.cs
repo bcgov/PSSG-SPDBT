@@ -13,9 +13,8 @@ internal class BizPortalUserManager :
     IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
-    IRequestHandler<BizPortalUserUpdateLoginCommand, Unit>,
     IRequestHandler<BizPortalUserDeleteCommand, Unit>,
-
+    IRequestHandler<BizPortalUserGetQuery, BizPortalUserResponse>,
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
@@ -92,6 +91,7 @@ internal class BizPortalUserManager :
 
         return _mapper.Map<BizPortalUserResponse>(response);
     }
+
     public async Task<BizPortalUserResponse> Handle(BizPortalUserGetQuery request, CancellationToken ct)
     {
         var response = (PortalUserResp)await _portalUserRepository.QueryAsync(
@@ -121,14 +121,6 @@ internal class BizPortalUserManager :
             MaximumNumberOfPrimaryAuthorizedContacts = biz != null ? biz.MaxPrimaryContacts : 0,
             Users = userResps
         };
-    }
-
-    public async Task<Unit> Handle(BizPortalUserUpdateLoginCommand cmd, CancellationToken ct)
-    {
-        await _portalUserRepository.ManageAsync(
-               new PortalUserUpdateLoginCmd(cmd.UserId),
-               ct);
-        return default;
     }
 
     public async Task<Unit> Handle(BizPortalUserDeleteCommand request, CancellationToken cancellationToken)
