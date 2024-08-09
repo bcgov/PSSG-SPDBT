@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BizListResponse } from 'src/app/api/models';
+import { BizListResponse } from '@app/api/models';
 
 export interface BizSelectionDialogData {
 	bizsList: Array<BizListResponse>;
 }
 @Component({
-	selector: 'app-biz-selection-modal',
+	selector: 'app-modal-biz-selection',
 	template: `
 		<div mat-dialog-title class="mat-dialog-title">{{ title }}</div>
 		<mat-divider></mat-divider>
@@ -20,12 +20,12 @@ export interface BizSelectionDialogData {
 	`,
 	styles: [],
 })
-export class BizSelectionModalComponent implements OnInit {
+export class ModalBizSelectionComponent implements OnInit {
 	bizsList: Array<BizListResponse> = [];
 	title = 'Business Selection';
 
 	constructor(
-		private dialogRef: MatDialogRef<BizSelectionModalComponent>,
+		private dialogRef: MatDialogRef<ModalBizSelectionComponent>,
 		@Inject(MAT_DIALOG_DATA) public dialogData: BizSelectionDialogData
 	) {}
 

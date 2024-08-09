@@ -100,8 +100,8 @@ export class CommonBusinessManagerComponent implements OnInit, LicenceChildStepp
 		return this.form.valid;
 	}
 
-	get isBusinessManager(): FormControl {
-		return this.form.get('isBusinessManager') as FormControl;
+	get applicantIsBizManager(): FormControl {
+		return this.form.get('applicantIsBizManager') as FormControl;
 	}
 	get givenName(): FormControl {
 		return this.form.get('givenName') as FormControl;

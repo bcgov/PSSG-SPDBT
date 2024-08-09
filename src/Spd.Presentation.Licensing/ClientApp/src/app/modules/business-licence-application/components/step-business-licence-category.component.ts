@@ -442,7 +442,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		}
 
 		this.businessApplicationService
-			.addUploadDocument(LicenceDocumentTypeCode.BizInsurance, file) // TODO is this the correct type?
+			.addUploadDocument(LicenceDocumentTypeCode.BizInsurance, file) // TODO is this the correct file type?
 			.subscribe({
 				next: (resp: any) => {
 					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);

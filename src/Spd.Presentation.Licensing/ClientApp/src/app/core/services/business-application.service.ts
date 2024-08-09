@@ -79,6 +79,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
+		isSwlAnonymous: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
+		swlLicenceAppId: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
+
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
 		isRenewalShortForm: new FormControl(), // placeholder for flag
@@ -354,7 +357,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		return true;
-		// TODO sole proprietor - do we autosave?
 	}
 
 	/**
@@ -394,9 +396,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepContactInformationComplete(): boolean {
-		// console.debug('isStepContactInformationComplete', this.businessManagerFormGroup.valid);
+		const isBusinessLicenceSoleProprietor = this.businessModelFormGroup.get('isBusinessLicenceSoleProprietor')?.value;
 
-		return this.businessManagerFormGroup.valid;
+		// console.debug('isStepContactInformationComplete', isBusinessLicenceSoleProprietor, this.applicantFormGroup.valid);
+
+		if (isBusinessLicenceSoleProprietor) return true;
+
+		return this.applicantFormGroup.valid;
 	}
 
 	/**
@@ -404,11 +410,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	isStepControllingMembersAndEmployeesComplete(): boolean {
+		const isBusinessLicenceSoleProprietor = this.businessModelFormGroup.get('isBusinessLicenceSoleProprietor')?.value;
+
 		// console.debug(
 		// 	'isStepControllingMembersAndEmployeesComplete',
+		// 	isBusinessLicenceSoleProprietor,
 		// 	this.controllingMembersFormGroup.valid,
 		// 	this.employeesFormGroup.valid
 		// );
+
+		if (isBusinessLicenceSoleProprietor) return true;
 
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
@@ -548,12 +559,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithSwl(): Observable<any> {
+	createNewBusinessLicenceWithSwl(soleProprietorSwlLicenceAppId: string, isSwlAnonymous: boolean): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
 			switchMap((businessProfile: BizProfileResponse) => {
-				return this.createEmptyLicenceForSoleProprietor({ businessProfile }).pipe(
+				return this.createEmptyLicenceForSoleProprietor({
+					soleProprietorSwlLicenceAppId,
+					businessProfile,
+					isSwlAnonymous,
+				}).pipe(
 					tap((_resp: any) => {
 						this.initialized = true;
 
@@ -821,18 +836,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private createEmptyLicenceForSoleProprietor({
+		soleProprietorSwlLicenceAppId,
 		businessProfile,
+		isSwlAnonymous,
 	}: {
+		soleProprietorSwlLicenceAppId: string;
 		businessProfile: BizProfileResponse;
+		isSwlAnonymous: boolean;
 	}): Observable<any> {
 		this.reset();
 
 		return this.applyLicenceProfileIntoModel({
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
+			soleProprietorSwlLicenceAppId,
 		}).pipe(
 			tap((_resp: any) => {
-				// this.businessModelFormGroup.patchValue({ isBusinessLicenceSoleProprietor: true }, { emitEvent: false });
+				this.businessModelFormGroup.patchValue({ isSwlAnonymous }, { emitEvent: false });
 
 				this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 			})
@@ -1304,7 +1324,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		};
 
 		const applicantData = {
-			isBusinessManager: businessLicenceAppl.applicantIsBizManager,
+			applicantIsBizManager: businessLicenceAppl.applicantIsBizManager,
 			givenName: businessLicenceAppl.applicantContactInfo?.givenName ?? null,
 			middleName1: businessLicenceAppl.applicantContactInfo?.middleName1 ?? null,
 			middleName2: businessLicenceAppl.applicantContactInfo?.middleName2 ?? null,
@@ -1398,10 +1418,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessProfile,
 		applicationTypeCode,
 		soleProprietorSwlLicence,
+		soleProprietorSwlLicenceAppId,
 	}: {
 		businessProfile: BizProfileResponse;
 		applicationTypeCode?: ApplicationTypeCode | null;
 		soleProprietorSwlLicence?: LicenceResponse;
+		soleProprietorSwlLicenceAppId?: string;
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -1515,8 +1537,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		if (soleProprietorSwlLicence?.licenceAppId) {
-			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSwlLicence?.licenceAppId);
+		if (soleProprietorSwlLicenceAppId) {
+			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSwlLicenceAppId);
 		}
 
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
@@ -1540,6 +1562,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				});
 
 				this.businessModelFormGroup.patchValue({
+					swlLicenceAppId: licenceAppId,
 					businessInformationData,
 					categoryData,
 				});

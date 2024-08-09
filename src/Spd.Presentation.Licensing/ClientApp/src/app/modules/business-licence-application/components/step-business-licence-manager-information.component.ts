@@ -25,11 +25,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<form [formGroup]="form" novalidate>
 						<div class="row">
 							<div class="col-xl-6 col-lg-6 col-md-12">
-								<mat-checkbox formControlName="isBusinessManager"> I am the business manager </mat-checkbox>
+								<mat-checkbox formControlName="applicantIsBizManager"> I am the business manager </mat-checkbox>
 							</div>
 						</div>
 
-						<ng-container *ngIf="isBusinessManager.value !== true">
+						<ng-container *ngIf="applicantIsBizManager.value !== true">
 							<div class="summary-heading my-2">Your Information</div>
 							<div class="row">
 								<div class="col-xl-6 col-lg-6 col-md-12">
@@ -137,7 +137,7 @@ export class StepBusinessLicenceManagerInformationComponent implements OnInit, L
 		return this.form.valid;
 	}
 
-	get isBusinessManager(): FormControl {
-		return this.form.get('isBusinessManager') as FormControl;
+	get applicantIsBizManager(): FormControl {
+		return this.form.get('applicantIsBizManager') as FormControl;
 	}
 }

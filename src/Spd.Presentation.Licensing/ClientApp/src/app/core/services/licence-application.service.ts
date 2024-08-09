@@ -1,4 +1,4 @@
-import { Injectable, SecurityContext } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -59,8 +59,6 @@ import { LicenceApplicationHelper } from './licence-application.helper';
 })
 export class LicenceApplicationService extends LicenceApplicationHelper {
 	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	photographOfYourself: string | null = null;
 
 	licenceModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(),
@@ -164,8 +162,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 */
 	reset(): void {
 		this.resetModelFlags();
-		this.photographOfYourself = null;
-
 		this.resetCommon();
 
 		this.consentAndDeclarationFormGroup.reset();
@@ -1055,19 +1051,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			switchMap((resp: WorkerLicenceAppResponse) => {
 				return this.applyLicenceAndProfileIntoModel(resp, null);
 			})
-		);
-	}
-
-	private setPhotographOfYourself(image: Blob | null): void {
-		if (!image || image.size == 0) {
-			this.photographOfYourself = null;
-			return;
-		}
-
-		const objectUrl = URL.createObjectURL(image);
-		this.photographOfYourself = this.domSanitizer.sanitize(
-			SecurityContext.RESOURCE_URL,
-			this.domSanitizer.bypassSecurityTrustResourceUrl(objectUrl)
 		);
 	}
 
