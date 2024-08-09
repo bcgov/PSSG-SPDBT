@@ -203,10 +203,10 @@ internal static class SharedContactFuncs
         existingContact.spd_mentalhealthcondition = newContact.spd_mentalhealthcondition ?? existingContact.spd_mentalhealthcondition;
         existingContact.spd_peaceofficer = newContact.spd_peaceofficer ?? existingContact.spd_peaceofficer;
         existingContact.spd_peaceofficerother = newContact.spd_peaceofficerother ?? existingContact.spd_peaceofficerother;
-        if (newContact.spd_peaceofficer == 100000000 && (newContact.spd_peaceofficerstatus == null) || newContact.spd_peaceofficerstatus == 100000008) 
-            existingContact.spd_peaceofficerstatus = 100000008;
+        if (newContact.spd_peaceofficer == (int) YesNoOptionSet.No && (newContact.spd_peaceofficerstatus == null) || newContact.spd_peaceofficerstatus == (int)PoliceOfficerRoleOptionSet.None) 
+            existingContact.spd_peaceofficerstatus = (int) PoliceOfficerRoleOptionSet.None;
         else 
-            existingContact.spd_peaceofficerstatus = newContact.spd_peaceofficer == 100000001 ? newContact.spd_peaceofficerstatus : existingContact.spd_peaceofficerstatus;
+            existingContact.spd_peaceofficerstatus = newContact.spd_peaceofficer == (int) YesNoOptionSet.Yes ? newContact.spd_peaceofficerstatus : existingContact.spd_peaceofficerstatus;
         existingContact.spd_selfdisclosure = newContact.spd_selfdisclosure ?? existingContact.spd_selfdisclosure;
         existingContact.spd_selfdisclosuredetails = newContact.spd_selfdisclosuredetails ?? existingContact.spd_selfdisclosuredetails;
         existingContact.spd_lastloggedinlicensingportal = newContact.spd_lastloggedinlicensingportal ?? existingContact.spd_lastloggedinlicensingportal;
