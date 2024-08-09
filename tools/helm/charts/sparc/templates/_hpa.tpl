@@ -8,9 +8,9 @@ metadata:
   labels: {{ .labels | nindent 4 }}
 spec:
   scaleTargetRef:
-    kind: DeploymentConfig
-    name: {{ .name }}-dc
-    apiVersion: apps.openshift.io/v1
+    kind: Deployment
+    name: {{ .name }}
+    apiVersion: apps/v1
   minReplicas: {{ .Values.scaling.minReplicas }}
   maxReplicas: {{ .Values.scaling.maxReplicas }}
   metrics:
