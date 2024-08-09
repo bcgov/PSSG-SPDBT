@@ -88,7 +88,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
 builder.Services.AddBCeIDService(builder.Configuration);
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks(builder.Configuration);
 
 var app = builder.Build();
 
@@ -103,7 +103,7 @@ app.UseAuthorization();
 app.MapHealthChecks("/health/startup", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-}).ShortCircuit();
+});
 app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
    .ShortCircuit();
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
