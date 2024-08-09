@@ -1,4 +1,9 @@
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 using FluentValidation;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
@@ -11,9 +16,6 @@ using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.TempFileStorage;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,7 +95,15 @@ app.UseAuthentication();
 app.UseMiddleware<UsersMiddleware>();
 app.UseAuthorization();
 
-app.MapHealthChecks("/health").ShortCircuit();
+app.MapHealthChecks("/health/startup", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+}).ShortCircuit();
+app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
+   .ShortCircuit();
+app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
+   .ShortCircuit();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
