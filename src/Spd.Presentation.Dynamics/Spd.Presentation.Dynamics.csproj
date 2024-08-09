@@ -5,6 +5,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
@@ -29,5 +30,4 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="Spd.Tests.Presentation.Dynamics" />
 	</ItemGroup>
-
 </Project>
