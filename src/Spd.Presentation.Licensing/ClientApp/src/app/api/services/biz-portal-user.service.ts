@@ -9,10 +9,15 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { ActionResult } from '../models/action-result';
 import { apiBusinessBizIdPortalUsersGet } from '../fn/biz-portal-user/api-business-biz-id-portal-users-get';
 import { ApiBusinessBizIdPortalUsersGet$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-get';
 import { apiBusinessBizIdPortalUsersPost } from '../fn/biz-portal-user/api-business-biz-id-portal-users-post';
 import { ApiBusinessBizIdPortalUsersPost$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-post';
+import { apiBusinessBizIdPortalUsersUserIdDelete } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-delete';
+import { ApiBusinessBizIdPortalUsersUserIdDelete$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-delete';
+import { apiBusinessBizIdPortalUsersUserIdGet } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-get';
+import { ApiBusinessBizIdPortalUsersUserIdGet$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-get';
 import { apiBusinessBizIdPortalUsersUserIdPut } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-put';
 import { ApiBusinessBizIdPortalUsersUserIdPut$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-put';
 import { BizPortalUserListResponse } from '../models/biz-portal-user-list-response';
@@ -90,6 +95,39 @@ export class BizPortalUserService extends BaseService {
     );
   }
 
+  /** Path part for operation `apiBusinessBizIdPortalUsersUserIdGet()` */
+  static readonly ApiBusinessBizIdPortalUsersUserIdGetPath = '/api/business/{bizId}/portal-users/{userId}';
+
+  /**
+   * Get Business Portal User.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdPortalUsersUserIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdPortalUsersUserIdGet$Response(params: ApiBusinessBizIdPortalUsersUserIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BizPortalUserResponse>> {
+    return apiBusinessBizIdPortalUsersUserIdGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get Business Portal User.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPortalUsersUserIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdPortalUsersUserIdGet(params: ApiBusinessBizIdPortalUsersUserIdGet$Params, context?: HttpContext): Observable<BizPortalUserResponse> {
+    return this.apiBusinessBizIdPortalUsersUserIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BizPortalUserResponse>): BizPortalUserResponse => r.body)
+    );
+  }
+
   /** Path part for operation `apiBusinessBizIdPortalUsersUserIdPut()` */
   static readonly ApiBusinessBizIdPortalUsersUserIdPutPath = '/api/business/{bizId}/portal-users/{userId}';
 
@@ -120,6 +158,31 @@ export class BizPortalUserService extends BaseService {
   apiBusinessBizIdPortalUsersUserIdPut(params: ApiBusinessBizIdPortalUsersUserIdPut$Params, context?: HttpContext): Observable<BizPortalUserResponse> {
     return this.apiBusinessBizIdPortalUsersUserIdPut$Response(params, context).pipe(
       map((r: StrictHttpResponse<BizPortalUserResponse>): BizPortalUserResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBusinessBizIdPortalUsersUserIdDelete()` */
+  static readonly ApiBusinessBizIdPortalUsersUserIdDeletePath = '/api/business/{bizId}/portal-users/{userId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdPortalUsersUserIdDelete()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdPortalUsersUserIdDelete$Response(params: ApiBusinessBizIdPortalUsersUserIdDelete$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+    return apiBusinessBizIdPortalUsersUserIdDelete(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdPortalUsersUserIdDelete$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdPortalUsersUserIdDelete(params: ApiBusinessBizIdPortalUsersUserIdDelete$Params, context?: HttpContext): Observable<ActionResult> {
+    return this.apiBusinessBizIdPortalUsersUserIdDelete$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 

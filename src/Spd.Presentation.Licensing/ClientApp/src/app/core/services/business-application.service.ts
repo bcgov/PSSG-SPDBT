@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
+	ActionResult,
 	Address,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
@@ -512,9 +513,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Delete a business manager
 	 * @returns
 	 */
-	deleteBizPortalUser(id: string): Observable<string> {
-		// TODO delete BizPortalUser
-		return of(id);
+	deleteBizPortalUser(userId: string): Observable<ActionResult> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizPortalUserService.apiBusinessBizIdPortalUsersUserIdDelete({
+			bizId,
+			userId,
+		});
 	}
 
 	/**

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
@@ -34,7 +34,7 @@ public class BizPortalUserController : SpdControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager")]
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryBusinessManager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpPost]
     public async Task<BizPortalUserResponse> Add([FromRoute] Guid bizId, [FromBody][Required] BizPortalUserCreateRequest bizPortalUserCreateRequest)
@@ -56,7 +56,7 @@ public class BizPortalUserController : SpdControllerBase
     /// <param name="userId"></param>
     /// <param name="bizPortalUserUpdateRequest"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager")]
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryBusinessManager,BusinessManager")]
     [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpPut]
     public async Task<BizPortalUserResponse> Put([FromRoute] Guid bizId, [FromRoute] Guid userId, [FromBody][Required] BizPortalUserUpdateRequest bizPortalUserUpdateRequest)
@@ -78,7 +78,7 @@ public class BizPortalUserController : SpdControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID")]//, Roles = "PrimaryManager,Manager")]
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryBusinessManager,BusinessManager")]
     [Route("api/business/{bizId}/portal-users")]
     [HttpGet]
     public async Task<BizPortalUserListResponse> GetBizPortalUserList([FromRoute] Guid bizId)
@@ -91,19 +91,16 @@ public class BizPortalUserController : SpdControllerBase
     /// </summary>
     /// <param name="bizId"></param>
     /// <returns></returns>
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager,Manager")]
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryBusinessManager,BusinessManager")]
     [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpGet]
     public async Task<BizPortalUserResponse> Get([FromRoute] Guid bizId, Guid userId)
     {
-        if (_currentUser.GetUserId() == userId.ToString())
-        {
-            await _mediator.Send(new BizPortalUserUpdateLoginCommand(userId));
-        }
         return await _mediator.Send(new BizPortalUserGetQuery(userId));
     }
-    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryManager")]
-    [Route("api/bizs/{bizId}/portal-users/{userId}")]
+
+    [Authorize(Policy = "OnlyBCeID", Roles = "PrimaryBusinessManager")]
+    [Route("api/business/{bizId}/portal-users/{userId}")]
     [HttpDelete]
     public async Task<ActionResult> DeleteAsync([FromRoute] Guid userId, [FromRoute] Guid bizId)
     {
