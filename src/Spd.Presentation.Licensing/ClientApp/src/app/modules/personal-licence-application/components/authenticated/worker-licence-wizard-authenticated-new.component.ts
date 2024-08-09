@@ -8,11 +8,11 @@ import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/mode
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { ApplicationService } from '@app/core/services/application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-authenticated.component';
@@ -78,7 +78,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 
 					<ng-container *ngIf="isSoleProprietor">
 						<mat-step completed="false">
-							<ng-template matStepLabel>Business Licence</ng-template>
+							<ng-template matStepLabel>Business Information</ng-template>
 						</mat-step>
 
 						<mat-step completed="false">
@@ -103,9 +103,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	readonly STEP_WORKER_LICENCE_SELECTION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_WORKER_INFORMATION = 1;
 	readonly STEP_WORKER_LICENCE_REVIEW = 2;
-	readonly STEP_BUSINESS_LICENCE = 3; // TODO authenticated sole proprietor
-	readonly STEP_BUSINESS_LICENCE_SELECTION = 4;
-	readonly STEP_BUSINESS_LICENCE_REVIEW = 5;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -236,21 +233,11 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextPayStep(): void {
-		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
-			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				this.hotToastService.success('Your licence has been successfully submitted');
-				this.payNow(_resp.body.licenceAppId!);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
+		this.submitStep();
 	}
 
 	onNextSoleProprietor(): void {
-		this.router.navigateByUrl(
-			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP)
-		);
+		this.submitStep(true);
 	}
 
 	onGoToStep(step: number) {
@@ -315,6 +302,34 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		} else {
 			this.goToChildNextStep();
 		}
+	}
+
+	private submitStep(isSoleProprietorFlow: boolean = false): void {
+		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				this.hotToastService.success('Your licence has been successfully submitted');
+
+				if (isSoleProprietorFlow) {
+					this.router.navigate(
+						[
+							BusinessLicenceApplicationRoutes.MODULE_PATH,
+							BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+						],
+						{
+							queryParams: {
+								// bizId: '26d3d383-5a35-432c-9398-72d8c2522666', // TODO  Combined SP - is there any way to know this?
+								licenceAppId: _resp.body.licenceAppId!,
+							},
+						}
+					);
+				} else {
+					this.payNow(_resp.body.licenceAppId!);
+				}
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
 	}
 
 	private updateCompleteStatus(): void {

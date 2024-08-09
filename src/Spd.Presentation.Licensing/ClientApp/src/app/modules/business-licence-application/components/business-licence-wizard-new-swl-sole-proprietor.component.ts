@@ -2,6 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
@@ -9,16 +10,17 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
-import { StepsBusinessLicenceSwlSpContactComponent } from './steps-business-licence-swl-sp-contact.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
 
 @Component({
-	selector: 'app-business-licence-wizard-new-swl-sp',
+	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
 	template: `
 		<mat-stepper
 			[selectedIndex]="3"
@@ -43,12 +45,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Business Information</ng-template>
 				<app-steps-business-licence-swl-sp-information
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
 					[applicationTypeCode]="applicationTypeCode"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
-					(nextReview)="onGoToReview()"
+					(cancelAndExit)="onCancelAndExit()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-steps-business-licence-swl-sp-information>
@@ -61,20 +61,14 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					[applicationTypeCode]="applicationTypeCode"
 					[bizTypeCode]="bizTypeCode"
 					[isBusinessLicenceSoleProprietor]="true"
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[isFormValid]="false"
+					[showSaveAndExit]="false"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
-					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(scrollIntoView)="onScrollIntoView()"
 				></app-steps-business-licence-selection>
-			</mat-step>
-
-			<mat-step completed="false">
-				<ng-template matStepLabel>Contact Information</ng-template>
-				<app-steps-business-licence-swl-sp-contact></app-steps-business-licence-swl-sp-contact>
 			</mat-step>
 
 			<mat-step completed="false">
@@ -97,38 +91,34 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 	`,
 	styles: [],
 })
-export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class BusinessLicenceWizardNewSwlSoleProprietorComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 4;
-	readonly STEP_CONTACT_INFORMATION = 5;
-	readonly STEP_REVIEW_AND_CONFIRM = 6;
+	readonly STEP_REVIEW_AND_CONFIRM = 5;
 
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;
 	step4Complete = false;
 
-	isFormValid = false;
-	showSaveAndExit = false;
-
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 
 	private businessModelValueChangedSubscription!: Subscription;
+	private isSwlAnonymous = false;
 
 	@ViewChild(StepsBusinessLicenceSwlSpInformationComponent)
 	stepsBusinessInformationComponent!: StepsBusinessLicenceSwlSpInformationComponent;
 	@ViewChild(StepsBusinessLicenceSelectionComponent)
 	stepsLicenceSelectionComponent!: StepsBusinessLicenceSelectionComponent;
-	@ViewChild(StepsBusinessLicenceSwlSpContactComponent)
-	stepsContactInformationComponent!: StepsBusinessLicenceSwlSpContactComponent;
 	@ViewChild(StepsBusinessLicenceReviewComponent)
 	stepsReviewAndConfirm!: StepsBusinessLicenceReviewComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -153,10 +143,7 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 				this.bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'businessInformationData.bizTypeCode'
 				)?.value;
-
-				this.isFormValid = _resp;
-
-				this.showSaveAndExit = this.businessApplicationService.isAutoSave();
+				this.isSwlAnonymous = this.businessApplicationService.businessModelFormGroup.get('isSwlAnonymous')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -175,9 +162,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
 				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToFirstStep();
-				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToFirstStep();
 				break;
@@ -195,9 +179,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 				break;
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsLicenceSelectionComponent?.onGoToLastStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToLastStep();
 				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToLastStep();
@@ -225,27 +206,8 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	onGoToStep(step: number) {
 		this.stepsBusinessInformationComponent?.onGoToFirstStep();
 		this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-		this.stepsContactInformationComponent?.onGoToFirstStep();
 		this.stepsReviewAndConfirm?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
-	}
-
-	onGoToReview() {
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-				next: (_resp: any) => {
-					setTimeout(() => {
-						// hack... does not navigate without the timeout
-						// this.goToReviewStep();
-					}, 250);
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
-			});
-		} else {
-			// this.goToReviewStep();
-		}
 	}
 
 	onChildNextStep() {
@@ -267,22 +229,34 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 		});
 	}
 
-	private saveStep(stepper?: MatStepper): void {
-		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-				next: (_resp: any) => {
-					if (stepper) {
-						if (stepper?.selected) stepper.selected.completed = true;
-						stepper.next();
-					} else {
-						this.goToChildNextStep();
+	onCancelAndExit(): void {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: `<p><b>Are you sure you want to cancel your sole proprietor business licence application?</b></p>
+						<p>If yes, you will redirected back to your security worker licence for review and payment.</p>`,
+			actionText: 'Yes',
+			cancelText: 'Close',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					if (this.isSwlAnonymous) {
+						this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+						return;
 					}
-				},
-				error: (error: HttpErrorResponse) => {
-					this.handlePartialSaveError(error);
-				},
+
+					// TODO Combined SP - how to know where to return back to? were they authenticated in bcsc previously?
+					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
+				}
 			});
-		} else if (stepper) {
+	}
+
+	private saveStep(stepper?: MatStepper): void {
+		if (stepper) {
 			if (stepper?.selected) stepper.selected.completed = true;
 			stepper.next();
 		} else {
@@ -298,9 +272,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 			case this.STEP_LICENCE_SELECTION:
 				this.stepsLicenceSelectionComponent?.onGoToNextStep();
 				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToNextStep();
-				break;
 			case this.STEP_REVIEW_AND_CONFIRM:
 				this.stepsReviewAndConfirm?.onGoToNextStep();
 				break;
@@ -310,10 +281,6 @@ export class BusinessLicenceWizardNewSwlSpComponent extends BaseWizardComponent 
 	private payNow(licenceAppId: string): void {
 		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
 	}
-
-	// private goToReviewStep(): void {
-	// 	this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-	// }
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {
 		// only 403s will be here as an error

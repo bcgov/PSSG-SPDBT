@@ -13,7 +13,7 @@ import { AlertUpdateOrRenewalComponent } from './components/alert-update-or-rene
 import { AlertComponent } from './components/alert.component';
 import { ApplicationsListCurrentComponent } from './components/applications-list-current.component';
 import { BaseFilterComponent } from './components/base-filter.component';
-import { BizSelectionModalComponent } from './components/biz-selection-modal.component';
+import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
 import { ContainerComponent } from './components/container.component';
@@ -50,7 +50,7 @@ const SHARED_COMPONENTS = [
 	SpdFooterComponent,
 	DialogComponent,
 	DialogOopsComponent,
-	BizSelectionModalComponent,
+	ModalBizSelectionComponent,
 	AddressAutocompleteComponent,
 	ModalAddressComponent,
 	DropdownOverlayComponent,
