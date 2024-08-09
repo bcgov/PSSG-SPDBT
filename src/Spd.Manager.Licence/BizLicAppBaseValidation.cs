@@ -16,17 +16,17 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
         RuleFor(r => r.ApplicantContactInfo.GivenName)
             .NotEmpty()
-            .When(r => r.ApplicantContactInfo != null);
+            .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.ApplicantContactInfo.Surname)
             .NotEmpty()
-            .When(r => r.ApplicantContactInfo != null);
+            .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.ApplicantContactInfo.PhoneNumber)
             .NotEmpty()
-            .When(r => r.ApplicantContactInfo != null);
+            .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.ApplicantContactInfo.EmailAddress)
             .NotEmpty()
             .EmailAddress()
-            .When(r => r.ApplicantContactInfo != null);
+            .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode)
