@@ -3,12 +3,13 @@
 		<UserSecretsId>c03da675-16e3-44d2-b265-90779c030de7</UserSecretsId>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="AutoMapper" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
-		<PackageReference Include="System.Configuration.ConfigurationManager" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
