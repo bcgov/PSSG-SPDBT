@@ -9,7 +9,7 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Manager.Licence;
-internal class BizPortalUserManager : 
+internal class BizPortalUserManager :
     IRequestHandler<BizPortalUserCreateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserUpdateCommand, BizPortalUserResponse>,
     IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
@@ -32,11 +32,11 @@ internal class BizPortalUserManager :
     public async Task<BizPortalUserResponse> Handle(BizPortalUserCreateCommand request, CancellationToken ct)
     {
         PortalUserListResp existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-            new PortalUserQry() 
-            { 
-                OrgId = request.BizPortalUserCreateRequest.BizId, 
+            new PortalUserQry()
+            {
+                OrgId = request.BizPortalUserCreateRequest.BizId,
                 ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
-                PortalUserServiceCategory =  PortalUserServiceCategoryEnum.Licensing
+                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
             },
             ct);
 
@@ -54,6 +54,8 @@ internal class BizPortalUserManager :
         SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, newlist.Count);
 
         var createPortalUserCmd = _mapper.Map<CreatePortalUserCmd>(request.BizPortalUserCreateRequest);
+        createPortalUserCmd.HostUrl = request.HostUrl;
+        createPortalUserCmd.CreatedByUserId = request.CreatedByUserId;
         var response = await _portalUserRepository.ManageAsync(createPortalUserCmd, ct);
 
         return _mapper.Map<BizPortalUserResponse>(response);
@@ -61,7 +63,7 @@ internal class BizPortalUserManager :
 
     public async Task<BizPortalUserResponse> Handle(BizPortalUserUpdateCommand request, CancellationToken ct)
     {
-        PortalUserListResp existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+        PortalUserListResp existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry()
             {
                 OrgId = request.BizPortalUserUpdateRequest.BizId,
@@ -92,7 +94,7 @@ internal class BizPortalUserManager :
     }
     public async Task<BizPortalUserResponse> Handle(BizPortalUserGetQuery request, CancellationToken ct)
     {
-        var response = (PortalUserResp) await _portalUserRepository.QueryAsync(
+        var response = (PortalUserResp)await _portalUserRepository.QueryAsync(
                 new PortalUserByIdQry(request.UserId),
                 ct);
         return _mapper.Map<BizPortalUserResponse>(response);
@@ -100,7 +102,7 @@ internal class BizPortalUserManager :
 
     public async Task<BizPortalUserListResponse> Handle(BizPortalUserListQuery query, CancellationToken ct)
     {
-        PortalUserListResp existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+        PortalUserListResp existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry()
             {
                 OrgId = query.BizId,
@@ -132,8 +134,8 @@ internal class BizPortalUserManager :
     public async Task<Unit> Handle(BizPortalUserDeleteCommand request, CancellationToken cancellationToken)
     {
         //check role max number rule
-        var existingUsersResult = (PortalUserListResp) await _portalUserRepository.QueryAsync(
-            new PortalUserQry() { OrgId = request.BizId},
+        var existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
+            new PortalUserQry() { OrgId = request.BizId },
             cancellationToken);
         var toDeleteUser = existingUsersResult.Items.FirstOrDefault(u => u.Id == request.UserId);
         var newUsers = existingUsersResult.Items.ToList();

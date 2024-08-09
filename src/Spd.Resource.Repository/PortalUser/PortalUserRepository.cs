@@ -1,9 +1,10 @@
 using AutoMapper;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.Client;
-using Spd.Resource.Repository.User;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
@@ -13,14 +14,17 @@ internal class PortalUserRepository : IPortalUserRepository
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<PortalUserRepository> _logger;
+    private readonly ITimeLimitedDataProtector _dataProtector;
 
     public PortalUserRepository(IDynamicsContextFactory ctx,
         IMapper mapper,
-        ILogger<PortalUserRepository> logger)
+        ILogger<PortalUserRepository> logger,
+        IDataProtectionProvider dpProvider)
     {
         _context = ctx.CreateChangeOverwrite();
         _mapper = mapper;
         _logger = logger;
+        _dataProtector = dpProvider.CreateProtector(nameof(CreatePortalUserCmd)).ToTimeLimitedDataProtector();
     }
 
     public async Task<PortalUserQryResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken)
@@ -28,7 +32,7 @@ internal class PortalUserRepository : IPortalUserRepository
         return qry switch
         {
             PortalUserByIdQry q => await GetUserAsync(q.UserId, cancellationToken),
-            PortalUserQry  q => await ListUsersAsync(qry, cancellationToken)
+            PortalUserQry q => await ListUsersAsync(qry, cancellationToken)
         };
     }
     public async Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken)
@@ -95,7 +99,7 @@ internal class PortalUserRepository : IPortalUserRepository
         {
             //TODO: is there any situation user may not have invition? (what is invition and how to assign it to user? or vice versa)
             var invition = GetPortalInvitationByUserId(userId);
-            if(invition is not null) _context.DeleteObject(invition);
+            if (invition is not null) _context.DeleteObject(invition);
 
             // Delete user and invitation
             _context.DeleteObject(user);
@@ -170,6 +174,13 @@ internal class PortalUserRepository : IPortalUserRepository
         spd_portaluser portaluser = _mapper.Map<spd_portaluser>(c);
         _context.AddTospd_portalusers(portaluser);
         account? org = await _context.GetOrgById((Guid)c.OrgId, ct);
+        if (org == null)
+        {
+            _logger.LogError($"no valid org is found by orgId {c.OrgId}");
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The organization is not valid.");
+        }
+        _context.SetLink(portaluser, nameof(portaluser.spd_OrganizationId), org);
+
         spd_identity? identity = null;
         if (c.IdentityId != null)
         {
@@ -180,12 +191,6 @@ internal class PortalUserRepository : IPortalUserRepository
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The identity is not valid.");
             }
         }
-        if (org == null)
-        {
-            _logger.LogError($"no valid org is found by orgId {c.OrgId}");
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The organization is not valid.");
-        }
-        _context.SetLink(portaluser, nameof(portaluser.spd_OrganizationId), org);
         if (identity != null)
             _context.SetLink(portaluser, nameof(portaluser.spd_IdentityId), identity);
 
@@ -197,7 +202,24 @@ internal class PortalUserRepository : IPortalUserRepository
                 _context.AddLink(portaluser, nameof(portaluser.spd_spd_role_spd_portaluser), role);
             }
         }
+
+        // create portal invitation
+        if (c.IdentityId == null)
+        {
+            spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(c);
+            var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
+            invitation.spd_invitationlink = $"{c.HostUrl}{SpdConstants.UserInviteLink}{encryptedInviteId}";
+            _context.AddTospd_portalinvitations(invitation);
+            _context.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
+            _context.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), portaluser);
+            if (c.CreatedByUserId != null)
+            {
+                spd_portaluser invitedBy = await _context.GetUserById((Guid)c.CreatedByUserId, ct);
+                _context.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), invitedBy);
+            }
+        }
         await _context.SaveChangesAsync(ct);
+
         PortalUserResp userResp = _mapper.Map<PortalUserResp>(portaluser);
         userResp.OrganizationId = c.OrgId;
         userResp.ContactRoleCode = c.ContactRoleCode;
