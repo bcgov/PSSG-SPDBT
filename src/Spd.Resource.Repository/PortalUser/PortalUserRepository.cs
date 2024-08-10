@@ -42,7 +42,75 @@ internal class PortalUserRepository : IPortalUserRepository
             UpdatePortalUserCmd c => await UpdatePortalUserAsync(c, cancellationToken),
             CreatePortalUserCmd c => await CreatePortalUserAsync(c, cancellationToken),
             PortalUserDeleteCmd c => await DeleteProtalUserAsync(c.Id, cancellationToken),
+            BizPortalUserInvitationVerify v => await VerifyBizPortalUserInvitationAsync(v, cancellationToken),
             _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+        };
+    }
+    private async Task<PortalUserResp> VerifyBizPortalUserInvitationAsync(BizPortalUserInvitationVerify verify, CancellationToken ct)
+    {
+        Guid inviteId;
+        try
+        {
+            string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verify.InviteIdEncryptedCode));
+            inviteId = Guid.Parse(inviteIdStr);
+        }
+        catch
+        {
+            throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+        }
+
+        var invite = await _context.spd_portalinvitations
+            .Expand(i => i.spd_OrganizationId)
+            .Where(i => i.spd_portalinvitationid == inviteId)
+            .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.PortalUser)
+            .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
+            .FirstOrDefaultAsync(ct);
+        if (invite == null)
+            throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+        if (invite.spd_OrganizationId.spd_orgguid != verify.OrgGuid.ToString())
+            throw new ApiException(HttpStatusCode.Accepted, "There is a mismatch between the invite organization and your bceid organization.");
+
+        //verified, now add/link identity to user.
+        spd_identity? identity = await _context.spd_identities
+            .Where(i => i.spd_userguid == verify.UserGuid.ToString() && i.spd_orgguid == verify.OrgGuid.ToString())
+            .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefaultAsync(ct);
+        if (identity == null)
+        {
+            identity = new spd_identity()
+            {
+                spd_identityid = Guid.NewGuid(),
+                spd_orgguid = verify.OrgGuid.ToString(),
+                spd_userguid = verify.UserGuid.ToString(),
+            };
+            _context.AddTospd_identities(identity);
+        }
+        else //the user already has identity in the system, probably used by other org.
+        {
+            //check if current org already has the same user
+            spd_portaluser? dupUser = await _context.spd_portalusers
+                .Where(u => u.spd_servicecategory == (int)PortalUserServiceCategoryOptionSet.Licensing)
+                .Where(u => u._spd_identityid_value == identity.spd_identityid)
+                .Where(u => u.statecode == DynamicsConstants.StateCode_Active)
+                .Where(u => u._spd_organizationid_value == invite._spd_organizationid_value)
+                .Where(u => u.spd_portaluserid != invite._spd_portaluserid_value)
+                .FirstOrDefaultAsync(ct);
+            if (dupUser != null)
+                throw new ApiException(HttpStatusCode.Accepted, "Your BCeID is already associated to a user in this organization.");
+        }
+
+        Guid userId = invite._spd_portaluserid_value ?? Guid.Empty;
+        var user = await _context.GetUserById(userId, ct);
+        _context.SetLink(user, nameof(user.spd_IdentityId), identity);
+
+        //set invite views
+        invite.spd_views = (invite.spd_views ?? 0) + 1;
+        _context.UpdateObject(invite);
+
+        await _context.SaveChangesAsync(ct);
+        return new PortalUserResp()
+        {
+            OrganizationId = user._spd_organizationid_value ?? Guid.Empty,
         };
     }
     private async Task<PortalUserListResp> ListUsersAsync(PortalUserQry qry, CancellationToken cancellationToken)
@@ -115,8 +183,6 @@ internal class PortalUserRepository : IPortalUserRepository
 
         return spd_portalinvitation;
     }
-
-
     private async Task<PortalUserResp> UpdatePortalUserAsync(UpdatePortalUserCmd c, CancellationToken ct)
     {
         spd_portaluser portalUser = await GetUserById(c.Id, ct);
@@ -160,7 +226,6 @@ internal class PortalUserRepository : IPortalUserRepository
         portalUser = await GetUserById(c.Id, ct);
         return _mapper.Map<PortalUserResp>(portalUser);
     }
-
     private async Task<PortalUserResp> CreatePortalUserAsync(CreatePortalUserCmd c, CancellationToken ct)
     {
         spd_portaluser portaluser = _mapper.Map<spd_portaluser>(c);
