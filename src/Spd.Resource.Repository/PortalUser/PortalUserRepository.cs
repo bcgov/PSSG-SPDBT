@@ -265,7 +265,7 @@ internal class PortalUserRepository : IPortalUserRepository
         {
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(c);
             var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.UserInviteValidDays)));
-            invitation.spd_invitationlink = $"{c.HostUrl}{SpdConstants.UserInviteLink}{encryptedInviteId}";
+            invitation.spd_invitationlink = $"{c.HostUrl}{SpdConstants.BizPortalUserInviteLink}{encryptedInviteId}";
             _context.AddTospd_portalinvitations(invitation);
             _context.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), org);
             _context.SetLink(invitation, nameof(spd_portalinvitation.spd_PortalUserId), portaluser);
