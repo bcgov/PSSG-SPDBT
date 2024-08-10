@@ -315,7 +315,8 @@ namespace Spd.Utilities.Dynamics
         CourtAppointedBailiff = 100000003,
         SpecialProvincialOrMunicipalConstable = 100000004,
         PoliceOfficer = 100000005,
-        Other = 100000006
+        Other = 100000006,
+        None = 100000008
     }
 
     public enum RequestDogPurposeOptionSet
