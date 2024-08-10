@@ -116,6 +116,7 @@ public enum PoliceOfficerRoleEnum
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
     Other,
+    None
 }
 
 public enum ServiceTypeCategoryEnum
