@@ -41,6 +41,8 @@ export { HairColourCode } from './models/hair-colour-code';
 export { HeightUnitCode } from './models/height-unit-code';
 export { IActionResult } from './models/i-action-result';
 export { IdentityProviderTypeCode } from './models/identity-provider-type-code';
+export { InvitationRequest } from './models/invitation-request';
+export { InvitationResponse } from './models/invitation-response';
 export { LicenceAppDocumentResponse } from './models/licence-app-document-response';
 export { LicenceAppListResponse } from './models/licence-app-list-response';
 export { LicenceBasicResponse } from './models/licence-basic-response';

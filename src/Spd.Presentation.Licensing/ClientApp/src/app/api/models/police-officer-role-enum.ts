@@ -7,5 +7,6 @@ export enum PoliceOfficerRoleEnum {
   CourtAppointedBailiff = 'CourtAppointedBailiff',
   SpecialProvincialOrMunicipalConstable = 'SpecialProvincialOrMunicipalConstable',
   PoliceOfficer = 'PoliceOfficer',
-  Other = 'Other'
+  Other = 'Other',
+  None = 'None'
 }
