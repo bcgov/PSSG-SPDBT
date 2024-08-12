@@ -11,6 +11,7 @@ public static class SpdConstants
     public static readonly string BulkAppUploadBirthdateFormat = "yyyy-MM-dd";
     public static readonly string DefaultBannerMsg = "10 business days for online applications and 20 business days for manual applications.";
     public static readonly string UserInviteLink = "crrp/invitation/";
+    public static readonly string BizPortalUserInviteLink = "crrp/invitation/"; //ask carol what it should be.
     public static readonly string CrrpApplicationInviteLink = "crrpa/invitation/";
     public static readonly string PssoApplicationInviteLink = "pssoa/invitation/";
     public static readonly int ShareableClearanceExpiredDateBufferInMonths = 6;
