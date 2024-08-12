@@ -279,7 +279,7 @@ export class BusinessManagersComponent implements OnInit {
 			title: 'Confirmation',
 			message: `Are you sure you want to permanently remove '${user.firstName} ${user.lastName}'?`,
 			actionText: 'Yes, remove',
-			success: 'Manager was successfully removed',
+			success: 'Business Manager was successfully removed',
 		});
 	}
 

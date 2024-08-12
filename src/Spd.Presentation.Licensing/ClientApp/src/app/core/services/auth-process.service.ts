@@ -55,7 +55,6 @@ export class AuthProcessService {
 			return Promise.resolve(nextRoute);
 		}
 
-		this.notify(false);
 		return Promise.resolve(null);
 	}
 
@@ -94,7 +93,37 @@ export class AuthProcessService {
 			return Promise.resolve(loginInfo);
 		}
 
+		return Promise.resolve(loginInfo);
+	}
+
+	//----------------------------------------------------------
+	// * Business Licencing Portal - BCeID - User Invitation
+	// *
+	async initializeBusinessLicenceInvitationBCeID(
+		invitationId: string
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
 		this.notify(false);
+
+		this.identityProvider = IdentityProviderTypeCode.BusinessBceId;
+
+		const returningRoute = BusinessLicenceApplicationRoutes.path(
+			`${BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION}/${invitationId}`
+		);
+
+		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID returningRoute', returningRoute);
+
+		const loginInfo = await this.authenticationService.login(this.identityProvider, returningRoute);
+
+		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID loginInfo', loginInfo);
+
+		if (loginInfo.returnRoute) {
+			this.notify(true);
+
+			const nextRoute = decodeURIComponent(loginInfo.returnRoute);
+			loginInfo.returnRoute = nextRoute;
+			return Promise.resolve(loginInfo);
+		}
+
 		return Promise.resolve(loginInfo);
 	}
 
