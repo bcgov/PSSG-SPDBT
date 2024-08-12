@@ -30,6 +30,20 @@ public class BizPortalUserController : SpdControllerBase
     }
 
     /// <summary>
+    /// Verify if the current invite and login user are correct.
+    /// </summary>
+    /// <param name="orgUserInvitationRequest">which include InviteHashCode</param>
+    /// <returns></returns>
+    [Route("api/business/portal-users/invitation")]
+    [Authorize(Policy = "OnlyBCeID")]
+    [HttpPost]
+    public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest bizUserInvitationRequest)
+    {
+        var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
+        return await _mediator.Send(new VerifyUserInvitation(bizUserInvitationRequest, userIdentityInfo.BizGuid, (Guid)userIdentityInfo.UserGuid));
+    }
+
+    /// <summary>
     /// Create Business Portal User
     /// </summary>
     /// <param name="bizId"></param>

@@ -9,11 +9,13 @@ public interface IBizPortalUserManager
     public Task<BizPortalUserListResponse> Handle(BizPortalUserListQuery request, CancellationToken ct);
     public Task<BizPortalUserResponse> Handle(BizPortalUserGetQuery request, CancellationToken ct);
     public Task<Unit> Handle(BizPortalUserDeleteCommand request, CancellationToken ct);
+    public Task<InvitationResponse> Handle(VerifyUserInvitation request, CancellationToken ct);
 }
 
 public record BizPortalUserCreateCommand(BizPortalUserCreateRequest BizPortalUserCreateRequest, string HostUrl, Guid? CreatedByUserId) : IRequest<BizPortalUserResponse>;
 public record BizPortalUserUpdateCommand(Guid UserId, BizPortalUserUpdateRequest BizPortalUserUpdateRequest) : IRequest<BizPortalUserResponse>;
 public record BizPortalUserDeleteCommand(Guid UserId, Guid BizId) : IRequest<Unit>;
+public record VerifyUserInvitation(InvitationRequest InvitationRequest, Guid BizGuid, Guid UserGuid) : IRequest<InvitationResponse>;
 
 public record BizPortalUserCreateRequest : BizPortalUserUpsertRequest { }
 
@@ -47,3 +49,6 @@ public record BizPortalUserListResponse
     public int? MaximumNumberOfPrimaryAuthorizedContacts { get; set; }
     public IEnumerable<BizPortalUserResponse> Users { get; set; } = Array.Empty<BizPortalUserResponse>();
 }
+
+public record InvitationRequest(string InviteEncryptedCode);
+public record InvitationResponse(Guid BizId);

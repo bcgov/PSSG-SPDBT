@@ -64,5 +64,6 @@ namespace Spd.Resource.Repository.PortalUser
 
     };
     public record PortalUserDeleteCmd(Guid Id) : PortalUserCmd;
+    public record BizPortalUserInvitationVerify(string InviteIdEncryptedCode, Guid OrgGuid, Guid UserGuid) : PortalUserCmd;
 
 }
