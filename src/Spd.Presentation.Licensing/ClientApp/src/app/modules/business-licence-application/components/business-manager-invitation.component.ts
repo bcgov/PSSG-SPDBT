@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InvitationRequest } from '@app/api/models';
 import { BizPortalUserService } from '@app/api/services';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { takeWhile } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
 
@@ -39,7 +38,6 @@ export class BusinessManagerInvitationComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private bizPortalUserService: BizPortalUserService
 	) {}
