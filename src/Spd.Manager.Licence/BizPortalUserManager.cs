@@ -15,6 +15,7 @@ internal class BizPortalUserManager :
     IRequestHandler<BizPortalUserListQuery, BizPortalUserListResponse>,
     IRequestHandler<BizPortalUserDeleteCommand, Unit>,
     IRequestHandler<BizPortalUserGetQuery, BizPortalUserResponse>,
+    IRequestHandler<VerifyUserInvitation, InvitationResponse>,
     IBizPortalUserManager
 {
     private readonly IMapper _mapper;
@@ -127,19 +128,29 @@ internal class BizPortalUserManager :
     {
         //check role max number rule
         var existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-            new PortalUserQry() { OrgId = request.BizId },
+            new PortalUserQry() { OrgId = request.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             cancellationToken);
         var toDeleteUser = existingUsersResult.Items.FirstOrDefault(u => u.Id == request.UserId);
         var newUsers = existingUsersResult.Items.ToList();
         if (toDeleteUser == null) return default;
         newUsers.Remove(toDeleteUser);
-        var biz = await _bizRepository.QueryBizAsync(new BizsQry(request.BizId), cancellationToken);
+        var biz = await _bizRepository.GetBizAsync(request.BizId, cancellationToken);
         int primaryUserNo = newUsers.Count(u => u.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager);
-        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.First().MaxContacts, biz.First().MaxPrimaryContacts, primaryUserNo, newUsers.Count);
+        SharedManagerFuncs.CheckMaxRoleNumberRuleAsync(biz.MaxContacts, biz.MaxPrimaryContacts, primaryUserNo, newUsers.Count);
 
         await _portalUserRepository.ManageAsync(
             new PortalUserDeleteCmd(request.UserId),
             cancellationToken);
         return default;
+    }
+
+    public async Task<InvitationResponse?> Handle(VerifyUserInvitation request, CancellationToken ct)
+    {
+        var result = await _portalUserRepository.ManageAsync(
+             new BizPortalUserInvitationVerify(request.InvitationRequest.InviteEncryptedCode, request.BizGuid, request.UserGuid),
+             ct);
+        if (result.OrganizationId == null)
+            return null;
+        return new InvitationResponse((Guid)result.OrganizationId);
     }
 }
