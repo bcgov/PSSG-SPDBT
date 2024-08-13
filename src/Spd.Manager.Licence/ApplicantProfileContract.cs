@@ -59,7 +59,7 @@ namespace Spd.Manager.Licence
         public Address? MailingAddress { get; set; }
         public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
         public bool? IsPoliceOrPeaceOfficer { get; set; }
-        public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
+        public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
