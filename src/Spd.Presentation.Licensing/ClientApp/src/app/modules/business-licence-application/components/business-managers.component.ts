@@ -144,29 +144,31 @@ import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './mo
 								<ng-container matColumnDef="action2">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
 									<mat-cell *matCellDef="let user">
-										<ng-container *ngIf="user.isActive; else notactiveactions">
-											<button
-												mat-flat-button
-												class="table-button"
-												style="color: var(--color-red);"
-												aria-label="Remove user"
-												(click)="onDeleteUser(user)"
-												*ngIf="allowDeleteRow(user)"
-											>
-												<mat-icon>delete_outline</mat-icon>Remove
-											</button>
+										<ng-container *ngIf="isCurrentPrimaryManager">
+											<ng-container *ngIf="user.isActive; else notactiveactions">
+												<button
+													mat-flat-button
+													class="table-button"
+													style="color: var(--color-red);"
+													aria-label="Remove user"
+													(click)="onDeleteUser(user)"
+													*ngIf="allowDeleteRow(user)"
+												>
+													<mat-icon>delete_outline</mat-icon>Remove
+												</button>
+											</ng-container>
+											<ng-template #notactiveactions>
+												<button
+													mat-flat-button
+													class="table-button"
+													style="color: var(--color-primary-light);"
+													aria-label="Cancel invitation"
+													(click)="onCancelInvitation(user)"
+												>
+													<mat-icon>cancel</mat-icon>Cancel
+												</button>
+											</ng-template>
 										</ng-container>
-										<ng-template #notactiveactions>
-											<button
-												mat-flat-button
-												class="table-button"
-												style="color: var(--color-primary-light);"
-												aria-label="Cancel invitation"
-												(click)="onCancelInvitation(user)"
-											>
-												<mat-icon>cancel</mat-icon>Cancel
-											</button>
-										</ng-template>
 									</mat-cell>
 								</ng-container>
 
@@ -227,7 +229,8 @@ export class BusinessManagersComponent implements OnInit {
 
 	showAdd = false;
 	isAllowedAddManager = false;
-	isAllowedAddPrimary = false;
+	isAllowedAddPrimaryManager = false;
+	isCurrentPrimaryManager = false;
 
 	usersList: any[] = [];
 
@@ -248,14 +251,17 @@ export class BusinessManagersComponent implements OnInit {
 	}
 
 	onMaintainUser(user: BizPortalUserResponse): void {
-		let isAllowedPrimary = this.isAllowedAddPrimary;
+		let isAllowedPrimary = this.isAllowedAddPrimaryManager;
 		if (user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager) {
 			isAllowedPrimary = true;
 		}
 
+		const isAllowedNonPrimary = this.getNumberOfPrimaryBusinessManagers() > 1;
+
 		const dialogOptions: BizPortalUserDialogData = {
 			user,
-			isAllowedPrimary,
+			isAllowedNonPrimaryManager: isAllowedNonPrimary,
+			isAllowedPrimaryManager: isAllowedPrimary,
 			emails: this.dataSource.data
 				.filter((item: BizPortalUserResponse) => item.id != user.id)
 				.map((item: BizPortalUserResponse) => item.email!),
@@ -267,7 +273,8 @@ export class BusinessManagersComponent implements OnInit {
 		const newUser: BizPortalUserResponse = {};
 		const dialogOptions: BizPortalUserDialogData = {
 			user: newUser,
-			isAllowedPrimary: this.isAllowedAddPrimary,
+			isAllowedNonPrimaryManager: true,
+			isAllowedPrimaryManager: this.isAllowedAddPrimaryManager,
 			emails: this.dataSource.data.map((item: BizPortalUserResponse) => item.email!),
 		};
 		this.openManagerDialog(dialogOptions, true);
@@ -295,31 +302,27 @@ export class BusinessManagersComponent implements OnInit {
 
 	allowEditRow(user: BizPortalUserResponse): boolean {
 		// if row is current user, allow edit
-		if (this.authUserBceidService.bceidUserProfile?.bizUserId == user.id) {
+		if (this.isCurrentUser(user)) {
 			return true;
 		}
 
-		// if row is not active user, prevent edit
+		// // if row is not active user, prevent edit
 		if (!user.isActive) {
 			return false;
 		}
 
 		// if current user is a Primary Authorized User, allow edit
-		return this.isUserPrimaryAuthorizedUser();
+		return this.isCurrentUserPrimaryAuthorizedUser();
 	}
 
 	allowDeleteRow(user: BizPortalUserResponse): boolean {
-		if (this.usersList.length <= 1) {
-			return false;
-		}
-
 		// if row is current user, prevent delete
-		if (this.authUserBceidService.bceidUserProfile?.bizUserId == user.id) {
+		if (this.isCurrentUser(user)) {
 			return false;
 		}
 
 		// if current user is a Primary Authorized User, allow delete
-		return this.isUserPrimaryAuthorizedUser();
+		return this.isCurrentUserPrimaryAuthorizedUser();
 	}
 
 	private loadList(): void {
@@ -337,13 +340,19 @@ export class BusinessManagersComponent implements OnInit {
 	}
 
 	private setFlags(): void {
-		this.showAdd = this.isUserPrimaryAuthorizedUser();
+		this.showAdd = this.isCurrentUserPrimaryAuthorizedUser();
 		this.isAllowedAddManager = this.usersList.length < this.maximumNumberOfContacts;
 
-		const numberOfPrimary = this.usersList.filter(
+		const numberOfPrimary = this.getNumberOfPrimaryBusinessManagers();
+		this.isAllowedAddPrimaryManager = numberOfPrimary < this.maximumNumberOfPrimaryContacts;
+
+		this.isCurrentPrimaryManager = this.isCurrentUserPrimaryAuthorizedUser();
+	}
+
+	private getNumberOfPrimaryBusinessManagers(): number {
+		return this.usersList.filter(
 			(user) => user.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager
 		)?.length;
-		this.isAllowedAddPrimary = numberOfPrimary < this.maximumNumberOfPrimaryContacts;
 	}
 
 	private sortUsers(): void {
@@ -412,16 +421,26 @@ export class BusinessManagersComponent implements OnInit {
 			});
 	}
 
-	private isUserPrimaryAuthorizedUser(): boolean {
+	private isCurrentUserPrimaryAuthorizedUser(): boolean {
 		if (!this.usersList) {
 			return false;
 		}
 
-		const currUser = this.usersList.find(
-			(item: BizPortalUserResponse) => item.id == this.authUserBceidService.bceidUserProfile?.bizUserId
-		);
+		return this.isUserPrimaryAuthorizedUser(this.authUserBceidService.bceidUserProfile?.bizUserId!);
+	}
+
+	private isUserPrimaryAuthorizedUser(userId: string): boolean {
+		if (!this.usersList) {
+			return false;
+		}
+
+		const currUser = this.usersList.find((item: BizPortalUserResponse) => item.id == userId);
 		return currUser
 			? currUser.contactAuthorizationTypeCode == ContactAuthorizationTypeCode.PrimaryBusinessManager
 			: false;
+	}
+
+	private isCurrentUser(user: BizPortalUserResponse): boolean {
+		return this.authUserBceidService.bceidUserProfile?.bizUserId === user.id;
 	}
 }
