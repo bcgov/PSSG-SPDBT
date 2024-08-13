@@ -396,13 +396,13 @@ internal class Mappings : Profile
         }
     }
 
-    private static GenderEnum? GetGenderEnumFromStr(string? genderStr)
+    private static GenderCode? GetGenderEnumFromStr(string? genderStr)
     {
         return genderStr switch
         {
-            "female" => GenderEnum.F,
-            "male" => GenderEnum.M,
-            "diverse" => GenderEnum.U,
+            "female" => GenderCode.F,
+            "male" => GenderCode.M,
+            "diverse" => GenderCode.U,
             _ => null,
         };
     }
