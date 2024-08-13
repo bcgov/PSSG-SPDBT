@@ -68,7 +68,6 @@ export { PermitAppSubmitRequest } from './models/permit-app-submit-request';
 export { PermitAppUpsertRequest } from './models/permit-app-upsert-request';
 export { PermitLicenceAppResponse } from './models/permit-licence-app-response';
 export { PoliceOfficerRoleCode } from './models/police-officer-role-code';
-export { PoliceOfficerRoleEnum } from './models/police-officer-role-enum';
 export { PrivateInvestigatorSwlContactInfo } from './models/private-investigator-swl-contact-info';
 export { RecaptchaConfiguration } from './models/recaptcha-configuration';
 export { ResidentialAddress } from './models/residential-address';
