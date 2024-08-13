@@ -21,12 +21,5 @@ spec:
   steps:
     - name: tag
       image: 'image-registry.openshift-image-registry.svc:5000/openshift/cli:latest'
-      resources:
-        limits:
-          cpu: 25m
-          memory: 64Mi
-        requests:
-          cpu: 5m
-          memory: 32Mi
       script: |
         oc tag $(params.sourceImage):$(params.sourceTag) $(params.destinationImage):$(params.destinationTag) --scheduled=$(params.scheduled) --reference-policy=$(params.referencePolicy)
