@@ -37,6 +37,9 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(a => a.spd_ApplicantId_account)
                 .Where(a => a.spd_applicationid == cmd.OriginalApplicationId)
                 .FirstOrDefaultAsync(ct);
+
+            if (originalApp == null)
+                throw new ArgumentException("Original business licence application was not found.");
         }
         catch (DataServiceQueryException ex)
         {
