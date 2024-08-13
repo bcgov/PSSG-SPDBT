@@ -16,13 +16,6 @@ spec:
   steps:
     - name: backup
       image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
-      resources:
-        limits:
-          cpu: 25m
-          memory: 64Mi
-        requests:
-          cpu: 5m
-          memory: 32Mi
       script: |
         old=$(oc get imagestream $(params.imageName) -o jsonpath='{.status.tags[?(@.tag=="$(params.toTag)")].items[0].image}')
         new=$(oc get imagestream $(params.imageName) -o jsonpath='{.status.tags[?(@.tag=="$(params.fromTag)")].items[0].image}')
