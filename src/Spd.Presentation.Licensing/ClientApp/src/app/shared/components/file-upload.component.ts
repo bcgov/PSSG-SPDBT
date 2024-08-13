@@ -97,10 +97,8 @@ export class FileUploadHelper {
 				</ng-container>
 			</div>
 
-			<label class="dropzone-area my-2" [for]="id">
-				<div>
-					<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
-				</div>
+			<label class="dropzone-area" [for]="id">
+				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
 				<div class="fw-bold mb-2">Drag and Drop your file here or click to browse</div>
 				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
 
@@ -168,9 +166,14 @@ export class FileUploadHelper {
 			}
 
 			.dropzone-area {
-				text-align: center !important;
 				width: 100%;
+				text-align: center !important;
 				cursor: pointer;
+			}
+
+			.dropzone-area:hover {
+				background-color: #f8f8f8;
+				outline: 0;
 			}
 		`,
 	],
@@ -243,6 +246,15 @@ export class FileUploadComponent implements OnInit {
 			return;
 		}
 
+		// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
+		// for example: filename.gov.bc.ca.docx ... Block the uploading of these files.
+		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
+
+		if (numberOfPeriods > 1) {
+			this.hotToastService.error('A file name cannot contain multiple periods. Please rename this file and try again.');
+			return;
+		}
+
 		if (newFile) {
 			this.files.push(newFile);
 			this.filesUpdated();
@@ -252,6 +264,8 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onRemoveFile(file: File) {
+		console.log('onRemoveFile', file);
+
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
