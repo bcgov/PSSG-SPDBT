@@ -76,7 +76,7 @@ export class FileUploadHelper {
 @Component({
 	selector: 'app-file-upload',
 	template: `
-		<div class="dropzone" fileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
+		<div class="dropzone" appFileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
 			<div class="row my-2" *ngIf="files && files.length > 0">
 				<ng-container *ngFor="let file of files; let i = index">
 					<div class="col-lg-6 col-md-12 col-sm-12">
