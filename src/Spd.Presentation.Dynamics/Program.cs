@@ -6,6 +6,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Newtonsoft.Json;
 using Spd.Presentation.Dynamics.Swagger;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
@@ -91,6 +92,10 @@ builder.Services.AddBCeIDService(builder.Configuration);
 builder.Services.AddHealthChecks(builder.Configuration);
 
 var app = builder.Build();
+
+// Initialize slow dependencies
+app.Services.GetRequiredService<AutoMapper.IConfigurationProvider>().CompileMappings();
+JsonConvert.SerializeObject(new { property = 1 });
 
 if (app.Environment.IsDevelopment())
 {
