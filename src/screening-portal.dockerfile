@@ -5,6 +5,7 @@ RUN mkdir /tools
 RUN dotnet tool install --tool-path /tools dotnet-trace
 RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
+RUN dotnet tool install --tool-path /tools dotnet-monitor
 
 WORKDIR /src
 
@@ -19,9 +20,9 @@ RUN cat Spd.sln \
 | sed 's#\\#/#g' \
 | xargs -I % sh -c 'mkdir -p $(dirname %) && mv $(basename %) $(dirname %)/'
 
-RUN dotnet restore "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj"
+RUN dotnet restore "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj" -r linux-x64 -p:PublishReadyToRun=true
 COPY . .
-RUN dotnet publish "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj" -c Release -o /app/publish --no-restore
+RUN dotnet publish "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj" -c Release -o /app/publish --no-restore --self-contained -r linux-x64 -p:PublishReadyToRun=true
 
 FROM docker.io/trion/ng-cli-karma:17.0.10 AS ng-builder
 WORKDIR /src
