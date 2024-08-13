@@ -128,6 +128,8 @@ export class FileUploadHelper {
 				display: flex;
 				justify-content: center;
 				margin: 10px;
+				padding: 0px 20px;
+				position: relative;
 			}
 
 			.file-preview:hover {
