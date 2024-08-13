@@ -28,7 +28,7 @@
     "MakeTypesInternal": false,
     "OpenGeneratedFilesInIDE": false,
     "GenerateMultipleFiles": false,
-    "CustomHttpHeaders": null,
+    "CustomHttpHeaders": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSIsImtpZCI6Ims0Y3BkRmdybU0yMHJhcThYVVRxMVlpaXNISSJ9.eyJhdWQiOiJodHRwczovL3NwZC1zcGFyYy5kZXYuamFnLmdvdi5iYy5jYS9hcGkvZGF0YS92OS4wLyIsImlzcyI6Imh0dHA6Ly9zdHN0ZXN0Lmdvdi5iYy5jYS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNzIzNTA2MDM0LCJuYmYiOjE3MjM1MDYwMzQsImV4cCI6MTcyMzUwOTYzNCwidXBuIjoic3BkX29zYWRAZ292LmJjLmNhIiwidW5pcXVlX25hbWUiOiJJRElSXFxTUERfT1NBRCIsImFwcHR5cGUiOiJDb25maWRlbnRpYWwiLCJhcHBpZCI6IjAxNzRiMjAzLWNkY2YtNDE2NC04NTMyLTBhNGM0ZmRmZGY2MiIsImF1dGhtZXRob2QiOiJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YWM6Y2xhc3NlczpQYXNzd29yZFByb3RlY3RlZFRyYW5zcG9ydCIsImF1dGhfdGltZSI6IjIwMjQtMDgtMTJUMjM6NDA6MzQuMjQ3WiIsInZlciI6IjEuMCIsInNjcCI6Im9wZW5pZCJ9.XeGJBZISQhbCt4KuEyot-Kt25LVoLC2ASRyO8aZfVFInBjsVhrfAkKDecUws4ihUqeN3wTrO8ZI5qI8M1TMo_tOM2UFw0_WprlcC0Tm4-LdcKXOo1TOeSNQvVoej9OaXmW07yCZDvoEMhj64lCcZln74K_GrwHksfF4QMfyV9hgq7VTvGWaidOAq96kz1_FHLXH1jCixRiaFVqMAP9f3KfN0Pxwb6gu7-wHcMDdm-OVXP0DjaXCLpiRROLwZTJigkNCoVWhIhn-qC1R9z-ccRmDUs_tokwWMqKpZNHmnRwX3O2RlRBkD3_-y39DPh1we03aiFykkS9ClHtthDtD87w",
     "IncludeWebProxy": false,
     "WebProxyHost": null,
     "IncludeWebProxyNetworkCredentials": false,
@@ -37,7 +37,7 @@
     "WebProxyNetworkCredentialsPassword": null,
     "WebProxyNetworkCredentialsDomain": null,
     "IncludeCustomHeaders": true,
-    "StoreCustomHttpHeaders": false,
+    "StoreCustomHttpHeaders": true,
     "ExcludedSchemaTypes": []
   }
 }
