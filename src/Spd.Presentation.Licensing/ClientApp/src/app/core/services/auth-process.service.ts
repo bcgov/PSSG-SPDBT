@@ -18,6 +18,9 @@ export class AuthProcessService {
 	private _waitUntilAuthentication$ = new BehaviorSubject<boolean>(false);
 	waitUntilAuthentication$ = this._waitUntilAuthentication$.asObservable();
 
+	private _hasValidToken$ = new BehaviorSubject<boolean>(false);
+	hasValidToken$ = this._hasValidToken$.asObservable();
+
 	loggedInUserTokenData: any = null;
 	identityProvider: IdentityProviderTypeCode | null = null;
 
@@ -44,6 +47,8 @@ export class AuthProcessService {
 			this.identityProvider,
 			returnComponentRoute ?? returningRoute
 		);
+
+		this.notifyValidToken(loginInfo.loggedIn);
 
 		console.debug('[AuthProcessService] initializeLicencingBCSC loginInfo', returnComponentRoute, loginInfo);
 
@@ -82,6 +87,8 @@ export class AuthProcessService {
 			state
 		);
 
+		this.notifyValidToken(loginInfo.loggedIn);
+
 		console.debug('[AuthProcessService] initializeLicencingBCeID loginInfo', loginInfo, 'defaultBizId', defaultBizId);
 
 		if (loginInfo.returnRoute) {
@@ -113,6 +120,8 @@ export class AuthProcessService {
 		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID returningRoute', returningRoute);
 
 		const loginInfo = await this.authenticationService.login(this.identityProvider, returningRoute);
+
+		this.notifyValidToken(loginInfo.loggedIn);
 
 		console.debug('[AuthProcessService] initializeBusinessLicenceInvitationBCeID loginInfo', loginInfo);
 
@@ -204,5 +213,9 @@ export class AuthProcessService {
 			console.debug('[AuthenticationService.setDecodedToken] loggedInUserTokenData', this.loggedInUserTokenData);
 			this._waitUntilAuthentication$.next(true);
 		}
+	}
+
+	private notifyValidToken(hasValidToken: boolean): void {
+		this._hasValidToken$.next(hasValidToken);
 	}
 }
