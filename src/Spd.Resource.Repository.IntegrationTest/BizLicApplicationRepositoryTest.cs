@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.DependencyInjection;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizLicApplication;
+using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
@@ -78,7 +80,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         await _context.SaveChangesAsync();
     } */
 
-    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    //** TODO: Adjust verification according to ticket SPDBT-2796
     [Fact]
     public async Task GetBizLicApplicationAsync_WithPrivateInvestigator_Run_Correctly()
     {
@@ -132,7 +134,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.DeleteObject(app);
         _context.DeleteObject(bizContact);
         await _context.SaveChangesAsync();
-    } */
+    }
 
     [Fact]
     public async Task GetBizLicApplicationAsync_BizNotFound_Throw_Exception()
@@ -400,7 +402,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         await _context.SaveChangesAsync();
     } */
 
-    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    //** TODO: Adjust verification according to ticket SPDBT-2796
     [Fact]
     public async Task SaveBizLicApplicationAsync_AddNewPrivateInvestigator_Run_Correctly()
     {
@@ -462,12 +464,28 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .Expand(a => a.spd_businesscontact_spd_application)
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
-            .FirstOrDefault();
+        .FirstOrDefault();
+
+        spd_businesscontact newBizContact = await CreateBizContactAsync(account, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
+        var position = _context.spd_positions.FirstOrDefault();
+        //_context.AddLink(bizContact2, nameof(spd_application.spd_businesscontact_spd_application), app);
+        _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), newBizContact);
+        await _context.SaveChangesAsync();
+
 
         spd_businesscontact? bizContact = _context.spd_businesscontacts
             .Expand(b => b.spd_position_spd_businesscontact)
             .OrderByDescending(b => b.createdon)
             .FirstOrDefault();
+
+        app = _context.spd_applications
+            .Expand(a => a.spd_CurrentExpiredLicenceId)
+            .Expand(a => a.spd_ServiceTypeId)
+            .Expand(a => a.spd_application_spd_licencecategory)
+            .Expand(a => a.spd_businesscontact_spd_application)
+            .Where(a => a.spd_applicationid == resp.LicenceAppId)
+            .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
+        .FirstOrDefault();
 
         // Assert
         Assert.NotNull(resp);
@@ -512,12 +530,12 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotEmpty(bizContact.spd_position_spd_businesscontact);
 
         //Innihilate
-        _context.DeleteObject(account);
-        _context.DeleteObject(bizContact);
 
-        // Remove all links to the application before removing it
+        _context.SetLink(newBizContact, nameof(newBizContact.spd_OrganizationId), null);
+        _context.DeleteLink(newBizContact, nameof(newBizContact.spd_businesscontact_spd_application), app);
         _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
-
+        _context.SetLink(app, nameof(spd_application.spd_ServiceTypeId), null);
+        _context.DeleteLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), newBizContact);
         foreach (var appCategory in app.spd_application_spd_licencecategory)
             _context.DeleteLink(app, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
         await _context.SaveChangesAsync();
@@ -526,11 +544,18 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
             .FirstOrDefault();
 
-        _context.DeleteObject(appToRemove);
-        await _context.SaveChangesAsync();
-    }*/
+        spd_businesscontact? bizContactToRemove = _context.spd_businesscontacts
+            .Where(b => b.spd_businesscontactid == bizContact.spd_businesscontactid)
+          .OrderByDescending(b => b.createdon)
+          .FirstOrDefault();
 
-    /*** TODO: Adjust verification according to ticket SPDBT-2796
+        _context.DeleteObject(appToRemove);
+        _context.DeleteObject(account);
+        _context.DeleteObject(bizContactToRemove);
+        await _context.SaveChangesAsync();
+    }
+
+    //** TODO: Adjust verification according to ticket SPDBT-2796
     [Fact]
     public async Task SaveBizLicApplicationAsync_AddNewPrivateInvestigatorWithExistingPrivateInvestigator_Run_Correctly()
     {
@@ -564,7 +589,10 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         spd_application? app = new() { spd_applicationid = cmd.LicenceAppId, statecode = DynamicsConstants.StateCode_Active };
         _context.AddTospd_applications(app);
-        spd_businesscontact bizContact = new();
+        spd_businesscontact bizContact = new()
+        {
+            spd_businesscontactid = Guid.NewGuid()
+        };
         _context.AddTospd_businesscontacts(bizContact);
         _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
 
@@ -598,6 +626,9 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
             .FirstOrDefault();
+        var position = _context.spd_positions.FirstOrDefault();
+        _context.AddLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
+        await _context.SaveChangesAsync();
 
         spd_businesscontact? newBizContact = _context.spd_businesscontacts
             .Expand(b => b.spd_position_spd_businesscontact)
@@ -646,6 +677,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotEmpty(newBizContact.spd_position_spd_businesscontact);
 
         //Innihilate
+        _context.DeleteLink(position, nameof(spd_businesscontact.spd_position_spd_businesscontact), bizContact);
         _context.DeleteObject(account);
         _context.DeleteObject(bizContact);
         _context.DeleteObject(newBizContact);
@@ -661,9 +693,9 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         _context.DeleteObject(appToRemove);
         await _context.SaveChangesAsync();
-    }*/
+    }
 
-    /*** TODO: Adjust verification according to ticket SPDBT-2796
+    //TODO: Adjust verification according to ticket SPDBT-2796
     [Fact]
     public async Task SaveBizLicApplicationAsync_UpdateExistingPrivateInvestigator_Run_Correctly()
     {
@@ -706,7 +738,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         };
         _context.AddTospd_businesscontacts(bizContact);
         _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
-
         account account = new()
         {
             accountid = cmd.ApplicantId,
@@ -782,25 +813,33 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         Assert.NotNull(updatedApp.spd_ServiceTypeId);
         Assert.NotEmpty(updatedApp.spd_application_spd_licencecategory);
         Assert.NotEmpty(app.spd_businesscontact_spd_application);
-        Assert.NotEmpty(newBizContact.spd_position_spd_businesscontact);
 
         //Innihilate
-        _context.DeleteObject(account);
-        _context.DeleteObject(bizContact);
-        _context.DeleteObject(newBizContact);
+
 
         // Remove all links to the application before removing it
+        _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), null);
+
         foreach (var appCategory in updatedApp.spd_application_spd_licencecategory)
             _context.DeleteLink(updatedApp, nameof(spd_application.spd_application_spd_licencecategory), appCategory);
-        await _context.SaveChangesAsync();
+        _context.DeleteLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), updatedApp);
+        _context.SetLink(updatedApp, nameof(updatedApp.spd_OrganizationId), null);
 
+        await _context.SaveChangesAsync();
         spd_application? appToRemove = _context.spd_applications
             .Where(a => a.spd_applicationid == resp.LicenceAppId)
             .FirstOrDefault();
-
+        spd_businesscontact? bizContactToRemove = _context.spd_businesscontacts
+           .Where(b => b.spd_businesscontactid == newBizContact.spd_businesscontactid)
+         .OrderByDescending(b => b.createdon)
+         .FirstOrDefault();
+        account accountToRemove = _context.accounts.Where(a => a.accountid == account.accountid).FirstOrDefault();
+        _context.DeleteObject(bizContactToRemove);
         _context.DeleteObject(appToRemove);
         await _context.SaveChangesAsync();
-    }*/
+        _context.DeleteObject(accountToRemove);
+        await _context.SaveChangesAsync();
+    }
 
     [Fact]
     public async Task SaveBizLicApplicationAsync_ApplicationNotFound_Throw_Exception()
@@ -940,6 +979,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     [Fact]
     public async Task CreateBizLicApplicationAsync_WithNewPrivateInvestigator_Run_Correctly()
     {
+    // it can't be done now, as it is not possible to create an incident and assign it to the license directly.
         // Arrange
         Guid bizId = Guid.NewGuid();
         account biz = new()
@@ -969,12 +1009,41 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         _context.AddTospd_applications(originalApp);
         _context.SetLink(originalApp, nameof(originalApp.spd_ApplicantId_account), biz);
+        contact contact = new() { contactid = Guid.NewGuid(), firstname = $"{IntegrationTestSetup.DataPrefix}-biz-{new Random().Next(1000)}", emailaddress1 = "test@test.com" };
+        _context.AddTocontacts(contact);
+        await _context.SaveChangesAsync();
+
+        var incidentId = Guid.NewGuid();
+        incident incident = new();
+        incident.incidentid = incidentId;
+
+        _context.AddToincidents(incident);
+        spd_servicetype? servicetype = _context.LookupServiceType(ServiceTypeEnum.SecurityWorkerLicence.ToString());
+        _context.SetLink(incident, nameof(incident.spd_ServiceTypeId), servicetype);
+        _context.SetLink(incident, nameof(incident.customerid_contact), contact);
+        _context.SetLink(incident, nameof(incident.spd_ApplicationId), originalApp);
+        await _context.SaveChangesAsync();
+
+        spd_licence licence = new()
+        {
+            spd_licenceid = Guid.NewGuid(),
+            statecode = DynamicsConstants.StateCode_Active,
+            spd_nameonlicence = "test",
+            spd_licencenumber = "XTAXYSQX6J",
+            spd_expirydate = DateTime.UtcNow,
+        };
+        _context.AddTospd_licences(licence);
+        _context.SetLink(licence, nameof(licence.spd_LicenceHolder_contact), contact);
+        _context.SetLink(licence, nameof(licence.spd_CaseId), incident);
+        _context.SetLink(licence, nameof(licence.spd_LicenceType), servicetype);
         await _context.SaveChangesAsync();
 
         PrivateInvestigatorSwlContactInfo privateInvestigator = new()
         {
+            ContactId = contact.contactid,
             GivenName = "InvestigatorGivenName",
-            Surname = "InvestigatorSurname"
+            Surname = "InvestigatorSurname",
+            LicenceId = licence.spd_licenceid
         };
 
         CreateBizLicApplicationCmd cmd = fixture.Build<CreateBizLicApplicationCmd>()
@@ -1068,7 +1137,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         _context.DeleteObject(originalAppToRemove);
 
         await _context.SaveChangesAsync();
-    } */
+    }
+    */
 
     [Fact]
     public async Task CreateBizLicApplicationAsync_WithWrongApplicationType_Throw_Exception()
@@ -1084,8 +1154,8 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     public async Task CreateBizLicApplicationAsync_WithoutOriginalApplicationId_Throw_Exception()
     {
         // Arrange
-        CreateBizLicApplicationCmd cmd = new() 
-        { 
+        CreateBizLicApplicationCmd cmd = new()
+        {
             ApplicationTypeCode = ApplicationTypeEnum.Renewal,
         };
 
@@ -1135,4 +1205,17 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         await _context.SaveChangesAsync();
     }
+
+    private async Task<spd_businesscontact> CreateBizContactAsync(account biz, spd_application app, string firstName, BizContactRoleOptionSet role)
+    {
+        spd_businesscontact bizContact = new();
+        bizContact.spd_businesscontactid = Guid.NewGuid();
+        bizContact.spd_firstname = IntegrationTestSetup.DataPrefix + firstName;
+        bizContact.spd_role = (int)role;
+        _context.AddTospd_businesscontacts(bizContact);
+        _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
+        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
+        return bizContact;
+    }
+
 }
