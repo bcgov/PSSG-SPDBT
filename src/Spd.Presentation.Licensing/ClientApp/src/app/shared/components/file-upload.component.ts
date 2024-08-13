@@ -264,8 +264,6 @@ export class FileUploadComponent implements OnInit {
 	}
 
 	onRemoveFile(file: File) {
-		console.log('onRemoveFile', file);
-
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
