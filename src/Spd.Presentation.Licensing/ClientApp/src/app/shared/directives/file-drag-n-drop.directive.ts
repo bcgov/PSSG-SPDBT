@@ -31,7 +31,7 @@ export class FileDragNDropDirective {
 		evt.preventDefault();
 		evt.stopPropagation();
 		this.setDefaults();
-		// debugger;
+
 		const files = evt.dataTransfer.files;
 		const valid_files: Array<File> = files;
 		if (valid_files.length > 0) {
