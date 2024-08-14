@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, SecurityContext } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { ApplicationService } from '@app/core/services/application.service';
 import { HotToastService } from '@ngneat/hot-toast';
+import { DialogComponent, DialogOptions } from './dialog.component';
 
 export enum DocumentTypeCode {
 	Image = 'IMAGE',
@@ -73,72 +76,65 @@ export class FileUploadHelper {
 @Component({
 	selector: 'app-file-upload',
 	template: `
-		<ngx-dropzone
-			#fileDropzone
-			(change)="onUploadFile($event)"
-			[multiple]="multiple"
-			[maxFileSize]="maxFileSize"
-			[disableClick]="disableClick"
-			[expandable]="expandable"
-			[accept]="accept"
-			[disabled]="disabled"
-		>
-			<ngx-dropzone-label>
-				<div>
-					<mat-icon class="upload-file-icon">cloud_upload</mat-icon>
-				</div>
-				<div>
-					<strong>Drag and Drop your file here or click to browse</strong>
-				</div>
-				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
-				<ng-container *ngTemplateOutlet="infoText"></ng-container>
-			</ngx-dropzone-label>
+		<div class="dropzone" appFileDragDrop (filesChangeEmitter)="onFileDragDropChange($event)">
+			<div class="row my-2" *ngIf="files && files.length > 0">
+				<ng-container *ngFor="let file of files; let i = index">
+					<div class="col-lg-6 col-md-12 col-sm-12">
+						<div class="file-preview" (removed)="onRemoveFile(file)">
+							<div style="text-align: center;z-index: 10;margin: 10px auto;">
+								<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
+								<span>{{ file.name }} </span>
 
-			<ng-container *ngIf="files && files.length > 0">
-				<div class="row">
-					<ng-container *ngFor="let file of files; let i = index">
-						<div class="col-lg-6 col-md-12 col-sm-12">
-							<ngx-dropzone-preview class="file-preview" [removable]="true" (removed)="onRemoveFile(file)">
-								<ngx-dropzone-label>
-									<mat-icon class="preview-icon">{{ getFileIcon(file).icon }}</mat-icon>
-									<span>{{ file.name }} </span>
-									<div class="image-preview-container" *ngIf="getPreviewImage(i)">
-										<img class="image-preview-container__image" [src]="getPreviewImage(i)" alt="Image preview" />
-									</div>
-									<!-- ({{ getFileSize(file.size) }} KB) -->
-								</ngx-dropzone-label>
-							</ngx-dropzone-preview>
+								<div class="image-preview-container" *ngIf="getPreviewImage(i)">
+									<img class="image-preview-container__image" [src]="getPreviewImage(i)" alt="Image preview" />
+								</div>
+							</div>
+							<div style="position: absolute; top: 5px; right: 5px; cursor: pointer;">
+								<mat-icon (click)="onRemoveFile(file)">cancel</mat-icon>
+							</div>
 						</div>
-					</ng-container>
-
-					<div class="text-center w-100 mx-4 mb-2">
-						<ng-container *ngTemplateOutlet="infoText"></ng-container>
 					</div>
-				</div>
-			</ng-container>
-		</ngx-dropzone>
-
-		<div class="row">
-			<div class="col-12">
-				<button
-					mat-stroked-button
-					(click)="fileDropzone.showFileSelector()"
-					*ngIf="maxNumberOfFiles > 1 && getNumberOfFiles() < maxNumberOfFiles"
-					class="large w-auto my-2"
-				>
-					<mat-icon>file_open</mat-icon> Add file
-				</button>
+				</ng-container>
 			</div>
-		</div>
 
-		<ng-template #infoText>
-			<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
-			<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
-			<div class="mat-option-hint">Maximum number of files: {{ maxNumberOfFiles }}</div>
-		</ng-template>
+			<label class="dropzone-area" [for]="id">
+				<div><mat-icon class="upload-file-icon">cloud_upload</mat-icon></div>
+				<div class="fw-bold mb-2">Drag and Drop your file here or click to browse</div>
+				<div class="fine-print mb-2" *ngIf="message">{{ message }}</div>
+
+				<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
+				<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
+				<div class="mat-option-hint">Maximum number of files: {{ maxNumberOfFiles }}</div>
+
+				<input
+					type="file"
+					[id]="id"
+					(change)="onFileAddChange($event)"
+					[multiple]="false"
+					[hidden]="true"
+					[accept]="accept"
+				/>
+			</label>
+		</div>
 	`,
 	styles: [
 		`
+			.file-preview {
+				background-image: linear-gradient(to top, #ededed, #efefef, #f1f1f1, #f4f4f4, #f6f6f6);
+				align-items: center;
+				border-radius: 5px;
+				display: flex;
+				justify-content: center;
+				margin: 10px;
+				padding: 0px 20px;
+				position: relative;
+			}
+
+			.file-preview:hover {
+				background-image: linear-gradient(to top, #e3e3e3, #ebeaea, #e8e7e7, #ebeaea, #f4f4f4);
+				outline: 0;
+			}
+
 			.upload-file-icon {
 				color: var(--color-primary-light);
 				font-size: 80px !important;
@@ -168,35 +164,47 @@ export class FileUploadHelper {
 					max-width: 200px;
 				}
 			}
+
+			.dropzone-area {
+				width: 100%;
+				text-align: center !important;
+				cursor: pointer;
+			}
+
+			.dropzone-area:hover {
+				background-color: #f8f8f8;
+				outline: 0;
+			}
 		`,
 	],
 })
 export class FileUploadComponent implements OnInit {
-	multiple = false; // prevent multiple at one time
-
 	@Input() control!: FormControl;
-
 	@Input() message = '';
-	@Input() expandable = true;
-	@Input() disableClick = false;
-	@Input() isReadonly = false;
-	@Input() disabled = false;
 	@Input() previewImage = false;
 	@Input() files: Array<File> = [];
 	@Input() maxNumberOfFiles: number = SPD_CONSTANTS.document.maxNumberOfFiles; // 0 or any number less than 0 means unlimited files
-	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Files types to accept
+	@Input() accept: string = SPD_CONSTANTS.document.acceptedFileTypes.join(', '); // Default file types to accept
 
 	@Output() fileRemoved = new EventEmitter<any>();
 	@Output() fileUploaded = new EventEmitter<File>();
 
+	id!: string;
 	maxFileSize: number = SPD_CONSTANTS.document.maxFileSize; // bytes
 	maxFileSizeMb: number = SPD_CONSTANTS.document.maxFileSizeInMb; // mb
 
 	imagePreviews: Array<string | null> = [];
 
-	constructor(private hotToastService: HotToastService, private domSanitizer: DomSanitizer) {}
+	constructor(
+		private hotToastService: HotToastService,
+		private dialog: MatDialog,
+		private domSanitizer: DomSanitizer,
+		private applicationService: ApplicationService
+	) {}
 
 	ngOnInit(): void {
+		this.id = this.applicationService.getUniqueId();
+
 		if (!this.files) {
 			this.files = []; // default to empty array;
 		}
@@ -206,90 +214,74 @@ export class FileUploadComponent implements OnInit {
 		}
 	}
 
-	onUploadFile(evt: any) {
+	onFileDragDropChange(newFile: File) {
+		this.addFile(newFile);
+	}
+
+	onFileAddChange(event: any) {
+		const newFile = event.target.files[0];
+
+		this.addFile(newFile);
+	}
+
+	private addFile(newFile: File) {
 		if (this.maxNumberOfFiles !== 0 && this.getNumberOfFiles() >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
 		}
 
-		// We can only upload one file at a time (multiple is set to false above), so the array of added/rejected files
-		// will only contain at most one element
-
-		// check if the file has already been uploaded
-		if (evt.addedFiles.length > 0) {
-			let dupFile: File | undefined = undefined;
-
-			const addedFile = evt.addedFiles[0];
-
-			// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
-			// for example: filename.gov.bc.ca.docx
-			// Block the uploading of these files for now. Hopefully newer version will fix this.
-			const numberOfPeriods = addedFile.name.match(/\./g)?.length ?? 0;
-
-			if (numberOfPeriods > 1) {
-				this.hotToastService.error(
-					'A file name cannot contain multiple periods. Please rename this file and try again.'
-				);
-				return;
-			}
-
-			if (!this.files) {
-				this.files = []; // default to empty array;
-			}
-
-			dupFile = this.files.find((item) => item.name == addedFile.name);
-
-			if (dupFile) {
-				this.hotToastService.error('A file with the same name has already been uploaded');
-				return;
-			}
-
-			this.files.push(...evt.addedFiles);
-			this.filesUpdated();
-
-			this.onFileUploaded(addedFile);
+		const isFoundIndex = this.files.findIndex((item: File) => item.name === newFile.name);
+		if (isFoundIndex >= 0) {
+			this.hotToastService.error('A file with the same name has already been uploaded');
 			return;
 		}
 
-		if (evt.rejectedFiles.length > 0) {
-			const rejectedFile = evt.rejectedFiles[0];
-			let reason = 'This file cannot be uploaded.';
-			if (rejectedFile.reason == 'size') {
-				reason = 'This file cannot be uploaded. The file size is too large.';
-			} else if (rejectedFile.reason == 'no_multiple') {
-				reason = 'Only one file was uploaded. Files must be uploaded one at a time.';
-			}
+		if (!this.isAccepted(newFile, this.accept)) {
+			this.hotToastService.error('A file of this type cannot be uploaded');
+			return;
+		}
 
-			this.hotToastService.error(`${reason}`);
+		if (this.maxFileSize && newFile.size > this.maxFileSize) {
+			this.hotToastService.error('A file of this size cannot be uploaded');
+			return;
+		}
+
+		// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
+		// for example: filename.gov.bc.ca.docx ... Block the uploading of these files.
+		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
+
+		if (numberOfPeriods > 1) {
+			this.hotToastService.error('A file name cannot contain multiple periods. Please rename this file and try again.');
+			return;
+		}
+
+		if (newFile) {
+			this.files.push(newFile);
+			this.filesUpdated();
+
+			this.fileUploaded.emit(newFile);
 		}
 	}
 
-	onRemoveFile(evt: any) {
-		this.removeFailedFile(evt);
-		this.fileRemoved.emit();
-	}
+	onRemoveFile(file: File) {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to remove this file?',
+			actionText: 'Yes, remove',
+			cancelText: 'Cancel',
+		};
 
-	onFileUploaded(addedFile: File): void {
-		this.fileUploaded.emit(addedFile);
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.removeFailedFile(file);
+					this.fileRemoved.emit();
+				}
+			});
 	}
-
-	getFileType(file: File): DocumentTypeCode {
-		return FileUploadHelper.getFileDocumentType(file);
-	}
-
-	getFileIcon(file: File): IconType {
-		return FileUploadHelper.getFileIcon(file);
-	}
-
-	getNumberOfFiles(): number {
-		return this.files?.length ?? 0;
-	}
-	// getFileSize(size: number) {
-	// 	size = size / 1000;
-
-	// 	if (size < 1) return 'Less than 1';
-	// 	else return size;
-	// }
 
 	getPreviewImage(index: number): string | null {
 		if (!this.previewImage) return null;
@@ -317,6 +309,52 @@ export class FileUploadComponent implements OnInit {
 		this.imagePreviews.splice(removeFileIndex, 1);
 		this.files.splice(removeFileIndex, 1);
 		this.filesUpdated();
+	}
+
+	getFileIcon(file: File): IconType {
+		return FileUploadHelper.getFileIcon(file);
+	}
+
+	getNumberOfFiles(): number {
+		return this.files?.length ?? 0;
+	}
+
+	// getFileType(file: File): DocumentTypeCode {
+	// 	return FileUploadHelper.getFileDocumentType(file);
+	// }
+
+	// getFileSize(size: number) {
+	// 	size = size / 1000;
+
+	// 	if (size < 1) return 'Less than 1';
+	// 	else return size;
+	// }
+
+	private isAccepted(file: File, accept: string): boolean {
+		if (accept === '*') {
+			return true;
+		}
+
+		const acceptFiletypes = accept.split(',').map((it) => it.toLowerCase().trim());
+		const filetype = file.type.toLowerCase();
+		const filename = file.name.toLowerCase();
+
+		const matchedFileType = acceptFiletypes.find((acceptFiletype: string) => {
+			// check for wildcard mimetype (e.g. image/*)
+			if (acceptFiletype.endsWith('/*')) {
+				return filetype.split('/')[0] === acceptFiletype.split('/')[0];
+			}
+
+			// check for file extension (e.g. .csv)
+			if (acceptFiletype.startsWith('.')) {
+				return filename.endsWith(acceptFiletype);
+			}
+
+			// check for exact mimetype match (e.g. image/jpeg)
+			return acceptFiletype == filetype;
+		});
+
+		return !!matchedFileType;
 	}
 
 	private filesUpdated(): void {

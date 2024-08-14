@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import {
 	Alias,
@@ -127,7 +126,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: ApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private domSanitizer: DomSanitizer,
 		private hotToastService: HotToastService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
