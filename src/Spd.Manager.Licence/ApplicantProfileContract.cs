@@ -53,7 +53,7 @@ namespace Spd.Manager.Licence
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public DateOnly DateOfBirth { get; set; }
-        public GenderEnum? GenderCode { get; set; }
+        public GenderCode? GenderCode { get; set; }
         public string? PhoneNumber { get; set; }
         public Address? ResidentialAddress { get; set; }
         public Address? MailingAddress { get; set; }
