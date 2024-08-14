@@ -2,7 +2,6 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
-import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
 import { AccessDeniedComponent } from './components/access-denied.component';
@@ -13,7 +12,6 @@ import { AlertUpdateOrRenewalComponent } from './components/alert-update-or-rene
 import { AlertComponent } from './components/alert.component';
 import { ApplicationsListCurrentComponent } from './components/applications-list-current.component';
 import { BaseFilterComponent } from './components/base-filter.component';
-import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
 import { ContainerComponent } from './components/container.component';
@@ -25,6 +23,7 @@ import { FileUploadComponent } from './components/file-upload.component';
 import { LicenceListExpiredComponent } from './components/licence-list-expired.component';
 import { LicenceReprintComponent } from './components/licence-reprint.component';
 import { ModalAddressComponent } from './components/modal-address.component';
+import { ModalBizSelectionComponent } from './components/modal-biz-selection.component';
 import { ModalFingerprintTearOffComponent } from './components/modal-fingerprint-tear-off.component';
 import { ModalLookupByLicenceNumberComponent } from './components/modal-lookup-by-licence-number.component';
 import { PaymentCancelComponent } from './components/payment-cancel.component';
@@ -37,6 +36,7 @@ import { StepSectionComponent } from './components/step-section.component';
 import { StepTitleComponent } from './components/step-title.component';
 import { WizardFooterComponent } from './components/wizard-footer.component';
 import { WizardOutsideFooterComponent } from './components/wizard-outside-footer.component';
+import { FileDragNDropDirective } from './directives/file-drag-n-drop.directive';
 import { PhoneNumberTransformDirective } from './directives/phone-number-transform.directive';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
@@ -86,6 +86,7 @@ const SHARED_COMPONENTS = [
 	ExpiredLicenceComponent,
 	AddressAndIsSameFlagComponent,
 	ContainerComponent,
+	FileDragNDropDirective,
 ];
 
 @NgModule({
@@ -97,7 +98,6 @@ const SHARED_COMPONENTS = [
 		ReactiveFormsModule,
 		NgxMaskDirective,
 		NgxMaskPipe,
-		NgxDropzoneModule,
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
@@ -117,7 +117,6 @@ const SHARED_COMPONENTS = [
 		ReactiveFormsModule,
 		NgxMaskDirective,
 		NgxMaskPipe,
-		NgxDropzoneModule,
 		...SHARED_COMPONENTS,
 	],
 })
