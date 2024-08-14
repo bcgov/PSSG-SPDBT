@@ -34,7 +34,7 @@ namespace Spd.Resource.Repository.PortalUser
                 (int)PortalUserServiceCategoryOptionSet.Licensing : (int)PortalUserServiceCategoryOptionSet.Screening));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portalinvitation>()
-            .ForMember(d => d.spd_portalinvitationid, opt => Guid.NewGuid())
+            .ForMember(d => d.spd_portalinvitationid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.organizationid, opt => opt.Ignore())
             .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => s.LastName))
