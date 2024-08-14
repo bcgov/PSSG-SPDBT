@@ -13,6 +13,7 @@ import { AuthUserBcscService } from './services/auth-user-bcsc.service';
 import { AuthenticationService } from './services/authentication.service';
 import { BusinessApplicationService } from './services/business-application.service';
 import { ConfigService } from './services/config.service';
+import { ControllingMembersService } from './services/controlling-members.service';
 import { FileUtilService } from './services/file-util.service';
 import { LicenceApplicationService } from './services/licence-application.service';
 import { PermitApplicationService } from './services/permit-application.service';
@@ -30,6 +31,7 @@ const CORE_COMPONENTS: any[] = [];
 		AuthUserBcscService,
 		AuthenticationService,
 		BusinessApplicationService,
+		ControllingMembersService,
 		ConfigService,
 		FileUtilService,
 		LicenceApplicationService,

@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
 import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-licence-application-routing.module';
+import { ControllingMembersCrcRoutes } from './modules/controlling-members-crc/controlling-members-crc-routing.module';
 import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 export class AppRoutes {
 	public static readonly PERSONAL_LICENCE_APPLICATION = PersonalLicenceApplicationRoutes.MODULE_PATH;
 	public static readonly BUSINESS_LICENCE_APPLICATION = BusinessLicenceApplicationRoutes.MODULE_PATH;
+	public static readonly CONTROLLING_MEMBERS_CRC = ControllingMembersCrcRoutes.MODULE_PATH;
 	public static readonly LANDING = '';
 	public static readonly ACCESS_DENIED = 'access-denied';
 	public static readonly INVITATION_DENIED = 'invitation-denied';
@@ -30,6 +32,13 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./modules/business-licence-application/business-licence-application.module').then(
 				(m) => m.BusinessLicenceApplicationModule
+			),
+	},
+	{
+		path: AppRoutes.CONTROLLING_MEMBERS_CRC,
+		loadChildren: () =>
+			import('./modules/controlling-members-crc/controlling-members-crc.module').then(
+				(m) => m.ControllingMembersCrcModule
 			),
 	},
 	{
