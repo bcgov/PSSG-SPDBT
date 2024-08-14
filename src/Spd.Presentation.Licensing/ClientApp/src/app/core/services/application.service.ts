@@ -85,6 +85,8 @@ export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLic
 export class ApplicationService {
 	isLoggedIn = false;
 
+	private uniqueId = 1;
+
 	applicationTitle$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([
 		'Licensing Application',
 		'Licensing Application',
@@ -112,6 +114,11 @@ export class ApplicationService {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.isLoggedIn = isLoggedIn;
 		});
+	}
+
+	public getUniqueId(): string {
+		this.uniqueId = this.uniqueId + 1;
+		return `ID${this.uniqueId}`;
 	}
 
 	public cancelAndLoseChanges() {
