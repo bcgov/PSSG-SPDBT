@@ -38,7 +38,6 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							[control]="attachments"
 							[maxNumberOfFiles]="10"
 							[files]="attachments.value"
-							[previewImage]="true"
 						></app-file-upload>
 						<mat-error
 							class="mat-option-error"
