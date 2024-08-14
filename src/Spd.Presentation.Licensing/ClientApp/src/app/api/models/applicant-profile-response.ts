@@ -5,7 +5,7 @@ import { Alias } from '../models/alias';
 import { Document } from '../models/document';
 import { GenderEnum } from '../models/gender-enum';
 import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
-import { PoliceOfficerRoleEnum } from '../models/police-officer-role-enum';
+import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 export interface ApplicantProfileResponse {
   aliases?: Array<Alias> | null;
   applicantId?: string;
@@ -23,7 +23,7 @@ export interface ApplicantProfileResponse {
   middleName2?: string | null;
   otherOfficerRole?: string | null;
   phoneNumber?: string | null;
-  policeOfficerRoleCode?: PoliceOfficerRoleEnum;
+  policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddress?: Address;
   sub?: string | null;
   surname?: string | null;

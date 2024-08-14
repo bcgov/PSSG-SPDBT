@@ -7,7 +7,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 export interface BizPortalUserDialogData {
 	user: BizPortalUserResponse;
-	isAllowedPrimary: boolean;
+	isAllowedNonPrimaryManager: boolean;
+	isAllowedPrimaryManager: boolean;
 	emails: string[]; // used to determine if email is unique within the set
 }
 
@@ -121,8 +122,8 @@ export class ModalBusinessManagerEditComponent implements OnInit {
 
 		this.authorizationTypes = ContactAuthorizationTypes.filter((item: SelectOptions) => {
 			return (
-				item.code === ContactAuthorizationTypeCode.BusinessManager ||
-				(this.dialogData.isAllowedPrimary && item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager)
+				(this.dialogData.isAllowedNonPrimaryManager && item.code === ContactAuthorizationTypeCode.BusinessManager) ||
+				(this.dialogData.isAllowedPrimaryManager && item.code === ContactAuthorizationTypeCode.PrimaryBusinessManager)
 			);
 		});
 	}

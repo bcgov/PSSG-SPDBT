@@ -20,13 +20,49 @@ import { apiBusinessBizIdPortalUsersUserIdGet } from '../fn/biz-portal-user/api-
 import { ApiBusinessBizIdPortalUsersUserIdGet$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-get';
 import { apiBusinessBizIdPortalUsersUserIdPut } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-put';
 import { ApiBusinessBizIdPortalUsersUserIdPut$Params } from '../fn/biz-portal-user/api-business-biz-id-portal-users-user-id-put';
+import { apiBusinessPortalUsersInvitationPost } from '../fn/biz-portal-user/api-business-portal-users-invitation-post';
+import { ApiBusinessPortalUsersInvitationPost$Params } from '../fn/biz-portal-user/api-business-portal-users-invitation-post';
 import { BizPortalUserListResponse } from '../models/biz-portal-user-list-response';
 import { BizPortalUserResponse } from '../models/biz-portal-user-response';
+import { InvitationResponse } from '../models/invitation-response';
 
 @Injectable({ providedIn: 'root' })
 export class BizPortalUserService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `apiBusinessPortalUsersInvitationPost()` */
+  static readonly ApiBusinessPortalUsersInvitationPostPath = '/api/business/portal-users/invitation';
+
+  /**
+   * Verify if the current invite and login user are correct.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessPortalUsersInvitationPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessPortalUsersInvitationPost$Response(params: ApiBusinessPortalUsersInvitationPost$Params, context?: HttpContext): Observable<StrictHttpResponse<InvitationResponse>> {
+    return apiBusinessPortalUsersInvitationPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Verify if the current invite and login user are correct.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessPortalUsersInvitationPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBusinessPortalUsersInvitationPost(params: ApiBusinessPortalUsersInvitationPost$Params, context?: HttpContext): Observable<InvitationResponse> {
+    return this.apiBusinessPortalUsersInvitationPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<InvitationResponse>): InvitationResponse => r.body)
+    );
   }
 
   /** Path part for operation `apiBusinessBizIdPortalUsersGet()` */

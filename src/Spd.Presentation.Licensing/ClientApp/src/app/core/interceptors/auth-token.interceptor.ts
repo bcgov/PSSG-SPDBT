@@ -27,9 +27,6 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 
 		const header = 'Bearer ' + token;
 		let headers = req.headers.set('Authorization', header);
-		if (this.authUserBceidService.bceidUserProfile?.bizId) {
-			headers = req.headers.set('bizId', this.authUserBceidService.bceidUserProfile.bizId);
-		}
 		if (this.authUserBceidService.bceidUserProfile?.bizUserId) {
 			headers = req.headers.set('bizUserId', this.authUserBceidService.bceidUserProfile.bizUserId);
 		}
