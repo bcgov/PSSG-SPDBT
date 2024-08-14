@@ -66,7 +66,7 @@ namespace Spd.Manager.Screening
 
             //check email rule
             if (existingUsersResult.UserResults.Any(u =>
-                u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
+                u.Email != null && u.Email.Equals(request.OrgUserUpdateRequest.Email, StringComparison.InvariantCultureIgnoreCase) &&
                 u.Id != request.OrgUserUpdateRequest.Id))
             {
                 throw new DuplicateException(HttpStatusCode.BadRequest, $"This email '{request.OrgUserUpdateRequest.Email}' has been used by another user.");
