@@ -14,6 +14,7 @@ import { BusinessLicenceWizardNewComponent } from './components/business-licence
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
+import { BusinessManagerInvitationComponent } from './components/business-manager-invitation.component';
 import { BusinessManagersComponent } from './components/business-managers.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
 import { BusinessUserApplicationsComponent } from './components/business-user-applications.component';
@@ -39,13 +40,13 @@ export class BusinessLicenceApplicationRoutes {
 	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
 	public static readonly BUSINESS_UPDATE_SUCCESS = 'business-update-success';
 
+	public static readonly BUSINESS_MANAGER_INVITATION = 'invitation';
+
 	// PAYMENT
 	public static readonly PAYMENT_SUCCESS = 'payment-success';
 	public static readonly PAYMENT_FAIL = 'payment-fail';
 	public static readonly PAYMENT_CANCEL = 'payment-cancel';
 	public static readonly PAYMENT_ERROR = 'payment-error';
-	public static readonly LICENCE_UPDATE_SUCCESS = 'licence-update-success';
-	public static readonly PERMIT_UPDATE_SUCCESS = 'permit-update-success';
 
 	public static readonly MODULE_PATH = BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APPLICATION;
 
@@ -138,7 +139,10 @@ const routes: Routes = [
 			},
 		],
 	},
-
+	{
+		path: `${BusinessLicenceApplicationRoutes.BUSINESS_MANAGER_INVITATION}/:id`,
+		component: BusinessManagerInvitationComponent,
+	},
 	{
 		path: BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS,
 		component: BusinessFirstTimeUserTermsOfUseComponent,

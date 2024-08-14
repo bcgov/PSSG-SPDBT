@@ -34,6 +34,7 @@ import { BusinessLicenceWizardNewComponent } from './components/business-licence
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
+import { BusinessManagerInvitationComponent } from './components/business-manager-invitation.component';
 import { BusinessManagersComponent } from './components/business-managers.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
 import { CommonBusinessInformationComponent } from './components/common-business-information.component';
@@ -68,6 +69,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 @NgModule({
 	declarations: [
 		BusinessLicenceSwlSoleProprietorComponent,
+		BusinessManagerInvitationComponent,
 		ModalBcBranchEditComponent,
 		ModalBusinessManagerEditComponent,
 		BusinessFirstTimeUserTermsOfUseComponent,
