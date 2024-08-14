@@ -12,6 +12,7 @@ import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface BizLicAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
+  applicantIsBizManager?: boolean | null;
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: string;
   bizTypeCode?: BizTypeCode;
