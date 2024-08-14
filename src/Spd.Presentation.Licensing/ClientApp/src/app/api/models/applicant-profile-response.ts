@@ -3,7 +3,7 @@
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { Document } from '../models/document';
-import { GenderEnum } from '../models/gender-enum';
+import { GenderCode } from '../models/gender-code';
 import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 export interface ApplicantProfileResponse {
@@ -12,7 +12,7 @@ export interface ApplicantProfileResponse {
   dateOfBirth?: string;
   documentInfos?: Array<Document> | null;
   emailAddress?: string | null;
-  genderCode?: GenderEnum;
+  genderCode?: GenderCode;
   givenName?: string | null;
   hasCriminalHistory?: boolean | null;
   identityProviderTypeCode?: IdentityProviderTypeCode;

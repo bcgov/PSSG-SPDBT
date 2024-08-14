@@ -35,7 +35,6 @@ export { Document } from './models/document';
 export { DocumentExpiredInfo } from './models/document-expired-info';
 export { EyeColourCode } from './models/eye-colour-code';
 export { GenderCode } from './models/gender-code';
-export { GenderEnum } from './models/gender-enum';
 export { GoogleRecaptcha } from './models/google-recaptcha';
 export { HairColourCode } from './models/hair-colour-code';
 export { HeightUnitCode } from './models/height-unit-code';
