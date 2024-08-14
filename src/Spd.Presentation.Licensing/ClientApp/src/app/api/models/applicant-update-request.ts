@@ -3,7 +3,7 @@
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationTypeCode } from '../models/application-type-code';
-import { GenderEnum } from '../models/gender-enum';
+import { GenderCode } from '../models/gender-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 export interface ApplicantUpdateRequest {
   aliases?: Array<Alias> | null;
@@ -12,7 +12,7 @@ export interface ApplicantUpdateRequest {
   dateOfBirth?: string;
   documentKeyCodes?: Array<string> | null;
   emailAddress?: string | null;
-  genderCode?: GenderEnum;
+  genderCode?: GenderCode;
   givenName?: string | null;
   hasCriminalHistory?: boolean | null;
   hasNewCriminalRecordCharge?: boolean | null;
