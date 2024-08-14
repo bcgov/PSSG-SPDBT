@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
+import { ApplicationService } from '@app/core/services/application.service';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
 import { UtilService } from '@app/core/services/util.service';
-import { ApplicationService } from '@app/core/services/application.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,8 +23,10 @@ import { Subscription } from 'rxjs';
 
 			<!-- <mat-chip-option class="me-3" *ngIf="env" disabled>{{ env }}</mat-chip-option> -->
 
+			<mat-icon matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
+				>logout</mat-icon
+			>
 			<div *ngIf="loggedInUserDisplay">
-				<mat-icon matTooltip="Logout" class="logout-button me-2" (click)="onLogout()">logout</mat-icon>
 				<span class="d-none d-md-inline">{{ loggedInUserDisplay }}</span>
 			</div>
 		</mat-toolbar>
@@ -88,6 +90,7 @@ import { Subscription } from 'rxjs';
 export class SpdHeaderComponent implements OnInit, OnDestroy {
 	fullTitle = '';
 	mobileTitle = '';
+	hasValidToken: boolean = false;
 	loggedInUserDisplay: string | null = null;
 
 	// env: string | null | undefined = null; // TODO add display of env
@@ -105,13 +108,20 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-			console.debug('[HeaderComponent] isLoggedIn', isLoggedIn);
+			console.debug('[SpdHeader] isLoggedIn', isLoggedIn);
+
 			if (!isLoggedIn) {
 				this.loggedInUserDisplay = null;
 				return;
 			}
 
 			this.getUserInfo();
+		});
+
+		this.authProcessService.hasValidToken$.subscribe((hasValidToken: boolean) => {
+			console.debug('[SpdHeader] hasValidToken', hasValidToken);
+
+			this.hasValidToken = hasValidToken;
 		});
 
 		// this.env = this.configService.isProduction() ? null : this.configService.configs?.environment;
@@ -150,7 +160,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 			name = this.utilService.getFullName(userData.firstName, userData.lastName);
 		}
 		if (!name) {
-			name = this.authProcessService.loggedInUserTokenData.display_name;
+			name = this.authProcessService.loggedInUserTokenData?.display_name;
 		}
 		this.loggedInUserDisplay = name ?? 'BCeID User';
 	}
