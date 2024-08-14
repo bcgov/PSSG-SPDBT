@@ -52,6 +52,11 @@ export class InvitationLinkOrganizationComponent implements OnInit {
 
 		let defaultOrgId = '';
 
+		const currentPath = location.pathname;
+		// to handle relative urls, look for '/crrp/' to get the default route
+		const startOfRoute = currentPath.indexOf('/' + CrrpRoutes.MODULE_PATH + '/');
+		const defaultRoute = currentPath.substring(startOfRoute);
+
 		this.orgService
 			.apiOrgsInviteLinkVerifyGet({ encodedOrgId: id! })
 			.pipe()
@@ -63,7 +68,7 @@ export class InvitationLinkOrganizationComponent implements OnInit {
 				}
 
 				defaultOrgId = resp.orgId!;
-				await this.authProcessService.initializeCrrpOrgLinkBceid(defaultOrgId!);
+				await this.authProcessService.initializeCrrpOrgLinkBceid(defaultOrgId!, defaultRoute);
 			});
 
 		this.authProcessService.waitUntilAuthentication$
