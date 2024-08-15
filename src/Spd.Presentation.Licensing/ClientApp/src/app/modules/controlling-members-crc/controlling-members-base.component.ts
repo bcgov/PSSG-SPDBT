@@ -32,7 +32,7 @@ export class ControllingMembersBaseComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
 
-		const xxx = await this.authProcessService.initializeLicencingBCSC(
+		await this.authProcessService.initializeLicencingBCSC(
 			ControllingMembersCrcRoutes.pathControllingMembers(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
 		);
 

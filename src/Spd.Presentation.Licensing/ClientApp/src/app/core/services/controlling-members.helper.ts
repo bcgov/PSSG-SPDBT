@@ -117,7 +117,7 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 	// 	return documents;
 	// }
 
-	getSaveBodyBase(controllingMembersModelFormValue: any): any {
+	getSaveBodyBase(_controllingMembersModelFormValue: any): any {
 		// 	const bizId = controllingMembersModelFormValue.bizId;
 		// 	const licenceAppId = controllingMembersModelFormValue.licenceAppId;
 		// 	const workerLicenceTypeData = { ...controllingMembersModelFormValue.workerLicenceTypeData };

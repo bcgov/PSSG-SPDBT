@@ -144,12 +144,12 @@ export class ControllingMembersService extends ControllingMembersHelper {
 			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.resetModelChangeFlags();
 
-				// let msg = 'Business Licence information has been saved';
-				// if (isSaveAndExit) {
-				// 	msg =
-				// 		'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
-				// }
-				// this.hotToastService.success(msg);
+				let msg = 'Business Licence information has been saved';
+				if (isSaveAndExit) {
+					msg =
+						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
 
 				// if (!controllingMembersModelFormValue.licenceAppId) {
 				// 	this.controllingMembersModelFormGroup.patchValue(

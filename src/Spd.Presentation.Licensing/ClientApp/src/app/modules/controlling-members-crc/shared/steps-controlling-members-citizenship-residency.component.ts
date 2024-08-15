@@ -59,7 +59,7 @@ export class StepsControllingMembersCitizenshipResidencyComponent extends BaseWi
 		super(commonApplicationService);
 	}
 
-	override dirtyForm(step: number): boolean {
+	override dirtyForm(_step: number): boolean {
 		// 	switch (step) {
 		// 		case this.STEP_LICENCE_CONFIRMATION:
 		// 			return true;
