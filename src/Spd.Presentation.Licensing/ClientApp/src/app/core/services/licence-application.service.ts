@@ -196,14 +196,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
-	 * When removing a file, set the value as changed
-	 * @returns
-	 */
-	fileRemoved(): void {
-		this.hasValueChanged = true;
-	}
-
-	/**
 	 * When uploading a file, set the value as changed, and perform the upload
 	 * @returns
 	 */

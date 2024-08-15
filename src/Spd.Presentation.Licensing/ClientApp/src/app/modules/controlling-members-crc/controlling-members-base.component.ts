@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.module';
 
 @Component({
@@ -22,18 +23,24 @@ import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.m
 export class ControllingMembersBaseComponent implements OnInit {
 	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
 
-	constructor(private route: ActivatedRoute, private router: Router, private authProcessService: AuthProcessService) {}
+	constructor(
+		private router: Router,
+		private authProcessService: AuthProcessService,
+		private controllingMembersService: ControllingMembersService
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
 
-		const loginInfo = await this.authProcessService.initializeLicencingBCSC(
+		const xxx = await this.authProcessService.initializeLicencingBCSC(
 			ControllingMembersCrcRoutes.pathControllingMembers(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
 		);
 
-		// if (!this.businessApplicationService.initialized) {
-		// 	this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
-		// 	return;
-		// }
+		if (!this.controllingMembersService.initialized) {
+			this.router.navigateByUrl(
+				ControllingMembersCrcRoutes.path(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_LOGIN)
+			);
+			return;
+		}
 	}
 }

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
-	selector: 'app-step-permit-residential-address',
+	selector: 'app-step-controlling-members-residential-address',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-address [form]="form"></app-address>
@@ -13,15 +13,15 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	`,
 	styles: [],
 })
-export class StepPermitResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMembersResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.permitApplicationService.residentialAddressFormGroup;
+	form: FormGroup = this.controllingMembersService.residentialAddressFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private permitApplicationService: PermitApplicationService) {}
+	constructor(private controllingMembersService: ControllingMembersService) {}
 
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {

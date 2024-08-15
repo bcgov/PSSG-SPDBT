@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { CommonFingerprintsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-fingerprints.component';
+import { FormFingerprintsComponent } from '@app/shared/components/form-fingerprints.component';
 
 @Component({
 	selector: 'app-step-worker-licence-fingerprints',
@@ -12,11 +12,11 @@ import { CommonFingerprintsComponent } from '@app/modules/personal-licence-appli
 			title="Upload proof of fingerprinting request"
 			subtitle="Provide confirmation of fingerprinting request from a law enforcement agency."
 		>
-			<app-common-fingerprints
+			<app-form-fingerprints
 				[form]="form"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
-			></app-common-fingerprints>
+			></app-form-fingerprints>
 		</app-step-section>
 	`,
 	styles: [],
@@ -24,7 +24,7 @@ import { CommonFingerprintsComponent } from '@app/modules/personal-licence-appli
 export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.fingerprintProofFormGroup;
 
-	@ViewChild(CommonFingerprintsComponent) commonFingerprintsComponent!: CommonFingerprintsComponent;
+	@ViewChild(FormFingerprintsComponent) commonFingerprintsComponent!: FormFingerprintsComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

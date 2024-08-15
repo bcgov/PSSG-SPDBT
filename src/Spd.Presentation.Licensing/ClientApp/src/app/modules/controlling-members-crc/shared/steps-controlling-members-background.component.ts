@@ -17,7 +17,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				Are you currently a police officer or peace officer?
+				<app-step-controlling-members-police-background
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-members-police-background>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -26,7 +28,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				Have you ever been treated for a mental health condition?
+				<app-step-controlling-members-mental-health-conditions
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-members-mental-health-conditions>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"

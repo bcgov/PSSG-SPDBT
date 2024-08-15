@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
-	selector: 'app-step-worker-licence-police-background',
+	selector: 'app-step-controlling-members-police-background',
 	template: `
 		<app-step-section
 			[title]="title"
@@ -22,20 +22,20 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 	`,
 	styles: [],
 })
-export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMembersPoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
+	form: FormGroup = this.controllingMembersService.policeBackgroundFormGroup;
 
 	@ViewChild(FormPoliceBackgroundComponent)
 	formPoliceBackgroundComponent!: FormPoliceBackgroundComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private controllingMembersService: ControllingMembersService) {}
 
 	ngOnInit(): void {
-		this.title = this.licenceApplicationService.getPoliceBackgroundTitle(this.applicationTypeCode);
+		this.title = this.controllingMembersService.getPoliceBackgroundTitle(this.applicationTypeCode);
 	}
 
 	isFormValid(): boolean {
@@ -44,7 +44,7 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.controllingMembersService.fileUploaded(
 			LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
 			file,
 			this.formPoliceBackgroundComponent.attachments,
@@ -53,6 +53,6 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.controllingMembersService.fileRemoved();
 	}
 }

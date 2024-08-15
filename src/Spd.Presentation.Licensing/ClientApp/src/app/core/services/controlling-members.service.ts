@@ -8,23 +8,19 @@ import {
 	BizProfileResponse,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import {
-	BizLicensingService,
-	BizPortalUserService,
-	BizProfileService,
-	LicenceService,
-	SecurityWorkerLicensingService,
-} from '@app/api/services';
+import { BizLicensingService, BizProfileService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { ApplicationService } from '@app/core/services/application.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocument, UtilService } from '@app/core/services/util.service';
+import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, take, tap } from 'rxjs';
 import { ControllingMembersHelper } from './controlling-members.helper';
 
 // export interface ControllingMemberContactInfo extends NonSwlContactInfo {
@@ -71,12 +67,9 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
 		private router: Router,
-		private licenceService: LicenceService,
-		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
 		private authUserBceidService: AuthUserBceidService,
-		private bizPortalUserService: BizPortalUserService,
 		private commonApplicationService: ApplicationService,
 		private hotToastService: HotToastService
 	) {
@@ -102,23 +95,26 @@ export class ControllingMembersService extends ControllingMembersHelper {
 					// 	{ isBcBusinessAddress, isBusinessLicenceSoleProprietor },
 					// 	{ emitEvent: false }
 					// );
+
 					// const step1Complete = this.isStepBackgroundInformationComplete();
 					// const step2Complete = this.isStepLicenceSelectionComplete();
 					// const step3Complete = isBusinessLicenceSoleProprietor ? true : this.isStepContactInformationComplete();
 					// const step4Complete = isBusinessLicenceSoleProprietor
 					// 	? true
 					// 	: this.isStepControllingMembersAndEmployeesComplete();
-					// const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
-					// console.debug(
-					// 	'controllingMembersModelFormGroup CHANGED',
-					// 	step1Complete,
-					// 	step2Complete,
-					// 	step3Complete,
-					// 	step4Complete,
-					// 	this.controllingMembersModelFormGroup.getRawValue()
-					// );
-					// this.updateModelChangeFlags();
-					// this.controllingMembersModelValueChanges$.next(isValid);
+
+					const isValid = true; //step1Complete && step2Complete && step3Complete && step4Complete;
+					console.debug(
+						'controllingMembersModelFormGroup CHANGED',
+						// step1Complete,
+						// step2Complete,
+						// step3Complete,
+						// step4Complete,
+						this.controllingMembersModelFormGroup.getRawValue()
+					);
+
+					this.updateModelChangeFlags();
+					this.controllingMembersModelValueChanges$.next(isValid);
 				}
 			});
 	}
@@ -139,7 +135,7 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<BizLicAppCommandResponse>
 	 */
-	partialSaveBusinessLicenceStep(isSaveAndExit?: boolean): Observable<any> {
+	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(controllingMembersModelFormValue);
 
@@ -181,9 +177,7 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(
-		isUpdateFlowWithHideReprintStep?: boolean
-	): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(controllingMembersModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -258,6 +252,33 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	}
 
 	/**
+	 * When uploading a file, set the value as changed, and perform the upload
+	 * @returns
+	 */
+	fileUploaded(
+		documentCode: LicenceDocumentTypeCode, // type of the document
+		document: File,
+		attachments: FormControl, // the FormControl containing the documents
+		fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
+	) {
+		this.hasValueChanged = true;
+
+		if (!this.isAutoSave()) return;
+
+		this.addUploadDocument(documentCode, document).subscribe({
+			next: (resp: any) => {
+				const matchingFile = attachments.value.find((item: File) => item.name == document.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+
+				fileUploadComponent.removeFailedFile(document);
+			},
+		});
+	}
+
+	/**
 	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
 	 * @param documentCode
 	 * @param document
@@ -288,6 +309,40 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Create an empty anonymous licence
+	 * @returns
+	 */
+	createNewCrcAnonymous(): Observable<any> {
+		return this.getCrcEmptyAnonymous().pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+					ApplicationTypeCode.New
+				);
+			})
+		);
+	}
+
+	private getCrcEmptyAnonymous(): Observable<any> {
+		this.reset();
+
+		this.controllingMembersModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData: {
+					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+				},
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		return of(this.controllingMembersModelFormGroup.value);
 	}
 
 	/**

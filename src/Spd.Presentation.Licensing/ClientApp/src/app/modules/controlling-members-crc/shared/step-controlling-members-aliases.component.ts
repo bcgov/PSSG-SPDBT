@@ -1,30 +1,28 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
-	selector: 'app-step-permit-aliases',
+	selector: 'app-step-controlling-members-aliases',
 	template: `
-		<app-step-section [title]="title" [subtitle]="subtitle">
+		<app-step-section title="Do you have any previous names or aliases?" [subtitle]="subtitle">
 			<app-form-aliases [form]="form"></app-form-aliases>
 		</app-step-section>
 	`,
 	styles: [],
 })
-export class StepPermitAliasesComponent implements OnInit, LicenceChildStepperStepComponent {
-	title = '';
+export class StepControllingMembersAliasesComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 
-	form: FormGroup = this.permitApplicationService.aliasesFormGroup;
+	form: FormGroup = this.controllingMembersService.aliasesFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private permitApplicationService: PermitApplicationService) {}
+	constructor(private controllingMembersService: ControllingMembersService) {}
 
 	ngOnInit(): void {
-		this.title = 'Do you have any previous names or aliases?';
 		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
 	}
 

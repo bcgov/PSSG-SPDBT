@@ -17,7 +17,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				Residency
+				<app-step-controlling-members-fingerprints></app-step-controlling-members-fingerprints>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -26,16 +26,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				Fingerprint
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				Driver's licence
+				<app-step-controlling-members-bc-driver-licence
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-members-bc-driver-licence>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"

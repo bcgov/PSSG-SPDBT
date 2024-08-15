@@ -31,7 +31,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				Do you have any previous names?
+				<app-step-controlling-members-aliases
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-members-aliases>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -40,7 +42,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				Confirm your residential address
+				<app-step-controlling-members-residential-address
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-members-residential-address>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"

@@ -5,7 +5,6 @@ import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
@@ -76,8 +75,6 @@ import {
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	form = this.businessApplicationService.categoryPrivateInvestigatorFormGroup;
-
-	matcher = new FormErrorStateMatcher();
 
 	constructor(private dialog: MatDialog, private businessApplicationService: BusinessApplicationService) {}
 

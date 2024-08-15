@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
-import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { take, tap } from 'rxjs';
 import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.module';
 
 @Component({
@@ -65,7 +66,12 @@ import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.m
 							</div>
 							<div class="col-lg-6 col-md-12 col-12 my-auto">
 								<div class="my-3 my-lg-0">
-									<a tabindex="0" class="large login-link" (click)="onContinue()" (keydown)="onKeydownContinue($event)">
+									<a
+										tabindex="0"
+										class="large login-link"
+										(click)="onContinueAnonymous()"
+										(keydown)="onKeydownContinueAnonymous($event)"
+									>
 										Continue without a BC Services Card
 									</a>
 								</div>
@@ -100,8 +106,8 @@ export class ControllingMembersLoginComponent implements OnInit {
 
 	constructor(
 		private router: Router,
-		private authProcessService: AuthProcessService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: ApplicationService,
+		private controllingMembersService: ControllingMembersService
 	) {}
 
 	ngOnInit(): void {
@@ -114,28 +120,12 @@ export class ControllingMembersLoginComponent implements OnInit {
 	}
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
-		this.router.navigateByUrl(
-			ControllingMembersCrcRoutes.pathControllingMembers(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
-		);
-	}
-
-	onContinue(): void {
-		// make sure the user is not logged in.
-		this.authProcessService.logoutBceid();
-		this.authProcessService.logoutBcsc();
-
-		this.router.navigateByUrl(
-			ControllingMembersCrcRoutes.pathControllingMembersAnonymous(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
-		);
-
-		// this.BusinessApplicationService
-		// 	.createNewLicenceAnonymous()
+		// this.controllingMembersService
+		// 	.createNewCrcAnonymous() // TODO update to authenticated
 		// 	.pipe(
 		// 		tap((_resp: any) => {
 		// 			this.router.navigateByUrl(
-		// 				ControllingMembersCrcRoutes.pathControllingMembersAnonymous(
-		// 					ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW
-		// 				)
+		// 				ControllingMembersCrcRoutes.pathControllingMembers(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
 		// 			);
 		// 		}),
 		// 		take(1)
@@ -143,9 +133,25 @@ export class ControllingMembersLoginComponent implements OnInit {
 		// 	.subscribe();
 	}
 
-	onKeydownContinue(event: KeyboardEvent) {
+	onContinueAnonymous(): void {
+		this.controllingMembersService
+			.createNewCrcAnonymous()
+			.pipe(
+				tap((_resp: any) => {
+					this.router.navigateByUrl(
+						ControllingMembersCrcRoutes.pathControllingMembersAnonymous(
+							ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW
+						)
+					);
+				}),
+				take(1)
+			)
+			.subscribe();
+	}
+
+	onKeydownContinueAnonymous(event: KeyboardEvent) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onContinue();
+		this.onContinueAnonymous();
 	}
 }

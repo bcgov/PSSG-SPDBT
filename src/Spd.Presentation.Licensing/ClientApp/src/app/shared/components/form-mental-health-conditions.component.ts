@@ -1,21 +1,20 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { FileUploadComponent } from './file-upload.component';
 
 @Component({
-	selector: 'app-common-mental-health-conditions',
+	selector: 'app-form-mental-health-conditions',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isCalledFromStep ? 'mx-auto' : ''">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
 					<mat-radio-group aria-label="Select an option" formControlName="isTreatedForMHC">
-						<div [ngClass]="isCalledFromStep ? '' : 'd-flex justify-content-start'">
+						<div [ngClass]="isWizardStep ? '' : 'd-flex justify-content-start'">
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-2" *ngIf="isCalledFromStep"></mat-divider>
+							<mat-divider class="my-2" *ngIf="isWizardStep"></mat-divider>
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</div>
 					</mat-radio-group>
@@ -32,7 +31,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			</div>
 
 			<div class="row my-4" *ngIf="isTreatedForMHC.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div [ngClass]="isCalledFromStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
+				<div [ngClass]="isWizardStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 					<p>
 						If you don't have a completed form, you can download and provide it to your physician to fill out, or your
@@ -66,28 +65,24 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonMentalHealthConditionsComponent {
+export class FormMentalHealthConditionsComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() form!: FormGroup;
-	@Input() isCalledFromStep = false;
+	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isWizardStep = false;
+
+	@Output() fileUploaded = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
-			LicenceDocumentTypeCode.MentalHealthCondition,
-			file,
-			this.attachments,
-			this.fileUploadComponent
-		);
+		this.fileUploaded.emit(file);
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.fileRemoved.emit();
 	}
 
 	get isTreatedForMHC(): FormControl {

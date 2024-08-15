@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
 @Component({
-	selector: 'app-step-worker-licence-mental-health-conditions',
+	selector: 'app-step-controlling-members-mental-health-conditions',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-form-mental-health-conditions
@@ -20,21 +20,21 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMembersMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
+	form: FormGroup = this.controllingMembersService.mentalHealthConditionsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FormMentalHealthConditionsComponent)
 	formMentalHealthConditionsComponent!: FormMentalHealthConditionsComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private controllingMembersService: ControllingMembersService) {}
 
 	ngOnInit(): void {
-		[this.title, this.subtitle] = this.licenceApplicationService.getMentalHealthConditionsTitle(
+		[this.title, this.subtitle] = this.controllingMembersService.getMentalHealthConditionsTitle(
 			this.applicationTypeCode,
 			this.hasPreviousMhcFormUpload.value
 		);
@@ -46,7 +46,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.controllingMembersService.fileUploaded(
 			LicenceDocumentTypeCode.MentalHealthCondition,
 			file,
 			this.formMentalHealthConditionsComponent.attachments,
@@ -55,7 +55,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.controllingMembersService.fileRemoved();
 	}
 
 	get hasPreviousMhcFormUpload(): FormControl {

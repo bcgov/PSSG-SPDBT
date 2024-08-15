@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-worker-licence-bc-driver-licence',
+	selector: 'app-step-controlling-members-bc-driver-licence',
 	template: `
 		<app-step-section title="Do you have a BC Driver's Licence?" [subtitle]="subtitle">
 			<div class="row">
@@ -21,14 +21,14 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	`,
 	styles: [],
 })
-export class StepWorkerLicenceBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMembersBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 
-	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
+	form: FormGroup = this.controllingMembersService.bcDriversLicenceFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private controllingMembersService: ControllingMembersService) {}
 
 	ngOnInit(): void {
 		this.subtitle = this.isRenewalOrUpdate

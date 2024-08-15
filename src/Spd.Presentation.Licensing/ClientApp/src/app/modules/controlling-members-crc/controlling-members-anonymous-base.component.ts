@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.module';
 
 @Component({
 	selector: 'app-controlling-members-anonymous-base',
@@ -16,15 +19,21 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 	styles: [],
 })
 export class ControllingMembersAnonymousBaseComponent implements OnInit {
-	constructor(private authProcessService: AuthProcessService) {}
+	constructor(
+		private router: Router,
+		private authProcessService: AuthProcessService,
+		private controllingMembersService: ControllingMembersService
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
 		this.authProcessService.logoutBcsc();
 
-		// if (!this.licenceApplicationService.initialized) {
-		// 	this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
-		// 	return;
-		// }
+		if (!this.controllingMembersService.initialized) {
+			this.router.navigateByUrl(
+				ControllingMembersCrcRoutes.path(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_LOGIN)
+			);
+			return;
+		}
 	}
 }

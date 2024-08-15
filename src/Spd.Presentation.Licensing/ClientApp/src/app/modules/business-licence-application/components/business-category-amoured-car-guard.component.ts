@@ -4,7 +4,6 @@ import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
@@ -55,8 +54,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 export class BusinessCategoryAmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
-
-	matcher = new FormErrorStateMatcher();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
