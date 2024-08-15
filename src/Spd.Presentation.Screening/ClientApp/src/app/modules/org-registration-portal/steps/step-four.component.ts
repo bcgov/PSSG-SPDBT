@@ -70,6 +70,14 @@ export class StepFourComponent {
 		this.saveStepperStep.emit(true);
 	}
 
+	onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+	}
+
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
+	}
+
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);
 	}

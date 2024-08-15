@@ -202,6 +202,18 @@ export class StepOneComponent {
 		this.scrollIntoView.emit(true);
 	}
 
+	onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+	}
+
+	onGoToLastStep() {
+		if (this.showStepEligibilityProblem) {
+			this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
+		} else {
+			this.childstepper.selectedIndex = this.childstepper.steps.length - 2;
+		}
+	}
+
 	navigateToLastStep(currentStateInfo: any): void {
 		// setup components with data in session
 		this.registrationPathSelectionComponent.registrationTypeCode = currentStateInfo.registrationTypeCode;
