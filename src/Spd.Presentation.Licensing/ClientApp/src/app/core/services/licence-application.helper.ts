@@ -234,10 +234,6 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		}
 	);
 
-	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]),
-	});
-
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),

@@ -11,12 +11,12 @@ import { ControllingMembersLoginComponent } from './controlling-members-login.co
 
 export class ControllingMembersCrcRoutes {
 	public static readonly CONTROLLING_MEMBERS_CRC = 'controlling-members-crc';
-	public static readonly CONTROLLING_MEMBERS_LOGIN = 'cm-login';
+	public static readonly CONTROLLING_MEMBERS_LOGIN = 'login';
 	public static readonly CONTROLLING_MEMBERS_ANONYMOUS = 'controlling-members-anonymous';
 	public static readonly CONTROLLING_MEMBERS = 'controlling-members';
-	public static readonly CONTROLLING_MEMBERS_NEW = 'cm-new';
-	public static readonly CONTROLLING_MEMBERS_RENEW = 'cm-renew';
-	public static readonly CONTROLLING_MEMBERS_UPDATE = 'cm-update';
+	public static readonly CONTROLLING_MEMBERS_NEW = 'new';
+	public static readonly CONTROLLING_MEMBERS_RENEW = 'renew';
+	public static readonly CONTROLLING_MEMBERS_UPDATE = 'update';
 
 	public static readonly MODULE_PATH = ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_CRC;
 

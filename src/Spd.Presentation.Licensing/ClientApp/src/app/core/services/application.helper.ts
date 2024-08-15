@@ -52,6 +52,10 @@ export abstract class ApplicationHelper {
 		accessCode: new FormControl('', [FormControlValidators.required]),
 	});
 
+	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]),
+	});
+
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),

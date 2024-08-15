@@ -7,7 +7,7 @@ import {
 	BizLicAppSubmitRequest,
 	BizProfileResponse,
 	LicenceAppDocumentResponse,
-	LicenceDocumentTypeCode
+	LicenceDocumentTypeCode,
 } from '@app/api/models';
 import {
 	BizLicensingService,
@@ -24,15 +24,7 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocument, UtilService } from '@app/core/services/util.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
-import {
-	BehaviorSubject,
-	Observable,
-	Subscription,
-	debounceTime,
-	distinctUntilChanged,
-	take,
-	tap
-} from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, take, tap } from 'rxjs';
 import { ControllingMembersHelper } from './controlling-members.helper';
 
 // export interface ControllingMemberContactInfo extends NonSwlContactInfo {
@@ -52,44 +44,22 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	controllingMembersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	controllingMembersModelFormGroup: FormGroup = this.formBuilder.group({
-		bizId: new FormControl(),
+		// bizId: new FormControl(),
 		licenceAppId: new FormControl(),
-		// latestApplicationId: new FormControl(), // placeholder for id
 
-		// isSwlAnonymous: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
-		// swlLicenceAppId: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
+		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
+		applicationTypeData: this.applicationTypeFormGroup,
 
-		// isBcBusinessAddress: new FormControl(), // placeholder for flag
-		// isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
-		// isRenewalShortForm: new FormControl(), // placeholder for flag
-		// caseNumber: new FormControl(), // placeholder to save info for display purposes
+		personalInformationData: this.personalInformationFormGroup,
+		aliasesData: this.aliasesFormGroup,
+		residentialAddressData: this.residentialAddressFormGroup,
 
-		// originalLicenceData: this.originalBusinessLicenceFormGroup,
-
-		// workerLicenceTypeData: this.workerLicenceTypeFormGroup,
-		// applicationTypeData: this.applicationTypeFormGroup,
-		// expiredLicenceData: this.expiredLicenceFormGroup,
-		// businessInformationData: this.businessInformationFormGroup,
-		// companyBrandingData: this.companyBrandingFormGroup,
-		// liabilityData: this.liabilityFormGroup,
-
-		// categoryData: this.categoryFormGroup,
-		// categoryArmouredCarGuardFormGroup: this.categoryArmouredCarGuardFormGroup,
-		// categoryPrivateInvestigatorFormGroup: this.categoryPrivateInvestigatorFormGroup,
-		// categorySecurityGuardFormGroup: this.categorySecurityGuardFormGroup,
-
-		// licenceTermData: this.licenceTermFormGroup,
-		// businessManagerData: this.businessManagerFormGroup,
-		// applicantData: this.applicantFormGroup,
-		// businessAddressData: this.businessAddressFormGroup,
-		// businessMailingAddressData: this.businessMailingAddressFormGroup,
-		// bcBusinessAddressData: this.bcBusinessAddressFormGroup,
-
-		// branchesInBcData: this.branchesInBcFormGroup,
-		// controllingMembersData: this.controllingMembersFormGroup,
-		// employeesData: this.employeesFormGroup,
-
-		// reprintLicenceData: this.reprintLicenceFormGroup,
+		citizenshipData: this.citizenshipFormGroup,
+		fingerprintProofData: this.fingerprintProofFormGroup,
+		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
+		// bcSecurityLicenceHistoryData: this.bcSecurityLicenceHistoryFormGroup,
+		policeBackgroundData: this.policeBackgroundFormGroup,
+		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
 	});
 
 	controllingMembersModelChangedSubscription!: Subscription;
@@ -128,12 +98,10 @@ export class ControllingMembersService extends ControllingMembersHelper {
 					// 	: this.controllingMembersModelFormGroup.get('businessAddressData.country')?.value;
 					// const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 					// const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
-
 					// this.controllingMembersModelFormGroup.patchValue(
 					// 	{ isBcBusinessAddress, isBusinessLicenceSoleProprietor },
 					// 	{ emitEvent: false }
 					// );
-
 					// const step1Complete = this.isStepBackgroundInformationComplete();
 					// const step2Complete = this.isStepLicenceSelectionComplete();
 					// const step3Complete = isBusinessLicenceSoleProprietor ? true : this.isStepContactInformationComplete();
@@ -141,7 +109,6 @@ export class ControllingMembersService extends ControllingMembersHelper {
 					// 	? true
 					// 	: this.isStepControllingMembersAndEmployeesComplete();
 					// const isValid = step1Complete && step2Complete && step3Complete && step4Complete;
-
 					// console.debug(
 					// 	'controllingMembersModelFormGroup CHANGED',
 					// 	step1Complete,
@@ -150,17 +117,11 @@ export class ControllingMembersService extends ControllingMembersHelper {
 					// 	step4Complete,
 					// 	this.controllingMembersModelFormGroup.getRawValue()
 					// );
-
 					// this.updateModelChangeFlags();
-
 					// this.controllingMembersModelValueChanges$.next(isValid);
 				}
 			});
 	}
-
-	// isBcBusinessAddress(): boolean {
-	// 	return this.controllingMembersModelFormGroup.get('isBcBusinessAddress')?.value;
-	// }
 
 	/**
 	 * Determine if the step data should be saved. If the data has changed and category data exists;
@@ -204,18 +165,6 @@ export class ControllingMembersService extends ControllingMembersHelper {
 			})
 		);
 	}
-
-	// payBusinessLicenceRenewalOrUpdateOrReplace(params: { paymentSuccess: string; paymentReason: string }): void {
-	// 	this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-	// 		next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-	// 			this.hotToastService.success(params.paymentSuccess);
-	// 			this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
-	// 		},
-	// 		error: (error: any) => {
-	// 			console.log('An error occurred during save', error);
-	// 		},
-	// 	});
-	// }
 
 	getBusinessProfile(): Observable<BizProfileResponse> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
@@ -302,9 +251,9 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		// 	// application and are still being used
 		// 	body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-				body,
-			});
+		return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+			body,
+		});
 		// }
 	}
 
@@ -1079,7 +1028,6 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	// 			  )
 	// 			: [];
 
-
 	// 	if (apis.length > 0) {
 	// 		return forkJoin(apis).pipe(
 	// 			switchMap((licenceResponses: Array<LicenceResponse>) => {
@@ -1568,8 +1516,6 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	// 		})
 	// 	);
 	// }
-
-	
 
 	// private applyRenewalDataUpdatesToModel(_resp: any): Observable<any> {
 	// 	const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
