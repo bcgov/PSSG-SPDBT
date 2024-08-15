@@ -101,6 +101,12 @@ import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 	styles: [],
 })
 export class PssoaComponent implements OnInit {
+	readonly STEP_ELIGIBILITY = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_ORG_INFO = 1;
+	readonly STEP_LOGIN = 2;
+	readonly STEP_PERSONAL_INFO = 3;
+	readonly STEP_TERMS_AND_COND = 4;
+
 	orgData: AppInviteOrgData | null = null;
 	portal = PortalTypeCode;
 
@@ -211,7 +217,19 @@ export class PssoaComponent implements OnInit {
 		this.orgData = { ...this.orgData, ...this.getDataToSave() };
 	}
 
-	onStepSelectionChange(_event: StepperSelectionEvent) {
+	onStepSelectionChange(event: StepperSelectionEvent) {
+		switch (event.selectedIndex) {
+			case this.STEP_ORG_INFO:
+				this.stepOrganizationInfoComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_PERSONAL_INFO:
+				this.stepPersonalInfoComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_TERMS_AND_COND:
+				this.stepTermsAndCondComponent?.onGoToFirstStep();
+				break;
+		}
+
 		this.onScrollIntoView();
 	}
 
@@ -220,10 +238,23 @@ export class PssoaComponent implements OnInit {
 		if (stepIndex == 3 && this.authenticationService.isLoggedIn()) {
 			// Go to Step 2
 			this.stepper.selectedIndex = 1;
+			this.stepOrganizationInfoComponent?.onGoToLastStep();
 			return;
 		}
 
 		stepper.previous();
+
+		switch (stepper.selectedIndex) {
+			case this.STEP_ORG_INFO:
+				this.stepOrganizationInfoComponent?.onGoToLastStep();
+				break;
+			case this.STEP_PERSONAL_INFO:
+				this.stepPersonalInfoComponent?.onGoToLastStep();
+				break;
+			case this.STEP_TERMS_AND_COND:
+				this.stepTermsAndCondComponent?.onGoToLastStep();
+				break;
+		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
@@ -239,12 +270,9 @@ export class PssoaComponent implements OnInit {
 				stepLogin.completed = true;
 			}
 
-			// const stateInfo = JSON.stringify({ ...this.getDataToSave() });
-			// this.currentStateInfo = JSON.parse(stateInfo);
-			// this.utilService.setSessionData(this.utilService.CRC_PORTAL_STATE_KEY, stateInfo);
-
 			// Go to Step 4
 			this.stepper.selectedIndex = 3;
+			return;
 		}
 
 		this.stepper.next();
