@@ -90,6 +90,11 @@ export interface RegistrationFormStepComponent {
 	styles: [],
 })
 export class OrgRegistrationComponent implements OnInit {
+	readonly STEP_ONE = 0; // needs to be zero based because 'selectedIndex' is zero based
+	readonly STEP_TWO = 1;
+	readonly STEP_THREE = 2;
+	readonly STEP_FOUR = 3;
+
 	registrationTypeCode: RegistrationTypeCode | null = null;
 	resetRecaptcha: Subject<void> = new Subject<void>();
 	sendToEmailAddress = '';
@@ -180,6 +185,18 @@ export class OrgRegistrationComponent implements OnInit {
 		}
 
 		stepper.previous();
+
+		switch (stepper.selectedIndex) {
+			case this.STEP_ONE:
+				this.stepOneComponent?.onGoToLastStep();
+				break;
+			case this.STEP_THREE:
+				this.stepThreeComponent?.onGoToLastStep();
+				break;
+			case this.STEP_FOUR:
+				this.stepFourComponent?.onGoToLastStep();
+				break;
+		}
 	}
 
 	onSaveStepperStep(): void {
@@ -278,6 +295,18 @@ export class OrgRegistrationComponent implements OnInit {
 		if (event.selectedIndex == 3) {
 			const step3Data = this.stepThreeComponent.getStepData();
 			this.sendToEmailAddress = step3Data.contactEmail;
+		}
+
+		switch (event.selectedIndex) {
+			case this.STEP_ONE:
+				this.stepOneComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_THREE:
+				this.stepThreeComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_FOUR:
+				this.stepFourComponent?.onGoToFirstStep();
+				break;
 		}
 
 		this.onScrollIntoView();
