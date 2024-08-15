@@ -343,8 +343,8 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
 		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
 		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
-		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
-		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
+		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
+		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
@@ -401,8 +401,8 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
-			residentialAddress: residentialAddress,
+			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
+			residentialAddress: residentialAddressData,
 		};
 
 		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
@@ -748,8 +748,8 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
 		const expiredLicenceData = { ...licenceModelFormValue.expiredLicenceData };
 		const characteristicsData = { ...licenceModelFormValue.characteristicsData };
-		const residentialAddress = { ...licenceModelFormValue.residentialAddress };
-		const mailingAddress = { ...licenceModelFormValue.mailingAddress };
+		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
+		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
 		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
@@ -761,7 +761,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		const documentInfos: Array<Document> = [];
 
 		// default the flag
-		mailingAddress.isAddressTheSame = !!mailingAddress.isAddressTheSame; // default to boolean
+		mailingAddressData.isAddressTheSame = !!mailingAddressData.isAddressTheSame; // default to boolean
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		let dogsAuthorizationData = {};
@@ -1032,9 +1032,9 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			//-----------------------------------
 			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
-			isMailingTheSameAsResidential: mailingAddress.isAddressTheSame,
-			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
-			residentialAddress,
+			isMailingTheSameAsResidential: mailingAddressData.isAddressTheSame,
+			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
+			residentialAddress: residentialAddressData,
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------

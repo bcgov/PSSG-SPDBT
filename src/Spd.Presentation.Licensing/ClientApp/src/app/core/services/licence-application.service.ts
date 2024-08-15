@@ -71,8 +71,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		reprintLicenceData: this.reprintLicenceFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
-		residentialAddress: this.residentialAddressFormGroup,
-		mailingAddress: this.mailingAddressFormGroup,
+		residentialAddressData: this.residentialAddressFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
 		profileConfirmationData: this.profileConfirmationFormGroup,
 
@@ -1101,7 +1101,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
-		const mailingAddress = this.mailingAddressFormGroup.getRawValue();
+		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
 		// Get the keyCode for the existing documents to save.
 		const existingDocumentIds: Array<string> = [];
@@ -1113,7 +1113,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		delete body.documentInfos;
 
-		const googleRecaptcha = { recaptchaCode: mailingAddress.captchaFormGroup.token };
+		const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
 		return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
 	}
 
@@ -1210,7 +1210,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			phoneNumber: profile.phoneNumber,
 		};
 
-		const residentialAddress = {
+		const residentialAddressData = {
 			addressSelected: true,
 			addressLine1: profile.residentialAddress?.addressLine1,
 			addressLine2: profile.residentialAddress?.addressLine2,
@@ -1220,7 +1220,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			province: profile.residentialAddress?.province,
 		};
 
-		const mailingAddress = {
+		const mailingAddressData = {
 			addressSelected: !!profile.mailingAddress,
 			isAddressTheSame: false,
 			addressLine1: profile.mailingAddress?.addressLine1,
@@ -1274,8 +1274,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
-				residentialAddress: { ...residentialAddress },
-				mailingAddress: { ...mailingAddress },
+				residentialAddressData: { ...residentialAddressData },
+				mailingAddressData: { ...mailingAddressData },
 				contactInformationData: { ...contactInformationData },
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(profile.aliases && profile.aliases.length > 0),
@@ -1910,7 +1910,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
-		const mailingAddress = {
+		const mailingAddressData = {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.
 		};
 
@@ -1920,7 +1920,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
-				mailingAddress: { ...mailingAddress },
+				mailingAddressData: { ...mailingAddressData },
 			},
 			{
 				emitEvent: false,
