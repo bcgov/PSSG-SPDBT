@@ -10,8 +10,8 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { ApplicationService } from '@app/core/services/application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-anonymous',
@@ -1060,44 +1060,44 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	}
 
 	get residentialAddressLine1(): string {
-		return this.licenceModelData.residentialAddress?.addressLine1 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.licenceModelData.residentialAddress?.addressLine2 ?? '';
+		return this.licenceModelData.residentialAddressData?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.licenceModelData.residentialAddress?.city ?? '';
+		return this.licenceModelData.residentialAddressData?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.licenceModelData.residentialAddress?.postalCode ?? '';
+		return this.licenceModelData.residentialAddressData?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.licenceModelData.residentialAddress?.province ?? '';
+		return this.licenceModelData.residentialAddressData?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.licenceModelData.residentialAddress?.country ?? '';
+		return this.licenceModelData.residentialAddressData?.country ?? '';
 	}
 	get isAddressTheSame(): string {
-		return this.licenceModelData.mailingAddress?.isAddressTheSame ?? '';
+		return this.licenceModelData.mailingAddressData?.isAddressTheSame ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.licenceModelData.mailingAddress?.addressLine1 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.licenceModelData.mailingAddress?.addressLine2 ?? '';
+		return this.licenceModelData.mailingAddressData?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.licenceModelData.mailingAddress?.city ?? '';
+		return this.licenceModelData.mailingAddressData?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.licenceModelData.mailingAddress?.postalCode ?? '';
+		return this.licenceModelData.mailingAddressData?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.licenceModelData.mailingAddress?.province ?? '';
+		return this.licenceModelData.mailingAddressData?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.licenceModelData.mailingAddress?.country ?? '';
+		return this.licenceModelData.mailingAddressData?.country ?? '';
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {
