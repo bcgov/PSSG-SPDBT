@@ -8,9 +8,9 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { ApplicationService } from '@app/core/services/application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
@@ -915,43 +915,43 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 	}
 
 	get residentialAddressLine1(): string {
-		return this.permitModelData.residentialAddress?.addressLine1 ?? '';
+		return this.permitModelData.residentialAddressData?.addressLine1 ?? '';
 	}
 	get residentialAddressLine2(): string {
-		return this.permitModelData.residentialAddress?.addressLine2 ?? '';
+		return this.permitModelData.residentialAddressData?.addressLine2 ?? '';
 	}
 	get residentialCity(): string {
-		return this.permitModelData.residentialAddress?.city ?? '';
+		return this.permitModelData.residentialAddressData?.city ?? '';
 	}
 	get residentialPostalCode(): string {
-		return this.permitModelData.residentialAddress?.postalCode ?? '';
+		return this.permitModelData.residentialAddressData?.postalCode ?? '';
 	}
 	get residentialProvince(): string {
-		return this.permitModelData.residentialAddress?.province ?? '';
+		return this.permitModelData.residentialAddressData?.province ?? '';
 	}
 	get residentialCountry(): string {
-		return this.permitModelData.residentialAddress?.country ?? '';
+		return this.permitModelData.residentialAddressData?.country ?? '';
 	}
 	get isAddressTheSame(): string {
-		return this.permitModelData.mailingAddress?.isAddressTheSame ?? '';
+		return this.permitModelData.mailingAddressData?.isAddressTheSame ?? '';
 	}
 
 	get mailingAddressLine1(): string {
-		return this.permitModelData.mailingAddress?.addressLine1 ?? '';
+		return this.permitModelData.mailingAddressData?.addressLine1 ?? '';
 	}
 	get mailingAddressLine2(): string {
-		return this.permitModelData.mailingAddress?.addressLine2 ?? '';
+		return this.permitModelData.mailingAddressData?.addressLine2 ?? '';
 	}
 	get mailingCity(): string {
-		return this.permitModelData.mailingAddress?.city ?? '';
+		return this.permitModelData.mailingAddressData?.city ?? '';
 	}
 	get mailingPostalCode(): string {
-		return this.permitModelData.mailingAddress?.postalCode ?? '';
+		return this.permitModelData.mailingAddressData?.postalCode ?? '';
 	}
 	get mailingProvince(): string {
-		return this.permitModelData.mailingAddress?.province ?? '';
+		return this.permitModelData.mailingAddressData?.province ?? '';
 	}
 	get mailingCountry(): string {
-		return this.permitModelData.mailingAddress?.country ?? '';
+		return this.permitModelData.mailingAddressData?.country ?? '';
 	}
 }

@@ -89,8 +89,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		characteristicsData: this.characteristicsFormGroup,
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 
-		residentialAddress: this.residentialAddressFormGroup,
-		mailingAddress: this.mailingAddressFormGroup,
+		residentialAddressData: this.residentialAddressFormGroup,
+		mailingAddressData: this.mailingAddressFormGroup,
 		contactInformationData: this.contactInformationFormGroup,
 		profileConfirmationData: this.profileConfirmationFormGroup,
 
@@ -1054,7 +1054,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			phoneNumber: profileData.phoneNumber,
 		};
 
-		const residentialAddress = {
+		const residentialAddressData = {
 			addressSelected: true,
 			addressLine1: profileData.residentialAddress?.addressLine1,
 			addressLine2: profileData.residentialAddress?.addressLine2,
@@ -1064,7 +1064,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			province: profileData.residentialAddress?.province,
 		};
 
-		const mailingAddress = {
+		const mailingAddressData = {
 			addressSelected: !!profileData.mailingAddress,
 			isAddressTheSame: false,
 			addressLine1: profileData.mailingAddress?.addressLine1,
@@ -1130,8 +1130,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
 				personalInformationData: { ...personalInformationData },
-				residentialAddress: { ...residentialAddress },
-				mailingAddress: { ...mailingAddress },
+				residentialAddressData: { ...residentialAddressData },
+				mailingAddressData: { ...mailingAddressData },
 				contactInformationData: { ...contactInformationData },
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(

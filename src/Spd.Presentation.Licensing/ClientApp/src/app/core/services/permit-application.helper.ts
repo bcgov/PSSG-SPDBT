@@ -230,8 +230,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	getProfileSaveBody(permitModelFormValue: any): ApplicantUpdateRequest {
 		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
 		const contactInformationData = { ...permitModelFormValue.contactInformationData };
-		const residentialAddress = { ...permitModelFormValue.residentialAddress };
-		const mailingAddress = { ...permitModelFormValue.mailingAddress };
+		const residentialAddressData = { ...permitModelFormValue.residentialAddressData };
+		const mailingAddressData = { ...permitModelFormValue.mailingAddressData };
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
 		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
 
@@ -290,8 +290,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
-			residentialAddress: residentialAddress,
+			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
+			residentialAddress: residentialAddressData,
 		};
 
 		console.debug('[getProfileSaveBody] permitModelFormValue', permitModelFormValue);
@@ -433,8 +433,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		const contactInformationData = { ...permitModelFormValue.contactInformationData };
 		const expiredLicenceData = { ...permitModelFormValue.expiredLicenceData };
 		const characteristicsData = { ...permitModelFormValue.characteristicsData };
-		const residentialAddress = { ...permitModelFormValue.residentialAddress };
-		const mailingAddress = { ...permitModelFormValue.mailingAddress };
+		const residentialAddressData = { ...permitModelFormValue.residentialAddressData };
+		const mailingAddressData = { ...permitModelFormValue.mailingAddressData };
 		const citizenshipData = { ...permitModelFormValue.citizenshipData };
 		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
 		const personalInformationData = { ...permitModelFormValue.personalInformationData };
@@ -447,7 +447,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		let employerPrimaryAddress = {};
 
 		// default the flags
-		mailingAddress.isAddressTheSame = !!mailingAddress.isAddressTheSame; // make it a boolean
+		mailingAddressData.isAddressTheSame = !!mailingAddressData.isAddressTheSame; // make it a boolean
 		personalInformationData.hasLegalNameChanged = !!personalInformationData.hasLegalNameChanged;
 
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
@@ -672,9 +672,9 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 			//-----------------------------------
 			reprint: this.utilService.booleanTypeToBoolean(permitModelFormValue.reprintLicenceData.reprintLicence),
 			//-----------------------------------
-			isMailingTheSameAsResidential: mailingAddress.isAddressTheSame,
-			mailingAddress: mailingAddress.isAddressTheSame ? residentialAddress : mailingAddress,
-			residentialAddress,
+			isMailingTheSameAsResidential: mailingAddressData.isAddressTheSame,
+			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
+			residentialAddress: residentialAddressData,
 			//-----------------------------------
 			isCanadianCitizen,
 			isCanadianResident: isCanadianCitizen
