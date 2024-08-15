@@ -24,20 +24,20 @@ import { StepBusinessLicenceUpdateTermsComponent } from './components/step-busin
 export class BusinessLicenceApplicationRoutes {
 	public static readonly BUSINESS_LICENCE_APPLICATION = 'business-licence';
 
-	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'business-licence-terms-and-conditions';
+	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 
 	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp';
 	public static readonly BUSINESS_NEW_SWL_SP = 'business-licence-new-swl-sp';
 
 	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
-	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'business-licence-user-profile';
-	public static readonly BUSINESS_NEW = 'business-licence-new';
-	public static readonly BUSINESS_RENEWAL = 'business-licence-renewal';
-	public static readonly BUSINESS_UPDATE = 'business-licence-update';
-	public static readonly BUSINESS_REPLACEMENT = 'business-licence-replacement';
+	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'user-profile';
+	public static readonly BUSINESS_NEW = 'new';
+	public static readonly BUSINESS_RENEWAL = 'renewal';
+	public static readonly BUSINESS_UPDATE = 'update';
+	public static readonly BUSINESS_REPLACEMENT = 'replacement';
 	public static readonly BUSINESS_PROFILE = 'business-profile';
 	public static readonly BUSINESS_MANAGERS = 'business-managers';
-	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'business-controlling-members-and-employees';
+	public static readonly BUSINESS_CONTROLLING_MEMBERS_AND_EMPLOYEES = 'controlling-members-and-employees';
 	public static readonly BUSINESS_UPDATE_SUCCESS = 'business-update-success';
 
 	public static readonly BUSINESS_MANAGER_INVITATION = 'invitation';

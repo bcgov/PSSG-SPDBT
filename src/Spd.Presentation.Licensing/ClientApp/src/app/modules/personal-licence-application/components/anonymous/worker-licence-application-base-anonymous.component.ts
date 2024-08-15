@@ -27,8 +27,8 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 
 	ngOnInit(): void {
 		// make sure the user is not logged in.
-		// this.authProcessService.logoutBceid(); // TODO needed?
-		// this.authProcessService.logoutBcsc();
+		this.authProcessService.logoutBceid(); // TODO needed?
+		this.authProcessService.logoutBcsc();
 
 		if (!this.licenceApplicationService.initialized) {
 			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
