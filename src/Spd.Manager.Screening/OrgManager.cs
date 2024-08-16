@@ -1,21 +1,20 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Org;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 
 namespace Spd.Manager.Screening
 {
     internal class OrgManager :
         IRequestHandler<OrgUpdateCommand, OrgResponse>,
-        IRequestHandler<OrgGetQuery, OrgResponse>,
+        IRequestHandler<OrgGetQuery, OrgResponse?>,
         IRequestHandler<OrgInvitationLinkCreateCommand, OrgInvitationLinkResponse>,
-        IRequestHandler<OrgInvitationLinkVerifyCommand, OrgInviteVerifyResponse>,
+        IRequestHandler<OrgInvitationLinkVerifyCommand, OrgInviteVerifyResponse?>,
         IOrgManager
     {
         private readonly IOrgRepository _orgRepository;
@@ -39,20 +38,13 @@ namespace Spd.Manager.Screening
         }
 
         public async Task<OrgResponse?> Handle(OrgGetQuery request, CancellationToken cancellationToken)
-        {
-            OrgResponse response;
-            if (request.AccessCode != null)
-            {
-                response = await _cache.Get<OrgResponse>($"org-response-{request.AccessCode}");
-                if (response != null) return response;
-            }
-            var result = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId, request.AccessCode), cancellationToken);
-            if (result == null) return null;
-
-            response = _mapper.Map<OrgResponse>(result.OrgResult);
-            await _cache.Set<OrgResponse>($"org-response-{response.AccessCode}", response, new TimeSpan(0, 30, 0));
-            return response;
-        }
+            => await _cache.GetAsync($"org-response-{request.AccessCode}", async ct =>
+                {
+                    var result = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId, request.AccessCode), ct);
+                    return _mapper.Map<OrgResponse>(result.OrgResult);
+                },
+                TimeSpan.FromMinutes(30),
+                cancellationToken);
 
         public async Task<OrgInvitationLinkResponse?> Handle(OrgInvitationLinkCreateCommand cmd, CancellationToken cancellationToken)
         {

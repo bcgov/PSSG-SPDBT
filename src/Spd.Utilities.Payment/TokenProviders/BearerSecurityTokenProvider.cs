@@ -1,13 +1,10 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System.Text;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Spd.Utilities.Cache;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Utilities.Payment.TokenProviders;
+
 internal class BearerSecurityTokenProvider : SecurityTokenProvider
 {
     private const string cacheKey = "paybc_invoice_oauth_token";
@@ -16,28 +13,28 @@ internal class BearerSecurityTokenProvider : SecurityTokenProvider
     IHttpClientFactory httpClientFactory,
     IDistributedCache cache,
     IOptions<PayBCSettings> options,
-    ILogger<ISecurityTokenProvider> logger) : base(httpClientFactory, cache, options, logger)
+    ILogger<BearerSecurityTokenProvider> logger) : base(httpClientFactory, cache, options, logger)
     { }
 
-    public override async Task<string> AcquireToken() =>
-        await cache.GetOrSet(cacheKey,
+    public override async Task<string> AcquireToken(CancellationToken ct = default) =>
+        await cache.GetAsync(cacheKey,
             AcquireInvoiceServiceToken,
-            TimeSpan.FromMinutes(options.ARInvoice.AuthenticationSettings.OAuthTokenCachedInMins)) ?? string.Empty;
+            TimeSpan.FromMinutes(options.ARInvoice.AuthenticationSettings.OAuthTokenCachedInMins),
+            ct) ?? string.Empty;
 
-    protected async Task<string?> AcquireInvoiceServiceToken()
+    protected async ValueTask<string?> AcquireInvoiceServiceToken(CancellationToken ct)
     {
-        return await AcquireTokenInternal(options.ARInvoice.AuthenticationSettings, "GetTokenForInvoice", typeof(BearerAccessToken));
+        return await AcquireTokenInternal(options.ARInvoice.AuthenticationSettings, "GetTokenForInvoice", typeof(BearerAccessToken), ct);
     }
 
-    protected override async Task<HttpResponseMessage> GetToken()
+    protected override async Task<HttpResponseMessage> GetToken(CancellationToken ct)
     {
         using var httpClient = httpClientFactory.CreateClient("oauth");
         string secret = $"{options.ARInvoice.AuthenticationSettings.ClientId}:{options.ARInvoice.AuthenticationSettings.ClientSecret}";
         string basicToken = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(secret));
         httpClient.DefaultRequestHeaders.Add("Authorization", "Basic " + basicToken);
-        var content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
-        return await httpClient.PostAsync(options.ARInvoice.AuthenticationSettings.OAuth2TokenEndpointUrl,
-            content);
+        using var content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
+        return await httpClient.PostAsync(options.ARInvoice.AuthenticationSettings.OAuth2TokenEndpointUrl, content, ct);
     }
 }
 

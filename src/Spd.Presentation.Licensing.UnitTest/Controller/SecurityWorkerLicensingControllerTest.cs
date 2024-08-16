@@ -1,10 +1,13 @@
-﻿using AutoFixture;
+﻿using System.Security.Principal;
+using AutoFixture;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
@@ -12,21 +15,21 @@ using Spd.Presentation.Licensing.Controllers;
 using Spd.Tests.Fixtures;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
+
 public class SecurityWorkerLicensingControllerTest
 {
     private readonly IFixture fixture;
-    private WorkerLicenceFixture workerLicenceFixture;
-    private Mock<IPrincipal> mockUser = new();
-    private Mock<IMediator> mockMediator = new();
-    private Mock<IValidator<WorkerLicenceAppUpsertRequest>> mockWslUpsertValidator = new();
-    private Mock<IValidator<WorkerLicenceAppSubmitRequest>> mockWslAnonymousSubmitValidator = new();
-    private Mock<IDistributedCache> mockCache = new();
-    private Mock<IDataProtectionProvider> mockDpProvider = new();
-    private Mock<IRecaptchaVerificationService> mockRecaptch = new();
-    private SecurityWorkerLicensingController sut;
+    private readonly WorkerLicenceFixture workerLicenceFixture;
+    private readonly Mock<IPrincipal> mockUser = new();
+    private readonly Mock<IMediator> mockMediator = new();
+    private readonly Mock<IValidator<WorkerLicenceAppUpsertRequest>> mockWslUpsertValidator = new();
+    private readonly Mock<IValidator<WorkerLicenceAppSubmitRequest>> mockWslAnonymousSubmitValidator = new();
+    private readonly IDistributedCache cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
+    private readonly Mock<IDataProtectionProvider> mockDpProvider = new();
+    private readonly Mock<IRecaptchaVerificationService> mockRecaptch = new();
+    private readonly SecurityWorkerLicensingController sut;
 
     private Dictionary<string, string> uploadFileConfiguration = new()
     {
@@ -75,7 +78,7 @@ public class SecurityWorkerLicensingControllerTest
                 configuration,
                 mockWslUpsertValidator.Object,
                 mockWslAnonymousSubmitValidator.Object,
-                mockCache.Object,
+                cache,
                 mockDpProvider.Object,
                 mockRecaptch.Object);
     }
