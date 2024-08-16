@@ -1,3 +1,9 @@
+using System.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text.Json;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,12 +11,6 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Spd.Utilities.LogonUser.Configurations;
-using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text.Json;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -73,6 +73,7 @@ namespace Spd.Utilities.LogonUser
                     ValidateActor = true,
                     ValidateIssuerSigningKey = true,
                 };
+                options.Validate();
             })
             .AddJwtBearer(IdirAuthenticationConfiguration.AuthSchemeName, options =>
             {
@@ -95,6 +96,7 @@ namespace Spd.Utilities.LogonUser
                     ValidateActor = true,
                     ValidateIssuerSigningKey = true,
                 };
+                options.Validate();
             })
             .AddJwtBearer(BcscAuthenticationConfiguration.AuthSchemeName, options =>
             {
@@ -186,6 +188,7 @@ namespace Spd.Utilities.LogonUser
                         }
                     }
                 };
+                options.Validate();
             })
             .AddPolicyScheme(defaultScheme, defaultScheme, options =>
             {
@@ -221,6 +224,7 @@ namespace Spd.Utilities.LogonUser
                     }
                     return BCeIDAuthenticationConfiguration.AuthSchemeName;
                 };
+                options.Validate();
             });
         }
 

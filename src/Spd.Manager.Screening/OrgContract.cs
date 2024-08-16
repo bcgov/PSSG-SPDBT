@@ -7,8 +7,11 @@ namespace Spd.Manager.Screening
     public interface IOrgManager
     {
         public Task<OrgResponse> Handle(OrgUpdateCommand request, CancellationToken cancellationToken);
-        public Task<OrgResponse> Handle(OrgGetQuery request, CancellationToken cancellationToken);
+
+        public Task<OrgResponse?> Handle(OrgGetQuery request, CancellationToken cancellationToken);
+
         public Task<OrgInvitationLinkResponse?> Handle(OrgInvitationLinkCreateCommand cmd, CancellationToken cancellationToken);
+
         public Task<OrgInviteVerifyResponse?> Handle(OrgInvitationLinkVerifyCommand cmd, CancellationToken cancellationToken);
     }
 
@@ -44,6 +47,7 @@ namespace Spd.Manager.Screening
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public IEnumerable<ServiceTypeCode> ServiceTypes { get; set; } = Array.Empty<ServiceTypeCode>();
     }
+
     public class OrgUpdateRequestValidator : AbstractValidator<OrgUpdateRequest>
     {
         public OrgUpdateRequestValidator()
@@ -91,6 +95,7 @@ namespace Spd.Manager.Screening
                 .MaximumLength(100);
         }
     }
+
     public record OrgInvitationLinkResponse(string OrgInvitationLinkUrl);
     public record OrgInviteVerifyResponse(Guid? OrgId, bool LinkIsValid = false, string? ErrMsg = null);
 }
