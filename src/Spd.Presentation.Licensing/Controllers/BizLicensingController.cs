@@ -1,3 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -6,13 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -199,7 +198,7 @@ namespace Spd.Presentation.Licensing.Controllers
             CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
             return fileKeyCode;
         }
 

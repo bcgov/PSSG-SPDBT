@@ -1,34 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+		<PropertyGroup>
+				<TargetFramework>net8.0</TargetFramework>
+				<ImplicitUsings>enable</ImplicitUsings>
+				<Nullable>enable</Nullable>
 
-    <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
+				<IsPackable>false</IsPackable>
+				<IsTestProject>true</IsTestProject>
+		</PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="FluentValidation" />
-	  <PackageReference Include="MediatR" />
-	  <PackageReference Include="Microsoft.NET.Test.Sdk" />
-	  <PackageReference Include="Moq" />
-	  <PackageReference Include="xunit" />
-	  <PackageReference Include="xunit.runner.visualstudio">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="FluentValidation" />
+				<PackageReference Include="MediatR" />
+				<PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+				<PackageReference Include="Microsoft.NET.Test.Sdk" />
+				<PackageReference Include="Moq" />
+				<PackageReference Include="xunit" />
+				<PackageReference Include="xunit.runner.visualstudio">
+						<PrivateAssets>all</PrivateAssets>
+						<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+				</PackageReference>
+		</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
-    <ProjectReference Include="..\Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj" />
-    <ProjectReference Include="..\Spd.Tests\Spd.Tests.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
+				<ProjectReference Include="..\Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj" />
+				<ProjectReference Include="..\Spd.Tests\Spd.Tests.csproj" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <Using Include="Xunit" />
-  </ItemGroup>
+		<ItemGroup>
+				<Using Include="Xunit" />
+		</ItemGroup>
 
 </Project>

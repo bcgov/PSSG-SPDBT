@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Address;
@@ -11,11 +12,12 @@ internal class AdminManager(
         IAddressAutocompleteClient _addressClient,
         IMapper _mapper,
         IConfigRepository _configRepo,
-        IOrgRepository _orgRepo)
+        IOrgRepository _orgRepo,
+        IDistributedCache _cache)
         : IRequestHandler<FindAddressQuery, IEnumerable<AddressFindResponse>>,
         IRequestHandler<RetrieveAddressByIdQuery, IEnumerable<AddressRetrieveResponse>>,
-        IRequestHandler<GetBannerMsgQuery, string>,
-        IRequestHandler<GetReplacementProcessingTimeQuery, string>,
+        IRequestHandler<GetBannerMsgQuery, string?>,
+        IRequestHandler<GetReplacementProcessingTimeQuery, string?>,
         IRequestHandler<GetMinistryQuery, IEnumerable<MinistryResponse>>,
         IAdminManager
 {
@@ -35,25 +37,35 @@ internal class AdminManager(
         return _mapper.Map<IEnumerable<AddressRetrieveResponse>>(result);
     }
 
-    public async Task<string> Handle(GetBannerMsgQuery query, CancellationToken cancellationToken)
+    public async Task<string?> Handle(GetBannerMsgQuery query, CancellationToken cancellationToken)
     {
-        return (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken))
-            .ConfigItems
-            .First()
-            .Value;
+        var result = await _cache.GetAsync(
+            IConfigRepository.BANNER_MSG_CONFIG_KEY,
+            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken)).ConfigItems,
+            TimeSpan.FromMinutes(15),
+            cancellationToken);
+
+        return result?.FirstOrDefault()?.Value;
     }
 
-    public async Task<string> Handle(GetReplacementProcessingTimeQuery query, CancellationToken cancellationToken)
+    public async Task<string?> Handle(GetReplacementProcessingTimeQuery query, CancellationToken cancellationToken)
     {
-        return (await _configRepo.Query(new ConfigQuery(IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), cancellationToken))
-            .ConfigItems
-            .First()
-            .Value;
+        var result = await _cache.GetAsync(
+            IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY,
+            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), cancellationToken)).ConfigItems,
+            TimeSpan.FromMinutes(15),
+            cancellationToken);
+
+        return result?.FirstOrDefault()?.Value;
     }
 
     public async Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken)
     {
-        var result = (OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BcGovOrgId, IncludeInactive: true), cancellationToken);
+        var result = await _cache.GetAsync(
+            "ministries_list",
+            async ct => (OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BcGovOrgId, IncludeInactive: true), ct),
+            TimeSpan.FromMinutes(15),
+            cancellationToken);
         return _mapper.Map<IEnumerable<MinistryResponse>>(result.OrgResults);
     }
 }

@@ -4,13 +4,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
-using Spd.Utilities.Cache;
 
 namespace Spd.Utilities.Dynamics
 {
     public interface ISecurityTokenProvider
     {
-        Task<string> AcquireToken();
+        Task<string> AcquireToken(CancellationToken ct = default);
     }
 
     internal class OauthSecurityTokenProvider : ISecurityTokenProvider
@@ -26,7 +25,7 @@ namespace Spd.Utilities.Dynamics
             IHttpClientFactory httpClientFactory,
             IDistributedCache cache,
             IOptions<DynamicsSettings> options,
-            ILogger<ISecurityTokenProvider> logger)
+            ILogger<OauthSecurityTokenProvider> logger)
         {
             this.httpClientFactory = httpClientFactory;
             this.cache = cache;
@@ -34,13 +33,13 @@ namespace Spd.Utilities.Dynamics
             this.options = options.Value;
         }
 
-        public async Task<string> AcquireToken() => 
-            await cache.GetOrSet(cacheKey, 
-                AcquireTokenInternal, 
-                TimeSpan.FromMinutes(options.AuthenticationSettings.OAuth2TokenCachedInMins)) ?? string.Empty;
+        public async Task<string> AcquireToken(CancellationToken ct = default) =>
+            await cache.GetAsync(cacheKey,
+                AcquireTokenInternal,
+                TimeSpan.FromMinutes(options.AuthenticationSettings.OAuth2TokenCachedInMins),
+                ct) ?? string.Empty;
 
-
-        private async Task<string?> AcquireTokenInternal()
+        private async ValueTask<string?> AcquireTokenInternal(CancellationToken ct)
         {
             var timeoutInMilliSecs = this.options.AuthenticationSettings.OAuth2TokenRequestTimeoutInMilliSeconds; // Time out the request after 200 ms
             var timeoutPolicy = Policy.TimeoutAsync(TimeSpan.FromMilliseconds(timeoutInMilliSecs), TimeoutStrategy.Pessimistic);
@@ -50,13 +49,14 @@ namespace Spd.Utilities.Dynamics
                         _ => TimeSpan.FromMilliseconds(timeoutInMilliSecs),
                         (result, timespan, retryNo, context) =>
                         {
-                            logger.LogInformation($"{context.OperationKey}: Retry number {retryNo} within {timespan.TotalMilliseconds}ms. Get timeout rejection");
+                            logger.LogInformation("{OperationKey}: Retry number {RetryNo} within {TotalMilliseconds}ms. Get timeout rejection",
+                                context.OperationKey, retryNo, timespan.TotalMilliseconds);
                         }
                     );
             var pollyContext = new Context("GetDynamicsToken");
             var wrapper = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 
-            var response = await wrapper.ExecuteAsync( async ctx => 
+            var response = await wrapper.ExecuteAsync(async ctx =>
             {
                 var httpClient = httpClientFactory.CreateClient("oauth");
                 return await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
@@ -68,8 +68,8 @@ namespace Spd.Utilities.Dynamics
                     UserName = $"{options.AuthenticationSettings.ServiceAccountDomain}\\{options.AuthenticationSettings.ServiceAccountName}",
                     Password = options.AuthenticationSettings.ServiceAccountPassword,
                     Scope = "openid",
-                });
-             }, pollyContext);
+                }, ct);
+            }, pollyContext);
 
             if (response.IsError)
             {

@@ -1,10 +1,11 @@
+using System.Net;
+using System.Text.Json;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using Spd.Manager.Shared;
@@ -18,12 +19,10 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
-using Spd.Utilities.Cache;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using System.Net;
 
 namespace Spd.Manager.Payment
 {
@@ -156,7 +155,7 @@ namespace Spd.Manager.Payment
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentInfoAsync(app, ct);
             Guid transNumber = Guid.NewGuid();
 
-            //generate the link string 
+            //generate the link string
             //payment utility
             var linkResult = (CreateDirectPaymentLinkResult)await _paymentService.HandleCommand(
                 new CreateDirectPaymentLinkCommand
@@ -339,12 +338,12 @@ namespace Spd.Manager.Payment
 
         private async Task<SpdPaymentConfig> GetSpdPaymentInfoAsync(ApplicationResult app, CancellationToken ct)
         {
-            ConfigResult? configResult = await _cache.Get<ConfigResult>("spdPayBCConfigs");
-            if (configResult == null)
-            {
-                configResult = await _configRepository.Query(new ConfigQuery(null, IConfigRepository.PAYBC_GROUP), ct);
-                await _cache.Set<ConfigResult>("spdPayBCConfigs", configResult, new TimeSpan(1, 0, 0));
-            }
+            ConfigResult? configResult = await _cache.GetAsync(
+                "spdPayBCConfigs",
+                async ct => await _configRepository.Query(new ConfigQuery(Group: IConfigRepository.PAYBC_GROUP), ct),
+                TimeSpan.FromMinutes(60),
+                ct);
+
             if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
             {
                 //screening price and payment setting
@@ -454,16 +453,14 @@ namespace Spd.Manager.Payment
         {
             try
             {
-                var result = JsonConvert.DeserializeObject<CasInvoiceCreateRespCompact>(response);
-                return JsonConvert.SerializeObject(result);
+                var result = JsonSerializer.Deserialize<CasInvoiceCreateRespCompact>(response);
+                return JsonSerializer.Serialize(result);
             }
             catch
             {
                 return response;
             }
         }
-
-
     }
 
     internal class CasInvoiceCreateRespCompact
