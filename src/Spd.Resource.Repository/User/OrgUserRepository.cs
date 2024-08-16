@@ -226,10 +226,11 @@ namespace Spd.Resource.Repository.User
             }
             else
             {
-                var invition = GetPortalInvitationByUserId(userId);
-                _dynaContext.DeleteObject(invition);
+                var invitation = GetPortalInvitationByUserId(userId);
+                if (invitation != null)
+                    _dynaContext.DeleteObject(invitation);
 
-                // Delete user and invitation
+                // Delete user
                 _dynaContext.DeleteObject(user);
             }
 
