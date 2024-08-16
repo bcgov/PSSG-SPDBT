@@ -1,11 +1,11 @@
 using System.Net;
+using System.Text.Json;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using Spd.Manager.Shared;
@@ -453,8 +453,8 @@ namespace Spd.Manager.Payment
         {
             try
             {
-                var result = JsonConvert.DeserializeObject<CasInvoiceCreateRespCompact>(response);
-                return JsonConvert.SerializeObject(result);
+                var result = JsonSerializer.Deserialize<CasInvoiceCreateRespCompact>(response);
+                return JsonSerializer.Serialize(result);
             }
             catch
             {

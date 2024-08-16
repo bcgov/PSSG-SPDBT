@@ -63,4 +63,9 @@
 						</ResolvedFileToPublish>
 				</ItemGroup>
 		</Target>
+
+		<ItemGroup>
+				<None Include="..\.editorconfig" Link=".editorconfig" />
+		</ItemGroup>
+
 </Project>
