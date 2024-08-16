@@ -25,6 +25,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />

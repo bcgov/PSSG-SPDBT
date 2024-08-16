@@ -9,19 +9,20 @@ namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
 public class OrgUserScenarios : ScenarioContextBase
 {
     public Random rnd;
+
     public OrgUserScenarios(ITestOutputHelper output, WebAppFixture fixture) : base(output, fixture)
     {
         rnd = new Random();
     }
 
-
     [Fact]
     public async Task CreateUser_WithCorrectAuthAndHeader_Success()
     {
-        var (org, user) = await fixture.testData.CreateOrgWithLogonUser($"org{rnd.Next(1,999)}");
+        var (org, user) = await fixture.testData.CreateOrgWithLogonUser($"org{rnd.Next(1, 999)}");
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Post.Json(Create_OrgUserCreateRequest((Guid)org.accountid)).ToUrl($"/api/orgs/{org.accountid}/users");
             _.ContentShouldContain(org.accountid.ToString());
@@ -36,6 +37,7 @@ public class OrgUserScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Put.Json(Create_OrgUserUpdateRequest((Guid)org.accountid, (Guid)user.spd_portaluserid)).ToUrl($"/api/orgs/{org.accountid}/users/{user.spd_portaluserid}");
             _.StatusCodeShouldBeOk();
@@ -49,6 +51,7 @@ public class OrgUserScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}/users/{user.spd_portaluserid}");
             _.StatusCodeShouldBeOk();
@@ -65,6 +68,7 @@ public class OrgUserScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Delete.Url($"/api/orgs/{org.accountid}/users/{user1.spd_portaluserid}");
             _.StatusCodeShouldBeOk();
@@ -74,7 +78,7 @@ public class OrgUserScenarios : ScenarioContextBase
     [Fact]
     public async Task VerifyUser_WithCorrectAuth_Success()
     {
-        Guid userGuid = Guid.NewGuid();
+        var userGuid = Guid.NewGuid().ToString();
         var (org, user) = await fixture.testData.CreateOrgWithPrimaryUser($"org3", userGuid, WebAppFixture.LOGON_ORG_GUID);
 
         var (user1, invite) = await fixture.testData.CreateTempUserInOrg("contactSur", "contactGiven", org);
@@ -82,6 +86,7 @@ public class OrgUserScenarios : ScenarioContextBase
         string encyptedCode = invite.spd_invitationlink.Substring(invite.spd_invitationlink.LastIndexOf("/") + 1, invite.spd_invitationlink.Length - invite.spd_invitationlink.LastIndexOf("/") - 1);
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(Guid.NewGuid().ToString(), WebAppFixture.LOGON_ORG_GUID);
             _.Post.Json(new InvitationRequest(encyptedCode)).ToUrl($"/api/invitations");
             _.StatusCodeShouldBeOk();
         });

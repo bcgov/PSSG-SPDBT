@@ -1,13 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
+using Spd.Utilities.BCeIDWS;
 
-namespace Spd.Utilities.BCeIDWS.IntegrationTest;
+namespace Spd.Tests.Integration.Utilities.BCeIDWS;
+
 public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
 {
     private readonly IBCeIDService _bceidService;
 
     public TransientFileStorageServiceTest(IntegrationTestSetup testSetup)
     {
-        _bceidService = testSetup.ServiceProvider.GetService<IBCeIDService>();
+        _bceidService = testSetup.ServiceProvider.GetRequiredService<IBCeIDService>();
     }
 
     [Fact]
@@ -21,7 +23,7 @@ public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetu
         };
 
         //Act
-        BCeIDUserDetailResult result = (BCeIDUserDetailResult)await _bceidService.HandleQuery(query);
+        var result = (BCeIDUserDetailResult)await _bceidService.HandleQuery(query);
 
         //Assert
         Assert.NotNull(result);

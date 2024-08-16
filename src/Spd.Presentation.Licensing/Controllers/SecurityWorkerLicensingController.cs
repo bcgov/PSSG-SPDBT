@@ -1,3 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -6,14 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -46,6 +45,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         #region bcsc authenticated
+
         /// <summary>
         /// Create Security Worker Licence Application, the DocumentInfos under WorkerLicenceAppUpsertRequest should contain all documents this application needs. If the document
         /// is not needed for this application, then remove it from documentInfos.
@@ -89,6 +89,7 @@ namespace Spd.Presentation.Licensing.Controllers
             Guid id = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery(applicantId));
             return await _mediator.Send(new GetWorkerLicenceQuery(id));
         }
+
         /// <summary>
         /// Upload licence application files
         /// </summary>
@@ -142,7 +143,7 @@ namespace Spd.Presentation.Licensing.Controllers
             CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
+            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
             return fileKeyCode;
         }
 
@@ -191,9 +192,9 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-        #endregion
+        #endregion bcsc authenticated
 
-        #region anonymous 
+        #region anonymous
 
         /// <summary>
         /// Get Security Worker Licence Application, anonymous one, so, we get the licenceAppId from cookies.
@@ -229,7 +230,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             string keyCode = Guid.NewGuid().ToString();
-            await Cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
+            await Cache.SetAsync(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20), ct);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
             return Ok();
         }
@@ -252,7 +253,7 @@ namespace Spd.Presentation.Licensing.Controllers
             CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30));
+            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
             return fileKeyCode;
         }
 
@@ -302,7 +303,7 @@ namespace Spd.Presentation.Licensing.Controllers
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return response;
         }
-        #endregion
 
+        #endregion anonymous
     }
 }

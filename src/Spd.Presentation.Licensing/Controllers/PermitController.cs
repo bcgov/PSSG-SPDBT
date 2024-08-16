@@ -1,3 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -6,14 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -43,6 +42,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         #region authenticated
+
         /// <summary>
         /// Create Permit Application
         /// </summary>
@@ -72,7 +72,7 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Get Lastest Permit Application 
+        /// Get Lastest Permit Application
         /// Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit
         /// </summary>
         /// <param name="applicantId"></param>
@@ -122,7 +122,7 @@ namespace Spd.Presentation.Licensing.Controllers
             CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
             return fileKeyCode;
         }
 
@@ -189,9 +189,9 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-        #endregion
+        #endregion authenticated
 
-        #region anonymous 
+        #region anonymous
 
         /// <summary>
         /// Get anonymous Permit Application, thus the licenceAppId is retrieved from cookies.
@@ -227,7 +227,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await VerifyGoogleRecaptchaAsync(recaptcha, ct);
             string keyCode = Guid.NewGuid().ToString();
-            await Cache.Set<LicenceAppDocumentsCache>(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
+            await Cache.SetAsync(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
             return Ok();
         }
@@ -250,7 +250,7 @@ namespace Spd.Presentation.Licensing.Controllers
             CreateDocumentInCacheCommand command = new(fileUploadRequest);
             var newFileInfos = await _mediator.Send(command, ct);
             Guid fileKeyCode = Guid.NewGuid();
-            await Cache.Set<IEnumerable<LicAppFileInfo>>(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20));
+            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
             return fileKeyCode;
         }
 
@@ -290,12 +290,12 @@ namespace Spd.Presentation.Licensing.Controllers
             {
                 PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
-
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
             return response;
         }
-        #endregion
+
+        #endregion anonymous
     }
 }

@@ -26,7 +26,6 @@
 	  <ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
 	  <ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
 	  <ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
 	  <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 	  <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
 	  <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
