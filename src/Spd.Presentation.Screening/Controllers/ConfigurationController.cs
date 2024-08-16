@@ -82,7 +82,7 @@ namespace Spd.Presentation.Screening.Controllers
                 BcscConfiguration = bcscConfig,
                 IdirConfiguration = idirConfig,
                 RecaptchaConfiguration = recaptchaResp,
-                BannerMessage = bannerMessage,
+                BannerMessage = bannerMessage ?? string.Empty,
                 PayBcSearchInvoiceUrl = payBcSearchInvoiceUrl ?? string.Empty
             });
         }

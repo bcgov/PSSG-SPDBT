@@ -1,10 +1,10 @@
-using Alba;
-using Spd.Manager.Screening;
-using Spd.Manager.Shared;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Alba;
+using Spd.Manager.Screening;
+using Spd.Manager.Shared;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Controllers;
@@ -21,6 +21,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Post.Json(Create_ApplicationInvitesCreateRequest()).ToUrl($"/api/orgs/{org.accountid}/application-invites");
             if (org != null && org.accountid != null)
@@ -38,6 +39,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}/application-invites?page=0&filters=searchText@=str");
             if (org != null && org.accountid != null)
@@ -55,6 +57,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Delete.Url($"/api/orgs/{org.accountid}/application-invites/{invite.spd_portalinvitationid}");
             if (org != null && org.accountid != null)
@@ -72,6 +75,7 @@ public class ApplicationScenarios : ScenarioContextBase
         var encodedCode = invite.spd_invitationlink.Substring(invite.spd_invitationlink.LastIndexOf("/") + 1, invite.spd_invitationlink.Length - invite.spd_invitationlink.LastIndexOf("/") - 1);
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.Post.Json(Create_AppInviteVerifyRequest(encodedCode)).ToUrl($"/api/application/invitation");
             if (org != null && org.accountid != null)
             {
@@ -88,6 +92,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         var result = await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Post.MultipartFormData(CreateMultipartFormData("test", "test.txt")).ToUrl($"/api/orgs/{org.accountid}/application");
             if (org != null && org.accountid != null)
@@ -107,6 +112,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}/applications?filters=status==AwaitingPayment|AwaitingApplicant,searchText@=str&sorts=name&page=1&pageSize=15");
             if (org != null && org.accountid != null)
@@ -123,6 +129,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}/application-statistics");
             if (org != null && org.accountid != null)
@@ -139,6 +146,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}/applications/bulk/history");
             if (org != null && org.accountid != null)
@@ -155,6 +163,7 @@ public class ApplicationScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Post.MultipartFormData(CreateBulkUploadMultipartFormData(
                 "\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"TEST\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"\"\t\"123456 TEST ROAD\"\t\"\"\t\"CITY\"\t\"BC\"\t\"CANADA\"\t\"V1V 1V1\"\t\"111-222-3333\"\t\"ADDRESS CANADA\"\t\"1990-01-01\"\t\"F\"\t\"9999999\"\t\"1111111\"", "test.tsv")).ToUrl($"/api/orgs/{org.accountid}/applications/bulk");

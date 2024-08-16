@@ -1,13 +1,12 @@
+using System.Net;
+using System.Security.Claims;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Screening;
-using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Shared;
-using System.Net;
-using System.Security.Claims;
 
 namespace Spd.Presentation.Screening
 {
@@ -78,13 +77,10 @@ namespace Spd.Presentation.Screening
                 //bcsc user
                 var applicantInfo = context.User.GetBcscUserIdentityInfo();
                 //we need to differentiate if current user-applicant has account in spd db. If yes, add role applicant.
-                ApplicantProfileResponse? appProfile = await cache.Get<ApplicantProfileResponse>($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}");
-                if (appProfile == null)
-                {
-                    appProfile = await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub));
-                    if (appProfile != null)
-                        await cache.Set($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}", appProfile, new TimeSpan(0, 30, 0));
-                }
+                var appProfile = await cache.GetAsync($"{ApplicantCacheKeyPrefix}{applicantInfo.Sub}",
+                    async ct => await mediator.Send(new GetApplicantProfileQuery(applicantInfo.Sub), ct),
+                    TimeSpan.FromMinutes(30),
+                    context.RequestAborted);
 
                 if (appProfile != null)
                 {
@@ -97,6 +93,7 @@ namespace Spd.Presentation.Screening
                 await next(context);
             }
         }
+
         private static bool NoUserMiddlewareProcessNeededEndpoints(HttpContext context)
         {
             var Endpoints = new List<(string method, string path)>
@@ -141,22 +138,15 @@ namespace Spd.Presentation.Screening
         private async Task<bool> ProcessIdirUser(Guid orgId, HttpContext context, IMediator mediator)
         {
             var idirUserIdentityInfo = context.User.GetIdirUserIdentityInfo();
-            IdirUserProfileResponse? idirUserProfile = await cache.Get<IdirUserProfileResponse>($"{IdirUserCacheKeyPrefix}{idirUserIdentityInfo.UserGuid}");
-            if (idirUserProfile == null)
-            {
-                idirUserProfile = await mediator.Send(new GetIdirUserProfileQuery(mapper.Map<IdirUserIdentity>(idirUserIdentityInfo)));
-                if (idirUserProfile != null)
-                {
-                    await cache.Set($"{IdirUserCacheKeyPrefix}{idirUserIdentityInfo.UserGuid}", idirUserProfile, new TimeSpan(0, 30, 0));
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            logger.LogDebug($"ProcessIdirUser -{idirUserProfile}");
-            if (idirUserProfile.UserId != null)
-                context.User.UpdateUserClaims(idirUserProfile.UserId.ToString(), orgId.ToString(), "BCGovStaff", idirUserProfile.IsPSA);
+            var idirUserProfile = await cache.GetAsync($"{IdirUserCacheKeyPrefix}{idirUserIdentityInfo.UserGuid}",
+                async ct => await mediator.Send(new GetIdirUserProfileQuery(mapper.Map<IdirUserIdentity>(idirUserIdentityInfo)), ct),
+                TimeSpan.FromMinutes(30),
+                context.RequestAborted);
+            if (idirUserProfile == null) return true;
+
+            logger.LogDebug("ProcessIdirUser -{IdirUserProfile}", idirUserProfile);
+            if (idirUserProfile.UserId.HasValue)
+                context.User.UpdateUserClaims(idirUserProfile.UserId.ToString()!, orgId.ToString(), "BCGovStaff", idirUserProfile.IsPSA);
             return true;
         }
 
@@ -170,12 +160,10 @@ namespace Spd.Presentation.Screening
 
             var userIdInfo = context.User.GetBceidUserIdentityInfo();
             //validate if the orgId in httpHeader is belong to this user and add the user role to claims.
-            OrgUserProfileResponse? userProfile = await cache.Get<OrgUserProfileResponse>($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}");
-            if (userProfile == null || userProfile.UserInfos.Any(u => u.UserId == Guid.Empty))
-            {
-                userProfile = await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)));
-                await cache.Set($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
-            }
+            var userProfile = await cache.GetAsync($"{OrgUserCacheKeyPrefix}{userIdInfo.UserGuid}",
+                async ct => await mediator.Send(new GetCurrentUserProfileQuery(mapper.Map<PortalUserIdentity>(userIdInfo)), ct),
+                TimeSpan.FromMinutes(30),
+                context.RequestAborted);
 
             if (userProfile?.UserInfos == null)
             {

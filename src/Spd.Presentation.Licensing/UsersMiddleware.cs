@@ -1,76 +1,45 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Utilities.Cache;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
-using System.Net;
 
-namespace Spd.Presentation.Licensing
+namespace Spd.Presentation.Licensing;
+
+public class UsersMiddleware
 {
-    public class UsersMiddleware
+    private readonly RequestDelegate next;
+    private readonly IDistributedCache cache;
+    private readonly BcscAuthenticationConfiguration bcscConfig;
+    private readonly string BizUserCacheKeyPrefix = "biz-user-";
+
+    public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration)
     {
-        private readonly RequestDelegate next;
-        private readonly IDistributedCache cache;
-        private readonly IMapper mapper;
-        private readonly ILogger<UsersMiddleware> logger;
-        private readonly BCeIDAuthenticationConfiguration? bceidConfig;
-        private readonly BcscAuthenticationConfiguration? bcscConfig;
-        private readonly string BizUserCacheKeyPrefix = "biz-user-";
+        this.next = next;
+        this.cache = cache;
+        bcscConfig = configuration
+        .GetSection(BcscAuthenticationConfiguration.Name)
+        .Get<BcscAuthenticationConfiguration>() ?? throw new InvalidOperationException($"{nameof(BcscAuthenticationConfiguration)} configuration is missing");
+    }
 
-        public UsersMiddleware(RequestDelegate next, IDistributedCache cache, IConfiguration configuration, IMapper mapper, ILogger<UsersMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context, IMediator mediator)
+    {
+        if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
         {
-            this.next = next;
-            this.cache = cache;
-            this.mapper = mapper;
-            this.logger = logger;
-            bceidConfig = configuration
-                .GetSection(BCeIDAuthenticationConfiguration.Name)
-                .Get<BCeIDAuthenticationConfiguration>();
-
-            bcscConfig = configuration
-            .GetSection(BcscAuthenticationConfiguration.Name)
-            .Get<BcscAuthenticationConfiguration>();
-        }
-
-        public async Task InvokeAsync(HttpContext context, IMediator mediator)
-        {
-            if (IPrincipalExtensions.BCeID_IDENTITY_PROVIDERS.Contains(context.User.GetIdentityProvider()))
+            //bceid user
+            var userIdInfo = context.User.GetBceidUserIdentityInfo();
+            ////validate if the bizUserId in httpHeader is correct and add the user role to claims.
+            if (context.Request.Headers.TryGetValue("bizUserId", out var userIdStr) && Guid.TryParse(userIdStr, out var userId))
             {
-                //bceid user
-                var userIdInfo = context.User.GetBceidUserIdentityInfo();
-                ////validate if the bizUserId in httpHeader is correct and add the user role to claims.
-                if (context.Request.Headers.TryGetValue("bizUserId", out var userIdStr))
-                {
-                    BizPortalUserResponse? userProfile = await cache.Get<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}");
-                    if (userProfile == null)
-                    {
-                        if (Guid.TryParse(userIdStr, out var userId))
-                        {
-                            userProfile = await mediator.Send(new BizPortalUserGetQuery(userId));
-                            await cache.Set<BizPortalUserResponse>($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}", userProfile, new TimeSpan(0, 30, 0));
-                        }
-                        else
-                        {
-                            await ReturnUnauthorized(context, "bizUserId is not a valid guid");
-                            return;
-                        }
-                    }
+                var userProfile = await cache.GetAsync($"{BizUserCacheKeyPrefix}{userIdInfo.UserGuid}",
+                     async ct => await mediator.Send(new BizPortalUserGetQuery(userId), ct),
+                     TimeSpan.FromMinutes(30),
+                     context.RequestAborted);
 
-                    if (userProfile != null)
-                    {
-                        context.User.UpdateUserClaims(userProfile.Id.ToString(), userProfile.BizId.ToString(), userProfile.ContactAuthorizationTypeCode.ToString());
-                    }
-                    await next(context);
-                }
-                else
+                if (userProfile != null)
                 {
-                    await next(context);
+                    context.User.UpdateUserClaims(userProfile.Id.ToString(), userProfile.BizId.ToString(), userProfile.ContactAuthorizationTypeCode.ToString());
                 }
-            }
-            else if (context.User.GetIssuer() == bcscConfig.Issuer)
-            {
                 await next(context);
             }
             else
@@ -78,13 +47,13 @@ namespace Spd.Presentation.Licensing
                 await next(context);
             }
         }
-
-        private static async Task ReturnUnauthorized(HttpContext context, string msg)
+        else if (context.User.GetIssuer() == bcscConfig.Issuer)
         {
-            context.Response.Clear();
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            context.Response.ContentType = "text/plain";
-            await context.Response.WriteAsync(msg);
+            await next(context);
+        }
+        else
+        {
+            await next(context);
         }
     }
 }

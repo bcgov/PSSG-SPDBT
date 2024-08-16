@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Manager.Screening;
+using Spd.Utilities.Dynamics;
 using Xunit.Abstractions;
 
 namespace Spd.Tests.Presentation.Screening.Integration.Managers;
@@ -21,11 +22,11 @@ public class ApplicationManagerTests : ScenarioContextBase
         request.OrgId = (Guid)org.accountid;
         string bcscApplicantSub = Guid.NewGuid().ToString();
 
-        //create app with totally new bcsc 
+        //create app with totally new bcsc
         //app created, identity created, contact created
         var response = await mediator.Send(new ApplicantApplicationCreateCommand(request, bcscApplicantSub));
         response.CreateSuccess.ShouldBeTrue();
-        var context = fixture.testData.GetDynamicsContext();
+        var context = Host.Services.GetRequiredService<IDynamicsContextFactory>().CreateReadOnly();
         var id = context.spd_identities
             .Expand(i => i.spd_ContactId)
             .Where(i => i.spd_userguid == bcscApplicantSub)

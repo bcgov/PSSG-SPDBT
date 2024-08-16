@@ -1,66 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<SpaRoot>ClientApp\</SpaRoot>
-		<SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
-		<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-		<UserSecretsId>168d0646-71ea-405b-8f2f-d47cdf5a0759</UserSecretsId>
-	</PropertyGroup>
+		<PropertyGroup>
+				<SpaRoot>ClientApp\</SpaRoot>
+				<SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
+				<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+				<UserSecretsId>168d0646-71ea-405b-8f2f-d47cdf5a0759</UserSecretsId>
+		</PropertyGroup>
 
-	<ItemGroup>
-		<Folder Include="ClientApp\" />
-	</ItemGroup>
-			
-	<ItemGroup>
-		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
-		<PackageReference Include="AutoMapper" />
-		<PackageReference Include="MediatR" />
-		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
-	  <ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
-	  <ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj" />
-	  <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!-- Don't publish the SPA source files, but do show them in the project files list -->
-		<Content Remove="$(SpaRoot)**" />
-		<None Remove="$(SpaRoot)**" />
-		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-	</ItemGroup>
-	
-	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
-		<!-- Ensure Node.js is installed -->
-		<Exec Command="node --version" ContinueOnError="true">
-			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-		</Exec>
-		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-		<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-	</Target>
-
-	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>
-			<DistFiles Include="$(SpaRoot)build\**" />
-			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
-				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			</ResolvedFileToPublish>
+				<Folder Include="ClientApp\" />
 		</ItemGroup>
-	</Target>
+
+		<ItemGroup>
+				<PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+				<PackageReference Include="AutoMapper" />
+				<PackageReference Include="MediatR" />
+				<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+				<PackageReference Include="Swashbuckle.AspNetCore" />
+				<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+				<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\Spd.Manager.Common\Spd.Manager.Common.csproj" />
+				<ProjectReference Include="..\Spd.Manager.Licence\Spd.Manager.Licence.csproj" />
+				<ProjectReference Include="..\Spd.Manager.Payment\Spd.Manager.Payment.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Recaptcha\Spd.Utilities.Recaptcha.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<!-- Don't publish the SPA source files, but do show them in the project files list -->
+				<Content Remove="$(SpaRoot)**" />
+				<None Remove="$(SpaRoot)**" />
+				<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+		</ItemGroup>
+
+		<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+				<!-- Ensure Node.js is installed -->
+				<Exec Command="node --version" ContinueOnError="true">
+						<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+				</Exec>
+				<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+				<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+				<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		</Target>
+
+		<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+				<!-- Include the newly-built files in the publish output -->
+				<ItemGroup>
+						<DistFiles Include="$(SpaRoot)build\**" />
+						<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+								<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+								<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+								<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+						</ResolvedFileToPublish>
+				</ItemGroup>
+		</Target>
+
+		<ItemGroup>
+				<None Include="..\.editorconfig" Link=".editorconfig" />
+		</ItemGroup>
 
 </Project>

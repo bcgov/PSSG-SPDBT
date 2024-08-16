@@ -6,11 +6,14 @@ namespace Spd.Manager.Common.Admin
     public interface IAdminManager
     {
         public Task<IEnumerable<AddressFindResponse>> Handle(FindAddressQuery request, CancellationToken cancellationToken);
-        public Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery request, CancellationToken cancellationToken);
-        public Task<string> Handle(GetBannerMsgQuery request, CancellationToken cancellationToken);
-        public Task<string> Handle(GetReplacementProcessingTimeQuery request, CancellationToken cancellationToken);
-        public Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken);
 
+        public Task<IEnumerable<AddressRetrieveResponse>> Handle(RetrieveAddressByIdQuery request, CancellationToken cancellationToken);
+
+        public Task<string?> Handle(GetBannerMsgQuery request, CancellationToken cancellationToken);
+
+        public Task<string?> Handle(GetReplacementProcessingTimeQuery request, CancellationToken cancellationToken);
+
+        public Task<IEnumerable<MinistryResponse>> Handle(GetMinistryQuery request, CancellationToken cancellationToken);
     }
 
     public record GetBannerMsgQuery : IRequest<string>;
@@ -85,5 +88,4 @@ namespace Spd.Manager.Common.Admin
         public bool IsActive { get; set; }
         public IEnumerable<ServiceTypeCode> ServiceTypeCodes { get; set; }
     }
-
 }
