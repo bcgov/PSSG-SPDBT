@@ -180,6 +180,14 @@ export class SaStepPersonalInfoComponent {
 		this.reEditCrcData.emit(true);
 	}
 
+	onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+	}
+
+	onGoToLastStep() {
+		this.childstepper.selectedIndex = this.childstepper.steps.length - 1;
+	}
+
 	private dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_CONTACT_INFO:
