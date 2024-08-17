@@ -1,4 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
@@ -92,7 +93,7 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 	step3Complete = false;
 
 	isFormValid = false;
-	showSaveAndExit = true;
+	showSaveAndExit = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -123,32 +124,11 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		// this.controllingMembersModelValueChangedSubscription = this.businessApplicationService.controllingMembersModelValueChanges$.subscribe(
-		// 	(_resp: boolean) => {
-		// 		this.workerLicenceTypeCode = this.businessApplicationService.controllingMembersModelFormGroup.get(
-		// 			'workerLicenceTypeData.workerLicenceTypeCode'
-		// 		)?.value;
-		// 		this.applicationTypeCode = this.businessApplicationService.controllingMembersModelFormGroup.get(
-		// 			'applicationTypeData.applicationTypeCode'
-		// 		)?.value;
-		// 		this.bizTypeCode = this.businessApplicationService.controllingMembersModelFormGroup.get(
-		// 			'businessInformationData.bizTypeCode'
-		// 		)?.value;
-
-		// 		this.isBusinessLicenceSoleProprietor = this.businessApplicationService.controllingMembersModelFormGroup.get(
-		// 			'isBusinessLicenceSoleProprietor'
-		// 		)?.value;
-
-		// 		const membersWithoutSwl = this.businessApplicationService.controllingMembersModelFormGroup.get(
-		// 			'controllingMembersData.membersWithoutSwl'
-		// 		)?.value;
-		// 		this.nonSwlControllingMembersExist = membersWithoutSwl?.length > 0;
-
-		// 		this.isFormValid = _resp;
-
-		// 		this.updateCompleteStatus();
-		// 	}
-		// );
+		this.controllingMembersModelValueChangedSubscription =
+			this.controllingMembersService.controllingMembersModelValueChanges$.subscribe((_resp: boolean) => {
+				// 		this.isFormValid = _resp;
+				// 		this.updateCompleteStatus();
+			});
 	}
 
 	ngOnDestroy() {
@@ -178,38 +158,24 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 		stepper.next();
 	}
 
-	// override onStepSelectionChange(event: StepperSelectionEvent) {
-	// 	switch (event.selectedIndex) {
-	// 		case this.STEP_BUSINESS_INFORMATION:
-	// 			this.stepsBusinessInformationComponent?.onGoToFirstStep();
-	// 			break;
-	// 		case this.STEP_LICENCE_SELECTION:
-	// 			this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-	// 			break;
-	// 		case this.STEP_CONTACT_INFORMATION:
-	// 		case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-	// 			if (this.isBusinessLicenceSoleProprietor) {
-	// 				this.stepsReviewAndConfirm?.onGoToFirstStep();
-	// 			} else {
-	// 				this.stepsContactInformationComponent?.onGoToFirstStep();
-	// 			}
-	// 			break;
-	// 		case this.STEP_CONTROLLING_MEMBERS:
-	// 			// If Sole Proprietor biz type, this step is not the controlling members step,
-	// 			// but the review step
-	// 			if (this.isBusinessLicenceSoleProprietor) {
-	// 				this.stepsReviewAndConfirm?.onGoToFirstStep();
-	// 			} else {
-	// 				this.stepsControllingMembersComponent?.onGoToFirstStep();
-	// 			}
-	// 			break;
-	// 		case this.STEP_REVIEW_AND_CONFIRM:
-	// 			this.stepsReviewAndConfirm?.onGoToFirstStep();
-	// 			break;
-	// 	}
+	override onStepSelectionChange(event: StepperSelectionEvent) {
+		switch (event.selectedIndex) {
+			case this.STEP_PERSONAL_INFORMATION:
+				this.stepsPersonalInformationComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_CITIZENSHIP_RESIDENCY:
+				this.stepsCitizenshipResidencyComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToFirstStep();
+				break;
+			case this.STEP_REVIEW:
+				this.stepReviewComponent?.onGoToFirstStep();
+				break;
+		}
 
-	// 	super.onStepSelectionChange(event);
-	// }
+		super.onStepSelectionChange(event);
+	}
 
 	onPreviousStepperStep(stepper: MatStepper): void {
 		stepper.previous();
@@ -230,22 +196,6 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 		}
 	}
 
-	// onNextPayStep(): void {
-	// 	this.businessApplicationService.submitBusinessLicenceNew().subscribe({
-	// 		next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-	// 			this.hotToastService.success('Your business licence has been successfully submitted');
-	// 			this.payNow(resp.body.licenceAppId!);
-	// 		},
-	// 		error: (error: any) => {
-	// 			console.log('An error occurred during save', error);
-	// 		},
-	// 	});
-	// }
-
-	// onNextStepperStep(stepper: MatStepper): void {
-	// 	this.saveStep(stepper);
-	// }
-
 	// onGoToStep(step: number) {
 	// 	this.stepsBusinessInformationComponent?.onGoToFirstStep();
 	// 	this.stepsLicenceSelectionComponent?.onGoToFirstStep();
@@ -255,64 +205,8 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 	// 	this.stepper.selectedIndex = step;
 	// }
 
-	// onGoToReview() {
-	// 	if (this.businessApplicationService.isAutoSave()) {
-	// 		this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-	// 			next: (_resp: any) => {
-	// 				setTimeout(() => {
-	// 					// hack... does not navigate without the timeout
-	// 					this.goToReviewStep();
-	// 				}, 250);
-	// 			},
-	// 			error: (error: HttpErrorResponse) => {
-	// 				this.handlePartialSaveError(error);
-	// 			},
-	// 		});
-	// 	} else {
-	// 		this.goToReviewStep();
-	// 	}
-	// }
-
 	// onChildNextStep() {
 	// 	this.saveStep();
-	// }
-
-	// onSaveAndExit(): void {
-	// 	if (!this.businessApplicationService.isSaveAndExit()) {
-	// 		return;
-	// 	}
-
-	// 	this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
-	// 		next: (_resp: any) => {
-	// 			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
-	// 		},
-	// 		error: (error: HttpErrorResponse) => {
-	// 			this.handlePartialSaveError(error);
-	// 		},
-	// 	});
-	// }
-
-	// private saveStep(stepper?: MatStepper): void {
-	// 	if (this.businessApplicationService.isAutoSave()) {
-	// 		this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
-	// 			next: (_resp: any) => {
-	// 				if (stepper) {
-	// 					if (stepper?.selected) stepper.selected.completed = true;
-	// 					stepper.next();
-	// 				} else {
-	// 					this.goToChildNextStep();
-	// 				}
-	// 			},
-	// 			error: (error: HttpErrorResponse) => {
-	// 				this.handlePartialSaveError(error);
-	// 			},
-	// 		});
-	// 	} else if (stepper) {
-	// 		if (stepper?.selected) stepper.selected.completed = true;
-	// 		stepper.next();
-	// 	} else {
-	// 		this.goToChildNextStep();
-	// 	}
 	// }
 
 	// private goToChildNextStep() {
@@ -335,30 +229,11 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 	// 	}
 	// }
 
-	// private payNow(licenceAppId: string): void {
-	// 	this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
-	// }
-
-	// private goToReviewStep(): void {
-	// 	if (this.isBusinessLicenceSoleProprietor) {
-	// 		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR;
-	// 	} else {
-	// 		this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM;
-	// 	}
-	// }
-
-	// private handlePartialSaveError(error: HttpErrorResponse): void {
-	// 	// only 403s will be here as an error
-	// 	if (error.status == 403) {
-	// 		this.commonApplicationService.handleDuplicateLicence();
-	// 	}
-	// }
-
 	// private updateCompleteStatus(): void {
-	// 	this.step1Complete = this.businessApplicationService.isStepBackgroundInformationComplete();
-	// 	this.step2Complete = this.businessApplicationService.isStepLicenceSelectionComplete();
-	// 	this.step3Complete = this.businessApplicationService.isStepContactInformationComplete();
-	// 	this.step4Complete = this.businessApplicationService.isStepControllingMembersAndEmployeesComplete();
+	// 	this.step1Complete = this.controllingMembersService.isStepBackgroundInformationComplete();
+	// 	this.step2Complete = this.controllingMembersService.isStepLicenceSelectionComplete();
+	// 	this.step3Complete = this.controllingMembersService.isStepContactInformationComplete();
+	// 	this.step4Complete = this.controllingMembersService.isStepControllingMembersAndEmployeesComplete();
 
 	// 	console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
 	// }
