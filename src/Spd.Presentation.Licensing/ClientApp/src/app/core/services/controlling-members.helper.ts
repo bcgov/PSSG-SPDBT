@@ -10,10 +10,6 @@ import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 
 export abstract class ControllingMembersHelper extends ApplicationHelper {
-	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group({
-		attachments: new FormControl([], [Validators.required]),
-	});
-
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
@@ -59,6 +55,27 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
 						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
 							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+			],
+		}
+	);
+
+	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isChargeHistory: new FormControl('', [FormControlValidators.required]),
+			chargeHistoryDetails: new FormControl(''),
+			isBankruptcyHistory: new FormControl('', [FormControlValidators.required]),
+			bankruptcyHistoryDetails: new FormControl(''),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'chargeHistoryDetails',
+					(form) => form.get('isChargeHistory')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'bankruptcyHistoryDetails',
+					(form) => form.get('isBankruptcyHistory')?.value == BooleanTypeCode.Yes
 				),
 			],
 		}

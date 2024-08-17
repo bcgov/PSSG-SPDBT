@@ -8,7 +8,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				Describe your business involvement
+				<app-step-controlling-members-bc-security-licence-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-members-bc-security-licence-history>
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"

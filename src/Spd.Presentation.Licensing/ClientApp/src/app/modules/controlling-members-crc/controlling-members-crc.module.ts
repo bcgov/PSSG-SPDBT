@@ -12,9 +12,11 @@ import { ControllingMembersCrcRoutingModule } from './controlling-members-crc-ro
 import { ControllingMembersLoginComponent } from './controlling-members-login.component';
 import { StepControllingMembersAliasesComponent } from './shared/step-controlling-members-aliases.component';
 import { StepControllingMembersBcDriverLicenceComponent } from './shared/step-controlling-members-bc-driver-licence.component';
+import { StepControllingMembersBcSecurityLicenceHistoryComponent } from './shared/step-controlling-members-bc-security-licence-history.component';
 import { StepControllingMembersChecklistNewComponent } from './shared/step-controlling-members-checklist-new.component';
 import { StepControllingMembersChecklistRenewalComponent } from './shared/step-controlling-members-checklist-renewal.component';
 import { StepControllingMembersChecklistUpdateComponent } from './shared/step-controlling-members-checklist-update.component';
+import { StepControllingMembersCitizenshipComponent } from './shared/step-controlling-members-citizenship.component';
 import { StepControllingMembersFingerprintsComponent } from './shared/step-controlling-members-fingerprints.component';
 import { StepControllingMembersMentalHealthConditionsComponent } from './shared/step-controlling-members-mental-health-conditions.component';
 import { StepControllingMembersPoliceBackgroundComponent } from './shared/step-controlling-members-police-background.component';
@@ -35,19 +37,21 @@ import { StepsControllingMembersReviewComponent } from './shared/steps-controlli
 		StepControllingMembersResidentialAddressComponent,
 		StepControllingMembersAliasesComponent,
 		StepControllingMembersFingerprintsComponent,
-		StepsControllingMembersPersonalInformationComponent,
-		StepsControllingMembersCitizenshipResidencyComponent,
 		StepControllingMembersBcDriverLicenceComponent,
 		StepControllingMembersPoliceBackgroundComponent,
 		StepControllingMembersMentalHealthConditionsComponent,
-		StepsControllingMembersReviewComponent,
-		StepsControllingMembersBackgroundComponent,
+		StepControllingMembersCitizenshipComponent,
+		StepControllingMembersBcSecurityLicenceHistoryComponent,
 		ControllingMembersWizardAnonymousNewComponent,
 		ControllingMembersWizardAnonymousRenewComponent,
 		ControllingMembersWizardAnonymousUpdateComponent,
 		ControllingMembersWizardAuthenticatedNewComponent,
 		ControllingMembersWizardAuthenticatedRenewComponent,
 		ControllingMembersWizardAuthenticatedUpdateComponent,
+		StepsControllingMembersPersonalInformationComponent,
+		StepsControllingMembersCitizenshipResidencyComponent,
+		StepsControllingMembersReviewComponent,
+		StepsControllingMembersBackgroundComponent,
 	],
 	imports: [SharedModule, ControllingMembersCrcRoutingModule],
 	providers: [],
