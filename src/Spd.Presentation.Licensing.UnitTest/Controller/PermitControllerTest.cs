@@ -1,10 +1,13 @@
-﻿using AutoFixture;
+﻿using System.Security.Claims;
+using AutoFixture;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
@@ -12,21 +15,20 @@ using Spd.Presentation.Licensing.Controllers;
 using Spd.Tests.Fixtures;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
-using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 
 public class PermitControllerTest
 {
     private readonly IFixture fixture;
-    private PermitFixture permitFixture;
-    private Mock<IMediator> mockMediator = new();
-    private Mock<IDistributedCache> mockCache = new();
-    private Mock<IValidator<PermitAppSubmitRequest>> mockPermitAppSubmitValidator = new();
-    private Mock<IValidator<PermitAppUpsertRequest>> mockPermitAppUpsertValidator = new();
-    private Mock<IDataProtectionProvider> mockDpProvider = new();
-    private Mock<IRecaptchaVerificationService> mockRecaptch = new();
-    private PermitController sut;
+    private readonly PermitFixture permitFixture;
+    private readonly Mock<IMediator> mockMediator = new();
+    private readonly IDistributedCache cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
+    private readonly Mock<IValidator<PermitAppSubmitRequest>> mockPermitAppSubmitValidator = new();
+    private readonly Mock<IValidator<PermitAppUpsertRequest>> mockPermitAppUpsertValidator = new();
+    private readonly Mock<IDataProtectionProvider> mockDpProvider = new();
+    private readonly Mock<IRecaptchaVerificationService> mockRecaptch = new();
+    private readonly PermitController sut;
 
     private Dictionary<string, string> uploadFileConfiguration = new()
     {
@@ -86,7 +88,7 @@ public class PermitControllerTest
                 mockPermitAppSubmitValidator.Object,
                 mockPermitAppUpsertValidator.Object,
                 mockRecaptch.Object,
-                mockCache.Object,
+                cache,
                 mockDpProvider.Object);
     }
 

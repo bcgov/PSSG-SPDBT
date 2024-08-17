@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.WorkerLicenceCategory;
+
 internal class WorkerLicenceCategoryRepository : IWorkerLicenceCategoryRepository
 {
     private readonly DynamicsContext _context;
@@ -24,12 +23,7 @@ internal class WorkerLicenceCategoryRepository : IWorkerLicenceCategoryRepositor
         {
             throw new ArgumentException("must have at least one qry parameter.");
         }
-        IEnumerable<spd_licencecategory>? categories = await _cache.Get<IEnumerable<spd_licencecategory>>("spd_licencecategory");
-        if (categories == null)
-        {
-            categories = _context.spd_licencecategories.ToList();
-            await _cache.Set<IEnumerable<spd_licencecategory>>("spd_licencecategory", categories, new TimeSpan(10, 0, 0));
-        }
+        var categories = await _cache.GetAsync("spd_licencecategory", async ct => await _context.spd_licencecategories.GetAllPagesAsync(ct), TimeSpan.FromMinutes(10), cancellationToken);
 
         if (qry.WorkerCategoryTypeId != null)
         {

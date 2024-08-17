@@ -1,13 +1,14 @@
+using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.User;
 using Spd.Utilities.Dynamics;
-using System.Net;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
+
 public class DynamicsTestData
 {
-    private readonly string testPrefix = "spd-auto-test";
+    private readonly string testPrefix = "spd-auto-test-";
     private readonly DynamicsContext _context;
     private readonly ITimeLimitedDataProtector _dataProtector;
 
@@ -17,24 +18,19 @@ public class DynamicsTestData
         _dataProtector = protectProvider.CreateProtector(nameof(UserCreateCmd)).ToTimeLimitedDataProtector();
     }
 
-    public DynamicsContext GetDynamicsContext()
-    {
-        return _context;
-    }
-
     public async Task<(account, spd_portaluser)> CreateOrgWithLogonUser(string orgName)
     {
         var org = await CreateOrg(orgName);
-        var identity = await CreateIdentity(WebAppFixture.LOGON_USER_GUID.ToString(), WebAppFixture.LOGON_ORG_GUID.ToString());
+        var identity = await CreateIdentity(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
         var user = await CreateUserInOrg("lastName", "firstName", org, identity);
         return (org, user);
     }
 
-    public async Task<(account, spd_portaluser)> CreateOrgWithPrimaryUser(string orgName, Guid userGuid, Guid orgGuid)
+    public async Task<(account, spd_portaluser)> CreateOrgWithPrimaryUser(string orgName, string userGuid, string orgGuid)
     {
         var org = await CreateOrg(orgName);
-        var identity = await CreateIdentity(userGuid.ToString(), orgGuid.ToString());
-        var user = await CreateUserInOrg($"ln{userGuid.ToString().Substring(0, 10)}", "firstName", org, identity);
+        var identity = await CreateIdentity(userGuid, orgGuid);
+        var user = await CreateUserInOrg($"ln{userGuid.Substring(0, 10)}", $"{testPrefix}-fn", org, identity);
         return (org, user);
     }
 
@@ -54,10 +50,19 @@ public class DynamicsTestData
                 name = $"{testPrefix}{orgName}",
                 spd_organizationlegalname = $"{testPrefix}{orgName}",
                 address1_city = "victoria",
-                spd_orgguid = WebAppFixture.LOGON_ORG_GUID.ToString(),
-                spd_workswith = (int)WorksWithChildrenOptionSet.Adults
+                spd_orgguid = Guid.Parse(WebAppFixture.LOGON_ORG_GUID).ToString(),
+                spd_workswith = (int)WorksWithChildrenOptionSet.Adults,
+                emailaddress1 = $"{testPrefix}{orgName}@test.gov.bc.ca",
             };
             _context.AddToaccounts(newOne);
+
+            foreach (var serviceType in DynamicsContextLookupHelpers.ServiceTypeGuidDictionary)
+            {
+                var st = new spd_servicetype { spd_servicetypeid = serviceType.Value };
+                _context.AttachTo(nameof(_context.spd_servicetypes), st);
+                _context.AddLink(newOne, nameof(account.spd_account_spd_servicetype), st);
+            }
+
             await _context.SaveChangesAsync();
             return newOne;
         }
@@ -80,7 +85,8 @@ public class DynamicsTestData
                 spd_firstname = givenName,
                 spd_surname = surname,
                 spd_invitationtype = (int)inviteType,
-                spd_invitationlink = $"http://localhost/invitations/{encryptedId}"
+                spd_invitationlink = $"http://localhost/invitations/{encryptedId}",
+                spd_email = $"{testPrefix}{givenName}.{surname}@test.gov.bc.ca"
             };
             _context.AddTospd_portalinvitations(newOne);
             _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
@@ -105,7 +111,7 @@ public class DynamicsTestData
                 spd_portaluserid = portalUserId,
                 spd_firstname = givenName,
                 spd_surname = surname,
-                spd_emailaddress1 = $"test{givenName}@{surname}.com",
+                spd_emailaddress1 = $"{testPrefix}{givenName}.{surname}@test.gov.bc.ca"
             };
             _context.AddTospd_portalusers(newOne);
             _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
@@ -128,7 +134,7 @@ public class DynamicsTestData
             spd_portaluserid = portalUserId,
             spd_firstname = givenName,
             spd_surname = surname,
-            spd_emailaddress1 = $"test{givenName}@{surname}.com",
+            spd_emailaddress1 = $"{testPrefix}{givenName}{surname}@test.gov.bc.ca",
         };
         _context.AddTospd_portalusers(newOne);
         _context.SetLink(newOne, nameof(spd_portaluser.spd_OrganizationId), org);
@@ -157,8 +163,8 @@ public class DynamicsTestData
             spd_identity newOne = new spd_identity
             {
                 spd_identityid = identityId,
-                spd_orgguid = orgGuid,
-                spd_userguid = userGuid,
+                spd_orgguid = Guid.Parse(orgGuid).ToString(),
+                spd_userguid = Guid.Parse(userGuid).ToString(),
             };
             _context.AddTospd_identities(newOne);
             await _context.SaveChangesAsync();
@@ -176,6 +182,7 @@ public class DynamicsTestData
             spd_lastname = surname,
             spd_dateofbirth = new Microsoft.OData.Edm.Date(birthdate.Year, birthdate.Month, birthdate.Day),
             statecode = DynamicsConstants.StatusCode_Active,
+            spd_emailaddress1 = $"{testPrefix}{givenName}.{surname}@test.gov.bc.ca"
         };
         _context.AddTospd_applications(newOne);
         _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
@@ -197,7 +204,7 @@ public class DynamicsTestData
             {
                 spd_orgregistrationid = id,
                 spd_organizationname = orgName,
-                spd_email = "testorgReg@orgreg.com"
+                spd_email = "testorgReg@test.gov.bc.ca"
             };
             _context.AddTospd_orgregistrations(newOne);
             _context.SetLink(newOne, nameof(spd_orgregistration.spd_OrganizationTypeId), _context.LookupOrganizationType("Volunteer-Registrant"));
@@ -222,10 +229,11 @@ public class DynamicsTestData
         Guid contactId = Guid.NewGuid();
         contact contact = new contact
         {
-            firstname = "applicantfn",
-            lastname = "applicantln",
+            firstname = "first",
+            lastname = "last",
             contactid = contactId,
-            birthdate = new Microsoft.OData.Edm.Date(2000, 1, 1)
+            birthdate = new Microsoft.OData.Edm.Date(2000, 1, 1),
+            emailaddress1 = $"{testPrefix}first.last@test.gov.bc.ca"
         };
         _context.AddTocontacts(contact);
         _context.AddLink(contact, nameof(contact.spd_contact_spd_identity), identity);
@@ -253,6 +261,7 @@ public class DynamicsTestData
             spd_lastname = $"{testPrefix}applastname",
             spd_dateofbirth = new Microsoft.OData.Edm.Date(2000, 1, 1),
             statecode = DynamicsConstants.StatusCode_Active,
+            spd_emailaddress1 = $"{testPrefix}{contact.firstname}.{contact.lastname}@test.gov.bc.ca",
         };
         _context.AddTospd_applications(newOne);
         _context.SetLink(newOne, nameof(newOne.spd_OrganizationId), org);
@@ -265,7 +274,6 @@ public class DynamicsTestData
             title = $"{testPrefix}incident",
             prioritycode = 1,
             _spd_applicationid_value = id,
-
         };
         _context.AddToincidents(incident);
         _context.SetLink(incident, nameof(incident.customerid_account), org);
@@ -276,4 +284,3 @@ public class DynamicsTestData
         return clearance;
     }
 }
-

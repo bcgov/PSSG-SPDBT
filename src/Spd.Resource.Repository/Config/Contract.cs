@@ -9,11 +9,12 @@
         public static readonly string PAYBC_PBCREFNUMBER_LICENSING_KEY = "PbcRefNumberLicensing";
         public static readonly string PAYBC_REVENUEACCOUNT_LICENSING_KEY = "RevenueAccountLicensing";
         public static readonly string LICENSING_REPLACEMENTPROCESSINGTIME_KEY = "ReplacementProcessingTime";
+
         Task<ConfigResult> Query(ConfigQuery query, CancellationToken ct);
     }
 
     //query
-    public record ConfigQuery(string Key, string? Group = null);
+    public record ConfigQuery(string? Key = null, string? Group = null);
     public record ConfigResult(IEnumerable<ConfigItem> ConfigItems);
     public record ConfigItem
     {

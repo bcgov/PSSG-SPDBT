@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
+    <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
   </ItemGroup>
 
 </Project>
