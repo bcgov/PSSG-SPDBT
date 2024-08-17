@@ -10,14 +10,14 @@ using System.Net;
 namespace Spd.Presentation.Licensing.Controllers;
 
 [ApiController]
-public class CrcControllingMemberController : SpdControllerBase
+public class ControllingMemberCrcAppController : SpdControllerBase
 {
     private readonly IMediator _mediator;
     /// <summary>
     /// 
     /// </summary>
     /// <param name="mediator"></param>
-    public CrcControllingMemberController (IMediator mediator)
+    public ControllingMemberCrcAppController (IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -25,12 +25,12 @@ public class CrcControllingMemberController : SpdControllerBase
     /// <summary>
     /// Save New Licence Crc Controlling Member
     /// </summary>
-    /// <param name="CrcControllingMemberUpsertRequest"></param>
+    /// <param name="ControllingMemberCrcSubmitRequest"></param>
     /// <returns></returns>
-    [Route("api/business-licence/New-Crc-Controlling-Member")]
+    [Route("api/controlling-member-crc-applications/anonymous/submit")]
     [HttpPost]
-    public async Task<CrcControllingMemberCommandResponse> SaveCrcControllingMemberApplication([FromBody][Required] CrcControllingMemberUpsertRequest CrcControllingMemberUpsertRequest, CancellationToken ct)
+    public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppSubmitRequest ControllingMemberCrcSubmitRequest, CancellationToken ct)
     {
-       return await _mediator.Send(new CrcControllingMemberUpsertCommand(CrcControllingMemberUpsertRequest), ct);
+       return await _mediator.Send(new ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcSubmitRequest), ct);
     }
 }
