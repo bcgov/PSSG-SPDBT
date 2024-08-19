@@ -14,13 +14,13 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-7 col-xl-8 col-lg-12 mx-auto">
-						<div class="fw-semibold fs-6">Criminal charges, convictions, or lawsuits</div>
+						<div class="fw-semibold fs-6">Criminal Charges, Convictions, or Lawsuits</div>
 						<p>
 							Have you or your business previously been charged, convicted, or received a court judgement in relation to
 							a lawsuit?
 						</p>
 						<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-							<mat-radio-group aria-label="Select an option" formControlName="isChargeHistory">
+							<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
 								<div class="d-flex justify-content-start">
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 									<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -30,36 +30,40 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<mat-error
 							class="mat-option-error"
 							*ngIf="
-								(form.get('isChargeHistory')?.dirty || form.get('isChargeHistory')?.touched) &&
-								form.get('isChargeHistory')?.invalid &&
-								form.get('isChargeHistory')?.hasError('required')
+								(form.get('hasCriminalHistory')?.dirty || form.get('hasCriminalHistory')?.touched) &&
+								form.get('hasCriminalHistory')?.invalid &&
+								form.get('hasCriminalHistory')?.hasError('required')
 							"
 							>This is required</mat-error
 						>
 
-						<div class="mt-2" *ngIf="isChargeHistory.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div class="mt-2" *ngIf="hasCriminalHistory.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
 							<mat-form-field>
 								<mat-label>Provide Details</mat-label>
 								<textarea
 									matInput
-									formControlName="chargeHistoryDetails"
+									formControlName="criminalHistoryDetail"
 									style="min-height: 100px"
 									[errorStateMatcher]="matcher"
 									maxlength="250"
 								></textarea>
 								<mat-hint>Maximum 250 characters</mat-hint>
-								<mat-error *ngIf="form.get('chargeHistoryDetails')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('criminalHistoryDetail')?.hasError('required')">
+									This is required
+								</mat-error>
 							</mat-form-field>
 						</div>
 
+						<mat-divider class="my-4 mat-divider-primary"></mat-divider>
+
 						<div class="mt-4">
-							<div class="fw-semibold fs-6">Bankruptcy history</div>
+							<div class="fw-semibold fs-6">Bankruptcy History</div>
 							<p>
 								Have you previously been involved in a company that has declared bankruptcy, is in the process of
 								declaring bankruptcy or currently have a bankruptcy in progress?
 							</p>
 							<div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-								<mat-radio-group aria-label="Select an option" formControlName="isBankruptcyHistory">
+								<mat-radio-group aria-label="Select an option" formControlName="hasBankruptcyHistory">
 									<div class="d-flex justify-content-start">
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 										<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -69,26 +73,30 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-error
 								class="mat-option-error"
 								*ngIf="
-									(form.get('isBankruptcyHistory')?.dirty || form.get('isBankruptcyHistory')?.touched) &&
-									form.get('isBankruptcyHistory')?.invalid &&
-									form.get('isBankruptcyHistory')?.hasError('required')
+									(form.get('hasBankruptcyHistory')?.dirty || form.get('hasBankruptcyHistory')?.touched) &&
+									form.get('hasBankruptcyHistory')?.invalid &&
+									form.get('hasBankruptcyHistory')?.hasError('required')
 								"
 								>This is required</mat-error
 							>
 						</div>
 
-						<div class="mt-2" *ngIf="isBankruptcyHistory.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+						<div
+							class="mt-2"
+							*ngIf="hasBankruptcyHistory.value === booleanTypeCodes.Yes"
+							@showHideTriggerSlideAnimation
+						>
 							<mat-form-field>
 								<mat-label>Provide Details</mat-label>
 								<textarea
 									matInput
-									formControlName="bankruptcyHistoryDetails"
+									formControlName="bankruptcyHistoryDetail"
 									style="min-height: 100px"
 									[errorStateMatcher]="matcher"
 									maxlength="250"
 								></textarea>
 								<mat-hint>Maximum 250 characters</mat-hint>
-								<mat-error *ngIf="form.get('bankruptcyHistoryDetails')?.hasError('required')">
+								<mat-error *ngIf="form.get('bankruptcyHistoryDetail')?.hasError('required')">
 									This is required
 								</mat-error>
 							</mat-form-field>
@@ -116,12 +124,12 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent implements L
 		return this.form.valid;
 	}
 
-	get isChargeHistory(): FormControl {
-		return this.form.get('isChargeHistory') as FormControl;
+	get hasCriminalHistory(): FormControl {
+		return this.form.get('hasCriminalHistory') as FormControl;
 	}
 
-	get isBankruptcyHistory(): FormControl {
-		return this.form.get('isBankruptcyHistory') as FormControl;
+	get hasBankruptcyHistory(): FormControl {
+		return this.form.get('hasBankruptcyHistory') as FormControl;
 	}
 
 	get isRenewalOrUpdate(): boolean {

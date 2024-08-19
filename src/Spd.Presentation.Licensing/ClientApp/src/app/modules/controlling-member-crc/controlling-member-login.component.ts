@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { take, tap } from 'rxjs';
-import { ControllingMembersCrcRoutes } from './controlling-member-crc-routing.module';
+import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
 
 @Component({
 	selector: 'app-controlling-member-login',
@@ -139,8 +139,8 @@ export class ControllingMemberLoginComponent implements OnInit {
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
-						ControllingMembersCrcRoutes.pathControllingMembersAnonymous(
-							ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW
+						ControllingMemberCrcRoutes.pathControllingMemberCrcAnonymous(
+							ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW
 						)
 					);
 				}),

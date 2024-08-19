@@ -6,10 +6,22 @@ import { FileUtilService } from '@app/core/services/file-util.service';
 import { UtilService } from '@app/core/services/util.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 
 export abstract class ControllingMembersHelper extends ApplicationHelper {
+	personalNameAndContactInformationFormGroup: FormGroup = this.formBuilder.group({
+		givenName: new FormControl(''),
+		middleName1: new FormControl(''),
+		middleName2: new FormControl(''),
+		surname: new FormControl('', [FormControlValidators.required]),
+		genderCode: new FormControl('', [FormControlValidators.required]),
+		dateOfBirth: new FormControl('', [Validators.required]),
+		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
+		phoneNumber: new FormControl('', [Validators.required]),
+	});
+
 	citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
@@ -62,20 +74,20 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 
 	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
 		{
-			isChargeHistory: new FormControl('', [FormControlValidators.required]),
-			chargeHistoryDetails: new FormControl(''),
-			isBankruptcyHistory: new FormControl('', [FormControlValidators.required]),
-			bankruptcyHistoryDetails: new FormControl(''),
+			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
+			criminalHistoryDetail: new FormControl(''),
+			hasBankruptcyHistory: new FormControl('', [FormControlValidators.required]),
+			bankruptcyHistoryDetail: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'chargeHistoryDetails',
-					(form) => form.get('isChargeHistory')?.value == BooleanTypeCode.Yes
+					'criminalHistoryDetail',
+					(form) => form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'bankruptcyHistoryDetails',
-					(form) => form.get('isBankruptcyHistory')?.value == BooleanTypeCode.Yes
+					'bankruptcyHistoryDetail',
+					(form) => form.get('hasBankruptcyHistory')?.value == BooleanTypeCode.Yes
 				),
 			],
 		}
@@ -87,9 +99,22 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 		check3: new FormControl(null, [Validators.requiredTrue]),
 		check4: new FormControl(null, [Validators.requiredTrue]),
 		check5: new FormControl(null, [Validators.requiredTrue]),
-		check6: new FormControl(null, [Validators.requiredTrue]),
 		agreeToCompleteAndAccurate: new FormControl(null, [Validators.requiredTrue]),
 		dateSigned: new FormControl({ value: null, disabled: true }),
+		captchaFormGroup: new FormGroup(
+			{
+				displayCaptcha: new FormControl(false),
+				token: new FormControl(''),
+			},
+			{
+				validators: [
+					FormGroupValidators.conditionalRequiredValidator(
+						'token',
+						(form) => form.get('displayCaptcha')?.value == true
+					),
+				],
+			}
+		),
 	});
 
 	constructor(
@@ -102,154 +127,79 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 		super(formBuilder);
 	}
 
-	// getDocsToSaveBlobs(controllingMembersModelFormValue: any): Array<LicenceDocumentsToSave> {
-	// 	const companyBrandingData = { ...controllingMembersModelFormValue.companyBrandingData };
-	// 	const liabilityData = { ...controllingMembersModelFormValue.liabilityData };
-	// 	const controllingMembersData = { ...controllingMembersModelFormValue.controllingMembersData };
+	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): any {
+		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, false);
+		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
-	// 	const documents: Array<LicenceDocumentsToSave> = [];
+		return baseData;
+	}
 
-	// 	if (!companyBrandingData.noLogoOrBranding) {
-	// 		const docs: Array<Blob> = [];
-	// 		companyBrandingData.attachments?.forEach((doc: any) => {
-	// 			docs.push(doc);
-	// 		});
-	// 		documents.push({
-	// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
-	// 			documents: docs,
-	// 		});
-	// 	}
+	private getSaveBodyBase(controllingMemberCrcFormValue: any, isAuthenticated: boolean): any {
+		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
+		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
+		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
+		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
+		// const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
+		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
+		const personalNameAndContactInformationData = {
+			...controllingMemberCrcFormValue.personalNameAndContactInformationData,
+		};
+		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryFormGroup;
 
-	// 	if (liabilityData.attachments?.length > 0) {
-	// 		const docs: Array<Blob> = [];
-	// 		liabilityData.attachments?.forEach((doc: any) => {
-	// 			docs.push(doc);
-	// 		});
-	// 		documents.push({
-	// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
-	// 			documents: docs,
-	// 		});
-	// 	}
+		personalNameAndContactInformationData.dateOfBirth = this.formatDatePipe.transform(
+			personalNameAndContactInformationData.dateOfBirth,
+			SPD_CONSTANTS.date.backendDateFormat
+		);
 
-	// 	if (controllingMembersData.attachments) {
-	// 		const docs: Array<Blob> = [];
-	// 		controllingMembersData.attachments.forEach((doc: any) => {
-	// 			docs.push(doc);
-	// 		});
-	// 		documents.push({
-	// 			licenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
-	// 			documents: docs,
-	// 		});
-	// 	}
+		const accessCode = ''; // TODO addess accessCode
 
-	// 	return documents;
-	// }
-
-	getSaveBodyBase(_controllingMembersModelFormValue: any): any {
-		// 	const bizId = controllingMembersModelFormValue.bizId;
-		// 	const licenceAppId = controllingMembersModelFormValue.licenceAppId;
-		// 	const workerLicenceTypeData = { ...controllingMembersModelFormValue.workerLicenceTypeData };
-		// 	const applicationTypeData = { ...controllingMembersModelFormValue.applicationTypeData };
-		// 	const expiredLicenceData = { ...controllingMembersModelFormValue.expiredLicenceData };
-		// 	const companyBrandingData = { ...controllingMembersModelFormValue.companyBrandingData };
-		// 	const applicantData = { ...controllingMembersModelFormValue.applicantData };
-		// 	const originalLicenceData = { ...controllingMembersModelFormValue.originalLicenceData };
-
-		// 	const bizTypeCode = controllingMembersModelFormValue.businessInformationData.bizTypeCode;
-
-		// 	let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		// 	let useDogs: boolean | null = null;
-
-		// 	const categoryCodes = this.getSaveBodyCategoryCodes(controllingMembersModelFormValue.categoryData);
-		// 	const documentInfos = this.getSaveBodyDocumentInfos(controllingMembersModelFormValue);
-
-		// 	// Business Manager information is only supplied in non-sole proprietor flow
-		// 	let applicantContactInfo: ContactInfo = {};
-		// 	let applicantIsBizManager: boolean | null = null;
-
-		// 	// Only save members if business is not a sole proprietor
-		// 	let members: Members = {
-		// 		employees: [],
-		// 		nonSwlControllingMembers: [],
-		// 		swlControllingMembers: [],
-		// 	};
-		// 	if (!this.isSoleProprietor(bizTypeCode)) {
-		// 		members = {
-		// 			employees: this.saveEmployeesBody(controllingMembersModelFormValue.employeesData),
-		// 			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(
-		// 				controllingMembersModelFormValue.controllingMembersData
-		// 			),
-		// 			swlControllingMembers: this.saveControllingMembersWithSwlBody(controllingMembersModelFormValue.controllingMembersData),
-		// 		};
-		// 	}
-
-		// 	const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
-		// 	const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
-		// 	if (!hasExpiredLicence) {
-		// 		this.clearExpiredLicenceModelData();
-		// 	}
+		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
+		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
+			bcSecurityLicenceHistoryData.hasBankruptcyHistory
+		);
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
 
 		const body = {
-			// 		bizId,
-			// 		bizTypeCode,
-			// 		licenceAppId,
-			// 		latestApplicationId: controllingMembersModelFormValue.latestApplicationId,
-			// 		applicationTypeCode: applicationTypeData.applicationTypeCode,
-			// 		workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
-			// 		licenceTermCode: controllingMembersModelFormValue.licenceTermData.licenceTermCode,
-			// 		//-----------------------------------
-			// 		members,
-			// 		//-----------------------------------
-			// 		originalApplicationId: originalLicenceData ? originalLicenceData.originalApplicationId : null,
-			// 		originalLicenceId: originalLicenceData ? originalLicenceData.originalLicenceId : null,
-			// 		//-----------------------------------
-			// 		categoryCodes: [...categoryCodes],
-			// 		documentInfos: [...documentInfos],
-			// 		privateInvestigatorSwlInfo,
-			// 		useDogs,
+			accessCode,
+			givenName: personalNameAndContactInformationData.givenName,
+			surname: personalNameAndContactInformationData.surname,
+			middleName1: personalNameAndContactInformationData.middleName1,
+			middleName2: personalNameAndContactInformationData.middleName2,
+			dateOfBirth: personalNameAndContactInformationData.dateOfBirth,
+			emailAddress: personalNameAndContactInformationData.emailAddress,
+			phoneNumber: personalNameAndContactInformationData.phoneNumber,
+			genderCode: personalNameAndContactInformationData.genderCode,
+			//-----------------------------------
+			hasPreviousName: this.utilService.booleanTypeToBoolean(
+				controllingMemberCrcFormValue.aliasesData.previousNameFlag
+			),
+			aliases:
+				controllingMemberCrcFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? controllingMemberCrcFormValue.aliasesData.aliases
+					: [],
+			//-----------------------------------
+			hasBcDriversLicence,
+			bcDriversLicenceNumber: hasBcDriversLicence ? bcDriversLicenceData.bcDriversLicenceNumber : null,
+			//-----------------------------------
+			residentialAddress: residentialAddressData,
+			//-----------------------------------
+			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
+			//-----------------------------------
+			hasBankruptcyHistory,
+			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
+			//-----------------------------------
+			hasCriminalHistory,
+			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
+			//-----------------------------------
+			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			// hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			//-----------------------------------
+			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
+			otherOfficerRole: policeBackgroundData.otherOfficerRole,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
 	}
-
-	// getSaveBodyDocumentInfos(controllingMembersModelFormValue: any): Array<Document> {
-	// 	const companyBrandingData = { ...controllingMembersModelFormValue.companyBrandingData };
-	// 	const liabilityData = { ...controllingMembersModelFormValue.liabilityData };
-	// 	const controllingMembersData = { ...controllingMembersModelFormValue.controllingMembersData };
-
-	// 	const documents: Array<Document> = [];
-
-	// 	if (!companyBrandingData.noLogoOrBranding) {
-	// 		companyBrandingData.attachments?.forEach((doc: any) => {
-	// 			documents.push({
-	// 				documentUrlId: doc.documentUrlId,
-	// 				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizBranding,
-	// 			});
-	// 		});
-	// 	}
-
-	// 	if (liabilityData.attachments?.length > 0) {
-	// 		liabilityData.attachments?.forEach((doc: any) => {
-	// 			documents.push({
-	// 				documentUrlId: doc.documentUrlId,
-	// 				licenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance,
-	// 			});
-	// 		});
-	// 	}
-
-	// 	return documents;
-	// }
-
-	// isRenewalOrUpdate(applicationTypeCode: ApplicationTypeCode | undefined): boolean {
-	// 	if (!applicationTypeCode) return false;
-
-	// 	return applicationTypeCode === ApplicationTypeCode.Renewal || applicationTypeCode === ApplicationTypeCode.Update;
-	// }
-
-	// isUpdate(applicationTypeCode: ApplicationTypeCode | undefined): boolean {
-	// 	if (!applicationTypeCode) return false;
-
-	// 	return applicationTypeCode === ApplicationTypeCode.Update;
-	// }
 }

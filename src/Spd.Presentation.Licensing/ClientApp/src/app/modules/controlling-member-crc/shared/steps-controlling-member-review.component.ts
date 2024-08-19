@@ -1,7 +1,8 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-review',
@@ -11,8 +12,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				<app-step-controlling-member-summary-review-anonymous></app-step-controlling-member-summary-review-anonymous>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_REVIEW)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -20,8 +22,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				<app-step-controlling-member-consent-and-declaration></app-step-controlling-member-consent-and-declaration>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onStepNext(STEP_CONSENT)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -30,38 +33,29 @@ import { ApplicationService } from '@app/core/services/application.service';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsControllingMemberReviewComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 1;
-	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_BRANDING = 3;
-	readonly STEP_LICENCE_LIABILITY = 4;
+	readonly STEP_REVIEW = 0;
+	readonly STEP_CONSENT = 1;
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	// @ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	// @ViewChild(StepBusinessLicenceCompanyBrandingComponent)
-	// stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
-	// @ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
+	@ViewChild(StepControllingMemberConsentAndDeclarationComponent)
+	stepConsent!: StepControllingMemberConsentAndDeclarationComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// 	switch (step) {
-		// 		case this.STEP_LICENCE_CONFIRMATION:
-		// 			return true;
-		// 		case this.STEP_LICENCE_EXPIRED:
-		// 			return this.stepExpiredComponent.isFormValid();
-		// 		case this.STEP_LICENCE_BRANDING:
-		// 			return this.stepCompanyBrandingComponent.isFormValid();
-		// 		case this.STEP_LICENCE_LIABILITY:
-		// 			return this.stepLiabilityComponent.isFormValid();
-		// 		default:
-		// 			console.error('Unknown Form', step);
-		// 	}
-		// 	return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_REVIEW:
+				return true;
+			case this.STEP_CONSENT:
+				return this.stepConsent.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

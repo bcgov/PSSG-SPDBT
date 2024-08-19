@@ -3,24 +3,22 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
 	ApplicationTypeCode,
-	BizLicAppCommandResponse,
-	BizLicAppSubmitRequest,
-	BizProfileResponse,
-	LicenceAppDocumentResponse,
+	ControllingMemberCrcAppCommandResponse,
+	ControllingMemberCrcAppSubmitRequest,
 	LicenceDocumentTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { BizLicensingService, BizProfileService } from '@app/api/services';
+import { BizLicensingService, BizProfileService, ControllingMemberCrcAppService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { ApplicationService } from '@app/core/services/application.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
-import { LicenceDocument, UtilService } from '@app/core/services/util.service';
+import { UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, tap } from 'rxjs';
 import { ControllingMembersHelper } from './controlling-members.helper';
 
 // export interface ControllingMemberContactInfo extends NonSwlContactInfo {
@@ -40,13 +38,12 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	controllingMembersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	controllingMembersModelFormGroup: FormGroup = this.formBuilder.group({
-		// bizId: new FormControl(),
 		licenceAppId: new FormControl(),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 
-		personalInformationData: this.personalInformationFormGroup,
+		personalInformationData: this.personalNameAndContactInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
 
@@ -56,7 +53,7 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		bcSecurityLicenceHistoryData: this.bcSecurityLicenceHistoryFormGroup,
 		policeBackgroundData: this.policeBackgroundFormGroup,
 		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
-		consentAndDeclarationData: this.consentAndDeclarationFormGroup
+		consentAndDeclarationData: this.consentAndDeclarationFormGroup,
 	});
 
 	controllingMembersModelChangedSubscription!: Subscription;
@@ -70,6 +67,7 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		private router: Router,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
+		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
 		private authUserBceidService: AuthUserBceidService,
 		private commonApplicationService: ApplicationService,
 		private hotToastService: HotToastService
@@ -136,121 +134,121 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<BizLicAppCommandResponse>
 	 */
-	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(controllingMembersModelFormValue);
+	// partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
+	// 	const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+	// 	const body = this.getSaveBodyBase(controllingMembersModelFormValue);
 
-		return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
-			take(1),
-			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.resetModelChangeFlags();
+	// 	return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
+	// 		take(1),
+	// 		tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+	// 			this.resetModelChangeFlags();
 
-				let msg = 'Business Licence information has been saved';
-				if (isSaveAndExit) {
-					msg =
-						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
-				}
-				this.hotToastService.success(msg);
+	// 			let msg = 'Business Licence information has been saved';
+	// 			if (isSaveAndExit) {
+	// 				msg =
+	// 					'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+	// 			}
+	// 			this.hotToastService.success(msg);
 
-				// if (!controllingMembersModelFormValue.licenceAppId) {
-				// 	this.controllingMembersModelFormGroup.patchValue(
-				// 		{ licenceAppId: resp.body.licenceAppId! },
-				// 		{ emitEvent: false }
-				// 	);
-				// }
-				return resp;
-			})
-		);
-	}
+	// 			// if (!controllingMembersModelFormValue.licenceAppId) {
+	// 			// 	this.controllingMembersModelFormGroup.patchValue(
+	// 			// 		{ licenceAppId: resp.body.licenceAppId! },
+	// 			// 		{ emitEvent: false }
+	// 			// 	);
+	// 			// }
+	// 			return resp;
+	// 		})
+	// 	);
+	// }
 
-	getBusinessProfile(): Observable<BizProfileResponse> {
-		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+	// getBusinessProfile(): Observable<BizProfileResponse> {
+	// 	const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.bizProfileService.apiBizIdGet({ id: bizId });
-	}
+	// 	return this.bizProfileService.apiBizIdGet({ id: bizId });
+	// }
 
-	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(controllingMembersModelFormValue);
+	// submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	// 	const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+	// 	const body = this.getSaveBodyBase(controllingMembersModelFormValue);
 
-		body.agreeToCompleteAndAccurate = true;
+	// 	body.agreeToCompleteAndAccurate = true;
 
-		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
-	}
+	// 	return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+	// }
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const bodyUpsert = this.getSaveBodyBase(controllingMembersModelFormValue);
-		delete bodyUpsert.documentInfos;
+	// submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	// 	const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+	// 	const bodyUpsert = this.getSaveBodyBase(controllingMembersModelFormValue);
+	// 	delete bodyUpsert.documentInfos;
 
-		const body = bodyUpsert as BizLicAppSubmitRequest;
+	// 	const body = bodyUpsert as BizLicAppSubmitRequest;
 
-		// if (body.applicationTypeCode === ApplicationTypeCode.Update) {
-		// 	// if not showing the reprint step, then set to True, otherwise
-		// 	// use the value selected
-		// 	body.reprint = isUpdateFlowWithHideReprintStep
-		// 		? true
-		// 		: this.utilService.booleanTypeToBoolean(controllingMembersModelFormValue.reprintLicenceData.reprintLicence);
-		// }
+	// 	// if (body.applicationTypeCode === ApplicationTypeCode.Update) {
+	// 	// 	// if not showing the reprint step, then set to True, otherwise
+	// 	// 	// use the value selected
+	// 	// 	body.reprint = isUpdateFlowWithHideReprintStep
+	// 	// 		? true
+	// 	// 		: this.utilService.booleanTypeToBoolean(controllingMembersModelFormValue.reprintLicenceData.reprintLicence);
+	// 	// }
 
-		// const documentsToSave = this.getDocsToSaveBlobs(controllingMembersModelFormValue);
+	// 	// const documentsToSave = this.getDocsToSaveBlobs(controllingMembersModelFormValue);
 
-		// body.agreeToCompleteAndAccurate = true;
+	// 	// body.agreeToCompleteAndAccurate = true;
 
-		// // Create list of APIs to call for the newly added documents
-		// const documentsToSaveApis: Observable<any>[] = [];
+	// 	// // Create list of APIs to call for the newly added documents
+	// 	// const documentsToSaveApis: Observable<any>[] = [];
 
-		// // Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
+	// 	// // Get the keyCode for the existing documents to save.
+	// 	// const existingDocumentIds: Array<string> = [];
 
-		// documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
-		// 	const newDocumentsOnly: Array<Blob> = [];
+	// 	// documentsToSave?.forEach((doc: LicenceDocumentsToSave) => {
+	// 	// 	const newDocumentsOnly: Array<Blob> = [];
 
-		// 	doc.documents.forEach((item: Blob) => {
-		// 		const spdFile: SpdFile = item as SpdFile;
-		// 		if (spdFile.documentUrlId) {
-		// 			existingDocumentIds.push(spdFile.documentUrlId);
-		// 		} else {
-		// 			newDocumentsOnly.push(item);
-		// 		}
-		// 	});
+	// 	// 	doc.documents.forEach((item: Blob) => {
+	// 	// 		const spdFile: SpdFile = item as SpdFile;
+	// 	// 		if (spdFile.documentUrlId) {
+	// 	// 			existingDocumentIds.push(spdFile.documentUrlId);
+	// 	// 		} else {
+	// 	// 			newDocumentsOnly.push(item);
+	// 	// 		}
+	// 	// 	});
 
-		// 	if (newDocumentsOnly.length > 0) {
-		// 		documentsToSaveApis.push(
-		// 			this.bizLicensingService.apiBusinessLicenceApplicationFilesPost({
-		// 				body: {
-		// 					Documents: newDocumentsOnly,
-		// 					LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
-		// 				},
-		// 			})
-		// 		);
-		// 	}
-		// });
+	// 	// 	if (newDocumentsOnly.length > 0) {
+	// 	// 		documentsToSaveApis.push(
+	// 	// 			this.bizLicensingService.apiBusinessLicenceApplicationFilesPost({
+	// 	// 				body: {
+	// 	// 					Documents: newDocumentsOnly,
+	// 	// 					LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+	// 	// 				},
+	// 	// 			})
+	// 	// 		);
+	// 	// 	}
+	// 	// });
 
-		// if (documentsToSaveApis.length > 0) {
-		// 	return forkJoin(documentsToSaveApis).pipe(
-		// 		switchMap((resps: string[]) => {
-		// 			// pass in the list of document key codes
-		// 			body.documentKeyCodes = [...resps];
-		// 			// pass in the list of document ids that were in the original
-		// 			// application and are still being used
-		// 			body.previousDocumentIds = [...existingDocumentIds];
+	// 	// if (documentsToSaveApis.length > 0) {
+	// 	// 	return forkJoin(documentsToSaveApis).pipe(
+	// 	// 		switchMap((resps: string[]) => {
+	// 	// 			// pass in the list of document key codes
+	// 	// 			body.documentKeyCodes = [...resps];
+	// 	// 			// pass in the list of document ids that were in the original
+	// 	// 			// application and are still being used
+	// 	// 			body.previousDocumentIds = [...existingDocumentIds];
 
-		// 			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-		// 				body,
-		// 			});
-		// 		})
-		// 	);
-		// } else {
-		// 	// pass in the list of document ids that were in the original
-		// 	// application and are still being used
-		// 	body.previousDocumentIds = [...existingDocumentIds];
+	// 	// 			return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+	// 	// 				body,
+	// 	// 			});
+	// 	// 		})
+	// 	// 	);
+	// 	// } else {
+	// 	// 	// pass in the list of document ids that were in the original
+	// 	// 	// application and are still being used
+	// 	// 	body.previousDocumentIds = [...existingDocumentIds];
 
-		return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
-			body,
-		});
-		// }
-	}
+	// 	return this.bizLicensingService.apiBusinessLicenceApplicationChangePost$Response({
+	// 		body,
+	// 	});
+	// 	// }
+	// }
 
 	/**
 	 * When uploading a file, set the value as changed, and perform the upload
@@ -264,41 +262,41 @@ export class ControllingMembersService extends ControllingMembersHelper {
 	) {
 		this.hasValueChanged = true;
 
-		if (!this.isAutoSave()) return;
+		// 	if (!this.isAutoSave()) return;
 
-		this.addUploadDocument(documentCode, document).subscribe({
-			next: (resp: any) => {
-				const matchingFile = attachments.value.find((item: File) => item.name == document.name);
-				matchingFile.documentUrlId = resp.body[0].documentUrlId;
-			},
-			error: (error: any) => {
-				console.log('An error occurred during file upload', error);
+		// 	this.addUploadDocument(documentCode, document).subscribe({
+		// 		next: (resp: any) => {
+		// 			const matchingFile = attachments.value.find((item: File) => item.name == document.name);
+		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
+		// 		},
+		// 		error: (error: any) => {
+		// 			console.log('An error occurred during file upload', error);
 
-				fileUploadComponent.removeFailedFile(document);
-			},
-		});
+		// 			fileUploadComponent.removeFailedFile(document);
+		// 		},
+		// 	});
 	}
 
-	/**
-	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
-	 * @param documentCode
-	 * @param document
-	 * @returns
-	 */
-	addUploadDocument(
-		documentCode: LicenceDocumentTypeCode,
-		documentFile: File
-	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-		const doc: LicenceDocument = {
-			Documents: [documentFile],
-			LicenceDocumentTypeCode: documentCode,
-		};
+	// /**
+	//  * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	//  * @param documentCode
+	//  * @param document
+	//  * @returns
+	//  */
+	// addUploadDocument(
+	// 	documentCode: LicenceDocumentTypeCode,
+	// 	documentFile: File
+	// ): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+	// 	const doc: LicenceDocument = {
+	// 		Documents: [documentFile],
+	// 		LicenceDocumentTypeCode: documentCode,
+	// 	};
 
-		return this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response({
-			licenceAppId: this.controllingMembersModelFormGroup.get('licenceAppId')?.value,
-			body: doc,
-		});
-	}
+	// 	return this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response({
+	// 		licenceAppId: this.controllingMembersModelFormGroup.get('licenceAppId')?.value,
+	// 		body: doc,
+	// 	});
+	// }
 
 	/**
 	 * Determine if the Save & Exit process can occur
@@ -414,6 +412,85 @@ export class ControllingMembersService extends ControllingMembersHelper {
 
 	// 	return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	// }
+
+	/**
+	 * Submit the licence data anonymous
+	 * @returns
+	 */
+	submitControllingMemberCrcAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		// const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
+
+		console.log('*********body', body);
+
+		// // Get the keyCode for the existing documents to save.
+		// const existingDocumentIds: Array<string> = [];
+		// body.documentInfos?.forEach((doc: Document) => {
+		// 	if (doc.documentUrlId) {
+		// 		existingDocumentIds.push(doc.documentUrlId);
+		// 	}
+		// });
+
+		// delete body.documentInfos;
+
+		// const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
+		// return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
+		return this.postLicenceAnonymousDocuments(body);
+
+		// this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMIT));
+	}
+
+	/**
+	 * Post licence documents anonymous.
+	 * @returns
+	 */
+	private postLicenceAnonymousDocuments(
+		// googleRecaptcha: GoogleRecaptcha,
+		// existingDocumentIds: Array<string>,
+		// documentsToSaveApis: Observable<string>[] | null,
+		body: ControllingMemberCrcAppSubmitRequest
+	) {
+		// if (documentsToSaveApis) {
+		// 	return this.controllingMemberCrcAppService
+		// 		.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+		// 		.pipe(
+		// 			switchMap((_resp: IActionResult) => {
+		// 				return forkJoin(documentsToSaveApis);
+		// 			}),
+		// 			switchMap((resps: string[]) => {
+		// 				// pass in the list of document key codes
+		// 				body.documentKeyCodes = [...resps];
+		// 				// pass in the list of document ids that were in the original
+		// 				// application and are still being used
+		// 				body.previousDocumentIds = [...existingDocumentIds];
+
+		// 				return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+		// 					body,
+		// 				});
+		// 			})
+		// 		)
+		// 		.pipe(take(1));
+		// } else {
+		// 	return this.securityWorkerLicensingService
+		// 		.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+		// 		.pipe(
+		// 			switchMap((_resp: IActionResult) => {
+		// 				// pass in the list of document ids that were in the original
+		// 				// application and are still being used
+		// 				body.previousDocumentIds = [...existingDocumentIds];
+
+		// 				return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
+		// 					body,
+		// 				});
+		// 			})
+		// 		)
+		// 		.pipe(take(1));
+		// }
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousSubmitPost$Response({
+			body,
+		});
+	}
 
 	/**
 	 * Save the controlling members and employees

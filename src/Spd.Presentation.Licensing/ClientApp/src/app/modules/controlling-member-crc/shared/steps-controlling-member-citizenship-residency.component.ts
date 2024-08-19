@@ -1,7 +1,10 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepControllingMemberBcDriverLicenceComponent } from './step-controlling-member-bc-driver-licence.component';
+import { StepControllingMemberCitizenshipComponent } from './step-controlling-member-citizenship.component';
+import { StepControllingMemberFingerprintsComponent } from './step-controlling-member-fingerprints.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-citizenship-residency',
@@ -13,8 +16,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-citizenship>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -22,8 +26,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				<app-step-controlling-member-fingerprints></app-step-controlling-member-fingerprints>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_FINGERPRINTS)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -33,8 +38,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-bc-driver-licence>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onStepNext(STEP_DRIVERS_LICENCE)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -43,38 +49,34 @@ import { ApplicationService } from '@app/core/services/application.service';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 1;
-	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_BRANDING = 3;
-	readonly STEP_LICENCE_LIABILITY = 4;
+	readonly STEP_CITIZENSHIP = 0;
+	readonly STEP_FINGERPRINTS = 1;
+	readonly STEP_DRIVERS_LICENCE = 2;
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	// @ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	// @ViewChild(StepBusinessLicenceCompanyBrandingComponent)
-	// stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
-	// @ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
+	@ViewChild(StepControllingMemberCitizenshipComponent) stepCitizenship!: StepControllingMemberCitizenshipComponent;
+	@ViewChild(StepControllingMemberFingerprintsComponent) stepFingerprints!: StepControllingMemberFingerprintsComponent;
+	@ViewChild(StepControllingMemberBcDriverLicenceComponent)
+	stepDriversLicence!: StepControllingMemberBcDriverLicenceComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// 	switch (step) {
-		// 		case this.STEP_LICENCE_CONFIRMATION:
-		// 			return true;
-		// 		case this.STEP_LICENCE_EXPIRED:
-		// 			return this.stepExpiredComponent.isFormValid();
-		// 		case this.STEP_LICENCE_BRANDING:
-		// 			return this.stepCompanyBrandingComponent.isFormValid();
-		// 		case this.STEP_LICENCE_LIABILITY:
-		// 			return this.stepLiabilityComponent.isFormValid();
-		// 		default:
-		// 			console.error('Unknown Form', step);
-		// 	}
-		// 	return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_CITIZENSHIP:
+				return this.stepCitizenship.isFormValid();
+			case this.STEP_FINGERPRINTS:
+				return this.stepFingerprints.isFormValid();
+			case this.STEP_DRIVERS_LICENCE:
+				return this.stepDriversLicence.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

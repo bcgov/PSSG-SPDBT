@@ -1,18 +1,21 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ControllingMemberCrcAppCommandResponse } from '@app/api/models';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
-import { HotToastService } from '@ngneat/hot-toast';
-import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-personal-information.component';
 import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-review.component';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { HotToastService } from '@ngneat/hot-toast';
+import { Subscription, distinctUntilChanged } from 'rxjs';
+import { ControllingMemberCrcRoutes } from '../controlling-member-crc-routing.module';
 
 @Component({
 	selector: 'app-controlling-member-wizard-anonymous-new',
@@ -31,6 +34,7 @@ import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
+					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 				></app-steps-controlling-member-personal-information>
@@ -43,6 +47,7 @@ import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
+					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -56,6 +61,7 @@ import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
+					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -69,15 +75,15 @@ import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
+					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
-					(nextStepperStep)="onNextStepperStep(stepper)"
+					(nextStepperStep)="onSubmitNow()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 				></app-steps-controlling-member-review>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Submit</ng-template>
-				<app-controlling-member-submission-received></app-controlling-member-submission-received>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -112,8 +118,8 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private dialog: MatDialog,
 		private hotToastService: HotToastService,
-		private commonApplicationService: ApplicationService,
 		private controllingMembersService: ControllingMembersService
 	) {
 		super(breakpointObserver);
@@ -157,6 +163,38 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 	onNextStepperStep(stepper: MatStepper): void {
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
+	}
+
+	onSubmitNow(): void {
+		this.controllingMembersService.submitControllingMemberCrcAnonymous().subscribe({
+			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
+				this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	onCancelAndExit(): void {
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to cancel your Criminal Record Check application?',
+			actionText: 'Yes',
+			cancelText: 'Close',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.router.navigateByUrl(
+						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN)
+					);
+				}
+			});
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

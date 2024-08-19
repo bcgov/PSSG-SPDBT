@@ -1,7 +1,10 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepControllingMemberAliasesComponent } from './step-controlling-member-aliases.component';
+import { StepControllingMemberPersonalInfoComponent } from './step-controlling-member-personal-info.component';
+import { StepControllingMemberResidentialAddressComponent } from './step-controlling-member-residential-address.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-personal-information',
@@ -18,15 +21,18 @@ import { ApplicationService } from '@app/core/services/application.service';
 					(previousStepperStep)="onGoToPreviousStep()"
 					(previousStepperStep)="onGotoBusinessProfile()"-->
 
-				<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
+				<app-wizard-footer (cancelAndExit)="onCancelAndExit()" (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
-				Confirm your personal information
+				<app-step-controlling-member-personal-info
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-member-personal-info>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -36,8 +42,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-aliases>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -47,8 +54,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-residential-address>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onStepNext(STEP_RESIDENTIAL_ADDRESS)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -57,38 +65,37 @@ import { ApplicationService } from '@app/core/services/application.service';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsControllingMemberPersonalInformationComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 1;
-	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_BRANDING = 3;
-	readonly STEP_LICENCE_LIABILITY = 4;
+	readonly STEP_CHECKLIST = 0;
+	readonly STEP_PERSONAL_INFO = 1;
+	readonly STEP_ALIASES = 2;
+	readonly STEP_RESIDENTIAL_ADDRESS = 3;
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	// @ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	// @ViewChild(StepBusinessLicenceCompanyBrandingComponent)
-	// stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
-	// @ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
+	@ViewChild(StepControllingMemberPersonalInfoComponent) stepPersonalInfo!: StepControllingMemberPersonalInfoComponent;
+	@ViewChild(StepControllingMemberAliasesComponent) stepAliases!: StepControllingMemberAliasesComponent;
+	@ViewChild(StepControllingMemberResidentialAddressComponent)
+	stepAddress!: StepControllingMemberResidentialAddressComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// 	switch (step) {
-		// 		case this.STEP_LICENCE_CONFIRMATION:
-		// 			return true;
-		// 		case this.STEP_LICENCE_EXPIRED:
-		// 			return this.stepExpiredComponent.isFormValid();
-		// 		case this.STEP_LICENCE_BRANDING:
-		// 			return this.stepCompanyBrandingComponent.isFormValid();
-		// 		case this.STEP_LICENCE_LIABILITY:
-		// 			return this.stepLiabilityComponent.isFormValid();
-		// 		default:
-		// 			console.error('Unknown Form', step);
-		// 	}
-		// 	return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_CHECKLIST:
+				return true;
+			case this.STEP_PERSONAL_INFO:
+				return this.stepPersonalInfo.isFormValid();
+			case this.STEP_ALIASES:
+				return this.stepAliases.isFormValid();
+			case this.STEP_RESIDENTIAL_ADDRESS:
+				return this.stepAddress.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

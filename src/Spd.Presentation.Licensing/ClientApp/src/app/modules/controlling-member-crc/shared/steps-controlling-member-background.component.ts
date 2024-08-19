@@ -1,7 +1,10 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepControllingMemberBcSecurityLicenceHistoryComponent } from './step-controlling-member-bc-security-licence-history.component';
+import { StepControllingMemberMentalHealthConditionsComponent } from './step-controlling-member-mental-health-conditions.component';
+import { StepControllingMemberPoliceBackgroundComponent } from './step-controlling-member-police-background.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-background',
@@ -13,8 +16,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-bc-security-licence-history>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_HISTORY)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -24,8 +28,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-police-background>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -35,8 +40,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 				></app-step-controlling-member-mental-health-conditions>
 
 				<app-wizard-footer
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_LICENCE_CONFIRMATION)"
+					(nextStepperStep)="onStepNext(STEP_MENTAL_HEALTH)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -45,38 +51,36 @@ import { ApplicationService } from '@app/core/services/application.service';
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsControllingMemberBackgroundComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 1;
-	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_BRANDING = 3;
-	readonly STEP_LICENCE_LIABILITY = 4;
+	readonly STEP_LICENCE_HISTORY = 0;
+	readonly STEP_POLICE_BACKGROUND = 1;
+	readonly STEP_MENTAL_HEALTH = 2;
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
-	// @ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
-	// @ViewChild(StepBusinessLicenceCompanyBrandingComponent)
-	// stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
-	// @ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
+	@ViewChild(StepControllingMemberBcSecurityLicenceHistoryComponent)
+	stepLicenceHistory!: StepControllingMemberBcSecurityLicenceHistoryComponent;
+	@ViewChild(StepControllingMemberPoliceBackgroundComponent)
+	stepPoliceBackground!: StepControllingMemberPoliceBackgroundComponent;
+	@ViewChild(StepControllingMemberMentalHealthConditionsComponent)
+	stepMentalHealth!: StepControllingMemberMentalHealthConditionsComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
-	override dirtyForm(_step: number): boolean {
-		// 	switch (step) {
-		// 		case this.STEP_LICENCE_CONFIRMATION:
-		// 			return true;
-		// 		case this.STEP_LICENCE_EXPIRED:
-		// 			return this.stepExpiredComponent.isFormValid();
-		// 		case this.STEP_LICENCE_BRANDING:
-		// 			return this.stepCompanyBrandingComponent.isFormValid();
-		// 		case this.STEP_LICENCE_LIABILITY:
-		// 			return this.stepLiabilityComponent.isFormValid();
-		// 		default:
-		// 			console.error('Unknown Form', step);
-		// 	}
-		// 	return false;
-		return true;
+	override dirtyForm(step: number): boolean {
+		switch (step) {
+			case this.STEP_LICENCE_HISTORY:
+				return this.stepLicenceHistory.isFormValid();
+			case this.STEP_POLICE_BACKGROUND:
+				return this.stepPoliceBackground.isFormValid();
+			case this.STEP_MENTAL_HEALTH:
+				return this.stepMentalHealth.isFormValid();
+			default:
+				console.error('Unknown Form', step);
+		}
+		return false;
 	}
 }

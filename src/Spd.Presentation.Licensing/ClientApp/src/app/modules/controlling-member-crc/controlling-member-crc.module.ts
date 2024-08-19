@@ -10,7 +10,7 @@ import { ControllingMemberCrcAnonymousBaseComponent } from './controlling-member
 import { ControllingMemberCrcBaseComponent } from './controlling-member-crc-base.component';
 import { ControllingMemberCrcRoutingModule } from './controlling-member-crc-routing.module';
 import { ControllingMemberLoginComponent } from './controlling-member-login.component';
-import { ControllingMemberSubmissionReceivedComponent } from './shared/step-controlling-member-submission-received.component';
+import { ControllingMemberSubmissionReceivedComponent } from './shared/controlling-member-submission-received.component';
 import { StepControllingMemberAliasesComponent } from './shared/step-controlling-member-aliases.component';
 import { StepControllingMemberBcDriverLicenceComponent } from './shared/step-controlling-member-bc-driver-licence.component';
 import { StepControllingMemberBcSecurityLicenceHistoryComponent } from './shared/step-controlling-member-bc-security-licence-history.component';
@@ -21,6 +21,7 @@ import { StepControllingMemberCitizenshipComponent } from './shared/step-control
 import { StepControllingMemberConsentAndDeclarationComponent } from './shared/step-controlling-member-consent-and-declaration.component';
 import { StepControllingMemberFingerprintsComponent } from './shared/step-controlling-member-fingerprints.component';
 import { StepControllingMemberMentalHealthConditionsComponent } from './shared/step-controlling-member-mental-health-conditions.component';
+import { StepControllingMemberPersonalInfoComponent } from './shared/step-controlling-member-personal-info.component';
 import { StepControllingMemberPoliceBackgroundComponent } from './shared/step-controlling-member-police-background.component';
 import { StepControllingMemberResidentialAddressComponent } from './shared/step-controlling-member-residential-address.component';
 import { StepControllingMemberSummaryReviewAnonymousComponent } from './shared/step-controlling-member-summary-review-anonymous.component';
@@ -41,6 +42,7 @@ import { StepsControllingMemberReviewComponent } from './shared/steps-controllin
 		StepControllingMemberAliasesComponent,
 		StepControllingMemberFingerprintsComponent,
 		StepControllingMemberBcDriverLicenceComponent,
+		StepControllingMemberPersonalInfoComponent,
 		StepControllingMemberPoliceBackgroundComponent,
 		StepControllingMemberMentalHealthConditionsComponent,
 		StepControllingMemberCitizenshipComponent,

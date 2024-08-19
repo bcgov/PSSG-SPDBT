@@ -126,7 +126,6 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 												</div>
 											</div>
 										</div>
-										<mat-divider class="mt-3 mb-2"></mat-divider>
 
 										<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
 											<mat-divider class="mt-3 mb-2"></mat-divider>

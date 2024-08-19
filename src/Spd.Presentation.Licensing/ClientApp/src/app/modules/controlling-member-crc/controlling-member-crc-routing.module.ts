@@ -8,55 +8,59 @@ import { ControllingMemberWizardAuthenticatedUpdateComponent } from './authentic
 import { ControllingMemberCrcAnonymousBaseComponent } from './controlling-member-crc-anonymous-base.component';
 import { ControllingMemberCrcBaseComponent } from './controlling-member-crc-base.component';
 import { ControllingMemberLoginComponent } from './controlling-member-login.component';
+import { ControllingMemberSubmissionReceivedComponent } from './shared/controlling-member-submission-received.component';
 
-export class ControllingMembersCrcRoutes {
-	public static readonly CONTROLLING_MEMBERS_CRC = 'controlling-members-crc';
-	public static readonly CONTROLLING_MEMBERS_LOGIN = 'login';
-	public static readonly CONTROLLING_MEMBERS_ANONYMOUS = 'controlling-members-anonymous';
-	public static readonly CONTROLLING_MEMBERS = 'controlling-members';
-	public static readonly CONTROLLING_MEMBERS_NEW = 'new';
-	public static readonly CONTROLLING_MEMBERS_RENEW = 'renew';
-	public static readonly CONTROLLING_MEMBERS_UPDATE = 'update';
+export class ControllingMemberCrcRoutes {
+	public static readonly CONTROLLING_MEMBER_CRC = 'controlling-member-crc';
+	public static readonly CONTROLLING_MEMBER_LOGIN = 'login';
+	public static readonly CONTROLLING_MEMBER_ANONYMOUS = 'controlling-member-anonymous';
+	public static readonly CONTROLLING_MEMBER = 'controlling-member';
+	public static readonly CONTROLLING_MEMBER_NEW = 'new';
+	public static readonly CONTROLLING_MEMBER_RENEW = 'renew';
+	public static readonly CONTROLLING_MEMBER_UPDATE = 'update';
+	public static readonly CONTROLLING_MEMBER_SUBMIT = 'submit';
 
-	public static readonly MODULE_PATH = ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_CRC;
+	public static readonly MODULE_PATH = ControllingMemberCrcRoutes.CONTROLLING_MEMBER_CRC;
 
 	public static path(route: string | null = null): string {
-		return route
-			? `/${ControllingMembersCrcRoutes.MODULE_PATH}/${route}`
-			: `/${ControllingMembersCrcRoutes.MODULE_PATH}`;
+		return route ? `/${ControllingMemberCrcRoutes.MODULE_PATH}/${route}` : `/${ControllingMemberCrcRoutes.MODULE_PATH}`;
 	}
 
-	public static pathControllingMembersAnonymous(route: string): string {
-		return `/${ControllingMembersCrcRoutes.MODULE_PATH}/${ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_ANONYMOUS}/${route}`;
+	public static pathControllingMemberCrcAnonymous(route: string): string {
+		return `/${ControllingMemberCrcRoutes.MODULE_PATH}/${ControllingMemberCrcRoutes.CONTROLLING_MEMBER_ANONYMOUS}/${route}`;
 	}
 
-	public static pathControllingMembers(route: string): string {
-		return `/${ControllingMembersCrcRoutes.MODULE_PATH}/${ControllingMembersCrcRoutes.CONTROLLING_MEMBERS}/${route}`;
+	public static pathControllingMemberCrc(route: string): string {
+		return `/${ControllingMemberCrcRoutes.MODULE_PATH}/${ControllingMemberCrcRoutes.CONTROLLING_MEMBER}/${route}`;
 	}
 }
 
 const routes: Routes = [
 	{
-		path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_LOGIN,
+		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN,
 		component: ControllingMemberLoginComponent,
+	},
+	{
+		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMIT,
+		component: ControllingMemberSubmissionReceivedComponent,
 	},
 	{
 		/**************************************************** */
 		// CONTROLLING MEMBERS - ANONYMOUS
 		/**************************************************** */
-		path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_ANONYMOUS,
+		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_ANONYMOUS,
 		component: ControllingMemberCrcAnonymousBaseComponent,
 		children: [
 			{
-				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW,
+				path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW,
 				component: ControllingMemberWizardAnonymousNewComponent,
 			},
 			{
-				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_RENEW,
+				path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_RENEW,
 				component: ControllingMemberWizardAnonymousRenewComponent,
 			},
 			{
-				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_UPDATE,
+				path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE,
 				component: ControllingMemberWizardAnonymousNewComponent,
 			},
 		],
@@ -65,26 +69,26 @@ const routes: Routes = [
 		/**************************************************** */
 		// CONTROLLING MEMBERS - AUTHENTICATED
 		/**************************************************** */
-		path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS,
+		path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER,
 		component: ControllingMemberCrcBaseComponent,
 		children: [
 			{
-				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW,
+				path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW,
 				component: ControllingMemberWizardAuthenticatedNewComponent,
 			},
 			{
-				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_RENEW,
+				path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_RENEW,
 				component: ControllingMemberWizardAuthenticatedRenewComponent,
 			},
 			{
-				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_UPDATE,
+				path: ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE,
 				component: ControllingMemberWizardAuthenticatedUpdateComponent,
 			},
 		],
 	},
 	{
 		path: '',
-		redirectTo: ControllingMembersCrcRoutes.path(),
+		redirectTo: ControllingMemberCrcRoutes.path(),
 		pathMatch: 'full',
 	},
 ];

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
-import { ControllingMembersCrcRoutes } from './controlling-member-crc-routing.module';
+import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
 
 @Component({
 	selector: 'app-controlling-member-crc-anonymous-base',
@@ -30,9 +30,7 @@ export class ControllingMemberCrcAnonymousBaseComponent implements OnInit {
 		this.authProcessService.logoutBcsc();
 
 		if (!this.controllingMembersService.initialized) {
-			this.router.navigateByUrl(
-				ControllingMembersCrcRoutes.path(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_LOGIN)
-			);
+			this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN));
 			return;
 		}
 	}

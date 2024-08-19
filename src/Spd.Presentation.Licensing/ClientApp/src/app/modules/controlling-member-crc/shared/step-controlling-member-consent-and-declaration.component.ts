@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
@@ -181,7 +181,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<!-- <div class="row mb-4" *ngIf="displayCaptcha.value">
+						<div class="row mb-4" *ngIf="displayCaptcha.value">
 							<div class="col-12">
 								<div formGroupName="captchaFormGroup">
 									<app-captcha-v2 [captchaFormGroup]="captchaFormGroup"></app-captcha-v2>
@@ -196,7 +196,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 									</mat-error>
 								</div>
 							</div>
-						</div> -->
+						</div>
 
 						<div class="row">
 							<div class="col-12">
@@ -232,9 +232,10 @@ export class StepControllingMemberConsentAndDeclarationComponent implements OnIn
 		// 		check5: true,
 		// 	});
 		// }
-		// this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
-		// 	this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
-		// });
+
+		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
+			this.captchaFormGroup.patchValue({ displayCaptcha: !isLoggedIn });
+		});
 	}
 
 	isFormValid(): boolean {
@@ -251,10 +252,10 @@ export class StepControllingMemberConsentAndDeclarationComponent implements OnIn
 		}
 	}
 
-	// get captchaFormGroup(): FormGroup {
-	// 	return this.form.get('captchaFormGroup') as FormGroup;
-	// }
-	// get displayCaptcha(): FormControl {
-	// 	return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
-	// }
+	get captchaFormGroup(): FormGroup {
+		return this.form.get('captchaFormGroup') as FormGroup;
+	}
+	get displayCaptcha(): FormControl {
+		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
+	}
 }
