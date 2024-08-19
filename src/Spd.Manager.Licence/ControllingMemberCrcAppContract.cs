@@ -14,8 +14,8 @@ public abstract record ControllingMemberCrcApp
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public bool? IsTermsOfUseAccepted { get; set; }
-    public DateTime AgreeToCompleteAndAccurate { get; set; }
+    public bool? agreeToCompleteAndAccurate { get; set; }
+    public DateTime AgreeToCompleteAndAccurateDate { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public GenderCode? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
@@ -33,7 +33,7 @@ public abstract record ControllingMemberCrcApp
 
     public bool? IsCanadianCitizen { get; set; }
     //public LicenceAppDocumentUpload? CitizenshipProofDoucuments { get; set; }
-    //public DateOnly? CitizenshipProofExpiryDate { get; set; }
+    public DateOnly? CitizenshipProofExpiryDate { get; set; }
     //public LicenceAppDocumentUpload? FingerPrintDoucuments { get; set; }
     //public LicenceAppDocumentUpload? GovernmentIssuedIdDoucuments1 { get; set; }
     //public LicenceAppDocumentUpload? GovernmentIssuedIdDoucuments2 { get; set; }
