@@ -14,7 +14,7 @@ public abstract record ControllingMemberCrcApp
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public DateOnly AgreeToCompleteAndAccurate { get; set; }
+    public bool? AgreeToCompleteAndAccurate { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public GenderCode? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
