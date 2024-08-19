@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormFingerprintsComponent } from '@app/shared/components/form-fingerprints.component';
 
@@ -26,7 +26,7 @@ export class StepControllingMemberFingerprintsComponent implements LicenceChildS
 
 	@ViewChild(FormFingerprintsComponent) formFingerprintsComponent!: FormFingerprintsComponent;
 
-	constructor(private controllingMembersService: ControllingMembersService) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService) {}
 
 	onFileUploaded(file: File): void {
 		this.controllingMembersService.fileUploaded(

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class StepControllingMemberBcDriverLicenceComponent implements OnInit, Li
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private controllingMembersService: ControllingMembersService) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService) {}
 
 	ngOnInit(): void {
 		this.subtitle = this.isRenewalOrUpdate

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { GenderTypes } from '@app/core/code-types/model-desc.models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -66,7 +66,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
 								</mat-form-field>
 							</div>
+						</div>
 
+						<div class="row">
+							<div class="fw-semibold fs-6 my-2">Contact Information</div>
 							<div class="col-xl-6 col-lg-6 col-md-12">
 								<mat-form-field>
 									<mat-label>Email Address</mat-label>
@@ -118,7 +121,7 @@ export class StepControllingMemberPersonalInfoComponent implements OnInit, Licen
 
 	form: FormGroup = this.controllingMembersService.personalNameAndContactInformationFormGroup;
 
-	constructor(private utilService: UtilService, private controllingMembersService: ControllingMembersService) {}
+	constructor(private utilService: UtilService, private controllingMembersService: ControllingMemberCrcService) {}
 
 	ngOnInit(): void {
 		this.title = this.isRenewalOrUpdate ? 'Confirm your personal information' : 'Your personal information';

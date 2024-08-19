@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { take, tap } from 'rxjs';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
 
@@ -107,7 +107,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private commonApplicationService: ApplicationService,
-		private controllingMembersService: ControllingMembersService
+		private controllingMembersService: ControllingMemberCrcService
 	) {}
 
 	ngOnInit(): void {

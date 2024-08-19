@@ -8,7 +8,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { ApplicationService } from '@app/core/services/application.service';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 
 @Component({
 	selector: 'app-step-controlling-member-summary-review-anonymous',
@@ -19,7 +19,7 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 					<div class="row mb-3">
 						<div class="col-12">
 							<mat-accordion multi="true">
-								<mat-expansion-panel class="mb-2" [expanded]="true">
+								<!-- <mat-expansion-panel class="mb-2" [expanded]="true">
 									<mat-expansion-panel-header>
 										<mat-panel-title class="review-panel-title">
 											<mat-toolbar class="d-flex justify-content-between">
@@ -54,7 +54,7 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 											</div>
 										</div>
 									</div>
-								</mat-expansion-panel>
+								</mat-expansion-panel> -->
 
 								<mat-expansion-panel class="mb-2" [expanded]="true">
 									<mat-expansion-panel-header>
@@ -329,44 +329,6 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 												</div>
 											</div>
 										</div>
-										<mat-divider class="mt-3 mb-2"></mat-divider>
-
-										<div class="text-minor-heading">Mailing Address</div>
-										<ng-container *ngIf="isAddressTheSame; else mailingIsDifferentThanResidential">
-											<div class="row mt-0">
-												<div class="col-12">
-													<div class="summary-text-data">Mailing address is the same as the residential address</div>
-												</div>
-											</div>
-										</ng-container>
-										<ng-template #mailingIsDifferentThanResidential>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 1</div>
-													<div class="summary-text-data">{{ mailingAddressLine1 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Address Line 2</div>
-													<div class="summary-text-data">{{ mailingAddressLine2 | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">City</div>
-													<div class="summary-text-data">{{ mailingCity | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Postal Code</div>
-													<div class="summary-text-data">{{ mailingPostalCode | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Province</div>
-													<div class="summary-text-data">{{ mailingProvince | default }}</div>
-												</div>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Country</div>
-													<div class="summary-text-data">{{ mailingCountry | default }}</div>
-												</div>
-											</div>
-										</ng-template>
 									</div>
 								</mat-expansion-panel>
 							</mat-accordion>
@@ -434,7 +396,7 @@ export class StepControllingMemberSummaryReviewAnonymousComponent implements OnI
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
-		private controllingMembersService: ControllingMembersService,
+		private controllingMembersService: ControllingMemberCrcService,
 		private commonApplicationService: ApplicationService
 	) {}
 
@@ -592,27 +554,5 @@ export class StepControllingMemberSummaryReviewAnonymousComponent implements OnI
 	}
 	get residentialCountry(): string {
 		return this.controllingMemberModelData.residentialAddressData?.country ?? '';
-	}
-	get isAddressTheSame(): string {
-		return this.controllingMemberModelData.mailingAddressData?.isAddressTheSame ?? '';
-	}
-
-	get mailingAddressLine1(): string {
-		return this.controllingMemberModelData.mailingAddressData?.addressLine1 ?? '';
-	}
-	get mailingAddressLine2(): string {
-		return this.controllingMemberModelData.mailingAddressData?.addressLine2 ?? '';
-	}
-	get mailingCity(): string {
-		return this.controllingMemberModelData.mailingAddressData?.city ?? '';
-	}
-	get mailingPostalCode(): string {
-		return this.controllingMemberModelData.mailingAddressData?.postalCode ?? '';
-	}
-	get mailingProvince(): string {
-		return this.controllingMemberModelData.mailingAddressData?.province ?? '';
-	}
-	get mailingCountry(): string {
-		return this.controllingMemberModelData.mailingAddressData?.country ?? '';
 	}
 }

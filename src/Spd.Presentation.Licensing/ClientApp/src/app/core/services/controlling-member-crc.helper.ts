@@ -10,7 +10,7 @@ import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 
-export abstract class ControllingMembersHelper extends ApplicationHelper {
+export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 	personalNameAndContactInformationFormGroup: FormGroup = this.formBuilder.group({
 		givenName: new FormControl(''),
 		middleName1: new FormControl(''),
@@ -141,13 +141,13 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
 		// const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
-		const personalNameAndContactInformationData = {
-			...controllingMemberCrcFormValue.personalNameAndContactInformationData,
+		const personalInformationData = {
+			...controllingMemberCrcFormValue.personalInformationData,
 		};
-		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryFormGroup;
+		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryData;
 
-		personalNameAndContactInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalNameAndContactInformationData.dateOfBirth,
+		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
+			personalInformationData.dateOfBirth,
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
@@ -161,14 +161,14 @@ export abstract class ControllingMembersHelper extends ApplicationHelper {
 
 		const body = {
 			accessCode,
-			givenName: personalNameAndContactInformationData.givenName,
-			surname: personalNameAndContactInformationData.surname,
-			middleName1: personalNameAndContactInformationData.middleName1,
-			middleName2: personalNameAndContactInformationData.middleName2,
-			dateOfBirth: personalNameAndContactInformationData.dateOfBirth,
-			emailAddress: personalNameAndContactInformationData.emailAddress,
-			phoneNumber: personalNameAndContactInformationData.phoneNumber,
-			genderCode: personalNameAndContactInformationData.genderCode,
+			givenName: personalInformationData.givenName,
+			surname: personalInformationData.surname,
+			middleName1: personalInformationData.middleName1,
+			middleName2: personalInformationData.middleName2,
+			dateOfBirth: personalInformationData.dateOfBirth,
+			emailAddress: personalInformationData.emailAddress,
+			phoneNumber: personalInformationData.phoneNumber,
+			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			hasPreviousName: this.utilService.booleanTypeToBoolean(
 				controllingMemberCrcFormValue.aliasesData.previousNameFlag

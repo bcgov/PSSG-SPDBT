@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 
 @Component({
@@ -220,7 +220,7 @@ export class StepControllingMemberConsentAndDeclarationComponent implements OnIn
 	constructor(
 		private utilService: UtilService,
 		private authProcessService: AuthProcessService,
-		private controllingMembersService: ControllingMembersService
+		private controllingMembersService: ControllingMemberCrcService
 	) {}
 
 	ngOnInit(): void {

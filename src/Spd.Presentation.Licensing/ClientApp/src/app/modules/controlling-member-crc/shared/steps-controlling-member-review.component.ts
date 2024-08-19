@@ -22,6 +22,7 @@ import { StepControllingMemberConsentAndDeclarationComponent } from './step-cont
 				<app-step-controlling-member-consent-and-declaration></app-step-controlling-member-consent-and-declaration>
 
 				<app-wizard-footer
+					nextButtonLabel="Submit"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_CONSENT)"

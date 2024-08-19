@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, ControllingMemberCrcAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-personal-information.component';
@@ -120,7 +120,7 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 		private router: Router,
 		private dialog: MatDialog,
 		private hotToastService: HotToastService,
-		private controllingMembersService: ControllingMembersService
+		private controllingMembersService: ControllingMemberCrcService
 	) {
 		super(breakpointObserver);
 	}

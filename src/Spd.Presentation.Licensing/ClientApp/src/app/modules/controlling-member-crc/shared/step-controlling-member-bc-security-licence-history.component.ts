@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
@@ -117,7 +117,7 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent implements L
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private controllingMembersService: ControllingMembersService) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

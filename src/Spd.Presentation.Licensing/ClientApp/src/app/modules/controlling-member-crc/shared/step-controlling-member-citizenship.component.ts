@@ -8,7 +8,7 @@ import {
 	ProofOfAbilityToWorkInCanadaTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -223,7 +223,7 @@ export class StepControllingMemberCitizenshipComponent implements OnInit, Licenc
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private controllingMembersService: ControllingMembersService, private utilService: UtilService) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService, private utilService: UtilService) {}
 
 	ngOnInit(): void {
 		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {

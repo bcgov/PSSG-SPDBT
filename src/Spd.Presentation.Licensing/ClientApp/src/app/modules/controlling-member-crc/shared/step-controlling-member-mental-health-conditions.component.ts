@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
@@ -31,7 +31,7 @@ export class StepControllingMemberMentalHealthConditionsComponent implements OnI
 	@ViewChild(FormMentalHealthConditionsComponent)
 	formMentalHealthConditionsComponent!: FormMentalHealthConditionsComponent;
 
-	constructor(private controllingMembersService: ControllingMembersService) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService) {}
 
 	ngOnInit(): void {
 		[this.title, this.subtitle] = this.controllingMembersService.getMentalHealthConditionsTitle(

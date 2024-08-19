@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
 
 @Component({
@@ -26,7 +26,7 @@ export class ControllingMemberCrcBaseComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private controllingMembersService: ControllingMembersService
+		private controllingMembersService: ControllingMemberCrcService
 	) {}
 
 	async ngOnInit(): Promise<void> {

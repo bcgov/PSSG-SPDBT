@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { ControllingMembersService } from '@app/core/services/controlling-members.service';
+import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class StepControllingMemberAliasesComponent implements OnInit, LicenceChi
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private controllingMembersService: ControllingMembersService) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService) {}
 
 	ngOnInit(): void {
 		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
