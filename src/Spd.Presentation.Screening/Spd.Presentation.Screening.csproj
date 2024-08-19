@@ -13,6 +13,7 @@
 
 		<ItemGroup>
 				<PackageReference Include="AutoMapper" />
+				<PackageReference Include="FluentValidation" />
 				<PackageReference Include="FluentValidation.AspNetCore" />
 				<PackageReference Include="IdentityModel" />
 				<PackageReference Include="MediatR" />
