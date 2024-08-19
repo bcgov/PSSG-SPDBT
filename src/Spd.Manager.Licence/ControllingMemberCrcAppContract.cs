@@ -9,42 +9,29 @@ using System.Threading.Tasks;
 namespace Spd.Manager.Licence;
 public abstract record ControllingMemberCrcApp
 {
-    public string? AccessCode { get; set; }
+    //public string? AccessCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
-    public bool? IsTermsOfUseAccepted { get; set; }
-    public DateTime DateSigned { get; set; }
+    public bool? AgreeToCompleteAndAccurate { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public GenderCode? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
     public bool? HasPreviousNames { get; set; }
     public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
-    public bool? HasBcDriverLicence { get; set; }
-    public string? BcDriverLicenceNumber { get; set; }
-
+    public bool? HasBcDriversLicence { get; set; }
+    public string? BcDriversLicenceNumber { get; set; }
     public bool? IsPoliceOrPeaceOfficer { get; set; }
     public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
-    // public LicenceAppDocumentUpload? LetterOfConflictDoucuments { get; set; }
-
+    public string? OtherOfficerRole { get; set; }
     public bool? IsCanadianCitizen { get; set; }
-    //public LicenceAppDocumentUpload? CitizenshipProofDoucuments { get; set; }
-    public DateOnly? CitizenshipProofExpiryDate { get; set; }
-    //public LicenceAppDocumentUpload? FingerPrintDoucuments { get; set; }
-    //public LicenceAppDocumentUpload? GovernmentIssuedIdDoucuments1 { get; set; }
-    //public LicenceAppDocumentUpload? GovernmentIssuedIdDoucuments2 { get; set; }
-
     public bool? HasCriminalHistory { get; set; }
     public string? CriminalHistoryDetail { get; set; }
-
     public bool? HasBankruptcyHistory { get; set; }
     public string? BankruptcyHistoryDetail { get; set; }
-
-    public bool? HasMentalCondition { get; set; }
-    //public LicenceAppDocumentUpload? MentalHealthConditionDoucuments { get; set; }
-
+    public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
 }
 
