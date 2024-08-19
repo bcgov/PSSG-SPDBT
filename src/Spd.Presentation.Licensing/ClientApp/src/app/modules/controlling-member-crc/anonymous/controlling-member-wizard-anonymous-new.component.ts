@@ -9,13 +9,13 @@ import { ApplicationService } from '@app/core/services/application.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { StepsControllingMembersBackgroundComponent } from '../shared/steps-controlling-members-background.component';
-import { StepsControllingMembersCitizenshipResidencyComponent } from '../shared/steps-controlling-members-citizenship-residency.component';
-import { StepsControllingMembersPersonalInformationComponent } from '../shared/steps-controlling-members-personal-information.component';
-import { StepsControllingMembersReviewComponent } from '../shared/steps-controlling-members-review.component';
+import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-background.component';
+import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-citizenship-residency.component';
+import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-personal-information.component';
+import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-review.component';
 
 @Component({
-	selector: 'app-controlling-members-wizard-anonymous-new',
+	selector: 'app-controlling-member-wizard-anonymous-new',
 	template: `
 		<mat-stepper
 			linear
@@ -26,19 +26,19 @@ import { StepsControllingMembersReviewComponent } from '../shared/steps-controll
 		>
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Personal Information</ng-template>
-				<app-steps-controlling-members-personal-information
+				<app-steps-controlling-member-personal-information
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
-				></app-steps-controlling-members-personal-information>
+				></app-steps-controlling-member-personal-information>
 			</mat-step>
 
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Citizenship & Residency</ng-template>
-				<app-steps-controlling-members-citizenship-residency
+				<app-steps-controlling-member-citizenship-residency
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
@@ -46,12 +46,12 @@ import { StepsControllingMembersReviewComponent } from '../shared/steps-controll
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-				></app-steps-controlling-members-citizenship-residency>
+				></app-steps-controlling-member-citizenship-residency>
 			</mat-step>
 
 			<mat-step [completed]="step3Complete">
 				<ng-template matStepLabel>Background</ng-template>
-				<app-steps-controlling-members-background
+				<app-steps-controlling-member-background
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
@@ -59,12 +59,12 @@ import { StepsControllingMembersReviewComponent } from '../shared/steps-controll
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-				></app-steps-controlling-members-background>
+				></app-steps-controlling-member-background>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review</ng-template>
-				<app-steps-controlling-members-review
+				<app-steps-controlling-member-review
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
@@ -72,17 +72,18 @@ import { StepsControllingMembersReviewComponent } from '../shared/steps-controll
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-				></app-steps-controlling-members-review>
+				></app-steps-controlling-member-review>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Submit</ng-template>
+				<app-controlling-member-submission-received></app-controlling-member-submission-received>
 			</mat-step>
 		</mat-stepper>
 	`,
 	styles: [],
 })
-export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERSONAL_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_CITIZENSHIP_RESIDENCY = 1;
 	readonly STEP_BACKGROUND = 2;
@@ -99,14 +100,14 @@ export class ControllingMembersWizardAnonymousNewComponent extends BaseWizardCom
 
 	private controllingMembersModelValueChangedSubscription!: Subscription;
 
-	@ViewChild(StepsControllingMembersPersonalInformationComponent)
-	stepsPersonalInformationComponent!: StepsControllingMembersPersonalInformationComponent;
-	@ViewChild(StepsControllingMembersCitizenshipResidencyComponent)
-	stepsCitizenshipResidencyComponent!: StepsControllingMembersCitizenshipResidencyComponent;
-	@ViewChild(StepsControllingMembersBackgroundComponent)
-	stepBackgroundComponent!: StepsControllingMembersBackgroundComponent;
-	@ViewChild(StepsControllingMembersReviewComponent)
-	stepReviewComponent!: StepsControllingMembersReviewComponent;
+	@ViewChild(StepsControllingMemberPersonalInformationComponent)
+	stepsPersonalInformationComponent!: StepsControllingMemberPersonalInformationComponent;
+	@ViewChild(StepsControllingMemberCitizenshipResidencyComponent)
+	stepsCitizenshipResidencyComponent!: StepsControllingMemberCitizenshipResidencyComponent;
+	@ViewChild(StepsControllingMemberBackgroundComponent)
+	stepBackgroundComponent!: StepsControllingMemberBackgroundComponent;
+	@ViewChild(StepsControllingMemberReviewComponent)
+	stepReviewComponent!: StepsControllingMemberReviewComponent;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,

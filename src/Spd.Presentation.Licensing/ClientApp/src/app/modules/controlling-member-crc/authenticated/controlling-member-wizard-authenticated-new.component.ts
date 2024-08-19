@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 
 @Component({
-	selector: 'app-controlling-members-wizard-authenticated-update',
+	selector: 'app-controlling-member-wizard-authenticated-new',
 	template: `
 		<mat-stepper
 			linear
@@ -34,7 +34,7 @@ import { BaseWizardComponent } from '@app/core/components/base-wizard.component'
 	`,
 	styles: [],
 })
-export class ControllingMembersWizardAuthenticatedUpdateComponent extends BaseWizardComponent {
+export class ControllingMemberWizardAuthenticatedNewComponent extends BaseWizardComponent {
 	step1Complete = false;
 	step2Complete = false;
 	step3Complete = false;

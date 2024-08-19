@@ -4,13 +4,13 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
-	selector: 'app-steps-controlling-members-background',
+	selector: 'app-steps-controlling-member-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-controlling-members-bc-security-licence-history
+				<app-step-controlling-member-bc-security-licence-history
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-bc-security-licence-history>
+				></app-step-controlling-member-bc-security-licence-history>
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"
@@ -19,9 +19,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				<app-step-controlling-members-police-background
+				<app-step-controlling-member-police-background
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-police-background>
+				></app-step-controlling-member-police-background>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -30,9 +30,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				<app-step-controlling-members-mental-health-conditions
+				<app-step-controlling-member-mental-health-conditions
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-mental-health-conditions>
+				></app-step-controlling-member-mental-health-conditions>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -44,7 +44,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsControllingMembersBackgroundComponent extends BaseWizardStepComponent {
+export class StepsControllingMemberBackgroundComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 1;
 	readonly STEP_LICENCE_EXPIRED = 2;
 	readonly STEP_LICENCE_BRANDING = 3;

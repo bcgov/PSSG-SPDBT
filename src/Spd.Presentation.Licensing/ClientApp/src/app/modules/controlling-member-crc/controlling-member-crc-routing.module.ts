@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ControllingMembersWizardAnonymousNewComponent } from './anonymous/controlling-members-wizard-anonymous-new.component';
-import { ControllingMembersWizardAnonymousRenewComponent } from './anonymous/controlling-members-wizard-anonymous-renew.component';
-import { ControllingMembersWizardAuthenticatedNewComponent } from './authenticated/controlling-members-wizard-authenticated-new.component';
-import { ControllingMembersWizardAuthenticatedRenewComponent } from './authenticated/controlling-members-wizard-authenticated-renew.component';
-import { ControllingMembersWizardAuthenticatedUpdateComponent } from './authenticated/controlling-members-wizard-authenticated-update.component';
-import { ControllingMembersAnonymousBaseComponent } from './controlling-members-anonymous-base.component';
-import { ControllingMembersBaseComponent } from './controlling-members-base.component';
-import { ControllingMembersLoginComponent } from './controlling-members-login.component';
+import { ControllingMemberWizardAnonymousNewComponent } from './anonymous/controlling-member-wizard-anonymous-new.component';
+import { ControllingMemberWizardAnonymousRenewComponent } from './anonymous/controlling-member-wizard-anonymous-renew.component';
+import { ControllingMemberWizardAuthenticatedNewComponent } from './authenticated/controlling-member-wizard-authenticated-new.component';
+import { ControllingMemberWizardAuthenticatedRenewComponent } from './authenticated/controlling-member-wizard-authenticated-renew.component';
+import { ControllingMemberWizardAuthenticatedUpdateComponent } from './authenticated/controlling-member-wizard-authenticated-update.component';
+import { ControllingMemberCrcAnonymousBaseComponent } from './controlling-member-crc-anonymous-base.component';
+import { ControllingMemberCrcBaseComponent } from './controlling-member-crc-base.component';
+import { ControllingMemberLoginComponent } from './controlling-member-login.component';
 
 export class ControllingMembersCrcRoutes {
 	public static readonly CONTROLLING_MEMBERS_CRC = 'controlling-members-crc';
@@ -38,26 +38,26 @@ export class ControllingMembersCrcRoutes {
 const routes: Routes = [
 	{
 		path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_LOGIN,
-		component: ControllingMembersLoginComponent,
+		component: ControllingMemberLoginComponent,
 	},
 	{
 		/**************************************************** */
 		// CONTROLLING MEMBERS - ANONYMOUS
 		/**************************************************** */
 		path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_ANONYMOUS,
-		component: ControllingMembersAnonymousBaseComponent,
+		component: ControllingMemberCrcAnonymousBaseComponent,
 		children: [
 			{
 				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW,
-				component: ControllingMembersWizardAnonymousNewComponent,
+				component: ControllingMemberWizardAnonymousNewComponent,
 			},
 			{
 				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_RENEW,
-				component: ControllingMembersWizardAnonymousRenewComponent,
+				component: ControllingMemberWizardAnonymousRenewComponent,
 			},
 			{
 				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_UPDATE,
-				component: ControllingMembersWizardAnonymousNewComponent,
+				component: ControllingMemberWizardAnonymousNewComponent,
 			},
 		],
 	},
@@ -66,19 +66,19 @@ const routes: Routes = [
 		// CONTROLLING MEMBERS - AUTHENTICATED
 		/**************************************************** */
 		path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS,
-		component: ControllingMembersBaseComponent,
+		component: ControllingMemberCrcBaseComponent,
 		children: [
 			{
 				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW,
-				component: ControllingMembersWizardAuthenticatedNewComponent,
+				component: ControllingMemberWizardAuthenticatedNewComponent,
 			},
 			{
 				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_RENEW,
-				component: ControllingMembersWizardAuthenticatedRenewComponent,
+				component: ControllingMemberWizardAuthenticatedRenewComponent,
 			},
 			{
 				path: ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_UPDATE,
-				component: ControllingMembersWizardAuthenticatedUpdateComponent,
+				component: ControllingMemberWizardAuthenticatedUpdateComponent,
 			},
 		],
 	},
@@ -93,4 +93,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class ControllingMembersCrcRoutingModule {}
+export class ControllingMemberCrcRoutingModule {}

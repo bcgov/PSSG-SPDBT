@@ -53,9 +53,10 @@ export class ControllingMembersService extends ControllingMembersHelper {
 		citizenshipData: this.citizenshipFormGroup,
 		fingerprintProofData: this.fingerprintProofFormGroup,
 		bcDriversLicenceData: this.bcDriversLicenceFormGroup,
-		// bcSecurityLicenceHistoryData: this.bcSecurityLicenceHistoryFormGroup,
+		bcSecurityLicenceHistoryData: this.bcSecurityLicenceHistoryFormGroup,
 		policeBackgroundData: this.policeBackgroundFormGroup,
 		mentalHealthConditionsData: this.mentalHealthConditionsFormGroup,
+		consentAndDeclarationData: this.consentAndDeclarationFormGroup
 	});
 
 	controllingMembersModelChangedSubscription!: Subscription;

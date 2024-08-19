@@ -5,7 +5,7 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-members-residential-address',
+	selector: 'app-step-controlling-member-residential-address',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-address [form]="form"></app-address>
@@ -13,7 +13,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	`,
 	styles: [],
 })
-export class StepControllingMembersResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 

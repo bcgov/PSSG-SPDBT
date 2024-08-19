@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
 import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-licence-application-routing.module';
-import { ControllingMembersCrcRoutes } from './modules/controlling-members-crc/controlling-members-crc-routing.module';
+import { ControllingMembersCrcRoutes } from './modules/controlling-member-crc/controlling-member-crc-routing.module';
 import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routing.module';
 import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
@@ -37,8 +37,8 @@ const routes: Routes = [
 	{
 		path: AppRoutes.CONTROLLING_MEMBERS_CRC,
 		loadChildren: () =>
-			import('./modules/controlling-members-crc/controlling-members-crc.module').then(
-				(m) => m.ControllingMembersCrcModule
+			import('./modules/controlling-member-crc/controlling-member-crc.module').then(
+				(m) => m.ControllingMemberCrcModule
 			),
 	},
 	{

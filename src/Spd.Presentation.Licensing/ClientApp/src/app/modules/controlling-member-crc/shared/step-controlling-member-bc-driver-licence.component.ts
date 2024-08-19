@@ -5,7 +5,7 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-members-bc-driver-licence',
+	selector: 'app-step-controlling-member-bc-driver-licence',
 	template: `
 		<app-step-section title="Do you have a BC Driver's Licence?" [subtitle]="subtitle">
 			<div class="row">
@@ -21,7 +21,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	`,
 	styles: [],
 })
-export class StepControllingMembersBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 
 	form: FormGroup = this.controllingMembersService.bcDriversLicenceFormGroup;

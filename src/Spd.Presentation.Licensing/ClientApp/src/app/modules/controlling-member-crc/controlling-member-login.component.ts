@@ -5,10 +5,10 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
 import { take, tap } from 'rxjs';
-import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.module';
+import { ControllingMembersCrcRoutes } from './controlling-member-crc-routing.module';
 
 @Component({
-	selector: 'app-controlling-members-login',
+	selector: 'app-controlling-member-login',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
 			<app-step-section title="Log in to submit your consent to a criminal record check">
@@ -100,7 +100,7 @@ import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.m
 		`,
 	],
 })
-export class ControllingMembersLoginComponent implements OnInit {
+export class ControllingMemberLoginComponent implements OnInit {
 	title!: string;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 

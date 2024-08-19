@@ -2,27 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { ControllingMembersService } from '@app/core/services/controlling-members.service';
-import { ControllingMembersCrcRoutes } from './controlling-members-crc-routing.module';
+import { ControllingMembersCrcRoutes } from './controlling-member-crc-routing.module';
 
 @Component({
-	selector: 'app-controlling-members-base',
+	selector: 'app-controlling-member-crc-anonymous-base',
 	template: `
-		<ng-container *ngIf="isAuthenticated$ | async">
-			<div class="container px-0 my-0 px-md-2 my-md-3">
-				<!-- hide padding/margin on smaller screens -->
-				<div class="row">
-					<div class="col-12">
-						<router-outlet></router-outlet>
-					</div>
+		<div class="container px-0 my-0 px-md-2 my-md-3">
+			<!-- hide padding/margin on smaller screens -->
+			<div class="row">
+				<div class="col-12">
+					<router-outlet></router-outlet>
 				</div>
 			</div>
-		</ng-container>
+		</div>
 	`,
 	styles: [],
 })
-export class ControllingMembersBaseComponent implements OnInit {
-	isAuthenticated$ = this.authProcessService.waitUntilAuthentication$;
-
+export class ControllingMemberCrcAnonymousBaseComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
@@ -31,10 +27,7 @@ export class ControllingMembersBaseComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		this.authProcessService.logoutBceid();
-
-		await this.authProcessService.initializeLicencingBCSC(
-			ControllingMembersCrcRoutes.pathControllingMembers(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
-		);
+		this.authProcessService.logoutBcsc();
 
 		if (!this.controllingMembersService.initialized) {
 			this.router.navigateByUrl(

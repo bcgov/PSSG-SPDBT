@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-controlling-members-bc-security-licence-history',
+	selector: 'app-step-controlling-member-bc-security-licence-history',
 	template: `
 		<app-step-section title="Describe your business involvement">
 			<form [formGroup]="form" novalidate>
@@ -101,7 +101,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepControllingMembersBcSecurityLicenceHistoryComponent implements LicenceChildStepperStepComponent {
+export class StepControllingMemberBcSecurityLicenceHistoryComponent implements LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 

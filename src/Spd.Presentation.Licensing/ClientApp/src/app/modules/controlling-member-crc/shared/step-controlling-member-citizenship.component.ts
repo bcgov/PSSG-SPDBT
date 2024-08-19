@@ -14,7 +14,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-step-controlling-members-citizenship',
+	selector: 'app-step-controlling-member-citizenship',
 	template: `
 		<app-step-section [title]="title">
 			<form [formGroup]="form" novalidate>
@@ -208,7 +208,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepControllingMembersCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = 'Are you a Canadian citizen?';
 	proofOfCanadianCitizenshipTypes = ProofOfCanadianCitizenshipTypes;
 	proofOfAbilityToWorkInCanadaTypes = ProofOfAbilityToWorkInCanadaTypes;

@@ -4,16 +4,16 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
-	selector: 'app-steps-controlling-members-personal-information',
+	selector: 'app-steps-controlling-member-personal-information',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<!-- <ng-container *ngIf="isNew"> -->
-				<app-step-controlling-members-checklist-new></app-step-controlling-members-checklist-new>
+				<app-step-controlling-member-checklist-new></app-step-controlling-member-checklist-new>
 				<!-- </ng-container>
 
 				<ng-container *ngIf="isRenewal">
-					<app-step-controlling-members-checklist-renewal></app-step-controlling-members-checklist-renewal>
+					<app-step-controlling-member-checklist-renewal></app-step-controlling-member-checklist-renewal>
 				</ng-container> 
 					(previousStepperStep)="onGoToPreviousStep()"
 					(previousStepperStep)="onGotoBusinessProfile()"-->
@@ -31,9 +31,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				<app-step-controlling-members-aliases
+				<app-step-controlling-member-aliases
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-aliases>
+				></app-step-controlling-member-aliases>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -42,9 +42,9 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				<app-step-controlling-members-residential-address
+				<app-step-controlling-member-residential-address
 					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-residential-address>
+				></app-step-controlling-member-residential-address>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -56,7 +56,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsControllingMembersPersonalInformationComponent extends BaseWizardStepComponent {
+export class StepsControllingMemberPersonalInformationComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 1;
 	readonly STEP_LICENCE_EXPIRED = 2;
 	readonly STEP_LICENCE_BRANDING = 3;

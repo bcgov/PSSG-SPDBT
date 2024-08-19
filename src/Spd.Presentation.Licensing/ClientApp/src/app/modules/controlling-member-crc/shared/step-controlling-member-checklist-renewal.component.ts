@@ -4,7 +4,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-members-checklist-renewal',
+	selector: 'app-step-controlling-member-checklist-renewal',
 	template: `
 		<app-step-section title="Checklist" subtitle="Make sure you have the following items before you continue">
 			<div class="row">
@@ -68,7 +68,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	`,
 	styles: [],
 })
-export class StepControllingMembersChecklistRenewalComponent implements LicenceChildStepperStepComponent {
+export class StepControllingMemberChecklistRenewalComponent implements LicenceChildStepperStepComponent {
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
 
 	form: FormGroup = this.formBuilder.group({

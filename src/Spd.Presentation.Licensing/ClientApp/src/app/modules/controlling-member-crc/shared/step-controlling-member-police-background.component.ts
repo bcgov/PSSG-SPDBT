@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
-	selector: 'app-step-controlling-members-police-background',
+	selector: 'app-step-controlling-member-police-background',
 	template: `
 		<app-step-section
 			[title]="title"
@@ -22,7 +22,7 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 	`,
 	styles: [],
 })
-export class StepControllingMembersPoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberPoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

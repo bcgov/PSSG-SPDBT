@@ -6,7 +6,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
 @Component({
-	selector: 'app-step-controlling-members-mental-health-conditions',
+	selector: 'app-step-controlling-member-mental-health-conditions',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<app-form-mental-health-conditions
@@ -20,7 +20,7 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 	`,
 	styles: [],
 })
-export class StepControllingMembersMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberMentalHealthConditionsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 

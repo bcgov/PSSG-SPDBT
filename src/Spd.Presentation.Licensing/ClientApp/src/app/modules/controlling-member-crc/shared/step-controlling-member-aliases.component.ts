@@ -5,7 +5,7 @@ import { ControllingMembersService } from '@app/core/services/controlling-member
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-members-aliases',
+	selector: 'app-step-controlling-member-aliases',
 	template: `
 		<app-step-section title="Do you have any previous names or aliases?" [subtitle]="subtitle">
 			<app-form-aliases [form]="form"></app-form-aliases>
@@ -13,7 +13,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	`,
 	styles: [],
 })
-export class StepControllingMembersAliasesComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberAliasesComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 
 	form: FormGroup = this.controllingMembersService.aliasesFormGroup;

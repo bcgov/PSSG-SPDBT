@@ -4,13 +4,11 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
-	selector: 'app-steps-controlling-members-citizenship-residency',
+	selector: 'app-steps-controlling-member-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-controlling-members-citizenship
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-citizenship>
+				<app-step-controlling-member-summary-review-anonymous></app-step-controlling-member-summary-review-anonymous>
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"
@@ -19,18 +17,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 			</mat-step>
 
 			<mat-step>
-				<app-step-controlling-members-fingerprints></app-step-controlling-members-fingerprints>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-controlling-members-bc-driver-licence
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-members-bc-driver-licence>
+				<app-step-controlling-member-consent-and-declaration></app-step-controlling-member-consent-and-declaration>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -42,7 +29,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 	styles: [],
 	encapsulation: ViewEncapsulation.None,
 })
-export class StepsControllingMembersCitizenshipResidencyComponent extends BaseWizardStepComponent {
+export class StepsControllingMemberReviewComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CONFIRMATION = 1;
 	readonly STEP_LICENCE_EXPIRED = 2;
 	readonly STEP_LICENCE_BRANDING = 3;
