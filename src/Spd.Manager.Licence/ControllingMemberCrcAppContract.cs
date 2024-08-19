@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Spd.Manager.Licence;
 public abstract record ControllingMemberCrcApp
 {
-    public string? AccessCode { get; set; }
+    //public string? AccessCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
