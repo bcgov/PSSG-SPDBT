@@ -3,6 +3,7 @@
 		<ItemGroup>
 				<PackageReference Include="Alba" />
 				<PackageReference Include="MartinCostello.Logging.XUnit" />
+				<PackageReference Include="Microsoft.Extensions.Options" />
 				<PackageReference Include="Microsoft.NET.Test.Sdk" />
 				<PackageReference Include="Shouldly" />
 				<PackageReference Include="xunit" />

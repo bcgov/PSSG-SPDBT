@@ -9,6 +9,7 @@
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 				<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+				<PackageReference Include="Microsoft.Extensions.Options" />
 				<PackageReference Include="Serilog.AspNetCore" />
 				<PackageReference Include="Serilog.Enrichers.ClientInfo" />
 				<PackageReference Include="Serilog.Enrichers.Environment" />
