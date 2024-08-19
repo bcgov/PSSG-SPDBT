@@ -43,7 +43,7 @@ public abstract record ControllingMemberCrcApp
     public bool? HasBankruptcyHistory { get; set; }
     public string? BankruptcyHistoryDetail { get; set; }
 
-    public bool? isTreatedForMHC { get; set; }
+    public bool? IsTreatedForMHC { get; set; }
     //public LicenceAppDocumentUpload? MentalHealthConditionDoucuments { get; set; }
 
     public Address? ResidentialAddress { get; set; }
