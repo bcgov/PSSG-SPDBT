@@ -1,16 +1,16 @@
+using System.Configuration;
+using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Presentation.Licensing.Configurations;
-using Spd.Utilities.Cache;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
-using System.Configuration;
-using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
+
 public abstract class SpdLicenceControllerBase : SpdControllerBase
 {
     private readonly ITimeLimitedDataProtector _dataProtector;
@@ -18,8 +18,8 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
     private readonly IConfiguration _configuration;
 
-    protected SpdLicenceControllerBase(IDistributedCache cache, 
-        IDataProtectionProvider dpProvider, 
+    protected SpdLicenceControllerBase(IDistributedCache cache,
+        IDataProtectionProvider dpProvider,
         IRecaptchaVerificationService recaptchaVerificationService,
         IConfiguration configuration)
     {
@@ -29,7 +29,9 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
         _configuration = configuration;
     }
 
-    protected IDistributedCache Cache { get { return _cache; } }
+    protected IDistributedCache Cache
+    { get { return _cache; } }
+
     protected void SetValueToResponseCookie(string key, string value)
     {
         var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(20));
@@ -79,8 +81,8 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
         List<LicAppFileInfo> results = new List<LicAppFileInfo>();
         foreach (Guid docKey in array)
         {
-            IEnumerable<LicAppFileInfo>? items = await _cache.Get<IEnumerable<LicAppFileInfo>>(docKey.ToString());
-            if (items!=null && items.Any())
+            IEnumerable<LicAppFileInfo>? items = await _cache.GetAsync<IEnumerable<LicAppFileInfo>>(docKey.ToString());
+            if (items != null && items.Any())
             {
                 results.AddRange(items);
             }
@@ -92,7 +94,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     {
         string keyCode = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationSubmitKeyCode);
         //validate keyCode
-        LicenceAppDocumentsCache? keyCodeValue = await Cache.Get<LicenceAppDocumentsCache?>(keyCode.ToString());
+        LicenceAppDocumentsCache? keyCodeValue = await Cache.GetAsync<LicenceAppDocumentsCache?>(keyCode.ToString());
         if (keyCodeValue == null)
         {
             throw new ApiException(HttpStatusCode.BadRequest, "invalid key code.");

@@ -6,8 +6,4 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Spd.Utilities.Cache\Spd.Utilities.Cache.csproj" />
-  </ItemGroup>
-
 </Project>

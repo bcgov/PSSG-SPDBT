@@ -5,7 +5,6 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
 using Spd.Manager.Screening;
 using Spd.Presentation.Screening.Swagger;
 using Spd.Utilities.Address;
@@ -99,7 +98,6 @@ namespace Spd.Presentation.Screening
         {
             // Initialize slow dependencies
             app.Services.GetRequiredService<AutoMapper.IConfigurationProvider>().CompileMappings();
-            JsonConvert.SerializeObject(new { property = 1 });
 
             app.UsePathBase(configuration.GetValue("BASE_PATH", string.Empty));
             if (app.Environment.IsDevelopment())

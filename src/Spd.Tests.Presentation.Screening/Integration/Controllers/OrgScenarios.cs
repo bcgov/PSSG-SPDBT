@@ -9,7 +9,6 @@ public class OrgScenarios : ScenarioContextBase
     public OrgScenarios(ITestOutputHelper output, WebAppFixture fixture) : base(output, fixture)
     { }
 
-
     [Fact]
     public async Task GetOrgFromId_WithoutHeader_Unauthorized()
     {
@@ -17,6 +16,7 @@ public class OrgScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.Get.Url($"/api/orgs/{org.accountid}");
             //todo, once we know how to make pkce auth working, uncomment following code.
             _.StatusCodeShouldBe(401);
@@ -30,6 +30,7 @@ public class OrgScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Get.Url($"/api/orgs/{org.accountid}");
             _.ContentShouldContain(org.accountid.ToString());
@@ -44,6 +45,7 @@ public class OrgScenarios : ScenarioContextBase
 
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.Get.Url($"/api/orgs/{org.accountid}");
             _.StatusCodeShouldBe(401);
         });
@@ -55,6 +57,7 @@ public class OrgScenarios : ScenarioContextBase
         var (org, user) = await fixture.testData.CreateOrgWithLogonUser("org1");
         await Host.Scenario(_ =>
         {
+            _.WithBceidUser(WebAppFixture.LOGON_USER_GUID, WebAppFixture.LOGON_ORG_GUID);
             _.WithRequestHeader("organization", org.accountid.ToString());
             _.Put.Json(Create_OrgUpdateRequest((Guid)org.accountid)).ToUrl($"/api/orgs/{org.accountid}");
             _.ContentShouldContain(org.accountid.ToString());

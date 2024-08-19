@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
 using Spd.Presentation.Licensing;
 using Spd.Presentation.Licensing.Services;
 using Spd.Presentation.Licensing.Swagger;
@@ -84,7 +83,6 @@ var app = builder.Build();
 
 // Initialize slow dependencies
 app.Services.GetRequiredService<AutoMapper.IConfigurationProvider>().CompileMappings();
-JsonConvert.SerializeObject(new { property = 1 });
 
 // Configure the HTTP request pipeline.
 app.UsePathBase(builder.Configuration.GetValue("BASE_PATH", string.Empty));
