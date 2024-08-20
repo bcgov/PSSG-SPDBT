@@ -33,10 +33,21 @@ public record ControllingMemberCrcApplication
     public bool? HasBankruptcyHistory { get; set; }
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
-    public ResidentialAddr? ResidentialAddress { get; set; }
+    public ResidentialAddr? ResidentialAddressData { get; set; }
 }
 
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
 
 };
+public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplication
+{
+    //TODO: what are response props?
+    public Guid? ControllingMemberCrcAppId { get; set; }
+    public Guid? ContactId { get; set; }
+    //public DateOnly? ExpiryDate { get; set; }
+    //public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
+    //public string? CaseNumber { get; set; }
+    //public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
+    //public string? ExpiredLicenceNumber { get; set; }
+}

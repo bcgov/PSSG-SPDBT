@@ -22,13 +22,10 @@ internal class ControllingMemberCrcAppManager :
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand cmd, CancellationToken ct)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
-        //ValidateFilesForNewApp(cmd);
-
         //save the application
         CreateControllingMemberCrcAppCmd createApp = _mapper.Map<CreateControllingMemberCrcAppCmd>(request);
+        //var response = await _controllingMemberCrcAppRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
         
-        //var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-        //await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
         throw new NotImplementedException();
     }
 }
