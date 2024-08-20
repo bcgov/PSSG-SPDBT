@@ -2,8 +2,8 @@ using AutoFixture;
 using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
@@ -29,6 +29,7 @@ public class BizLicenceAppManagerTest
     private Mock<IBizContactRepository> mockBizContactRepo = new();
     private Mock<IBizRepository> mockBizRepo = new();
     private Mock<ITaskRepository> mockTaskRepo = new();
+    private Mock<IPersonLicApplicationRepository> mockPersonalLicAppRepo = new();
     private BizLicAppManager sut;
 
     public BizLicenceAppManagerTest()
@@ -55,7 +56,8 @@ public class BizLicenceAppManagerTest
             mockBizContactRepo.Object,
             mockBizLicAppRepo.Object,
             mockTaskRepo.Object,
-            mockBizRepo.Object);
+            mockBizRepo.Object,
+            mockPersonalLicAppRepo.Object);
     }
 
     [Fact]

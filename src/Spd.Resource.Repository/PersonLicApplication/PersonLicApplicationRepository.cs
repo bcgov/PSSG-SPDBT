@@ -4,6 +4,8 @@ using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.LicApp;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
 internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
@@ -45,7 +47,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             {
                 throw new ArgumentException("for replace, renew or update, original application id cannot be null");
             }
-            
+
             if (cmd.OriginalLicenceId != null)
             {
                 SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
@@ -137,6 +139,21 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         }
 
         return appResp;
+    }
+
+    public async Task<LicenceApplicationCmdResp> UpdateSwlSoleProprietorApplicationAsync(Guid swlAppId, Guid bizLicAppId, CancellationToken ct)
+    {
+        var swlApp = await _context.spd_applications
+            .Where(a => a.spd_applicationid == swlAppId)
+            .SingleOrDefaultAsync(ct);
+        if (swlApp == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the swl application for {swlAppId}.");
+
+        var bizLicApp = await _context.spd_applications.Where(a => a.spd_applicationid == bizLicAppId).SingleOrDefaultAsync(ct);
+        if (bizLicApp == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the business application for {bizLicAppId}.");
+
+        _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
+        await _context.SaveChangesAsync(ct);
+        return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }
 
     private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
