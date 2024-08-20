@@ -146,10 +146,10 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         var swlApp = await _context.spd_applications
             .Where(a => a.spd_applicationid == swlAppId)
             .SingleOrDefaultAsync(ct);
-        if (swlApp == null) throw new ApiException(HttpStatusCode.BadRequest, "cannot find the swl application.");
+        if (swlApp == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the swl application for {swlAppId}.");
 
         var bizLicApp = await _context.spd_applications.Where(a => a.spd_applicationid == bizLicAppId).SingleOrDefaultAsync(ct);
-        if (bizLicApp == null) throw new ApiException(HttpStatusCode.BadRequest, "cannot find the business application.");
+        if (bizLicApp == null) throw new ApiException(HttpStatusCode.BadRequest, $"Cannot find the business application for {bizLicAppId}.");
 
         _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
         await _context.SaveChangesAsync(ct);
