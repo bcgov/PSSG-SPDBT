@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,30 @@ internal class ControllingMemberCrcAppManager :
         IControllingMemberCrcAppManager
 {
     protected readonly IMapper _mapper;
+    private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
+    private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
 
-    public ControllingMemberCrcAppManager(IMapper mapper)
+
+    public ControllingMemberCrcAppManager(IMapper mapper,
+        IBizLicApplicationRepository bizApplicationRepository,
+        IControllingMemberCrcRepository controllingMemberCrcRepository)
     {
+        _bizLicApplicationRepository = bizApplicationRepository;
         _mapper = mapper;
+        _controllingMemberCrcRepository = controllingMemberCrcRepository;
     }
 
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand cmd, CancellationToken ct)
     {
+
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
         //save the application
         CreateControllingMemberCrcAppCmd createApp = _mapper.Map<CreateControllingMemberCrcAppCmd>(request);
-        //var response = await _controllingMemberCrcAppRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
-        
-        throw new NotImplementedException();
+        var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
+
+        return new ControllingMemberCrcAppCommandResponse
+        {
+            ControllingMemberAppId = response.ControllingMemberCrcAppId
+        };
     }
 }

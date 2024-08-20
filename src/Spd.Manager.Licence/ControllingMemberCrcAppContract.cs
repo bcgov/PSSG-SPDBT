@@ -14,6 +14,7 @@ public interface IControllingMemberCrcAppManager
 public abstract record ControllingMemberCrcApp
 {
     //public string? AccessCode { get; set; }
+    public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
