@@ -1,34 +1,31 @@
-﻿using MediatR;
-using Spd.Manager.Shared;
+﻿using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.PersonLicApplication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spd.Manager.Licence;
-public interface IControllingMemberCrcAppManager
+namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
+
+public record ControllingMemberCrcApplication
 {
-    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand command, CancellationToken ct);
-}
-public abstract record ControllingMemberCrcApp
-{
-    //public string? AccessCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public DateOnly DateOfBirth { get; set; }
-    public GenderCode? GenderCode { get; set; }
+    public GenderEnum? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
     public bool? HasPreviousNames { get; set; }
-    public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
+    public IEnumerable<AliasResp> Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
     public bool? IsPoliceOrPeaceOfficer { get; set; }
-    public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+    public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
     public string? OtherOfficerRole { get; set; }
     public bool? IsCanadianCitizen { get; set; }
     public bool? HasCriminalHistory { get; set; }
@@ -36,17 +33,10 @@ public abstract record ControllingMemberCrcApp
     public bool? HasBankruptcyHistory { get; set; }
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
-    public Address? ResidentialAddress { get; set; }
+    public ResidentialAddr? ResidentialAddress { get; set; }
 }
 
-public record ControllingMemberCrcAppCommandResponse
+public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
-    public Guid ControllingMemberAppId { get; set; }
+
 };
-
-
-public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcApp
-{
-};
-
-public record ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
