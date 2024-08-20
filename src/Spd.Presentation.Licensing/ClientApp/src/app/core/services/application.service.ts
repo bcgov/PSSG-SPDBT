@@ -34,12 +34,6 @@ import {
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { AuthProcessService } from './auth-process.service';
-import { AuthUserBceidService } from './auth-user-bceid.service';
-import { AuthUserBcscService } from './auth-user-bcsc.service';
-import { ConfigService } from './config.service';
-import { FileUtilService } from './file-util.service';
-import { UtilService } from './util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -47,6 +41,12 @@ import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { AuthProcessService } from './auth-process.service';
+import { AuthUserBceidService } from './auth-user-bceid.service';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
+import { ConfigService } from './config.service';
+import { FileUtilService } from './file-util.service';
+import { UtilService } from './util.service';
 
 export class LicenceLookupResult {
 	'isFound': boolean;
@@ -395,6 +395,10 @@ export class ApplicationService {
 			switch (workerLicenceTypeCode) {
 				case WorkerLicenceTypeCode.SecurityBusinessLicence: {
 					mobileTitle = 'SBL';
+					break;
+				}
+				case WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
+					mobileTitle = 'CM CRC';
 					break;
 				}
 				case WorkerLicenceTypeCode.SecurityWorkerLicence: {

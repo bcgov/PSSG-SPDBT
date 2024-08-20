@@ -1549,6 +1549,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceAppResponse) => {
 				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
+				businessInformationData.bizTypeCode = resp.bizTypeCode;
 				businessInformationData.soleProprietorCategoryCodes = resp.categoryCodes;
 
 				const categoryData: any = {};

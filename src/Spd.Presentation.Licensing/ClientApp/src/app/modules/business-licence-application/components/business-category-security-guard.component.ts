@@ -6,7 +6,6 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-business-category-security-guard',
@@ -65,7 +64,6 @@ export class BusinessCategorySecurityGuardComponent implements LicenceChildStepp
 	form = this.businessApplicationService.categorySecurityGuardFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
-	matcher = new FormErrorStateMatcher();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 

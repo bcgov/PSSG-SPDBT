@@ -54,7 +54,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 										<mat-checkbox formControlName="check1" (click)="onCheckboxChange()">
 											I hereby consent to the Registrar of Security Services (Registrar) carrying out a criminal record
 											check, police information check and correctional service information check (Prescribed Checks) on
-											me pursuant to the Security Services Review Act (SSA).
+											me pursuant to the <i>Security Services Review Act (SSA)</i>.
 										</mat-checkbox>
 										<mat-error
 											class="mat-option-error"

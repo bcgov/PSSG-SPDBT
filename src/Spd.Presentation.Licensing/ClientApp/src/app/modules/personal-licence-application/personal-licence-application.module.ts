@@ -51,8 +51,8 @@ import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/licence-first-time-user-terms-of-use.component';
-import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
 import { LicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/licence-return-from-bl-sole-proprietor.component';
+import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
@@ -84,17 +84,12 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/aut
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-step-components/steps-worker-licence-updates-authenticated.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/common-step-components/common-access-code-anonymous.component';
 import { CommonAliasListComponent } from './components/shared/common-step-components/common-alias-list.component';
-import { CommonAliasesComponent } from './components/shared/common-step-components/common-aliases.component';
-import { CommonBcDriverLicenceComponent } from './components/shared/common-step-components/common-bc-driver-licence.component';
 import { CommonContactInformationComponent } from './components/shared/common-step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/common-step-components/common-criminal-history.component';
-import { CommonFingerprintsComponent } from './components/shared/common-step-components/common-fingerprints.component';
-import { CommonMentalHealthConditionsComponent } from './components/shared/common-step-components/common-mental-health-conditions.component';
 import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/common-step-components/common-personal-information-new-anonymous.component';
 import { CommonPersonalInformationRenewAnonymousComponent } from './components/shared/common-step-components/common-personal-information-renew-anonymous.component';
 import { CommonPhotographOfYourselfComponent } from './components/shared/common-step-components/common-photograph-of-yourself.component';
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/common-step-components/common-physical-characteristics.component';
-import { CommonPoliceBackgroundComponent } from './components/shared/common-step-components/common-police-background.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
 import { LicenceActiveSwlPermitLicencesComponent } from './components/shared/licence-active-swl-permit-licences.component';
 import { LicencePaymentCancelAnonymousComponent } from './components/shared/licence-payment-cancel-anonymous.component';
@@ -169,13 +164,8 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		StepPermitUserProfileComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
-		CommonAliasesComponent,
-		CommonBcDriverLicenceComponent,
 		CommonContactInformationComponent,
 		CommonCriminalHistoryComponent,
-		CommonPoliceBackgroundComponent,
-		CommonMentalHealthConditionsComponent,
-		CommonFingerprintsComponent,
 		CommonPersonalInformationNewAnonymousComponent,
 		CommonPersonalInformationRenewAnonymousComponent,
 		CommonPhotographOfYourselfComponent,

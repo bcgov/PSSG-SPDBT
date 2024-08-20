@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { ModalFingerprintTearOffComponent } from '@app/shared/components/modal-fingerprint-tear-off.component';
+import { FileUploadComponent } from './file-upload.component';
+import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.component';
 
 @Component({
-	selector: 'app-common-fingerprints',
+	selector: 'app-form-fingerprints',
 	template: `
 		<div class="row">
 			<div class="offset-md-2 col-md-8 col-sm-12">
@@ -71,7 +71,7 @@ import { ModalFingerprintTearOffComponent } from '@app/shared/components/modal-f
 	`,
 	styles: [],
 })
-export class CommonFingerprintsComponent {
+export class FormFingerprintsComponent {
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
 
 	@Input() form!: FormGroup;

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
@@ -16,8 +16,6 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 export class StepPermitResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
-
-	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	form: FormGroup = this.permitApplicationService.residentialAddressFormGroup;
 
