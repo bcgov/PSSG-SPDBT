@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routing.module';
 
@@ -48,17 +48,8 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 	`,
 	styles: [],
 })
-export class ControllingMemberSubmissionReceivedComponent implements OnInit {
+export class ControllingMemberSubmissionReceivedComponent {
 	constructor(private router: Router) {}
-
-	ngOnInit(): void {
-		// this.controllingMembersModelData = {
-		// 	...this.controllingMembersService.controllingMembersModelFormGroup.getRawValue(),
-		// };
-		// if (!this.controllingMembersService.initialized) {
-		// 	this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN));
-		// }
-	}
 
 	onBackToHome(): void {
 		this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN));

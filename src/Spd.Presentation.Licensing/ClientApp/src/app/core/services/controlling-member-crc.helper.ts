@@ -134,7 +134,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		return baseData;
 	}
 
-	private getSaveBodyBase(controllingMemberCrcFormValue: any, isAuthenticated: boolean): any {
+	private getSaveBodyBase(controllingMemberCrcFormValue: any, _isAuthenticated: boolean): any {
 		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
 		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };

@@ -95,10 +95,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	fileUploaded(
-		documentCode: LicenceDocumentTypeCode, // type of the document
-		document: File,
-		attachments: FormControl, // the FormControl containing the documents
-		fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
+		_documentCode: LicenceDocumentTypeCode, // type of the document
+		_document: File,
+		_attachments: FormControl, // the FormControl containing the documents
+		_fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
 	) {
 		this.hasValueChanged = true;
 

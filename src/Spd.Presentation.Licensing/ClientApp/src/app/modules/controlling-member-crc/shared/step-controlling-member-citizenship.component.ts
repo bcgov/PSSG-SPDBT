@@ -231,7 +231,7 @@ export class StepControllingMemberCitizenshipComponent implements OnInit, Licenc
 		}
 	}
 
-	onFileUploaded(file: File): void {
+	onFileUploaded(_file: File): void {
 		this.controllingMembersService.hasValueChanged = true;
 
 		// if (!this.controllingMembersService.isAutoSave()) {
@@ -260,7 +260,7 @@ export class StepControllingMemberCitizenshipComponent implements OnInit, Licenc
 		this.controllingMembersService.hasValueChanged = true;
 	}
 
-	onGovernmentIssuedFileUploaded(file: File): void {
+	onGovernmentIssuedFileUploaded(_file: File): void {
 		this.controllingMembersService.hasValueChanged = true;
 
 		// if (!this.controllingMembersService.isAutoSave()) {
