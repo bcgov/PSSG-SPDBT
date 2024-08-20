@@ -1,11 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 
 @Component({
-	selector: 'app-common-bc-driver-licence',
+	selector: 'app-form-bc-driver-licence',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -48,9 +47,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonBcDriverLicenceComponent {
+export class FormBcDriverLicenceComponent {
 	booleanTypeCodes = BooleanTypeCode;
-	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;
 

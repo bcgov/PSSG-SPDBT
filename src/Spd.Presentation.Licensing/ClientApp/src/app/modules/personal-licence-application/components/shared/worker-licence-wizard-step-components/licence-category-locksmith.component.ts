@@ -6,7 +6,6 @@ import { LocksmithRequirementCode } from '@app/core/code-types/model-desc.models
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
@@ -114,8 +113,6 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildStepperStepComponent {
 	form: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
 	title = '';
-
-	matcher = new FormErrorStateMatcher();
 
 	locksmithRequirementCodes = LocksmithRequirementCode;
 

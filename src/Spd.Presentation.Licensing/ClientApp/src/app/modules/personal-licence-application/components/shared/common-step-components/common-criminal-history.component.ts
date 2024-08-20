@@ -10,11 +10,11 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isCalledFromStep ? 'mx-auto' : ''">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
 					<mat-radio-group aria-label="Select an option" formControlName="hasCriminalHistory">
-						<div [ngClass]="isCalledFromStep ? '' : 'd-flex justify-content-start'">
+						<div [ngClass]="isWizardStep ? '' : 'd-flex justify-content-start'">
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-2" *ngIf="isCalledFromStep"></mat-divider>
+							<mat-divider class="my-2" *ngIf="isWizardStep"></mat-divider>
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</div>
 					</mat-radio-group>
@@ -31,7 +31,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 			</div>
 
 			<div class="row mt-4" *ngIf="isYesAndUpdate" @showHideTriggerSlideAnimation>
-				<div [ngClass]="isCalledFromStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
+				<div [ngClass]="isWizardStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 
 					<div class="text-minor-heading mb-2">Brief Description of New Charges or Convictions</div>
@@ -65,7 +65,7 @@ export class CommonCriminalHistoryComponent {
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	@Input() isCalledFromStep = false;
+	@Input() isWizardStep = false;
 
 	get isYesAndUpdate(): boolean {
 		return (

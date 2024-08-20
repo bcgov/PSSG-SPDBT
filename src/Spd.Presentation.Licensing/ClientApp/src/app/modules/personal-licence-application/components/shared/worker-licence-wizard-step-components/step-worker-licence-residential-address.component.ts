@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -16,8 +16,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepWorkerLicenceResidentialAddressComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
-
-	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 

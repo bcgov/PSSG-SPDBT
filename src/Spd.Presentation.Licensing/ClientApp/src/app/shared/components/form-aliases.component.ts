@@ -5,11 +5,11 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { DialogComponent, DialogOptions } from './dialog.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-common-aliases',
+	selector: 'app-form-aliases',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -121,7 +121,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonAliasesComponent {
+export class FormAliasesComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 

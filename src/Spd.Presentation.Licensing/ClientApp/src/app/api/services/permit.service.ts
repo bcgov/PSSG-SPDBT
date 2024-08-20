@@ -112,7 +112,7 @@ export class PermitService extends BaseService {
   static readonly ApiApplicantsApplicantIdPermitLatestGetPath = '/api/applicants/{applicantId}/permit-latest';
 
   /**
-   * Get Lastest Permit Application 
+   * Get Lastest Permit Application
    * Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit.
    *
    *
@@ -127,7 +127,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Get Lastest Permit Application 
+   * Get Lastest Permit Application
    * Example: api/applicants/{applicantId}/permit-latest?typeCode=BodyArmourPermit.
    *
    *

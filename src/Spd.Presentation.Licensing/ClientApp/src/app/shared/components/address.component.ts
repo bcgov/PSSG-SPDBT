@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { Address } from './address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { Address } from './address-autocomplete.component';
 
 @Component({
 	selector: 'app-address',
@@ -98,8 +97,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 export class AddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
 	provinceOfBC = SPD_CONSTANTS.address.provinceBC;
-
-	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	@Input() form!: FormGroup;
 	@Input() isWizardStep = true;

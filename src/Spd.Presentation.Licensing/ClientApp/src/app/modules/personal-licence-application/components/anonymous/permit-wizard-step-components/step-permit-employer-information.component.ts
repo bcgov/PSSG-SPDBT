@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AddressRetrieveResponse, ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { Address } from '@app/shared/components/address-autocomplete.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -150,8 +150,6 @@ export class StepPermitEmployerInformationComponent implements OnInit, LicenceCh
 	form: FormGroup = this.permitApplicationService.employerInformationFormGroup;
 	title = '';
 	subtitle = '';
-
-	addressAutocompleteFields: AddressRetrieveResponse[] = [];
 
 	readonly title_new = 'Provide your employer’s information';
 	readonly title_not_new = 'Confirm your employer’s information';

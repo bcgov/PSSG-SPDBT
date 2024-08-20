@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
 @Component({
 	selector: 'app-common-user-profile-licence-mental-health-conditions',
@@ -19,10 +20,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						{{ subtitle }}
 					</app-alert>
 
-					<app-common-mental-health-conditions
+					<app-form-mental-health-conditions
 						[applicationTypeCode]="applicationTypeCode"
 						[form]="form"
-					></app-common-mental-health-conditions>
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
+					></app-form-mental-health-conditions>
 				</div>
 			</mat-expansion-panel>
 		</mat-accordion>
@@ -38,6 +41,9 @@ export class CommonUserProfileLicenceMentalHealthConditionsComponent
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
+	@ViewChild(FormMentalHealthConditionsComponent)
+	formMentalHealthConditionsComponent!: FormMentalHealthConditionsComponent;
+
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 
 	ngOnInit(): void {
@@ -50,6 +56,19 @@ export class CommonUserProfileLicenceMentalHealthConditionsComponent
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onFileUploaded(file: File): void {
+		this.licenceApplicationService.fileUploaded(
+			LicenceDocumentTypeCode.MentalHealthCondition,
+			file,
+			this.formMentalHealthConditionsComponent.attachments,
+			this.formMentalHealthConditionsComponent.fileUploadComponent
+		);
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.fileRemoved();
 	}
 
 	get hasPreviousMhcFormUpload(): FormControl {

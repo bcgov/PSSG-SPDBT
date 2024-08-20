@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-criminal-history',
@@ -12,7 +12,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 			<app-common-criminal-history
 				[form]="form"
 				[applicationTypeCode]="applicationTypeCode"
-				[isCalledFromStep]="true"
+				[isWizardStep]="true"
 			></app-common-criminal-history>
 		</app-step-section>
 	`,
