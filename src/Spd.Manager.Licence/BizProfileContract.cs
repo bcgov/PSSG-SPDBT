@@ -56,6 +56,7 @@ public record BizListResponse
     public string? BizLegalName { get; set; }
     public string? BizName { get; set; }
     public Guid? BizGuid { get; set; }
+    public IEnumerable<ServiceTypeCode> ServiceTypeCodes { get; set; }
 }
 
 public record BizProfileResponse : BizInfo
