@@ -17,6 +17,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[isSoleProprietorCombinedFlow]="isBusinessLicenceSoleProprietor"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
 					(previousStepperStep)="onStepPrevious()"
@@ -35,6 +36,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[isSoleProprietorCombinedFlow]="isBusinessLicenceSoleProprietor"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
 					(previousStepperStep)="onLicenceTermGoToPreviousStep()"

@@ -1,22 +1,21 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { PoliceOfficerRoleCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { FileUploadComponent } from './file-upload.component';
 
 @Component({
-	selector: 'app-common-police-background',
+	selector: 'app-form-police-background',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isCalledFromStep ? 'mx-auto' : ''">
+				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12" [ngClass]="isWizardStep ? 'mx-auto' : ''">
 					<mat-radio-group aria-label="Select an option" formControlName="isPoliceOrPeaceOfficer">
-						<div [ngClass]="isCalledFromStep ? '' : 'd-flex justify-content-start'">
+						<div [ngClass]="isWizardStep ? '' : 'd-flex justify-content-start'">
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
-							<mat-divider class="my-2" *ngIf="isCalledFromStep"></mat-divider>
+							<mat-divider class="my-2" *ngIf="isWizardStep"></mat-divider>
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
 						</div>
 					</mat-radio-group>
@@ -36,7 +35,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					*ngIf="isPoliceOrPeaceOfficer.value === booleanTypeCodes.Yes"
 					@showHideTriggerSlideAnimation
 				>
-					<div [ngClass]="isCalledFromStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
+					<div [ngClass]="isWizardStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
 						<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 						<div class="row mt-2">
 							<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12">
@@ -111,7 +110,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonPoliceBackgroundComponent {
+export class FormPoliceBackgroundComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodeOther = PoliceOfficerRoleCode.Other;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
@@ -119,23 +118,19 @@ export class CommonPoliceBackgroundComponent {
 	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;
-	@Input() isCalledFromStep = false;
+	@Input() isWizardStep = false;
+
+	@Output() fileUploaded = new EventEmitter<File>();
+	@Output() fileRemoved = new EventEmitter();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
-
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
-			LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-			file,
-			this.attachments,
-			this.fileUploadComponent
-		);
+		this.fileUploaded.emit(file);
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.fileRemoved.emit();
 	}
 
 	get isPoliceOrPeaceOfficer(): FormControl {

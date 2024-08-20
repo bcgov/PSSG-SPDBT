@@ -16,7 +16,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 				</div>
 			</div>
 
-			<app-common-bc-driver-licence [form]="form"></app-common-bc-driver-licence>
+			<app-form-bc-driver-licence [form]="form"></app-form-bc-driver-licence>
 		</app-step-section>
 	`,
 	styles: [],

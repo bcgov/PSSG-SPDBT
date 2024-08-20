@@ -68,25 +68,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 
 		// TODO for BUSINESS_NEW_SWL_SP, ignore first time login ??
 
-		// handle first time login
-		if (this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
-			this.router.navigateByUrl(
-				BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS)
-			);
-			return;
-		}
-
-		// If the user is navigating to a payment page, the service does not have to be initialized
-		const path = this.router.url;
-		if (
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
-		) {
-			return;
-		}
-
 		if (
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR) &&
 			loginInfo.state
@@ -110,6 +91,25 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 					take(1)
 				)
 				.subscribe();
+			return;
+		}
+
+		// If the user is navigating to a payment page, the service does not have to be initialized
+		const path = this.router.url;
+		if (
+			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
+			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
+			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
+			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
+		) {
+			return;
+		}
+
+		// handle first time login
+		if (this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
+			this.router.navigateByUrl(
+				BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS)
+			);
 			return;
 		}
 

@@ -8,7 +8,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	selector: 'app-step-permit-aliases',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
-			<app-common-aliases [form]="form"></app-common-aliases>
+			<app-form-aliases [form]="form"></app-form-aliases>
 		</app-step-section>
 	`,
 	styles: [],
