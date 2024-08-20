@@ -8,6 +8,7 @@ using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -325,6 +326,14 @@ internal class Mappings : Profile
         CreateMap<SwlContactInfo, BizContactResp>()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
             .ReverseMap();
+
+        CreateMap<ControllingMemberCrcAppSubmitRequest, CreateControllingMemberCrcAppCmd>()
+            .ForPath(d => d.ResidentialAddressData.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddressData.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddressData.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddressData.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddressData.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

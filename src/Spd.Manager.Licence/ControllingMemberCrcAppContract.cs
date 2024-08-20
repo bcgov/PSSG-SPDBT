@@ -7,6 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence;
+public interface IControllingMemberCrcAppManager
+{
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand command, CancellationToken ct);
+}
 public abstract record ControllingMemberCrcApp
 {
     //public string? AccessCode { get; set; }
@@ -45,4 +49,4 @@ public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcApp
 {
 };
 
-public record ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcAppSubmitRequest CrcControllingMemberUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
