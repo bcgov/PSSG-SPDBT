@@ -1,7 +1,7 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { PayerPreferenceTypeCode } from 'src/app/api/models';
+import { PayerPreferenceTypeCode, ServiceTypeCode } from 'src/app/api/models';
 import { AppInviteOrgData } from './screening-application.model';
 import { SaConsentToCrcComponent } from './step-components/sa-consent-to-crc.component';
 import { SaConsentToReleaseOfInfoComponent } from './step-components/sa-consent-to-release-of-info.component';
@@ -137,7 +137,10 @@ export class SaStepTermsAndCondComponent {
 				this.orgData.performPaymentProcess = false;
 				this.agreeToShareCrc = true;
 			} else {
-				this.orgData.performPaymentProcess = this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant;
+				// SPDBT-2938 - Volunteer Service Requiring Payment - Add check for service type
+				this.orgData.performPaymentProcess =
+					this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant &&
+					this.orgData?.serviceType != ServiceTypeCode.CrrpVolunteer;
 				this.agreeToShareCrc = false;
 			}
 		}
