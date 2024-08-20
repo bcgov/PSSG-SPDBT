@@ -65,5 +65,8 @@ public class BizLicAppSubmitRequestValidator : BizLicAppBaseValidator<BizLicAppS
         RuleFor(r => r.PreviousDocumentIds)
             .Must(r => r != null && r.Any())
             .WithMessage("Missing previous documents.");
+        RuleFor(r => r.BizTypeCode)
+            .Must(r => r == BizTypeCode.NonRegisteredSoleProprietor || r == BizTypeCode.RegisteredSoleProprietor)
+            .When(r => r.SoleProprietorSWLAppId != null);
     }
 }

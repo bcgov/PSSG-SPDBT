@@ -37,6 +37,7 @@ internal class BizLicAppManager :
     private readonly IBizContactRepository _bizContactRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IBizRepository _bizRepository;
+    private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
 
     public BizLicAppManager(
         ILicenceRepository licenceRepository,
@@ -49,7 +50,8 @@ internal class BizLicAppManager :
         IBizContactRepository bizContactRepository,
         IBizLicApplicationRepository bizApplicationRepository,
         ITaskRepository taskRepository,
-        IBizRepository bizRepository)
+        IBizRepository bizRepository,
+        IPersonLicApplicationRepository personLicApplicationRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -62,6 +64,7 @@ internal class BizLicAppManager :
         _bizContactRepository = bizContactRepository;
         _taskRepository = taskRepository;
         _bizRepository = bizRepository;
+        _personLicApplicationRepository = personLicApplicationRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -97,6 +100,11 @@ internal class BizLicAppManager :
         SaveBizLicApplicationCmd saveCmd = _mapper.Map<SaveBizLicApplicationCmd>(cmd.BizLicAppUpsertRequest);
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos);
         var response = await _bizLicApplicationRepository.SaveBizLicApplicationAsync(saveCmd, cancellationToken);
+
+        if (cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId != null)//this is a biz lic app from swl as sole proprietor
+        {
+            await _personLicApplicationRepository.UpdateSwlSoleProprietorApplicationAsync((Guid)cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId, response.LicenceAppId, cancellationToken);
+        }
 
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
@@ -141,7 +149,7 @@ internal class BizLicAppManager :
         BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
         if (originalLic.BizId == null)
             throw new ArgumentException("there is no business related to the application.");
-        
+
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
         createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
@@ -564,10 +572,10 @@ internal class BizLicAppManager :
     }
 
     private async Task<CreateBizLicApplicationCmd> SetBizManagerInfo(
-        Guid bizId, 
-        CreateBizLicApplicationCmd createApp, 
-        bool applicantIsBizManager, 
-        ContactInfo? applicantContactInfo, 
+        Guid bizId,
+        CreateBizLicApplicationCmd createApp,
+        bool applicantIsBizManager,
+        ContactInfo? applicantContactInfo,
         CancellationToken ct)
     {
         BizResult bizResult = await _bizRepository.GetBizAsync(bizId, ct);
