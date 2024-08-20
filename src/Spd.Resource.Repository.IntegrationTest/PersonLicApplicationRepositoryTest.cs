@@ -85,4 +85,33 @@ public class PersonLicApplicationRepositoryTest : IClassFixture<IntegrationTestS
         // Action and Assert
         await Assert.ThrowsAsync<ArgumentException>(async () => await _personLicAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
     }
+
+    [Fact]
+    public async Task UpdateSwlSoleProprietorApplicationAsync_Run_Correctly()
+    {
+        // Arrange
+        Guid swlAppId = Guid.NewGuid();
+        Guid swlContactId = Guid.NewGuid();
+        spd_application application = new() { spd_applicationid = swlAppId };
+        _context.AddTospd_applications(application);
+        contact contact = new() { contactid = swlContactId, firstname = "test", emailaddress1 = "test@test.com" };
+        _context.AddTocontacts(contact);
+        _context.SetLink(application, nameof(spd_application.spd_ApplicantId_contact), contact);
+        Guid bizAppId = Guid.NewGuid();
+        Guid bizId = Guid.NewGuid();
+        spd_application bizApp = new() { spd_applicationid = bizAppId };
+        _context.AddTospd_applications(bizApp);
+        account biz = new() { accountid = bizId, name = IntegrationTestSetup.DataPrefix + "_test" };
+        _context.AddToaccounts(biz);
+        _context.SetLink(application, nameof(spd_application.spd_ApplicantId_account), biz);
+        await _context.SaveChangesAsync();
+
+        // Action
+        LicenceApplicationCmdResp resp = await _personLicAppRepository.UpdateSwlSoleProprietorApplicationAsync(swlAppId, bizAppId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(resp);
+        Assert.Equal(swlAppId, resp.LicenceAppId);
+        Assert.Equal(swlContactId, resp.ContactId);
+    }
 }

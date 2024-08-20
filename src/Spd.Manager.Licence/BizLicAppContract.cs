@@ -93,6 +93,7 @@ public abstract record BizLicenceApp : LicenceAppBase
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
+    public Guid? SoleProprietorSWLAppId { get; set; } //for swl apply for sole proprietor, they need to input swl app id here.
 }
 
 public record NonSwlContactInfo : ContactInfo

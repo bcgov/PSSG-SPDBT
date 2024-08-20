@@ -45,7 +45,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             {
                 throw new ArgumentException("for replace, renew or update, original application id cannot be null");
             }
-            
+
             if (cmd.OriginalLicenceId != null)
             {
                 SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
@@ -137,6 +137,15 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         }
 
         return appResp;
+    }
+
+    public async Task<LicenceApplicationCmdResp> UpdateSwlSoleProprietorApplicationAsync(Guid swlAppId, Guid bizLicAppId, CancellationToken ct)
+    {
+        var swlApp = await _context.spd_applications.Where(a => a.spd_applicationid == swlAppId).SingleOrDefaultAsync(ct);
+        var bizLicApp = await _context.spd_applications.Where(a => a.spd_applicationid == bizLicAppId).SingleOrDefaultAsync(ct);
+        _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
+        _context.SaveChangesAsync(ct);
+        return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }
 
     private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
