@@ -97,6 +97,10 @@ export class StepBusinessLicenceBusinessAddressComponent implements LicenceChild
 	}
 
 	get isBcBusinessAddress(): boolean {
+		if (!this.businessAddressFormGroup.valid) {
+			return true;
+		}
+
 		return this.businessApplicationService.isBcBusinessAddress();
 	}
 }

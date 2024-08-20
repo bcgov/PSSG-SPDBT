@@ -5,7 +5,6 @@ import { WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import {
 	LookupByLicenceNumberDialogData,
@@ -98,8 +97,6 @@ export class ExpiredLicenceComponent implements OnInit {
 	messageInfo: string | null = null;
 	messageWarn: string | null = null;
 	messageError: string | null = null;
-
-	matcher = new FormErrorStateMatcher();
 
 	@Input() isLoggedIn!: boolean;
 	@Input() form!: FormGroup;

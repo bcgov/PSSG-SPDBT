@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-worker-licence-aliases',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
-			<app-common-aliases [form]="form"></app-common-aliases>
+			<app-form-aliases [form]="form"></app-form-aliases>
 		</app-step-section>
 	`,
 	styles: [],
