@@ -85,4 +85,57 @@ public class PersonLicApplicationRepositoryTest : IClassFixture<IntegrationTestS
         // Action and Assert
         await Assert.ThrowsAsync<ArgumentException>(async () => await _personLicAppRepository.GetLicenceApplicationAsync(Guid.NewGuid(), CancellationToken.None));
     }
+
+    [Fact]
+    public async Task UpdateSwlSoleProprietorApplicationAsync_Run_Correctly()
+    {
+        spd_application? application = null;
+        contact? contact = null;
+        spd_application? bizApp = null;
+        account? biz = null;
+
+        try
+        {
+            // Arrange
+            // create swl app
+            Guid swlAppId = Guid.NewGuid();
+            Guid swlContactId = Guid.NewGuid();
+            application = new() { spd_applicationid = swlAppId };
+            _context.AddTospd_applications(application);
+            contact = new()
+            {
+                contactid = swlContactId,
+                firstname = IntegrationTestSetup.DataPrefix + "test",
+                emailaddress1 = IntegrationTestSetup.DataPrefix + "test@test.com"
+            };
+            _context.AddTocontacts(contact);
+            _context.SetLink(application, nameof(spd_application.spd_ApplicantId_contact), contact);
+            //create biz app
+            Guid bizAppId = Guid.NewGuid();
+            Guid bizId = Guid.NewGuid();
+            bizApp = new() { spd_applicationid = bizAppId };
+            _context.AddTospd_applications(bizApp);
+            biz = new() { accountid = bizId, name = IntegrationTestSetup.DataPrefix + "_test" };
+            _context.AddToaccounts(biz);
+            _context.SetLink(bizApp, nameof(spd_application.spd_ApplicantId_account), biz);
+            await _context.SaveChangesAsync();
+
+            // Action
+            LicenceApplicationCmdResp resp = await _personLicAppRepository.UpdateSwlSoleProprietorApplicationAsync(swlAppId, bizAppId, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(resp);
+            Assert.Equal(swlAppId, resp.LicenceAppId);
+            Assert.Equal(swlContactId, resp.ContactId);
+        }
+        finally
+        {
+            //Annihilate
+            if (application != null) _context.DeleteObject(application);
+            if (contact != null) _context.DeleteObject(contact);
+            if (bizApp != null) _context.DeleteObject(bizApp);
+            if (biz != null) _context.DeleteObject(biz);
+            await _context.SaveChangesAsync(CancellationToken.None);
+        }
+    }
 }
