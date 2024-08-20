@@ -161,7 +161,7 @@ export const WorkerLicenceTypes: SelectOptions[] = [
 	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
 	{
-		desc: 'Security Business Licence Controlling Member Crc',
+		desc: 'Controlling Members CRC',
 		code: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
 ];

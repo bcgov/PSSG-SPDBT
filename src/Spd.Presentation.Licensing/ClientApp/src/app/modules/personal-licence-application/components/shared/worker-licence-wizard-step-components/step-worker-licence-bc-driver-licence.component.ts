@@ -16,7 +16,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 				</div>
 			</div>
 
-			<app-common-bc-driver-licence [form]="form"></app-common-bc-driver-licence>
+			<app-form-bc-driver-licence [form]="form"></app-form-bc-driver-licence>
 		</app-step-section>
 	`,
 	styles: [],

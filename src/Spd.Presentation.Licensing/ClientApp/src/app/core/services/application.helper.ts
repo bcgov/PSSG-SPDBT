@@ -52,6 +52,10 @@ export abstract class ApplicationHelper {
 		accessCode: new FormControl('', [FormControlValidators.required]),
 	});
 
+	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
+		attachments: new FormControl([], [Validators.required]),
+	});
+
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
 			hasExpiredLicence: new FormControl('', [FormControlValidators.required]),
@@ -353,5 +357,53 @@ export abstract class ApplicationHelper {
 		reader.onload = (_event) => {
 			this.photographOfYourself = reader.result;
 		};
+	}
+
+	/**
+	 * When removing a file, set the value as changed
+	 * @returns
+	 */
+	fileRemoved(): void {
+		this.hasValueChanged = true;
+	}
+
+	/**
+	 * Get the title for the PoliceBackground page
+	 * @returns
+	 */
+	getPoliceBackgroundTitle(applicationTypeCode: ApplicationTypeCode | null): string {
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return 'Do you now hold any Police Officer or Peace Officer roles?';
+		} else {
+			return 'Are you currently a Police Officer or Peace Officer?';
+		}
+	}
+
+	/**
+	 * Get the title for the MentalHealthConditions page
+	 * @returns
+	 */
+	getMentalHealthConditionsTitle(
+		applicationTypeCode: ApplicationTypeCode | null,
+		hasPreviousMhcFormUpload: boolean
+	): [string, string] {
+		let title = '';
+		let subtitle = '';
+
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			if (hasPreviousMhcFormUpload) {
+				// If they uploaded a MHC form during the previous application
+				title = 'Has your mental health condition changed since you last submitted a mental health condition form?';
+			} else {
+				// If they have never uploaded a MHC form before, show this
+				title = 'Have you been treated for a mental health condition in the last 3 years?';
+			}
+		} else {
+			title = 'Have you been treated for any mental health conditions?';
+			subtitle =
+				'An individual applying for a security worker licence must provide particulars of any mental health condition for which the individual has received treatment';
+		}
+
+		return [title, subtitle];
 	}
 }

@@ -5,7 +5,6 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
@@ -150,7 +149,6 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
 	constants = SPD_CONSTANTS;
-	matcher = new FormErrorStateMatcher();
 
 	businessTypes = BusinessLicenceTypes;
 
