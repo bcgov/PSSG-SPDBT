@@ -4,6 +4,8 @@ using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.LicApp;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
 internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
@@ -141,10 +143,16 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 
     public async Task<LicenceApplicationCmdResp> UpdateSwlSoleProprietorApplicationAsync(Guid swlAppId, Guid bizLicAppId, CancellationToken ct)
     {
-        var swlApp = await _context.spd_applications.Where(a => a.spd_applicationid == swlAppId).SingleOrDefaultAsync(ct);
+        var swlApp = await _context.spd_applications
+            .Where(a => a.spd_applicationid == swlAppId)
+            .SingleOrDefaultAsync(ct);
+        if (swlApp == null) throw new ApiException(HttpStatusCode.BadRequest, "cannot find the swl application.");
+
         var bizLicApp = await _context.spd_applications.Where(a => a.spd_applicationid == bizLicAppId).SingleOrDefaultAsync(ct);
+        if (bizLicApp == null) throw new ApiException(HttpStatusCode.BadRequest, "cannot find the business application.");
+
         _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
-        _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }
 
