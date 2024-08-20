@@ -10,11 +10,11 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
 import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-licence-swl-sp-information.component';
@@ -76,6 +76,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<app-steps-business-licence-review
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[isBusinessLicenceSoleProprietor]="true"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"
@@ -91,7 +92,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 	`,
 	styles: [],
 })
-export class BusinessLicenceWizardNewSwlSoleProprietorComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class BusinessLicenceWizardNewSwlSoleProprietorComponent
+	extends BaseWizardComponent
+	implements OnInit, OnDestroy
+{
 	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 4;
 	readonly STEP_REVIEW_AND_CONFIRM = 5;

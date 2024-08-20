@@ -28,18 +28,6 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.mod
 											</td>
 											<td class="pb-2">Save your progress</td>
 										</tr>
-										<tr>
-											<td>
-												<mat-icon class="icon me-2">circle</mat-icon>
-											</td>
-											<td class="pb-2">See the status of your criminal record check</td>
-										</tr>
-										<tr>
-											<td>
-												<mat-icon class="icon me-2">circle</mat-icon>
-											</td>
-											<td class="pb-2">Manage updates to your profile</td>
-										</tr>
 									</table>
 									<div class="mt-3">
 										<button

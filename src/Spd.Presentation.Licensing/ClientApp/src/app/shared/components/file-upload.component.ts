@@ -205,10 +205,6 @@ export class FileUploadComponent implements OnInit {
 	ngOnInit(): void {
 		this.id = this.applicationService.getUniqueId();
 
-		if (!this.files) {
-			this.files = []; // default to empty array;
-		}
-
 		if (this.maxNumberOfFiles > SPD_CONSTANTS.document.maxNumberOfFiles) {
 			this.maxNumberOfFiles = SPD_CONSTANTS.document.maxNumberOfFiles;
 		}
@@ -228,6 +224,10 @@ export class FileUploadComponent implements OnInit {
 		if (this.maxNumberOfFiles !== 0 && this.getNumberOfFiles() >= this.maxNumberOfFiles) {
 			this.hotToastService.error(`You are only allowed to upload a maximum of ${this.maxNumberOfFiles} files`);
 			return;
+		}
+
+		if (!this.files) {
+			this.files = []; // default to empty array;
 		}
 
 		const isFoundIndex = this.files.findIndex((item: File) => item.name === newFile.name);
