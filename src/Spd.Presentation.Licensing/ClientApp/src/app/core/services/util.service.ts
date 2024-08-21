@@ -310,6 +310,10 @@ export class UtilService {
 		return value ? BooleanTypeCode.Yes : BooleanTypeCode.No;
 	}
 
+	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
+		return province === SPD_CONSTANTS.address.provinceBC && country === SPD_CONSTANTS.address.countryCanada;
+	}
+
 	public getPermitShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		isCanadianResident: boolean,
@@ -317,14 +321,16 @@ export class UtilService {
 		proofOfResidentStatusCode: LicenceDocumentTypeCode | null,
 		proofOfCitizenshipCode: LicenceDocumentTypeCode | null
 	): boolean {
+		const canadianCitizenProof = canadianCitizenProofTypeCode ?? LicenceDocumentTypeCode.CanadianPassport;
+		const proofOfResidentStatus = proofOfResidentStatusCode ?? LicenceDocumentTypeCode.PermanentResidentCard;
+		const proofOfCitizenship = proofOfCitizenshipCode ?? LicenceDocumentTypeCode.NonCanadianPassport;
+
 		return (
-			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
+			(isCanadianCitizen && canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
 			(!isCanadianCitizen &&
 				isCanadianResident &&
-				proofOfResidentStatusCode != LicenceDocumentTypeCode.PermanentResidentCard) ||
-			(!isCanadianCitizen &&
-				!isCanadianResident &&
-				proofOfCitizenshipCode != LicenceDocumentTypeCode.NonCanadianPassport)
+				proofOfResidentStatus != LicenceDocumentTypeCode.PermanentResidentCard) ||
+			(!isCanadianCitizen && !isCanadianResident && proofOfCitizenship != LicenceDocumentTypeCode.NonCanadianPassport)
 		);
 	}
 
@@ -333,14 +339,41 @@ export class UtilService {
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
 	): boolean {
-		return (
-			(isCanadianCitizen && canadianCitizenProofTypeCode != LicenceDocumentTypeCode.CanadianPassport) ||
-			(!isCanadianCitizen && notCanadianCitizenProofTypeCode != LicenceDocumentTypeCode.PermanentResidentCard)
+		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
+			isCanadianCitizen,
+			canadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
 		);
 	}
 
-	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
-		return province === SPD_CONSTANTS.address.provinceBC && country === SPD_CONSTANTS.address.countryCanada;
+	public getControllingMemberCrcShowAdditionalGovIdData(
+		isCanadianCitizen: boolean,
+		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+	): boolean {
+		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
+			isCanadianCitizen,
+			canadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
+		);
+	}
+
+	private getSwlOrControllingMemberCrcShowAdditionalGovIdData(
+		isCanadianCitizen: boolean,
+		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+	): boolean {
+		const canadianCitizenProof = canadianCitizenProofTypeCode
+			? canadianCitizenProofTypeCode
+			: LicenceDocumentTypeCode.CanadianPassport;
+		const notCanadianCitizenProof = notCanadianCitizenProofTypeCode
+			? notCanadianCitizenProofTypeCode
+			: LicenceDocumentTypeCode.PermanentResidentCard;
+
+		return (
+			(isCanadianCitizen && canadianCitizenProof != LicenceDocumentTypeCode.CanadianPassport) ||
+			(!isCanadianCitizen && notCanadianCitizenProof != LicenceDocumentTypeCode.PermanentResidentCard)
+		);
 	}
 
 	//------------------------------------

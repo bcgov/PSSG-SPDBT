@@ -1,14 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
-	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
-import { ApplicationService } from '@app/core/services/application.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
+import { UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-controlling-member-summary-review-anonymous',
@@ -395,10 +394,7 @@ export class StepControllingMemberSummaryReviewAnonymousComponent implements OnI
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
-	constructor(
-		private controllingMembersService: ControllingMemberCrcService,
-		private commonApplicationService: ApplicationService
-	) {}
+	constructor(private controllingMembersService: ControllingMemberCrcService, private utilService: UtilService) {}
 
 	ngOnInit(): void {
 		this.controllingMemberModelData = {
@@ -513,13 +509,10 @@ export class StepControllingMemberSummaryReviewAnonymousComponent implements OnI
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		return (
-			(this.controllingMemberModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
-				this.controllingMemberModelData.citizenshipData.canadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.CanadianPassport) ||
-			(this.controllingMemberModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
-				this.controllingMemberModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.PermanentResidentCard)
+		return this.utilService.getControllingMemberCrcShowAdditionalGovIdData(
+			this.controllingMemberModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			this.controllingMemberModelData.citizenshipData.canadianCitizenProofTypeCode,
+			this.controllingMemberModelData.citizenshipData.notCanadianCitizenProofTypeCode
 		);
 	}
 
