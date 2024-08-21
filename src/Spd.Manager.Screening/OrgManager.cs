@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
@@ -7,6 +6,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Org;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Screening
 {
@@ -19,14 +19,12 @@ namespace Spd.Manager.Screening
     {
         private readonly IOrgRepository _orgRepository;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public OrgManager(IOrgRepository orgRepository, IMapper mapper, IDistributedCache cache, IDataProtectionProvider dpProvider)
         {
             _orgRepository = orgRepository;
             _mapper = mapper;
-            _cache = cache;
             _dataProtector = dpProvider.CreateProtector(nameof(OrgInvitationLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
@@ -38,13 +36,10 @@ namespace Spd.Manager.Screening
         }
 
         public async Task<OrgResponse?> Handle(OrgGetQuery request, CancellationToken cancellationToken)
-            => await _cache.GetAsync($"org-response-{request.AccessCode}", async ct =>
-                {
-                    var result = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId, request.AccessCode), ct);
-                    return _mapper.Map<OrgResponse>(result.OrgResult);
-                },
-                TimeSpan.FromMinutes(30),
-                cancellationToken);
+        {
+            var result = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId, request.AccessCode), cancellationToken);
+            return _mapper.Map<OrgResponse>(result.OrgResult);
+        }
 
         public async Task<OrgInvitationLinkResponse?> Handle(OrgInvitationLinkCreateCommand cmd, CancellationToken cancellationToken)
         {
