@@ -4,6 +4,7 @@ using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.LicApp;
+using Spd.Resource.Repository.Org;
 using Spd.Utilities.Dynamics;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,9 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
     {
         // get parrent business license application
         spd_application? bizLicApplication = await _context.spd_applications
+                .Expand(a=>a.spd_businessapplication_spd_workerapplication)
                 .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_ApplicantId_account)
                 .Where(a => a.spd_applicationid == cmd.ParentBizLicApplicationId)
                 .SingleOrDefaultAsync(ct);
 
@@ -36,39 +39,36 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             throw new ArgumentException("Original business licence application was not found.");
 
         // create controlling member application
-        Guid applicantId = new Guid();
         spd_application app = _mapper.Map<spd_application>(cmd);
-        app.spd_applicationid = applicantId;
         _context.AddTospd_applications(app);
-        await _context.SaveChangesAsync(ct);
-
-
-        var account = _context.accounts
-            .Where(a => a.accountid == bizLicApplication._spd_organizationid_value)
-            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-            .FirstOrDefault();
-        if (account != null)
-        {
-            _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), account);
-        }
         // create contact
         contact contact = _mapper.Map<contact>(cmd);
         contact.contactid = Guid.NewGuid();
         _context.AddTocontacts(contact);
 
+        await _context.SaveChangesAsync(ct);
+
+        var account = _context.accounts
+            .Where(a => a.accountid == bizLicApplication.spd_ApplicantId_account.accountid)
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+        if (account != null)
+        {
+            _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+        }
 
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
+        await _context.SaveChangesAsync(ct);
 
         //create the aliases
         foreach (var item in cmd.Aliases)
         {
             AddAlias(item, contact);
         }
-        await _context.SaveChangesAsync(ct);
 
-        _context.AddLink(app, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), bizLicApplication);
+        _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
         await _context.SaveChangesAsync(ct);
-        return new ControllingMemberCrcApplicationCmdResp(applicantId);
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid);
     }
     private void AddAlias(AliasResp createAliasCmd, contact contact)
     {
