@@ -112,6 +112,7 @@ public record UpdateCmd
     public Guid OrgId { get; set; }
     public Guid ApplicationId { get; set; }
     public ApplicationStatusEnum? Status { get; set; }
+    public bool? HaveVerifiedIdentity { get; set; }
 }
 
 public enum ApplicationStatusEnum
