@@ -1,5 +1,6 @@
 ﻿using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
-
-public record ControllingMemberCrcApplication
+public partial interface IControllingMemberCrcRepository
 {
+    public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
+}
+    public record ControllingMemberCrcApplication
+{
+    public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -51,3 +56,4 @@ public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplic
     //public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     //public string? ExpiredLicenceNumber { get; set; }
 }
+public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId);
