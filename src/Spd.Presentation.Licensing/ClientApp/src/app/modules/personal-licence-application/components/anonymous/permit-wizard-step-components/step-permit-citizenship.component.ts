@@ -361,18 +361,12 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		const canadianCitizenProofTypeCode =
-			this.canadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.CanadianPassport;
-		const proofOfResidentStatusCode =
-			this.proofOfResidentStatusCode.value ?? LicenceDocumentTypeCode.PermanentResidentCard;
-		const proofOfCitizenshipCode = this.proofOfCitizenshipCode.value ?? LicenceDocumentTypeCode.NonCanadianPassport;
-
 		return this.utilService.getPermitShowAdditionalGovIdData(
 			this.isCanadianCitizen.value == BooleanTypeCode.Yes,
 			this.isCanadianResident.value == BooleanTypeCode.Yes,
-			canadianCitizenProofTypeCode,
-			proofOfResidentStatusCode,
-			proofOfCitizenshipCode
+			this.canadianCitizenProofTypeCode.value,
+			this.proofOfResidentStatusCode.value,
+			this.proofOfCitizenshipCode.value
 		);
 	}
 
