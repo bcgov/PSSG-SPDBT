@@ -299,15 +299,10 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		const canadianCitizenProofTypeCode =
-			this.canadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.CanadianPassport;
-		const notCanadianCitizenProofTypeCode =
-			this.notCanadianCitizenProofTypeCode.value ?? LicenceDocumentTypeCode.PermanentResidentCard;
-
 		return this.utilService.getSwlShowAdditionalGovIdData(
 			this.isCanadianCitizen.value == BooleanTypeCode.Yes,
-			canadianCitizenProofTypeCode,
-			notCanadianCitizenProofTypeCode
+			this.canadianCitizenProofTypeCode.value,
+			this.notCanadianCitizenProofTypeCode.value
 		);
 	}
 

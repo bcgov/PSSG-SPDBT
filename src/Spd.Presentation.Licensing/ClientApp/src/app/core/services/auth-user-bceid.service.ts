@@ -28,11 +28,19 @@ export class AuthUserBceidService {
 			return await this.setBizProfile(bizsList[0].bizId!);
 		} else {
 			if (defaultBizId) {
-				const bizIdItem = bizsList.find((biz) => biz.bizId == defaultBizId);
-				if (bizIdItem) {
-					return await this.setBizProfile(bizIdItem.bizId);
+				const defaultBiz = bizsList.find((biz: BizListResponse) => biz.bizId == defaultBizId);
+				if (defaultBiz) {
+					return await this.setBizProfile(defaultBiz.bizId);
 				}
 			}
+
+			// SPDBT-2941 use first SecurityBusinessLicence Biz as the default
+			// const securityBusinessLicenceBiz = bizsList.find((biz: BizListResponse) =>
+			// 	biz.serviceTypeCodes?.findIndex((item: ServiceTypeCode) => item === ServiceTypeCode.SecurityBusinessLicence)
+			// );
+			// if (securityBusinessLicenceBiz) {
+			// 	return await this.setBizProfile(securityBusinessLicenceBiz.bizId);
+			// }
 
 			const biz = await this.bizSelectionAsync(bizsList);
 			return await this.setBizProfile(biz.bizId);

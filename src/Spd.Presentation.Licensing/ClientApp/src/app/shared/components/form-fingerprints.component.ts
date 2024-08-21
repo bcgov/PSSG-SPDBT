@@ -36,7 +36,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 				</app-alert>
 			</div>
 		</div>
-		<div class="row mt-2">
+		<div class="row my-2">
 			<div class="offset-md-2 col-md-8 col-sm-12">
 				<form [formGroup]="form" novalidate>
 					<div class="text-minor-heading mb-2">Upload your document</div>

@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BizTypeCode,
-	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
@@ -12,6 +11,7 @@ import {
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-anonymous',
@@ -767,6 +767,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
+		private utilService: UtilService,
 		private commonApplicationService: ApplicationService
 	) {}
 
@@ -1003,13 +1004,10 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		return (
-			(this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes &&
-				this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.CanadianPassport) ||
-			(this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.No &&
-				this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode !=
-					LicenceDocumentTypeCode.PermanentResidentCard)
+		return this.utilService.getSwlShowAdditionalGovIdData(
+			this.licenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			this.licenceModelData.citizenshipData.canadianCitizenProofTypeCode,
+			this.licenceModelData.citizenshipData.notCanadianCitizenProofTypeCode
 		);
 	}
 
