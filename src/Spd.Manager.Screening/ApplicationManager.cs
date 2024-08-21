@@ -233,7 +233,8 @@ namespace Spd.Manager.Screening
             {
                 OrgId = request.OrgId,
                 ApplicationId = request.ApplicationId,
-                Status = null
+                Status = null,
+                HaveVerifiedIdentity = null
             };
             if (request.Status == IdentityStatusCode.Rejected)
             {
@@ -253,10 +254,15 @@ namespace Spd.Manager.Screening
                     //if org is non-volunteer crrp
                     ApplicationResult result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
                     if (result.PaidOn != null) //already paid
+                    {
                         updateCmd.Status = ApplicationStatusEnum.Submitted;
-                    else //not paid
+                    }
+                    else
+                    {//not paid
                         updateCmd.Status = ApplicationStatusEnum.PaymentPending;
+                    }
                 }
+                updateCmd.HaveVerifiedIdentity = true;
             }
             await _applicationRepository.UpdateAsync(updateCmd, ct);
             return default;
