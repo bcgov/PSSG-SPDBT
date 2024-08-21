@@ -80,7 +80,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		latestApplicationId: new FormControl(), // placeholder for id
 
 		isSwlAnonymous: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
-		swlLicenceAppId: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
+		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
@@ -559,13 +559,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithSwl(soleProprietorSwlLicenceAppId: string, isSwlAnonymous: boolean): Observable<any> {
+	createNewBusinessLicenceWithSwl(soleProprietorSWLAppId: string, isSwlAnonymous: boolean): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
 			switchMap((businessProfile: BizProfileResponse) => {
 				return this.createEmptyLicenceForSoleProprietor({
-					soleProprietorSwlLicenceAppId,
+					soleProprietorSWLAppId,
 					businessProfile,
 					isSwlAnonymous,
 				}).pipe(
@@ -836,11 +836,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	private createEmptyLicenceForSoleProprietor({
-		soleProprietorSwlLicenceAppId,
+		soleProprietorSWLAppId,
 		businessProfile,
 		isSwlAnonymous,
 	}: {
-		soleProprietorSwlLicenceAppId: string;
+		soleProprietorSWLAppId: string;
 		businessProfile: BizProfileResponse;
 		isSwlAnonymous: boolean;
 	}): Observable<any> {
@@ -849,7 +849,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.applyLicenceProfileIntoModel({
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
-			soleProprietorSwlLicenceAppId,
+			soleProprietorSWLAppId,
 		}).pipe(
 			tap((_resp: any) => {
 				this.businessModelFormGroup.patchValue({ isSwlAnonymous }, { emitEvent: false });
@@ -1418,12 +1418,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessProfile,
 		applicationTypeCode,
 		soleProprietorSwlLicence,
-		soleProprietorSwlLicenceAppId,
+		soleProprietorSWLAppId,
 	}: {
 		businessProfile: BizProfileResponse;
 		applicationTypeCode?: ApplicationTypeCode | null;
 		soleProprietorSwlLicence?: LicenceResponse;
-		soleProprietorSwlLicenceAppId?: string;
+		soleProprietorSWLAppId?: string;
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
@@ -1537,8 +1537,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		if (soleProprietorSwlLicenceAppId) {
-			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSwlLicenceAppId);
+		if (soleProprietorSWLAppId) {
+			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 		}
 
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
@@ -1563,7 +1563,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				});
 
 				this.businessModelFormGroup.patchValue({
-					swlLicenceAppId: licenceAppId,
+					soleProprietorSWLAppId: licenceAppId,
 					businessInformationData,
 					categoryData,
 				});
