@@ -29,16 +29,9 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.mod
 											<td class="pb-2">Save your progress</td>
 										</tr>
 									</table>
-									<div class="mt-3">
-										<button
-											mat-flat-button
-											color="primary"
-											class="xlarge mt-2"
-											(click)="onRegisterWithBcServicesCard()"
-										>
-											Log In with <span class="fw-bold">BC Services Card</span>
-										</button>
-									</div>
+									<button mat-flat-button color="primary" class="xlarge mt-3" (click)="onRegisterWithBcServicesCard()">
+										Log In with <span class="fw-bold">BC Services Card</span>
+									</button>
 									<div class="mt-3">
 										Don't have BC Services Card?
 										<a class="large login-link" [href]="setupAccountUrl" target="_blank">Set up your account today</a>
