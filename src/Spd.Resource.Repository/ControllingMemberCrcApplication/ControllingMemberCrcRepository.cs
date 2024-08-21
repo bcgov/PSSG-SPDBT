@@ -46,7 +46,6 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         contact.contactid = Guid.NewGuid();
         _context.AddTocontacts(contact);
 
-        await _context.SaveChangesAsync(ct);
 
         var account = _context.accounts
             .Where(a => a.accountid == bizLicApplication.spd_ApplicantId_account.accountid)
@@ -58,7 +57,6 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         }
 
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-        await _context.SaveChangesAsync(ct);
 
         //create the aliases
         foreach (var item in cmd.Aliases)

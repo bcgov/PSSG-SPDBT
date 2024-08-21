@@ -14,15 +14,12 @@ internal class ControllingMemberCrcAppManager :
         IControllingMemberCrcAppManager
 {
     protected readonly IMapper _mapper;
-    private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
 
 
     public ControllingMemberCrcAppManager(IMapper mapper,
-        IBizLicApplicationRepository bizApplicationRepository,
         IControllingMemberCrcRepository controllingMemberCrcRepository)
     {
-        _bizLicApplicationRepository = bizApplicationRepository;
         _mapper = mapper;
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
     }
