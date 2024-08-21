@@ -254,13 +254,9 @@ namespace Spd.Manager.Screening
                     //if org is non-volunteer crrp
                     ApplicationResult result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
                     if (result.PaidOn != null) //already paid
-                    {
                         updateCmd.Status = ApplicationStatusEnum.Submitted;
-                    }
-                    else
-                    {//not paid
+                    else //not paid
                         updateCmd.Status = ApplicationStatusEnum.PaymentPending;
-                    }
                 }
                 updateCmd.HaveVerifiedIdentity = true;
             }
