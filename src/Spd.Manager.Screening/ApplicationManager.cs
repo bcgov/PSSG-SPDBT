@@ -233,7 +233,8 @@ namespace Spd.Manager.Screening
             {
                 OrgId = request.OrgId,
                 ApplicationId = request.ApplicationId,
-                Status = null
+                Status = null,
+                HaveVerifiedIdentity = null
             };
             if (request.Status == IdentityStatusCode.Rejected)
             {
@@ -257,6 +258,7 @@ namespace Spd.Manager.Screening
                     else //not paid
                         updateCmd.Status = ApplicationStatusEnum.PaymentPending;
                 }
+                updateCmd.HaveVerifiedIdentity = true;
             }
             await _applicationRepository.UpdateAsync(updateCmd, ct);
             return default;
