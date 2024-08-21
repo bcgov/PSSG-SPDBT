@@ -29,6 +29,7 @@ export interface BizLicAppResponse {
   members?: Members;
   noBranding?: boolean | null;
   privateInvestigatorSwlInfo?: PrivateInvestigatorSwlContactInfo;
+  soleProprietorSWLAppId?: string | null;
   useDogs?: boolean | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

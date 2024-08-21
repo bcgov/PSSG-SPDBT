@@ -461,6 +461,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 	getSaveBodyBase(businessModelFormValue: any): any {
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
+		const soleProprietorSWLAppId = businessModelFormValue.soleProprietorSWLAppId;
 		const workerLicenceTypeData = { ...businessModelFormValue.workerLicenceTypeData };
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
@@ -536,6 +537,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			bizId,
 			bizTypeCode,
 			licenceAppId,
+			soleProprietorSWLAppId,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
