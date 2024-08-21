@@ -1562,8 +1562,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					categoryData[item] = true;
 				});
 
+				const isBusinessLicenceSoleProprietor = this.isSoleProprietor(resp.bizTypeCode);
+
 				this.businessModelFormGroup.patchValue({
 					soleProprietorSWLAppId: licenceAppId,
+					isBusinessLicenceSoleProprietor,
 					businessInformationData,
 					categoryData,
 				});
