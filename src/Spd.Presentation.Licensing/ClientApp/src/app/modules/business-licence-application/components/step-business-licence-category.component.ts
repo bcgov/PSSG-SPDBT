@@ -248,7 +248,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 	ngOnInit(): void {
 		this.isUpdate = this.businessApplicationService.isUpdate(this.applicationTypeCode);
-
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = this.title_new;
@@ -267,52 +266,16 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 		}
 
-		this.setupCategories();
+		this.initialSetupCategories();
 
 		if (this.isBusinessLicenceSoleProprietor) {
 			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
 			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
-
 			this.soleProprietorCategoryChange();
 		} else {
 			const originalLicenceData = this.businessApplicationService.originalBusinessLicenceFormGroup.value;
 			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
-
 			this.businessCategoryTypes = BusinessCategoryTypes;
-		}
-	}
-
-	setupCategories(): void {
-		const formValue = this.form.value;
-
-		// pass 'true' as 'preventDisable'
-		// checkboxes can be deselected that shouldn't be
-		if (formValue.SecurityAlarmInstaller) {
-			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmInstaller, true);
-		}
-
-		if (formValue.SecurityGuard) {
-			this.onCategoryChange(WorkerCategoryTypeCode.SecurityGuard, true);
-		}
-
-		if (formValue.SecurityAlarmResponse) {
-			this.onCategoryChange(WorkerCategoryTypeCode.SecurityAlarmResponse, true);
-		}
-
-		if (formValue.Locksmith) {
-			this.onCategoryChange(WorkerCategoryTypeCode.Locksmith, true);
-		}
-
-		if (this.isUpdate) {
-			if (this.ArmouredCarGuard.value) {
-				this.blockArmouredCarGuard = true;
-			}
-			if (this.PrivateInvestigator.value) {
-				this.blockPrivateInvestigator = true;
-			}
-			if (this.SecurityGuard.value) {
-				this.blockSecurityGuard = true;
-			}
 		}
 	}
 
@@ -322,68 +285,22 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		type CategoryKey = keyof typeof this.businessApplicationService.categoryFormGroup;
 
 		const armouredCarGuard = formValue[WorkerCategoryTypeCode.ArmouredCarGuard as unknown as CategoryKey];
-		const locksmith = formValue[WorkerCategoryTypeCode.Locksmith as unknown as CategoryKey];
 		const privateInvestigator = formValue[WorkerCategoryTypeCode.PrivateInvestigator as unknown as CategoryKey];
-		const securityAlarmInstaller = formValue[WorkerCategoryTypeCode.SecurityAlarmInstaller as unknown as CategoryKey];
-		const securityAlarmResponse = formValue[WorkerCategoryTypeCode.SecurityAlarmResponse as unknown as CategoryKey];
 		const securityGuard = formValue[WorkerCategoryTypeCode.SecurityGuard as unknown as CategoryKey];
 
 		switch (changedItem) {
 			case WorkerCategoryTypeCode.ArmouredCarGuard:
 				this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: armouredCarGuard });
 				break;
-			case WorkerCategoryTypeCode.Locksmith:
-				this.showLocksmithMessage = locksmith;
-				if (locksmith) {
-					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				}
-				break;
 			case WorkerCategoryTypeCode.SecurityGuard:
-				this.showSecurityGuardMessage = securityGuard;
-				if (securityGuard) {
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-				}
-
 				this.categorySecurityGuardFormGroup.patchValue({ isInclude: securityGuard });
-				break;
-			case WorkerCategoryTypeCode.SecurityAlarmInstaller:
-				this.showSecurityAlarmInstallerMessage = securityAlarmInstaller;
-				if (securityAlarmInstaller) {
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmSales);
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-					this.setAndDisable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmSales);
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-					this.unsetAndEnable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				}
-				break;
-			case WorkerCategoryTypeCode.SecurityAlarmResponse:
-				this.showSecurityAlarmResponseMessage = securityAlarmResponse;
-				if (securityAlarmResponse) {
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-				}
 				break;
 			case WorkerCategoryTypeCode.PrivateInvestigator:
 				this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: privateInvestigator });
 				break;
 		}
 
-		if (securityGuard || securityAlarmInstaller) {
-			this.showSecurityAlarmResponseMessage = false;
-		}
+		this.setupCategory(changedItem, preventDisable);
 
 		this.soleProprietorCategoryChange();
 
@@ -457,6 +374,99 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 	onFileRemoved(): void {
 		this.businessApplicationService.hasValueChanged = true;
+	}
+
+	private initialSetupCategories(): void {
+		const formValue = this.form.value;
+
+		// TODO autocheck the categories that apply?
+		if (formValue.Locksmith) {
+			this.setupCategory(WorkerCategoryTypeCode.Locksmith);
+		}
+
+		if (formValue.SecurityGuard) {
+			this.setupCategory(WorkerCategoryTypeCode.SecurityGuard);
+		}
+
+		if (formValue.SecurityAlarmInstaller) {
+			this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+		}
+
+		if (formValue.SecurityAlarmResponse) {
+			this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmResponse);
+		}
+
+		if (this.isUpdate) {
+			if (this.ArmouredCarGuard.value) {
+				this.blockArmouredCarGuard = true;
+			}
+			if (this.PrivateInvestigator.value) {
+				this.blockPrivateInvestigator = true;
+			}
+			if (this.SecurityGuard.value) {
+				this.blockSecurityGuard = true;
+			}
+		}
+	}
+
+	private setupCategory(changedItem: string, preventDisable: boolean = false): void {
+		const formValue = this.form.value;
+
+		type CategoryKey = keyof typeof this.businessApplicationService.categoryFormGroup;
+
+		const locksmith = formValue[WorkerCategoryTypeCode.Locksmith as unknown as CategoryKey];
+		const securityAlarmInstaller = formValue[WorkerCategoryTypeCode.SecurityAlarmInstaller as unknown as CategoryKey];
+		const securityAlarmResponse = formValue[WorkerCategoryTypeCode.SecurityAlarmResponse as unknown as CategoryKey];
+		const securityGuard = formValue[WorkerCategoryTypeCode.SecurityGuard as unknown as CategoryKey];
+
+		switch (changedItem) {
+			case WorkerCategoryTypeCode.Locksmith:
+				this.showLocksmithMessage = locksmith;
+				if (locksmith) {
+					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+				} else if (!preventDisable) {
+					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+				}
+				break;
+			case WorkerCategoryTypeCode.SecurityGuard:
+				this.showSecurityGuardMessage = securityGuard;
+				if (securityGuard) {
+					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
+				} else if (!preventDisable) {
+					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
+				}
+				break;
+			case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+				this.showSecurityAlarmInstallerMessage = securityAlarmInstaller;
+				if (securityAlarmInstaller) {
+					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmSales);
+					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
+					this.setAndDisable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+				} else if (!preventDisable) {
+					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmSales);
+					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
+					this.unsetAndEnable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+				}
+				break;
+			case WorkerCategoryTypeCode.SecurityAlarmResponse:
+				this.showSecurityAlarmResponseMessage = securityAlarmResponse;
+				if (securityAlarmResponse) {
+					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+				} else if (!preventDisable) {
+					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+				}
+				break;
+		}
+
+		if (securityGuard || securityAlarmInstaller) {
+			this.showSecurityAlarmResponseMessage = false;
+		}
 	}
 
 	private soleProprietorCategoryChange(): void {

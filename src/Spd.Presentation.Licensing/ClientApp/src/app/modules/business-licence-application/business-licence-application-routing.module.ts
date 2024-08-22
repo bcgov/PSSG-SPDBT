@@ -7,7 +7,6 @@ import { BusinessLicencePaymentCancelComponent } from './components/business-lic
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
 import { BusinessLicencePaymentSuccessComponent } from './components/business-licence-payment-success.component';
-import { BusinessLicenceSwlSoleProprietorComponent } from './components/business-licence-swl-sole-proprietor.component';
 import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business-licence-update-received-success.component';
 import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
@@ -26,8 +25,7 @@ export class BusinessLicenceApplicationRoutes {
 
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 
-	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp';
-	public static readonly BUSINESS_NEW_SWL_SP = 'business-licence-new-swl-sp';
+	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp'; // should contain url parameters for licenceAppId & isSwlAnonymous
 
 	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'user-profile';
@@ -86,10 +84,6 @@ const routes: Routes = [
 			},
 			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
-				component: BusinessLicenceSwlSoleProprietorComponent,
-			},
-			{
-				path: BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP,
 				component: BusinessLicenceWizardNewSwlSoleProprietorComponent,
 			},
 			{
