@@ -44,7 +44,7 @@ internal class PortalUserRepository : IPortalUserRepository
         }
         if (qry.OrgIdOrParentOrgId != null)
         {
-            results = userList.Where(d => d._spd_organizationid_value == qry.OrgIdOrParentOrgId || d.spd_OrganizationId._parentaccountid_value == qry.OrgIdOrParentOrgId);
+            results = userList.Where(d => d._spd_organizationid_value == qry.OrgIdOrParentOrgId || d.spd_OrganizationId?._parentaccountid_value == qry.OrgIdOrParentOrgId);
         }
         return new PortalUserListResp
         {
