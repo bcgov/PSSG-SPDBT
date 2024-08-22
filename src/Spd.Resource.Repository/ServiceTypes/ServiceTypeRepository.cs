@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Utilities.Dynamics;
 
@@ -23,7 +24,18 @@ internal class ServiceTypeRepository : IServiceTypeRepository
         {
             throw new ArgumentException("must be at leaset one qry parameter.");
         }
-        var servicetypes = await _cache.GetAsync("spd_servicetypes", async ct => await _context.spd_servicetypes.GetAllPagesAsync(ct), TimeSpan.FromMinutes(60), cancellationToken);
+
+        //Yossi, please revert back to your code when you figure out the root cause
+        //change
+        //var servicetypes = await _cache.GetAsync("spd_servicetypes", async ct => await _context.spd_servicetypes.GetAllPagesAsync(ct), TimeSpan.FromMinutes(60), cancellationToken);
+        //to 
+        IEnumerable<spd_servicetype>? servicetypes = await _cache.GetAsync<IEnumerable<spd_servicetype>>("spd_servicetypes", cancellationToken);
+        if (servicetypes == null)
+        {
+            servicetypes = _context.spd_servicetypes.ToList();
+            await _cache.SetAsync<IEnumerable<spd_servicetype>>("spd_servicetypes", servicetypes, new TimeSpan(1, 0, 0));
+        }
+        //change
 
         if (qry.ServiceTypeId != null)
         {
