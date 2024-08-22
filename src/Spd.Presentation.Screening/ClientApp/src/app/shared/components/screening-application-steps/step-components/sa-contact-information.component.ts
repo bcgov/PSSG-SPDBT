@@ -103,29 +103,40 @@ export class SaContactInformationComponent implements CrcFormStepComponent {
 		if (!data) return;
 
 		this._orgData = data;
-		this.form = this.formBuilder.group(
-			{
-				givenName: new FormControl({ value: data.givenName, disabled: data.readonlyTombstone ?? false }, [
-					FormControlValidators.required,
-				]),
-				middleName1: new FormControl({ value: data.middleName1, disabled: data.readonlyTombstone ?? false }),
-				middleName2: new FormControl({ value: data.middleName2, disabled: data.readonlyTombstone ?? false }),
-				surname: new FormControl({ value: data.surname, disabled: data.readonlyTombstone ?? false }, [
-					FormControlValidators.required,
-				]),
+
+		const readonlyTombstone = data.readonlyTombstone ?? false;
+		if (readonlyTombstone) {
+			// SPDBT-2948 - do not enforce name validation when it is prepopulated
+			this.form = this.formBuilder.group({
+				givenName: new FormControl({ value: data.givenName, disabled: true }),
+				middleName1: new FormControl({ value: data.middleName1, disabled: true }),
+				middleName2: new FormControl({ value: data.middleName2, disabled: true }),
+				surname: new FormControl({ value: data.surname, disabled: true }),
 				emailAddress: new FormControl(data.emailAddress, [Validators.required, FormControlValidators.email]),
 				phoneNumber: new FormControl(data.phoneNumber, [Validators.required]),
 				oneLegalName: new FormControl(data.oneLegalName),
-			},
-			{
-				validators: [
-					FormGroupValidators.conditionalRequiredValidator(
-						'givenName',
-						(form) => form.get('oneLegalName')?.value != true
-					),
-				],
-			}
-		);
+			});
+		} else {
+			this.form = this.formBuilder.group(
+				{
+					givenName: new FormControl({ value: data.givenName, disabled: false }, [FormControlValidators.required]),
+					middleName1: new FormControl({ value: data.middleName1, disabled: false }),
+					middleName2: new FormControl({ value: data.middleName2, disabled: false }),
+					surname: new FormControl({ value: data.surname, disabled: false }, [FormControlValidators.required]),
+					emailAddress: new FormControl(data.emailAddress, [Validators.required, FormControlValidators.email]),
+					phoneNumber: new FormControl(data.phoneNumber, [Validators.required]),
+					oneLegalName: new FormControl(data.oneLegalName),
+				},
+				{
+					validators: [
+						FormGroupValidators.conditionalRequiredValidator(
+							'givenName',
+							(form) => form.get('oneLegalName')?.value != true
+						),
+					],
+				}
+			);
+		}
 	}
 	get orgData(): AppInviteOrgData | null {
 		return this._orgData;
