@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
@@ -20,14 +20,12 @@ namespace Spd.Manager.Screening
     {
         private readonly IOrgRepository _orgRepository;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public OrgManager(IOrgRepository orgRepository, IMapper mapper, IDistributedCache cache, IDataProtectionProvider dpProvider)
         {
             _orgRepository = orgRepository;
             _mapper = mapper;
-            _cache = cache;
             _dataProtector = dpProvider.CreateProtector(nameof(OrgInvitationLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
@@ -40,18 +38,8 @@ namespace Spd.Manager.Screening
 
         public async Task<OrgResponse?> Handle(OrgGetQuery request, CancellationToken cancellationToken)
         {
-            OrgResponse response;
-            if (request.AccessCode != null)
-            {
-                response = await _cache.Get<OrgResponse>($"org-response-{request.AccessCode}");
-                if (response != null) return response;
-            }
             var result = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId, request.AccessCode), cancellationToken);
-            if (result == null) return null;
-
-            response = _mapper.Map<OrgResponse>(result.OrgResult);
-            await _cache.Set<OrgResponse>($"org-response-{response.AccessCode}", response, new TimeSpan(0, 30, 0));
-            return response;
+            return _mapper.Map<OrgResponse>(result.OrgResult);
         }
 
         public async Task<OrgInvitationLinkResponse?> Handle(OrgInvitationLinkCreateCommand cmd, CancellationToken cancellationToken)
