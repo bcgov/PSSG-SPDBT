@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Utilities.Dynamics;
 
@@ -23,7 +24,18 @@ internal class WorkerLicenceCategoryRepository : IWorkerLicenceCategoryRepositor
         {
             throw new ArgumentException("must have at least one qry parameter.");
         }
-        var categories = await _cache.GetAsync("spd_licencecategory", async ct => await _context.spd_licencecategories.GetAllPagesAsync(ct), TimeSpan.FromMinutes(10), cancellationToken);
+
+        //Yossi, please revert back to your code when you figure out the root cause
+        //change
+        //var categories = await _cache.GetAsync("spd_licencecategory", async ct => await _context.spd_licencecategories.GetAllPagesAsync(ct), TimeSpan.FromMinutes(10), cancellationToken);
+        //to
+        IEnumerable<spd_licencecategory>? categories = await _cache.GetAsync<IEnumerable<spd_licencecategory>>("spd_licencecategory", cancellationToken);
+        if (categories == null)
+        {
+            categories = _context.spd_licencecategories.ToList();
+            await _cache.SetAsync<IEnumerable<spd_licencecategory>>("spd_licencecategory", categories, new TimeSpan(1, 0, 0));
+        }
+        //change
 
         if (qry.WorkerCategoryTypeId != null)
         {
