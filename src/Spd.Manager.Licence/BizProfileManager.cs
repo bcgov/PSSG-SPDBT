@@ -148,7 +148,7 @@ public class BizProfileManager :
         if (!biz.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence))
             return true;
 
-        var portalUsers = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+        var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
         if (portalUsers == null || !portalUsers.Items.Any())
@@ -164,7 +164,7 @@ public class BizProfileManager :
         if (currentUserIdentity == null)
             return null;
 
-        var portalUsers = (PortalUserListResp) await _portalUserRepository.QueryAsync(
+        var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
             new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
             ct);
         PortalUserResp resp = portalUsers.Items.FirstOrDefault();
@@ -211,7 +211,7 @@ public class BizProfileManager :
         {
             Id = (Guid)cmd.BizId,
             BizLegalName = bizInfoFromBceid?.LegalName,
-            BizName = bizInfoFromBceid?.TradeName,
+            BizName = string.IsNullOrWhiteSpace(bizInfoFromBceid?.TradeName) ? null : bizInfoFromBceid.TradeName,
             Email = cmd.BceidIdentityInfo.Email,
             BizGuid = cmd.BceidIdentityInfo.BizGuid,
             MailingAddress = _mapper.Map<Addr>(bizInfoFromBceid?.MailingAddress),
