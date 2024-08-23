@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Licence
@@ -31,7 +32,8 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.Rationale, opt => opt.MapFrom(s => s.spd_rationale))
              .ForMember(d => d.PhotoDocumentUrlId, opt => opt.MapFrom(s => s._spd_photographid_value))
              .ForMember(d => d.IsTemporary, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_temporarylicence)))
-             .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)));
+             .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
+             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s.spd_spd_licence_spd_caselicencecategory_licenceid.ToList())));
 
             _ = CreateMap<spd_licence, Addr>()
              .ForMember(d => d.AddressLine1, opt => opt.MapFrom(s => s.spd_employeraddress1))
@@ -64,6 +66,13 @@ namespace Spd.Resource.Repository.Licence
         {
             if (optionset == null) return null;
             return Enum.Parse<LicenceStatusEnum>(Enum.GetName(typeof(LicenceStatusOptionSet), optionset));
+        }
+
+        internal static IEnumerable<WorkerCategoryTypeEnum> GetCategoryCodes(List<spd_caselicencecategory> categories)
+        {
+            return categories
+                .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes)
+                .Select(c => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
         }
     }
 }
