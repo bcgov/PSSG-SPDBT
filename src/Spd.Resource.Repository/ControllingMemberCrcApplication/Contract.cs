@@ -39,6 +39,7 @@ public partial interface IControllingMemberCrcRepository
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
+    public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
 }
 
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
@@ -56,4 +57,4 @@ public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplic
     //public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     //public string? ExpiredLicenceNumber { get; set; }
 }
-public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId);
+public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId, Guid? ContactId = null);
