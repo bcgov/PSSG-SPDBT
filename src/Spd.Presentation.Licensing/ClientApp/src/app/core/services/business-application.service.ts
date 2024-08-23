@@ -79,8 +79,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
-		isSwlAnonymous: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
-		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow // TODO  Combined SP
+		isSwlAnonymous: new FormControl(), // placeholder for sole proprietor flow
+		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
@@ -559,7 +559,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithSwl(soleProprietorSWLAppId: string, isSwlAnonymous: boolean): Observable<any> {
+	createNewBusinessLicenceWithSwlCombinedFlow(
+		soleProprietorSWLAppId: string,
+		isSwlAnonymous: boolean
+	): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
@@ -570,7 +573,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					isSwlAnonymous,
 				}).pipe(
 					tap((_resp: any) => {
-						this.initialized = true;
+						this.setAsInitialized();
 
 						this.commonApplicationService.setApplicationTitle(
 							WorkerLicenceTypeCode.SecurityBusinessLicence,
@@ -602,7 +605,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 								switchMap((soleProprietorSwlLicence: LicenceResponse) => {
 									return this.createEmptyLicence({ businessProfile, soleProprietorSwlLicence }).pipe(
 										tap((_resp: any) => {
-											this.initialized = true;
+											this.setAsInitialized();
 
 											this.commonApplicationService.setApplicationTitle(
 												WorkerLicenceTypeCode.SecurityBusinessLicence,
@@ -616,7 +619,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					return this.createEmptyLicence({ businessProfile }).pipe(
 						tap((_resp: any) => {
-							this.initialized = true;
+							this.setAsInitialized();
 
 							this.commonApplicationService.setApplicationTitle(
 								WorkerLicenceTypeCode.SecurityBusinessLicence,
@@ -634,7 +637,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						switchMap((controllingMembersAndEmployees: Members) => {
 							return this.createEmptyLicence({ businessProfile, controllingMembersAndEmployees }).pipe(
 								tap((_resp: any) => {
-									this.initialized = true;
+									this.setAsInitialized();
 
 									this.commonApplicationService.setApplicationTitle(
 										WorkerLicenceTypeCode.SecurityBusinessLicence,
@@ -654,9 +657,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	getBusinessLicenceToResume(licenceAppId: string): Observable<BizLicAppResponse> {
-		return this.loadExistingBusinessLicenceWithId({ licenceAppId, applicationTypeCode: ApplicationTypeCode.New }).pipe(
+		return this.loadExistingBusinessLicenceToResume({
+			licenceAppId,
+			applicationTypeCode: ApplicationTypeCode.New,
+		}).pipe(
 			tap((_resp: any) => {
-				this.initialized = true;
+				this.setAsInitialized();
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
@@ -677,7 +683,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	): Observable<BizLicAppResponse> {
 		return this.getBusinessLicenceOfType(applicationTypeCode, originalLicence).pipe(
 			tap((_resp: any) => {
-				this.initialized = true;
+				this.setAsInitialized();
 
 				this.commonApplicationService.setApplicationTitle(
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
@@ -799,16 +805,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorSwlPhoneNumber = modelFormValue.businessInformationData.soleProprietorSwlPhoneNumber;
 		} else {
 			// Clear out any old data
-			this.businessInformationFormGroup.patchValue({
-				soleProprietorLicenceId: null,
-				soleProprietorLicenceAppId: null,
-				soleProprietorLicenceHolderName: null,
-				soleProprietorLicenceNumber: null,
-				soleProprietorLicenceExpiryDate: null,
-				soleProprietorLicenceStatusCode: null,
-				soleProprietorSwlEmailAddress: null,
-				soleProprietorSwlPhoneNumber: null,
-			});
+			this.businessInformationFormGroup.patchValue(
+				{
+					soleProprietorLicenceId: null,
+					soleProprietorLicenceAppId: null,
+					soleProprietorLicenceHolderName: null,
+					soleProprietorLicenceNumber: null,
+					soleProprietorLicenceExpiryDate: null,
+					soleProprietorLicenceStatusCode: null,
+					soleProprietorSwlEmailAddress: null,
+					soleProprietorSwlPhoneNumber: null,
+				},
+				{
+					emitEvent: false,
+				}
+			);
 		}
 
 		const body: BizProfileUpdateRequest = {
@@ -921,7 +932,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 					return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
 						tap((_resp: any) => {
-							this.initialized = true;
+							this.setAsInitialized();
 
 							this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 						})
@@ -931,7 +942,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		} else {
 			return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
 				tap((_resp: any) => {
-					this.initialized = true;
+					this.setAsInitialized();
 
 					this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 				})
@@ -969,7 +980,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Loads the current profile and a licence
 	 * @returns
 	 */
-	private loadExistingBusinessLicenceWithId({
+	private loadExistingBusinessLicenceToResume({
 		licenceAppId,
 		originalLicence,
 		applicationTypeCode,
@@ -1279,8 +1290,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const dogAuthorizationAttachments: Array<File> = [];
 
 		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
-		const categoryArmouredCarGuardFormGroup: any = { isInclude: false };
-		const categorySecurityGuardFormGroup: any = { isInclude: false };
+		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
+		let categorySecurityGuardFormGroup: any = { isInclude: false };
 
 		businessLicenceAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
@@ -1343,8 +1354,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (this.isSoleProprietor(businessLicenceAppl.bizTypeCode)) {
 			const businessInformation = this.businessInformationFormGroup.value;
+			const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
 			businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
-				categoryData[item] = true;
+				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
 			});
 		} else {
 			// mark the appropriate category types as true
@@ -1352,6 +1364,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				categoryData[item as string] = true;
 			});
 		}
+
+		// const xxx = this.businessInformationFormGroup.value;
+		// console.log('************ soleProprietorCategoryCodes', xxx.soleProprietorCategoryCodes);
+		// console.log('************ categoryData', categoryData);
 
 		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
 			categoryPrivateInvestigatorFormGroup = {
@@ -1366,16 +1382,41 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		if (categoryData.ArmouredCarGuard) {
-			categoryArmouredCarGuardFormGroup.isInclude = true;
-			categoryArmouredCarGuardFormGroup.attachments = categoryArmouredCarGuardAttachments;
+			categoryArmouredCarGuardFormGroup = {
+				isInclude: true,
+				attachments: categoryArmouredCarGuardAttachments,
+			};
 		}
 
 		if (categoryData.SecurityGuard) {
-			categorySecurityGuardFormGroup.isInclude = true;
-			categorySecurityGuardFormGroup.isRequestDogAuthorization =
-				dogAuthorizationAttachments.length > 0 ? BooleanTypeCode.Yes : BooleanTypeCode.No;
-			categorySecurityGuardFormGroup.attachments = dogAuthorizationAttachments;
+			categorySecurityGuardFormGroup = {
+				isInclude: true,
+				isRequestDogAuthorization: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+				attachments: dogAuthorizationAttachments,
+			};
 		}
+
+		// TODO autocheck the categories that apply?
+		// if (categoryData.Locksmith) {
+		// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
+		// }
+
+		// if (categoryData.SecurityGuard) {
+		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
+		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
+		// }
+
+		// if (categoryData.SecurityAlarmInstaller) {
+		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmSales] = true;
+		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
+		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
+		// 	categoryData[WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller] = true;
+		// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
+		// }
+
+		// if (categoryData.SecurityAlarmResponse) {
+		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
+		// }
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -1538,7 +1579,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		if (soleProprietorSWLAppId) {
+			// using sole proprietor combined flow
 			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
+		}
+
+		if (soleProprietorSwlLicence?.licenceAppId) {
+			// business licence is sole proprietor
+			return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence?.licenceAppId);
 		}
 
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
@@ -1564,12 +1611,120 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 				const isBusinessLicenceSoleProprietor = this.isSoleProprietor(resp.bizTypeCode);
 
-				this.businessModelFormGroup.patchValue({
-					soleProprietorSWLAppId: licenceAppId,
-					isBusinessLicenceSoleProprietor,
-					businessInformationData,
-					categoryData,
+				let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
+				let categorySecurityGuardFormGroup: any = { isInclude: false };
+
+				if (categoryData.ArmouredCarGuard) {
+					categoryArmouredCarGuardFormGroup = {
+						isInclude: true,
+						attachments: [],
+					};
+				}
+
+				if (categoryData.SecurityGuard) {
+					categorySecurityGuardFormGroup = {
+						isInclude: true,
+						isRequestDogAuthorization: null,
+						attachments: [],
+					};
+				}
+
+				// TODO autocheck the categories that apply?
+				// if (categoryData.Locksmith) {
+				// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
+				// }
+
+				// if (categoryData.SecurityGuard) {
+				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
+				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
+				// }
+
+				// if (categoryData.SecurityAlarmInstaller) {
+				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmSales] = true;
+				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
+				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
+				// 	categoryData[WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller] = true;
+				// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
+				// }
+
+				// if (categoryData.SecurityAlarmResponse) {
+				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
+				// }
+
+				// console.log(
+				// 	'**************** soleProprietorCategoryCodes',
+				// 	businessInformationData.soleProprietorCategoryCodes
+				// );
+				// console.log('**************** categoryData', categoryData);
+
+				this.businessModelFormGroup.patchValue(
+					{
+						soleProprietorSWLAppId: licenceAppId,
+						isBusinessLicenceSoleProprietor,
+						businessInformationData,
+						categoryData,
+						categoryArmouredCarGuardFormGroup,
+						categorySecurityGuardFormGroup,
+					},
+					{
+						emitEvent: false,
+					}
+				);
+			}),
+			switchMap((_resp: any) => {
+				return of(this.businessModelFormGroup.value);
+			})
+		);
+	}
+
+	applyBusinessLicenceSoleProprietorSelection(licenceAppId: string): Observable<any> {
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
+			tap((resp: WorkerLicenceAppResponse) => {
+				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
+				businessInformationData.soleProprietorCategoryCodes = resp.categoryCodes;
+
+				const categoryData: any = {};
+				const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
+				workerCategoryTypeCodes.forEach((item: string) => {
+					categoryData[item] = false;
 				});
+
+				businessInformationData.soleProprietorCategoryCodes?.forEach((item: string) => {
+					categoryData[item] = true;
+				});
+
+				let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
+				let categorySecurityGuardFormGroup: any = { isInclude: false };
+
+				if (categoryData.ArmouredCarGuard) {
+					categoryArmouredCarGuardFormGroup = {
+						isInclude: true,
+						attachments: [],
+					};
+				}
+
+				if (categoryData.SecurityGuard) {
+					categorySecurityGuardFormGroup = {
+						isInclude: true,
+						isRequestDogAuthorization: null,
+						attachments: [],
+					};
+				}
+
+				// TODO autocheck the categories that apply?
+
+				this.businessModelFormGroup.patchValue(
+					{
+						soleProprietorSWLAppId: licenceAppId,
+						businessInformationData,
+						categoryData,
+						categoryArmouredCarGuardFormGroup,
+						categorySecurityGuardFormGroup,
+					},
+					{
+						emitEvent: false,
+					}
+				);
 			}),
 			switchMap((_resp: any) => {
 				return of(this.businessModelFormGroup.value);

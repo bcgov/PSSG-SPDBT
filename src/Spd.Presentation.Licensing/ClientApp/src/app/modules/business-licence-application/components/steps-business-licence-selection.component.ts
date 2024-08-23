@@ -17,7 +17,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[isSoleProprietorCombinedFlow]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorCombinedFlow]="isSoleProprietorCombinedFlow"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
 					(previousStepperStep)="onStepPrevious()"
@@ -36,7 +36,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[isSoleProprietorCombinedFlow]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorCombinedFlow]="isSoleProprietorCombinedFlow"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
 					(previousStepperStep)="onLicenceTermGoToPreviousStep()"
@@ -54,6 +54,7 @@ export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepCompon
 	readonly STEP_LICENCE_TERM = 2;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isSoleProprietorCombinedFlow = false;
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() isRenewalShortForm!: boolean;

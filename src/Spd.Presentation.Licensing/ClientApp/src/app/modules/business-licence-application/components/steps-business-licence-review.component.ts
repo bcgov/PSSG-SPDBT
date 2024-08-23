@@ -17,7 +17,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 
 				<app-wizard-footer
 					[isFormValid]="true"
-					[isSoleProprietorCombinedFlow]="isBusinessLicenceSoleProprietor"
+					[isSoleProprietorCombinedFlow]="isSoleProprietorCombinedFlow"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
 					(previousStepperStep)="onStepPrevious()"
@@ -42,7 +42,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 					<app-wizard-footer
 						[isFormValid]="true"
 						[showSaveAndExit]="true"
-						[isSoleProprietorCombinedFlow]="isBusinessLicenceSoleProprietor"
+						[isSoleProprietorCombinedFlow]="isSoleProprietorCombinedFlow"
 						(saveAndExit)="onNoSaveAndExit()"
 						nextButtonLabel="Pay Now"
 						(previousStepperStep)="onConsentGoToPreviousStep()"
@@ -83,6 +83,7 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() licenceCost = 0;
 	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
+	@Input() isSoleProprietorCombinedFlow = false;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
