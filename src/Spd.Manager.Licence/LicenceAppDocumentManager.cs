@@ -116,6 +116,17 @@ internal partial class LicenceAppDocumentManager :
             LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen,
             LicenceDocumentTypeCode.CanadianCitizenship
         };
+    public static readonly List<LicenceDocumentTypeCode> GovernmentIssuedPhotoId_NoCitizens = new List<LicenceDocumentTypeCode> {
+            LicenceDocumentTypeCode.NonCanadianPassport,
+            LicenceDocumentTypeCode.BirthCertificate,
+            LicenceDocumentTypeCode.PermanentResidentCard,
+
+            //TODO: what is the code for 'Secure Certifacate of indian status' (non canadian citizen doc) ? we have:
+            LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen
+
+            //TODO: what is the code for 'Other' types of Government Issued PhotoId
+            //LicenceDocumentTypeCode.????
+    }; 
 
     public static readonly List<WorkerCategoryTypeCode> WorkerCategoryTypeCode_NoNeedDocument = new List<WorkerCategoryTypeCode> {
             WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller,
