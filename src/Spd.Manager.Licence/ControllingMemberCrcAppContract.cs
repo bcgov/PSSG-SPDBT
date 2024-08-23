@@ -48,6 +48,9 @@ public record ControllingMemberCrcAppCommandResponse
 
 public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcApp
 {
+    public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+
 };
 
-public record ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;

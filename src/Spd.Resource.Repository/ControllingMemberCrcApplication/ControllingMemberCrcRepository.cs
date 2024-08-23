@@ -40,12 +40,11 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 
         // create controlling member application
         spd_application app = _mapper.Map<spd_application>(cmd);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
         // create contact
-        contact contact = _mapper.Map<contact>(cmd);
-        contact.contactid = Guid.NewGuid();
-        _context.AddTocontacts(contact);
-
+        contact? contact = _mapper.Map<contact>(cmd);
+        contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
 
         var account = _context.accounts
             .Where(a => a.accountid == bizLicApplication.spd_ApplicantId_account.accountid)
@@ -57,39 +56,11 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         }
 
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-
-        //create the aliases
-        foreach (var item in cmd.Aliases)
-        {
-            AddAlias(item, contact);
-        }
-
+        
+        // add link to business application
         _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
         await _context.SaveChangesAsync(ct);
-        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid);
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid) contact.contactid);
     }
-    private void AddAlias(AliasResp createAliasCmd, contact contact)
-    {
-        spd_alias? matchingAlias = GetAlias(createAliasCmd, contact);
-        // if not found, create new alias
-        if (matchingAlias == null)
-        {
-            spd_alias alias = _mapper.Map<spd_alias>(createAliasCmd);
-            _context.AddTospd_aliases(alias);
-            // associate alias to contact
-            _context.SetLink(alias, nameof(alias.spd_ContactId), contact);
-        }
-    }
-    private spd_alias? GetAlias(AliasResp aliasCreateCmd, contact contact)
-    {
-        var matchingAlias = _context.spd_aliases.Where(o =>
-           o.spd_firstname == aliasCreateCmd.GivenName &&
-           o.spd_middlename1 == aliasCreateCmd.MiddleName1 &&
-           o.spd_middlename2 == aliasCreateCmd.MiddleName2 &&
-           o.spd_surname == aliasCreateCmd.Surname &&
-           o.statecode != DynamicsConstants.StateCode_Inactive &&
-           o._spd_contactid_value == contact.contactid
-       ).FirstOrDefault();
-        return matchingAlias;
-    }
+
 }
