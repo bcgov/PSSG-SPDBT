@@ -8,7 +8,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	selector: 'app-step-worker-licence-expired',
 	template: `
 		<app-step-section
-			title="Do you have an expired licence?"
+			title="Do you have an expired licence in BC?"
 			subtitle="Processing time will be reduced if you provide info from your past licence"
 		>
 			<app-expired-licence

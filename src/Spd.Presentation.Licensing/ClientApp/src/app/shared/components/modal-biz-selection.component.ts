@@ -13,7 +13,7 @@ export interface BizSelectionDialogData {
 		<mat-dialog-content class="mat-dialog-content">
 			<ng-container *ngFor="let bizItem of bizsList; let i = index">
 				<button mat-stroked-button color="primary" class="large my-2" (click)="onSelectBiz(bizItem)">
-					{{ bizItem.bizLegalName ?? bizItem.bizName }}
+					{{ bizItem.bizName ?? bizItem.bizLegalName }}
 				</button>
 			</ng-container>
 		</mat-dialog-content>
@@ -32,8 +32,8 @@ export class ModalBizSelectionComponent implements OnInit {
 	ngOnInit(): void {
 		const businessList = this.dialogData.bizsList;
 		businessList.sort((a: BizListResponse, b: BizListResponse) => {
-			const a1 = (a.bizLegalName ?? a.bizName)?.toUpperCase() ?? '';
-			const b1 = (b.bizLegalName ?? b.bizName)?.toUpperCase() ?? '';
+			const a1 = (a.bizName ?? a.bizLegalName)?.toUpperCase() ?? '';
+			const b1 = (b.bizName ?? b.bizLegalName)?.toUpperCase() ?? '';
 			return a1.localeCompare(b1);
 		});
 		this.bizsList = businessList;

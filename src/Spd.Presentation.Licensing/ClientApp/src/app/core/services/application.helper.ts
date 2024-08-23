@@ -3,8 +3,12 @@ import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
+import { BehaviorSubject } from 'rxjs';
 
 export abstract class ApplicationHelper {
+	private _waitUntilInitialized$ = new BehaviorSubject<boolean>(false);
+	waitUntilInitialized$ = this._waitUntilInitialized$.asObservable();
+
 	initialized = false;
 	hasValueChanged = false;
 	isLoading = true;
@@ -340,6 +344,14 @@ export abstract class ApplicationHelper {
 		this.initialized = false;
 		this.isLoading = true;
 		this.hasValueChanged = false;
+
+		this._waitUntilInitialized$.next(false);
+	}
+
+	setAsInitialized(): void {
+		this.initialized = true;
+
+		this._waitUntilInitialized$.next(true);
 	}
 
 	/**

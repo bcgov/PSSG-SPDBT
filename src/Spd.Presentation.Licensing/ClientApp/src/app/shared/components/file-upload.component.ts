@@ -104,7 +104,7 @@ export class FileUploadHelper {
 
 				<div class="mat-option-hint mx-2" *ngIf="accept">Accepted file formats: {{ accept }}</div>
 				<div class="mat-option-hint" *ngIf="maxFileSizeMb">File size maximum: {{ maxFileSizeMb }} Mb</div>
-				<div class="mat-option-hint">Maximum number of files: {{ maxNumberOfFiles }}</div>
+				<div class="mat-option-hint pb-2">Maximum number of files: {{ maxNumberOfFiles }}</div>
 
 				<input
 					type="file"

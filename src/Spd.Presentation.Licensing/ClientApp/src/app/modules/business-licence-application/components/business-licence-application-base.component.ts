@@ -66,8 +66,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 
 		console.debug('BusinessLicenceApplicationBaseComponent loginInfo', loginInfo);
 
-		// TODO for BUSINESS_NEW_SWL_SP, ignore first time login ??
-
 		if (
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR) &&
 			loginInfo.state
@@ -79,12 +77,12 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor isSwlAnonymous', isSwlAnonymous);
 
 			this.businessApplicationService
-				.createNewBusinessLicenceWithSwl(licenceAppId!, isSwlAnonymous === 'Y')
+				.createNewBusinessLicenceWithSwlCombinedFlow(licenceAppId!, isSwlAnonymous === 'Y')
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
 							`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
-								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SWL_SP
+								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
 							)}?${loginInfo.state}`
 						);
 					}),

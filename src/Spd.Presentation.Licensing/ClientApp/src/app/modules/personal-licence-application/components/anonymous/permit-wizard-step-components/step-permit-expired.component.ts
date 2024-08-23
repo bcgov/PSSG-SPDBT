@@ -8,7 +8,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	selector: 'app-step-permit-expired',
 	template: `
 		<app-step-section
-			title="Do you have an expired permit?"
+			title="Do you have an expired permit in BC?"
 			subtitle="Processing time will be reduced if you provide info from your past permit"
 		>
 			<app-expired-licence

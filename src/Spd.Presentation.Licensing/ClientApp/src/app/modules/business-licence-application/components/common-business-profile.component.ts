@@ -100,7 +100,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				</section>
 			</div>
 
-			<div class="col-lg-6 col-md-12" *ngIf="!isBcBusinessAddress">
+			<div class="col-lg-6 col-md-12" *ngIf="!showBcBusinessAddress">
 				<section>
 					<mat-accordion>
 						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
@@ -187,6 +187,14 @@ export class CommonBusinessProfileComponent implements LicenceChildStepperStepCo
 	private isFormGroupValid(form: FormGroup): boolean {
 		form.markAllAsTouched();
 		return form.valid;
+	}
+
+	get showBcBusinessAddress(): boolean {
+		if (!this.businessAddressFormGroup.valid) {
+			return true;
+		}
+
+		return this.isBcBusinessAddress;
 	}
 
 	get isBusinessLicenceSoleProprietor(): boolean {
