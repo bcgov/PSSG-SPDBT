@@ -428,8 +428,9 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		}
 
 		if (categoryData.SecurityGuard) {
-			const useDogs =
-				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
+			const useDogs = this.utilService.booleanTypeToBoolean(
+				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization
+			);
 			if (useDogs) {
 				if (businessModelFormValue.categorySecurityGuardFormGroup.attachments) {
 					const docs: Array<Blob> = [];
@@ -498,7 +499,9 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const categoryData = { ...businessModelFormValue.categoryData };
 
 		if (categoryData.SecurityGuard) {
-			useDogs = businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
+			useDogs = this.utilService.booleanTypeToBoolean(
+				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization
+			);
 		}
 
 		if (categoryData.PrivateInvestigator) {
@@ -656,8 +659,9 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		}
 
 		if (categoryData.SecurityGuard) {
-			const useDogs =
-				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization === BooleanTypeCode.Yes;
+			const useDogs = this.utilService.booleanTypeToBoolean(
+				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization
+			);
 			if (useDogs) {
 				if (businessModelFormValue.categorySecurityGuardFormGroup.attachments) {
 					businessModelFormValue.categorySecurityGuardFormGroup.attachments?.forEach((doc: any) => {
@@ -772,13 +776,16 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 	clearPrivateInvestigatorModelData(): void {
 		// clear out any old data
-		this.categoryPrivateInvestigatorFormGroup.patchValue({
-			managerContactId: null,
-			managerLicenceId: null,
-			managerLicenceHolderName: null,
-			managerLicenceNumber: null,
-			managerLicenceExpiryDate: null,
-			managerLicenceStatusCode: null,
-		});
+		this.categoryPrivateInvestigatorFormGroup.patchValue(
+			{
+				managerContactId: null,
+				managerLicenceId: null,
+				managerLicenceHolderName: null,
+				managerLicenceNumber: null,
+				managerLicenceExpiryDate: null,
+				managerLicenceStatusCode: null,
+			},
+			{ emitEvent: false }
+		);
 	}
 }

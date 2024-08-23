@@ -22,73 +22,77 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 @Component({
 	selector: 'app-business-licence-wizard-new-swl-sole-proprietor',
 	template: `
-		<mat-stepper
-			[selectedIndex]="3"
-			linear
-			labelPosition="bottom"
-			[orientation]="orientation"
-			(selectionChange)="onStepSelectionChange($event)"
-			#stepper
-		>
-			<mat-step [editable]="false" [completed]="true">
-				<ng-template matStepLabel>Licence Selection</ng-template>
-			</mat-step>
+		<ng-container *ngIf="isInitialized$ | async">
+			<mat-stepper
+				[selectedIndex]="3"
+				linear
+				labelPosition="bottom"
+				[orientation]="orientation"
+				(selectionChange)="onStepSelectionChange($event)"
+				#stepper
+			>
+				<mat-step [editable]="false" [completed]="true">
+					<ng-template matStepLabel>Licence Selection</ng-template>
+				</mat-step>
 
-			<mat-step [editable]="false" [completed]="true">
-				<ng-template matStepLabel>Worker Information</ng-template>
-			</mat-step>
+				<mat-step [editable]="false" [completed]="true">
+					<ng-template matStepLabel>Worker Information</ng-template>
+				</mat-step>
 
-			<mat-step [editable]="false" [completed]="true">
-				<ng-template matStepLabel>Review Worker Licence</ng-template>
-			</mat-step>
+				<mat-step [editable]="false" [completed]="true">
+					<ng-template matStepLabel>Review Worker Licence</ng-template>
+				</mat-step>
 
-			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel>Business Information</ng-template>
-				<app-steps-business-licence-swl-sp-information
-					[applicationTypeCode]="applicationTypeCode"
-					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
-					(cancelAndExit)="onCancelAndExit()"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-business-licence-swl-sp-information>
-			</mat-step>
+				<mat-step [completed]="step1Complete">
+					<ng-template matStepLabel>Business Information</ng-template>
+					<app-steps-business-licence-swl-sp-information
+						[applicationTypeCode]="applicationTypeCode"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(cancelAndExit)="onCancelAndExit()"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-business-licence-swl-sp-information>
+				</mat-step>
 
-			<mat-step [completed]="step2Complete">
-				<ng-template matStepLabel>Business Selection</ng-template>
-				<app-steps-business-licence-selection
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
-					[bizTypeCode]="bizTypeCode"
-					[isBusinessLicenceSoleProprietor]="true"
-					[isFormValid]="false"
-					[showSaveAndExit]="false"
-					(childNextStep)="onChildNextStep()"
-					(saveAndExit)="onSaveAndExit()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(scrollIntoView)="onScrollIntoView()"
-				></app-steps-business-licence-selection>
-			</mat-step>
+				<mat-step [completed]="step2Complete">
+					<ng-template matStepLabel>Business Selection</ng-template>
+					<app-steps-business-licence-selection
+						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						[applicationTypeCode]="applicationTypeCode"
+						[bizTypeCode]="bizTypeCode"
+						[isBusinessLicenceSoleProprietor]="true"
+						[isSoleProprietorCombinedFlow]="true"
+						[isFormValid]="false"
+						[showSaveAndExit]="false"
+						(childNextStep)="onChildNextStep()"
+						(saveAndExit)="onSaveAndExit()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(scrollIntoView)="onScrollIntoView()"
+					></app-steps-business-licence-selection>
+				</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Review Business Licence</ng-template>
-				<app-steps-business-licence-review
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
-					[applicationTypeCode]="applicationTypeCode"
-					[isBusinessLicenceSoleProprietor]="true"
-					(saveAndExit)="onSaveAndExit()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
-					(scrollIntoView)="onScrollIntoView()"
-					(goToStep)="onGoToStep($event)"
-				></app-steps-business-licence-review>
-			</mat-step>
+				<mat-step completed="false">
+					<ng-template matStepLabel>Review Business Licence</ng-template>
+					<app-steps-business-licence-review
+						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						[applicationTypeCode]="applicationTypeCode"
+						[isBusinessLicenceSoleProprietor]="true"
+						[isSoleProprietorCombinedFlow]="true"
+						(saveAndExit)="onSaveAndExit()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextPayStep)="onNextPayStep()"
+						(scrollIntoView)="onScrollIntoView()"
+						(goToStep)="onGoToStep($event)"
+					></app-steps-business-licence-review>
+				</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Pay</ng-template>
-			</mat-step>
-		</mat-stepper>
+				<mat-step completed="false">
+					<ng-template matStepLabel>Pay</ng-template>
+				</mat-step>
+			</mat-stepper>
+		</ng-container>
 	`,
 	styles: [],
 })
@@ -96,6 +100,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	extends BaseWizardComponent
 	implements OnInit, OnDestroy
 {
+	isInitialized$ = this.businessApplicationService.waitUntilInitialized$;
+
 	readonly STEP_BUSINESS_INFORMATION = 3; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_LICENCE_SELECTION = 4;
 	readonly STEP_REVIEW_AND_CONFIRM = 5;
