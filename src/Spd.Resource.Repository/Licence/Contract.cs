@@ -48,6 +48,9 @@ namespace Spd.Resource.Repository.Licence
         public string? LicenceHolderMiddleName1 { get; set; }
         public LicenceStatusEnum LicenceStatusCode { get; set; }
         public string? NameOnCard { get; set; }
+
+        //issued categories 
+        public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
     }
 
     public record PermitLicence : Licence

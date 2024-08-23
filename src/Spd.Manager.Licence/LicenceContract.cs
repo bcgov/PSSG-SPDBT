@@ -23,6 +23,9 @@ public record LicenceBasicResponse
     public Guid? LicenceHolderId { get; set; }
     public string? NameOnCard { get; set; }
     public LicenceStatusCode LicenceStatusCode { get; set; }
+
+    //issued categories
+    public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
 };
 
 public record LicenceResponse : LicenceBasicResponse
