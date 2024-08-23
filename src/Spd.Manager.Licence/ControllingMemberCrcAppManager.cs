@@ -94,11 +94,6 @@ internal class ControllingMemberCrcAppManager :
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
-
-        if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PhotoOfYourself))
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing PhotoOfYourself file");
-        }
     }
 
 }
