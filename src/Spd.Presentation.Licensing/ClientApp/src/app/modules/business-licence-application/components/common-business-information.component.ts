@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
+import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -164,7 +164,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 					</ng-container>
 
 					<div class="row">
-						<div class="col-lg-4 col-md-7 col-sm-12">
+						<div class="col-md-7 col-sm-12">
 							<mat-form-field>
 								<mat-label>Email Address</mat-label>
 								<input
@@ -183,7 +183,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 							</mat-form-field>
 						</div>
 
-						<div class="col-lg-4 col-md-5 col-sm-12">
+						<div class="col-md-5 col-sm-12">
 							<mat-form-field>
 								<mat-label>Phone Number</mat-label>
 								<input
@@ -228,14 +228,14 @@ export class CommonBusinessInformationComponent implements OnInit {
 		// Biz type can only be changed from sole proprietor to non-sole proprietor
 		// so limit the dropdown values when a value has previously been selected
 		// and the business is non-sole proprietor
-		if (this.bizTypeCode.value && !this.isBusinessLicenceSoleProprietor) {
-			this.businessTypes = BusinessLicenceTypes.filter(
-				(item: SelectOptions) =>
-					item.code === BizTypeCode.Corporation ||
-					item.code === BizTypeCode.NonRegisteredPartnership ||
-					item.code === BizTypeCode.RegisteredPartnership
-			);
-		}
+		// if (this.bizTypeCode.value && !this.isBusinessLicenceSoleProprietor) {
+		// 	this.businessTypes = BusinessLicenceTypes.filter(
+		// 		(item: SelectOptions) =>
+		// 			item.code === BizTypeCode.Corporation ||
+		// 			item.code === BizTypeCode.NonRegisteredPartnership ||
+		// 			item.code === BizTypeCode.RegisteredPartnership
+		// 	);
+		// }
 
 		if (this.isReadonly || this.isSoleProprietorCombinedFlow) {
 			if (!this.isBizTradeNameReadonly.value) {
@@ -292,7 +292,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 					);
 
 					this.businessApplicationService
-						.applyBusinessLicenceSoleProprietorSwl(resp.data.licenceAppId)
+						.applyBusinessLicenceSoleProprietorSelection(resp.data.licenceAppId)
 						.subscribe((_resp: any) => {
 							this.hotToastService.success('A sole proprietor was successfully selected');
 						});
