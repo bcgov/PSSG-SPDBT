@@ -90,7 +90,6 @@ internal class LicenceRepository : ILicenceRepository
             lics = lics.Where(a => a.spd_LicenceHolder_contact.spd_accesscode == qry.AccessCode);
         }
 
-        var data = lics.ToList();
         return new LicenceListResp()
         {
             Items = _mapper.Map<IEnumerable<LicenceResp>>(lics)
