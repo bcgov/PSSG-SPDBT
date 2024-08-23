@@ -54,6 +54,27 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
         return Ok();
     }
+    /// <summary>
+    /// Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
+    /// Uploading file only save files in cache, the files are not connected to the application yet.
+    /// </summary>
+    /// <param name="fileUploadRequest"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/anonymous/files")]
+    [HttpPost]
+    [RequestSizeLimit(26214400)] //25M
+    public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+    {
+        await VerifyKeyCode();
+        VerifyFiles(fileUploadRequest.Documents);
+
+        CreateDocumentInCacheCommand command = new(fileUploadRequest);
+        var newFileInfos = await _mediator.Send(command, ct);
+        Guid fileKeyCode = Guid.NewGuid();
+        await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
+        return fileKeyCode;
+    }
 
     /// <summary>
     /// Save New Licence Crc Controlling Member
@@ -64,9 +85,13 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     [HttpPost]
     public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppSubmitRequest ControllingMemberCrcSubmitRequest, CancellationToken ct)
     {
+        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(ControllingMemberCrcSubmitRequest.DocumentKeyCodes, ct);
         var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(ControllingMemberCrcSubmitRequest, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-        return await _mediator.Send(new ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcSubmitRequest), ct);
+
+        ControllingMemberCrcAppCommandResponse? response = null;
+        response = await _mediator.Send(new ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcSubmitRequest, newDocInfos), ct);
+        return response;
     }
 }
