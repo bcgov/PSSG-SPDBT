@@ -607,7 +607,10 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		}
 
 		if (includeProfileDocs) {
-			if (policeBackgroundData.attachments) {
+			const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+			const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+
+			if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
 				const docs: Array<Blob> = [];
 				policeBackgroundData.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
@@ -618,7 +621,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 				});
 			}
 
-			if (mentalHealthConditionsData.attachments) {
+			if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
 				const docs: Array<Blob> = [];
 				mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
@@ -678,7 +681,10 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 
-		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+
+		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
 			const docs: Array<Blob> = [];
 			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
@@ -689,7 +695,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			});
 		}
 
-		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
 			const docs: Array<Blob> = [];
 			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);

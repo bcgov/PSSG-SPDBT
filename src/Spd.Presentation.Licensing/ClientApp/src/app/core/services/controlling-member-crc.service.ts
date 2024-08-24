@@ -4,6 +4,8 @@ import {
 	ApplicationTypeCode,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppSubmitRequest,
+	GoogleRecaptcha,
+	IActionResult,
 	LicenceDocumentTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -12,12 +14,23 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
-import { BehaviorSubject, Observable, Subscription, debounceTime, distinctUntilChanged, of, tap } from 'rxjs';
+import {
+	BehaviorSubject,
+	Observable,
+	Subscription,
+	debounceTime,
+	distinctUntilChanged,
+	forkJoin,
+	of,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import { ApplicationService } from './application.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
-import { UtilService } from './util.service';
+import { LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -62,13 +75,16 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
-					const isValid = true; //step1Complete && step2Complete && step3Complete && step4Complete;
+					const step1Complete = this.isStepPersonalInformationComplete();
+					const step2Complete = this.isStepCitizenshipAndResidencyComplete();
+					const step3Complete = this.isStepBackgroundComplete();
+					const isValid = step1Complete && step2Complete && step3Complete;
+
 					console.debug(
 						'controllingMembersModelFormGroup CHANGED',
-						// step1Complete,
-						// step2Complete,
-						// step3Complete,
-						// step4Complete,
+						step1Complete,
+						step2Complete,
+						step3Complete,
 						this.controllingMembersModelFormGroup.getRawValue()
 					);
 
@@ -76,6 +92,53 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 					this.controllingMembersModelValueChanges$.next(isValid);
 				}
 			});
+	}
+
+	isStepPersonalInformationComplete(): boolean {
+		// console.debug(
+		// 	'isStepPersonalInformationComplete',
+		// 	this.personalNameAndContactInformationFormGroup.valid,
+		// 	this.aliasesFormGroup.valid,
+		// 	this.residentialAddressFormGroup.valid
+		// );
+
+		return (
+			this.personalNameAndContactInformationFormGroup.valid &&
+			this.aliasesFormGroup.valid &&
+			this.residentialAddressFormGroup.valid
+		);
+	}
+
+	isStepCitizenshipAndResidencyComplete(): boolean {
+		// console.debug(
+		// 	'isStepCitizenshipAndResidencyComplete',
+		// 	this.citizenshipFormGroup.valid,
+		// 	this.fingerprintProofFormGroup.valid,
+		// 	this.bcDriversLicenceFormGroup.valid
+		// );
+
+		return (
+			this.citizenshipFormGroup.valid && this.fingerprintProofFormGroup.valid && this.bcDriversLicenceFormGroup.valid
+		);
+	}
+
+	/**
+	 * If this step is complete, mark the step as complete in the wizard
+	 * @returns
+	 */
+	isStepBackgroundComplete(): boolean {
+		// console.debug(
+		// 	'isStepBackgroundComplete',
+		// 	this.bcSecurityLicenceHistoryFormGroup.valid,
+		// 	this.policeBackgroundFormGroup.valid,
+		// 	this.mentalHealthConditionsFormGroup.valid
+		// );
+
+		return (
+			this.bcSecurityLicenceHistoryFormGroup.valid &&
+			this.policeBackgroundFormGroup.valid &&
+			this.mentalHealthConditionsFormGroup.valid
+		);
 	}
 
 	/**
@@ -169,74 +232,65 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	submitControllingMemberCrcAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
 
-		// // Get the keyCode for the existing documents to save.
-		// const existingDocumentIds: Array<string> = [];
-		// body.documentInfos?.forEach((doc: Document) => {
-		// 	if (doc.documentUrlId) {
-		// 		existingDocumentIds.push(doc.documentUrlId);
-		// 	}
-		// });
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
 
-		// delete body.documentInfos;
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
 
-		// const googleRecaptcha = { recaptchaCode: mailingAddressData.captchaFormGroup.token };
-		// return this.postLicenceAnonymousDocuments(googleRecaptcha, existingDocumentIds, null, body);
-		return this.postLicenceAnonymousDocuments(body);
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
 
-		// this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMIT));
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		return this.postCrcAnonymousDocuments(googleRecaptcha, documentsToSaveApis, body);
 	}
 
 	/**
 	 * Post licence documents anonymous.
 	 * @returns
 	 */
-	private postLicenceAnonymousDocuments(
-		// googleRecaptcha: GoogleRecaptcha,
-		// existingDocumentIds: Array<string>,
-		// documentsToSaveApis: Observable<string>[] | null,
+	private postCrcAnonymousDocuments(
+		googleRecaptcha: GoogleRecaptcha,
+		documentsToSaveApis: Observable<string>[],
 		body: ControllingMemberCrcAppSubmitRequest
 	) {
-		// if (documentsToSaveApis) {
-		// 	return this.controllingMemberCrcAppService
-		// 		.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-		// 		.pipe(
-		// 			switchMap((_resp: IActionResult) => {
-		// 				return forkJoin(documentsToSaveApis);
-		// 			}),
-		// 			switchMap((resps: string[]) => {
-		// 				// pass in the list of document key codes
-		// 				body.documentKeyCodes = [...resps];
-		// 				// pass in the list of document ids that were in the original
-		// 				// application and are still being used
-		// 				body.previousDocumentIds = [...existingDocumentIds];
+		return this.controllingMemberCrcAppService
+			.apiControllingMemberCrcApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			.pipe(
+				switchMap((_resp: IActionResult) => {
+					return forkJoin(documentsToSaveApis);
+				}),
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
 
-		// 				return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-		// 					body,
-		// 				});
-		// 			})
-		// 		)
-		// 		.pipe(take(1));
-		// } else {
-		// 	return this.securityWorkerLicensingService
-		// 		.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
-		// 		.pipe(
-		// 			switchMap((_resp: IActionResult) => {
-		// 				// pass in the list of document ids that were in the original
-		// 				// application and are still being used
-		// 				body.previousDocumentIds = [...existingDocumentIds];
-
-		// 				return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousSubmitPost$Response({
-		// 					body,
-		// 				});
-		// 			})
-		// 		)
-		// 		.pipe(take(1));
-		// }
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousSubmitPost$Response({
-			body,
-		});
+					return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousSubmitPost$Response({
+						body,
+					});
+				})
+			)
+			.pipe(take(1));
 	}
 
 	/**

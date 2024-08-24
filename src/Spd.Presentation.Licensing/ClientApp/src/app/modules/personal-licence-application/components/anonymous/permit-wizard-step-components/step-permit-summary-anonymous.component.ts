@@ -719,11 +719,10 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedAttachments : [];
 	}
 
-	get hasBcDriversLicence(): string {
-		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';
-	}
 	get bcDriversLicenceNumber(): string {
-		return this.permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '';
+		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
+			? this.permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			: '';
 	}
 
 	get hairColourCode(): string {
