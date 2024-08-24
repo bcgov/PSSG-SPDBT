@@ -25,6 +25,7 @@ internal class LicenceRepository : ILicenceRepository
                 .Expand(i => i.spd_LicenceHolder_contact)
                 .Expand(i => i.spd_LicenceHolder_account)
                 .Expand(i => i.spd_CaseId)
+                .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
                 .Where(l => l.spd_licenceid == licenceId)
                 .FirstOrDefaultAsync(ct);
         }
@@ -47,6 +48,7 @@ internal class LicenceRepository : ILicenceRepository
         }
 
         IQueryable<spd_licence> lics = _context.spd_licences
+            .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
             .Expand(i => i.spd_LicenceHolder_contact)
             .Expand(i => i.spd_LicenceHolder_account)
             .Expand(i => i.spd_CaseId);
