@@ -30,9 +30,11 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 				></app-step-controlling-member-personal-info>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERSONAL_INFO)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -42,9 +44,11 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 				></app-step-controlling-member-aliases>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
+					(nextReviewStepperStep)="onNextReview(STEP_ALIASES)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -54,9 +58,11 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 				></app-step-controlling-member-residential-address>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_RESIDENTIAL_ADDRESS)"
+					(nextReviewStepperStep)="onNextReview(STEP_RESIDENTIAL_ADDRESS)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -71,7 +77,7 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 	readonly STEP_RESIDENTIAL_ADDRESS = 3;
 
 	@Input() isFormValid!: boolean;
-	@Input() showSaveAndExit!: boolean;
+	// @Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberPersonalInfoComponent) stepPersonalInfo!: StepControllingMemberPersonalInfoComponent;

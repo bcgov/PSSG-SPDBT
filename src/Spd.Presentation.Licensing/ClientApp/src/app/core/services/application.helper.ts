@@ -3,7 +3,7 @@ import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscriber } from 'rxjs';
 
 export abstract class ApplicationHelper {
 	private _waitUntilInitialized$ = new BehaviorSubject<boolean>(false);
@@ -358,17 +358,26 @@ export abstract class ApplicationHelper {
 	 * Set the current photo of yourself
 	 * @returns
 	 */
-	setPhotographOfYourself(image: Blob | null): void {
+	setPhotographOfYourself(image: Blob | null): Observable<boolean> {
 		if (!image || image.size == 0) {
 			this.photographOfYourself = null;
-			return;
+			return of(false);
 		}
 
-		const reader = new FileReader();
-		reader.readAsDataURL(image);
-		reader.onload = (_event) => {
-			this.photographOfYourself = reader.result;
-		};
+		return new Observable<boolean>((observer: Subscriber<boolean>) => {
+			const reader = new FileReader();
+
+			// if success
+			reader.onload = (ev: ProgressEvent): void => {
+				this.photographOfYourself = reader.result;
+				observer.next(true);
+			};
+			// if failed
+			reader.onerror = (ev: any): void => {
+				observer.error(false);
+			};
+			reader.readAsDataURL(image);
+		});
 	}
 
 	/**
