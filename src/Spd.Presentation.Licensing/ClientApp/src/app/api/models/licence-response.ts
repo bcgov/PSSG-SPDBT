@@ -6,10 +6,12 @@ import { BodyArmourPermitReasonCode } from '../models/body-armour-permit-reason-
 import { Document } from '../models/document';
 import { LicenceStatusCode } from '../models/licence-status-code';
 import { LicenceTermCode } from '../models/licence-term-code';
+import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceResponse {
   armouredVehiclePermitReasonCodes?: Array<ArmouredVehiclePermitReasonCode> | null;
   bodyArmourPermitReasonCodes?: Array<BodyArmourPermitReasonCode> | null;
+  categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   employerName?: string | null;
   employerPrimaryAddress?: Address;
   expiryDate?: string;

@@ -8,9 +8,9 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-authenticated',
@@ -682,11 +682,10 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		);
 	}
 
-	get hasBcDriversLicence(): string {
-		return this.licenceModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';
-	}
 	get bcDriversLicenceNumber(): string {
-		return this.licenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '';
+		return this.licenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
+			? this.licenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			: '';
 	}
 
 	get hairColourCode(): string {
