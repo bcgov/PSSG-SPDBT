@@ -111,7 +111,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licences/licence-photo/{licenceId}")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBcsc")]
+        //[Authorize(Policy = "OnlyBcsc")]
         public async Task<FileStreamResult> GetLicencePhoto([FromRoute] Guid licenceId)
         {
             FileResponse? response = await _mediator.Send(new LicencePhotoQuery(licenceId));

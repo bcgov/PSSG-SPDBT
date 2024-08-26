@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +8,10 @@ using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -44,7 +44,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="licenceAppId"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/{licenceAppId}")]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId)
         {
@@ -244,6 +244,20 @@ namespace Spd.Presentation.Licensing.Controllers
             }
 
             return File(content, contentType, response?.FileName);
+        }
+
+        /// <summary>
+        /// Create controlling member crc invitation for this biz contact
+        /// </summary>
+        /// <param name="bizContactId"></param>
+        /// <returns></returns>
+        [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        [HttpGet]
+        public async Task<NonSwlContactInfo> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
+        {
+            NonSwlContactInfo response = await _mediator.Send(new BizControllingMemberNewInviteCommand(bizContactId), ct);
+            return response;
         }
     }
 }

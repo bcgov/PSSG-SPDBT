@@ -192,7 +192,7 @@ internal abstract class LicenceAppManagerBase
             .OrderByDescending(a => a.SubmittedOn)
             .FirstOrDefault();
         if (app == null)
-            throw new ApiException(HttpStatusCode.BadRequest, $"there is no {licenceTypeEnum}.");
+            throw new ApiException(HttpStatusCode.InternalServerError, $"there is no completed {licenceTypeEnum} application.");
         return app.LicenceAppId;
     }
 

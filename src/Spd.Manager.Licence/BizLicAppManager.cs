@@ -31,6 +31,7 @@ internal class BizLicAppManager :
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<BrandImageQuery, FileResponse>,
+        IRequestHandler<BizControllingMemberNewInviteCommand, NonSwlContactInfo>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -305,6 +306,15 @@ internal class BizLicAppManager :
                 cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLic.LicenceAppId, Cost = cost };
+    }
+
+    public async Task<NonSwlContactInfo> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
+    {
+        //check if bizContact already has invitation
+
+
+
+        return null;
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)

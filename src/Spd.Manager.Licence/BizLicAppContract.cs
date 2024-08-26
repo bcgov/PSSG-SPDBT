@@ -16,6 +16,7 @@ public interface IBizLicAppManager
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
     public Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct);
+    public Task<NonSwlContactInfo> Handle(BizControllingMemberNewInviteCommand command, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
@@ -38,6 +39,8 @@ public record BizLicAppUpdateCommand(
     BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
+
+public record BizControllingMemberNewInviteCommand(Guid BizContactId) : IRequest<NonSwlContactInfo>;
 
 public record BrandImageQuery(Guid DocumentId) : IRequest<FileResponse>;
 
@@ -99,6 +102,7 @@ public abstract record BizLicenceApp : LicenceAppBase
 public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
+    public NonSwlControllingMemberStatusCode NonSwlControllingMemberStatusCode { get; set; } = NonSwlControllingMemberStatusCode.ControllingMemberAdded;
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo
@@ -127,3 +131,12 @@ public record UpsertBizMembersCommand(
     Guid? ApplicationId,
     Members Members,
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;
+
+public enum NonSwlControllingMemberStatusCode
+{
+    ControllingMemberAdded,
+    InvitationSent,
+    ApplicationReceived,
+    CompletedCleared,
+    CompletedRiskFound
+}
