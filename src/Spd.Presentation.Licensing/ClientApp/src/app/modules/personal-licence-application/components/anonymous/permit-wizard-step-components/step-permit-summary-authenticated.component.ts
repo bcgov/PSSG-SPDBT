@@ -8,9 +8,9 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { ApplicationService } from '@app/core/services/application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
@@ -484,11 +484,10 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedAttachments : [];
 	}
 
-	get hasBcDriversLicence(): string {
-		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';
-	}
 	get bcDriversLicenceNumber(): string {
-		return this.permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '';
+		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
+			? this.permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			: '';
 	}
 
 	get hairColourCode(): string {

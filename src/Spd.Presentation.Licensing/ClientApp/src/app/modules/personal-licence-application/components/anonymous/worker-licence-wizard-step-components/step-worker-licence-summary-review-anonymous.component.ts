@@ -1011,11 +1011,10 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		);
 	}
 
-	get hasBcDriversLicence(): string {
-		return this.licenceModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';
-	}
 	get bcDriversLicenceNumber(): string {
-		return this.licenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '';
+		return this.licenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
+			? this.licenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			: '';
 	}
 
 	get hairColourCode(): string {
