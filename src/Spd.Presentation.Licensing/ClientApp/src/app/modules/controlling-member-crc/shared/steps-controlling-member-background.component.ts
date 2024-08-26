@@ -16,9 +16,11 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 				></app-step-controlling-member-bc-security-licence-history>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_HISTORY)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_HISTORY)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -28,9 +30,11 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 				></app-step-controlling-member-police-background>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
+					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -40,9 +44,11 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 				></app-step-controlling-member-mental-health-conditions>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_MENTAL_HEALTH)"
+					(nextReviewStepperStep)="onNextReview(STEP_MENTAL_HEALTH)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -56,7 +62,7 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 	readonly STEP_MENTAL_HEALTH = 2;
 
 	@Input() isFormValid!: boolean;
-	@Input() showSaveAndExit!: boolean;
+	// @Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberBcSecurityLicenceHistoryComponent)
