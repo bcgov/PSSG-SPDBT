@@ -1483,6 +1483,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
 				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.NonCanadianPassport:
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
 					// Additional Government ID: GovernmentIssuedPhotoIdTypes

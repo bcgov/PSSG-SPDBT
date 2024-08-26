@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { ApplicationService } from '@app/core/services/application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-confirmation',
@@ -100,71 +100,18 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	}
 
 	get cardHolderName(): string {
-		return this.licenceModelData.personalInformationData.cardHolderName;
+		return this.licenceApplicationService.getSummarycardHolderName(this.licenceModelData);
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
+		return this.licenceApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
+		return this.licenceApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
+		return this.licenceApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 	get categoryList(): Array<WorkerCategoryTypeCode> {
-		const list: Array<WorkerCategoryTypeCode> = [];
-		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
-		}
-		if (this.licenceModelData.categoryBodyArmourSalesFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.BodyArmourSales);
-		}
-		if (this.licenceModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-		}
-		if (this.licenceModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-		}
-		if (this.licenceModelData.categoryFireInvestigatorFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.FireInvestigator);
-		}
-		if (this.licenceModelData.categoryLocksmithFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.Locksmith);
-		}
-		if (this.licenceModelData.categoryLocksmithSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
-		}
-		if (this.licenceModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
-		}
-		if (this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
-		}
-		if (this.licenceModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
-		}
-		if (this.licenceModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
-		}
-		if (this.licenceModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-		}
-		if (this.licenceModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
-		}
-		if (this.licenceModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
-		}
-		if (this.licenceModelData.categorySecurityConsultantFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityConsultant);
-		}
-		if (this.licenceModelData.categorySecurityGuardFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityGuard);
-		}
-		if (this.licenceModelData.categorySecurityGuardSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
-		}
-
-		return list;
+		return this.licenceApplicationService.getSummarycategoryList(this.licenceModelData);
 	}
 }

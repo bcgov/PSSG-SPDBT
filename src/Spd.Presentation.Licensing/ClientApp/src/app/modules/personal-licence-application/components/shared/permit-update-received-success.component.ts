@@ -114,12 +114,12 @@ export class PermitUpdateReceivedSuccessComponent implements OnInit {
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+		return this.permitApplicationService.getSummaryworkerLicenceTypeCode(this.permitModelData);
 	}
 	get licenceTermCode(): string {
-		return this.permitModelData.licenceTermData.licenceTermCode ?? '';
+		return this.permitApplicationService.getSummarylicenceTermCode(this.permitModelData);
 	}
 	get caseNumber(): string {
-		return this.permitModelData.caseNumber ?? '';
+		return this.permitApplicationService.getSummarycaseNumber(this.permitModelData);
 	}
 }
