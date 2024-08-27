@@ -952,7 +952,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					originalCategoryCodes: accessCodeData.linkedLicenceCategoryCodes,
 				};
 
-				let [
+				const [
 					categoryArmouredCarGuardFormGroup,
 					categoryBodyArmourSalesFormGroup,
 					categoryClosedCircuitTelevisionInstallerFormGroup,
@@ -1420,25 +1420,25 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			attachments: [],
 		};
 
-		let [
-			categoryArmouredCarGuardFormGroup,
-			categoryBodyArmourSalesFormGroup,
-			categoryClosedCircuitTelevisionInstallerFormGroup,
-			categoryElectronicLockingDeviceInstallerFormGroup,
-			categoryFireInvestigatorFormGroup,
-			categoryLocksmithFormGroup,
-			categoryLocksmithSupFormGroup,
-			categoryPrivateInvestigatorFormGroup,
-			categoryPrivateInvestigatorSupFormGroup,
-			categorySecurityAlarmInstallerFormGroup,
-			categorySecurityAlarmInstallerSupFormGroup,
-			categorySecurityAlarmMonitorFormGroup,
-			categorySecurityAlarmResponseFormGroup,
-			categorySecurityAlarmSalesFormGroup,
-			categorySecurityConsultantFormGroup,
-			categorySecurityGuardFormGroup,
-			categorySecurityGuardSupFormGroup,
-		] = this.initializeCategoryFormGroups(workerLicenceAppl.categoryCodes);
+		const initialCategoryData = this.initializeCategoryFormGroups(workerLicenceAppl.categoryCodes);
+
+		let categoryArmouredCarGuardFormGroup = initialCategoryData[0];
+		const categoryBodyArmourSalesFormGroup = initialCategoryData[1];
+		const categoryClosedCircuitTelevisionInstallerFormGroup = initialCategoryData[2];
+		const categoryElectronicLockingDeviceInstallerFormGroup = initialCategoryData[3];
+		const categoryFireInvestigatorFormGroup = initialCategoryData[4];
+		let categoryLocksmithFormGroup = initialCategoryData[5];
+		const categoryLocksmithSupFormGroup = initialCategoryData[6];
+		const categoryPrivateInvestigatorFormGroup = initialCategoryData[7];
+		let categoryPrivateInvestigatorSupFormGroup = initialCategoryData[8];
+		let categorySecurityAlarmInstallerFormGroup = initialCategoryData[9];
+		const categorySecurityAlarmInstallerSupFormGroup = initialCategoryData[10];
+		const categorySecurityAlarmMonitorFormGroup = initialCategoryData[11];
+		const categorySecurityAlarmResponseFormGroup = initialCategoryData[12];
+		const categorySecurityAlarmSalesFormGroup = initialCategoryData[13];
+		const categorySecurityConsultantFormGroup = initialCategoryData[14];
+		let categorySecurityGuardFormGroup = initialCategoryData[15];
+		const categorySecurityGuardSupFormGroup = initialCategoryData[16];
 
 		const fingerprintProofDataAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
@@ -1869,7 +1869,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			licenceTermCode: null,
 		};
 
-		let [
+		const [
 			categoryArmouredCarGuardFormGroup,
 			categoryBodyArmourSalesFormGroup,
 			categoryClosedCircuitTelevisionInstallerFormGroup,
@@ -2024,7 +2024,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
 		};
 
-		let [
+		const [
 			categoryArmouredCarGuardFormGroup,
 			categoryBodyArmourSalesFormGroup,
 			categoryClosedCircuitTelevisionInstallerFormGroup,
@@ -2107,7 +2107,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.
 		};
 
-		let [
+		const [
 			categoryArmouredCarGuardFormGroup,
 			categoryBodyArmourSalesFormGroup,
 			categoryClosedCircuitTelevisionInstallerFormGroup,
