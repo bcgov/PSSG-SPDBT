@@ -85,6 +85,7 @@ import { StepsPermitReviewAnonymousComponent } from './permit-wizard-step-compon
 				<app-steps-permit-review-anonymous
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[showEmployerInformation]="showEmployerInformation"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(nextPayStep)="onNextPayStep()"

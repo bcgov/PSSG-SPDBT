@@ -82,7 +82,7 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 	],
 })
 export class BusinessLicenceUpdateReceivedSuccessComponent implements OnInit {
-	licenceModelData: any = {};
+	businessModelData: any = {};
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
@@ -90,7 +90,7 @@ export class BusinessLicenceUpdateReceivedSuccessComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
+		this.businessModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 
 		if (!this.businessApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();
@@ -106,12 +106,12 @@ export class BusinessLicenceUpdateReceivedSuccessComponent implements OnInit {
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+		return this.businessModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
 	}
 	get licenceTermCode(): string {
-		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+		return this.businessModelData.licenceTermData.licenceTermCode ?? '';
 	}
 	get caseNumber(): string {
-		return this.licenceModelData.caseNumber ?? '';
+		return this.businessModelData.caseNumber ?? '';
 	}
 }

@@ -2,12 +2,11 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { StepsPermitDetailsNewComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/steps-permit-details-new.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { StepsPermitDetailsNewComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/steps-permit-details-new.component';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
@@ -75,6 +74,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<app-steps-permit-review-authenticated
 							[workerLicenceTypeCode]="workerLicenceTypeCode"
 							[applicationTypeCode]="applicationTypeCodeRenewal"
+							[showEmployerInformation]="showEmployerInformation"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
@@ -125,7 +125,6 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: ApplicationService
