@@ -936,7 +936,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!, accessCodeData).pipe(
+		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, accessCodeData).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = { ..._resp.personalInformationData };
 
