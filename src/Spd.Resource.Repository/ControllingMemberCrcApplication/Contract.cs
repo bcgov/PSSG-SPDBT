@@ -12,11 +12,13 @@ namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
 {
     public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
-    public Task<ControllingMemberCrcApplicationResp> SaveLicenceApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMenberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
 }
 
 public record ControllingMemberCrcApplication
 {
+    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
