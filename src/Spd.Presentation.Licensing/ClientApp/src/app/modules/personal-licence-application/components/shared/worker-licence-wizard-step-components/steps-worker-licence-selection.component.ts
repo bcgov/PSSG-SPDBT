@@ -58,7 +58,7 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
+			<mat-step *ngIf="showWorkerLicenceSoleProprietorStep">
 				<app-step-worker-licence-sole-proprietor
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-sole-proprietor>
@@ -156,6 +156,7 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@Input() isFormValid = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() showStepDogsAndRestraints = false;
+	@Input() showWorkerLicenceSoleProprietorStep = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
 

@@ -19,6 +19,7 @@ import {
 	PaymentLinkResponse,
 	PaymentMethodCode,
 	PermitLicenceAppResponse,
+	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -65,6 +66,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse, BizLicAppResponse {
 	hasLoginNameChanged: boolean;
 	cardHolderName?: null | string;
+	licenceCategoryCodes?: Array<WorkerCategoryTypeCode> | null;
 	licenceHolderName?: null | string;
 	licenceExpiryDate?: string;
 	licenceExpiryNumberOfDays?: null | number;
@@ -119,6 +121,12 @@ export class ApplicationService {
 	public getUniqueId(): string {
 		this.uniqueId = this.uniqueId + 1;
 		return `ID${this.uniqueId}`;
+	}
+
+	public isBusinessLicenceSoleProprietor(bizTypeCode: BizTypeCode): boolean {
+		return (
+			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
+		);
 	}
 
 	public cancelAndLoseChanges() {
@@ -277,19 +285,6 @@ export class ApplicationService {
 								);
 
 								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!);
-
-								const hasRestraintAuthorization = resp.documentInfos?.find(
-									(item: Document) =>
-										item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate ||
-										item.licenceDocumentTypeCode ===
-											LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter ||
-										item.licenceDocumentTypeCode ===
-											LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent
-								);
-								licence.restraintAuthorization = hasRestraintAuthorization?.licenceDocumentTypeCode
-									? hasRestraintAuthorization.licenceDocumentTypeCode
-									: null;
-
 								response.push(licence);
 							});
 
@@ -760,6 +755,33 @@ export class ApplicationService {
 			licence.licenceId = matchingLicence.licenceId;
 			licence.licenceNumber = matchingLicence.licenceNumber;
 			licence.hasLoginNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
+			licence.licenceCategoryCodes = matchingLicence.categoryCodes ?? [];
+
+			const hasSecurityGuardCategory =
+				licence.licenceCategoryCodes.findIndex(
+					(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
+				) >= 0;
+
+			if (hasSecurityGuardCategory) {
+				const hasDogAuthorization = resp.documentInfos?.find(
+					(item: Document) =>
+						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
+				);
+				licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
+					? hasDogAuthorization.licenceDocumentTypeCode
+					: null;
+
+				const hasRestraintAuthorization = resp.documentInfos?.find(
+					(item: Document) =>
+						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate ||
+						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter ||
+						item.licenceDocumentTypeCode ===
+							LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent
+				);
+				licence.restraintAuthorization = hasRestraintAuthorization?.licenceDocumentTypeCode
+					? hasRestraintAuthorization.licenceDocumentTypeCode
+					: null;
+			}
 
 			if (licence.licenceExpiryNumberOfDays >= 0) {
 				if (
@@ -807,13 +829,6 @@ export class ApplicationService {
 			resp.licenceTermCode
 		).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
 		licence.licenceReprintFee = fee?.amount ? fee.amount : null;
-
-		const hasDogAuthorization = resp.documentInfos?.find(
-			(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
-		);
-		licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
-			? hasDogAuthorization.licenceDocumentTypeCode
-			: null;
 
 		return licence;
 	}
