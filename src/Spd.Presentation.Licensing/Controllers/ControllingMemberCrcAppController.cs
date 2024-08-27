@@ -36,7 +36,25 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         _configuration = configuration;
         _controllingMemberCrcAppSubmitValidator = controllingMemberCrcAppSubmitValidator;
     }
+    #region authenticated
 
+    /// <summary>
+    /// Create Controlling member CRC Application
+    /// </summary>
+    /// <param name="controllingMemberCrcAppUpsertRequest"></param>
+    /// <returns></returns>
+    [Route("api/permit-applications")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpPost]
+    public async Task<ControllingMemberCrcAppCommandResponse> SaveControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcAppUpsertRequest)
+    {
+        if (controllingMemberCrcAppUpsertRequest.ApplicantId == Guid.Empty)
+            throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+        return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
+    }
+
+    #endregion authenticated
+    #region anonymous
     /// <summary>
     /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
     /// the keycode will be set in the cookies
@@ -91,7 +109,8 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
         ControllingMemberCrcAppCommandResponse? response = null;
-        response = await _mediator.Send(new ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcSubmitRequest, newDocInfos), ct);
+        response = await _mediator.Send(new ControllingMemberCrcAppNewCommand(ControllingMemberCrcSubmitRequest, newDocInfos), ct);
         return response;
     }
+    #endregion anonymous
 }

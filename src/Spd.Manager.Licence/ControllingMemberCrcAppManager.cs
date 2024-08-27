@@ -20,7 +20,7 @@ using Spd.Resource.Repository.LicApp;
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager : 
     LicenceAppManagerBase,
-    IRequestHandler<ControllingMemberCrcAppSubmitRequestCommand, ControllingMemberCrcAppCommandResponse>,
+    IRequestHandler<ControllingMemberCrcAppNewCommand, ControllingMemberCrcAppCommandResponse>,
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
@@ -43,7 +43,7 @@ internal class ControllingMemberCrcAppManager :
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
     }
-    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand cmd, CancellationToken ct)
+    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -62,7 +62,7 @@ internal class ControllingMemberCrcAppManager :
             ControllingMemberAppId = response.ControllingMemberCrcAppId
         };
     }
-    private static void ValidateFilesForNewApp(ControllingMemberCrcAppSubmitRequestCommand cmd)
+    private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
         IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;
