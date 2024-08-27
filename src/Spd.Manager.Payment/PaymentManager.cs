@@ -1,5 +1,3 @@
-using System.Net;
-using System.Text.Json;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
@@ -23,6 +21,8 @@ using Spd.Utilities.FileStorage;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
+using System.Text.Json;
 
 namespace Spd.Manager.Payment
 {
@@ -344,7 +344,7 @@ namespace Spd.Manager.Payment
                 TimeSpan.FromMinutes(60),
                 ct);
 
-            if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
+            if (app.ServiceType != null && IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
             {
                 //screening price and payment setting
                 var pbcRefnumberConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
@@ -395,13 +395,12 @@ namespace Spd.Manager.Payment
                 decimal? price = feeList.LicenceFees.First()?.Amount;
                 if (price == null)
                     throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
-                SpdPaymentConfig spdPaymentConfig = new()
+                return new SpdPaymentConfig
                 {
                     PbcRefNumber = pbcRefnumberLicConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountLicConfig.Value,
                     ServiceCost = Decimal.Round((decimal)price, 2)
                 };
-                return spdPaymentConfig;
             }
         }
 
