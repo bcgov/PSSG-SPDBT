@@ -35,6 +35,7 @@ export abstract class ApplicationHelper {
 		linkedCardHolderName: new FormControl(null),
 		linkedLicenceHolderName: new FormControl(null),
 		linkedLicenceHolderId: new FormControl(null),
+		linkedLicenceCategoryCodes: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),
@@ -47,6 +48,7 @@ export abstract class ApplicationHelper {
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
+		originalCategoryCodes: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),
 		originalDogAuthorizationExists: new FormControl(false),
 	});
@@ -368,12 +370,12 @@ export abstract class ApplicationHelper {
 			const reader = new FileReader();
 
 			// if success
-			reader.onload = (ev: ProgressEvent): void => {
+			reader.onload = (_ev: ProgressEvent): void => {
 				this.photographOfYourself = reader.result;
 				observer.next(true);
 			};
 			// if failed
-			reader.onerror = (ev: any): void => {
+			reader.onerror = (_ev: any): void => {
 				observer.error(false);
 			};
 			reader.readAsDataURL(image);
