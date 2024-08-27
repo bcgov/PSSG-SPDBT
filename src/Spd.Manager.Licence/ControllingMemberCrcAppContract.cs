@@ -10,6 +10,7 @@ namespace Spd.Manager.Licence;
 public interface IControllingMemberCrcAppManager
 {
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand command, CancellationToken ct);
 }
 public record ControllingMemberCrcAppBase
 {
@@ -46,7 +47,7 @@ public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertReq
 public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
-    public Guid? LicenceAppId { get; set; }
+    public Guid? ControllingMemberAppId { get; set; }
     public Guid ApplicantId { get; set; }
 };
 #endregion

@@ -63,4 +63,8 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid) contact.contactid);
     }
 
+    public async Task<ControllingMemberCrcApplicationResp> SaveLicenceApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
 }

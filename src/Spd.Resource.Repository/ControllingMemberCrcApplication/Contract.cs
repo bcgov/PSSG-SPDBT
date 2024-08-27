@@ -12,8 +12,10 @@ namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
 {
     public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationResp> SaveLicenceApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
 }
-    public record ControllingMemberCrcApplication
+
+public record ControllingMemberCrcApplication
 {
     public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
@@ -41,20 +43,20 @@ public partial interface IControllingMemberCrcRepository
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
 }
-
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
-
+    public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 };
+public record SaveControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
+{
+    public Guid? ControllingMemberCrcAppId { get; set; }
+    public Guid ContactId { get; set; }
+    public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+}
 public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplication
 {
     //TODO: what are response props?
     public Guid? ControllingMemberCrcAppId { get; set; }
     public Guid? ContactId { get; set; }
-    //public DateOnly? ExpiryDate { get; set; }
-    //public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
-    //public string? CaseNumber { get; set; }
-    //public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
-    //public string? ExpiredLicenceNumber { get; set; }
 }
 public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId, Guid? ContactId = null);
