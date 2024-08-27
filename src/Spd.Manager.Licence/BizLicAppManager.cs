@@ -556,13 +556,13 @@ internal class BizLicAppManager :
         {
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Below Dog's Handers information needs to be updated in the business license {originalApp.ExpiredLicenceNumber} \n " +
+                Description = $"Below Dog's Handers information needs to be updated in the business licence {originalApp.ExpiredLicenceNumber} \n " +
                     $"Use of dog : Explosives detection / Drug detection / Protection (As described in the DSV certificate) \n " +
                     $"DSV Certificate Number \n " +
                     $"Expiry Date \n" +
                     $"DSV certificate (Attachment)",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
-                Subject = $"Dog validation information to be updated for Business License {originalLic.LicenceNumber}",
+                Subject = $"Dog validation information to be updated for Business Licence {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingAccountId = originalApp.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
