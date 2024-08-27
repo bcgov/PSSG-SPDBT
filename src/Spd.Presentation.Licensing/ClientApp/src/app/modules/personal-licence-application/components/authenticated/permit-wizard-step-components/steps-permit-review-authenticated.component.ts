@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-consent-and-declaration.component';
 import { StepPermitSummaryAuthenticatedComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-summary-authenticated.component';
 import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-summary-review-update-authenticated.component';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-permit-review-authenticated',
@@ -16,6 +16,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 				</ng-container>
 				<ng-template #notUpdateReview>
 					<app-step-permit-summary-authenticated
+						[showEmployerInformation]="showEmployerInformation"
 						(editStep)="onGoToStep($event)"
 					></app-step-permit-summary-authenticated>
 				</ng-template>
@@ -72,6 +73,7 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() showEmployerInformation!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
