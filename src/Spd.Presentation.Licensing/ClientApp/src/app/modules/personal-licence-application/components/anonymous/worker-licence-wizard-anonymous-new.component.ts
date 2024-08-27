@@ -35,6 +35,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+					[showWorkerLicenceSoleProprietorStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -256,7 +257,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 							],
 							{
 								queryParams: {
-									// bizId: '26d3d383-5a35-432c-9398-72d8c2522666', // TODO  Combined SP - is there any way to know this?
 									licenceAppId: this.licenceAppId,
 									isSwlAnonymous: 'Y',
 								},
