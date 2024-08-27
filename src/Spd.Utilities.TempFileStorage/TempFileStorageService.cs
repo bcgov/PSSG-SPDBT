@@ -1,13 +1,16 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 
 namespace Spd.Utilities.TempFileStorage;
+
 internal class TempFileStorageService : ITempFileStorageService
 {
     public IDistributedCache _cache;
+
     public TempFileStorageService(IDistributedCache cache)
     {
         _cache = cache;
     }
+
     public async Task<string> HandleCommand(TempFileCommand cmd, CancellationToken cancellationToken)
     {
         return cmd switch
@@ -31,7 +34,7 @@ internal class TempFileStorageService : ITempFileStorageService
         string fileKey = $"file-{Guid.NewGuid()}";
         using var ms = new MemoryStream();
         await cmd.File.CopyToAsync(ms, ct);
-        _cache.Set(fileKey, ms.ToArray(), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(0, 10, 0) }); //10 mins
+        await _cache.SetAsync(fileKey, ms.ToArray(), new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = new TimeSpan(0, 10, 0) }, ct); //10 mins
         return fileKey;
     }
 
