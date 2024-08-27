@@ -10,7 +10,10 @@ import { StepPermitSummaryAnonymousComponent } from './step-permit-summary-anony
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-permit-summary-anonymous (editStep)="onGoToStep($event)"></app-step-permit-summary-anonymous>
+				<app-step-permit-summary-anonymous
+					[showEmployerInformation]="showEmployerInformation"
+					(editStep)="onGoToStep($event)"
+				></app-step-permit-summary-anonymous>
 
 				<app-wizard-footer
 					(previousStepperStep)="onStepPrevious()"
@@ -40,6 +43,7 @@ export class StepsPermitReviewAnonymousComponent extends BaseWizardStepComponent
 
 	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() showEmployerInformation!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 

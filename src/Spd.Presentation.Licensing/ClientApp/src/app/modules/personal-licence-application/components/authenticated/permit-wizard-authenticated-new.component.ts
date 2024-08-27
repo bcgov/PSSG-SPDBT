@@ -7,9 +7,9 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepsPermitDetailsNewComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/steps-permit-details-new.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
@@ -80,6 +80,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<app-steps-permit-review-authenticated
 							[workerLicenceTypeCode]="workerLicenceTypeCode"
 							[applicationTypeCode]="applicationTypeCodeNew"
+							[showEmployerInformation]="showEmployerInformation"
 							(saveAndExit)="onSaveAndExit()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
