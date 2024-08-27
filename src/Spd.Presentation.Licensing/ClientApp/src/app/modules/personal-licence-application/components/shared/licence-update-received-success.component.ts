@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { ApplicationService } from '@app/core/services/application.service';
+import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 
 @Component({
 	selector: 'app-licence-update-received-success',
@@ -114,12 +114,12 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+		return this.licenceApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
 	}
 	get licenceTermCode(): string {
-		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
+		return this.licenceApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 	get caseNumber(): string {
-		return this.licenceModelData.caseNumber ?? '';
+		return this.licenceApplicationService.getSummarycaseNumber(this.licenceModelData);
 	}
 }

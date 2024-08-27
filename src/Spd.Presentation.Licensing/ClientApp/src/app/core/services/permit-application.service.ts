@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import {
 	Alias,
@@ -28,6 +27,7 @@ import { AuthenticationService } from '@app/core/services/authentication.service
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
@@ -105,6 +105,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		optionsPipe: OptionsPipe,
 		private router: Router,
 		private permitService: PermitService,
 		private licenceService: LicenceService,
@@ -112,10 +113,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: ApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private domSanitizer: DomSanitizer,
 		private hotToastService: HotToastService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService, optionsPipe);
 
 		this.permitModelChangedSubscription = this.permitModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())

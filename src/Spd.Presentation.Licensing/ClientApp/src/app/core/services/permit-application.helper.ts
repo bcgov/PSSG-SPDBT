@@ -16,6 +16,7 @@ import {
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { SpdFile, UtilService } from '@app/core/services/util.service';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
@@ -218,7 +219,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		protected configService: ConfigService,
 		protected formatDatePipe: FormatDatePipe,
 		protected utilService: UtilService,
-		protected fileUtilService: FileUtilService
+		protected fileUtilService: FileUtilService,
+		protected optionsPipe: OptionsPipe
 	) {
 		super(formBuilder);
 	}
@@ -696,5 +698,399 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
+	}
+
+	getSummarylicenceHolderName(permitModelData: any): string {
+		return this.utilService.getFullNameWithMiddle(
+			permitModelData.personalInformationData.givenName,
+			permitModelData.personalInformationData.middleName1,
+			permitModelData.personalInformationData.middleName2,
+			permitModelData.personalInformationData.surname
+		);
+	}
+	getSummaryshowPhotographOfYourself(permitModelData: any): boolean {
+		return (
+			this.getSummaryhasGenderChanged(permitModelData) &&
+			this.getSummaryphotoOfYourselfAttachments(permitModelData).length > 0
+		);
+	}
+
+	getSummaryisReprint(permitModelData: any): string {
+		return permitModelData.reprintLicenceData.reprintLicence ?? '';
+	}
+	getSummarycaseNumber(permitModelData: any): string {
+		return permitModelData.caseNumber ?? '';
+	}
+
+	getSummaryhasBcscNameChanged(permitModelData: any): boolean {
+		return permitModelData.personalInformationData.hasBcscNameChanged ?? '';
+	}
+	getSummaryhasGenderChanged(permitModelData: any): boolean {
+		return permitModelData.personalInformationData.hasGenderChanged ?? '';
+	}
+	getSummaryoriginalLicenceNumber(permitModelData: any): string {
+		return permitModelData.originalLicenceData.originalLicenceNumber ?? '';
+	}
+	getSummaryoriginalExpiryDate(permitModelData: any): string {
+		return permitModelData.originalLicenceData.originalExpiryDate ?? '';
+	}
+	getSummaryoriginalLicenceTermCode(permitModelData: any): string {
+		return permitModelData.originalLicenceData.originalLicenceTermCode ?? '';
+	}
+	getSummaryworkerLicenceTypeCode(permitModelData: any): WorkerLicenceTypeCode | null {
+		return permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	}
+	getSummaryapplicationTypeCode(permitModelData: any): ApplicationTypeCode | null {
+		return permitModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
+	getSummarylicenceTermCode(permitModelData: any): string {
+		return permitModelData.licenceTermData.licenceTermCode ?? '';
+	}
+	getSummaryhasExpiredLicence(permitModelData: any): string {
+		return permitModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	getSummaryexpiredLicenceNumber(permitModelData: any): string {
+		return permitModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	getSummaryexpiredLicenceExpiryDate(permitModelData: any): string {
+		return permitModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+	}
+
+	getSummarygivenName(permitModelData: any): string {
+		return permitModelData.personalInformationData.givenName ?? '';
+	}
+	getSummarymiddleName1(permitModelData: any): string {
+		return permitModelData.personalInformationData.middleName1 ?? '';
+	}
+	getSummarymiddleName2(permitModelData: any): string {
+		return permitModelData.personalInformationData.middleName2 ?? '';
+	}
+	getSummarysurname(permitModelData: any): string {
+		return this.getSummarysurname(permitModelData);
+	}
+	getSummarygenderCode(permitModelData: any): string {
+		return permitModelData.personalInformationData.genderCode ?? '';
+	}
+	getSummarydateOfBirth(permitModelData: any): string {
+		return permitModelData.personalInformationData.dateOfBirth ?? '';
+	}
+
+	getSummarypreviousNameFlag(permitModelData: any): string {
+		return permitModelData.aliasesData.previousNameFlag ?? '';
+	}
+	getSummaryaliases(permitModelData: any): Array<any> {
+		return permitModelData.aliasesData.aliases ?? [];
+	}
+
+	getSummarycriminalHistoryLabel(permitModelData: any): string {
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(permitModelData);
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return 'New Criminal Charges or Convictions';
+		} else {
+			return 'Previously been Charged or Convicted of a Crime';
+		}
+	}
+	getSummaryhasCriminalHistory(permitModelData: any): string {
+		return permitModelData.criminalHistoryData.hasCriminalHistory ?? '';
+	}
+	getSummarycriminalChargeDescription(permitModelData: any): string {
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(permitModelData);
+
+		return applicationTypeCode === ApplicationTypeCode.Update &&
+			this.getSummaryhasCriminalHistory(permitModelData) === BooleanTypeCode.Yes
+			? permitModelData.criminalHistoryData.criminalChargeDescription
+			: '';
+	}
+
+	getSummaryisCanadianCitizen(permitModelData: any): string {
+		return permitModelData.citizenshipData.isCanadianCitizen ?? '';
+	}
+	getSummarycanadianCitizenProofTypeCode(permitModelData: any): string {
+		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
+			? permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
+			: '';
+	}
+	getSummaryisCanadianResident(permitModelData: any): string {
+		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
+			? permitModelData.citizenshipData.isCanadianResident ?? ''
+			: '';
+	}
+	getSummaryproofOfResidentStatusCode(permitModelData: any): string {
+		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
+			permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.Yes
+			? permitModelData.citizenshipData.proofOfResidentStatusCode ?? ''
+			: '';
+	}
+	getSummaryproofOfCitizenshipCode(permitModelData: any): string {
+		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
+			permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.No
+			? permitModelData.citizenshipData.proofOfCitizenshipCode ?? ''
+			: '';
+	}
+	getSummarycitizenshipExpiryDate(permitModelData: any): string {
+		return permitModelData.citizenshipData.expiryDate ?? '';
+	}
+	getSummaryattachments(permitModelData: any): File[] {
+		return permitModelData.citizenshipData.attachments ?? [];
+	}
+
+	getSummaryshowAdditionalGovIdData(permitModelData: any): boolean {
+		return this.utilService.getPermitShowAdditionalGovIdData(
+			this.getSummaryisCanadianCitizen(permitModelData) == BooleanTypeCode.Yes,
+			this.getSummaryisCanadianResident(permitModelData) == BooleanTypeCode.Yes,
+			this.getSummarycanadianCitizenProofTypeCode(permitModelData) as LicenceDocumentTypeCode,
+			this.getSummaryproofOfResidentStatusCode(permitModelData) as LicenceDocumentTypeCode,
+			this.getSummaryproofOfCitizenshipCode(permitModelData) as LicenceDocumentTypeCode
+		);
+	}
+
+	getSummarygovernmentIssuedPhotoTypeCode(permitModelData: any): string {
+		return this.getSummaryshowAdditionalGovIdData(permitModelData)
+			? permitModelData.citizenshipData.governmentIssuedPhotoTypeCode
+			: '';
+	}
+	getSummarygovernmentIssuedPhotoExpiryDate(permitModelData: any): string {
+		return this.getSummaryshowAdditionalGovIdData(permitModelData)
+			? permitModelData.citizenshipData.governmentIssuedExpiryDate
+			: '';
+	}
+	getSummarygovernmentIssuedPhotoAttachments(permitModelData: any): File[] {
+		return this.getSummaryshowAdditionalGovIdData(permitModelData)
+			? permitModelData.citizenshipData.governmentIssuedAttachments
+			: [];
+	}
+
+	getSummarybcDriversLicenceNumber(permitModelData: any): string {
+		return permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
+			? permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			: '';
+	}
+
+	getSummaryhairColourCode(permitModelData: any): string {
+		return permitModelData.characteristicsData.hairColourCode ?? '';
+	}
+	getSummaryeyeColourCode(permitModelData: any): string {
+		return permitModelData.characteristicsData.eyeColourCode ?? '';
+	}
+	getSummaryheight(permitModelData: any): string {
+		return permitModelData.characteristicsData.height ?? '';
+	}
+	getSummaryheightInches(permitModelData: any): string {
+		return permitModelData.characteristicsData.heightInches ?? '';
+	}
+	getSummaryheightUnitCode(permitModelData: any): string {
+		return permitModelData.characteristicsData.heightUnitCode ?? '';
+	}
+	getSummaryweight(permitModelData: any): string {
+		return permitModelData.characteristicsData.weight ?? '';
+	}
+	getSummaryweightUnitCode(permitModelData: any): string {
+		return permitModelData.characteristicsData.weightUnitCode ?? '';
+	}
+
+	getSummaryphotoOfYourselfAttachments(permitModelData: any): File[] {
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(permitModelData);
+
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return permitModelData.photographOfYourselfData.attachments ?? [];
+		} else {
+			const updatePhoto = permitModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = permitModelData.photographOfYourselfData.updateAttachments ?? [];
+			return updatePhoto ? updateAttachments : null;
+		}
+	}
+
+	getSummaryemailAddress(permitModelData: any): string {
+		return permitModelData.contactInformationData?.emailAddress ?? '';
+	}
+	getSummaryphoneNumber(permitModelData: any): string {
+		return permitModelData.contactInformationData?.phoneNumber ?? '';
+	}
+
+	getSummarypurposeLabel(permitModelData: any): string {
+		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Reasons for Requiring an Armoured Vehicle';
+		} else {
+			return 'Reasons for Requiring Body Armour';
+		}
+	}
+	getSummarypurposeReasons(permitModelData: any): Array<string> {
+		const reasonList = [];
+
+		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			const armouredVehicleRequirement = permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
+			if (armouredVehicleRequirement.isPersonalProtection) {
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.PersonalProtection,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
+			}
+			if (armouredVehicleRequirement.isProtectionOfAnotherPerson) {
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
+			}
+			if (armouredVehicleRequirement.isProtectionOfPersonalProperty) {
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
+			}
+			if (armouredVehicleRequirement.isProtectionOfOthersProperty) {
+				reasonList.push(
+					this.optionsPipe.transform(
+						ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty,
+						'ArmouredVehiclePermitReasonTypes'
+					)
+				);
+			}
+			if (armouredVehicleRequirement.isMyEmployment) {
+				reasonList.push(
+					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.MyEmployment, 'ArmouredVehiclePermitReasonTypes')
+				);
+			}
+			if (armouredVehicleRequirement.isOther) {
+				reasonList.push(
+					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.Other, 'ArmouredVehiclePermitReasonTypes')
+				);
+			}
+		} else {
+			const bodyArmourRequirementFormGroup = permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
+			if (bodyArmourRequirementFormGroup.isOutdoorRecreation) {
+				reasonList.push(
+					this.optionsPipe.transform(BodyArmourPermitReasonCode.OutdoorRecreation, 'BodyArmourPermitReasonTypes')
+				);
+			}
+			if (bodyArmourRequirementFormGroup.isPersonalProtection) {
+				reasonList.push(
+					this.optionsPipe.transform(BodyArmourPermitReasonCode.PersonalProtection, 'BodyArmourPermitReasonTypes')
+				);
+			}
+			if (bodyArmourRequirementFormGroup.isMyEmployment) {
+				reasonList.push(
+					this.optionsPipe.transform(BodyArmourPermitReasonCode.MyEmployment, 'BodyArmourPermitReasonTypes')
+				);
+			}
+			if (bodyArmourRequirementFormGroup.isTravelForConflict) {
+				reasonList.push(
+					this.optionsPipe.transform(
+						BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict,
+						'BodyArmourPermitReasonTypes'
+					)
+				);
+			}
+			if (bodyArmourRequirementFormGroup.isOther) {
+				reasonList.push(this.optionsPipe.transform(BodyArmourPermitReasonCode.Other, 'BodyArmourPermitReasonTypes'));
+			}
+		}
+		return reasonList;
+	}
+	getSummaryisOtherReason(permitModelData: any): boolean {
+		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			const armouredVehicleRequirement = permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
+			return armouredVehicleRequirement.isOther;
+		} else {
+			const bodyArmourRequirementFormGroup = permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
+			return bodyArmourRequirementFormGroup.isOther;
+		}
+	}
+	getSummaryotherReason(permitModelData: any): boolean {
+		return permitModelData.permitRequirementData.otherReason;
+	}
+
+	getSummaryrationaleLabel(permitModelData: any): string {
+		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+			return 'Rationale for Requiring an Armoured Vehicle';
+		} else {
+			return 'Rationale for Requiring Body Armour';
+		}
+	}
+	getSummaryrationale(permitModelData: any): string {
+		return permitModelData.permitRationaleData?.rationale ?? '';
+	}
+	getSummaryisRationaleAttachments(permitModelData: any): boolean {
+		return permitModelData.permitRationaleData?.attachments?.length > 0;
+	}
+	getSummaryrationaleAttachments(permitModelData: any): File[] {
+		return permitModelData.permitRationaleData?.attachments ?? [];
+	}
+
+	getSummaryemployerName(permitModelData: any): string {
+		return permitModelData.employerData?.employerName ?? '';
+	}
+	getSummarysupervisorName(permitModelData: any): string {
+		return permitModelData.employerData?.supervisorName ?? '';
+	}
+	getSummarysupervisorEmailAddress(permitModelData: any): string {
+		return permitModelData.employerData?.supervisorEmailAddress ?? '';
+	}
+	getSummarysupervisorPhoneNumber(permitModelData: any): string {
+		return permitModelData.employerData?.supervisorPhoneNumber ?? '';
+	}
+	getSummarybusinessAddressLine1(permitModelData: any): string {
+		return permitModelData.employerData?.addressLine1 ?? '';
+	}
+	getSummarybusinessAddressLine2(permitModelData: any): string {
+		return permitModelData.employerData?.addressLine2 ?? '';
+	}
+	getSummarybusinessCity(permitModelData: any): string {
+		return permitModelData.employerData?.city ?? '';
+	}
+	getSummarybusinessPostalCode(permitModelData: any): string {
+		return permitModelData.employerData?.postalCode ?? '';
+	}
+	getSummarybusinessProvince(permitModelData: any): string {
+		return permitModelData.employerData?.province ?? '';
+	}
+	getSummarybusinessCountry(permitModelData: any): string {
+		return permitModelData.employerData?.country ?? '';
+	}
+
+	getSummaryresidentialAddressLine1(permitModelData: any): string {
+		return permitModelData.residentialAddressData?.addressLine1 ?? '';
+	}
+	getSummaryresidentialAddressLine2(permitModelData: any): string {
+		return permitModelData.residentialAddressData?.addressLine2 ?? '';
+	}
+	getSummaryresidentialCity(permitModelData: any): string {
+		return permitModelData.residentialAddressData?.city ?? '';
+	}
+	getSummaryresidentialPostalCode(permitModelData: any): string {
+		return permitModelData.residentialAddressData?.postalCode ?? '';
+	}
+	getSummaryresidentialProvince(permitModelData: any): string {
+		return permitModelData.residentialAddressData?.province ?? '';
+	}
+	getSummaryresidentialCountry(permitModelData: any): string {
+		return permitModelData.residentialAddressData?.country ?? '';
+	}
+	getSummaryisAddressTheSame(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.isAddressTheSame ?? '';
+	}
+
+	getSummarymailingAddressLine1(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.addressLine1 ?? '';
+	}
+	getSummarymailingAddressLine2(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.addressLine2 ?? '';
+	}
+	getSummarymailingCity(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.city ?? '';
+	}
+	getSummarymailingPostalCode(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.postalCode ?? '';
+	}
+	getSummarymailingProvince(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.province ?? '';
+	}
+	getSummarymailingCountry(permitModelData: any): string {
+		return permitModelData.mailingAddressData?.country ?? '';
 	}
 }

@@ -8,9 +8,9 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-update-authenticated',
@@ -184,36 +184,27 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		);
 	}
 	get showPhotographOfYourself(): boolean {
-		return this.hasGenderChanged && this.photoOfYourselfAttachments?.length > 0;
+		return this.licenceApplicationService.getSummaryshowPhotographOfYourself(this.licenceModelData);
 	}
 
 	get hasBcscNameChanged(): boolean {
-		return this.licenceModelData.personalInformationData.hasBcscNameChanged ?? '';
+		return this.licenceApplicationService.getSummaryhasBcscNameChanged(this.licenceModelData);
 	}
 	get hasGenderChanged(): boolean {
-		return this.licenceModelData.personalInformationData.hasGenderChanged ?? '';
+		return this.licenceApplicationService.getSummaryhasGenderChanged(this.licenceModelData);
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
+		return this.licenceApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
+		return this.licenceApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
+		return this.licenceApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.licenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
-	}
-	get applicationTypeCode(): ApplicationTypeCode | null {
-		return this.licenceModelData.applicationTypeData?.applicationTypeCode ?? null;
-	}
-	get licenceTermCode(): string {
-		return this.licenceModelData.licenceTermData.licenceTermCode ?? '';
-	}
 	get isReprint(): string {
-		return this.licenceModelData.reprintLicenceData.reprintLicence ?? '';
+		return this.licenceApplicationService.getSummaryisReprint(this.licenceModelData);
 	}
 	get licenceFee(): number | null {
 		if (!this.licenceTermCode || !this.isReprint) {
@@ -233,91 +224,55 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return fee ? fee.amount ?? null : null;
 	}
 
+	get isSoleProprietor(): string {
+		return this.licenceApplicationService.getSummaryisSoleProprietor(this.licenceModelData);
+	}
+
+	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
+		return this.licenceApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
+	}
+
+	get applicationTypeCode(): ApplicationTypeCode | null {
+		return this.licenceApplicationService.getSummaryapplicationTypeCode(this.licenceModelData);
+	}
+
+	get licenceTermCode(): string {
+		return this.licenceApplicationService.getSummarylicenceTermCode(this.licenceModelData);
+	}
+
+	get carryAndUseRestraints(): string {
+		return this.licenceApplicationService.getSummarycarryAndUseRestraints(this.licenceModelData);
+	}
+	get carryAndUseRestraintsDocument(): string {
+		return this.licenceApplicationService.getSummarycarryAndUseRestraintsDocument(this.licenceModelData);
+	}
+	get carryAndUseRestraintsAttachments(): File[] {
+		return this.licenceApplicationService.getSummarycarryAndUseRestraintsAttachments(this.licenceModelData);
+	}
+	get showDogsAndRestraints(): boolean {
+		return this.licenceApplicationService.getSummaryshowDogsAndRestraints(this.licenceModelData);
+	}
+	get useDogs(): string {
+		return this.licenceApplicationService.getSummaryuseDogs(this.licenceModelData);
+	}
+	get isDogsPurposeProtection(): string {
+		return this.licenceApplicationService.getSummaryisDogsPurposeProtection(this.licenceModelData);
+	}
+	get isDogsPurposeDetectionDrugs(): string {
+		return this.licenceApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.licenceModelData);
+	}
+	get isDogsPurposeDetectionExplosives(): string {
+		return this.licenceApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.licenceModelData);
+	}
+	get dogsPurposeAttachments(): File[] {
+		return this.licenceApplicationService.getSummarydogsPurposeAttachments(this.licenceModelData);
+	}
+
 	get photoOfYourselfAttachments(): File[] {
-		return this.licenceModelData.photographOfYourselfData.updateAttachments ?? [];
+		return this.licenceApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {
-		const list: Array<WorkerCategoryTypeCode> = [];
-		if (this.licenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
-		}
-		if (this.licenceModelData.categoryBodyArmourSalesFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.BodyArmourSales);
-		}
-		if (this.licenceModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-		}
-		if (this.licenceModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-		}
-		if (this.licenceModelData.categoryFireInvestigatorFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.FireInvestigator);
-		}
-		if (this.licenceModelData.categoryLocksmithFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.Locksmith);
-		}
-		if (this.licenceModelData.categoryLocksmithSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
-		}
-		if (this.licenceModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
-		}
-		if (this.licenceModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
-		}
-		if (this.licenceModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
-		}
-		if (this.licenceModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
-		}
-		if (this.licenceModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-		}
-		if (this.licenceModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
-		}
-		if (this.licenceModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
-		}
-		if (this.licenceModelData.categorySecurityConsultantFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityConsultant);
-		}
-		if (this.licenceModelData.categorySecurityGuardFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityGuard);
-		}
-		if (this.licenceModelData.categorySecurityGuardSupFormGroup.isInclude) {
-			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
-		}
-
-		return list;
-	}
-	get showDogsAndRestraints(): boolean {
-		return this.licenceModelData.categorySecurityGuardFormGroup.isInclude;
-	}
-	get carryAndUseRestraints(): string {
-		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
-	}
-	get carryAndUseRestraintsDocument(): string {
-		return this.licenceModelData.restraintsAuthorizationData.carryAndUseRestraintsDocument ?? '';
-	}
-	get carryAndUseRestraintsAttachments(): File[] {
-		return this.licenceModelData.restraintsAuthorizationData.attachments ?? [];
-	}
-	get useDogs(): string {
-		return this.licenceModelData.dogsAuthorizationData.useDogs ?? '';
-	}
-	get isDogsPurposeProtection(): string {
-		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
-	}
-	get isDogsPurposeDetectionDrugs(): string {
-		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
-	}
-	get isDogsPurposeDetectionExplosives(): string {
-		return this.licenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
-	}
-	get dogsPurposeAttachments(): File[] {
-		return this.licenceModelData.dogsAuthorizationData.attachments ?? [];
+		return this.licenceApplicationService.getSummarycategoryList(this.licenceModelData);
 	}
 }
