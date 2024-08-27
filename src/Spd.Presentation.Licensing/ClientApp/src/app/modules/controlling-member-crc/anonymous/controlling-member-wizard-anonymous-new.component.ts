@@ -27,16 +27,19 @@ import { ControllingMemberCrcRoutes } from '../controlling-member-crc-routing.mo
 			(selectionChange)="onStepSelectionChange($event)"
 			#stepper
 		>
+			<!-- 
+					[showSaveAndExit]="false"
+			-->
 			<mat-step [completed]="step1Complete">
 				<ng-template matStepLabel>Personal Information</ng-template>
 				<app-steps-controlling-member-personal-information
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
 					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
+					(nextReview)="onGoToReview()"
 				></app-steps-controlling-member-personal-information>
 			</mat-step>
 
@@ -44,13 +47,13 @@ import { ControllingMemberCrcRoutes } from '../controlling-member-crc-routing.mo
 				<ng-template matStepLabel>Citizenship & Residency</ng-template>
 				<app-steps-controlling-member-citizenship-residency
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
 					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextReview)="onGoToReview()"
 				></app-steps-controlling-member-citizenship-residency>
 			</mat-step>
 
@@ -58,27 +61,25 @@ import { ControllingMemberCrcRoutes } from '../controlling-member-crc-routing.mo
 				<ng-template matStepLabel>Background</ng-template>
 				<app-steps-controlling-member-background
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
 					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
 					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(nextReview)="onGoToReview()"
 				></app-steps-controlling-member-background>
 			</mat-step>
 
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review</ng-template>
 				<app-steps-controlling-member-review
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="false"
-					[applicationTypeCode]="applicationTypeCode"
 					(scrollIntoView)="onScrollIntoView()"
 					(cancelAndExit)="onCancelAndExit()"
 					(childNextStep)="onChildNextStep()"
 					(nextStepperStep)="onSubmitNow()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
+					(goToStep)="onGoToStep($event)"
 				></app-steps-controlling-member-review>
 			</mat-step>
 
@@ -133,8 +134,9 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 
 		this.controllingMembersModelValueChangedSubscription =
 			this.controllingMembersService.controllingMembersModelValueChanges$.subscribe((_resp: boolean) => {
-				// 		this.isFormValid = _resp;
-				// 		this.updateCompleteStatus();
+				this.isFormValid = _resp;
+
+				this.updateCompleteStatus();
 			});
 	}
 
@@ -197,6 +199,13 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 			});
 	}
 
+	onGoToStep(step: number) {
+		this.stepsPersonalInformationComponent?.onGoToFirstStep();
+		this.stepsCitizenshipResidencyComponent?.onGoToFirstStep();
+		this.stepBackgroundComponent?.onGoToFirstStep();
+		this.stepper.selectedIndex = step;
+	}
+
 	override onStepSelectionChange(event: StepperSelectionEvent) {
 		switch (event.selectedIndex) {
 			case this.STEP_PERSONAL_INFORMATION:
@@ -235,45 +244,18 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 		}
 	}
 
-	// onGoToStep(step: number) {
-	// 	this.stepsBusinessInformationComponent?.onGoToFirstStep();
-	// 	this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-	// 	this.stepsContactInformationComponent?.onGoToFirstStep();
-	// 	this.stepsControllingMembersComponent?.onGoToFirstStep();
-	// 	this.stepsReviewAndConfirm?.onGoToFirstStep();
-	// 	this.stepper.selectedIndex = step;
-	// }
+	onGoToReview() {
+		setTimeout(() => {
+			// hack... does not navigate without the timeout
+			this.stepper.selectedIndex = this.STEP_REVIEW;
+		}, 250);
+	}
 
-	// onChildNextStep() {
-	// 	this.saveStep();
-	// }
+	private updateCompleteStatus(): void {
+		this.step1Complete = this.controllingMembersService.isStepPersonalInformationComplete();
+		this.step2Complete = this.controllingMembersService.isStepCitizenshipAndResidencyComplete();
+		this.step3Complete = this.controllingMembersService.isStepBackgroundComplete();
 
-	// private goToChildNextStep() {
-	// 	switch (this.stepper.selectedIndex) {
-	// 		case this.STEP_BUSINESS_INFORMATION:
-	// 			this.stepsBusinessInformationComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_LICENCE_SELECTION:
-	// 			this.stepsLicenceSelectionComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_CONTACT_INFORMATION:
-	// 			this.stepsContactInformationComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_CONTROLLING_MEMBERS:
-	// 			this.stepsControllingMembersComponent?.onGoToNextStep();
-	// 			break;
-	// 		case this.STEP_REVIEW_AND_CONFIRM:
-	// 			this.stepsReviewAndConfirm?.onGoToNextStep();
-	// 			break;
-	// 	}
-	// }
-
-	// private updateCompleteStatus(): void {
-	// 	this.step1Complete = this.controllingMembersService.isStepBackgroundInformationComplete();
-	// 	this.step2Complete = this.controllingMembersService.isStepLicenceSelectionComplete();
-	// 	this.step3Complete = this.controllingMembersService.isStepContactInformationComplete();
-	// 	this.step4Complete = this.controllingMembersService.isStepControllingMembersAndEmployeesComplete();
-
-	// 	console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete, this.step4Complete);
-	// }
+		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
+	}
 }

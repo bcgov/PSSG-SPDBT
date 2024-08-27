@@ -1,21 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.OData;
 using Microsoft.OData.Client;
 using Microsoft.OData.Extensions.Client;
 
 namespace Spd.Utilities.Dynamics
 {
-    internal class ODataClientHandler : IODataClientHandler
+    internal class ODataClientHandler(ISecurityTokenProvider tokenProvider) : IODataClientHandler
     {
-        private readonly ISecurityTokenProvider tokenProvider;
-        private readonly ILogger<IODataClientHandler> logger;
         private string? authToken;
-
-        public ODataClientHandler(ISecurityTokenProvider tokenProvider, ILogger<IODataClientHandler> logger)
-        {
-            this.tokenProvider = tokenProvider;
-            this.logger = logger;
-        }
 
         public void OnClientCreated(ClientCreatedArgs args)
         {
@@ -26,7 +17,7 @@ namespace Spd.Utilities.Dynamics
             client.Configurations.RequestPipeline.OnEntryStarting((arg) =>
             {
                 // do not send reference properties and null values to Dynamics
-                arg.Entry.Properties = arg.Entry.Properties.Where((prop) => !prop.Name.StartsWith('_') && prop.Value != null);
+                arg.Entry.Properties = arg.Entry.Properties.Cast<ODataProperty>().Where((prop) => !prop.Name.StartsWith('_') && prop.Value != null);
             });
             client.BuildingRequest += Client_BuildingRequest;
             client.SendingRequest2 += Client_SendingRequest2;
@@ -46,12 +37,12 @@ namespace Spd.Utilities.Dynamics
                 {
                     int page = 1;
                     List<string> queries = query.Split('&').ToList();
-                    string? top = queries.FirstOrDefault(q => q.StartsWith("$top="));
+                    string? top = queries.Find(q => q.StartsWith("$top="));
                     if (!string.IsNullOrWhiteSpace(top))
                     {
                         var strs = top.Split("=");
                         var pageSize = Int32.Parse(strs[1]);
-                        string? skip = queries.FirstOrDefault(q => q.StartsWith("$skip="));
+                        string? skip = queries.Find(q => q.StartsWith("$skip="));
                         if (!string.IsNullOrWhiteSpace(skip))
                         {
                             var skipValue = skip.Split("=");
@@ -66,7 +57,6 @@ namespace Spd.Utilities.Dynamics
                     }
                 }
             }
-            logger.LogDebug($"send {e.RequestUri.ToString()} to dynamics");
         }
     }
 }

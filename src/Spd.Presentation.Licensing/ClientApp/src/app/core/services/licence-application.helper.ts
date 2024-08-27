@@ -8,6 +8,7 @@ import {
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	WorkerCategoryTypeCode,
+	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
@@ -607,7 +608,10 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		}
 
 		if (includeProfileDocs) {
-			if (policeBackgroundData.attachments) {
+			const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+			const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+
+			if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
 				const docs: Array<Blob> = [];
 				policeBackgroundData.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
@@ -618,7 +622,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 				});
 			}
 
-			if (mentalHealthConditionsData.attachments) {
+			if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
 				const docs: Array<Blob> = [];
 				mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
@@ -678,7 +682,10 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
 		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
 
-		if (policeBackgroundData.isPoliceOrPeaceOfficer === BooleanTypeCode.Yes && policeBackgroundData.attachments) {
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+
+		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
 			const docs: Array<Blob> = [];
 			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
@@ -689,7 +696,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			});
 		}
 
-		if (mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes && mentalHealthConditionsData.attachments) {
+		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
 			const docs: Array<Blob> = [];
 			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
@@ -1246,5 +1253,432 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		});
 
 		return documents;
+	}
+
+	getSummaryshowPhotographOfYourself(workerLicenceModelData: any): boolean {
+		return (
+			this.getSummaryhasGenderChanged(workerLicenceModelData) &&
+			this.getSummaryphotoOfYourselfAttachments(workerLicenceModelData).length > 0
+		);
+	}
+
+	getSummaryhasBcscNameChanged(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.personalInformationData.hasBcscNameChanged ?? '';
+	}
+	getSummaryhasGenderChanged(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.personalInformationData.hasGenderChanged ?? '';
+	}
+	getSummaryoriginalLicenceNumber(workerLicenceModelData: any): string {
+		return workerLicenceModelData.originalLicenceData.originalLicenceNumber ?? '';
+	}
+	getSummaryoriginalExpiryDate(workerLicenceModelData: any): string {
+		return workerLicenceModelData.originalLicenceData.originalExpiryDate ?? '';
+	}
+	getSummaryoriginalLicenceTermCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
+	}
+	getSummarycardHolderName(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.cardHolderName ?? '';
+	}
+	getSummarycaseNumber(workerLicenceModelData: any): string {
+		return workerLicenceModelData.caseNumber ?? '';
+	}
+
+	getSummaryisReprint(workerLicenceModelData: any): string {
+		return workerLicenceModelData.reprintLicenceData.reprintLicence ?? '';
+	}
+
+	getSummaryworkerLicenceTypeCode(workerLicenceModelData: any): WorkerLicenceTypeCode | null {
+		return workerLicenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	}
+
+	getSummaryapplicationTypeCode(workerLicenceModelData: any): ApplicationTypeCode | null {
+		return workerLicenceModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
+
+	getSummaryisSoleProprietor(workerLicenceModelData: any): string {
+		return workerLicenceModelData.soleProprietorData?.isSoleProprietor ?? '';
+	}
+
+	getSummarysoleProprietorBizTypeCode(workerLicenceModelData: any): string {
+		const isSoleProprietor = workerLicenceModelData.soleProprietorData.isSoleProprietor === BooleanTypeCode.Yes;
+		return isSoleProprietor ? workerLicenceModelData.soleProprietorData?.bizTypeCode : '';
+	}
+
+	getSummarycategoryArmouredCarGuardAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryArmouredCarGuardFormGroup.attachments ?? [];
+	}
+	getSummarycategoryFireInvestigatorCertificateAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments ?? [];
+	}
+	getSummarycategoryFireInvestigatorLetterAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments ?? [];
+	}
+	getSummarycategoryLocksmithAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryLocksmithFormGroup.attachments ?? [];
+	}
+	getSummarycategorySecurityGuardAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categorySecurityGuardFormGroup.attachments ?? [];
+	}
+	getSummarycategorySecurityConsultantAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categorySecurityConsultantFormGroup.attachments ?? [];
+	}
+	getSummarycategorySecurityConsultantResumeAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categorySecurityConsultantFormGroup.resumeAttachments ?? [];
+	}
+	getSummarycategorySecurityAlarmInstallerAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categorySecurityAlarmInstallerFormGroup.attachments ?? [];
+	}
+	getSummarycategoryPrivateInvestigatorAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryPrivateInvestigatorFormGroup.attachments ?? [];
+	}
+	getSummarycategoryPrivateInvestigatorTrainingAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryPrivateInvestigatorFormGroup.trainingAttachments ?? [];
+	}
+	getSummarycategoryPrivateInvestigatorFireCertificateAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryPrivateInvestigatorFormGroup.fireCourseCertificateAttachments;
+	}
+	getSummarycategoryPrivateInvestigatorFireLetterAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryPrivateInvestigatorFormGroup.fireVerificationLetterAttachments;
+	}
+	getSummarycategoryPrivateInvestigatorUnderSupervisionAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.categoryPrivateInvestigatorSupFormGroup.attachments ?? [];
+	}
+
+	getSummarylicenceTermCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.licenceTermData.licenceTermCode ?? '';
+	}
+
+	getSummaryhasExpiredLicence(workerLicenceModelData: any): string {
+		return workerLicenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	getSummaryexpiredLicenceNumber(workerLicenceModelData: any): string {
+		return workerLicenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	getSummaryexpiredLicenceExpiryDate(workerLicenceModelData: any): string {
+		return workerLicenceModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+	}
+
+	getSummarycarryAndUseRestraints(workerLicenceModelData: any): string {
+		return workerLicenceModelData.restraintsAuthorizationData.carryAndUseRestraints ?? '';
+	}
+	getSummarycarryAndUseRestraintsDocument(workerLicenceModelData: any): string {
+		return workerLicenceModelData.restraintsAuthorizationData.carryAndUseRestraintsDocument ?? '';
+	}
+	getSummarycarryAndUseRestraintsAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.restraintsAuthorizationData.attachments ?? [];
+	}
+	getSummaryshowDogsAndRestraints(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categorySecurityGuardFormGroup.isInclude;
+	}
+	getSummaryuseDogs(workerLicenceModelData: any): string {
+		return workerLicenceModelData.dogsAuthorizationData.useDogs ?? '';
+	}
+	getSummaryisDogsPurposeProtection(workerLicenceModelData: any): string {
+		return workerLicenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+	}
+	getSummaryisDogsPurposeDetectionDrugs(workerLicenceModelData: any): string {
+		return workerLicenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
+	}
+	getSummaryisDogsPurposeDetectionExplosives(workerLicenceModelData: any): string {
+		return workerLicenceModelData.dogsAuthorizationData.dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
+	}
+	getSummarydogsPurposeAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.dogsAuthorizationData.attachments ?? [];
+	}
+
+	getSummaryisPoliceOrPeaceOfficer(workerLicenceModelData: any): string {
+		return workerLicenceModelData.policeBackgroundData.isPoliceOrPeaceOfficer ?? '';
+	}
+	getSummarypoliceOfficerRoleCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.policeBackgroundData.policeOfficerRoleCode ?? '';
+	}
+	getSummaryotherOfficerRole(workerLicenceModelData: any): string {
+		return workerLicenceModelData.policeBackgroundData.otherOfficerRole ?? '';
+	}
+	getSummaryletterOfNoConflictAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.policeBackgroundData.attachments ?? [];
+	}
+
+	getSummarygivenName(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.givenName ?? '';
+	}
+	getSummarymiddleName1(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.middleName1 ?? '';
+	}
+	getSummarymiddleName2(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.middleName2 ?? '';
+	}
+	getSummarysurname(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.surname ?? '';
+	}
+	getSummarygenderCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.genderCode ?? '';
+	}
+	getSummarydateOfBirth(workerLicenceModelData: any): string {
+		return workerLicenceModelData.personalInformationData.dateOfBirth ?? '';
+	}
+
+	getSummarypreviousNameFlag(workerLicenceModelData: any): string {
+		return workerLicenceModelData.aliasesData.previousNameFlag ?? '';
+	}
+	getSummaryaliases(workerLicenceModelData: any): Array<any> {
+		return workerLicenceModelData.aliasesData.aliases ?? [];
+	}
+
+	getSummaryisTreatedForMHC(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mentalHealthConditionsData.isTreatedForMHC ?? '';
+	}
+	getSummarymentalHealthConditionAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.mentalHealthConditionsData.attachments ?? [];
+	}
+
+	getSummarycriminalHistoryLabel(workerLicenceModelData: any): string {
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(workerLicenceModelData);
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			return 'New Criminal Charges or Convictions';
+		} else {
+			return 'Previously been Charged or Convicted of a Crime';
+		}
+	}
+	getSummaryhasCriminalHistory(workerLicenceModelData: any): string {
+		return workerLicenceModelData.criminalHistoryData.hasCriminalHistory ?? '';
+	}
+	getSummarycriminalChargeDescription(workerLicenceModelData: any): string {
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(workerLicenceModelData);
+		const hasCriminalHistory = this.getSummaryhasCriminalHistory(workerLicenceModelData);
+
+		return applicationTypeCode === ApplicationTypeCode.Update && hasCriminalHistory === BooleanTypeCode.Yes
+			? workerLicenceModelData.criminalHistoryData.criminalChargeDescription
+			: '';
+	}
+
+	getSummaryproofOfFingerprintAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.fingerprintProofData.attachments ?? [];
+	}
+
+	getSummaryisCanadianCitizen(workerLicenceModelData: any): string {
+		return workerLicenceModelData.citizenshipData.isCanadianCitizen ?? '';
+	}
+	getSummarycanadianCitizenProofTypeCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
+			? workerLicenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
+			: '';
+	}
+	getSummarynotCanadianCitizenProofTypeCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
+			? workerLicenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? ''
+			: '';
+	}
+	getSummaryproofOfAbility(workerLicenceModelData: any): string {
+		return workerLicenceModelData.citizenshipData.proofOfAbility ?? '';
+	}
+	getSummarycitizenshipExpiryDate(workerLicenceModelData: any): string {
+		return workerLicenceModelData.citizenshipData.expiryDate ?? '';
+	}
+	getSummarycitizenshipAttachments(workerLicenceModelData: any): File[] {
+		return workerLicenceModelData.citizenshipData.attachments ?? [];
+	}
+	getSummarygovernmentIssuedPhotoTypeCode(workerLicenceModelData: any): string {
+		const showAdditionalGovIdData = this.getSummaryshowAdditionalGovIdData(workerLicenceModelData);
+		return showAdditionalGovIdData ? workerLicenceModelData.citizenshipData.governmentIssuedPhotoTypeCode : '';
+	}
+	getSummarygovernmentIssuedPhotoExpiryDate(workerLicenceModelData: any): string {
+		const showAdditionalGovIdData = this.getSummaryshowAdditionalGovIdData(workerLicenceModelData);
+		return showAdditionalGovIdData ? workerLicenceModelData.citizenshipData.governmentIssuedExpiryDate : '';
+	}
+	getSummarygovernmentIssuedPhotoAttachments(workerLicenceModelData: any): File[] {
+		const showAdditionalGovIdData = this.getSummaryshowAdditionalGovIdData(workerLicenceModelData);
+		return showAdditionalGovIdData ? workerLicenceModelData.citizenshipData.governmentIssuedAttachments : [];
+	}
+
+	getSummaryshowAdditionalGovIdData(workerLicenceModelData: any): boolean {
+		return this.utilService.getSwlShowAdditionalGovIdData(
+			workerLicenceModelData.citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			workerLicenceModelData.citizenshipData.canadianCitizenProofTypeCode,
+			workerLicenceModelData.citizenshipData.notCanadianCitizenProofTypeCode
+		);
+	}
+
+	getSummarybcDriversLicenceNumber(workerLicenceModelData: any): string {
+		return workerLicenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
+			? workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			: '';
+	}
+
+	getSummaryhairColourCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.hairColourCode ?? '';
+	}
+	getSummaryeyeColourCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.eyeColourCode ?? '';
+	}
+	getSummaryheight(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.height ?? '';
+	}
+	getSummaryheightInches(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.heightInches ?? '';
+	}
+	getSummaryheightUnitCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.heightUnitCode ?? '';
+	}
+	getSummaryweight(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.weight ?? '';
+	}
+	getSummaryweightUnitCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.characteristicsData.weightUnitCode ?? '';
+	}
+
+	getSummaryphotoOfYourselfAttachments(workerLicenceModelData: any): File[] {
+		const applicationTypeCode = this.getSummaryapplicationTypeCode(workerLicenceModelData);
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return workerLicenceModelData.photographOfYourselfData.attachments ?? [];
+		} else {
+			const updatePhoto = workerLicenceModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
+			const updateAttachments = workerLicenceModelData.photographOfYourselfData.updateAttachments ?? [];
+			return updatePhoto ? updateAttachments : null;
+		}
+	}
+
+	getSummaryemailAddress(workerLicenceModelData: any): string {
+		return workerLicenceModelData.contactInformationData?.emailAddress ?? '';
+	}
+	getSummaryphoneNumber(workerLicenceModelData: any): string {
+		return workerLicenceModelData.contactInformationData?.phoneNumber ?? '';
+	}
+
+	getSummaryresidentialAddressLine1(workerLicenceModelData: any): string {
+		return workerLicenceModelData.residentialAddressData?.addressLine1 ?? '';
+	}
+	getSummaryresidentialAddressLine2(workerLicenceModelData: any): string {
+		return workerLicenceModelData.residentialAddressData?.addressLine2 ?? '';
+	}
+	getSummaryresidentialCity(workerLicenceModelData: any): string {
+		return workerLicenceModelData.residentialAddressData?.city ?? '';
+	}
+	getSummaryresidentialPostalCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.residentialAddressData?.postalCode ?? '';
+	}
+	getSummaryresidentialProvince(workerLicenceModelData: any): string {
+		return workerLicenceModelData.residentialAddressData?.province ?? '';
+	}
+	getSummaryresidentialCountry(workerLicenceModelData: any): string {
+		return workerLicenceModelData.residentialAddressData?.country ?? '';
+	}
+	getSummaryisAddressTheSame(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.isAddressTheSame ?? '';
+	}
+
+	getSummarymailingAddressLine1(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.addressLine1 ?? '';
+	}
+	getSummarymailingAddressLine2(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.addressLine2 ?? '';
+	}
+	getSummarymailingCity(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.city ?? '';
+	}
+	getSummarymailingPostalCode(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.postalCode ?? '';
+	}
+	getSummarymailingProvince(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.province ?? '';
+	}
+	getSummarymailingCountry(workerLicenceModelData: any): string {
+		return workerLicenceModelData.mailingAddressData?.country ?? '';
+	}
+
+	getSummarycategoryList(workerLicenceModelData: any): Array<WorkerCategoryTypeCode> {
+		const list: Array<WorkerCategoryTypeCode> = [];
+		if (workerLicenceModelData.categoryArmouredCarGuardFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.ArmouredCarGuard);
+		}
+		if (workerLicenceModelData.categoryBodyArmourSalesFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.BodyArmourSales);
+		}
+		if (workerLicenceModelData.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
+		}
+		if (workerLicenceModelData.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
+		}
+		if (workerLicenceModelData.categoryFireInvestigatorFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.FireInvestigator);
+		}
+		if (workerLicenceModelData.categoryLocksmithFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.Locksmith);
+		}
+		if (workerLicenceModelData.categoryLocksmithSupFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
+		}
+		if (workerLicenceModelData.categoryPrivateInvestigatorFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.PrivateInvestigator);
+		}
+		if (workerLicenceModelData.categoryPrivateInvestigatorSupFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
+		}
+		if (workerLicenceModelData.categorySecurityAlarmInstallerFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+		}
+		if (workerLicenceModelData.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
+		}
+		if (workerLicenceModelData.categorySecurityAlarmMonitorFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
+		}
+		if (workerLicenceModelData.categorySecurityAlarmResponseFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
+		}
+		if (workerLicenceModelData.categorySecurityAlarmSalesFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityAlarmSales);
+		}
+		if (workerLicenceModelData.categorySecurityConsultantFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityConsultant);
+		}
+		if (workerLicenceModelData.categorySecurityGuardFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityGuard);
+		}
+		if (workerLicenceModelData.categorySecurityGuardSupFormGroup.isInclude) {
+			list.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
+		}
+
+		return list;
+	}
+
+	getSummaryisAnyDocuments(workerLicenceModelData: any): boolean {
+		return (
+			this.getSummaryshowArmouredCarGuard(workerLicenceModelData) ||
+			this.getSummaryshowFireInvestigator(workerLicenceModelData) ||
+			this.getSummaryshowLocksmith(workerLicenceModelData) ||
+			this.getSummaryshowPrivateInvestigator(workerLicenceModelData) ||
+			this.getSummaryshowPrivateInvestigatorUnderSupervision(workerLicenceModelData) ||
+			this.getSummaryshowSecurityAlarmInstaller(workerLicenceModelData) ||
+			this.getSummaryshowSecurityConsultant(workerLicenceModelData) ||
+			this.getSummaryshowSecurityGuard(workerLicenceModelData)
+		);
+	}
+
+	getSummaryshowArmouredCarGuard(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categoryArmouredCarGuardFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowFireInvestigator(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categoryFireInvestigatorFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowLocksmith(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categoryLocksmithFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowPrivateInvestigator(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categoryPrivateInvestigatorFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowPrivateInvestigatorUnderSupervision(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categoryPrivateInvestigatorSupFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowSecurityAlarmInstaller(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categorySecurityAlarmInstallerFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowSecurityConsultant(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categorySecurityConsultantFormGroup?.isInclude ?? false;
+	}
+	getSummaryshowSecurityGuard(workerLicenceModelData: any): boolean {
+		return workerLicenceModelData.categorySecurityGuardFormGroup?.isInclude ?? false;
 	}
 }

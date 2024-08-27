@@ -37,7 +37,6 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	map,
 	of,
 	switchMap,
 	take,
@@ -879,16 +878,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
+					switchMap((resps: any[]) => {
+						const latestLicence = resps[0];
+						const photoOfYourself = resps[1];
+
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(_resp, true);
+							return this.applyRenewalDataUpdatesToModel(latestLicence, true, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(_resp);
+						return this.applyUpdateDataUpdatesToModel(latestLicence, photoOfYourself);
 					})
 				);
 			}
@@ -1011,16 +1009,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			case ApplicationTypeCode.Update: {
 				return forkJoin([this.loadExistingLicenceAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
 					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
+					switchMap((resps: any[]) => {
+						const latestLicence = resps[0];
+						const photoOfYourself = resps[1];
+
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(_resp, false);
+							return this.applyRenewalDataUpdatesToModel(latestLicence, true, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(_resp);
+						return this.applyUpdateDataUpdatesToModel(latestLicence, photoOfYourself);
 					})
 				);
 			}
@@ -1486,6 +1483,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
 				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.NonCanadianPassport:
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
 					// Additional Government ID: GovernmentIssuedPhotoIdTypes
@@ -1752,7 +1750,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private applyRenewalDataUpdatesToModel(resp: any, isAuthenticated: boolean): Observable<any> {
+	private applyRenewalDataUpdatesToModel(resp: any, isAuthenticated: boolean, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		// Remove data that should be re-prompted for
@@ -1857,11 +1855,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
+				return of(this.licenceModelFormGroup.value);
+			})
+		);
 	}
 
-	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
+	private applyUpdateDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
 		const originalLicenceData = resp.originalLicenceData;
@@ -1900,8 +1902,12 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
+				return of(this.licenceModelFormGroup.value);
+			})
+		);
 	}
 
 	private applyReplacementDataUpdatesToModel(resp: any): Observable<any> {

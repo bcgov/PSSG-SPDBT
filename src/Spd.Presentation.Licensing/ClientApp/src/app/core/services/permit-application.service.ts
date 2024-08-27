@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import {
 	Alias,
@@ -28,6 +27,7 @@ import { AuthenticationService } from '@app/core/services/authentication.service
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
@@ -38,7 +38,6 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	map,
 	of,
 	switchMap,
 	take,
@@ -106,6 +105,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		optionsPipe: OptionsPipe,
 		private router: Router,
 		private permitService: PermitService,
 		private licenceService: LicenceService,
@@ -113,10 +113,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: ApplicationService,
 		private applicantProfileService: ApplicantProfileService,
-		private domSanitizer: DomSanitizer,
 		private hotToastService: HotToastService
 	) {
-		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
+		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService, optionsPipe);
 
 		this.permitModelChangedSubscription = this.permitModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
@@ -624,15 +623,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
 		]).pipe(
 			catchError((error) => of(error)),
-			map((resps: any[]) => {
-				this.setPhotographOfYourself(resps[1]);
-				return resps[0];
-			}),
-			switchMap((_resp: any) => {
+			switchMap((resps: any[]) => {
+				const latestLicence = resps[0];
+				const photoOfYourself = resps[1];
+
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					return this.applyRenewalDataUpdatesToModel(_resp);
+					return this.applyRenewalDataUpdatesToModel(latestLicence, photoOfYourself);
 				}
-				return this.applyUpdateDataUpdatesToModel(_resp);
+
+				return this.applyUpdateDataUpdatesToModel(latestLicence, photoOfYourself);
 			})
 		);
 	}
@@ -817,17 +816,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.licenceService.apiLicencesLicencePhotoGet(),
 		]).pipe(
 			catchError((error) => of(error)),
-			map((resps: any[]) => {
-				this.setPhotographOfYourself(resps[1]);
-				return resps[0];
-			}),
-			switchMap((_resp: any) => {
+			switchMap((resps: any[]) => {
+				const latestLicence = resps[0];
+				const photoOfYourself = resps[1];
+
 				if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-					return this.applyRenewalDataUpdatesToModel(_resp);
-				} else {
-					// Must be ApplicationTypeCode.Update: there is no replacement for Permits
-					return this.applyUpdateDataUpdatesToModel(_resp);
+					return this.applyRenewalDataUpdatesToModel(latestLicence, photoOfYourself);
 				}
+
+				return this.applyUpdateDataUpdatesToModel(latestLicence, photoOfYourself);
 			})
 		);
 	}
@@ -1406,7 +1403,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return of(this.permitModelFormGroup.value);
 	}
 
-	private applyRenewalDataUpdatesToModel(resp: any): Observable<any> {
+	private applyRenewalDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
@@ -1455,10 +1452,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			}
 		);
 
-		return of(this.permitModelFormGroup.value);
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyUpdateDataUpdatesToModel] permitModel', this.permitModelFormGroup.value);
+				return of(this.permitModelFormGroup.value);
+			})
+		);
 	}
 
-	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
+	private applyUpdateDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
 
@@ -1487,6 +1489,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				emitEvent: false,
 			}
 		);
-		return of(this.permitModelFormGroup.value);
+
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyUpdateDataUpdatesToModel] permitModel', this.permitModelFormGroup.value);
+				return of(this.permitModelFormGroup.value);
+			})
+		);
 	}
 }
