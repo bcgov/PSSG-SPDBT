@@ -11,18 +11,11 @@ internal class LicenceFeeRepository(IDynamicsContextFactory contextFactory, IMap
 
     public async Task<LicenceFeeListResp> QueryAsync(LicenceFeeQry qry, CancellationToken cancellationToken)
     {
-        IEnumerable<spd_licencefee>? feeResult = await cache.GetAsync<IEnumerable<spd_licencefee>>("spd_licencefee", cancellationToken);
-        if (feeResult == null)
-        {
-            feeResult = context.spd_licencefees.Expand(a => a.spd_ServiceTypeId).ToList();
-            await cache.SetAsync<IEnumerable<spd_licencefee>>("spd_licencefee", feeResult, new TimeSpan(1, 0, 0));
-        }
-        //Yossi, please check why this failed.
-        //var feeResult = await cache.GetAsync(
-        //    "license-fees",
-        //    async ct => await context.spd_licencefees.Expand(a => a.spd_ServiceTypeId).GetAllPagesAsync(ct),
-        //    TimeSpan.FromMinutes(60),
-        //    cancellationToken) ?? [];
+        IEnumerable<spd_licencefee> feeResult = await cache.GetAsync(
+            "license-fees",
+            async ct => (await context.spd_licencefees.Expand(a => a.spd_ServiceTypeId).GetAllPagesAsync(ct)).ToList(),
+            TimeSpan.FromMinutes(60),
+            cancellationToken) ?? [];
 
         if (!qry.IncludeInactive)
             feeResult = feeResult.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
