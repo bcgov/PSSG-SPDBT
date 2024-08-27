@@ -540,11 +540,11 @@ internal class BizLicAppManager :
 
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Request to update the license category applicable on the {originalLic.LicenceNumber} \n " +
+                Description = $"Request to update the licence category applicable on the {originalLic.LicenceNumber} \n " +
                     $"Previous Categories: {previousCategories} \n " +
                     $"Updated Categories: {updatedCategories}",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
-                Subject = $"License Category update {originalLic.LicenceNumber}",
+                Subject = $"Licence Category update {originalLic.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingAccountId = originalApp.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
