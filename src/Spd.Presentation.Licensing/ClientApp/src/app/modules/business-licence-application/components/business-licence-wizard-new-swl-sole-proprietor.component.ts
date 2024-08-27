@@ -240,6 +240,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	onCancelAndExit(): void {
+		// TODO combined flow - change warning message
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -259,14 +260,27 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 						return;
 					}
 
-					// TODO Combined SP - how to know where to return back to? were they authenticated in bcsc previously?
 					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
 				}
 			});
 	}
 
 	private saveStep(stepper?: MatStepper): void {
-		if (stepper) {
+		if (this.businessApplicationService.isAutoSave()) {
+			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
+				next: (_resp: any) => {
+					if (stepper) {
+						if (stepper?.selected) stepper.selected.completed = true;
+						stepper.next();
+					} else {
+						this.goToChildNextStep();
+					}
+				},
+				error: (error: HttpErrorResponse) => {
+					this.handlePartialSaveError(error);
+				},
+			});
+		} else if (stepper) {
 			if (stepper?.selected) stepper.selected.completed = true;
 			stepper.next();
 		} else {
@@ -295,7 +309,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	private handlePartialSaveError(error: HttpErrorResponse): void {
 		// only 403s will be here as an error
 		if (error.status == 403) {
-			this.commonApplicationService.handleDuplicateLicence();
+			this.commonApplicationService.handleDuplicateBusinessLicence();
 		}
 	}
 

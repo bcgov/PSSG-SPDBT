@@ -238,7 +238,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextSoleProprietor(): void {
-		this.submitStep(true);
+		this.submitSoleProprietorComboFlowStep();
 	}
 
 	onGoToStep(step: number) {
@@ -305,26 +305,30 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		}
 	}
 
-	private submitStep(isSoleProprietorFlow: boolean = false): void {
+	private submitStep(): void {
 		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 
-				if (isSoleProprietorFlow) {
-					this.router.navigate(
-						[
-							BusinessLicenceApplicationRoutes.MODULE_PATH,
-							BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
-						],
-						{
-							queryParams: {
-								licenceAppId: _resp.body.licenceAppId!,
-							},
-						}
-					);
-				} else {
-					this.payNow(_resp.body.licenceAppId!);
-				}
+				this.payNow(_resp.body.licenceAppId!);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	private submitSoleProprietorComboFlowStep(): void {
+		this.licenceApplicationService.submitSoleProprietorComboFlow().subscribe({
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				this.router.navigate(
+					[BusinessLicenceApplicationRoutes.MODULE_PATH, BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR],
+					{
+						queryParams: {
+							licenceAppId: _resp.body.licenceAppId!,
+						},
+					}
+				);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

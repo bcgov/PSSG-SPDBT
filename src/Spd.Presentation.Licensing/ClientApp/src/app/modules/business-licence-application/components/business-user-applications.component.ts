@@ -208,12 +208,28 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		this.businessApplicationService
 			.getBusinessLicenceToResume(appl.licenceAppId!)
 			.pipe(
-				tap((_resp: any) => {
+				tap((resp: any) => {
+					// return to the swl sole proprietor / business licence combo flow
+					if (resp.soleProprietorSWLAppId) {
+						this.router.navigate(
+							[
+								BusinessLicenceApplicationRoutes.MODULE_PATH,
+								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+							],
+							{
+								queryParams: {
+									licenceAppId: resp.soleProprietorSWLAppId,
+								},
+							}
+						);
+						return;
+					}
+
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
 							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE
 						),
-						{ state: { applicationTypeCode: _resp.applicationTypeData.applicationTypeCode } }
+						{ state: { applicationTypeCode: resp.applicationTypeData.applicationTypeCode } }
 					);
 				}),
 				take(1)

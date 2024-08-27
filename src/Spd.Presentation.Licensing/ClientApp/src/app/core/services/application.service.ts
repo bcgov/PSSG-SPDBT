@@ -644,6 +644,23 @@ export class ApplicationService {
 			});
 	}
 
+	handleDuplicateBusinessLicence(): void {
+		const data: DialogOptions = {
+			icon: 'error',
+			title: 'Confirmation',
+			message:
+				'You already have the same kind of licence or licence application. You cannot continue with this application. Please contact SPD.',
+			cancelText: 'Go back',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				this.onGoToHome();
+			});
+	}
+
 	getMainWarningsAndError(
 		userApplicationsList: Array<MainApplicationResponse>,
 		activeLicences: Array<MainLicenceResponse>

@@ -423,6 +423,22 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
+	submitSoleProprietorComboFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body });
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
 	partialSaveLicenceStepAuthenticated(
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
@@ -438,8 +454,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
-					msg =
-						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
 				this.hotToastService.success(msg);
 

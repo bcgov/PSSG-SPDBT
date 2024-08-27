@@ -208,10 +208,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.resetModelChangeFlags();
 
-				let msg = 'Business Licence information has been saved';
+				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
-					msg =
-						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
 				this.hotToastService.success(msg);
 
@@ -1396,32 +1395,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			};
 		}
 
-		// TODO autocheck the categories that apply?
-		// if (categoryData.Locksmith) {
-		// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-		// }
-
-		// if (categoryData.SecurityGuard) {
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-		// }
-
-		// if (categoryData.SecurityAlarmInstaller) {
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmSales] = true;
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-		// 	categoryData[WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller] = true;
-		// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-		// }
-
-		// if (categoryData.SecurityAlarmResponse) {
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-		// }
-
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: businessLicenceAppl.licenceAppId,
 				latestApplicationId: businessLicenceAppl.licenceAppId,
+				soleProprietorSWLAppId: businessLicenceAppl.soleProprietorSWLAppId,
 				workerLicenceTypeData,
 				applicationTypeData,
 				originalLicenceData,
@@ -1629,34 +1607,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					};
 				}
 
-				// TODO autocheck the categories that apply?
-				// if (categoryData.Locksmith) {
-				// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-				// }
-
-				// if (categoryData.SecurityGuard) {
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-				// }
-
-				// if (categoryData.SecurityAlarmInstaller) {
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmSales] = true;
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-				// 	categoryData[WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller] = true;
-				// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-				// }
-
-				// if (categoryData.SecurityAlarmResponse) {
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-				// }
-
-				// console.log(
-				// 	'**************** soleProprietorCategoryCodes',
-				// 	businessInformationData.soleProprietorCategoryCodes
-				// );
-				// console.log('**************** categoryData', categoryData);
-
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
@@ -1711,11 +1661,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					};
 				}
 
-				// TODO autocheck the categories that apply?
-
 				this.businessModelFormGroup.patchValue(
 					{
-						soleProprietorSWLAppId: licenceAppId,
+						soleProprietorSWLAppId: null,
 						businessInformationData,
 						categoryData,
 						categoryArmouredCarGuardFormGroup,
