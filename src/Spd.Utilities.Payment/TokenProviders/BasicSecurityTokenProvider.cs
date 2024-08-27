@@ -4,20 +4,17 @@ using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.Payment.TokenProviders;
 
-internal class BasicSecurityTokenProvider : SecurityTokenProvider
+internal class BasicSecurityTokenProvider(
+    IHttpClientFactory httpClientFactory,
+    IDistributedCache cache,
+    IOptions<PayBCSettings> options,
+    ILogger<BasicSecurityTokenProvider> logger) : SecurityTokenProvider(httpClientFactory, cache, options, logger)
 {
     private const string cacheKey = "paybc_refund_oauth_token";
 
-    public BasicSecurityTokenProvider(
-        IHttpClientFactory httpClientFactory,
-        IDistributedCache cache,
-        IOptions<PayBCSettings> options,
-        ILogger<BasicSecurityTokenProvider> logger) : base(httpClientFactory, cache, options, logger)
-    { }
-
-    public override async Task<string> AcquireToken(CancellationToken ct) =>
+    public override async Task<string> AcquireToken(CancellationToken ct = default) =>
         await cache.GetAsync(cacheKey, AcquireRefundServiceToken,
-            TimeSpan.FromMinutes(options.DirectRefund.AuthenticationSettings.OAuthTokenCachedInMins)) ?? string.Empty;
+            TimeSpan.FromMinutes(options.DirectRefund.AuthenticationSettings.OAuthTokenCachedInMins), ct) ?? string.Empty;
 
     protected async ValueTask<string?> AcquireRefundServiceToken(CancellationToken ct)
     {
@@ -36,7 +33,7 @@ internal class BasicSecurityTokenProvider : SecurityTokenProvider
 
 internal record BasicAccessToken
 {
-    public string access_token { get; set; }
-    public string token_type { get; set; }
+    public string? access_token { get; set; }
+    public string? token_type { get; set; }
     public DateTimeOffset expires_at { get; set; }
 }

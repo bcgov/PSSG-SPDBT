@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -8,10 +7,9 @@ namespace Spd.Utilities.Payment
 {
     internal partial class PaymentService : IPaymentService
     {
-        public async Task<CreateDirectPaymentLinkResult> CreateDirectPaymentLinkAsync(CreateDirectPaymentLinkCommand command)
+        private CreateDirectPaymentLinkResult CreateDirectPaymentLinkAsync(CreateDirectPaymentLinkCommand command)
         {
-            _logger.LogInformation("CreateDirectPaymentLinkCommand");
-            if (_config?.DirectPayment?.APIKey == null || _config?.DirectPayment?.DirectPayPath == null)
+            if (_config?.DirectPayment?.APIKey == null || _config.DirectPayment?.DirectPayPath == null)
                 throw new ConfigurationErrorsException("Payment Direct Pay Configuration is not correct.");
 
             string trnDate = DateTime.Now.Date.ToString("yyyy-MM-dd");
@@ -38,16 +36,15 @@ namespace Spd.Utilities.Payment
             string query = $"trnDate={trnDate}&pbcRefNumber={pbcRefNumber}&glDate={glDate}&description={description}&trnNumber={trnNumber}&trnAmount={trnAmount}&paymentMethod={paymentMethod}&currency={currency}&redirectUri={redirectUrl}&revenue={revenue}&ref1={ref1}&ref2={ref2}&ref3={ref3}";
             StringBuilder sb = new StringBuilder();
             string hashValue;
-            using (MD5 md5 = MD5.Create())
+#pragma warning disable CA5351 // Do Not Use Broken Cryptographic Algorithms
+            string str = $"{query}{apikey}";
+            byte[] hash = MD5.HashData(Encoding.UTF8.GetBytes(str));
+            // Convert the byte array to string format
+            foreach (byte b in hash)
             {
-                string str = $"{query}{apikey}";
-                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-                // Convert the byte array to string format
-                foreach (byte b in hash)
-                {
-                    sb.Append($"{b:x2}");
-                }
+                sb.Append($"{b:x2}");
             }
+#pragma warning restore CA5351 // Do Not Use Broken Cryptographic Algorithms
             hashValue = sb.ToString();
 
             query = query + $"&hashValue={hashValue}";
@@ -64,17 +61,15 @@ namespace Spd.Utilities.Payment
             };
         }
 
-        public async Task<PaymentValidationResult> ValidatePaymentResultStrAsync(ValidatePaymentResultStrCommand command)
+        private PaymentValidationResult ValidatePaymentResultStrAsync(ValidatePaymentResultStrCommand command)
         {
-            _logger.LogInformation("ValidatePaymentResultStrCommand");
-
-            if (_config?.DirectPayment?.APIKey == null || _config?.DirectPayment?.DirectPayPath == null)
+            if (_config?.DirectPayment?.APIKey == null || _config.DirectPayment?.DirectPayPath == null)
                 throw new ConfigurationErrorsException("Payment Direct Pay Configuration is not correct.");
 
             string apikey = _config.DirectPayment.APIKey;
             string queryStr = command.QueryStr;
             string[] queries = queryStr.Split("&");
-            string hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
+            var hashvalueStr = queries.FirstOrDefault(q => q.StartsWith("hashValue="));
             if (hashvalueStr == null)
             {
                 return new PaymentValidationResult() { ValidationPassed = false };
@@ -83,15 +78,14 @@ namespace Spd.Utilities.Payment
             int pos = queryStr.LastIndexOf(hashvalueStr);
             string query = queryStr.Substring(1, pos - 2);
             StringBuilder sb = new StringBuilder();
-            using (MD5 md5 = MD5.Create())
+            string str = $"{query}{apikey}";
+#pragma warning disable CA5351 // Do Not Use Broken Cryptographic Algorithms
+            byte[] hash = MD5.HashData(Encoding.UTF8.GetBytes(str));
+#pragma warning restore CA5351 // Do Not Use Broken Cryptographic Algorithms
+            // Convert the byte array to string format
+            foreach (byte b in hash)
             {
-                string str = $"{query}{apikey}";
-                byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-                // Convert the byte array to string format
-                foreach (byte b in hash)
-                {
-                    sb.Append($"{b:x2}");
-                }
+                sb.Append($"{b:x2}");
             }
             string calculatedHash = sb.ToString();
             return new PaymentValidationResult() { ValidationPassed = calculatedHash.Equals(expectedHashValue) };
