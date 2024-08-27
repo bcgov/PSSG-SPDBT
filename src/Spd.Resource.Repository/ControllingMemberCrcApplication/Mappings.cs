@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 internal class Mappings : Profile
@@ -95,6 +89,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_uploadeddocuments, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentOptionSets(s.UploadedDocumentEnums)))
          .ForMember(d => d.spd_criminalchargesconvictionsdetails, opt => opt.MapFrom(s => s.CriminalHistoryDetail))
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
+         .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => true))
          .ReverseMap()
          .ForMember(d => d.EmailAddress, opt => opt.Ignore())
          .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
