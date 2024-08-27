@@ -38,6 +38,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+							[showWorkerLicenceSoleProprietorStep]="true"
 							(childNextStep)="onLicenceSelectionChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
 							(nextReview)="onGoToReview()"
@@ -317,7 +318,6 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 						],
 						{
 							queryParams: {
-								// bizId: '26d3d383-5a35-432c-9398-72d8c2522666', // TODO  Combined SP - is there any way to know this?
 								licenceAppId: _resp.body.licenceAppId!,
 							},
 						}
