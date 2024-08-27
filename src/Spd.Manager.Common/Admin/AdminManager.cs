@@ -41,7 +41,7 @@ internal class AdminManager(
     {
         var result = await _cache.GetAsync(
             IConfigRepository.BANNER_MSG_CONFIG_KEY,
-            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken)).ConfigItems,
+            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.BANNER_MSG_CONFIG_KEY), cancellationToken)).ConfigItems.ToList(),
             TimeSpan.FromMinutes(15),
             cancellationToken);
 
@@ -52,7 +52,7 @@ internal class AdminManager(
     {
         var result = await _cache.GetAsync(
             IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY,
-            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), cancellationToken)).ConfigItems,
+            async ct => (await _configRepo.Query(new ConfigQuery(IConfigRepository.LICENSING_REPLACEMENTPROCESSINGTIME_KEY), cancellationToken)).ConfigItems.ToList(),
             TimeSpan.FromMinutes(15),
             cancellationToken);
 
@@ -63,9 +63,9 @@ internal class AdminManager(
     {
         var result = await _cache.GetAsync(
             "ministries_list",
-            async ct => (OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BcGovOrgId, IncludeInactive: true), ct),
+            async ct => ((OrgsQryResult)await _orgRepo.QueryOrgAsync(new OrgsQry(null, ParentOrgId: SpdConstants.BcGovOrgId, IncludeInactive: true), ct)).OrgResults.ToList(),
             TimeSpan.FromMinutes(15),
             cancellationToken);
-        return _mapper.Map<IEnumerable<MinistryResponse>>(result.OrgResults);
+        return _mapper.Map<IEnumerable<MinistryResponse>>(result);
     }
 }

@@ -5,18 +5,9 @@ using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.WorkerLicenceCategory;
 
-internal class WorkerLicenceCategoryRepository : IWorkerLicenceCategoryRepository
+internal class WorkerLicenceCategoryRepository(IDynamicsContextFactory ctx, IMapper mapper, IDistributedCache cache) : IWorkerLicenceCategoryRepository
 {
-    private readonly DynamicsContext _context;
-    private readonly IMapper _mapper;
-    private readonly IDistributedCache _cache;
-
-    public WorkerLicenceCategoryRepository(IDynamicsContextFactory ctx, IMapper mapper, IDistributedCache cache)
-    {
-        _context = ctx.Create();
-        _mapper = mapper;
-        _cache = cache;
-    }
+    private readonly DynamicsContext _context = ctx.Create();
 
     public async Task<WorkerLicenceCategoryListResp> QueryAsync(WorkerLicenceCategoryQry qry, CancellationToken cancellationToken)
     {
@@ -25,30 +16,24 @@ internal class WorkerLicenceCategoryRepository : IWorkerLicenceCategoryRepositor
             throw new ArgumentException("must have at least one qry parameter.");
         }
 
-        //Yossi, please revert back to your code when you figure out the root cause
-        //change
-        //var categories = await _cache.GetAsync("spd_licencecategory", async ct => await _context.spd_licencecategories.GetAllPagesAsync(ct), TimeSpan.FromMinutes(10), cancellationToken);
-        //to
-        IEnumerable<spd_licencecategory>? categories = await _cache.GetAsync<IEnumerable<spd_licencecategory>>("spd_licencecategory", cancellationToken);
-        if (categories == null)
-        {
-            categories = _context.spd_licencecategories.ToList();
-            await _cache.SetAsync<IEnumerable<spd_licencecategory>>("spd_licencecategory", categories, new TimeSpan(1, 0, 0));
-        }
-        //change
+        IEnumerable<spd_licencecategory> categories = await cache.GetAsync(
+            "spd_licencecategory",
+            async ct => (await _context.spd_licencecategories.GetAllPagesAsync(ct)).ToList(),
+            TimeSpan.FromMinutes(10),
+            cancellationToken) ?? [];
 
         if (qry.WorkerCategoryTypeId != null)
         {
             categories = categories.Where(s => s.spd_licencecategoryid == qry.WorkerCategoryTypeId);
         }
-        if (qry.WorkerCategoryType != null)
+        if (qry.WorkerCategoryType != null && DynamicsContextLookupHelpers.LicenceCategoryDictionary.TryGetValue(qry.WorkerCategoryType.ToString()!, out Guid guid))
         {
-            var keyExisted = DynamicsContextLookupHelpers.LicenceCategoryDictionary.TryGetValue(qry.WorkerCategoryType.ToString(), out Guid guid);
             categories = categories.Where(s => s.spd_licencecategoryid == guid);
         }
-        var list = _mapper.Map<IEnumerable<WorkerLicenceCategoryResp>>(categories);
-        var response = new WorkerLicenceCategoryListResp();
-        response.Items = list;
-        return response;
+        var list = mapper.Map<IEnumerable<WorkerLicenceCategoryResp>>(categories);
+        return new WorkerLicenceCategoryListResp
+        {
+            Items = list
+        };
     }
 }
