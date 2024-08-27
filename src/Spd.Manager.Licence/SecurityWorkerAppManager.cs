@@ -358,13 +358,13 @@ internal class SecurityWorkerAppManager :
     {
         ChangeSpec changes = new();
         //categories changed
-        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
+        if (newRequest.CategoryCodes.Count() != originalLic.CategoryCodes.Count())
             changes.CategoriesChanged = true;
         else
         {
             List<WorkerCategoryTypeCode> newList = newRequest.CategoryCodes.ToList();
             newList.Sort();
-            List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
+            List<WorkerCategoryTypeCode> originalList = originalLic.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
             originalList.Sort();
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
