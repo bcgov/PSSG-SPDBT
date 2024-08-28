@@ -131,10 +131,10 @@ internal class Mappings : Profile
         _ = CreateMap<SaveControllingMemberCrcAppCmd, spd_application>()
             .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
             .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.ControllingMemberCrcAppId ?? Guid.NewGuid()))
-            .IncludeBase<LicenceApplication, spd_application>();
+            .IncludeBase<ControllingMemberCrcApplication, spd_application>();
 
         _ = CreateMap<SaveControllingMemberCrcAppCmd, contact>()
-          .IncludeBase<LicenceApplication, contact>();
+          .IncludeBase<ControllingMemberCrcApplication, contact>();
 
         _ = CreateMap<AliasResp, spd_alias>()
           .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
