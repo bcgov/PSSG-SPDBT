@@ -71,7 +71,7 @@ public class ControllingMemberCrcAppManagerTests
         };
         
 
-        var command = new ControllingMemberCrcAppSubmitRequestCommand(request,
+        var command = new ControllingMemberCrcAppNewCommand(request,
             new List<LicAppFileInfo>
                 {
                     new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict },
@@ -128,7 +128,7 @@ public class ControllingMemberCrcAppManagerTests
         };
 
 
-        var command = new ControllingMemberCrcAppSubmitRequestCommand(request,
+        var command = new ControllingMemberCrcAppNewCommand(request,
             new List<LicAppFileInfo>
                 {
                     new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict },
