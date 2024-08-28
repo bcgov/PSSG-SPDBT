@@ -5,6 +5,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Org;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using System;
 using System.Collections.Generic;
@@ -63,4 +64,34 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid) contact.contactid);
     }
 
+    public async Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd cmd, CancellationToken ct)
+    {
+        spd_application? app;
+        if (cmd.ControllingMemberCrcAppId != null)
+        {
+            app = _context.spd_applications
+                .Expand(a => a.spd_application_spd_licencecategory)
+                .Where(a => a.spd_applicationid == cmd.ControllingMemberCrcAppId).FirstOrDefault();
+            if (app == null)
+                throw new ArgumentException("invalid app id");
+            _mapper.Map<SaveControllingMemberCrcAppCmd, spd_application>(cmd, app);
+            app.spd_applicationid = (Guid)(cmd.ControllingMemberCrcAppId);
+            _context.UpdateObject(app);
+        }
+        else
+        {
+            app = _mapper.Map<spd_application>(cmd);
+            _context.AddTospd_applications(app);
+            var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
+            if (contact != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+            }
+        }
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        SharedRepositoryFuncs.LinkTeam(_context,DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+        await _context.SaveChangesAsync();
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)cmd.ContactId);
+    }
+    
 }

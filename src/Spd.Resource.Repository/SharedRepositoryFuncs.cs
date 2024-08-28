@@ -1,4 +1,5 @@
 ﻿using Microsoft.Dynamics.CRM;
+using Polly;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
@@ -44,5 +45,11 @@ internal static class SharedRepositoryFuncs
         {
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
         }
+    }
+    public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
+    {
+        Guid teamGuid = Guid.Parse(teamGuidStr);
+        team? serviceTeam =  _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 }
