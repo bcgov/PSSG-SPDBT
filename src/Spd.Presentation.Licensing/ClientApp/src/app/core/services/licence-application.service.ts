@@ -1034,7 +1034,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	populateSoleProprietorComboFlowAnonymous(): Observable<any> {
-		return this.loadExistingLicenceApplicationAnonymous().pipe(
+		return this.getSoleProprietorComboFlowAnonymous().pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -1042,6 +1042,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					_resp.workerLicenceTypeData.workerLicenceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
+			})
+		);
+	}
+
+	private getSoleProprietorComboFlowAnonymous(): Observable<any> {
+		this.reset();
+
+		return this.securityWorkerLicensingService.apiSpWorkerLicenceApplicationGet().pipe(
+			switchMap((resp: WorkerLicenceAppResponse) => {
+				return this.applyLicenceAndProfileIntoModel(resp, null);
 			})
 		);
 	}

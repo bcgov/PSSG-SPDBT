@@ -259,7 +259,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 						this.router.navigate([
 							PersonalLicenceApplicationRoutes.MODULE_PATH,
 							PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
-							PersonalLicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
+							PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS,
 						]);
 						return;
 					}

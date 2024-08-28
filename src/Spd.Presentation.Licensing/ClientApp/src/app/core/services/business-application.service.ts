@@ -1369,10 +1369,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		// const xxx = this.businessInformationFormGroup.value;
-		// console.log('************ soleProprietorCategoryCodes', xxx.soleProprietorCategoryCodes);
-		// console.log('************ categoryData', categoryData);
-
 		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
 			categoryPrivateInvestigatorFormGroup = {
 				isInclude: true,
