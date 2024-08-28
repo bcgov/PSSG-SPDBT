@@ -340,7 +340,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			tap((res: StrictHttpResponse<PermitAppCommandResponse>) => {
 				this.resetModelChangeFlags();
 
-				let msg = 'Permit information has been saved';
+				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
 					msg =
 						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';

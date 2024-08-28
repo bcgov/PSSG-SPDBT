@@ -60,7 +60,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									<div class="d-block text-muted mt-2 mt-lg-0">Licence Categories</div>
 									<div class="text-data">
 										<ul class="m-0">
-											<ng-container *ngFor="let catCode of licence.categoryCodes; let i = index">
+											<ng-container *ngFor="let catCode of licence.licenceCategoryCodes; let i = index">
 												<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
 											</ng-container>
 										</ul>

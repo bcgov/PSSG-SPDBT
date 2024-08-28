@@ -6,10 +6,10 @@ import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/mode
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceIdentificationAnonymousComponent } from './worker-licence-wizard-step-components/steps-worker-licence-identification-anonymous.component';
@@ -33,6 +33,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
+					[showWorkerLicenceSoleProprietorStep]="showWorkerLicenceSoleProprietorStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -117,6 +118,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
 	policeOfficerRoleCode: string | null = null;
+	showWorkerLicenceSoleProprietorStep = false;
 
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -157,6 +159,12 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 				this.policeOfficerRoleCode = this.licenceApplicationService.licenceModelFormGroup.get(
 					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
+
+				const bizTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+					'soleProprietorData.bizTypeCode'
+				)?.value;
+				this.showWorkerLicenceSoleProprietorStep =
+					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
 
 				this.updateCompleteStatus();
 			}
