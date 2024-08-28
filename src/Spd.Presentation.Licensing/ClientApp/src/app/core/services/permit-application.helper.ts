@@ -118,7 +118,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		}
 	);
 
-	citizenshipFormGroup: FormGroup = this.formBuilder.group(
+	override citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
 			isCanadianResident: new FormControl(''),
