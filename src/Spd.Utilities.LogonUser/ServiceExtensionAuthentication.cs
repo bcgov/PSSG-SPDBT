@@ -1,16 +1,17 @@
+using IdentityModel.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
+using Spd.Utilities.LogonUser.Configurations;
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
-using IdentityModel.Client;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
-using Spd.Utilities.LogonUser.Configurations;
 
 namespace Spd.Utilities.LogonUser
 {
@@ -55,14 +56,14 @@ namespace Spd.Utilities.LogonUser
             .AddJwtBearer(BCeIDAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{bceidConfig.Authority}/.well-known/openid-configuration";
-                options.Authority = bceidConfig?.Authority;
+                options.Authority = bceidConfig.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { bceidConfig?.Audiences },
+                    ValidAudiences = new[] { bceidConfig.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { bceidConfig?.Issuer },
+                    ValidIssuers = new[] { bceidConfig.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -78,14 +79,14 @@ namespace Spd.Utilities.LogonUser
             .AddJwtBearer(IdirAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{idirConfig.Authority}/.well-known/openid-configuration";
-                options.Authority = idirConfig?.Authority;
+                options.Authority = idirConfig.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { idirConfig?.Audiences },
+                    ValidAudiences = new[] { idirConfig.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { idirConfig?.Issuer },
+                    ValidIssuers = new[] { idirConfig.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -101,14 +102,14 @@ namespace Spd.Utilities.LogonUser
             .AddJwtBearer(BcscAuthenticationConfiguration.AuthSchemeName, options =>
             {
                 options.MetadataAddress = $"{bcscConfig.Authority}/.well-known/openid-configuration";
-                options.Authority = bcscConfig?.Authority;
+                options.Authority = bcscConfig.Authority;
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudiences = new[] { bcscConfig?.Audiences },
+                    ValidAudiences = new[] { bcscConfig.Audiences },
                     ValidateIssuer = true,
-                    ValidIssuers = new[] { bcscConfig?.Issuer },
+                    ValidIssuers = new[] { bcscConfig.Issuer },
                     RequireSignedTokens = true,
                     RequireAudience = true,
                     RequireExpirationTime = true,
@@ -123,13 +124,13 @@ namespace Spd.Utilities.LogonUser
                 {
                     OnTokenValidated = async ctx =>
                     {
-                        var oidcConfig = await ctx.Options.ConfigurationManager.GetConfigurationAsync(CancellationToken.None);
+                        var ct = ctx.HttpContext.RequestAborted;
+                        var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<BcscAuthenticationConfiguration>>();
+                        var oidcConfig = await ctx.Options.ConfigurationManager!.GetConfigurationAsync(ct);
 
                         //set token validation parameters
                         var validationParameters = ctx.Options.TokenValidationParameters.Clone();
                         validationParameters.IssuerSigningKeys = oidcConfig.JsonWebKeySet.GetSigningKeys();
-                        validationParameters.ValidateLifetime = false;
-                        validationParameters.ValidateIssuer = false;
 
                         string tokenStr = ((JsonWebToken)ctx.SecurityToken).EncodedHeader + "."
                             + ((JsonWebToken)ctx.SecurityToken).EncodedPayload + "."
@@ -145,46 +146,42 @@ namespace Spd.Utilities.LogonUser
                         userInfoRequest.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/jwt"));
 
                         //request userinfo claims through the backchannel
-                        var response = await ctx.Options.Backchannel.GetUserInfoAsync(userInfoRequest, CancellationToken.None);
-                        if (!response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
+                        var response = await ctx.Options.Backchannel.GetUserInfoAsync(userInfoRequest, ct);
+                        if (response != null && !response.IsError && response.HttpStatusCode == HttpStatusCode.OK)
                         {
                             //handle encrypted userinfo response...
-                            if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/jwt")
+                            if (response.HttpResponse?.Content?.Headers?.ContentType?.MediaType == "application/jwt")
                             {
                                 var handler = new JwtSecurityTokenHandler();
                                 if (handler.CanReadToken(response.Raw))
                                 {
-                                    handler.ValidateToken(response.Raw, validationParameters, out var token);
-                                    var jwe = token as JwtSecurityToken;
-                                    MapClaimsToPrincipalClaims(ctx.Principal, jwe.Claims);
+                                    var token = await handler.ValidateTokenAsync(response.Raw, validationParameters);
+                                    if (token.SecurityToken is JwtSecurityToken jwe)
+                                    {
+                                        MapClaimsToPrincipalClaims(ctx.Principal!, jwe.Claims);
+                                    }
                                 }
                             }
-                            else if (response.HttpResponse.Content?.Headers?.ContentType?.MediaType == "application/json")
+                            else if (response.HttpResponse?.Content?.Headers?.ContentType?.MediaType == "application/json")
                             {
-                                var claims = JsonSerializer.Deserialize<Dictionary<string, object>>(response.Raw);
+                                var claims = JsonSerializer.Deserialize<Dictionary<string, object>>(response.Raw!)!;
                                 foreach (var claim in claims)
                                 {
-                                    string str = claim.Value.ToString();
-                                    ctx.Principal.AddUpdateClaim(claim.Key, str);
+                                    string str = claim.Value.ToString()!;
+                                    ctx.Principal!.AddUpdateClaim(claim.Key, str);
                                 }
                             }
                             else
                             {
                                 //...or fail
-                                ctx.Fail(response.Error);
+                                ctx.Fail($"Failed to get userinfo: {response.Error}");
                             }
-                        }
-                        else if (response.IsError)
-                        {
-                            //handle for all other failures
-                            ctx.Fail(response.Error);
                         }
                         else
                         {
-                            //handle non encrypted
-                            JsonDocument jd = JsonDocument.Parse(((JsonElement)response.Json).GetRawText());
-                            var claims = jd.RootElement.ToClaims();
-                            MapClaimsToPrincipalClaims(ctx.Principal, claims);
+                            logger.LogError(response?.Exception, "Failed to get userinfo for token {Token}", tokenStr);
+                            //handle for all other failures
+                            ctx.Fail($"Failed to get userinfo: {response?.Error}");
                         }
                     }
                 };
