@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace Spd.Manager.Licence;
 public interface IControllingMemberCrcAppManager
 {
-    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand command, CancellationToken ct);
 }
-public abstract record ControllingMemberCrcApp
+public record ControllingMemberCrcAppBase
 {
-    //public string? AccessCode { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
@@ -40,17 +40,29 @@ public abstract record ControllingMemberCrcApp
     public Address? ResidentialAddress { get; set; }
 }
 
-public record ControllingMemberCrcAppCommandResponse
+
+#region authenticated
+public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcAppUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
+
+public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 {
-    public Guid ControllingMemberAppId { get; set; }
+    public IEnumerable<Document>? DocumentInfos { get; set; }
+    public Guid? ControllingMemberAppId { get; set; }
+    public Guid ApplicantId { get; set; }
 };
-
-
-public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcApp
+#endregion
+#region anonymous user
+public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
 {
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
 
 };
 
-public record ControllingMemberCrcAppSubmitRequestCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppCommandResponse
+{
+    public Guid ControllingMemberAppId { get; set; }
+};
+
+#endregion
