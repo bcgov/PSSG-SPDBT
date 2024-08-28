@@ -64,7 +64,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid) contact.contactid);
     }
 
-    public async Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMenberCrcApplicationAsync(SaveControllingMemberCrcAppCmd cmd, CancellationToken ct)
+    public async Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd cmd, CancellationToken ct)
     {
         spd_application? app;
         if (cmd.ControllingMemberCrcAppId != null)
@@ -88,24 +88,10 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             }
         }
-        //TODO: what is the LinkServiceType??
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
-   
-    
-        //TODO: what is the LinkTeam ??
-        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
+        SharedRepositoryFuncs.LinkTeam(_context,DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         await _context.SaveChangesAsync();
-      
-
-        //TODO: do we have category codes in the crc controlling member process?
-        //SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        //await _context.SaveChangesAsync();
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)cmd.ContactId);
     }
-    private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
-    {
-        Guid teamGuid = Guid.Parse(teamGuidStr);
-        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
-        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
-    }
+    
 }

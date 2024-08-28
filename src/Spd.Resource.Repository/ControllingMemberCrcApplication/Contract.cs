@@ -12,7 +12,7 @@ namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
 {
     public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
-    public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMenberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
 }
 
 public record ControllingMemberCrcApplication

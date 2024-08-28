@@ -71,8 +71,8 @@ internal class ControllingMemberCrcAppManager :
         
         //TODO: find the purpose, add related enums if needed (ask peggy)
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos);
-
-        var response = await _controllingMemberCrcRepository.SaveControllingMenberCrcApplicationAsync(saveCmd, ct);
+        saveCmd.WorkerLicenceTypeCode = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC;
+        var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(saveCmd, ct);
         if (cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId == null)
             cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId = response.ControllingMemberCrcAppId;
         await UpdateDocumentsAsync(
