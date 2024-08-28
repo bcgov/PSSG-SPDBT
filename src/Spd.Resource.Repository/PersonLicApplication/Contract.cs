@@ -92,6 +92,7 @@ public record LicenceApplicationResp() : LicenceApplication
     public string? CaseNumber { get; set; }
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
+    public Guid? SoleProprietorBizAppId { get; set; } //this is for sole-proprietor biz application id for combo app
 };
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
