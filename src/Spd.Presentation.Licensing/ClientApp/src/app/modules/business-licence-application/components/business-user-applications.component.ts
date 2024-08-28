@@ -211,17 +211,10 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				tap((resp: any) => {
 					// return to the swl sole proprietor / business licence combo flow
 					if (resp.soleProprietorSWLAppId) {
-						this.router.navigate(
-							[
-								BusinessLicenceApplicationRoutes.MODULE_PATH,
-								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
-							],
-							{
-								queryParams: {
-									licenceAppId: resp.soleProprietorSWLAppId,
-								},
-							}
-						);
+						this.router.navigate([
+							BusinessLicenceApplicationRoutes.MODULE_PATH,
+							BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+						]);
 						return;
 					}
 

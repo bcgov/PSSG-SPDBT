@@ -127,6 +127,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	applicationTypeCode!: ApplicationTypeCode;
 
 	private licenceModelChangedSubscription!: Subscription;
+	private soleProprietorBizAppId: string | null = null;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -168,6 +169,9 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				this.showCitizenshipStep =
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+
+				this.soleProprietorBizAppId =
+					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorBizAppId')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -321,11 +325,27 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	private submitSoleProprietorComboFlowStep(): void {
 		this.licenceApplicationService.submitSoleProprietorComboFlow().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				// if a business licence app already exists, use it
+				if (this.soleProprietorBizAppId) {
+					this.router.navigate(
+						[
+							BusinessLicenceApplicationRoutes.MODULE_PATH,
+							BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+						],
+						{
+							queryParams: {
+								bizLicAppId: this.soleProprietorBizAppId,
+							},
+						}
+					);
+					return;
+				}
+
 				this.router.navigate(
 					[BusinessLicenceApplicationRoutes.MODULE_PATH, BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR],
 					{
 						queryParams: {
-							licenceAppId: _resp.body.licenceAppId!,
+							swlLicAppId: _resp.body.licenceAppId!,
 						},
 					}
 				);

@@ -64,6 +64,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
 		latestApplicationId: new FormControl(), // placeholder for id
 
+		soleProprietorBizAppId: new FormControl(), // placeholder for combo flow
+
 		originalLicenceData: this.originalLicenceFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
@@ -555,7 +557,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
+	getWorkerLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
@@ -1750,6 +1752,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				licenceAppId: workerLicenceAppl.licenceAppId,
 				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
+				soleProprietorBizAppId: workerLicenceAppl.soleProprietorBizAppId,
 				workerLicenceTypeData,
 				applicationTypeData,
 				soleProprietorData,

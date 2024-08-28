@@ -555,33 +555,38 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Create an empty licence
+	 * Either create an empty licence or continue with the existing business lic app
 	 * @returns
 	 */
-	createNewBusinessLicenceWithSwlCombinedFlow(
-		soleProprietorSWLAppId: string,
+	businessLicenceWithSwlCombinedFlow(
+		soleProprietorSWLAppId: string | null | undefined,
+		soleProprietorBizAppId: string | null | undefined,
 		isSwlAnonymous: boolean
 	): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
-			switchMap((businessProfile: BizProfileResponse) => {
-				return this.createEmptyLicenceForSoleProprietor({
-					soleProprietorSWLAppId,
-					businessProfile,
-					isSwlAnonymous,
-				}).pipe(
-					tap((_resp: any) => {
-						this.setAsInitialized();
+		if (soleProprietorSWLAppId) {
+			return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+				switchMap((businessProfile: BizProfileResponse) => {
+					return this.createEmptyLicenceForSoleProprietor({
+						soleProprietorSWLAppId,
+						businessProfile,
+						isSwlAnonymous,
+					}).pipe(
+						tap((_resp: any) => {
+							this.setAsInitialized();
 
-						this.commonApplicationService.setApplicationTitle(
-							WorkerLicenceTypeCode.SecurityBusinessLicence,
-							ApplicationTypeCode.New
-						);
-					})
-				);
-			})
-		);
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ApplicationTypeCode.New
+							);
+						})
+					);
+				})
+			);
+		}
+
+		return this.getBusinessLicenceToResume(soleProprietorBizAppId!);
 	}
 
 	/**

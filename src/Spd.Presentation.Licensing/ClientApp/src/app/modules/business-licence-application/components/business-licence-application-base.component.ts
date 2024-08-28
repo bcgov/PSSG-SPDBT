@@ -36,14 +36,16 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 	async ngOnInit(): Promise<void> {
 		const queryParams: Params = await lastValueFrom(this.route.queryParams.pipe(take(1)));
 		const defaultBizId: string | undefined = queryParams['bizId'];
-		const licenceAppId: string | undefined = queryParams['licenceAppId'];
+		const swlLicAppId: string | undefined = queryParams['swlLicAppId'];
+		const bizLicAppId: string | undefined = queryParams['bizLicAppId'];
 		const isSwlAnonymous: string | undefined = queryParams['isSwlAnonymous'];
 
 		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
 
 		const params: URLSearchParams = new URLSearchParams();
 		if (defaultBizId) params.set('bizId', defaultBizId);
-		if (licenceAppId) params.set('licenceAppId', licenceAppId);
+		if (swlLicAppId) params.set('swlLicAppId', swlLicAppId);
+		if (bizLicAppId) params.set('bizLicAppId', bizLicAppId);
 		if (isSwlAnonymous) params.set('isSwlAnonymous', isSwlAnonymous);
 
 		const currentPath = location.pathname;
@@ -67,12 +69,13 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		console.debug('BusinessLicenceApplicationBaseComponent loginInfo', loginInfo);
 
 		if (
+			(swlLicAppId || bizLicAppId) &&
 			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR) &&
 			loginInfo.state
 		) {
 			// handle new business licence creation from swl - for sole proprietor
 			this.businessApplicationService
-				.createNewBusinessLicenceWithSwlCombinedFlow(licenceAppId!, isSwlAnonymous === 'Y')
+				.businessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId, isSwlAnonymous === 'Y')
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
