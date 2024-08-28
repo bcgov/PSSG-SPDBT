@@ -1,5 +1,3 @@
-using System.Configuration;
-using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
@@ -8,6 +6,8 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
+using System.Configuration;
+using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
 
@@ -32,9 +32,9 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     protected IDistributedCache Cache
     { get { return _cache; } }
 
-    protected void SetValueToResponseCookie(string key, string value)
+    protected void SetValueToResponseCookie(string key, string value, int durationInMins = 20)
     {
-        var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(20));
+        var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(durationInMins));
         this.Response.Cookies.Append(key,
             encryptedKeyCode,
             new CookieOptions
@@ -42,7 +42,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
                 Secure = true,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(20)
+                Expires = DateTimeOffset.UtcNow.AddMinutes(durationInMins)
             });
     }
 
@@ -78,7 +78,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     {
         Guid[]? array = docKeyCodes?.ToArray();
         if (array == null || array.Length == 0) return Enumerable.Empty<LicAppFileInfo>();
-        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+        List<LicAppFileInfo> results = new();
         foreach (Guid docKey in array)
         {
             IEnumerable<LicAppFileInfo>? items = await _cache.GetAsync<IEnumerable<LicAppFileInfo>>(docKey.ToString());
