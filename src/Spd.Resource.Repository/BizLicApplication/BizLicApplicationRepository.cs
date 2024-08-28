@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Resource.Repository.PersonLicApplication;
 using System.Net;
 
 namespace Spd.Resource.Repository.BizLicApplication;
@@ -116,7 +116,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         LinkOrganization(cmd.ApplicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) && 
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
             cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
             cmd.PrivateInvestigatorSwlInfo?.LicenceId != null)
         {
@@ -154,6 +154,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Expand(a => a.spd_application_spd_licencecategory)
                 .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Expand(a => a.spd_businesscontact_spd_application)
+                .Expand(a => a.spd_businessapplication_spd_workerapplication)
                 .Where(a => a.spd_applicationid == licenceApplicationId)
                 .FirstOrDefaultAsync(ct);
         }
@@ -183,7 +184,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
                 .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
                 .FirstOrDefault();
-            
+
             PrivateInvestigatorSwlContactInfo privateInvestigatorInfo = new()
             {
                 ContactId = bizContact?.spd_ContactId?.contactid,
@@ -277,7 +278,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             .Where(b => b.spd_position_spd_businesscontact.Any(p => p.spd_positionid == position.spd_positionid))
             .Where(b => b.spd_businesscontact_spd_application.Any(b => b.spd_applicationid == app.spd_applicationid))
             .FirstOrDefault();
-        
+
         if (bizContact == null)
             return;
 
@@ -337,8 +338,8 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _context.SetLink(app, nameof(app.ownerid), serviceTeam);
     }
 
-    private spd_licence GetLicence(Guid licenceId) 
-    { 
+    private spd_licence GetLicence(Guid licenceId)
+    {
         spd_licence? licence = _context.spd_licences
             .Where(l => l.spd_licenceid == licenceId)
             .Where(l => l.statecode == DynamicsConstants.StateCode_Active)

@@ -53,6 +53,7 @@ public record WorkerLicenceAppResponse : WorkerLicenceAppBase
     public string? ExpiredLicenceNumber { get; set; }
     public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+    public Guid? SoleProprietorBizAppId { get; set; } //this is for sole-proprietor biz application id for combo app
 }
 
 public record LicenceAppListResponse
