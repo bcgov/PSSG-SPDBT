@@ -61,6 +61,7 @@ internal class Mappings : Profile
 
         _ = CreateMap<ControllingMemberCrcApplication, spd_application>()
          .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+         .ForMember(d => d.spd_licenceapplicationtype, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeOptionSet(s.ApplicationTypeCode)))
          .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))
          .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
@@ -103,6 +104,8 @@ internal class Mappings : Profile
          .ForMember(d => d.Surname, opt => opt.Ignore())
          .ForMember(d => d.MiddleName1, opt => opt.Ignore())
          .ForMember(d => d.MiddleName2, opt => opt.Ignore())
+         .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
+         .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.DateOfBirth, opt => opt.Ignore())
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
@@ -124,6 +127,14 @@ internal class Mappings : Profile
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
           .ForMember(d => d.ControllingMemberCrcAppId, opt => opt.MapFrom(s => s.spd_applicationid))
           .IncludeBase<spd_application, ControllingMemberCrcApplication>();
+
+        _ = CreateMap<SaveControllingMemberCrcAppCmd, spd_application>()
+            .ForMember(d => d.statuscode, opt => opt.MapFrom(s => SharedMappingFuncs.GetApplicationStatus(s.ApplicationStatusEnum)))
+            .ForMember(d => d.spd_applicationid, opt => opt.MapFrom(s => s.ControllingMemberCrcAppId ?? Guid.NewGuid()))
+            .IncludeBase<LicenceApplication, spd_application>();
+
+        _ = CreateMap<SaveControllingMemberCrcAppCmd, contact>()
+          .IncludeBase<LicenceApplication, contact>();
 
         _ = CreateMap<AliasResp, spd_alias>()
           .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))

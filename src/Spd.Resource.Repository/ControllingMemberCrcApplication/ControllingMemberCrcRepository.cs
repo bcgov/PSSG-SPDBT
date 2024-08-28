@@ -99,7 +99,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 
         //TODO: do we have category codes in the crc controlling member process?
         //SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)cmd.ContactId);
     }
     private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)

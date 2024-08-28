@@ -67,23 +67,6 @@ internal class ControllingMemberCrcAppManager :
     #endregion
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand cmd, CancellationToken ct)
     {
-        /*duplication check for crc apps? is there any posibility that someone be the member of two businesses, and done criminal record check once, so is that valid for another business
-
-        we need to check that ? or even it can  filtered by business before sending the link to its members ?
-
-
-       bool hasDuplicate = await HasDuplicates(cmd.ControllingMemberCrcAppUpsertRequest.ApplicantId,
-           Enum.Parse<WorkerLicenceTypeEnum>(cmd.ControllingMemberCrcAppUpsertRequest.WorkerLicenceTypeCode.ToString()),
-           cmd.ControllingMemberCrcAppUpsertRequest.LicenceAppId,
-           ct);
-
-        if (hasDuplicate)
-        {
-            throw new ApiException(HttpStatusCode.Forbidden, "Applicant already has the same kind of licence or licence application");
-        }
-        */
-
-        //TODO: check and add mappings
         SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
         
         //TODO: find the purpose, add related enums if needed (ask peggy)
