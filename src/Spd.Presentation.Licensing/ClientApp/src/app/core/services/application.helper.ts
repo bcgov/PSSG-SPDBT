@@ -1,9 +1,9 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscriber } from 'rxjs';
 
 export abstract class ApplicationHelper {
 	private _waitUntilInitialized$ = new BehaviorSubject<boolean>(false);
@@ -35,6 +35,7 @@ export abstract class ApplicationHelper {
 		linkedCardHolderName: new FormControl(null),
 		linkedLicenceHolderName: new FormControl(null),
 		linkedLicenceHolderId: new FormControl(null),
+		linkedLicenceCategoryCodes: new FormControl(null),
 		captchaFormGroup: new FormGroup({
 			token: new FormControl('', FormControlValidators.required),
 		}),
@@ -47,6 +48,7 @@ export abstract class ApplicationHelper {
 		originalExpiryDate: new FormControl(null),
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
+		originalCategoryCodes: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false),
 		originalDogAuthorizationExists: new FormControl(false),
 	});
@@ -59,6 +61,56 @@ export abstract class ApplicationHelper {
 	fingerprintProofFormGroup: FormGroup = this.formBuilder.group({
 		attachments: new FormControl([], [Validators.required]),
 	});
+
+	citizenshipFormGroup: FormGroup = this.formBuilder.group(
+		{
+			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
+			canadianCitizenProofTypeCode: new FormControl(''),
+			notCanadianCitizenProofTypeCode: new FormControl(''),
+			expiryDate: new FormControl(''),
+			attachments: new FormControl([], [Validators.required]),
+			governmentIssuedPhotoTypeCode: new FormControl(''),
+			governmentIssuedExpiryDate: new FormControl(''),
+			governmentIssuedAttachments: new FormControl([]),
+		},
+		{
+			validators: [
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'canadianCitizenProofTypeCode',
+					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'notCanadianCitizenProofTypeCode',
+					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.No
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'expiryDate',
+					(form) =>
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							(form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
+								form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit))
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'governmentIssuedPhotoTypeCode',
+					(form) =>
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'governmentIssuedAttachments',
+					(form) =>
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
+							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
+						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
+							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
+				),
+			],
+		}
+	);
 
 	expiredLicenceFormGroup = this.formBuilder.group(
 		{
@@ -358,17 +410,26 @@ export abstract class ApplicationHelper {
 	 * Set the current photo of yourself
 	 * @returns
 	 */
-	setPhotographOfYourself(image: Blob | null): void {
+	setPhotographOfYourself(image: Blob | null): Observable<boolean> {
 		if (!image || image.size == 0) {
 			this.photographOfYourself = null;
-			return;
+			return of(false);
 		}
 
-		const reader = new FileReader();
-		reader.readAsDataURL(image);
-		reader.onload = (_event) => {
-			this.photographOfYourself = reader.result;
-		};
+		return new Observable<boolean>((observer: Subscriber<boolean>) => {
+			const reader = new FileReader();
+
+			// if success
+			reader.onload = (_ev: ProgressEvent): void => {
+				this.photographOfYourself = reader.result;
+				observer.next(true);
+			};
+			// if failed
+			reader.onerror = (_ev: any): void => {
+				observer.error(false);
+			};
+			reader.readAsDataURL(image);
+		});
 	}
 
 	/**

@@ -39,7 +39,7 @@ internal abstract class LicenceAppManagerBase
         _licAppRepository = licAppRepository;
     }
 
-    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false)
+    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false, Guid? companionAppId = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -51,9 +51,16 @@ internal abstract class LicenceAppManagerBase
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
+        {
+            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.Submitted, ct);
             await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+        }
         else
+        {
+            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, ct);
             await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+        }
+
         return price?.LicenceFees.FirstOrDefault()?.Amount ?? 0;
     }
 

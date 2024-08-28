@@ -67,6 +67,7 @@ public record BizLicApplicationResp() : BizLicApplication
     public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
+    public Guid? SoleProprietorSWLAppId { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo

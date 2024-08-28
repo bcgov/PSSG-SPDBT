@@ -1,9 +1,9 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LicenceDocumentTypeCode } from '@app/api/models';
+import { ControllingMemberCrcAppSubmitRequest, LicenceDocumentTypeCode } from '@app/api/models';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { UtilService } from '@app/core/services/util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
+import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
@@ -21,56 +21,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
 		phoneNumber: new FormControl('', [Validators.required]),
 	});
-
-	citizenshipFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
-			canadianCitizenProofTypeCode: new FormControl(''),
-			notCanadianCitizenProofTypeCode: new FormControl(''),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl([], [Validators.required]),
-			governmentIssuedPhotoTypeCode: new FormControl(''),
-			governmentIssuedExpiryDate: new FormControl(''),
-			governmentIssuedAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'canadianCitizenProofTypeCode',
-					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'notCanadianCitizenProofTypeCode',
-					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.No
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							(form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
-								form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit))
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedPhotoTypeCode',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedAttachments',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
-				),
-			],
-		}
-	);
 
 	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
 		{
@@ -127,19 +77,21 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		super(formBuilder);
 	}
 
-	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): any {
+	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): ControllingMemberCrcAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		return baseData;
 	}
 
-	private getSaveBodyBase(controllingMemberCrcFormValue: any, _isAuthenticated: boolean): any {
+	private getSaveBodyBase(
+		controllingMemberCrcFormValue: any,
+		_isAuthenticated: boolean
+	): ControllingMemberCrcAppSubmitRequest {
 		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
 		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
 		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
-		// const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
 		const personalInformationData = {
 			...controllingMemberCrcFormValue.personalInformationData,
@@ -151,8 +103,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
-		const accessCode = ''; // TODO addess accessCode
-
 		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
 		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
@@ -160,7 +110,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
 
 		const body = {
-			accessCode,
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
@@ -192,7 +141,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			// hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
 			//-----------------------------------
 			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
@@ -201,5 +149,73 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 
 		console.debug('[getSaveBodyBase] body returned', body);
 		return body;
+	}
+
+	getDocsToSaveBlobs(
+		body: ControllingMemberCrcAppSubmitRequest,
+		controllingMembersModelFormValue: any
+	): Array<LicenceDocumentsToSave> {
+		const documents: Array<LicenceDocumentsToSave> = [];
+
+		const citizenshipData = { ...controllingMembersModelFormValue.citizenshipData };
+		const fingerprintProofData = { ...controllingMembersModelFormValue.fingerprintProofData };
+		const policeBackgroundData = { ...controllingMembersModelFormValue.policeBackgroundData };
+		const mentalHealthConditionsData = { ...controllingMembersModelFormValue.mentalHealthConditionsData };
+
+		if (fingerprintProofData.attachments) {
+			const docs: Array<Blob> = [];
+			fingerprintProofData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint, documents: docs });
+		}
+
+		if (body.isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
+			const docs: Array<Blob> = [];
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				documents: docs,
+			});
+		}
+
+		if (body.isTreatedForMHC && mentalHealthConditionsData.attachments) {
+			const docs: Array<Blob> = [];
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition, documents: docs });
+		}
+
+		if (citizenshipData.attachments) {
+			const docs: Array<Blob> = [];
+			citizenshipData.attachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			const citizenshipLicenceDocumentTypeCode =
+				citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
+					? citizenshipData.canadianCitizenProofTypeCode
+					: citizenshipData.notCanadianCitizenProofTypeCode;
+			documents.push({ licenceDocumentTypeCode: citizenshipLicenceDocumentTypeCode, documents: docs });
+		}
+
+		const isIncludeAdditionalGovermentIdStepData = this.utilService.getSwlShowAdditionalGovIdData(
+			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			citizenshipData.canadianCitizenProofTypeCode,
+			citizenshipData.notCanadianCitizenProofTypeCode
+		);
+
+		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
+			const docs: Array<Blob> = [];
+			citizenshipData.governmentIssuedAttachments.forEach((doc: SpdFile) => {
+				docs.push(doc);
+			});
+			documents.push({ licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode, documents: docs });
+		}
+
+		console.debug('[getDocsToSaveBlobs] documentsToSave', documents);
+		return documents;
 	}
 }

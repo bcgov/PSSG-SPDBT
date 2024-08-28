@@ -68,12 +68,12 @@ export class AlertUpdateOrRenewalComponent implements OnInit {
 	}
 
 	get originalLicenceNumber(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceNumber ?? '';
+		return this.licenceApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.licenceModelData.originalLicenceData.originalExpiryDate ?? '';
+		return this.licenceApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
+		return this.licenceApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 }

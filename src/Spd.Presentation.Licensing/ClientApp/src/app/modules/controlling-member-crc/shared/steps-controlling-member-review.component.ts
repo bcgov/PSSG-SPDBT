@@ -1,15 +1,17 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode } from '@app/api/models';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
+import { StepControllingMemberSummaryReviewAnonymousComponent } from './step-controlling-member-summary-review-anonymous.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-controlling-member-summary-review-anonymous></app-step-controlling-member-summary-review-anonymous>
+				<app-step-controlling-member-summary-review-anonymous
+					(editStep)="onEditStep($event)"
+				></app-step-controlling-member-summary-review-anonymous>
 
 				<app-wizard-footer
 					(cancelAndExit)="onCancelAndExit()"
@@ -37,15 +39,23 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 	readonly STEP_REVIEW = 0;
 	readonly STEP_CONSENT = 1;
 
-	@Input() isFormValid!: boolean;
-	@Input() showSaveAndExit!: boolean;
-	@Input() applicationTypeCode!: ApplicationTypeCode;
+	// @Input() isFormValid!: boolean;
+	// @Input() showSaveAndExit!: boolean;
+	// @Input() applicationTypeCode!: ApplicationTypeCode;
 
+	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
+
+	@ViewChild(StepControllingMemberSummaryReviewAnonymousComponent)
+	stepReview!: StepControllingMemberSummaryReviewAnonymousComponent;
 	@ViewChild(StepControllingMemberConsentAndDeclarationComponent)
 	stepConsent!: StepControllingMemberConsentAndDeclarationComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
+	}
+
+	onEditStep(stepNumber: number) {
+		this.goToStep.emit(stepNumber);
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -58,5 +68,10 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	override onGoToFirstStep() {
+		this.childstepper.selectedIndex = 0;
+		this.stepReview.onUpdateData();
 	}
 }

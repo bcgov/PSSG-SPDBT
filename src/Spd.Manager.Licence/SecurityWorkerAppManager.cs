@@ -152,8 +152,15 @@ internal class SecurityWorkerAppManager :
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
-        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+        if (IsSoleProprietorComboApp(request)) //for sole proprietor, we only commit application until user submit the biz liz app. spdbt-2936 item 3
+        {
+            return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = 0 };
+        }
+        else
+        {
+            decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
+            return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+        }
     }
     #endregion
 
@@ -358,13 +365,13 @@ internal class SecurityWorkerAppManager :
     {
         ChangeSpec changes = new();
         //categories changed
-        if (newRequest.CategoryCodes.Count() != originalApp.CategoryCodes.Count())
+        if (newRequest.CategoryCodes.Count() != originalLic.CategoryCodes.Count())
             changes.CategoriesChanged = true;
         else
         {
             List<WorkerCategoryTypeCode> newList = newRequest.CategoryCodes.ToList();
             newList.Sort();
-            List<WorkerCategoryTypeCode> originalList = originalApp.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
+            List<WorkerCategoryTypeCode> originalList = originalLic.CategoryCodes.Select(c => Enum.Parse<WorkerCategoryTypeCode>(c.ToString())).ToList();
             originalList.Sort();
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
@@ -561,6 +568,13 @@ internal class SecurityWorkerAppManager :
                 }
             }
         }
+
+    }
+
+    private bool IsSoleProprietorComboApp(LicenceAppBase app)
+    {
+        return app.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence &&
+            (app.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || app.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
 
     }
 

@@ -37,7 +37,6 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	forkJoin,
-	map,
 	of,
 	switchMap,
 	take,
@@ -437,7 +436,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			tap((res: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hasValueChanged = false;
 
-				let msg = 'Licence information has been saved';
+				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
 					msg =
 						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
@@ -879,16 +878,20 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: userLicenceInformation?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
+					switchMap((resps: any[]) => {
+						const latestApplication = resps[0];
+						const photoOfYourself = resps[1];
+
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(_resp, true);
+							return this.applyRenewalDataUpdatesToModel(
+								latestApplication,
+								true,
+								userLicenceInformation,
+								photoOfYourself
+							);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(_resp);
+						return this.applyUpdateDataUpdatesToModel(latestApplication, userLicenceInformation, photoOfYourself);
 					})
 				);
 			}
@@ -896,7 +899,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				// ApplicationTypeCode.Replacement
 				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, userLicenceInformation).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp);
+						return this.applyReplacementDataUpdatesToModel(_resp, userLicenceInformation);
 					})
 				);
 			}
@@ -933,7 +936,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		accessCodeData: any,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode!).pipe(
+		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, accessCodeData).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = { ..._resp.personalInformationData };
 
@@ -946,12 +949,51 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					originalLicenceNumber: accessCodeData.licenceNumber,
 					originalExpiryDate: accessCodeData.linkedExpiryDate,
 					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+					originalCategoryCodes: accessCodeData.linkedLicenceCategoryCodes,
 				};
+
+				const [
+					categoryArmouredCarGuardFormGroup,
+					categoryBodyArmourSalesFormGroup,
+					categoryClosedCircuitTelevisionInstallerFormGroup,
+					categoryElectronicLockingDeviceInstallerFormGroup,
+					categoryFireInvestigatorFormGroup,
+					categoryLocksmithFormGroup,
+					categoryLocksmithSupFormGroup,
+					categoryPrivateInvestigatorFormGroup,
+					categoryPrivateInvestigatorSupFormGroup,
+					categorySecurityAlarmInstallerFormGroup,
+					categorySecurityAlarmInstallerSupFormGroup,
+					categorySecurityAlarmMonitorFormGroup,
+					categorySecurityAlarmResponseFormGroup,
+					categorySecurityAlarmSalesFormGroup,
+					categorySecurityConsultantFormGroup,
+					categorySecurityGuardFormGroup,
+					categorySecurityGuardSupFormGroup,
+				] = this.initializeCategoryFormGroups(accessCodeData.linkedLicenceCategoryCodes);
 
 				this.licenceModelFormGroup.patchValue(
 					{
 						originalLicenceData,
 						personalInformationData,
+
+						categoryArmouredCarGuardFormGroup,
+						categoryBodyArmourSalesFormGroup,
+						categoryClosedCircuitTelevisionInstallerFormGroup,
+						categoryElectronicLockingDeviceInstallerFormGroup,
+						categoryFireInvestigatorFormGroup,
+						categoryLocksmithFormGroup,
+						categoryLocksmithSupFormGroup,
+						categoryPrivateInvestigatorFormGroup,
+						categoryPrivateInvestigatorSupFormGroup,
+						categorySecurityGuardFormGroup,
+						categorySecurityGuardSupFormGroup,
+						categorySecurityAlarmInstallerFormGroup,
+						categorySecurityAlarmInstallerSupFormGroup,
+						categorySecurityAlarmMonitorFormGroup,
+						categorySecurityAlarmResponseFormGroup,
+						categorySecurityAlarmSalesFormGroup,
+						categorySecurityConsultantFormGroup,
 					},
 					{ emitEvent: false }
 				);
@@ -1005,36 +1047,41 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	private getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode: ApplicationTypeCode): Observable<any> {
+	private getLicenceOfTypeUsingAccessCodeAnonymous(
+		applicationTypeCode: ApplicationTypeCode,
+		accessCodeData: any
+	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
-				return forkJoin([this.loadExistingLicenceAnonymous(), this.licenceService.apiLicencesLicencePhotoGet()]).pipe(
+				return forkJoin([
+					this.loadExistingLicenceApplicationAnonymous(),
+					this.licenceService.apiLicencesLicencePhotoGet(),
+				]).pipe(
 					catchError((error) => of(error)),
-					map((resps: any[]) => {
-						this.setPhotographOfYourself(resps[1]);
-						return resps[0];
-					}),
-					switchMap((_resp: any) => {
+					switchMap((resps: any[]) => {
+						const latestApplication = resps[0];
+						const photoOfYourself = resps[1];
+
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(_resp, false);
+							return this.applyRenewalDataUpdatesToModel(latestApplication, true, accessCodeData, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(_resp);
+						return this.applyUpdateDataUpdatesToModel(latestApplication, accessCodeData, photoOfYourself);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingLicenceAnonymous().pipe(
+				return this.loadExistingLicenceApplicationAnonymous().pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp);
+						return this.applyReplacementDataUpdatesToModel(_resp, accessCodeData);
 					})
 				);
 			}
 		}
 	}
 
-	private loadExistingLicenceAnonymous(): Observable<any> {
+	private loadExistingLicenceApplicationAnonymous(): Observable<any> {
 		this.reset();
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
@@ -1358,16 +1405,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			weightUnitCode: workerLicenceAppl.weightUnitCode,
 		};
 
-		let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
-		let categoryClosedCircuitTelevisionInstallerFormGroup: any = { isInclude: false };
-		let categoryElectronicLockingDeviceInstallerFormGroup: any = { isInclude: false };
-		let categoryLocksmithSupFormGroup: any = { isInclude: false };
-		let categorySecurityGuardSupFormGroup: any = { isInclude: false };
-		let categorySecurityAlarmInstallerSupFormGroup: any = { isInclude: false };
-		let categorySecurityAlarmMonitorFormGroup: any = { isInclude: false };
-		let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
-		let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
-
 		let restraintsAuthorizationData: any = {
 			carryAndUseRestraints: BooleanTypeCode.No,
 			carryAndUseRestraintsDocument: null,
@@ -1383,55 +1420,25 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			attachments: [],
 		};
 
-		let categoryArmouredCarGuardFormGroup: {
-			isInclude: boolean;
-			expiryDate: string | null;
-			attachments: File[];
-		} = {
-			isInclude: false,
-			expiryDate: null,
-			attachments: [],
-		};
+		const initialCategoryData = this.initializeCategoryFormGroups(workerLicenceAppl.categoryCodes);
 
-		const categoryFireInvestigatorFormGroup: any = { isInclude: false };
-		let categoryLocksmithFormGroup: any = { isInclude: false };
-		const categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
-		let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
-		let categorySecurityGuardFormGroup: any = { isInclude: false };
-		let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
-		const categorySecurityConsultantFormGroup: any = { isInclude: false };
-
-		workerLicenceAppl.categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
-			switch (category) {
-				case WorkerCategoryTypeCode.BodyArmourSales:
-					categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-					categoryClosedCircuitTelevisionInstallerFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
-					categoryElectronicLockingDeviceInstallerFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
-					categoryLocksmithSupFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
-					categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
-					categorySecurityAlarmInstallerSupFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
-					categorySecurityAlarmMonitorFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.SecurityAlarmResponse:
-					categorySecurityAlarmResponseFormGroup = { isInclude: true, checkbox: true };
-					break;
-				case WorkerCategoryTypeCode.SecurityAlarmSales:
-					categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
-					break;
-			}
-		});
+		let categoryArmouredCarGuardFormGroup = initialCategoryData[0];
+		const categoryBodyArmourSalesFormGroup = initialCategoryData[1];
+		const categoryClosedCircuitTelevisionInstallerFormGroup = initialCategoryData[2];
+		const categoryElectronicLockingDeviceInstallerFormGroup = initialCategoryData[3];
+		const categoryFireInvestigatorFormGroup = initialCategoryData[4];
+		let categoryLocksmithFormGroup = initialCategoryData[5];
+		const categoryLocksmithSupFormGroup = initialCategoryData[6];
+		const categoryPrivateInvestigatorFormGroup = initialCategoryData[7];
+		let categoryPrivateInvestigatorSupFormGroup = initialCategoryData[8];
+		let categorySecurityAlarmInstallerFormGroup = initialCategoryData[9];
+		const categorySecurityAlarmInstallerSupFormGroup = initialCategoryData[10];
+		const categorySecurityAlarmMonitorFormGroup = initialCategoryData[11];
+		const categorySecurityAlarmResponseFormGroup = initialCategoryData[12];
+		const categorySecurityAlarmSalesFormGroup = initialCategoryData[13];
+		const categorySecurityConsultantFormGroup = initialCategoryData[14];
+		let categorySecurityGuardFormGroup = initialCategoryData[15];
+		const categorySecurityGuardSupFormGroup = initialCategoryData[16];
 
 		const fingerprintProofDataAttachments: Array<File> = [];
 		const citizenshipDataAttachments: Array<File> = [];
@@ -1486,6 +1493,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
 				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
 				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
 				case LicenceDocumentTypeCode.NonCanadianPassport:
 				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
 					// Additional Government ID: GovernmentIssuedPhotoIdTypes
@@ -1579,7 +1587,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments1PrivateInvestigator.push(aFile);
 
-					categoryPrivateInvestigatorFormGroup.isInclude = true;
 					categoryPrivateInvestigatorFormGroup.requirementCode = doc.licenceDocumentTypeCode;
 					categoryPrivateInvestigatorFormGroup.attachments = attachments1PrivateInvestigator;
 					break;
@@ -1589,7 +1596,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments2PrivateInvestigator.push(aFile);
 
-					categoryPrivateInvestigatorFormGroup.isInclude = true;
 					categoryPrivateInvestigatorFormGroup.trainingCode = doc.licenceDocumentTypeCode;
 					categoryPrivateInvestigatorFormGroup.trainingAttachments = attachments2PrivateInvestigator;
 					break;
@@ -1624,7 +1630,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments2SecurityConsultant.push(aFile);
 
-					categorySecurityConsultantFormGroup.isInclude = true;
 					categorySecurityConsultantFormGroup.requirementCode = doc.licenceDocumentTypeCode;
 					categorySecurityConsultantFormGroup.attachments = attachments2SecurityConsultant;
 
@@ -1634,7 +1639,6 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const aFile = this.fileUtilService.dummyFile(doc);
 					attachments1SecurityConsultant.push(aFile);
 
-					categorySecurityConsultantFormGroup.isInclude = true;
 					categorySecurityConsultantFormGroup.resumeAttachments = attachments1SecurityConsultant;
 
 					break;
@@ -1752,17 +1756,138 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		return of(this.licenceModelFormGroup.value);
 	}
 
-	private applyRenewalDataUpdatesToModel(resp: any, isAuthenticated: boolean): Observable<any> {
+	private initializeCategoryFormGroups(categoryCodes: WorkerCategoryTypeCode[] | null | undefined): any {
+		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
+		let categoryBodyArmourSalesFormGroup: any = { isInclude: false };
+		let categoryClosedCircuitTelevisionInstallerFormGroup: any = { isInclude: false };
+		let categoryElectronicLockingDeviceInstallerFormGroup: any = { isInclude: false };
+		let categoryFireInvestigatorFormGroup: any = { isInclude: false };
+		let categoryLocksmithFormGroup: any = { isInclude: false };
+		let categoryLocksmithSupFormGroup: any = { isInclude: false };
+		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
+		let categoryPrivateInvestigatorSupFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmInstallerFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmInstallerSupFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmMonitorFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmResponseFormGroup: any = { isInclude: false };
+		let categorySecurityAlarmSalesFormGroup: any = { isInclude: false };
+		let categorySecurityConsultantFormGroup: any = { isInclude: false };
+		let categorySecurityGuardFormGroup: any = { isInclude: false };
+		let categorySecurityGuardSupFormGroup: any = { isInclude: false };
+
+		categoryCodes?.forEach((category: WorkerCategoryTypeCode) => {
+			switch (category) {
+				case WorkerCategoryTypeCode.ArmouredCarGuard:
+					categoryArmouredCarGuardFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.BodyArmourSales:
+					categoryBodyArmourSalesFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+					categoryClosedCircuitTelevisionInstallerFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+					categoryElectronicLockingDeviceInstallerFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.FireInvestigator:
+					categoryFireInvestigatorFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.Locksmith:
+					categoryLocksmithFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.LocksmithUnderSupervision:
+					categoryLocksmithSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.PrivateInvestigator:
+					categoryPrivateInvestigatorFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision:
+					categoryPrivateInvestigatorSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityGuard:
+					categorySecurityGuardFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityGuardUnderSupervision:
+					categorySecurityGuardSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision:
+					categorySecurityAlarmInstallerSupFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+					categorySecurityAlarmInstallerFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+					categorySecurityAlarmMonitorFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmResponse:
+					categorySecurityAlarmResponseFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmSales:
+					categorySecurityAlarmSalesFormGroup = { isInclude: true, checkbox: true };
+					break;
+				case WorkerCategoryTypeCode.SecurityConsultant:
+					categorySecurityConsultantFormGroup = { isInclude: true, checkbox: true };
+					break;
+			}
+		});
+
+		return [
+			categoryArmouredCarGuardFormGroup,
+			categoryBodyArmourSalesFormGroup,
+			categoryClosedCircuitTelevisionInstallerFormGroup,
+			categoryElectronicLockingDeviceInstallerFormGroup,
+			categoryFireInvestigatorFormGroup,
+			categoryLocksmithFormGroup,
+			categoryLocksmithSupFormGroup,
+			categoryPrivateInvestigatorFormGroup,
+			categoryPrivateInvestigatorSupFormGroup,
+			categorySecurityAlarmInstallerFormGroup,
+			categorySecurityAlarmInstallerSupFormGroup,
+			categorySecurityAlarmMonitorFormGroup,
+			categorySecurityAlarmResponseFormGroup,
+			categorySecurityAlarmSalesFormGroup,
+			categorySecurityConsultantFormGroup,
+			categorySecurityGuardFormGroup,
+			categorySecurityGuardSupFormGroup,
+		];
+	}
+
+	private applyRenewalDataUpdatesToModel(
+		resp: any,
+		isAuthenticated: boolean,
+		userLicenceInformation: MainLicenceResponse,
+		photoOfYourself: Blob
+	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
 
 		// Remove data that should be re-prompted for
 		const soleProprietorData = {
 			isSoleProprietor: null,
-			bizTypeCode: null,
+			bizTypeCode: resp.soleProprietorData.bizTypeCode,
 		};
 		const licenceTermData = {
 			licenceTermCode: null,
 		};
+
+		const [
+			categoryArmouredCarGuardFormGroup,
+			categoryBodyArmourSalesFormGroup,
+			categoryClosedCircuitTelevisionInstallerFormGroup,
+			categoryElectronicLockingDeviceInstallerFormGroup,
+			categoryFireInvestigatorFormGroup,
+			categoryLocksmithFormGroup,
+			categoryLocksmithSupFormGroup,
+			categoryPrivateInvestigatorFormGroup,
+			categoryPrivateInvestigatorSupFormGroup,
+			categorySecurityAlarmInstallerFormGroup,
+			categorySecurityAlarmInstallerSupFormGroup,
+			categorySecurityAlarmMonitorFormGroup,
+			categorySecurityAlarmResponseFormGroup,
+			categorySecurityAlarmSalesFormGroup,
+			categorySecurityConsultantFormGroup,
+			categorySecurityGuardFormGroup,
+			categorySecurityGuardSupFormGroup,
+		] = this.initializeCategoryFormGroups(userLicenceInformation.licenceCategoryCodes);
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
@@ -1851,17 +1976,43 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				mentalHealthConditionsData,
 				policeBackgroundData,
 				criminalHistoryData,
+
+				categoryArmouredCarGuardFormGroup,
+				categoryBodyArmourSalesFormGroup,
+				categoryClosedCircuitTelevisionInstallerFormGroup,
+				categoryElectronicLockingDeviceInstallerFormGroup,
+				categoryFireInvestigatorFormGroup,
+				categoryLocksmithFormGroup,
+				categoryLocksmithSupFormGroup,
+				categoryPrivateInvestigatorFormGroup,
+				categoryPrivateInvestigatorSupFormGroup,
+				categorySecurityGuardFormGroup,
+				categorySecurityGuardSupFormGroup,
+				categorySecurityAlarmInstallerFormGroup,
+				categorySecurityAlarmInstallerSupFormGroup,
+				categorySecurityAlarmMonitorFormGroup,
+				categorySecurityAlarmResponseFormGroup,
+				categorySecurityAlarmSalesFormGroup,
+				categorySecurityConsultantFormGroup,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
-		console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
+				return of(this.licenceModelFormGroup.value);
+			})
+		);
 	}
 
-	private applyUpdateDataUpdatesToModel(resp: any): Observable<any> {
+	private applyUpdateDataUpdatesToModel(
+		resp: any,
+		userLicenceInformation: MainLicenceResponse,
+		photoOfYourself: Blob
+	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
 
 		const originalLicenceData = resp.originalLicenceData;
@@ -1872,6 +2023,26 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			attachments: [],
 			hasPreviousMhcFormUpload: resp.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes,
 		};
+
+		const [
+			categoryArmouredCarGuardFormGroup,
+			categoryBodyArmourSalesFormGroup,
+			categoryClosedCircuitTelevisionInstallerFormGroup,
+			categoryElectronicLockingDeviceInstallerFormGroup,
+			categoryFireInvestigatorFormGroup,
+			categoryLocksmithFormGroup,
+			categoryLocksmithSupFormGroup,
+			categoryPrivateInvestigatorFormGroup,
+			categoryPrivateInvestigatorSupFormGroup,
+			categorySecurityAlarmInstallerFormGroup,
+			categorySecurityAlarmInstallerSupFormGroup,
+			categorySecurityAlarmMonitorFormGroup,
+			categorySecurityAlarmResponseFormGroup,
+			categorySecurityAlarmSalesFormGroup,
+			categorySecurityConsultantFormGroup,
+			categorySecurityGuardFormGroup,
+			categorySecurityGuardSupFormGroup,
+		] = this.initializeCategoryFormGroups(userLicenceInformation.licenceCategoryCodes);
 
 		const policeBackgroundData = {
 			isPoliceOrPeaceOfficer: null,
@@ -1894,17 +2065,39 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				mentalHealthConditionsData,
 				policeBackgroundData,
 				criminalHistoryData,
+
+				categoryArmouredCarGuardFormGroup,
+				categoryBodyArmourSalesFormGroup,
+				categoryClosedCircuitTelevisionInstallerFormGroup,
+				categoryElectronicLockingDeviceInstallerFormGroup,
+				categoryFireInvestigatorFormGroup,
+				categoryLocksmithFormGroup,
+				categoryLocksmithSupFormGroup,
+				categoryPrivateInvestigatorFormGroup,
+				categoryPrivateInvestigatorSupFormGroup,
+				categorySecurityGuardFormGroup,
+				categorySecurityGuardSupFormGroup,
+				categorySecurityAlarmInstallerFormGroup,
+				categorySecurityAlarmInstallerSupFormGroup,
+				categorySecurityAlarmMonitorFormGroup,
+				categorySecurityAlarmResponseFormGroup,
+				categorySecurityAlarmSalesFormGroup,
+				categorySecurityConsultantFormGroup,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
-		console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		return this.setPhotographOfYourself(photoOfYourself).pipe(
+			switchMap((_resp: any) => {
+				console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
+				return of(this.licenceModelFormGroup.value);
+			})
+		);
 	}
 
-	private applyReplacementDataUpdatesToModel(resp: any): Observable<any> {
+	private applyReplacementDataUpdatesToModel(resp: any, userLicenceInformation: MainLicenceResponse): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		const originalLicenceData = resp.originalLicenceData;
@@ -1914,6 +2107,26 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			isAddressTheSame: false, // Mailing address validation will only show when this is false.
 		};
 
+		const [
+			categoryArmouredCarGuardFormGroup,
+			categoryBodyArmourSalesFormGroup,
+			categoryClosedCircuitTelevisionInstallerFormGroup,
+			categoryElectronicLockingDeviceInstallerFormGroup,
+			categoryFireInvestigatorFormGroup,
+			categoryLocksmithFormGroup,
+			categoryLocksmithSupFormGroup,
+			categoryPrivateInvestigatorFormGroup,
+			categoryPrivateInvestigatorSupFormGroup,
+			categorySecurityAlarmInstallerFormGroup,
+			categorySecurityAlarmInstallerSupFormGroup,
+			categorySecurityAlarmMonitorFormGroup,
+			categorySecurityAlarmResponseFormGroup,
+			categorySecurityAlarmSalesFormGroup,
+			categorySecurityConsultantFormGroup,
+			categorySecurityGuardFormGroup,
+			categorySecurityGuardSupFormGroup,
+		] = this.initializeCategoryFormGroups(userLicenceInformation.licenceCategoryCodes);
+
 		this.licenceModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
@@ -1921,6 +2134,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: false },
 				mailingAddressData: { ...mailingAddressData },
+
+				categoryArmouredCarGuardFormGroup,
+				categoryBodyArmourSalesFormGroup,
+				categoryClosedCircuitTelevisionInstallerFormGroup,
+				categoryElectronicLockingDeviceInstallerFormGroup,
+				categoryFireInvestigatorFormGroup,
+				categoryLocksmithFormGroup,
+				categoryLocksmithSupFormGroup,
+				categoryPrivateInvestigatorFormGroup,
+				categoryPrivateInvestigatorSupFormGroup,
+				categorySecurityGuardFormGroup,
+				categorySecurityGuardSupFormGroup,
+				categorySecurityAlarmInstallerFormGroup,
+				categorySecurityAlarmInstallerSupFormGroup,
+				categorySecurityAlarmMonitorFormGroup,
+				categorySecurityAlarmResponseFormGroup,
+				categorySecurityAlarmSalesFormGroup,
+				categorySecurityConsultantFormGroup,
 			},
 			{
 				emitEvent: false,

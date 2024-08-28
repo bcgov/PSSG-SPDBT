@@ -1,15 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import {
-	ApplicationTypeCode,
-	ArmouredVehiclePermitReasonCode,
-	BizTypeCode,
-	BodyArmourPermitReasonCode,
-	LicenceDocumentTypeCode,
-	WorkerLicenceTypeCode,
-} from '@app/api/models';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { UtilService } from '@app/core/services/util.service';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
@@ -376,17 +367,16 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 })
 export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	permitModelData: any = {};
-	showEmployerInformation = false;
 
 	booleanTypeCodes = BooleanTypeCode;
+
+	@Input() showEmployerInformation!: boolean;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: ApplicationService,
-		private utilService: UtilService,
-		private optionsPipe: OptionsPipe
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -404,13 +394,11 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+		return this.permitApplicationService.getSummaryworkerLicenceTypeCode(this.permitModelData);
 	}
-
 	get applicationTypeCode(): ApplicationTypeCode | null {
-		return this.permitModelData.applicationTypeData?.applicationTypeCode ?? null;
+		return this.permitApplicationService.getSummaryapplicationTypeCode(this.permitModelData);
 	}
-
 	get licenceFee(): number | null {
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BizTypeCode.None)
@@ -420,255 +408,138 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 	}
 
 	get licenceTermCode(): string {
-		return this.permitModelData.licenceTermData.licenceTermCode ?? '';
+		return this.permitApplicationService.getSummarylicenceTermCode(this.permitModelData);
 	}
 	get hasExpiredLicence(): string {
-		return this.permitModelData.expiredLicenceData.hasExpiredLicence ?? '';
+		return this.permitApplicationService.getSummaryhasExpiredLicence(this.permitModelData);
 	}
 	get expiredLicenceNumber(): string {
-		return this.permitModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+		return this.permitApplicationService.getSummaryexpiredLicenceNumber(this.permitModelData);
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.permitModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+		return this.permitApplicationService.getSummaryexpiredLicenceExpiryDate(this.permitModelData);
 	}
 
 	get isCanadianCitizen(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen ?? '';
+		return this.permitApplicationService.getSummaryisCanadianCitizen(this.permitModelData);
 	}
 	get canadianCitizenProofTypeCode(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
-			? this.permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
-			: '';
+		return this.permitApplicationService.getSummarycanadianCitizenProofTypeCode(this.permitModelData);
 	}
 	get isCanadianResident(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? this.permitModelData.citizenshipData.isCanadianResident ?? ''
-			: '';
+		return this.permitApplicationService.getSummaryisCanadianResident(this.permitModelData);
 	}
 	get proofOfResidentStatusCode(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
-			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.Yes
-			? this.permitModelData.citizenshipData.proofOfResidentStatusCode ?? ''
-			: '';
+		return this.permitApplicationService.getSummaryproofOfResidentStatusCode(this.permitModelData);
 	}
 	get proofOfCitizenshipCode(): string {
-		return this.permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
-			this.permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.No
-			? this.permitModelData.citizenshipData.proofOfCitizenshipCode ?? ''
-			: '';
+		return this.permitApplicationService.getSummaryproofOfCitizenshipCode(this.permitModelData);
 	}
 	get citizenshipExpiryDate(): string {
-		return this.permitModelData.citizenshipData.expiryDate ?? '';
+		return this.permitApplicationService.getSummarycitizenshipExpiryDate(this.permitModelData);
 	}
 	get attachments(): File[] {
-		return this.permitModelData.citizenshipData.attachments ?? [];
+		return this.permitApplicationService.getSummaryattachments(this.permitModelData);
 	}
 
 	get showAdditionalGovIdData(): boolean {
-		return this.utilService.getPermitShowAdditionalGovIdData(
-			this.isCanadianCitizen == BooleanTypeCode.Yes,
-			this.isCanadianResident == BooleanTypeCode.Yes,
-			this.canadianCitizenProofTypeCode as LicenceDocumentTypeCode,
-			this.proofOfResidentStatusCode as LicenceDocumentTypeCode,
-			this.proofOfCitizenshipCode as LicenceDocumentTypeCode
-		);
+		return this.permitApplicationService.getSummaryshowAdditionalGovIdData(this.permitModelData);
 	}
 
 	get governmentIssuedPhotoTypeCode(): string {
-		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedPhotoTypeCode : '';
+		return this.permitApplicationService.getSummarygovernmentIssuedPhotoTypeCode(this.permitModelData);
 	}
 	get governmentIssuedPhotoExpiryDate(): string {
-		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedExpiryDate : '';
+		return this.permitApplicationService.getSummarygovernmentIssuedPhotoExpiryDate(this.permitModelData);
 	}
 	get governmentIssuedPhotoAttachments(): File[] {
-		return this.showAdditionalGovIdData ? this.permitModelData.citizenshipData.governmentIssuedAttachments : [];
+		return this.permitApplicationService.getSummarygovernmentIssuedPhotoAttachments(this.permitModelData);
 	}
 
-	get hasBcDriversLicence(): string {
-		return this.permitModelData.bcDriversLicenceData.hasBcDriversLicence ?? '';
-	}
 	get bcDriversLicenceNumber(): string {
-		return this.permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '';
+		return this.permitApplicationService.getSummarybcDriversLicenceNumber(this.permitModelData);
 	}
 
 	get hairColourCode(): string {
-		return this.permitModelData.characteristicsData.hairColourCode ?? '';
+		return this.permitApplicationService.getSummaryhairColourCode(this.permitModelData);
 	}
 	get eyeColourCode(): string {
-		return this.permitModelData.characteristicsData.eyeColourCode ?? '';
+		return this.permitApplicationService.getSummaryeyeColourCode(this.permitModelData);
 	}
 	get height(): string {
-		return this.permitModelData.characteristicsData.height ?? '';
+		return this.permitApplicationService.getSummaryheight(this.permitModelData);
 	}
 	get heightInches(): string {
-		return this.permitModelData.characteristicsData.heightInches ?? '';
+		return this.permitApplicationService.getSummaryheightInches(this.permitModelData);
 	}
 	get heightUnitCode(): string {
-		return this.permitModelData.characteristicsData.heightUnitCode ?? '';
+		return this.permitApplicationService.getSummaryheightUnitCode(this.permitModelData);
 	}
 	get weight(): string {
-		return this.permitModelData.characteristicsData.weight ?? '';
+		return this.permitApplicationService.getSummaryweight(this.permitModelData);
 	}
 	get weightUnitCode(): string {
-		return this.permitModelData.characteristicsData.weightUnitCode ?? '';
+		return this.permitApplicationService.getSummaryweightUnitCode(this.permitModelData);
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		if (this.applicationTypeCode === ApplicationTypeCode.New) {
-			return this.permitModelData.photographOfYourselfData.attachments ?? [];
-		} else {
-			const updatePhoto = this.permitModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
-			const updateAttachments = this.permitModelData.photographOfYourselfData.updateAttachments ?? [];
-			return updatePhoto ? updateAttachments : null;
-		}
+		return this.permitApplicationService.getSummaryphotoOfYourselfAttachments(this.permitModelData);
 	}
 
 	get purposeLabel(): string {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			return 'Reasons for Requiring an Armoured Vehicle';
-		} else {
-			return 'Reasons for Requiring Body Armour';
-		}
+		return this.permitApplicationService.getSummarypurposeLabel(this.permitModelData);
 	}
 	get purposeReasons(): Array<string> {
-		const reasonList = [];
-		this.showEmployerInformation = false;
-
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
-			if (armouredVehicleRequirement.isPersonalProtection) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.PersonalProtection,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isProtectionOfAnotherPerson) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.ProtectionOfAnotherPerson,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isProtectionOfPersonalProperty) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.ProtectionOfPersonalProperty,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isProtectionOfOthersProperty) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						ArmouredVehiclePermitReasonCode.ProtectionOfOtherProperty,
-						'ArmouredVehiclePermitReasonTypes'
-					)
-				);
-			}
-			if (armouredVehicleRequirement.isMyEmployment) {
-				this.showEmployerInformation = true;
-				reasonList.push(
-					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.MyEmployment, 'ArmouredVehiclePermitReasonTypes')
-				);
-			}
-			if (armouredVehicleRequirement.isOther) {
-				reasonList.push(
-					this.optionsPipe.transform(ArmouredVehiclePermitReasonCode.Other, 'ArmouredVehiclePermitReasonTypes')
-				);
-			}
-		} else {
-			const bodyArmourRequirementFormGroup = this.permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
-			if (bodyArmourRequirementFormGroup.isOutdoorRecreation) {
-				reasonList.push(
-					this.optionsPipe.transform(BodyArmourPermitReasonCode.OutdoorRecreation, 'BodyArmourPermitReasonTypes')
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isPersonalProtection) {
-				reasonList.push(
-					this.optionsPipe.transform(BodyArmourPermitReasonCode.PersonalProtection, 'BodyArmourPermitReasonTypes')
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isMyEmployment) {
-				this.showEmployerInformation = true;
-				reasonList.push(
-					this.optionsPipe.transform(BodyArmourPermitReasonCode.MyEmployment, 'BodyArmourPermitReasonTypes')
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isTravelForConflict) {
-				reasonList.push(
-					this.optionsPipe.transform(
-						BodyArmourPermitReasonCode.TravelInResponseToInternationalConflict,
-						'BodyArmourPermitReasonTypes'
-					)
-				);
-			}
-			if (bodyArmourRequirementFormGroup.isOther) {
-				reasonList.push(this.optionsPipe.transform(BodyArmourPermitReasonCode.Other, 'BodyArmourPermitReasonTypes'));
-			}
-		}
-		return reasonList;
+		return this.permitApplicationService.getSummarypurposeReasons(this.permitModelData);
 	}
 	get isOtherReason(): boolean {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			const armouredVehicleRequirement = this.permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
-			return armouredVehicleRequirement.isOther;
-		} else {
-			const bodyArmourRequirementFormGroup = this.permitModelData.permitRequirementData.bodyArmourRequirementFormGroup;
-			return bodyArmourRequirementFormGroup.isOther;
-		}
+		return this.permitApplicationService.getSummaryisOtherReason(this.permitModelData);
 	}
 	get otherReason(): boolean {
-		return this.permitModelData.permitRequirementData.otherReason;
+		return this.permitApplicationService.getSummaryotherReason(this.permitModelData);
 	}
 
 	get rationaleLabel(): string {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
-			return 'Rationale for Requiring an Armoured Vehicle';
-		} else {
-			return 'Rationale for Requiring Body Armour';
-		}
+		return this.permitApplicationService.getSummaryrationaleLabel(this.permitModelData);
 	}
 	get rationale(): string {
-		return this.permitModelData.permitRationaleData?.rationale ?? '';
+		return this.permitApplicationService.getSummaryrationale(this.permitModelData);
 	}
 	get isRationaleAttachments(): boolean {
-		return this.permitModelData.permitRationaleData?.attachments?.length > 0;
+		return this.permitApplicationService.getSummaryisRationaleAttachments(this.permitModelData);
 	}
 	get rationaleAttachments(): File[] {
-		return this.permitModelData.permitRationaleData?.attachments ?? [];
+		return this.permitApplicationService.getSummaryrationaleAttachments(this.permitModelData);
 	}
 
 	get employerName(): string {
-		return this.permitModelData.employerData?.employerName ?? '';
+		return this.permitApplicationService.getSummaryemployerName(this.permitModelData);
 	}
 	get supervisorName(): string {
-		return this.permitModelData.employerData?.supervisorName ?? '';
+		return this.permitApplicationService.getSummarysupervisorName(this.permitModelData);
 	}
 	get supervisorEmailAddress(): string {
-		return this.permitModelData.employerData?.supervisorEmailAddress ?? '';
+		return this.permitApplicationService.getSummarysupervisorEmailAddress(this.permitModelData);
 	}
 	get supervisorPhoneNumber(): string {
-		return this.permitModelData.employerData?.supervisorPhoneNumber ?? '';
+		return this.permitApplicationService.getSummarysupervisorPhoneNumber(this.permitModelData);
 	}
 	get businessAddressLine1(): string {
-		return this.permitModelData.employerData?.addressLine1 ?? '';
+		return this.permitApplicationService.getSummarybusinessAddressLine1(this.permitModelData);
 	}
 	get businessAddressLine2(): string {
-		return this.permitModelData.employerData?.addressLine2 ?? '';
+		return this.permitApplicationService.getSummarybusinessAddressLine2(this.permitModelData);
 	}
 	get businessCity(): string {
-		return this.permitModelData.employerData?.city ?? '';
+		return this.permitApplicationService.getSummarybusinessCity(this.permitModelData);
 	}
 	get businessPostalCode(): string {
-		return this.permitModelData.employerData?.postalCode ?? '';
+		return this.permitApplicationService.getSummarybusinessPostalCode(this.permitModelData);
 	}
 	get businessProvince(): string {
-		return this.permitModelData.employerData?.province ?? '';
+		return this.permitApplicationService.getSummarybusinessProvince(this.permitModelData);
 	}
 	get businessCountry(): string {
-		return this.permitModelData.employerData?.country ?? '';
+		return this.permitApplicationService.getSummarybusinessCountry(this.permitModelData);
 	}
 }

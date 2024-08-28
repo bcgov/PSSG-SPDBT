@@ -14,8 +14,6 @@ import { ApplicationsListCurrentComponent } from './components/applications-list
 import { BaseFilterComponent } from './components/base-filter.component';
 import { CaptchaV2Component } from './components/captcha-v2.component';
 import { CollectionNoticeComponent } from './components/collection-notice.component';
-import { FormMentalHealthConditionsComponent } from './components/form-mental-health-conditions.component';
-import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { ContainerComponent } from './components/container.component';
 import { DialogOopsComponent } from './components/dialog-oops.component';
 import { DialogComponent } from './components/dialog.component';
@@ -25,6 +23,9 @@ import { FileUploadComponent } from './components/file-upload.component';
 import { FormAliasesComponent } from './components/form-aliases.component';
 import { FormBcDriverLicenceComponent } from './components/form-bc-driver-licence.component';
 import { FormFingerprintsComponent } from './components/form-fingerprints.component';
+import { FormMentalHealthConditionsComponent } from './components/form-mental-health-conditions.component';
+import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
+import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
 import { LicenceListExpiredComponent } from './components/licence-list-expired.component';
 import { LicenceReprintComponent } from './components/licence-reprint.component';
 import { ModalAddressComponent } from './components/modal-address.component';
@@ -97,6 +98,7 @@ const SHARED_COMPONENTS = [
 	FormBcDriverLicenceComponent,
 	FormPoliceBackgroundComponent,
 	FormMentalHealthConditionsComponent,
+	FormSwlCitizenshipComponent,
 ];
 
 @NgModule({
