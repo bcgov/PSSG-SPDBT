@@ -1027,6 +1027,24 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	}
 
 	/**
+	 * Load an existing licence application with an access code
+	 * @param licenceAppId
+	 * @returns
+	 */
+	populateSoleProprietorComboFlowAnonymous(): Observable<any> {
+		return this.loadExistingLicenceApplicationAnonymous().pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	/**
 	 * Create an empty anonymous licence
 	 * @returns
 	 */

@@ -256,7 +256,11 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			.subscribe((response: boolean) => {
 				if (response) {
 					if (this.isSwlAnonymous) {
-						this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous());
+						this.router.navigate([
+							PersonalLicenceApplicationRoutes.MODULE_PATH,
+							PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
+							PersonalLicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,
+						]);
 						return;
 					}
 

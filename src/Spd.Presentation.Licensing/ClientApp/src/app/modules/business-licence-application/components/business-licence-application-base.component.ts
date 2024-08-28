@@ -71,11 +71,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			loginInfo.state
 		) {
 			// handle new business licence creation from swl - for sole proprietor
-
-			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor defaultBizId', defaultBizId);
-			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor licenceAppId', licenceAppId);
-			console.debug('BusinessLicenceApplicationBaseComponent soleProprietor isSwlAnonymous', isSwlAnonymous);
-
 			this.businessApplicationService
 				.createNewBusinessLicenceWithSwlCombinedFlow(licenceAppId!, isSwlAnonymous === 'Y')
 				.pipe(
