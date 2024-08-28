@@ -1,6 +1,5 @@
 using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
 public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpdateRequest>
@@ -39,7 +38,7 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .NotEmpty()
             .When(r => r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor && r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.BizManagerContactInfo)
-            .Must(r => r.GivenName.IsNullOrEmpty() != true &&
+            .Must(r =>
                 r.Surname.IsNullOrEmpty() != true &&
                 r.PhoneNumber.IsNullOrEmpty() != true &&
                 r.EmailAddress.IsNullOrEmpty() != true)
