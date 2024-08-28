@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +8,10 @@ using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -216,7 +216,11 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-            return await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
+            var response = await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
+
+            //clear the cookie for the sole proprietor swl
+            SetValueToResponseCookie(SessionConstants.AnonymousSoleProprietorApplicationContext, string.Empty);
+            return response;
         }
 
         /// <summary>
