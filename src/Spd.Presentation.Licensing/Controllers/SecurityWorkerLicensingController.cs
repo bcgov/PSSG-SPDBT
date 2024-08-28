@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +9,10 @@ using Spd.Manager.Shared;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -218,6 +218,19 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Get Security Worker Licence SoleProprietor Application, anonymous one, so, we get the swlAppId from cookies.
+        /// Used for sole proprietor, biz app is aborted, fe needs to get the swl application
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/sp-worker-licence-application")]
+        [HttpGet]
+        public async Task<WorkerLicenceAppResponse> GetSPSecurityWorkerLicenceApplicationAnonymous()
+        {
+            string swlApplicationId = GetInfoFromRequestCookie(SessionConstants.AnonymousSoleProprietorApplicationContext);
+            return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(swlApplicationId)));
+        }
+
+        /// <summary>
         /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
         /// the keycode will be set in the cookies
         /// </summary>
@@ -301,6 +314,12 @@ namespace Spd.Presentation.Licensing.Controllers
             }
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+
+            //if it is sole proprietor, we have to support connect two flows together and we have to support user abort the second flow, user can still go back to the first flow.
+            if (response.LicenceAppId != null && (jsonRequest.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || jsonRequest.BizTypeCode == BizTypeCode.RegisteredSoleProprietor))
+            {
+                SetValueToResponseCookie(SessionConstants.AnonymousSoleProprietorApplicationContext, response.LicenceAppId.ToString(), 180);
+            }
             return response;
         }
 
