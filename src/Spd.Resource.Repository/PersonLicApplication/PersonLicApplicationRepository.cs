@@ -58,7 +58,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             }
         }
         _context.SetLink(app, nameof(app.spd_ApplicantId_contact), contact);
-        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -101,7 +101,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
-        await LinkTeam(DynamicsConstants.Licensing_Client_Service_Team_Guid, app, ct);
+        SharedRepositoryFuncs.LinkTeam(_context,DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
@@ -156,12 +156,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }
 
-    private async Task LinkTeam(string teamGuidStr, spd_application app, CancellationToken ct)
-    {
-        Guid teamGuid = Guid.Parse(teamGuidStr);
-        team? serviceTeam = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
-        _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
-    }
+   
 
     private List<spd_alias>? GetAliases(Guid contactId)
     {
