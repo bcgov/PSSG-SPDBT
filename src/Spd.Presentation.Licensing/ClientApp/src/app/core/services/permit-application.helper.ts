@@ -766,7 +766,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		return permitModelData.personalInformationData.middleName2 ?? '';
 	}
 	getSummarysurname(permitModelData: any): string {
-		return this.getSummarysurname(permitModelData);
+		return permitModelData.personalInformationData.surname ?? '';
 	}
 	getSummarygenderCode(permitModelData: any): string {
 		return permitModelData.personalInformationData.genderCode ?? '';
