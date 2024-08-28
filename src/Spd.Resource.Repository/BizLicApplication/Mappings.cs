@@ -70,6 +70,7 @@ internal class Mappings : Profile
          .ForMember(d => d.ExpiredLicenceId, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licenceid))
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
          .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.Ignore())
+         .ForMember(d => d.SoleProprietorSWLAppId, opt => opt.MapFrom(s => GetSwlAppId(s.spd_businessapplication_spd_workerapplication.ToList())))
          .IncludeBase<spd_application, BizLicApplication>();
 
         _ = CreateMap<PrivateInvestigatorSwlContactInfo, spd_businesscontact>()
@@ -102,5 +103,11 @@ internal class Mappings : Profile
     private static DateTimeOffset? GetDeclarationDate(BizLicApplication app)
     {
         return app.AgreeToCompleteAndAccurate != null && app.AgreeToCompleteAndAccurate == true ? DateTime.Now : null;
+    }
+
+    private static Guid? GetSwlAppId(List<spd_application> apps)
+    {
+        return apps.OrderByDescending(a => a.createdon)
+            .FirstOrDefault()?.spd_applicationid;
     }
 }
