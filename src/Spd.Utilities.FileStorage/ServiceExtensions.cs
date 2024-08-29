@@ -43,6 +43,7 @@ namespace Spd.Utilities.FileStorage
 
             services.AddTransient<IMainFileStorageService, MainFileStorageService>();
             services.AddTransient<ITransientFileStorageService, TransientFileStorageService>();
+            services.AddTransient<ITempFileStorageService, TempFileStorageService>();
 
             return services;
         }

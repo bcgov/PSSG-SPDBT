@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -16,7 +13,9 @@ using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
-using Spd.Utilities.TempFileStorage;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 
 namespace Spd.Presentation.Screening
 {
@@ -82,7 +81,6 @@ namespace Spd.Presentation.Screening
             {
                 services.AddDistributedMemoryCache();
             }
-            services.AddTempFileStorageService();
             services.AddFileStorageProxy(configuration);
             services
               .AddBCeIDService(configuration)

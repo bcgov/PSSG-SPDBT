@@ -3,9 +3,9 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
-using Spd.Utilities.TempFileStorage;
 
 namespace Spd.Resource.Repository.Document;
+
 internal class DocumentRepository : IDocumentRepository
 {
     private readonly DynamicsContext _context;
@@ -70,6 +70,7 @@ internal class DocumentRepository : IDocumentRepository
             Items = _mapper.Map<IEnumerable<DocumentResp>>(result)
         };
     }
+
     public async Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken ct)
     {
         return cmd switch
@@ -347,5 +348,3 @@ internal class DocumentRepository : IDocumentRepository
         return _mapper.Map<DocumentResp>(documenturl);
     }
 }
-
-

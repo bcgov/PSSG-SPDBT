@@ -266,3 +266,6 @@ dotnet_diagnostic.S6608.severity = suggestion
 
 # S2139: Exceptions should be either logged or rethrown but not both
 dotnet_diagnostic.S2139.severity = suggestion
+
+# S2094: Classes should not be empty
+dotnet_diagnostic.S2094.severity = suggestion

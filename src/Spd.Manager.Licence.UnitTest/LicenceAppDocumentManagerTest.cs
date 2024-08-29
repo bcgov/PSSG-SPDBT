@@ -5,9 +5,10 @@ using Moq;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.PersonLicApplication;
-using Spd.Utilities.TempFileStorage;
+using Spd.Utilities.FileStorage;
 
 namespace Spd.Manager.Licence.UnitTest;
+
 public class LicenceAppDocumentManagerTest
 {
     private readonly IFixture fixture;
