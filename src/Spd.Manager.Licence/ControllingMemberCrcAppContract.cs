@@ -43,7 +43,8 @@ public record ControllingMemberCrcAppBase
 
 #region authenticated
 public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcAppUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
-
+public record ControllingMemberCrcSubmitCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcUpsertRequest)
+    : ControllingMemberCrcUpsertCommand(ControllingMemberCrcUpsertRequest), IRequest<ControllingMemberCrcAppCommandResponse>;
 public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }

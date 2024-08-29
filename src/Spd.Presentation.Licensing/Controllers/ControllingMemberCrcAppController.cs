@@ -59,7 +59,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
     }
     /// <summary>
-    /// Upload permit application files to transient storage
+    /// Upload Controlling Member application files to transient storage
     /// </summary>
     /// <param name="fileUploadRequest"></param>
     /// <param name="licenceAppId"></param>
@@ -69,13 +69,32 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     [HttpPost]
     [RequestSizeLimit(26214400)] //25M
     [Authorize(Policy = "OnlyBcsc")]
-    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid CrcAppId, CancellationToken ct)
     {
         VerifyFiles(fileUploadRequest.Documents);
         var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
-        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, CrcAppId), ct);
     }
+    /// <summary>
+    /// Submit Controlling Member Crc Application
+    /// authenticated
+    /// </summary>
+    /// <param name="ControllingMemberCrcSubmitRequest"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/submit")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpPost]
+    public async Task<ControllingMemberCrcAppCommandResponse> SubmitPermitApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcSubmitRequest, CancellationToken ct)
+    {
+        //TODO: modify validator condition
+        var validateResult = await _controllingMemberCrcAppUpsertValidator.ValidateAsync(controllingMemberCrcSubmitRequest, ct);
+        if (!validateResult.IsValid)
+            throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+        return await _mediator.Send(new ControllingMemberCrcSubmitCommand(controllingMemberCrcSubmitRequest));
+    }
+
     #endregion authenticated
     #region anonymous
     /// <summary>
@@ -118,7 +137,8 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     }
 
     /// <summary>
-    /// Save New Licence Crc Controlling Member
+    /// Submit Controlling Member Crc Application
+    /// anonymous
     /// </summary>
     /// <param name="ControllingMemberCrcSubmitRequest"></param>
     /// <returns></returns>
