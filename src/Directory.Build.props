@@ -11,8 +11,8 @@
 				<AnalysisMode>all</AnalysisMode>
 				<AnalysisLevel>latest-all</AnalysisLevel>
 				<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
-				<DebugType>portable</DebugType>
+				<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+				<DebugType>Full</DebugType>
 				<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
 				<PublishReadyToRunEmitSymbols>true</PublishReadyToRunEmitSymbols>
 		</PropertyGroup>

@@ -263,3 +263,6 @@ dotnet_diagnostic.S6602.severity = suggestion
 
 # S6608: Prefer indexing instead of "Enumerable" methods on types implementing "IList"
 dotnet_diagnostic.S6608.severity = suggestion
+
+# S2139: Exceptions should be either logged or rethrown but not both
+dotnet_diagnostic.S2139.severity = suggestion
