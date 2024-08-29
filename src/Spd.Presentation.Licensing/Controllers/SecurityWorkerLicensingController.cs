@@ -316,7 +316,7 @@ namespace Spd.Presentation.Licensing.Controllers
             SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
 
             //if it is sole proprietor, we have to support connect two flows together and we have to support user abort the second flow, user can still go back to the first flow.
-            if (response.LicenceAppId != null && (jsonRequest.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || jsonRequest.BizTypeCode == BizTypeCode.RegisteredSoleProprietor))
+            if (response?.LicenceAppId != null && (jsonRequest.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || jsonRequest.BizTypeCode == BizTypeCode.RegisteredSoleProprietor))
             {
                 SetValueToResponseCookie(SessionConstants.AnonymousSoleProprietorApplicationContext, response.LicenceAppId.ToString(), 180);
             }

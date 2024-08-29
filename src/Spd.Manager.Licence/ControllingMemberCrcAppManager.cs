@@ -16,11 +16,12 @@ using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
 using Spd.Resource.Repository.LicApp;
+using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager : 
     LicenceAppManagerBase,
-    IRequestHandler<ControllingMemberCrcAppSubmitRequestCommand, ControllingMemberCrcAppCommandResponse>,
+    IRequestHandler<ControllingMemberCrcAppNewCommand, ControllingMemberCrcAppCommandResponse>,
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
@@ -43,7 +44,8 @@ internal class ControllingMemberCrcAppManager :
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
     }
-    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppSubmitRequestCommand cmd, CancellationToken ct)
+    #region anonymous new
+    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -62,7 +64,24 @@ internal class ControllingMemberCrcAppManager :
             ControllingMemberAppId = response.ControllingMemberCrcAppId
         };
     }
-    private static void ValidateFilesForNewApp(ControllingMemberCrcAppSubmitRequestCommand cmd)
+    #endregion
+    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand cmd, CancellationToken ct)
+    {
+        SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
+        
+        //TODO: find the purpose, add related enums if needed (ask peggy)
+        saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos);
+        saveCmd.WorkerLicenceTypeCode = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC;
+        var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(saveCmd, ct);
+        if (cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId == null)
+            cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId = response.ControllingMemberCrcAppId;
+        await UpdateDocumentsAsync(
+            (Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId,
+            (List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos,
+            ct);
+        return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
+    }
+    private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
         IEnumerable<LicAppFileInfo> fileInfos = cmd.LicAppFileInfos;

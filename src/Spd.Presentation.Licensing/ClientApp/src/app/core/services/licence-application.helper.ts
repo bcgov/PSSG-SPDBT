@@ -235,56 +235,6 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		}
 	);
 
-	citizenshipFormGroup: FormGroup = this.formBuilder.group(
-		{
-			isCanadianCitizen: new FormControl('', [FormControlValidators.required]),
-			canadianCitizenProofTypeCode: new FormControl(''),
-			notCanadianCitizenProofTypeCode: new FormControl(''),
-			expiryDate: new FormControl(''),
-			attachments: new FormControl([], [Validators.required]),
-			governmentIssuedPhotoTypeCode: new FormControl(''),
-			governmentIssuedExpiryDate: new FormControl(''),
-			governmentIssuedAttachments: new FormControl([]),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'canadianCitizenProofTypeCode',
-					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'notCanadianCitizenProofTypeCode',
-					(form) => form.get('isCanadianCitizen')?.value == BooleanTypeCode.No
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'expiryDate',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							(form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.WorkPermit ||
-								form.get('notCanadianCitizenProofTypeCode')?.value == LicenceDocumentTypeCode.StudyPermit))
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedPhotoTypeCode',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
-				),
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'governmentIssuedAttachments',
-					(form) =>
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.Yes &&
-							form.get('canadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.CanadianPassport) ||
-						(form.get('isCanadianCitizen')?.value == BooleanTypeCode.No &&
-							form.get('notCanadianCitizenProofTypeCode')?.value != LicenceDocumentTypeCode.PermanentResidentCard)
-				),
-			],
-		}
-	);
-
 	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
 		{
 			reprintLicence: new FormControl(''),
