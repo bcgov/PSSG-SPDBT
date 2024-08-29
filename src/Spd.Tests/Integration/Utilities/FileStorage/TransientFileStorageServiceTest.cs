@@ -24,7 +24,7 @@ public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetu
             Content = Encoding.ASCII.GetBytes("samplefile"),
             ContentType = "application/txt",
             FileName = fileName,
-            Metadata = new List<Metadata>() { new Metadata("test", "value") }
+            Metadata = new List<FileMetadata>() { new FileMetadata("test", "value") }
         };
         await _transientFileService.HandleCommand(new UploadFileCommand(fileName, IntegrationTestSetup.Folder, testFile, new FileTag { }),
             CancellationToken.None);

@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+		<PropertyGroup>
+		  <UserSecretsId>66b9a0a2-5645-464e-a7f9-e967302ea78f</UserSecretsId>
+		</PropertyGroup>
+
 		<ItemGroup>
 				<PackageReference Include="Alba" />
 				<PackageReference Include="MartinCostello.Logging.XUnit" />
