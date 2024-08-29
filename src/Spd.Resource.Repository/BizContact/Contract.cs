@@ -4,7 +4,8 @@ namespace Spd.Resource.Repository.BizContact
 {
     public interface IBizContactRepository
     {
-        Task<IEnumerable<BizContactResp>> GetBizAppContactsAsync(BizContactQry qry, CancellationToken ct);
+        Task<BizContactResp> GetBizContactAsync(Guid bizContactId, CancellationToken ct);
+        Task<IEnumerable<BizContactResp>> QueryBizAppContactsAsync(BizContactQry qry, CancellationToken ct);
         Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct);
     }
     //command

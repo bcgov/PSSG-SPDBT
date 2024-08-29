@@ -23,7 +23,22 @@ namespace Spd.Resource.Repository.BizContact
             _logger = logger;
         }
 
-        public async Task<IEnumerable<BizContactResp>> GetBizAppContactsAsync(BizContactQry qry, CancellationToken ct)
+        public async Task<BizContactResp> GetBizContactAsync(Guid bizContactId, CancellationToken ct)
+        {
+            spd_businesscontact? bizContact = await _context.spd_businesscontacts
+                .Expand(c => c.spd_businesscontact_spd_application)
+                .Where(c => c.spd_businesscontactid == bizContactId)
+                .FirstOrDefaultAsync(ct);
+
+            if (bizContact == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the business contact");
+
+            return _mapper.Map<BizContactResp>(bizContact);
+
+
+        }
+
+        public async Task<IEnumerable<BizContactResp>> QueryBizAppContactsAsync(BizContactQry qry, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
                 .Expand(c => c.spd_businesscontact_spd_application);

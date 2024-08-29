@@ -5,6 +5,7 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
+using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -39,6 +40,7 @@ internal class BizLicAppManager :
     private readonly ITaskRepository _taskRepository;
     private readonly IBizRepository _bizRepository;
     private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
+    private readonly IControllingMemberInviteRepository _cmInviteRepository;
 
     public BizLicAppManager(
         ILicenceRepository licenceRepository,
@@ -52,7 +54,8 @@ internal class BizLicAppManager :
         IBizLicApplicationRepository bizApplicationRepository,
         ITaskRepository taskRepository,
         IBizRepository bizRepository,
-        IPersonLicApplicationRepository personLicApplicationRepository)
+        IPersonLicApplicationRepository personLicApplicationRepository,
+        IControllingMemberInviteRepository cmInviteRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -66,6 +69,7 @@ internal class BizLicAppManager :
         _taskRepository = taskRepository;
         _bizRepository = bizRepository;
         _personLicApplicationRepository = personLicApplicationRepository;
+        _cmInviteRepository = cmInviteRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -314,14 +318,18 @@ internal class BizLicAppManager :
     {
         //check if bizContact already has invitation
 
+        //get info from bizContactId
+        BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, cancellationToken);
 
+        _cmInviteRepository.ManageAsync(_mapper.Map<ControllingMemberInviteCreateCmd>(contactResp), cancellationToken);
+        //map to
 
         return null;
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
     {
-        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
+        var bizMembers = await _bizContactRepository.QueryBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
         Members members = new();
         members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)

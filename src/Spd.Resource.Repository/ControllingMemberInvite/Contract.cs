@@ -1,3 +1,5 @@
+using Spd.Resource.Repository.ApplicationInvite;
+
 namespace Spd.Resource.Repository.ControllingMemberInvite
 {
     public interface IControllingMemberInviteRepository
@@ -14,9 +16,15 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         public string HostUrl { get; set; } = null!;
     };
 
-    public class ControllingMemberInviteResp
+    public record ControllingMemberInviteResp : ControllingMemberInvite
     {
+        public Guid Id { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public ApplicationInviteStatusEnum Status { get; set; }
+        public string? ErrorMsg { get; set; }
+        public bool? Viewed { get; set; }
     }
+
     public record ControllingMemberInviteVerifyCmd
     {
     }
@@ -28,8 +36,11 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? MiddleName1 { get; set; }
+        public string? MiddleName2 { get; set; }
         public string? Email { get; set; }
-        public Guid? OrgId { get; set; }
+        public Guid BizId { get; set; }
         public Guid CreatedByUserId { get; set; }
+        public Guid BizContactId { get; set; }
     }
 }

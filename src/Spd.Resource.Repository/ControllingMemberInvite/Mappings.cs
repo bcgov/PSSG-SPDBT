@@ -1,4 +1,7 @@
 using AutoMapper;
+using Microsoft.Dynamics.CRM;
+using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Repository.ControllingMemberInvite
 {
@@ -6,30 +9,26 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
     {
         public Mappings()
         {
-            //_ = CreateMap<ControllingMemberInvite, spd_portalinvitation>()
-            //.ForMember(d => d.spd_portalinvitationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-            //.ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))
-            //.ForMember(d => d.spd_surname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.LastName)))
-            //.ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
-            //.ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.JobTitle)))
-            //.ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ScreeningRequest))
-            //.ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
-            //.ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
-            //.ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => GetPayeeTypeCode(s.PayeeType)))
-            //.ReverseMap()
-            //.ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
-            //.ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
-            //.ForMember(d => d.JobTitle, opt => opt.MapFrom(s => s.spd_jobtitle));
+            _ = CreateMap<ControllingMemberInvite, spd_portalinvitation>()
+            .ForMember(d => d.spd_portalinvitationid, opt => opt.MapFrom(s => Guid.NewGuid()))
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.LastName)))
+            .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
+            .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ControllingMemberCRC))
+            .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
+            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => PayerPreferenceOptionSet.Applicant))
+            .ReverseMap()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname));
 
-            //_ = CreateMap<spd_portalinvitation, ApplicationInviteResult>()
-            //.IncludeBase<spd_portalinvitation, ApplicationInvite>()
-            //.ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
-            //.ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
-            //.ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
-            //.ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
-            //.ForMember(d => d.CreatedByUserId, opt => opt.MapFrom(s => s._spd_invitedby_value))
-            //.ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? ApplicationInviteStatusEnum.Draft : Enum.Parse<ApplicationInviteStatusEnum>(((InvitationStatus)s.statuscode).ToString())))
-            //.ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0));
+            _ = CreateMap<spd_portalinvitation, ControllingMemberInviteResp>()
+            .IncludeBase<spd_portalinvitation, ControllingMemberInvite>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
+            .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
+            .ForMember(d => d.CreatedByUserId, opt => opt.MapFrom(s => s._spd_invitedby_value))
+            .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? ApplicationInviteStatusEnum.Draft : Enum.Parse<ApplicationInviteStatusEnum>(((InvitationStatus)s.statuscode).ToString())))
+            .ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0));
 
             //_ = CreateMap<spd_portalinvitation, AppInviteVerifyResp>()
             //.ForMember(d => d.AppInviteId, opt => opt.MapFrom(s => s.spd_portalinvitationid))
@@ -55,33 +54,5 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             //.ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             //.ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));
         }
-        //private static string? GetPayeeType(int? code)
-        //{
-        //    if (code == null) return null;
-        //    return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
-        //}
-
-        //private static int? GetPayeeTypeCode(PayerPreferenceTypeCode? code)
-        //{
-        //    if (code == null) return null;
-        //    try
-        //    {
-        //        return (int)Enum.Parse<PayerPreferenceOptionSet>(code.ToString());
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //}
-        //private static string? GetEmployeeInteractionType(int? code)
-        //{
-        //    if (code == null) return null;
-        //    return Enum.GetName(typeof(WorksWithChildrenOptionSet), code);
-        //}
-        //private static ScreenTypeEnum? GetScreenType(int? code)
-        //{
-        //    if (code == null) return null;
-        //    return Enum.Parse<ScreenTypeEnum>(Enum.GetName(typeof(ScreenTypeOptionSet), code));
-        //}
     }
 }
