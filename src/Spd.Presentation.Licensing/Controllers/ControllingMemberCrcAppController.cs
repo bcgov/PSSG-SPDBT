@@ -83,7 +83,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// <param name="ControllingMemberCrcSubmitRequest"></param>
     /// <returns></returns>
     [Route("api/controlling-member-crc-applications/submit")]
-    //[Authorize(Policy = "OnlyBcsc")]
+    [Authorize(Policy = "OnlyBcsc")]
     [HttpPost]
     public async Task<ControllingMemberCrcAppCommandResponse> SubmitPermitApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcSubmitRequest, CancellationToken ct)
     {
