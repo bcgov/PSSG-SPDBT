@@ -200,7 +200,7 @@ namespace Spd.Utilities.LogonUser
                         if (jwtHandler.CanReadToken(token))
                         {
                             JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(token);
-                            if (jwtToken.Issuer.Equals(bceidConfig.Authority) ||
+                            if (bceidConfig.Authority.Equals(jwtToken.Issuer) ||
                                 jwtToken.Audiences.Any(a => bceidConfig.Audiences.Equals(a)))
                             {
                                 //idir and bceid have the same authoritiy and audience.
@@ -212,7 +212,7 @@ namespace Spd.Utilities.LogonUser
                                 return BCeIDAuthenticationConfiguration.AuthSchemeName;
                             }
                             else if (jwtToken.Issuer.Equals(bcscConfig.Issuer) ||
-                                jwtToken.Audiences.Any(a => bcscConfig.Audiences.Equals(a)))
+                                (jwtToken.Audiences ?? []).Any(a => bcscConfig.Audiences.Equals(a)))
                             {
                                 return BcscAuthenticationConfiguration.AuthSchemeName;
                             }
