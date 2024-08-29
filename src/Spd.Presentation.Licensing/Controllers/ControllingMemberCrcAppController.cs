@@ -62,10 +62,10 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// Upload Controlling Member application files to transient storage
     /// </summary>
     /// <param name="fileUploadRequest"></param>
-    /// <param name="licenceAppId"></param>
+    /// <param name="CrcAppId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [Route("api/controlling-member-crc-applications/{licenceAppId}/files")]
+    [Route("api/controlling-member-crc-applications/{CrcAppId}/files")]
     [HttpPost]
     [RequestSizeLimit(26214400)] //25M
     [Authorize(Policy = "OnlyBcsc")]
@@ -83,7 +83,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// <param name="ControllingMemberCrcSubmitRequest"></param>
     /// <returns></returns>
     [Route("api/controlling-member-crc-applications/submit")]
-    [Authorize(Policy = "OnlyBcsc")]
+    //[Authorize(Policy = "OnlyBcsc")]
     [HttpPost]
     public async Task<ControllingMemberCrcAppCommandResponse> SubmitPermitApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcSubmitRequest, CancellationToken ct)
     {
