@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Utilities.Recaptcha;
-using Spd.Utilities.Shared;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Security.Principal;
 using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers;
@@ -18,13 +19,16 @@ namespace Spd.Presentation.Licensing.Controllers;
 [ApiController]
 public class ControllingMemberCrcAppController : SpdLicenceControllerBase
 {
+    private readonly IPrincipal _currentUser;
     private readonly IMediator _mediator;
     private readonly ILogger<ControllingMemberCrcAppController> _logger;
 
     private readonly IConfiguration _configuration;
     private readonly IValidator<ControllingMemberCrcAppSubmitRequest> _controllingMemberCrcAppSubmitValidator;
-    public ControllingMemberCrcAppController(IMediator mediator,
+    private readonly IValidator<ControllingMemberCrcAppUpsertRequest> _controllingMemberCrcAppUpsertValidator;
+    public ControllingMemberCrcAppController(IPrincipal currentUser, IMediator mediator,
         IValidator<ControllingMemberCrcAppSubmitRequest> controllingMemberCrcAppSubmitValidator,
+        IValidator<ControllingMemberCrcAppUpsertRequest> controllingMemberCrcAppUpsertValidator,
         ILogger<ControllingMemberCrcAppController> logger,
         IDistributedCache cache,
         IDataProtectionProvider dpProvider,
@@ -32,9 +36,11 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         IConfiguration configuration) : base(cache, dpProvider, recaptchaVerificationService, configuration)
     {
         _mediator = mediator;
+        _currentUser = currentUser;
         _logger = logger;
         _configuration = configuration;
         _controllingMemberCrcAppSubmitValidator = controllingMemberCrcAppSubmitValidator;
+        _controllingMemberCrcAppUpsertValidator = controllingMemberCrcAppUpsertValidator;
     }
     #region authenticated
 
@@ -52,7 +58,24 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
             throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
         return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
     }
+    /// <summary>
+    /// Upload permit application files to transient storage
+    /// </summary>
+    /// <param name="fileUploadRequest"></param>
+    /// <param name="licenceAppId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/{licenceAppId}/files")]
+    [HttpPost]
+    [RequestSizeLimit(26214400)] //25M
+    [Authorize(Policy = "OnlyBcsc")]
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
+    {
+        VerifyFiles(fileUploadRequest.Documents);
+        var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
+        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
+    }
     #endregion authenticated
     #region anonymous
     /// <summary>
