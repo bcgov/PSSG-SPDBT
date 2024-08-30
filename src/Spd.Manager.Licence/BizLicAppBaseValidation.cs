@@ -14,9 +14,6 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
         RuleFor(r => r.UseDogs)
             .NotEmpty()
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard));
-        RuleFor(r => r.ApplicantContactInfo.GivenName)
-            .NotEmpty()
-            .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.ApplicantContactInfo.Surname)
             .NotEmpty()
             .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
@@ -57,7 +54,7 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
             .Must(r => r.ContactId != null && r.ContactId != Guid.Empty &&
                  r.LicenceId != null && r.LicenceId != Guid.Empty &&
-                 !string.IsNullOrEmpty(r.GivenName) && !string.IsNullOrEmpty(r.Surname))
+                 !string.IsNullOrEmpty(r.Surname))
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.PrivateInvestigator) &&
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor)
