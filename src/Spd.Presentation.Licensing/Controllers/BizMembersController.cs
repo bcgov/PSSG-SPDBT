@@ -78,13 +78,8 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
-            //temp delete for testing
             var userIdStr = _currentUser.GetUserId();
             if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
-            //to
-            //var userIdStr = "dffd9fe4-015c-ef11-b851-00505683fbf4";
-            //temp
-
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
