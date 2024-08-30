@@ -7,13 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence;
-public class ControllingMemberCrcAppValidator : AbstractValidator<ControllingMemberCrcAppSubmitRequest>
+public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractValidator<ControllingMemberCrcAppSubmitRequest>
 {
-    public ControllingMemberCrcAppValidator()
+    public ControllingMemberCrcAppAnonymousSubmitRequestValidator()
     {
-        RuleFor(r => r.ParentBizLicApplicationId).NotEmpty();
+        RuleFor(r => r.ParentBizLicApplicationId).NotEqual(Guid.Empty);
+        RuleFor(r => r.WorkerLicenceTypeCode)
+            .Equal(WorkerLicenceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC);
         RuleFor(r => r.Surname)
             .MaximumLength(40)
+            .NotNull()
             .NotEmpty();
         RuleFor(r => r.GivenName)
             .MaximumLength(40);
@@ -21,15 +24,17 @@ public class ControllingMemberCrcAppValidator : AbstractValidator<ControllingMem
             .MaximumLength(40);
         RuleFor(r => r.MiddleName2)
             .MaximumLength(40);
-        RuleFor(r => r.GenderCode).NotEmpty();
-        RuleFor(r => r.DateOfBirth).NotEmpty();
+        RuleFor(r => r.GenderCode)
+            .NotNull()
+            .NotEmpty();
+        RuleFor(r => r.DateOfBirth).NotNull().NotEmpty();
         RuleFor(r => r.PhoneNumber)
             .MaximumLength(15);
         RuleFor(r => r.EmailAddress)
             .MaximumLength(75)
             .EmailAddress();
         RuleFor(r => r.ResidentialAddress).NotEmpty();
-        RuleFor(r => r.ResidentialAddress.AddressLine1)
+        RuleFor(r => r.ResidentialAddress.AddressLine1).NotNull()
             .NotEmpty()
             .MaximumLength(100)
             .When(r => r.ResidentialAddress != null);
@@ -37,44 +42,51 @@ public class ControllingMemberCrcAppValidator : AbstractValidator<ControllingMem
             .MaximumLength(100)
             .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.ResidentialAddress.City)
+            .NotNull()
             .NotEmpty()
             .MaximumLength(100)
             .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.ResidentialAddress.Province)
+            .NotNull()
             .NotEmpty()
             .MaximumLength(100)
             .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.ResidentialAddress.Country)
+            .NotNull()
             .NotEmpty()
             .MaximumLength(100)
             .When(r => r.ResidentialAddress != null);
         RuleFor(r => r.ResidentialAddress.PostalCode)
+            .NotNull()
             .NotEmpty()
             .MaximumLength(20)
             .When(r => r.ResidentialAddress != null);
-        RuleFor(r => r.HasCriminalHistory).NotEmpty();
+        RuleFor(r => r.HasCriminalHistory).NotNull();
         RuleFor(r => r.CriminalHistoryDetail)
+            .NotNull()
             .NotEmpty()
             .MaximumLength(250)
             .When(r => r.HasCriminalHistory == true);
-        RuleFor(r => r.HasBankruptcyHistory)
+        RuleFor(r => r.HasBankruptcyHistory).NotNull()
             .NotEmpty();
-        RuleFor(r => r.BankruptcyHistoryDetail)
+        RuleFor(r => r.BankruptcyHistoryDetail).NotNull()
             .NotEmpty()
             .MaximumLength(250)
             .When(r => r.HasBankruptcyHistory == true);
 
-        RuleFor(r => r.IsPoliceOrPeaceOfficer)
-            .NotEmpty();
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull();
         RuleFor(r => r.PoliceOfficerRoleCode)
+            .NotNull()
             .NotEmpty()
             .When(r => r.IsPoliceOrPeaceOfficer == true);
         RuleFor(r => r.OtherOfficerRole)
+            .NotNull()
             .NotEmpty()
             .MaximumLength(50)
             .When(r => r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
 
         RuleFor(r => r.Aliases)
+            .NotNull()
             .NotEmpty()
             .Must(r => r.Count() <= 3)
             .When(r => r.HasPreviousNames == true)
@@ -85,6 +97,7 @@ public class ControllingMemberCrcAppValidator : AbstractValidator<ControllingMem
             {
                 aliases.RuleFor(r => r.Surname)
                     .MaximumLength(40)
+                    .NotNull()
                     .NotEmpty()
                     .WithMessage("Surname name is required for all aliases.");
                 aliases.RuleFor(r => r.GivenName)
@@ -96,11 +109,130 @@ public class ControllingMemberCrcAppValidator : AbstractValidator<ControllingMem
             })
             .When(r => r.Aliases != null && r.HasPreviousNames == true);
 
-        RuleFor(r => r.IsTreatedForMHC).NotEmpty();
-        RuleFor(r => r.IsCanadianCitizen).NotEmpty();
+        RuleFor(r => r.IsTreatedForMHC).NotNull();
+        RuleFor(r => r.IsCanadianCitizen).NotNull();
         RuleFor(r => r.BcDriversLicenceNumber)
+            .NotNull()
+            .NotEmpty()
             .MaximumLength(8)
             .When(r => r.HasBcDriversLicence == true);
         RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
+        RuleFor(r => r.LicenceTermCode).NotNull();
+        RuleFor(r => r.ApplicationTypeCode).NotNull();
     }
+}
+public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<ControllingMemberCrcAppUpsertRequest>
+{
+    public ControllingMemberCrcAppSubmitRequestValidator()
+    {
+        RuleFor(r => r.ParentBizLicApplicationId).NotEqual(Guid.Empty);
+        RuleFor(r => r.WorkerLicenceTypeCode)
+            .Equal(WorkerLicenceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC);
+        RuleFor(r => r.Surname)
+            .MaximumLength(40)
+            .NotNull()
+            .NotEmpty();
+        RuleFor(r => r.GivenName)
+            .MaximumLength(40);
+        RuleFor(r => r.MiddleName1)
+            .MaximumLength(40);
+        RuleFor(r => r.MiddleName2)
+            .MaximumLength(40);
+        RuleFor(r => r.GenderCode)
+            .NotNull()
+            .NotEmpty();
+        RuleFor(r => r.DateOfBirth).NotNull().NotEmpty();
+        RuleFor(r => r.PhoneNumber)
+            .MaximumLength(15);
+        RuleFor(r => r.EmailAddress)
+            .MaximumLength(75)
+            .EmailAddress();
+        RuleFor(r => r.ResidentialAddress).NotEmpty();
+        RuleFor(r => r.ResidentialAddress.AddressLine1).NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.AddressLine2)
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.City)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Province)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Country)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.PostalCode)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(20)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.HasCriminalHistory).NotNull();
+        RuleFor(r => r.CriminalHistoryDetail)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(250)
+            .When(r => r.HasCriminalHistory == true);
+        RuleFor(r => r.HasBankruptcyHistory).NotNull()
+            .NotEmpty();
+        RuleFor(r => r.BankruptcyHistoryDetail).NotNull()
+            .NotEmpty()
+            .MaximumLength(250)
+            .When(r => r.HasBankruptcyHistory == true);
+
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull();
+        RuleFor(r => r.PoliceOfficerRoleCode)
+            .NotNull()
+            .NotEmpty()
+            .When(r => r.IsPoliceOrPeaceOfficer == true);
+        RuleFor(r => r.OtherOfficerRole)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(50)
+            .When(r => r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
+
+        RuleFor(r => r.Aliases)
+            .NotNull()
+            .NotEmpty()
+            .Must(r => r.Count() <= 3)
+            .When(r => r.HasPreviousNames == true)
+            .WithMessage("No more than 3 user entered aliases are allowed");
+
+        RuleForEach(r => r.Aliases)
+            .ChildRules(aliases =>
+            {
+                aliases.RuleFor(r => r.Surname)
+                    .MaximumLength(40)
+                    .NotNull()
+                    .NotEmpty()
+                    .WithMessage("Surname name is required for all aliases.");
+                aliases.RuleFor(r => r.GivenName)
+                    .MaximumLength(40);
+                aliases.RuleFor(r => r.MiddleName1)
+                    .MaximumLength(40);
+                aliases.RuleFor(r => r.MiddleName2)
+                    .MaximumLength(40);
+            })
+            .When(r => r.Aliases != null && r.HasPreviousNames == true);
+
+        RuleFor(r => r.IsTreatedForMHC).NotNull();
+        RuleFor(r => r.IsCanadianCitizen).NotNull();
+        RuleFor(r => r.BcDriversLicenceNumber)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(8)
+            .When(r => r.HasBcDriversLicence == true);
+        RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
+        RuleFor(r => r.LicenceTermCode).NotNull();
+        RuleFor(r => r.ApplicationTypeCode).NotNull();
+    }
+
 }

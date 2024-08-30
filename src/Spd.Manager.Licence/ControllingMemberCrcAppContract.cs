@@ -14,7 +14,7 @@ public interface IControllingMemberCrcAppManager
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand command, CancellationToken ct);
 
 }
-public record ControllingMemberCrcAppBase
+public record ControllingMemberCrcAppBase : LicenceAppBase
 {
     public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
@@ -67,6 +67,8 @@ public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitReq
 public record ControllingMemberCrcAppCommandResponse
 {
     public Guid ControllingMemberAppId { get; set; }
+    public decimal? Cost { get; set; }
+
 };
 
 #endregion
