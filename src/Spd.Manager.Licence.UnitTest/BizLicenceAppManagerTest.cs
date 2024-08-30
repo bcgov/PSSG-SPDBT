@@ -59,8 +59,7 @@ public class BizLicenceAppManagerTest
             mockBizLicAppRepo.Object,
             mockTaskRepo.Object,
             mockBizRepo.Object,
-            mockPersonalLicAppRepo.Object,
-            mockCmInviteRepo.Object);
+            mockPersonalLicAppRepo.Object);
     }
 
     [Fact]

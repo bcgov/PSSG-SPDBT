@@ -9,7 +9,6 @@ using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
@@ -47,9 +46,12 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/{licenceAppId}")]
         //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
-        public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId)
+        public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId, CancellationToken ct)
         {
-            return await _mediator.Send(new GetBizLicAppQuery(licenceAppId));
+            BizLicAppResponse response = await _mediator.Send(new GetBizLicAppQuery(licenceAppId));
+            if (response.BizId != null)
+                response.Members = await _mediator.Send(new GetBizMembersQuery((Guid)response.BizId, null), ct);
+            return response;
         }
 
         /// <summary>
@@ -144,43 +146,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-        /// <summary>
-        /// Get Biz controlling members and employees, controlling member includes swl and non-swl
-        /// This is the latest active biz controlling members and employees, irrelevent to application.
-        /// </summary>
-        /// <param name="bizId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
-        }
-
-        /// <summary>
-        /// Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
-        /// </summary>
-        /// <param name="bizId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
-        {
-            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
-            if (newDocInfos.Count() != members.ControllingMemberDocumentKeyCodes.Count())
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find all files in the cache.");
-            }
-            await _mediator.Send(new UpsertBizMembersCommand(bizId, null, members, newDocInfos), ct);
-            return Ok();
-        }
-
         ///<summary>
         /// Uploading file only save files in cache, the files are not connected to the biz and application yet.
         /// this is used for uploading member files or update, renew, replace.
@@ -249,30 +214,6 @@ namespace Spd.Presentation.Licensing.Controllers
             }
 
             return File(content, contentType, response?.FileName);
-        }
-
-        /// <summary>
-        /// Create controlling member crc invitation for this biz contact
-        /// </summary>
-        /// <param name="bizContactId"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
-        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        [HttpGet]
-        public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
-        {
-            //temp delete for testing
-            //var userIdStr = _currentUser.GetUserId();
-            //if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
-            //to
-            var userIdStr = "dffd9fe4-015c-ef11-b851-00505683fbf4";
-            //temp
-
-            string? hostUrl = _configuration.GetValue<string>("HostUrl");
-            if (hostUrl == null)
-                throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
-            var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl);
-            return await _mediator.Send(inviteCreateCmd, ct);
         }
     }
 }

@@ -5,7 +5,6 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
-using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -28,11 +27,8 @@ internal class BizLicAppManager :
         IRequestHandler<BizLicAppReplaceCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppRenewCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
-        IRequestHandler<GetBizMembersQuery, Members>,
-        IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<BrandImageQuery, FileResponse>,
-        IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -40,7 +36,6 @@ internal class BizLicAppManager :
     private readonly ITaskRepository _taskRepository;
     private readonly IBizRepository _bizRepository;
     private readonly IPersonLicApplicationRepository _personLicApplicationRepository;
-    private readonly IControllingMemberInviteRepository _cmInviteRepository;
 
     public BizLicAppManager(
         ILicenceRepository licenceRepository,
@@ -54,8 +49,7 @@ internal class BizLicAppManager :
         IBizLicApplicationRepository bizApplicationRepository,
         ITaskRepository taskRepository,
         IBizRepository bizRepository,
-        IPersonLicApplicationRepository personLicApplicationRepository,
-        IControllingMemberInviteRepository cmInviteRepository)
+        IPersonLicApplicationRepository personLicApplicationRepository)
     : base(mapper,
         documentUrlRepository,
         feeRepository,
@@ -69,7 +63,6 @@ internal class BizLicAppManager :
         _taskRepository = taskRepository;
         _bizRepository = bizRepository;
         _personLicApplicationRepository = personLicApplicationRepository;
-        _cmInviteRepository = cmInviteRepository;
     }
 
     public async Task<BizLicAppResponse> Handle(GetBizLicAppQuery query, CancellationToken cancellationToken)
@@ -78,10 +71,6 @@ internal class BizLicAppManager :
         BizLicAppResponse result = _mapper.Map<BizLicAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
-
-        if (result.BizId != null)
-            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, null), cancellationToken);
-
         return result;
     }
 
@@ -310,75 +299,6 @@ internal class BizLicAppManager :
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };
     }
 
-    public async Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
-    {
-        //check if bizContact already has invitation
-        //todo: probably we do not need to check this. it should allow user to send out invite multiple times.
-        //var existingInvites = await _cmInviteRepository.QueryAsync(new ControllingMemberInviteQuery(cmd.BizContactId), cancellationToken);
-        //if (existingInvites.Any(i => i.Status == Resource.Repository.ApplicationInviteStatusEnum.Sent))
-        //    throw new ApiException(HttpStatusCode.BadRequest, "There is already an invite sent out.");
-
-        //get info from bizContactId
-        BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, cancellationToken);
-        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-controlling member.");
-        if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
-            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
-        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null)
-            throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
-        //todo : how can we check if the CRC approved but it has been expired.
-
-        var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
-        createCmd.CreatedByUserId = cmd.UserId;
-        createCmd.HostUrl = cmd.HostUrl;
-        await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
-
-        return new ControllingMemberInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };
-    }
-
-    public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
-    {
-        var bizMembers = await _bizContactRepository.QueryBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
-        Members members = new();
-        members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
-            .Select(c => new SwlContactInfo()
-            {
-                BizContactId = c.BizContactId,
-                LicenceId = c.LicenceId,
-                ContactId = c.ContactId,
-            });
-        members.NonSwlControllingMembers = bizMembers.Where(c => c.ContactId == null && c.LicenceId == null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
-            .Select(c => _mapper.Map<NonSwlContactInfo>(c));
-        members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
-            .Select(c => _mapper.Map<SwlContactInfo>(c));
-        return members;
-    }
-
-    public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
-    {
-        await UpdateMembersAsync(cmd.Members, cmd.BizId, ct);
-        if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CorporateRegistryDocument))
-            throw new ApiException(HttpStatusCode.BadRequest, "Can only Upload Corporate Registry Document for management of controlling member.");
-
-        if (cmd.LicAppFileInfos != null && cmd.LicAppFileInfos.Any())
-        {
-            foreach (LicAppFileInfo licAppFile in cmd.LicAppFileInfos)
-            {
-                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                fileCmd.AccountId = cmd.BizId;
-                fileCmd.ApplicationId = cmd.ApplicationId;
-                fileCmd.TempFile = tempFile;
-                //create bcgov_documenturl and file
-                await _documentRepository.ManageAsync(fileCmd, ct);
-            }
-        }
-        return default;
-    }
-
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery query, CancellationToken cancellationToken)
     {
         LicenceAppQuery q = new(
@@ -443,21 +363,6 @@ internal class BizLicAppManager :
             //todo: add more logging
             return new FileResponse(); //error in S3, probably cannot find the file
         }
-    }
-
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, CancellationToken ct)
-    {
-        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
-        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
-        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
-        foreach (var e in employees)
-        {
-            e.BizContactRoleCode = BizContactRoleEnum.Employee;
-        }
-        contacts.AddRange(employees);
-        BizContactUpsertCmd upsertCmd = new(bizId, contacts);
-        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
-        return default;
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,
@@ -637,6 +542,24 @@ internal class BizLicAppManager :
         }
 
         return createApp;
+    }
+
+
+    //todo: if fe can make seperate call to members and application, then we can give all members related info to BizMemberManager, then this function
+    //can be removed.
+    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, CancellationToken ct)
+    {
+        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
+        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
+        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
+        foreach (var e in employees)
+        {
+            e.BizContactRoleCode = BizContactRoleEnum.Employee;
+        }
+        contacts.AddRange(employees);
+        BizContactUpsertCmd upsertCmd = new(bizId, contacts);
+        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
+        return default;
     }
 
     private sealed record ChangeSpec

@@ -12,11 +12,8 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand command, CancellationToken ct);
-    public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
-    public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
     public Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct);
-    public Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand command, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
@@ -39,8 +36,6 @@ public record BizLicAppUpdateCommand(
     BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
-
-public record BizControllingMemberNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl) : IRequest<ControllingMemberInvitesCreateResponse>;
 
 public record BrandImageQuery(Guid DocumentId) : IRequest<FileResponse>;
 
@@ -110,37 +105,4 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
     public Guid? ContactId { get; set; }
     public Guid? BizContactId { get; set; }
     public Guid? LicenceId { get; set; }
-}
-
-public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
-
-public record Members
-{
-    public IEnumerable<SwlContactInfo> SwlControllingMembers { get; set; }
-    public IEnumerable<NonSwlContactInfo> NonSwlControllingMembers { get; set; }
-    public IEnumerable<SwlContactInfo> Employees { get; set; }
-};
-
-public record MembersRequest : Members
-{
-    public IEnumerable<Guid> ControllingMemberDocumentKeyCodes { get; set; } = Array.Empty<Guid>();//the document is saved in cache.
-}
-
-public record UpsertBizMembersCommand(
-    Guid BizId,
-    Guid? ApplicationId,
-    Members Members,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;
-
-public enum NonSwlControllingMemberStatusCode
-{
-    ControllingMemberAdded,
-    InvitationSent,
-    ApplicationReceived,
-    CompletedCleared,
-    CompletedRiskFound
-}
-public record ControllingMemberInvitesCreateResponse(Guid BizContactId)
-{
-    public bool CreateSuccess { get; set; } = false;
 }
