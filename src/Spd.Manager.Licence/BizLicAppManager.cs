@@ -27,8 +27,6 @@ internal class BizLicAppManager :
         IRequestHandler<BizLicAppReplaceCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppRenewCommand, BizLicAppCommandResponse>,
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
-        IRequestHandler<GetBizMembersQuery, Members>,
-        IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<BrandImageQuery, FileResponse>,
         IBizLicAppManager
@@ -73,10 +71,6 @@ internal class BizLicAppManager :
         BizLicAppResponse result = _mapper.Map<BizLicAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.LicenceApplicationId), cancellationToken);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();
-
-        if (result.BizId != null)
-            result.Members = await Handle(new GetBizMembersQuery((Guid)result.BizId, null), cancellationToken);
-
         return result;
     }
 
@@ -112,7 +106,6 @@ internal class BizLicAppManager :
         if (cmd.BizLicAppUpsertRequest.Members != null && cmd.BizLicAppUpsertRequest.BizId != null)
             await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
                 cmd.BizLicAppUpsertRequest.BizId,
-                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
                 cancellationToken);
 
         if (cmd.BizLicAppUpsertRequest.DocumentInfos != null && cmd.BizLicAppUpsertRequest.DocumentInfos.Any())
@@ -162,7 +155,6 @@ internal class BizLicAppManager :
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalLic.BizId,
-                (Guid)originalLic.LicenceAppId,
                 cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -209,7 +201,6 @@ internal class BizLicAppManager :
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalBizLic.BizId,
-                (Guid)originalBizLic.LicenceAppId,
                 cancellationToken);
 
         // Upload new files
@@ -303,53 +294,9 @@ internal class BizLicAppManager :
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalLicApp.BizId,
-                (Guid)originalLicApp.LicenceAppId,
                 cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };
-    }
-
-    public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
-    {
-        var bizMembers = await _bizContactRepository.GetBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
-        Members members = new();
-        members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
-            .Select(c => new SwlContactInfo()
-            {
-                BizContactId = c.BizContactId,
-                LicenceId = c.LicenceId,
-                ContactId = c.ContactId,
-            });
-        members.NonSwlControllingMembers = bizMembers.Where(c => c.ContactId == null && c.LicenceId == null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
-            .Select(c => _mapper.Map<NonSwlContactInfo>(c));
-        members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
-            .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
-            .Select(c => _mapper.Map<SwlContactInfo>(c));
-        return members;
-    }
-
-    public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
-    {
-        await UpdateMembersAsync(cmd.Members, cmd.BizId, cmd.ApplicationId, ct);
-        if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CorporateRegistryDocument))
-            throw new ApiException(HttpStatusCode.BadRequest, "Can only Upload Corporate Registry Document for management of controlling member.");
-
-        if (cmd.LicAppFileInfos != null && cmd.LicAppFileInfos.Any())
-        {
-            foreach (LicAppFileInfo licAppFile in cmd.LicAppFileInfos)
-            {
-                SpdTempFile? tempFile = _mapper.Map<SpdTempFile>(licAppFile);
-                CreateDocumentCmd? fileCmd = _mapper.Map<CreateDocumentCmd>(licAppFile);
-                fileCmd.AccountId = cmd.BizId;
-                fileCmd.ApplicationId = cmd.ApplicationId;
-                fileCmd.TempFile = tempFile;
-                //create bcgov_documenturl and file
-                await _documentRepository.ManageAsync(fileCmd, ct);
-            }
-        }
-        return default;
     }
 
     public async Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery query, CancellationToken cancellationToken)
@@ -416,21 +363,6 @@ internal class BizLicAppManager :
             //todo: add more logging
             return new FileResponse(); //error in S3, probably cannot find the file
         }
-    }
-
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid? appId, CancellationToken ct)
-    {
-        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
-        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
-        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
-        foreach (var e in employees)
-        {
-            e.BizContactRoleCode = BizContactRoleEnum.Employee;
-        }
-        contacts.AddRange(employees);
-        BizContactUpsertCmd upsertCmd = new(bizId, appId, contacts);
-        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
-        return default;
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,
@@ -610,6 +542,24 @@ internal class BizLicAppManager :
         }
 
         return createApp;
+    }
+
+
+    //todo: if fe can make seperate call to members and application, then we can give all members related info to BizMemberManager, then this function
+    //can be removed.
+    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, CancellationToken ct)
+    {
+        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
+        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
+        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
+        foreach (var e in employees)
+        {
+            e.BizContactRoleCode = BizContactRoleEnum.Employee;
+        }
+        contacts.AddRange(employees);
+        BizContactUpsertCmd upsertCmd = new(bizId, contacts);
+        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
+        return default;
     }
 
     private sealed record ChangeSpec

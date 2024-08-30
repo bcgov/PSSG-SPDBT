@@ -125,15 +125,6 @@ namespace Spd.Manager.Screening
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
     }
-    public enum ApplicationInviteStatusCode
-    {
-        Draft,
-        Sent,
-        Failed,
-        Completed, //inactive Status code
-        Cancelled,//inactive Status code
-        Expired //inactive Status code
-    }
     #endregion
 
     #region application

@@ -46,9 +46,12 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/{licenceAppId}")]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
-        public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId)
+        public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId, CancellationToken ct)
         {
-            return await _mediator.Send(new GetBizLicAppQuery(licenceAppId));
+            BizLicAppResponse response = await _mediator.Send(new GetBizLicAppQuery(licenceAppId));
+            if (response.BizId != null)
+                response.Members = await _mediator.Send(new GetBizMembersQuery((Guid)response.BizId, null), ct);
+            return response;
         }
 
         /// <summary>
@@ -141,43 +144,6 @@ namespace Spd.Presentation.Licensing.Controllers
             }
 
             return response;
-        }
-
-        /// <summary>
-        /// Get Biz controlling members and employees, controlling member includes swl and non-swl
-        /// This is the latest active biz controlling members and employees, irrelevent to application.
-        /// </summary>
-        /// <param name="bizId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
-        [HttpGet]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
-        {
-            return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
-        }
-
-        /// <summary>
-        /// Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
-        /// </summary>
-        /// <param name="bizId"></param>
-        /// <param name="applicationId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
-        {
-            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
-            if (newDocInfos.Count() != members.ControllingMemberDocumentKeyCodes.Count())
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find all files in the cache.");
-            }
-            await _mediator.Send(new UpsertBizMembersCommand(bizId, null, members, newDocInfos), ct);
-            return Ok();
         }
 
         ///<summary>
