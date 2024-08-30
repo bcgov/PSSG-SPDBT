@@ -1,17 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.BizLicApplication;
-using Spd.Resource.Repository.LicApp;
-using Spd.Resource.Repository.Org;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
@@ -26,6 +15,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         _mapper = mapper;
     }
 
+    //for unauth, create contact and application
     public async Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct)
     {
         // get parent business license application
@@ -141,7 +131,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         }
 
         await _context.SaveChangesAsync();
-        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)cmd.ContactId);
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, cmd.ContactId);
     }
 
 }

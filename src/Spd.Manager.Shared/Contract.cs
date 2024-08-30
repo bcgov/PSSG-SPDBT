@@ -129,6 +129,17 @@ namespace Spd.Manager.Shared
         MDRA,
         SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
     }
+
+    public enum ApplicationInviteStatusCode
+    {
+        Draft,
+        Sent,
+        Failed,
+        Completed, //inactive Status code
+        Cancelled,//inactive Status code
+        Expired //inactive Status code
+    }
+
     public record FileResponse
     {
         public string ContentType { get; set; } = null!;

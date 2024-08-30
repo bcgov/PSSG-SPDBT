@@ -153,3 +153,13 @@ public record SwlContactInfo
 {
     public Guid? LicenceId { get; set; }
 }
+
+public enum ApplicationInviteStatusEnum
+{
+    Draft,
+    Sent,
+    Failed,
+    Completed,
+    Cancelled,
+    Expired
+}
