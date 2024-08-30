@@ -44,7 +44,11 @@ public record ControllingMemberCrcApplication
     public bool? IsTreatedForMHC { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
-    public Guid BizContactId { get; set; } 
+    public Guid BizContactId { get; set; }
+    //TODO: check these fields
+    public Guid? ExpiredLicenceId { get; set; }
+    public bool? HasExpiredLicence { get; set; }
+    public LicenceTermEnum? LicenceTermCode { get; set; }
 }
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
