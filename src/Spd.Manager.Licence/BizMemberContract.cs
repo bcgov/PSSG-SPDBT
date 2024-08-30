@@ -31,13 +31,12 @@ public record UpsertBizMembersCommand(
     Members Members,
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;
 
-public enum NonSwlControllingMemberStatusCode
+public enum ControllingMemberStatusCode
 {
-    ControllingMemberAdded,
     InvitationSent,
-    ApplicationReceived,
-    CompletedCleared,
-    CompletedRiskFound
+    ApplicationSubmitted,
+    CompletedRiskFound,
+    CompletedCleared
 }
 public record ControllingMemberInvitesCreateResponse(Guid BizContactId)
 {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -73,15 +74,15 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="bizContactId"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
-        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
             //temp delete for testing
-            //var userIdStr = _currentUser.GetUserId();
-            //if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            var userIdStr = _currentUser.GetUserId();
+            if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
             //to
-            var userIdStr = "dffd9fe4-015c-ef11-b851-00505683fbf4";
+            //var userIdStr = "dffd9fe4-015c-ef11-b851-00505683fbf4";
             //temp
 
             string? hostUrl = _configuration.GetValue<string>("HostUrl");

@@ -97,7 +97,7 @@ public abstract record BizLicenceApp : LicenceAppBase
 public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
-    public NonSwlControllingMemberStatusCode NonSwlControllingMemberStatusCode { get; set; } = NonSwlControllingMemberStatusCode.ControllingMemberAdded;
+    public ApplicationPortalStatusCode? ControllingMemberAppStatusCode { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo

@@ -319,6 +319,7 @@ internal class Mappings : Profile
             .ReverseMap();
 
         CreateMap<BizContactResp, NonSwlContactInfo>()
+            .ForMember(d => d.ControllingMemberAppStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberCrcAppPortalStatusEnum))
             .ReverseMap()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
 
