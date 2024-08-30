@@ -11,6 +11,8 @@ public interface IControllingMemberCrcAppManager
 {
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand command, CancellationToken ct);
+
 }
 public record ControllingMemberCrcAppBase
 {
@@ -38,12 +40,14 @@ public record ControllingMemberCrcAppBase
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
+    public Guid BizContactId { get; set; }
 }
 
 
 #region authenticated
 public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcAppUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
-
+public record ControllingMemberCrcSubmitCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcUpsertRequest)
+    : ControllingMemberCrcUpsertCommand(ControllingMemberCrcUpsertRequest), IRequest<ControllingMemberCrcAppCommandResponse>;
 public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
