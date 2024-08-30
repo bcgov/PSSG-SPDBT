@@ -31,7 +31,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizContactQry qry = new(biz.accountid, app.spd_applicationid);
 
             // Action
-            var response = await _bizContactRepo.QueryBizAppContactsAsync(qry, CancellationToken.None);
+            var response = await _bizContactRepo.QueryBizContactsAsync(qry, CancellationToken.None);
 
             // Assert
             Assert.NotNull(response);

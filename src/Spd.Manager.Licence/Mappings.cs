@@ -320,6 +320,7 @@ internal class Mappings : Profile
 
         CreateMap<BizContactResp, NonSwlContactInfo>()
             .ForMember(d => d.ControllingMemberAppStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberCrcAppPortalStatusEnum))
+            .ForMember(d => d.InviteStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberInvitationStatusEnum))
             .ReverseMap()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
 

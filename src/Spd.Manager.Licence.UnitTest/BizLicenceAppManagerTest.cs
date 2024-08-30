@@ -6,7 +6,6 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
-using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -31,7 +30,6 @@ public class BizLicenceAppManagerTest
     private Mock<IBizRepository> mockBizRepo = new();
     private Mock<ITaskRepository> mockTaskRepo = new();
     private Mock<IPersonLicApplicationRepository> mockPersonalLicAppRepo = new();
-    private Mock<IControllingMemberInviteRepository> mockCmInviteRepo = new();
     private BizLicAppManager sut;
 
     public BizLicenceAppManagerTest()

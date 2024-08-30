@@ -6,7 +6,7 @@ namespace Spd.Resource.Repository.BizContact
     public interface IBizContactRepository
     {
         Task<BizContactResp> GetBizContactAsync(Guid bizContactId, CancellationToken ct);
-        Task<IEnumerable<BizContactResp>> QueryBizAppContactsAsync(BizContactQry qry, CancellationToken ct);
+        Task<IEnumerable<BizContactResp>> QueryBizContactsAsync(BizContactQry qry, CancellationToken ct);
         Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct);
     }
     //command
@@ -30,6 +30,8 @@ namespace Spd.Resource.Repository.BizContact
         public Guid BizId { get; set; }
         public Guid? LatestControllingMemberCrcAppId { get; set; }
         public ApplicationPortalStatusEnum? LatestControllingMemberCrcAppPortalStatusEnum { get; set; }
+        public Guid? LatestControllingMemberInvitationId { get; set; }
+        public ApplicationInviteStatusEnum? LatestControllingMemberInvitationStatusEnum { get; set; }
     }
 
     public enum BizContactRoleEnum

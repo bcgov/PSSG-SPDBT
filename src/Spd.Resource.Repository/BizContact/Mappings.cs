@@ -20,6 +20,8 @@ namespace Spd.Resource.Repository.BizContact
             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s._spd_contactid_value))
             .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_swlnumber_value))
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            .ForMember(d => d.LatestControllingMemberInvitationId, opt => opt.MapFrom(s => GetLastestControllingMemberInvite(s.spd_businesscontact_spd_portalinvitation.ToList()).InviteId))
+            .ForMember(d => d.LatestControllingMemberInvitationStatusEnum, opt => opt.MapFrom(s => GetLastestControllingMemberInvite(s.spd_businesscontact_spd_portalinvitation.ToList()).InviteStatus))
             .ForMember(d => d.LatestControllingMemberCrcAppId, opt => opt.MapFrom(s => GetLastestControllingMemberCrcApp(s.spd_businesscontact_spd_application.ToList()).AppId))
             .ForMember(d => d.LatestControllingMemberCrcAppPortalStatusEnum, opt => opt.MapFrom(s => GetLastestControllingMemberCrcApp(s.spd_businesscontact_spd_application.ToList()).PortalStatus))
             .ReverseMap()
@@ -39,6 +41,22 @@ namespace Spd.Resource.Repository.BizContact
                     string status = ((ApplicationPortalStatus)app.spd_portalstatus.Value).ToString();
                     ApplicationPortalStatusEnum statusEnum = Enum.Parse<ApplicationPortalStatusEnum>(status);
                     return (app.spd_applicationid, statusEnum);
+                }
+            }
+        }
+
+        private (Guid? InviteId, ApplicationInviteStatusEnum? InviteStatus) GetLastestControllingMemberInvite(IEnumerable<spd_portalinvitation> invites)
+        {
+            spd_portalinvitation? invite = invites.OrderByDescending(app => app.createdon).FirstOrDefault();
+            if (invite == null) return (null, null);
+            else
+            {
+                if (invite.statuscode == null) return (invite.spd_portalinvitationid, null);
+                else
+                {
+                    string status = ((InvitationStatus)invite.statuscode.Value).ToString();
+                    ApplicationInviteStatusEnum statusEnum = Enum.Parse<ApplicationInviteStatusEnum>(status);
+                    return (invite.spd_portalinvitationid, statusEnum);
                 }
             }
         }

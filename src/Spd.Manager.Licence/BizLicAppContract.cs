@@ -98,6 +98,7 @@ public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
     public ApplicationPortalStatusCode? ControllingMemberAppStatusCode { get; set; }
+    public ApplicationInviteStatusCode? InviteStatusCode { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo

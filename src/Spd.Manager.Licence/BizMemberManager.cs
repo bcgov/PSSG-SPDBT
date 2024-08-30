@@ -79,7 +79,7 @@ internal class BizMemberManager :
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)
     {
-        var bizMembers = await _bizContactRepository.QueryBizAppContactsAsync(new BizContactQry(qry.BizId, null), ct);
+        var bizMembers = await _bizContactRepository.QueryBizContactsAsync(new BizContactQry(qry.BizId, null), ct);
         Members members = new();
         members.SwlControllingMembers = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)

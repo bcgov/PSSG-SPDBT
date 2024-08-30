@@ -31,13 +31,6 @@ public record UpsertBizMembersCommand(
     Members Members,
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;
 
-public enum ControllingMemberStatusCode
-{
-    InvitationSent,
-    ApplicationSubmitted,
-    CompletedRiskFound,
-    CompletedCleared
-}
 public record ControllingMemberInvitesCreateResponse(Guid BizContactId)
 {
     public bool CreateSuccess { get; set; }

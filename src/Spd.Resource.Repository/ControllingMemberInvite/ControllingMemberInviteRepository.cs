@@ -46,7 +46,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         {
             spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
             account? biz = await _dynaContext.GetOrgById(createInviteCmd.BizId, ct);
-            spd_businesscontact? bizContact = await _dynaContext.GetBizContactById(createInviteCmd.BizId, ct);
+            spd_businesscontact? bizContact = await _dynaContext.GetBizContactById(createInviteCmd.BizContactId, ct);
             spd_portalinvitation invitation = _mapper.Map<spd_portalinvitation>(createInviteCmd);
             var encryptedInviteId = WebUtility.UrlEncode(_dataProtector.Protect(invitation.spd_portalinvitationid.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.ApplicationInviteValidDays)));
             invitation.spd_invitationlink = $"{createInviteCmd.HostUrl}{SpdConstants.BizPortalControllingMemberInviteLink}{encryptedInviteId}";
