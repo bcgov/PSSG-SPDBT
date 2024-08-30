@@ -11,15 +11,15 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         {
             _ = CreateMap<ControllingMemberInvite, spd_portalinvitation>()
             .ForMember(d => d.spd_portalinvitationid, opt => opt.MapFrom(s => Guid.NewGuid()))
-            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))
-            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.LastName)))
-            .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.Email))
+            .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.GivenName)))
+            .ForMember(d => d.spd_surname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.Surname)))
+            .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.EmailAddress))
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ControllingMemberCRC))
             .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
             .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => PayerPreferenceOptionSet.Applicant))
             .ReverseMap()
-            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
-            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname));
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname));
 
             _ = CreateMap<spd_portalinvitation, ControllingMemberInviteResp>()
             .IncludeBase<spd_portalinvitation, ControllingMemberInvite>()

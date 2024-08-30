@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.BizContact
@@ -18,9 +19,28 @@ namespace Spd.Resource.Repository.BizContact
             .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s._spd_contactid_value))
             .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s._spd_swlnumber_value))
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            .ForMember(d => d.LatestControllingMemberCrcAppId, opt => opt.MapFrom(s => GetLastestControllingMemberCrcApp(s.spd_businesscontact_spd_application.ToList()).AppId))
+            .ForMember(d => d.LatestControllingMemberCrcAppPortalStatusEnum, opt => opt.MapFrom(s => GetLastestControllingMemberCrcApp(s.spd_businesscontact_spd_application.ToList()).PortalStatus))
             .ReverseMap()
             .ForMember(d => d.spd_role, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(s.BizContactRoleCode)))
             .ForMember(d => d.spd_fullname, opt => opt.MapFrom(s => $"{s.Surname}, {s.GivenName}"));
+        }
+
+        private (Guid? AppId, ApplicationPortalStatusEnum? PortalStatus) GetLastestControllingMemberCrcApp(IEnumerable<spd_application> apps)
+        {
+            spd_application? app = apps.OrderByDescending(app => app.createdon).FirstOrDefault();
+            if (app == null) return (null, null);
+            else
+            {
+                if (app.spd_portalstatus == null) return (app.spd_applicationid, null);
+                else
+                {
+                    string status = ((ApplicationPortalStatus)app.spd_portalstatus.Value).ToString();
+                    ApplicationPortalStatusEnum statusEnum = Enum.Parse<ApplicationPortalStatusEnum>(status);
+                    return (app.spd_applicationid, statusEnum);
+                }
+            }
         }
     }
 }

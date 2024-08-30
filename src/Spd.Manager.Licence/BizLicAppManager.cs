@@ -117,7 +117,6 @@ internal class BizLicAppManager :
         if (cmd.BizLicAppUpsertRequest.Members != null && cmd.BizLicAppUpsertRequest.BizId != null)
             await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
                 cmd.BizLicAppUpsertRequest.BizId,
-                (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
                 cancellationToken);
 
         if (cmd.BizLicAppUpsertRequest.DocumentInfos != null && cmd.BizLicAppUpsertRequest.DocumentInfos.Any())
@@ -167,7 +166,6 @@ internal class BizLicAppManager :
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalLic.BizId,
-                (Guid)originalLic.LicenceAppId,
                 cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -214,7 +212,6 @@ internal class BizLicAppManager :
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalBizLic.BizId,
-                (Guid)originalBizLic.LicenceAppId,
                 cancellationToken);
 
         // Upload new files
@@ -308,7 +305,6 @@ internal class BizLicAppManager :
         if (cmd.LicenceRequest.Members != null)
             await UpdateMembersAsync(cmd.LicenceRequest.Members,
                 (Guid)originalLicApp.BizId,
-                (Guid)originalLicApp.LicenceAppId,
                 cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };
@@ -317,11 +313,25 @@ internal class BizLicAppManager :
     public async Task<NonSwlContactInfo> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
     {
         //check if bizContact already has invitation
+        //todo: probably we do not need to check this. it should allow user to send out invite multiple times.
+        //var existingInvites = await _cmInviteRepository.QueryAsync(new ControllingMemberInviteQuery(cmd.BizContactId), cancellationToken);
+        //if (existingInvites.Any(i => i.Status == Resource.Repository.ApplicationInviteStatusEnum.Sent))
+        //    throw new ApiException(HttpStatusCode.BadRequest, "There is already an invite sent out.");
 
         //get info from bizContactId
         BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, cancellationToken);
+        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-controlling member.");
+        if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
+        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null)
+            throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
+        //todo : how can we check if the CRC approved but it has been expired.
 
-        _cmInviteRepository.ManageAsync(_mapper.Map<ControllingMemberInviteCreateCmd>(contactResp), cancellationToken);
+        var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
+        createCmd.CreatedByUserId = cmd.UserId;
+        createCmd.HostUrl = cmd.HostUrl;
+        await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
         //map to
 
         return null;
@@ -350,7 +360,7 @@ internal class BizLicAppManager :
 
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
     {
-        await UpdateMembersAsync(cmd.Members, cmd.BizId, cmd.ApplicationId, ct);
+        await UpdateMembersAsync(cmd.Members, cmd.BizId, ct);
         if (cmd.LicAppFileInfos.Any(f => f.LicenceDocumentTypeCode != LicenceDocumentTypeCode.CorporateRegistryDocument))
             throw new ApiException(HttpStatusCode.BadRequest, "Can only Upload Corporate Registry Document for management of controlling member.");
 
@@ -436,7 +446,7 @@ internal class BizLicAppManager :
         }
     }
 
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, Guid? appId, CancellationToken ct)
+    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, CancellationToken ct)
     {
         List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
         contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
@@ -446,7 +456,7 @@ internal class BizLicAppManager :
             e.BizContactRoleCode = BizContactRoleEnum.Employee;
         }
         contacts.AddRange(employees);
-        BizContactUpsertCmd upsertCmd = new(bizId, appId, contacts);
+        BizContactUpsertCmd upsertCmd = new(bizId, contacts);
         await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
         return default;
     }

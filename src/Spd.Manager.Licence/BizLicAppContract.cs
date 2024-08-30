@@ -40,7 +40,7 @@ public record BizLicAppUpdateCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<BizLicAppCommandResponse>;
 
-public record BizControllingMemberNewInviteCommand(Guid BizContactId) : IRequest<NonSwlContactInfo>;
+public record BizControllingMemberNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl) : IRequest<NonSwlContactInfo>;
 
 public record BrandImageQuery(Guid DocumentId) : IRequest<FileResponse>;
 

@@ -1,5 +1,3 @@
-using System.Configuration;
-using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
@@ -8,6 +6,8 @@ using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Utilities.Shared.Tools;
+using System.Configuration;
+using System.Net;
 
 namespace Spd.Presentation.Licensing.Controllers;
 
@@ -16,7 +16,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     private readonly ITimeLimitedDataProtector _dataProtector;
     private readonly IDistributedCache _cache;
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
-    private readonly IConfiguration _configuration;
+    protected readonly IConfiguration _configuration;
 
     protected SpdLicenceControllerBase(IDistributedCache cache,
         IDataProtectionProvider dpProvider,
@@ -78,7 +78,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     {
         Guid[]? array = docKeyCodes?.ToArray();
         if (array == null || array.Length == 0) return Enumerable.Empty<LicAppFileInfo>();
-        List<LicAppFileInfo> results = new List<LicAppFileInfo>();
+        List<LicAppFileInfo> results = new();
         foreach (Guid docKey in array)
         {
             IEnumerable<LicAppFileInfo>? items = await _cache.GetAsync<IEnumerable<LicAppFileInfo>>(docKey.ToString());

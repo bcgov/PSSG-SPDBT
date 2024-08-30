@@ -1,5 +1,3 @@
-using Spd.Resource.Repository.ApplicationInvite;
-
 namespace Spd.Resource.Repository.ControllingMemberInvite
 {
     public interface IControllingMemberInviteRepository
@@ -34,11 +32,11 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
 
     public record ControllingMemberInvite
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
-        public string? Email { get; set; }
+        public string? EmailAddress { get; set; }
         public Guid BizId { get; set; }
         public Guid CreatedByUserId { get; set; }
         public Guid BizContactId { get; set; }

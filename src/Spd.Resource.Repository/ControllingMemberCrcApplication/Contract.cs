@@ -1,12 +1,6 @@
 ﻿using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
@@ -44,6 +38,7 @@ public record ControllingMemberCrcApplication
     public bool? IsTreatedForMHC { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
+    public Guid BizContactId { get; set; } //todo: add BizContactId to viewModel and transfer the id to here.
 }
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {

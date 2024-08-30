@@ -21,8 +21,8 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         account biz = await CreateAccountAsync();
         spd_application app = await CreateApplicationAsync(biz);
-        spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
-        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.Employee);
+        spd_businesscontact bizContact = await CreateBizContactAsync(biz, "firstName1", BizContactRoleOptionSet.ControllingMember);
+        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, "firstName2", BizContactRoleOptionSet.Employee);
         await _context.SaveChangesAsync(CancellationToken.None);
 
         try
@@ -58,10 +58,9 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         // Arrange
         //create account
         account biz = await CreateAccountAsync();
-        spd_application app = await CreateApplicationAsync(biz);
         await _context.SaveChangesAsync(CancellationToken.None);
 
-        BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)app.spd_applicationid, new List<BizContactResp>());
+        BizContactUpsertCmd cmd = new((Guid)biz.accountid, new List<BizContactResp>());
 
         try
         {
@@ -77,7 +76,6 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         finally
         {
             //Annihilate
-            _context.DeleteObject(app);
             _context.DeleteObject(biz);
             await _context.SaveChangesAsync(CancellationToken.None);
         }
@@ -142,11 +140,9 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     {
         // Arrange
         account biz = await CreateAccountAsync();
-        spd_application app = await CreateApplicationAsync(biz);
         await _context.SaveChangesAsync(CancellationToken.None);
-        spd_businesscontact bizContact = await CreateBizContactAsync(biz, app, "firstName1", BizContactRoleOptionSet.ControllingMember);
-        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, app, "firstName2", BizContactRoleOptionSet.ControllingMember);
-        spd_application newApp = await CreateApplicationAsync(biz);
+        spd_businesscontact bizContact = await CreateBizContactAsync(biz, "firstName1", BizContactRoleOptionSet.ControllingMember);
+        spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, "firstName2", BizContactRoleOptionSet.ControllingMember);
         await _context.SaveChangesAsync(CancellationToken.None);
 
         try
@@ -157,7 +153,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
                 new BizContactResp{ GivenName = "newFirstName3", EmailAddress="firstName3@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
             };
 
-            BizContactUpsertCmd cmd = new((Guid)biz.accountid, (Guid)newApp.spd_applicationid, requests);
+            BizContactUpsertCmd cmd = new((Guid)biz.accountid, requests);
 
             // Action
             var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
@@ -169,19 +165,12 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
                 .ToList();
             Assert.Equal(2, bizContacts.Count());
             Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName1")); //updated
-
-            var newAppliation = _context.spd_applications
-                .Expand(a => a.spd_businesscontact_spd_application)
-                .Where(a => a.spd_applicationid == newApp.spd_applicationid)
-                .FirstOrDefault();
-            Assert.Equal(2, newAppliation.spd_businesscontact_spd_application.Count());
         }
         finally
         {
             //Annihilate
             _context.DeleteObject(bizContact);
             _context.DeleteObject(bizContact2);
-            _context.DeleteObject(app);
             _context.DeleteObject(biz);
             await _context.SaveChangesAsync(CancellationToken.None);
         }
@@ -206,7 +195,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         return app;
     }
 
-    private async Task<spd_businesscontact> CreateBizContactAsync(account biz, spd_application app, string firstName, BizContactRoleOptionSet role)
+    private async Task<spd_businesscontact> CreateBizContactAsync(account biz, string firstName, BizContactRoleOptionSet role)
     {
         spd_businesscontact bizContact = new();
         bizContact.spd_businesscontactid = Guid.NewGuid();
@@ -214,7 +203,6 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         bizContact.spd_role = (int)role;
         _context.AddTospd_businesscontacts(bizContact);
         _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
-        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
         return bizContact;
     }
 

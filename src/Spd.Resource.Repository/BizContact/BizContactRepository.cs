@@ -34,8 +34,6 @@ namespace Spd.Resource.Repository.BizContact
                 throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the business contact");
 
             return _mapper.Map<BizContactResp>(bizContact);
-
-
         }
 
         public async Task<IEnumerable<BizContactResp>> QueryBizAppContactsAsync(BizContactQry qry, CancellationToken ct)
@@ -87,21 +85,12 @@ namespace Spd.Resource.Repository.BizContact
                 _context.UpdateObject(item);
             }
 
-            spd_application? app = null;
-            if (cmd.AppId != null)
-            {
-                app = await _context.GetApplicationById((Guid)cmd.AppId, ct);
-                if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
-            }
-
             //update all that in cmd.Data
             var toModify = list.Where(c => cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid));
             foreach (var item in toModify)
             {
                 _mapper.Map(cmd.Data.FirstOrDefault(d => d.BizContactId == item.spd_businesscontactid), item);
                 _context.UpdateObject(item);
-                if (app != null && !item.spd_businesscontact_spd_application.Any(a => a.spd_applicationid == cmd.AppId))
-                    _context.AddLink(item, nameof(item.spd_businesscontact_spd_application), app);
             }
             await _context.SaveChangesAsync(ct);
 
@@ -140,8 +129,6 @@ namespace Spd.Resource.Repository.BizContact
                     }
 
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
-                    if (app != null)
-                        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
                 }
             }
             await _context.SaveChangesAsync(ct);

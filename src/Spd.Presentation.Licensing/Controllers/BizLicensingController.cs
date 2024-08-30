@@ -9,6 +9,7 @@ using Spd.Manager.Shared;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
@@ -256,7 +257,18 @@ namespace Spd.Presentation.Licensing.Controllers
         [HttpGet]
         public async Task<NonSwlContactInfo> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
-            NonSwlContactInfo response = await _mediator.Send(new BizControllingMemberNewInviteCommand(bizContactId), ct);
+            //temp delete for testing
+            //var userIdStr = _currentUser.GetUserId();
+            //if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            //to
+            var userIdStr = "dffd9fe4-015c-ef11-b851-00505683fbf4";
+            //temp
+
+            string? hostUrl = _configuration.GetValue<string>("HostUrl");
+            if (hostUrl == null)
+                throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+            var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl);
+            NonSwlContactInfo response = await _mediator.Send(inviteCreateCmd, ct);
             return response;
         }
     }
