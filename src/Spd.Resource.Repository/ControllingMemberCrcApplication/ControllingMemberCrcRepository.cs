@@ -66,7 +66,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 
         //link to bizContact
         var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
-        _context.SetLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
+        _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
 
         //link bizContact with contact
         _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
