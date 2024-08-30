@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
@@ -37,7 +37,8 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
-            //for new, always create a new contact //todo: probably needs to change if hasExpiredLicence
+            //for new, always create a new contact 
+            //todo: probably needs to change if hasExpiredLicence
             contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
         else
@@ -64,17 +65,29 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
 
         //link to bizContact
-        var bizContact = await _context.GetBizContactById(cmd.BizContactId, ct);
+        var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
         _context.SetLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
 
         //link bizContact with contact
-
+        _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
         await _context.SaveChangesAsync(ct);
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
     }
 
     public async Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd cmd, CancellationToken ct)
     {
+        // get parent business license application
+        spd_application? bizLicApplication = await _context.spd_applications
+                .Expand(a => a.spd_businessapplication_spd_workerapplication)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_ApplicantId_account)
+                .Where(a => a.spd_applicationid == cmd.ParentBizLicApplicationId)
+                .SingleOrDefaultAsync(ct);
+
+        if (bizLicApplication == null)
+            throw new ArgumentException("Original business licence application was not found.");
+
+        var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
         spd_application? app;
         if (cmd.ControllingMemberCrcAppId != null)
         {
@@ -95,11 +108,28 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             if (contact != null)
             {
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+                //link bizContact with contact
+                _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
             }
+            //link to biz
+            var account = _context.accounts
+                .Where(a => a.accountid == cmd.ParentBizLicApplicationId)
+                .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+                .FirstOrDefault();
+            if (account != null)
+            {
+                _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+            }
+            // add link to parent business application
+            _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
+
+            SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+            SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+
+            //link to bizContact
+            _context.SetLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
         }
 
-        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
-        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         await _context.SaveChangesAsync();
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, cmd.ContactId);
     }

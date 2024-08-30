@@ -32,9 +32,9 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     protected IDistributedCache Cache
     { get { return _cache; } }
 
-    protected void SetValueToResponseCookie(string key, string value)
+    protected void SetValueToResponseCookie(string key, string value, int durationInMins = 20)
     {
-        var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(20));
+        var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(durationInMins));
         this.Response.Cookies.Append(key,
             encryptedKeyCode,
             new CookieOptions
@@ -42,7 +42,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
                 Secure = true,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(20)
+                Expires = DateTimeOffset.UtcNow.AddMinutes(durationInMins)
             });
     }
 

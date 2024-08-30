@@ -217,7 +217,11 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-            return await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
+            var response = await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
+
+            //clear the cookie for the sole proprietor swl
+            SetValueToResponseCookie(SessionConstants.AnonymousSoleProprietorApplicationContext, string.Empty);
+            return response;
         }
 
         /// <summary>

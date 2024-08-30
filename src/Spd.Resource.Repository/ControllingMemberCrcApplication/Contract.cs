@@ -1,4 +1,4 @@
-﻿using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.PersonLicApplication;
 
@@ -38,7 +38,7 @@ public record ControllingMemberCrcApplication
     public bool? IsTreatedForMHC { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
-    public Guid BizContactId { get; set; } //todo: add BizContactId to viewModel and transfer the id to here.
+    public Guid BizContactId { get; set; } 
 }
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
