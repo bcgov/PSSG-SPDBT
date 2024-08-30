@@ -81,9 +81,9 @@ namespace Spd.Utilities.LogonUser
                 LastName = claim.GetClaimValue<string>(BCeID_SUR_NAME),
                 PreferredUserName = claim.GetClaimValue<string>("preferred_username"),
                 BCeIDUserName = claim.GetClaimValue<string>("bceid_username"),
-                UserGuid = claim.GetClaimValue<Guid>("bceid_user_guid"),
+                UserGuid = claim.GetClaimValue<Guid?>("bceid_user_guid"),
                 EmailVerified = claim.GetClaimValue<bool>("email_verified"),
-                BizGuid = claim.GetClaimValue<Guid>("bceid_business_guid"),
+                BizGuid = claim.GetClaimValue<Guid?>("bceid_business_guid"),
                 BizName = claim.GetClaimValue<string>("bceid_business_name"),
                 Issuer = claim.GetClaimValue<string>("iss"),
             };

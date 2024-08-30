@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 
 namespace Spd.Utilities.LogonUser;
 
@@ -29,15 +30,20 @@ public static class ClaimsPrincipleExtension
         identity.AddClaim(new Claim(key, value));
     }
 
-    public static T? GetClaimValue<T>(this ClaimsPrincipal claimsPrincipal, string key) => (T?)GetClaimValue(claimsPrincipal, typeof(T), key);
+    public static T? GetClaimValue<T>([NotNull] this ClaimsPrincipal claimsPrincipal, string key)
+    {
+        var value = GetClaimValue(claimsPrincipal, typeof(T), key);
+        if (value == null) return default;
+        return (T?)value;
+    }
 
-    private static object? GetClaimValue(this ClaimsPrincipal claimsPrincipal, Type type, string key)
+    private static object? GetClaimValue([NotNull] this ClaimsPrincipal claimsPrincipal, Type type, string key)
         => type switch
         {
             Type t when t == typeof(string) => claimsPrincipal.FindFirstValue(key),
-            Type t when t == typeof(int) => int.TryParse(claimsPrincipal.FindFirstValue(key), out int value) ? value : default,
-            Type t when t == typeof(bool) => bool.TryParse(claimsPrincipal.FindFirstValue(key), out bool value) && value,
-            Type t when t == typeof(Guid) => Guid.TryParse(claimsPrincipal.FindFirstValue(key), out Guid value) ? value : null,
+            Type t when t == typeof(int) || t == typeof(int?) => int.TryParse(claimsPrincipal.FindFirstValue(key), out int value) ? value : null,
+            Type t when t == typeof(bool) || t==typeof(bool?) => bool.TryParse(claimsPrincipal.FindFirstValue(key), out bool value) ? value : null,
+            Type t when t == typeof(Guid) || t == typeof(Guid?) => Guid.TryParse(claimsPrincipal.FindFirstValue(key), out Guid value) ? value : null,
             _ => default
         };
 }

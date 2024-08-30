@@ -40,7 +40,7 @@ public class BizPortalUserController : SpdControllerBase
     public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest bizUserInvitationRequest)
     {
         var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
-        return await _mediator.Send(new VerifyUserInvitation(bizUserInvitationRequest, userIdentityInfo.BizGuid, (Guid)userIdentityInfo.UserGuid));
+        return await _mediator.Send(new VerifyUserInvitation(bizUserInvitationRequest, userIdentityInfo.BizGuid.Value, userIdentityInfo.UserGuid.Value));
     }
 
     /// <summary>
