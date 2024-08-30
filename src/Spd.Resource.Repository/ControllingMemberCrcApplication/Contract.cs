@@ -1,12 +1,6 @@
-﻿using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository

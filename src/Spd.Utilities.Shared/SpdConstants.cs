@@ -12,6 +12,7 @@ public static class SpdConstants
     public static readonly string DefaultBannerMsg = "10 business days for online applications and 20 business days for manual applications.";
     public static readonly string UserInviteLink = "crrp/invitation/";
     public static readonly string BizPortalUserInviteLink = "business-licence/invitation/";
+    public static readonly string BizPortalControllingMemberInviteLink = "business-licence/cm-crc-invitation/";
     public static readonly string CrrpApplicationInviteLink = "crrpa/invitation/";
     public static readonly string PssoApplicationInviteLink = "pssoa/invitation/";
     public static readonly int ShareableClearanceExpiredDateBufferInMonths = 6;

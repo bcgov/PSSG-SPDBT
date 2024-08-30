@@ -9,6 +9,7 @@ using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
+using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Delegates;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
@@ -70,6 +71,7 @@ namespace Spd.Resource.Repository
             configurationServices.Services.AddTransient<IBizContactRepository, BizContactRepository>();
             configurationServices.Services.AddTransient<IEventRepository, EventRepository>();
             configurationServices.Services.AddTransient<IControllingMemberCrcRepository, ControllingMemberCrcRepository>();
+            configurationServices.Services.AddTransient<IControllingMemberInviteRepository, ControllingMemberInviteRepository>();
         }
     }
 }
