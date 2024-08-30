@@ -96,7 +96,7 @@ public class BizLicensingControllerTest
     [Fact]
     public async void Get_GetBizLicenceApplication_Return_BizLicAppResponse()
     {
-        var result = await sut.GetBizLicenceApplication(Guid.NewGuid());
+        var result = await sut.GetBizLicenceApplication(Guid.NewGuid(), CancellationToken.None);
 
         Assert.IsType<BizLicAppResponse>(result);
         mockMediator.Verify();
