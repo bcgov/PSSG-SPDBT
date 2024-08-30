@@ -85,7 +85,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     [Route("api/controlling-member-crc-applications/submit")]
     [Authorize(Policy = "OnlyBcsc")]
     [HttpPost]
-    public async Task<ControllingMemberCrcAppCommandResponse> SubmitPermitApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcSubmitRequest, CancellationToken ct)
+    public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcSubmitRequest, CancellationToken ct)
     {
         //TODO: modify validator condition
         var validateResult = await _controllingMemberCrcAppUpsertValidator.ValidateAsync(controllingMemberCrcSubmitRequest, ct);

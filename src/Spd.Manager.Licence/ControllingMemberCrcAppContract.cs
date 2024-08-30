@@ -40,6 +40,7 @@ public record ControllingMemberCrcAppBase
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
+    public Guid BizContactId { get; set; }
 }
 
 
