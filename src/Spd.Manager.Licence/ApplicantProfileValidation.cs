@@ -7,7 +7,6 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
     public ApplicantUpdateRequestValidator()
     {
         RuleFor(r => r.ApplicationTypeCode).NotEmpty().IsInEnum().When(r => r.LicenceId != null);
-        RuleFor(r => r.GivenName).NotEmpty();
         RuleFor(r => r.Surname).NotEmpty();
         RuleFor(r => r.DateOfBirth).NotEmpty();
         RuleFor(r => r.GenderCode).NotEmpty().IsInEnum();
