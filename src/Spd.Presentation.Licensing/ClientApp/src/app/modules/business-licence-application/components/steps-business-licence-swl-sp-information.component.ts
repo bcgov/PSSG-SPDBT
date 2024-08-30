@@ -23,6 +23,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CONFIRMATION)"
 					(cancelAndExit)="onCancelAndExit()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
@@ -33,6 +35,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CONFIRMATION)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CONFIRMATION)"
@@ -65,6 +69,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
@@ -78,6 +84,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_INFORMATION)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_INFORMATION)"
@@ -89,6 +97,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_ADDRESS)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_ADDRESS)"
@@ -102,6 +112,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_BRANDING)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_BRANDING)"
@@ -115,6 +127,8 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 
 				<app-wizard-footer
 					[isSoleProprietorCombinedFlow]="true"
+					[showSaveAndExit]="true"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_LIABILITY)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_LIABILITY)"

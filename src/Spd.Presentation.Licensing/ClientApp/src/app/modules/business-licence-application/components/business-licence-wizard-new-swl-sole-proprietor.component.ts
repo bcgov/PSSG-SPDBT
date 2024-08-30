@@ -12,7 +12,6 @@ import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
@@ -64,7 +63,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorCombinedFlow]="true"
 						[isFormValid]="false"
-						[showSaveAndExit]="false"
+						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -80,7 +79,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorCombinedFlow]="true"
-						(saveAndExit)="onSaveAndExit()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(scrollIntoView)="onScrollIntoView()"
@@ -240,33 +238,33 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	onCancelAndExit(): void {
-		// TODO combined flow - change warning message
-		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Confirmation',
-			message: `<p><b>Are you sure you want to cancel your sole proprietor business licence application?</b></p>
-						<p>If yes, you will redirected back to your security worker licence for review and payment.</p>`,
-			actionText: 'Yes',
-			cancelText: 'Close',
-		};
+		// // TODO combined flow - change warning message
+		// const data: DialogOptions = {
+		// 	icon: 'warning',
+		// 	title: 'Confirmation',
+		// 	message: `<p><b>Are you sure you want to cancel your sole proprietor business licence application?</b></p>
+		// 				<p>If yes, you will redirected back to your security worker licence for review and payment.</p>`,
+		// 	actionText: 'Yes',
+		// 	cancelText: 'Close',
+		// };
 
-		this.dialog
-			.open(DialogComponent, { data })
-			.afterClosed()
-			.subscribe((response: boolean) => {
-				if (response) {
-					if (this.isSwlAnonymous) {
-						this.router.navigate([
-							PersonalLicenceApplicationRoutes.MODULE_PATH,
-							PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
-							PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS,
-						]);
-						return;
-					}
+		// this.dialog
+		// 	.open(DialogComponent, { data })
+		// 	.afterClosed()
+		// 	.subscribe((response: boolean) => {
+		// 		if (response) {
+		if (this.isSwlAnonymous) {
+			this.router.navigate([
+				PersonalLicenceApplicationRoutes.MODULE_PATH,
+				PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
+				PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS,
+			]);
+			return;
+		}
 
-					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
-				}
-			});
+		this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
+		// 	}
+		// });
 	}
 
 	private saveStep(stepper?: MatStepper): void {

@@ -58,7 +58,11 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 			</div>
 		</section>
 
-		<app-wizard-footer [nextButtonLabel]="saveAndContinueLabel" (nextStepperStep)="onContinue()"></app-wizard-footer>
+		<app-wizard-footer
+			[nextButtonLabel]="saveAndContinueLabel"
+			[isWideNext]="true"
+			(nextStepperStep)="onContinue()"
+		></app-wizard-footer>
 	`,
 	styles: ``,
 })
