@@ -3,16 +3,21 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
     public interface IControllingMemberInviteRepository
     {
         public Task<IEnumerable<ControllingMemberInviteResp>> QueryAsync(ControllingMemberInviteQuery query, CancellationToken cancellationToken);
-        public Task ManageAsync(ControllingMemberInviteCreateCmd query, CancellationToken cancellationToken);
+        public Task ManageAsync(ControllingMemberInviteCmd cmd, CancellationToken cancellationToken);
         public Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInvitesAsync(ControllingMemberInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
     }
 
     public record ControllingMemberInviteQuery(Guid BizContactId, bool IncludeInactive = false);
-
-    public record ControllingMemberInviteCreateCmd : ControllingMemberInvite
+    public interface ControllingMemberInviteCmd { };
+    public record ControllingMemberInviteCreateCmd : ControllingMemberInvite, ControllingMemberInviteCmd
     {
         public string HostUrl { get; set; } = null!;
     };
+    public record ControllingMemberInviteUpdateCmd : ControllingMemberInviteCmd
+    {
+        public Guid ControllingMemberInviteId { get; set; }
+        public ApplicationInviteStatusEnum ApplicationInviteStatusEnum { get; set; }
+    }
 
     public record ControllingMemberInviteResp : ControllingMemberInvite
     {

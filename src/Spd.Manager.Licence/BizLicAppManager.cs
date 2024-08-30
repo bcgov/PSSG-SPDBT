@@ -32,7 +32,7 @@ internal class BizLicAppManager :
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<BrandImageQuery, FileResponse>,
-        IRequestHandler<BizControllingMemberNewInviteCommand, NonSwlContactInfo>,
+        IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -310,7 +310,7 @@ internal class BizLicAppManager :
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };
     }
 
-    public async Task<NonSwlContactInfo> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
+    public async Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
     {
         //check if bizContact already has invitation
         //todo: probably we do not need to check this. it should allow user to send out invite multiple times.
@@ -332,9 +332,8 @@ internal class BizLicAppManager :
         createCmd.CreatedByUserId = cmd.UserId;
         createCmd.HostUrl = cmd.HostUrl;
         await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
-        //map to
 
-        return null;
+        return new ControllingMemberInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };
     }
 
     public async Task<Members> Handle(GetBizMembersQuery qry, CancellationToken ct)

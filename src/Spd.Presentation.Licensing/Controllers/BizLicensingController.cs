@@ -255,7 +255,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
         //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
-        public async Task<NonSwlContactInfo> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
+        public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
             //temp delete for testing
             //var userIdStr = _currentUser.GetUserId();
@@ -268,8 +268,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
             var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl);
-            NonSwlContactInfo response = await _mediator.Send(inviteCreateCmd, ct);
-            return response;
+            return await _mediator.Send(inviteCreateCmd, ct);
         }
     }
 }

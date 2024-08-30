@@ -4,6 +4,7 @@ using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Resource.Repository.ControllingMemberInvite
@@ -33,7 +34,15 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             return _mapper.Map<IEnumerable<ControllingMemberInviteResp>>(invites.ToList());
         }
 
-        public async Task ManageAsync(ControllingMemberInviteCreateCmd createInviteCmd, CancellationToken ct)
+        public async Task ManageAsync(ControllingMemberInviteCmd cmd, CancellationToken ct)
+        {
+            if (cmd is ControllingMemberInviteCreateCmd)
+                await CreateControllingMemberInviteAsync((ControllingMemberInviteCreateCmd)cmd, ct);
+            else if (cmd is ControllingMemberInviteUpdateCmd)
+                await UpdateApplicationInvitesAsync((ControllingMemberInviteUpdateCmd)cmd, ct);
+        }
+
+        public async Task CreateControllingMemberInviteAsync(ControllingMemberInviteCreateCmd createInviteCmd, CancellationToken ct)
         {
             spd_portaluser? user = await _dynaContext.GetUserById(createInviteCmd.CreatedByUserId, ct);
             account? biz = await _dynaContext.GetOrgById(createInviteCmd.BizId, ct);
@@ -53,38 +62,28 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             await _dynaContext.SaveChangesAsync(ct);
         }
 
-        public async Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInvitesAsync(ControllingMemberInviteVerifyCmd verifyInviteCmd, CancellationToken ct)
+        private async Task UpdateApplicationInvitesAsync(ControllingMemberInviteUpdateCmd cmInviteUpdateCmd, CancellationToken cancellationToken)
         {
-            //Guid inviteId;
-            //try
-            //{
-            //    string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verifyInviteCmd.InviteEncryptedCode));
-            //    inviteId = Guid.Parse(inviteIdStr);
-            //}
-            //catch
-            //{
-            //    throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
-            //}
-            //var invite = await _dynaContext.spd_portalinvitations
-            //    .Expand(i => i.spd_OrganizationId)
-            //    .Where(i => i.spd_portalinvitationid == inviteId)
-            //    .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.ScreeningRequest)
-            //    .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
-            //    .FirstOrDefaultAsync(ct);
-            //if (invite == null)
-            //    throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+            spd_portalinvitation? invite = await _dynaContext.spd_portalinvitations
+                 .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
+                 .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC)
+                 .Where(i => i.spd_portalinvitationid == cmInviteUpdateCmd.ControllingMemberInviteId)
+                 .FirstOrDefaultAsync(cancellationToken);
+            if (invite == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid invite id");
 
-            ////set invite views
-            //invite.spd_views = (invite.spd_views ?? 0) + 1;
-            //_dynaContext.UpdateObject(invite);
-            //await _dynaContext.SaveChangesAsync(ct);
-            //return _mapper.Map<AppInviteVerifyResp>(invite);
-            return null;
+            // Inactivate the invite
+            invite.statecode = DynamicsConstants.StateCode_Inactive;
+            invite.statuscode = (int)Enum.Parse<InvitationStatus>(cmInviteUpdateCmd.ApplicationInviteStatusEnum.ToString());
+            _dynaContext.UpdateObject(invite);
+
+            await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task<spd_portalinvitation?> GetPortalInvitationById(Guid organizationId, Guid portalInvitationId)
-           => await _dynaContext.spd_portalinvitations
-                .Where(a => a.spd_portalinvitationid == portalInvitationId && a._spd_organizationid_value == organizationId)
-                .SingleOrDefaultAsync();
+        public async Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInvitesAsync(ControllingMemberInviteVerifyCmd verifyInviteCmd, CancellationToken ct)
+        {
+            //to be implemented
+            return null;
+        }
     }
 }
