@@ -7,9 +7,11 @@ public interface IBizMemberManager
     public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand command, CancellationToken ct);
+    public Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand command, CancellationToken ct);
 }
 
 public record BizControllingMemberNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl) : IRequest<ControllingMemberInvitesCreateResponse>;
+public record VerifyBizControllingMemberInviteCommand(string InviteEncryptedCode) : IRequest<ControllingMemberAppInviteVerifyResponse>;
 
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
 
@@ -35,3 +37,10 @@ public record ControllingMemberInvitesCreateResponse(Guid BizContactId)
 {
     public bool CreateSuccess { get; set; }
 }
+public record ControllingMemberAppInviteVerifyRequest(string InviteEncryptedCode);
+public record ControllingMemberAppInviteVerifyResponse()
+{
+    public Guid BizContactId { get; set; }
+    public Guid? BizLinAppId { get; set; }
+    public Guid BizId { get; set; }
+};

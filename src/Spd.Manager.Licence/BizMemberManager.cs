@@ -21,6 +21,7 @@ internal class BizMemberManager :
         IRequestHandler<GetBizMembersQuery, Members>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
+        IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
         IBizMemberManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -51,6 +52,12 @@ internal class BizMemberManager :
         _bizContactRepository = bizContactRepository;
         _cmInviteRepository = cmInviteRepository;
     }
+
+    public async Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand cmd, CancellationToken cancellationToken)
+    {
+        return null;
+    }
+
     public async Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
     {
         //check if bizContact already has invitation

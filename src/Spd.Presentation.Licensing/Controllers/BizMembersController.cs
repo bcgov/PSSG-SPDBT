@@ -86,5 +86,19 @@ namespace Spd.Presentation.Licensing.Controllers
             var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl);
             return await _mediator.Send(inviteCreateCmd, ct);
         }
+
+        /// <summary>
+        /// Verify if the current controlling member crc application invite is correct, and return needed info
+        /// </summary>
+        /// <param name="appInviteVerifyRequest">which include InviteEncryptedCode</param>
+        /// <returns></returns>
+        [Route("api/controlling-member-crc-applications")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ControllingMemberAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] ControllingMemberAppInviteVerifyRequest inviteVerifyRequest)
+        {
+            return await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
+        }
+
     }
 }
