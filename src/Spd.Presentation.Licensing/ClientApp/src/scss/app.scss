@@ -163,6 +163,17 @@ body {
 	background-color: var(--color-primary-lightest);
 }
 
+@media print {
+	.no-print,
+	.no-print * {
+		display: none !important;
+	}
+
+	.print-only {
+		display: block;
+	}
+}
+
 .step {
 	width: 100%;
 	align-items: center;

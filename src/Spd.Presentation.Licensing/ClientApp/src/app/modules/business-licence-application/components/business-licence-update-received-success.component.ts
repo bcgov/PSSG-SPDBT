@@ -66,20 +66,7 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			@media print {
-				.no-print,
-				.no-print * {
-					display: none !important;
-				}
-
-				.print-only {
-					display: block;
-				}
-			}
-		`,
-	],
+	styles: [],
 })
 export class BusinessLicenceUpdateReceivedSuccessComponent implements OnInit {
 	businessModelData: any = {};

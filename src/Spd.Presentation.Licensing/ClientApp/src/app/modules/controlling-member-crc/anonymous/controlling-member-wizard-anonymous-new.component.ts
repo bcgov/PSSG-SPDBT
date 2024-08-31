@@ -171,6 +171,10 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 		this.controllingMembersService.submitControllingMemberCrcAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
 				this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
+
+				this.router.navigateByUrl(
+					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMIT)
+				);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
