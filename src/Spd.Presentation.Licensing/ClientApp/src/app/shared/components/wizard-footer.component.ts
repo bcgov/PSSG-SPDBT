@@ -53,7 +53,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				<div
 					class="col-md-12"
 					[ngClass]="
-						isWideNext ? 'offset-xxl-2 col-xxl-3 col-xl-4 col-lg-6' : 'offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3'
+						isWideNext ? 'offset-xxl-2 col-xxl-4 col-xl-4 col-lg-6' : 'offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3'
 					"
 				>
 					<button
@@ -68,10 +68,10 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-template>
 
-			<ng-container *ngIf="isSoleProprietorCombinedFlow; else defaultFlow">
+			<ng-container *ngIf="isSoleProprietorReturnToSwl; else defaultFlow">
 				<div
 					class="col-xxl-4 col-xl-5 col-lg-6 col-md-12"
-					[ngClass]="isSoleProprietorCombinedFlow ? '' : 'offset-xxl-2'"
+					[ngClass]="isSoleProprietorReturnToSwl ? '' : 'offset-xxl-2'"
 					[ngClass]="isPreviousStepperStepObserved ? '' : 'offset-xxl-1'"
 				>
 					<button
@@ -120,7 +120,7 @@ export class WizardFooterComponent implements OnInit {
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
 	@Input() showExit = true;
-	@Input() isSoleProprietorCombinedFlow = false;
+	@Input() isSoleProprietorReturnToSwl = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() cancel: EventEmitter<any> = new EventEmitter();

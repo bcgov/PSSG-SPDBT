@@ -160,7 +160,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
 					BooleanTypeCode.Yes;
 
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+				this.showSaveAndExit = this.licenceApplicationService.isSaveAndExit();
 
 				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'

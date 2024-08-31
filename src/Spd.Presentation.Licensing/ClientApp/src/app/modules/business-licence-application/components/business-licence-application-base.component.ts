@@ -38,7 +38,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		const defaultBizId: string | undefined = queryParams['bizId'];
 		const swlLicAppId: string | undefined = queryParams['swlLicAppId'];
 		const bizLicAppId: string | undefined = queryParams['bizLicAppId'];
-		const isSwlAnonymous: string | undefined = queryParams['isSwlAnonymous'];
+		const isSoleProprietorSWLAnonymous: string | undefined = queryParams['isSoleProprietorSWLAnonymous'];
 
 		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
 
@@ -46,7 +46,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		if (defaultBizId) params.set('bizId', defaultBizId);
 		if (swlLicAppId) params.set('swlLicAppId', swlLicAppId);
 		if (bizLicAppId) params.set('bizLicAppId', bizLicAppId);
-		if (isSwlAnonymous) params.set('isSwlAnonymous', isSwlAnonymous);
+		if (isSoleProprietorSWLAnonymous) params.set('isSoleProprietorSWLAnonymous', isSoleProprietorSWLAnonymous);
 
 		const currentPath = location.pathname;
 		let redirectComponentRoute: string | undefined;
@@ -75,7 +75,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		) {
 			// handle new business licence creation from swl - for sole proprietor
 			this.businessApplicationService
-				.businessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId, isSwlAnonymous === 'Y')
+				.getBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId, isSoleProprietorSWLAnonymous === 'Y')
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

@@ -25,7 +25,7 @@ export class BusinessLicenceApplicationRoutes {
 
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 
-	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp'; // should contain url parameters for licenceAppId & isSwlAnonymous
+	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp'; // should contain url parameters for licenceAppId & isSoleProprietorSWLAnonymous
 
 	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
 	public static readonly BUSINESS_LICENCE_USER_PROFILE = 'user-profile';

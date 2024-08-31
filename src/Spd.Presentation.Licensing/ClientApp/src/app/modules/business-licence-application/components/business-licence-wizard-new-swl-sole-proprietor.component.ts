@@ -2,7 +2,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
@@ -46,9 +45,10 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<ng-template matStepLabel>Business Information</ng-template>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
+						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
-						(cancelAndExit)="onCancelAndExit()"
+						(cancelAndExit)="onReturnToSwl()"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
 					></app-steps-business-licence-swl-sp-information>
@@ -61,7 +61,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[applicationTypeCode]="applicationTypeCode"
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
-						[isSoleProprietorCombinedFlow]="true"
+						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
 						[isFormValid]="false"
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
@@ -78,7 +78,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[workerLicenceTypeCode]="workerLicenceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
-						[isSoleProprietorCombinedFlow]="true"
+						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(scrollIntoView)="onScrollIntoView()"
@@ -109,12 +109,13 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	step3Complete = false;
 	step4Complete = false;
 
+	isSoleProprietorReturnToSwl = false;
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 
 	private businessModelValueChangedSubscription!: Subscription;
-	private isSwlAnonymous = false;
+	private isSoleProprietorSWLAnonymous = false;
 
 	@ViewChild(StepsBusinessLicenceSwlSpInformationComponent)
 	stepsBusinessInformationComponent!: StepsBusinessLicenceSwlSpInformationComponent;
@@ -126,7 +127,6 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -151,7 +151,11 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 				this.bizTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'businessInformationData.bizTypeCode'
 				)?.value;
-				this.isSwlAnonymous = this.businessApplicationService.businessModelFormGroup.get('isSwlAnonymous')?.value;
+
+				this.isSoleProprietorSWLAnonymous =
+					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSWLAnonymous')?.value;
+				this.isSoleProprietorReturnToSwl =
+					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorReturnToSwl')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -195,7 +199,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.submitBusinessLicenceNew().subscribe({
+		this.businessApplicationService.submitBusinessLicenceWithSwlCombinedFlowNew().subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hotToastService.success('Your business licence has been successfully submitted');
 				this.payNow(resp.body.licenceAppId!);
@@ -227,7 +231,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			return;
 		}
 
-		this.businessApplicationService.partialSaveBusinessLicenceStep(true).subscribe({
+		this.businessApplicationService.partialSaveBusinessLicenceWithSwlCombinedFlow(true).subscribe({
 			next: (_resp: any) => {
 				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
 			},
@@ -237,23 +241,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		});
 	}
 
-	onCancelAndExit(): void {
-		// // TODO combined flow - change warning message
-		// const data: DialogOptions = {
-		// 	icon: 'warning',
-		// 	title: 'Confirmation',
-		// 	message: `<p><b>Are you sure you want to cancel your sole proprietor business licence application?</b></p>
-		// 				<p>If yes, you will redirected back to your security worker licence for review and payment.</p>`,
-		// 	actionText: 'Yes',
-		// 	cancelText: 'Close',
-		// };
-
-		// this.dialog
-		// 	.open(DialogComponent, { data })
-		// 	.afterClosed()
-		// 	.subscribe((response: boolean) => {
-		// 		if (response) {
-		if (this.isSwlAnonymous) {
+	onReturnToSwl(): void {
+		if (this.isSoleProprietorSWLAnonymous) {
 			this.router.navigate([
 				PersonalLicenceApplicationRoutes.MODULE_PATH,
 				PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
@@ -263,13 +252,11 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 		}
 
 		this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
-		// 	}
-		// });
 	}
 
 	private saveStep(stepper?: MatStepper): void {
 		if (this.businessApplicationService.isAutoSave()) {
-			this.businessApplicationService.partialSaveBusinessLicenceStep().subscribe({
+			this.businessApplicationService.partialSaveBusinessLicenceWithSwlCombinedFlow().subscribe({
 				next: (_resp: any) => {
 					if (stepper) {
 						if (stepper?.selected) stepper.selected.completed = true;
