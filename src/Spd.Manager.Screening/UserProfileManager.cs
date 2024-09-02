@@ -172,7 +172,7 @@ namespace Spd.Manager.Screening
             IDIRUserDetailResult? idirDetail = (IDIRUserDetailResult?)await _bceidService.HandleQuery(new IDIRUserDetailQuery()
             {
                 RequesterGuid = cmd.IdirUserIdentity.UserGuid,
-                RequesterAccountType = RequesterAccountTypeEnum.Internal,
+                RequesterAccountType = RequesterAccountType.Internal,
                 UserGuid = cmd.IdirUserIdentity.UserGuid
             });
             if (idirDetail?.MinistryCode == null)
