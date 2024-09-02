@@ -24,7 +24,7 @@ public class BceidIdentityInfo
     public string? LastName { get; set; }
     public string? PreferredUserName { get; set; }
     public Guid? UserGuid { get; set; }
-    public Guid BizGuid { get; set; }
+    public Guid? BizGuid { get; set; }
     public string? BizName { get; set; }
     public string? Issuer { get; set; }
     public bool? EmailVerified { get; set; }

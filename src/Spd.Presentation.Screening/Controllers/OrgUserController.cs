@@ -14,7 +14,7 @@ using System.Security.Principal;
 namespace Spd.Presentation.Screening.Controllers
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     [Authorize(Policy = "OnlyBCeID")]
     public class OrgUserController : SpdControllerBase
@@ -43,7 +43,7 @@ namespace Spd.Presentation.Screening.Controllers
         public async Task<InvitationResponse> VerifyUserInvitation([FromBody][Required] InvitationRequest orgUserInvitationRequest)
         {
             var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
-            return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, userIdentityInfo.BizGuid, (Guid)userIdentityInfo.UserGuid));
+            return await _mediator.Send(new VerifyUserInvitation(orgUserInvitationRequest, userIdentityInfo.BizGuid.Value, userIdentityInfo.UserGuid.Value));
         }
 
         [Authorize(Policy = "OnlyBCeID", Roles = "Primary")]

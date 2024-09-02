@@ -19,7 +19,6 @@ using Spd.Resource.Repository.Registration;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
-using Spd.Utilities.TempFileStorage;
 using System.Net;
 
 namespace Spd.Manager.Screening
@@ -100,6 +99,7 @@ namespace Spd.Manager.Screening
         }
 
         #region application
+
         public async Task<ApplicationCreateResponse> Handle(ApplicationCreateCommand request, CancellationToken ct)
         {
             _logger.LogDebug($"applicationCreateCommand={request}");
@@ -118,7 +118,10 @@ namespace Spd.Manager.Screening
             if (request.ConsentFormFile != null)
             {
                 //psso does not have consent form
-                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(request.ConsentFormFile), ct);
+                using var ms = new MemoryStream();
+                await request.ConsentFormFile.CopyToAsync(ms, ct);
+
+                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(ms.ToArray()), ct);
                 spdTempFile = new()
                 {
                     TempFileKey = fileKey,
@@ -279,9 +282,10 @@ namespace Spd.Manager.Screening
             return resp;
         }
 
-        #endregion
+        #endregion application
 
         #region bulk upload
+
         public async Task<BulkHistoryListResponse> Handle(GetBulkUploadHistoryQuery request, CancellationToken ct)
         {
             Paging paging = _mapper.Map<Paging>(request.Paging);
@@ -324,9 +328,11 @@ namespace Spd.Manager.Screening
             }
             return response;
         }
-        #endregion
+
+        #endregion bulk upload
 
         #region clearances
+
         public async Task<ClearanceAccessListResponse> Handle(ClearanceAccessListQuery request, CancellationToken ct)
         {
             ClearanceAccessFilterBy filterBy = _mapper.Map<ClearanceAccessFilterBy>(request.FilterBy);
@@ -343,7 +349,6 @@ namespace Spd.Manager.Screening
                 ct);
 
             return _mapper.Map<ClearanceAccessListResponse>(response);
-
         }
 
         public async Task<Unit> Handle(ClearanceAccessDeleteCommand request, CancellationToken ct)
@@ -397,9 +402,11 @@ namespace Spd.Manager.Screening
 
             return response;
         }
-        #endregion
+
+        #endregion clearances
 
         #region applicant-applications
+
         public async Task<ApplicationCreateResponse> Handle(ApplicantApplicationCreateCommand command, CancellationToken ct)
         {
             ApplicationInviteResult? invite = null;
@@ -543,7 +550,10 @@ namespace Spd.Manager.Screening
             IList<DocumentResp> docResps = new List<DocumentResp>();
             foreach (var file in command.Request.Files)
             {
-                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), ct);
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms, ct);
+
+                string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(ms.ToArray()), ct);
                 SpdTempFile spdTempFile = new()
                 {
                     TempFileKey = fileKey,
@@ -616,6 +626,7 @@ namespace Spd.Manager.Screening
             }
             return new FileResponse();
         }
-        #endregion
+
+        #endregion applicant-applications
     }
 }

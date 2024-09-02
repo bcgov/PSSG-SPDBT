@@ -165,7 +165,7 @@ namespace Spd.Manager.Payment
                     PbcRefNumber = spdPaymentConfig.PbcRefNumber,
                     Amount = spdPaymentConfig.ServiceCost,
                     Description = command.PaymentLinkCreateRequest.Description,
-                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
+                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodType.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref2 = paymentId.ToString() + "*" + applicationId.ToString(), //paymentId+"*"+applicationId to ref2 //ref1 is recalled by paybc for their internal use.
                     Ref3 = isFromSecurePaymentLink.ToString()

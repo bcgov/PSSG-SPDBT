@@ -1,6 +1,3 @@
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 using FluentValidation;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -15,7 +12,9 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Recaptcha;
-using Spd.Utilities.TempFileStorage;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,7 +65,7 @@ else
 }
 
 builder.Services.AddAutoMapper(assemblies);
-builder.Services.AddTempFileStorageService();
+builder.Services.AddFileStorageProxy(builder.Configuration);
 builder.Services.AddTransient<IMultipartRequestService, MultipartRequestService>();
 builder.Services.AddFileStorageProxy(builder.Configuration);
 builder.Services

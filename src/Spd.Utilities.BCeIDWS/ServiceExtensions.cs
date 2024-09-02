@@ -10,9 +10,7 @@ namespace Spd.Utilities.BCeIDWS
     {
         public static IServiceCollection AddBCeIDService(this IServiceCollection services, IConfiguration configuration)
         {
-            var options = configuration.GetSection("BCeIDWebService").Get<BCeIDSettings>()!;
-
-            services.Configure<BCeIDSettings>(opts => configuration.GetSection("BCeIDWebService").Bind(opts));
+            services.AddOptions<BCeIDSettings>().Bind(configuration.GetSection("BCeIDWebService"));
 
             services.AddSingleton<BCeIDServiceSoap>(sp =>
             {

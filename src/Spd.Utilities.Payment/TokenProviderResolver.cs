@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Spd.Utilities.Payment.TokenProviders;
-using System;
 
 namespace Spd.Utilities.Payment;
+
 internal interface ITokenProviderResolver
 {
     ISecurityTokenProvider GetTokenProviderByName(string name);
@@ -11,16 +11,17 @@ internal interface ITokenProviderResolver
 internal class TokenProviderResolver : ITokenProviderResolver
 {
     private readonly IServiceProvider _serviceProvider;
+
     public TokenProviderResolver(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
+
     public ISecurityTokenProvider GetTokenProviderByName(string name)
     {
         if (name == "BasicTokenProvider")
-            return _serviceProvider.GetService<BasicSecurityTokenProvider>();
+            return _serviceProvider.GetRequiredService<BasicSecurityTokenProvider>();
         else
-            return _serviceProvider.GetService<BearerSecurityTokenProvider>();
+            return _serviceProvider.GetRequiredService<BearerSecurityTokenProvider>();
     }
-
 }

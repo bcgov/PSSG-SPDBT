@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-  </ItemGroup>
-
-</Project>
