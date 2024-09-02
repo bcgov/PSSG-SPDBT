@@ -11,8 +11,14 @@ public interface IPrinter
     Task<ReportResponse> Report(ReportRequest request, CancellationToken ct);
 }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable S2094 // Classes should not be empty
+
 public abstract record PrintRequest;
 public abstract record ReportRequest;
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning restore S2094 // Classes should not be empty
 
 public record SendResponse(string PrintJobId, JobStatus Status, string? Error);
 public record ReportResponse(string PrintJobId, JobStatus Status, string? Error);
