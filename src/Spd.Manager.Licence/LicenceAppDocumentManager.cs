@@ -4,9 +4,10 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.PersonLicApplication;
-using Spd.Utilities.TempFileStorage;
+using Spd.Utilities.FileStorage;
 
 namespace Spd.Manager.Licence;
+
 internal partial class LicenceAppDocumentManager :
         IRequestHandler<CreateDocumentInCacheCommand, IEnumerable<LicAppFileInfo>>,
         IRequestHandler<CreateDocumentInTransientStoreCommand, IEnumerable<LicenceAppDocumentResponse>>,
@@ -36,7 +37,7 @@ internal partial class LicenceAppDocumentManager :
     {
         BizLicApplicationResp? bizLicApplicationResp = null;
         Guid? contactId = null;
-        DocumentTypeEnum ? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
+        DocumentTypeEnum? docType1 = Mappings.GetDocumentType1Enum(command.Request.LicenceDocumentTypeCode);
         DocumentTypeEnum? docType2 = Mappings.GetDocumentType2Enum(command.Request.LicenceDocumentTypeCode);
 
         LicenceApplicationResp app = await _personlicAppRepository.GetLicenceApplicationAsync(command.AppId, cancellationToken);
@@ -54,7 +55,10 @@ internal partial class LicenceAppDocumentManager :
         IList<DocumentResp> docResps = new List<DocumentResp>();
         foreach (var file in command.Request.Documents)
         {
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), cancellationToken);
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms, cancellationToken);
+
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(ms.ToArray()), cancellationToken);
             SpdTempFile spdTempFile = new()
             {
                 TempFileKey = fileKey,
@@ -87,7 +91,10 @@ internal partial class LicenceAppDocumentManager :
         IList<LicAppFileInfo> cacheFileInfos = new List<LicAppFileInfo>();
         foreach (var file in command.Request.Documents)
         {
-            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(file), cancellationToken);
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms, cancellationToken);
+
+            string fileKey = await _tempFile.HandleCommand(new SaveTempFileCommand(ms.ToArray()), cancellationToken);
             LicAppFileInfo f = new()
             {
                 TempFileKey = fileKey,
@@ -101,6 +108,7 @@ internal partial class LicenceAppDocumentManager :
 
         return cacheFileInfos;
     }
+
     public static readonly List<LicenceDocumentTypeCode> WorkProofCodes = new List<LicenceDocumentTypeCode> {
             LicenceDocumentTypeCode.PermanentResidentCard,
             LicenceDocumentTypeCode.RecordOfLandingDocument,

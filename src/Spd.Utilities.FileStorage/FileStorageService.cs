@@ -1,24 +1,21 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Web;
 
 namespace Spd.Utilities.FileStorage
 {
     internal abstract class FileStorageService : IFileStorageService
     {
-        protected readonly AmazonS3Client _amazonS3Client;
-        protected readonly IOptions<S3Settings> _config;
-        private readonly ILogger<IFileStorageService> _logger;
+        protected readonly IAmazonS3 _amazonS3Client;
+        protected readonly S3Settings _config;
 
-        public FileStorageService(AmazonS3Client amazonS3Client, IOptions<S3Settings> config, ILogger<IFileStorageService> logger)
+        protected FileStorageService(IAmazonS3 amazonS3Client, S3Settings config)
         {
             _amazonS3Client = amazonS3Client;
             _config = config;
-            _logger = logger;
         }
+
         public async Task<string> HandleCommand(StorageCommand cmd, CancellationToken cancellationToken)
         {
             return cmd switch
@@ -31,7 +28,7 @@ namespace Spd.Utilities.FileStorage
             };
         }
 
-        public async Task<StorageQueryResults> HandleQuery(StorageQuery query, CancellationToken cancellationToken)
+        public async Task<StorageQueryResults?> HandleQuery(StorageQuery query, CancellationToken cancellationToken)
         {
             return query switch
             {
@@ -40,7 +37,6 @@ namespace Spd.Utilities.FileStorage
                 _ => throw new NotSupportedException($"{query.GetType().Name} is not supported")
             };
         }
-
 
         private async Task<string> UploadStorageItem(UploadFileCommand cmd, CancellationToken cancellationToken)
         {
@@ -53,14 +49,14 @@ namespace Spd.Utilities.FileStorage
                 Key = key,
                 ContentType = cmd.File.ContentType,
                 InputStream = new MemoryStream(file.Content),
-                BucketName = _config.Value.Bucket,
-                TagSet = GetTagSet(cmd.FileTag?.Tags),
+                BucketName = _config.Bucket,
+                TagSet = GetTagSet(cmd.FileTag?.Tags ?? []),
             };
             request.Metadata.Add("contenttype", file.ContentType);
             request.Metadata.Add("filename", HttpUtility.HtmlEncode(file.FileName));
             if (file.Metadata != null)
             {
-                foreach (Metadata md in file.Metadata)
+                foreach (FileMetadata md in file.Metadata)
                     request.Metadata.Add(md.Key, md.Value);
             }
 
@@ -72,7 +68,7 @@ namespace Spd.Utilities.FileStorage
 
         private async Task<string> UploadStorageItemStream(UploadFileStreamCommand cmd, CancellationToken cancellationToken)
         {
-            FileStream file = cmd.FileStream;
+            FileContent file = cmd.FileStream;
             var folder = cmd.Folder == null ? "" : $"{cmd.Folder}/";
             var key = $"{folder}{cmd.Key}";
 
@@ -81,14 +77,14 @@ namespace Spd.Utilities.FileStorage
                 Key = key,
                 ContentType = cmd.FileStream.ContentType,
                 InputStream = file.FileContentStream,
-                BucketName = _config.Value.Bucket,
-                TagSet = GetTagSet(cmd.FileTag?.Tags),
+                BucketName = _config.Bucket,
+                TagSet = GetTagSet(cmd.FileTag?.Tags ?? []),
             };
             request.Metadata.Add("contenttype", file.ContentType);
             request.Metadata.Add("filename", HttpUtility.HtmlEncode(file.FileName));
             if (file.Metadata != null)
             {
-                foreach (Metadata md in file.Metadata)
+                foreach (FileMetadata md in file.Metadata)
                     request.Metadata.Add(md.Key, md.Value);
             }
 
@@ -106,8 +102,8 @@ namespace Spd.Utilities.FileStorage
             var request = new PutObjectTaggingRequest
             {
                 Key = key,
-                BucketName = _config.Value.Bucket,
-                Tagging = new Tagging { TagSet = GetTagSet(cmd.FileTag?.Tags) }
+                BucketName = _config.Bucket,
+                Tagging = new Tagging { TagSet = GetTagSet(cmd.FileTag?.Tags ?? []) }
             };
 
             var response = await _amazonS3Client.PutObjectTaggingAsync(request, cancellationToken);
@@ -125,9 +121,9 @@ namespace Spd.Utilities.FileStorage
             var destKey = $"{destFolder}{cmd.DestKey}";
             var request = new CopyObjectRequest
             {
-                SourceBucket = this._config.Value.Bucket,
+                SourceBucket = this._config.Bucket,
                 SourceKey = key,
-                DestinationBucket = this._config.Value.Bucket,
+                DestinationBucket = this._config.Bucket,
                 DestinationKey = destKey,
             };
 
@@ -145,21 +141,21 @@ namespace Spd.Utilities.FileStorage
             //get object
             var request = new GetObjectRequest
             {
-                BucketName = _config.Value.Bucket,
+                BucketName = _config.Bucket,
                 Key = requestKey,
             };
             var response = await _amazonS3Client.GetObjectAsync(request, ct);
             response.EnsureSuccess();
             using var contentStream = response.ResponseStream;
             using var ms = new MemoryStream();
-            await contentStream.CopyToAsync(ms);
-            contentStream.Flush();
+            await contentStream.CopyToAsync(ms, ct);
+            await contentStream.FlushAsync(ct);
 
             //get tagging
             var tagResponse = await _amazonS3Client.GetObjectTaggingAsync(
                 new GetObjectTaggingRequest
                 {
-                    BucketName = _config.Value.Bucket,
+                    BucketName = _config.Bucket,
                     Key = requestKey,
                 }, ct);
             tagResponse.EnsureSuccess();
@@ -182,7 +178,7 @@ namespace Spd.Utilities.FileStorage
             );
         }
 
-        private async Task<FileMetadataQueryResult> GetStorageMetaData(string key, string? folder, CancellationToken cancellationToken)
+        private async Task<FileMetadataQueryResult?> GetStorageMetaData(string key, string? folder, CancellationToken cancellationToken)
         {
             try
             {
@@ -191,7 +187,7 @@ namespace Spd.Utilities.FileStorage
 
                 GetObjectMetadataResponse response = await _amazonS3Client.GetObjectMetadataAsync(new GetObjectMetadataRequest()
                 {
-                    BucketName = _config.Value.Bucket,
+                    BucketName = _config.Bucket,
                     Key = requestKey,
                 }, cancellationToken);
                 return new FileMetadataQueryResult(key, folder, GetMetadata(response.Metadata));
@@ -206,44 +202,21 @@ namespace Spd.Utilities.FileStorage
             }
         }
 
-        private List<Amazon.S3.Model.Tag> GetTagSet(IEnumerable<Tag>? tags)
-        {
-            var taglist = new List<Amazon.S3.Model.Tag>();
-            if (tags != null && tags.Any())
+        private static List<Amazon.S3.Model.Tag> GetTagSet(IEnumerable<Tag> tags)
+            =>
+            tags.Select(tag => new Amazon.S3.Model.Tag()
             {
-                foreach (Tag tag in tags)
-                {
-                    taglist.Add(new Amazon.S3.Model.Tag() { Key = tag.Key, Value = tag.Value });
-                }
-            }
-            return taglist;
-        }
+                Key = tag.Key,
+                Value = tag.Value
+            }).ToList();
 
-        private List<Metadata> GetMetadata(MetadataCollection mc)
-        {
-            var metadata = new List<Metadata>();
-            foreach (var key in mc.Keys)
-            {
-                if (key != "contentType" && key != "fileName")
-                {
-                    metadata.Add(new Metadata(key, mc[key]));
-                }
-            }
-            return metadata;
-        }
+        private static List<FileMetadata> GetMetadata(MetadataCollection mc) =>
+            mc.Keys.Where(key => key != "contentType" && key != "fileName")
+                .Select(key => new FileMetadata(key, mc[key]))
+                .ToList();
 
-        private List<Tag> GetTags(List<Amazon.S3.Model.Tag> tags)
-        {
-            var taglist = new List<Tag>();
-            if (tags != null && tags.Any())
-            {
-                foreach (Amazon.S3.Model.Tag tag in tags)
-                {
-                    taglist.Add(new Tag(tag.Key, tag.Value));
-                }
-            }
-            return taglist;
-        }
+        private static List<Tag> GetTags(List<Amazon.S3.Model.Tag> tags) =>
+            tags.ConvertAll(tag => new Tag(tag.Key, tag.Value));
     }
 
     internal static class S3ClientEx

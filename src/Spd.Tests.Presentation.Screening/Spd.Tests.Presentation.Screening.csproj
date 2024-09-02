@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+		<PropertyGroup>
+				<IsTestProject>true</IsTestProject>
+		</PropertyGroup>
+
 		<ItemGroup>
 				<PackageReference Include="Alba" />
 				<PackageReference Include="MartinCostello.Logging.XUnit" />

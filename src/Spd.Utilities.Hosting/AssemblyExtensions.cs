@@ -2,11 +2,11 @@
 
 namespace Spd.Utilities.Hosting
 {
-    public static class AssemblyEx
+    public static class AssemblyExtensions
     {
         public static async Task<string> GetManifestResourceString(this Assembly assembly, string manifestName)
         {
-            using (var stream = assembly.GetManifestResourceStream(manifestName))
+            using (var stream = assembly.GetManifestResourceStream(manifestName)!)
             {
                 using (var reader = new StreamReader(stream))
                 {
@@ -15,11 +15,11 @@ namespace Spd.Utilities.Hosting
             }
         }
 
-        public static Type[] Discover<I>(this Assembly assembly) =>
-         assembly.DefinedTypes.Where(t => t.IsClass && !t.IsAbstract && t.IsPublic && typeof(I).IsAssignableFrom(t)).ToArray();
+        public static Type[] Discover<TInterface>(this Assembly assembly) =>
+         assembly.DefinedTypes.Where(t => t.IsClass && !t.IsAbstract && t.IsPublic && typeof(TInterface).IsAssignableFrom(t)).ToArray();
 
-        public static I[] CreateInstancesOf<I>(this Assembly assembly) =>
-            assembly.Discover<I>().Select(t => (I)Activator.CreateInstance(t)).ToArray();
+        public static TInterface[] CreateInstancesOf<TInterface>(this Assembly assembly) =>
+            assembly.Discover<TInterface>().Select(t => (TInterface)Activator.CreateInstance(t)!).ToArray();
 
         public static bool IsAssignableToGenericType(this Type type, Type genericType)
         {
@@ -34,7 +34,7 @@ namespace Spd.Utilities.Hosting
             if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
                 return true;
 
-            Type baseType = type.BaseType;
+            var baseType = type.BaseType;
             if (baseType == null) return false;
 
             return IsAssignableToGenericType(baseType, genericType);

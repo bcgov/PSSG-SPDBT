@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "components": [
+  ],
+  "extensions": [
+    "https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid",
+    "https://marketplace.visualstudio.com/items?itemName=marketplace.ODataConnectedService2022",
+  ]
+}
