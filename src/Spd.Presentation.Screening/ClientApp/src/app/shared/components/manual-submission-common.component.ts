@@ -5,6 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { NgxMaskPipe } from 'ngx-mask';
+import { Observable } from 'rxjs';
 import {
 	ApplicationCreateResponse,
 	BooleanTypeCode,
@@ -37,6 +38,11 @@ export interface AliasCreateRequest {
 	middleName1?: null | string;
 	middleName2?: null | string;
 	surname?: null | string;
+}
+
+export interface ManualSubmissionBody {
+	ConsentFormFile: File | null;
+	ApplicationCreateRequestJson: string;
 }
 
 @Component({
@@ -673,8 +679,8 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			}
 
 			createRequest.requireDuplicateCheck = true;
-			
-			const body = {
+
+			const body: ManualSubmissionBody = {
 				ConsentFormFile: this.portal == PortalTypeCode.Crrp ? this.fileUploadComponent.files[0] : null,
 				ApplicationCreateRequestJson: JSON.stringify(createRequest),
 			};
@@ -840,7 +846,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		});
 	}
 
-	private displayDataValidationMessage(body: any, dupres: ApplicationCreateResponse): void {
+	private displayDataValidationMessage(body: ManualSubmissionBody, dupres: ApplicationCreateResponse): void {
 		if (dupres.createSuccess) {
 			this.handleSaveSuccess();
 			return;
@@ -852,7 +858,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 				title: 'Potential duplicate detected',
 				message:
 					'An in-progress application already exists for this applicant, with your organization for this screening type. How would you like to proceed?',
-				actionText: 'Submit application',
+				actionText: 'Submit Application',
 				cancelText: 'Cancel',
 			};
 			this.dialog
@@ -868,31 +874,39 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		}
 	}
 
-	private saveAndCheckDuplicates(body: any): void {
+	private saveAndCheckDuplicates(body: ManualSubmissionBody): void {
 		// Check for potential duplicate
-		this.applicationService
-			.apiOrgsOrgIdApplicationPost({ orgId: this.orgId!, body })
+		this.saveBody(body, true)
 			.pipe()
 			.subscribe((dupres: ApplicationCreateResponse) => {
 				this.displayDataValidationMessage(body, dupres);
 			});
 	}
 
-	private saveManualSubmission(body: any): void {
-		body.ApplicationCreateRequestJson.requireDuplicateCheck = false;
-
-		this.applicationService
-			.apiOrgsOrgIdApplicationPost({
-				orgId: this.orgId!,
-				body,
-			})
+	private saveManualSubmission(body: ManualSubmissionBody): void {
+		this.saveBody(body, false)
 			.pipe()
 			.subscribe((_resp: any) => {
 				this.handleSaveSuccess();
 			});
 	}
 
-	private promptVulnerableSector(body: any): void {
+	private saveBody(body: ManualSubmissionBody, requireDuplicateCheck: boolean): Observable<ApplicationCreateResponse> {
+		const applicationCreateRequestJson = JSON.parse(body.ApplicationCreateRequestJson);
+		applicationCreateRequestJson.requireDuplicateCheck = requireDuplicateCheck; // Check for potential duplicate
+
+		const consentFormFile = body.ConsentFormFile ? (body.ConsentFormFile as Blob) : undefined;
+
+		return this.applicationService.apiOrgsOrgIdApplicationPost({
+			orgId: this.orgId!,
+			body: {
+				ConsentFormFile: consentFormFile,
+				ApplicationCreateRequestJson: JSON.stringify(applicationCreateRequestJson) as any,
+			},
+		});
+	}
+
+	private promptVulnerableSector(body: ManualSubmissionBody): void {
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Vulnerable sector',
@@ -916,7 +930,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			});
 	}
 
-	private promptVulnerableSectorNo(body: any): void {
+	private promptVulnerableSectorNo(body: ManualSubmissionBody): void {
 		const data: DialogOptions = {
 			icon: 'info_outline',
 			title: 'Criminal record check',
