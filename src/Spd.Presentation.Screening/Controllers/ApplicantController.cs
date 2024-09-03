@@ -74,7 +74,7 @@ namespace Spd.Presentation.Screening.Controllers
             if (!string.Equals(applicantInfo.FirstName, appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
                 !string.Equals(applicantInfo.LastName, appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
                 applicantInfo.BirthDate != requestBirthDate)
-                throw new ApiException(HttpStatusCode.BadRequest, "The submitted user identitiy data is different than BCSC identity data.");
+                throw new ApiException(HttpStatusCode.BadRequest, "The submitted user identity data is different than BCSC identity data.");
 
             return await _mediator.Send(new ApplicantApplicationCreateCommand(appCreateRequest, applicantInfo.Sub));
         }
