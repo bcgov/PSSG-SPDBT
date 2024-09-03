@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Builder;
+using System.Reflection;
 
 namespace Spd.Utilities.Hosting
 {
@@ -10,12 +10,7 @@ namespace Spd.Utilities.Hosting
     {
         public static void ConfigureComponentServices(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment, params Assembly[] assemblies)
         {
-            var configServices = new ConfigurationServices
-            {
-                Services = services,
-                Configuration = configuration,
-                Environment = environment
-            };
+            var configServices = new ConfigurationServices(services, configuration, environment);
 
             foreach (var assembly in assemblies)
             {
@@ -44,6 +39,5 @@ namespace Spd.Utilities.Hosting
                 }
             }
         }
-
     }
 }

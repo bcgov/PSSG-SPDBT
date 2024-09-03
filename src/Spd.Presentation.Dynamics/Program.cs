@@ -1,7 +1,3 @@
-using System.Configuration;
-using System.Reflection;
-using System.Security.Principal;
-using System.Text.Json.Serialization;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -14,7 +10,10 @@ using Spd.Utilities.Hosting;
 using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Printing;
-using Spd.Utilities.TempFileStorage;
+using System.Configuration;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +58,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies
 builder.Services.AddAutoMapper(assemblies);
 builder.Services.AddDistributedMemoryCache();
 builder.Services
-    .AddTempFileStorageService()
     .AddFileStorageProxy(builder.Configuration)
     .AddPaymentService(builder.Configuration)
     .AddDynamicsProxy(builder.Configuration)
