@@ -20,7 +20,6 @@
 		<ProjectReference Include="..\Spd.Utilities.FileStorage\Spd.Utilities.FileStorage.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
 		<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
-		<ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

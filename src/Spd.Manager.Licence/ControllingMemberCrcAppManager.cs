@@ -58,13 +58,16 @@ internal class ControllingMemberCrcAppManager :
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
         
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberCrcAppId, response.ContactId, null, null, null, null, null, ct);
-        
+        decimal cost = await CommitApplicationAsync(request, response.ControllingMemberCrcAppId, ct);
+
         return new ControllingMemberCrcAppCommandResponse
         {
-            ControllingMemberAppId = response.ControllingMemberCrcAppId
+            ControllingMemberAppId = response.ControllingMemberCrcAppId,
+            Cost = cost
         };
     }
     #endregion
+    #region authenticated
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand cmd, CancellationToken ct)
     {
         SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
@@ -81,6 +84,15 @@ internal class ControllingMemberCrcAppManager :
             ct);
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
     }
+    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand cmd, CancellationToken ct)
+    {
+        var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
+        //move files from transient bucket to main bucket when app status changed to Submitted.
+        await MoveFilesAsync((Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId, ct);
+        decimal cost = await CommitApplicationAsync(cmd.ControllingMemberCrcAppUpsertRequest, cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId.Value, ct, false);
+        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId, Cost = cost};
+    }
+    #endregion
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -102,11 +114,11 @@ internal class ControllingMemberCrcAppManager :
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing citizen proof file because you are canadian.");
         }
-        
+
         if (request.IsCanadianCitizen == false &&
-            fileInfos.Count(f => LicenceAppDocumentManager.GovernmentIssuedPhotoId_NoCitizens.Contains(f.LicenceDocumentTypeCode)) < 2)
+          !fileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "Missing government issued Id wth photo file because you are not canadian.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
         }
 
         if (!fileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))

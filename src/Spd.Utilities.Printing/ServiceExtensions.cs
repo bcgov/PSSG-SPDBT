@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Spd.Utilities.Printing.BCMailPlus;
 
 namespace Spd.Utilities.Printing;
@@ -18,11 +17,9 @@ public static class ServiceExtensions
     /// <returns></returns>
     public static IServiceCollection AddPrinting(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<BCMailPlusSettings>(opts => configuration.GetSection("BCMailPlus").Bind(opts));
-        services.AddSingleton<IValidateOptions<BCMailPlusSettings>, BCMailPlusSettingsValidator>();
+        services.AddOptions<BCMailPlusSettings>().Bind(configuration.GetSection("BCMailPlus")).ValidateDataAnnotations();
         services.AddTransient<IBcMailPlusApi, BcMailPlusApi>();
         services.AddTransient<IPrinter, Printer>();
         return services;
     }
 }
-

@@ -9,6 +9,7 @@ using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
+using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
@@ -318,11 +319,12 @@ internal class Mappings : Profile
             .ReverseMap();
 
         CreateMap<BizContactResp, NonSwlContactInfo>()
+            .ForMember(d => d.ControllingMemberAppStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberCrcAppPortalStatusEnum))
+            .ForMember(d => d.InviteStatusCode, opt => opt.MapFrom(s => s.LatestControllingMemberInvitationStatusEnum))
             .ReverseMap()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember));
 
-        CreateMap<UpsertBizMembersCommand, BizContactUpsertCmd>()
-            .ForMember(d => d.AppId, opt => opt.MapFrom(s => s.ApplicationId));
+        CreateMap<UpsertBizMembersCommand, BizContactUpsertCmd>();
 
         CreateMap<SwlContactInfo, BizContactResp>()
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
@@ -345,7 +347,10 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
 
         CreateMap<ControllingMemberCrcApplicationCmdResp, ControllingMemberCrcAppCommandResponse>();
-
+        CreateMap<BizContactResp, ControllingMemberInvite>();
+        CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
+            .IncludeBase<BizContactResp, ControllingMemberInvite>()
+            .ForMember(d => d.HostUrl, opt => opt.Ignore());
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

@@ -16,7 +16,6 @@
     <ProjectReference Include="..\Spd.Utilities.BCeIDWS\Spd.Utilities.BCeIDWS.csproj" />
     <ProjectReference Include="..\Spd.Utilities.LogonUser\Spd.Utilities.LogonUser.csproj" />
     <ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
-    <ProjectReference Include="..\Spd.Utilities.TempFileStorage\Spd.Utilities.TempFileStorage.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

@@ -1,24 +1,14 @@
-﻿using Moq;
-using Moq.Protected;
-using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
+﻿using AutoMapper;
+using Moq;
 using Spd.Manager.Licence;
-using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
-using Spd.Utilities.Shared.Exceptions;
+using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
 using Spd.Utilities.FileStorage;
-using Spd.Manager.Printing.Documents.TransformationStrategies;
+using Spd.Utilities.Shared.Exceptions;
 using Mappings = Spd.Manager.Licence.Mappings;
-using Microsoft.AspNetCore.Mvc;
 
 public class ControllingMemberCrcAppManagerTests
 {
@@ -32,7 +22,6 @@ public class ControllingMemberCrcAppManagerTests
     private readonly Mock<IControllingMemberCrcRepository> _controllingMemberCrcRepositoryMock;
     private readonly Mock<ILicAppRepository> _licAppRepositoryMock;
     private ControllingMemberCrcAppManager sut;
-
 
     public ControllingMemberCrcAppManagerTests()
     {
@@ -49,8 +38,8 @@ public class ControllingMemberCrcAppManagerTests
             x.AddProfile<Mappings>();
         });
         var mapper = mapperConfig.CreateMapper();
-            
-        sut = new ControllingMemberCrcAppManager(mapper,_documentRepositoryMock.Object,
+
+        sut = new ControllingMemberCrcAppManager(mapper, _documentRepositoryMock.Object,
         _feeRepositoryMock.Object,
         _licenceRepositoryMock.Object,
         _mainFileServiceMock.Object,
@@ -69,17 +58,14 @@ public class ControllingMemberCrcAppManagerTests
             IsPoliceOrPeaceOfficer = true,
             IsTreatedForMHC = false,
         };
-        
 
         var command = new ControllingMemberCrcAppNewCommand(request,
             new List<LicAppFileInfo>
                 {
                     new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict },
-                    new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint }, 
-                    new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianPassport } 
+                    new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint },
+                    new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianPassport }
             });
-
-
 
         _licAppRepositoryMock.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
@@ -112,8 +98,8 @@ public class ControllingMemberCrcAppManagerTests
         Assert.Equal(result.ControllingMemberAppId, controllingMemberAppId);
         _mainFileServiceMock.Verify();
         _transientFileServiceMock.Verify();
-
     }
+
     [Fact]
     public async Task Handle_anonymous_submit_WhithoutFingerPrint_ShouldReturnError()
     {
@@ -127,15 +113,12 @@ public class ControllingMemberCrcAppManagerTests
             IsTreatedForMHC = false,
         };
 
-
         var command = new ControllingMemberCrcAppNewCommand(request,
             new List<LicAppFileInfo>
                 {
                     new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict },
                     new LicAppFileInfo { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianPassport }
             });
-
-
 
         _licAppRepositoryMock.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app

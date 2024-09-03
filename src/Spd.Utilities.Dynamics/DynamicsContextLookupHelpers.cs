@@ -348,6 +348,21 @@ namespace Spd.Utilities.Dynamics
 
         }
 
+        public static async Task<spd_businesscontact?> GetBizContactById(this DynamicsContext context, Guid bizContactId, CancellationToken ct)
+        {
+            try
+            {
+                return await context.spd_businesscontacts.Where(a => a.spd_businesscontactid == bizContactId).SingleOrDefaultAsync(ct);
+            }
+            catch (DataServiceQueryException ex)
+            {
+                if (ex.Response.StatusCode == 404)
+                    return null;
+                else
+                    throw;
+            }
+        }
+
         public static async Task<task?> GetTaskById(this DynamicsContext context, Guid taskId, CancellationToken ct)
            => await context.tasks.Where(a => a.activityid == taskId)
             .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)

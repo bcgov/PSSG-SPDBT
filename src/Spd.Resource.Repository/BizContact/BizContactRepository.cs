@@ -23,27 +23,24 @@ namespace Spd.Resource.Repository.BizContact
             _logger = logger;
         }
 
-        public async Task<IEnumerable<BizContactResp>> GetBizAppContactsAsync(BizContactQry qry, CancellationToken ct)
+        public async Task<BizContactResp> GetBizContactAsync(Guid bizContactId, CancellationToken ct)
+        {
+            spd_businesscontact? bizContact = await _context.spd_businesscontacts
+                .Expand(c => c.spd_businesscontact_spd_application)
+                .Where(c => c.spd_businesscontactid == bizContactId)
+                .FirstOrDefaultAsync(ct);
+
+            if (bizContact == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the business contact");
+
+            return _mapper.Map<BizContactResp>(bizContact);
+        }
+
+        public async Task<IEnumerable<BizContactResp>> QueryBizContactsAsync(BizContactQry qry, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
-                .Expand(c => c.spd_businesscontact_spd_application);
-            if (qry.AppId != null) //change to n:n relationship, so have to do the separate way.
-            {
-                spd_application? app = _context.spd_applications.Expand(a => a.spd_businesscontact_spd_application)
-                    .Where(a => a.spd_applicationid == qry.AppId)
-                    .FirstOrDefault();
-                if (app != null)
-                {
-                    IList<spd_businesscontact> bizContactList = app.spd_businesscontact_spd_application.ToList();
-                    if (!qry.IncludeInactive)
-                    {
-                        bizContactList = bizContactList.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive).ToList();
-                    }
-                    if (qry.RoleCode != null)
-                        bizContactList = bizContactList.Where(a => a.spd_role == (int?)SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(qry.RoleCode)).ToList();
-                    return _mapper.Map<IEnumerable<BizContactResp>>(bizContactList);
-                }
-            }
+                .Expand(c => c.spd_businesscontact_spd_application)
+                .Expand(c => c.spd_businesscontact_spd_portalinvitation);
 
             if (!qry.IncludeInactive)
                 bizContacts = bizContacts.Where(a => a.statecode != DynamicsConstants.StateCode_Inactive);
@@ -72,21 +69,12 @@ namespace Spd.Resource.Repository.BizContact
                 _context.UpdateObject(item);
             }
 
-            spd_application? app = null;
-            if (cmd.AppId != null)
-            {
-                app = await _context.GetApplicationById((Guid)cmd.AppId, ct);
-                if (app == null) throw new ApiException(HttpStatusCode.BadRequest, $"Application {cmd.AppId} does not exist.");
-            }
-
             //update all that in cmd.Data
             var toModify = list.Where(c => cmd.Data.Any(d => d.BizContactId == c.spd_businesscontactid));
             foreach (var item in toModify)
             {
                 _mapper.Map(cmd.Data.FirstOrDefault(d => d.BizContactId == item.spd_businesscontactid), item);
                 _context.UpdateObject(item);
-                if (app != null && !item.spd_businesscontact_spd_application.Any(a => a.spd_applicationid == cmd.AppId))
-                    _context.AddLink(item, nameof(item.spd_businesscontact_spd_application), app);
             }
             await _context.SaveChangesAsync(ct);
 
@@ -125,8 +113,6 @@ namespace Spd.Resource.Repository.BizContact
                     }
 
                     _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
-                    if (app != null)
-                        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
                 }
             }
             await _context.SaveChangesAsync(ct);

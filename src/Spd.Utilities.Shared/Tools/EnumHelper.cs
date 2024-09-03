@@ -7,7 +7,7 @@ public static class EnumHelper
     public static string GetDescription(this Enum enumValue)
     {
         var field = enumValue.GetType().GetField(enumValue.ToString());
-        if (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+        if (field != null && Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
         {
             return attribute.Description;
         }
@@ -26,4 +26,3 @@ public static class EnumHelper
         throw new ArgumentException("Not found.", nameof(description));
     }
 }
-

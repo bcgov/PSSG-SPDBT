@@ -16,7 +16,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     private readonly ITimeLimitedDataProtector _dataProtector;
     private readonly IDistributedCache _cache;
     private readonly IRecaptchaVerificationService _recaptchaVerificationService;
-    private readonly IConfiguration _configuration;
+    protected readonly IConfiguration _configuration;
 
     protected SpdLicenceControllerBase(IDistributedCache cache,
         IDataProtectionProvider dpProvider,

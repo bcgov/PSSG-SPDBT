@@ -141,6 +141,7 @@ namespace Spd.Utilities.Dynamics
     {
         PortalUser = 100000000,
         ScreeningRequest = 100000001,
+        ControllingMemberCRC = 100000002
     }
 
     public enum InvitationStatus

@@ -1,0 +1,2 @@
+﻿namespace Spd.Manager.Licence;
+

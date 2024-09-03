@@ -12,8 +12,6 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppReplaceCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppRenewCommand command, CancellationToken ct);
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand command, CancellationToken ct);
-    public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
-    public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
     public Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct);
 }
@@ -99,6 +97,8 @@ public abstract record BizLicenceApp : LicenceAppBase
 public record NonSwlContactInfo : ContactInfo
 {
     public Guid? BizContactId { get; set; }
+    public ApplicationPortalStatusCode? ControllingMemberAppStatusCode { get; set; }
+    public ApplicationInviteStatusCode? InviteStatusCode { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo
@@ -107,23 +107,3 @@ public record PrivateInvestigatorSwlContactInfo : ContactInfo
     public Guid? BizContactId { get; set; }
     public Guid? LicenceId { get; set; }
 }
-
-public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
-
-public record Members
-{
-    public IEnumerable<SwlContactInfo> SwlControllingMembers { get; set; }
-    public IEnumerable<NonSwlContactInfo> NonSwlControllingMembers { get; set; }
-    public IEnumerable<SwlContactInfo> Employees { get; set; }
-};
-
-public record MembersRequest : Members
-{
-    public IEnumerable<Guid> ControllingMemberDocumentKeyCodes { get; set; } = Array.Empty<Guid>();//the document is saved in cache.
-}
-
-public record UpsertBizMembersCommand(
-    Guid BizId,
-    Guid? ApplicationId,
-    Members Members,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>;
