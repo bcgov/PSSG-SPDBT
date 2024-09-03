@@ -347,6 +347,7 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
 
         CreateMap<ControllingMemberCrcApplicationCmdResp, ControllingMemberCrcAppCommandResponse>();
+        CreateMap<ControllingMemberInviteVerifyResp, ControllingMemberAppInviteVerifyResponse>();
         CreateMap<BizContactResp, ControllingMemberInvite>();
         CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
