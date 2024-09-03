@@ -16,6 +16,10 @@ export type AlertType = 'success' | 'warning' | 'danger';
 	`,
 	styles: [
 		`
+			.alert-icon {
+				overflow: visible;
+			}
+
 			.alert-info {
 				border: 1px solid rgba(217, 234, 247, 1);
 				background-color: rgba(217, 234, 247, 1);
