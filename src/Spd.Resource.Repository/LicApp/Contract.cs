@@ -12,8 +12,7 @@ public partial interface ILicAppRepository
 public record LicenceAppQuery(Guid? ApplicantId,
     Guid? BizId,
     List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes,
-    List<ApplicationPortalStatusEnum>? ValidPortalStatus,
-    Guid? BizContactId = null);
+    List<ApplicationPortalStatusEnum>? ValidPortalStatus);
 
 public record LicenceAppListResp
 {

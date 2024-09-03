@@ -41,7 +41,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/members")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
         {
             return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
@@ -56,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/members")]
         [HttpPost]
-        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
         {
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
@@ -74,7 +74,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="bizContactId"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
-        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
