@@ -9,7 +9,11 @@ public partial interface ILicAppRepository
     public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, CancellationToken ct);
 }
 
-public record LicenceAppQuery(Guid? ApplicantId, Guid? BizId, List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
+public record LicenceAppQuery(Guid? ApplicantId,
+    Guid? BizId,
+    List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes,
+    List<ApplicationPortalStatusEnum>? ValidPortalStatus,
+    Guid? BizContactId = null);
 
 public record LicenceAppListResp
 {

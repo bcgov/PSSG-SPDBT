@@ -41,6 +41,7 @@ public record ControllingMemberAppInviteVerifyRequest(string InviteEncryptedCode
 public record ControllingMemberAppInviteVerifyResponse()
 {
     public Guid BizContactId { get; set; }
-    public Guid? BizLinAppId { get; set; }
+    public Guid? BizLicAppId { get; set; }
     public Guid BizId { get; set; }
+    public Guid? ControllingMemberCrcAppId { get; set; }
 };

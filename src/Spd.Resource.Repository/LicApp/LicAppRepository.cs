@@ -57,6 +57,11 @@ internal class LicAppRepository : ILicAppRepository
         {
             apps = apps.Where(a => a._spd_applicantid_value == qry.BizId);
         }
+        if ((qry.BizContactId != null))
+        {
+            apps = apps.Where(a => a.spd_businesscontact_spd_application.Any(a => a.spd_businesscontactid == qry.BizId)); //todo: test
+        }
+
         var applist = apps.ToList();
 
         if (qry.ValidWorkerLicenceTypeCodes != null && qry.ValidWorkerLicenceTypeCodes.Any())

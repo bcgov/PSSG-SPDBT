@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
@@ -55,7 +56,49 @@ internal class BizMemberManager :
 
     public async Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand cmd, CancellationToken cancellationToken)
     {
-        return null;
+        ControllingMemberInviteVerifyResp resp = await _cmInviteRepository.VerifyControllingMemberInviteAsync(new ControllingMemberInviteVerifyCmd(cmd.InviteEncryptedCode), cancellationToken);
+
+        var response = _mapper.Map<ControllingMemberAppInviteVerifyResponse>(resp);
+
+        //get biz app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                null,
+                resp.BizId,
+                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
+                new List<ApplicationPortalStatusEnum>
+                {
+                    ApplicationPortalStatusEnum.Draft,
+                    ApplicationPortalStatusEnum.Incomplete,
+                    ApplicationPortalStatusEnum.VerifyIdentity,
+                    ApplicationPortalStatusEnum.AwaitingPayment
+                }),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.CreatedOn)
+            .FirstOrDefault();
+        response.BizLicAppId = app?.LicenceAppId;
+
+        //get existing controlling member crc app
+        IEnumerable<LicenceAppListResp> cmApps = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                null,
+                resp.BizId,
+                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC },
+                new List<ApplicationPortalStatusEnum>
+                {
+                            ApplicationPortalStatusEnum.Draft,
+                            ApplicationPortalStatusEnum.Incomplete,
+                            ApplicationPortalStatusEnum.VerifyIdentity,
+                            ApplicationPortalStatusEnum.AwaitingPayment
+                }),
+            cancellationToken);
+        LicenceAppListResp? cmApp = cmApps.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.CreatedOn)
+            .FirstOrDefault();
+        response.ControllingMemberCrcAppId = cmApp?.LicenceAppId;
+
+        return response;
     }
 
     public async Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
