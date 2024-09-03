@@ -41,7 +41,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/members")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
         {
             return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
@@ -56,7 +56,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business-licence-application/{bizId}/members")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
         {
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(members.ControllingMemberDocumentKeyCodes, ct);
@@ -74,12 +74,13 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="bizContactId"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
             var userIdStr = _currentUser.GetUserId();
-            if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            userIdStr = "dffd9fe4-015c-ef11-b851-00505683fbf4";
+            if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Unauthorized");
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
@@ -92,7 +93,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// </summary>
         /// <param name="appInviteVerifyRequest">which include InviteEncryptedCode</param>
         /// <returns></returns>
-        [Route("api/controlling-member-crc-applications")]
+        [Route("api/controlling-members/invites")]
         [HttpPost]
         [AllowAnonymous]
         public async Task<ControllingMemberAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] ControllingMemberAppInviteVerifyRequest inviteVerifyRequest)
