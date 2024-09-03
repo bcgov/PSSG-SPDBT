@@ -879,7 +879,6 @@ namespace Spd.Manager.Screening
 
             RuleFor(r => r.EmailAddress)
                 .NotEmpty()
-                .Must(e => e.EndsWith("gov.bc.ca"))
                 .EmailAddress()
                 .MaximumLength(75);
         }
