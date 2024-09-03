@@ -114,7 +114,7 @@ export class SaContactInformationComponent implements CrcFormStepComponent {
 				surname: new FormControl({ value: data.surname, disabled: true }),
 				emailAddress: new FormControl(data.emailAddress, [Validators.required, FormControlValidators.email]),
 				phoneNumber: new FormControl(data.phoneNumber, [Validators.required]),
-				oneLegalName: new FormControl(data.oneLegalName),
+				oneLegalName: new FormControl(true),
 			});
 		} else {
 			this.form = this.formBuilder.group(
