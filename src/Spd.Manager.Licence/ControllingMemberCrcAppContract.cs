@@ -58,6 +58,7 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 #region anonymous user
 public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
 {
+    public Guid ControllingMemberAppId { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
 
@@ -70,5 +71,10 @@ public record ControllingMemberCrcAppCommandResponse
     public decimal? Cost { get; set; }
 
 };
+
+public record ControllingMemberCrcAppUpdateCommand(
+    ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    : IRequest<ControllingMemberCrcAppCommandResponse>;
 
 #endregion

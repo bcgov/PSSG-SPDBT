@@ -17,6 +17,8 @@ using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Manager.Shared;
+using Spd.Resource.Repository.Contact;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager : 
@@ -91,6 +93,10 @@ internal class ControllingMemberCrcAppManager :
         await MoveFilesAsync((Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId, ct);
         decimal cost = await CommitApplicationAsync(cmd.ControllingMemberCrcAppUpsertRequest, cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId.Value, ct, false);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId, Cost = cost};
+    }
+    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand cmd, CancellationToken cancellationToken)
+    {
+        return null;
     }
     #endregion
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)

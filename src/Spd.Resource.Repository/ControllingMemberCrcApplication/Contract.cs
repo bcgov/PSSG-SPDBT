@@ -1,5 +1,6 @@
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
@@ -7,6 +8,7 @@ public partial interface IControllingMemberCrcRepository
 {
     public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationListResp> QueryAsync(ControllingMemberCrcQry qry, CancellationToken ct);
 }
 
 public record ControllingMemberCrcApplication
@@ -46,6 +48,8 @@ public record ControllingMemberCrcApplication
 }
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
+    public Guid? ControllingMemberCrcAppId { get; set; }
+
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 };
 public record SaveControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
@@ -61,3 +65,16 @@ public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplic
     public Guid? ContactId { get; set; }
 }
 public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId, Guid? ContactId = null);
+public record ControllingMemberCrcApplicationListResp
+{
+    public IEnumerable<ControllingMemberCrcApplicationResp> Items { get; set; } = Array.Empty<ControllingMemberCrcApplicationResp>();
+}
+
+public record ControllingMemberCrcQry
+{
+    public Guid? ControllingMemberCrcAppId { get; set; }
+    public Guid? ContactId { get; set; }
+    public Guid? AccountId { get; set; }
+    public WorkerLicenceTypeEnum? Type { get; set; }
+
+};
