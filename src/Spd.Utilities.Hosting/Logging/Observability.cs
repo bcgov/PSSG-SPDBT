@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +7,8 @@ using Serilog.Enrichers.Span;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Extensions.Logging;
+using System.Globalization;
+using System.Net;
 
 namespace Spd.Utilities.Hosting.Logging;
 
@@ -91,16 +91,18 @@ public static class Observability
 
             Log.Information($"Logs will be forwarded to Splunk");
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
+#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
             loggerConfiguration
                 .WriteTo.EventCollector(
                     splunkHost: hostUrl,
                     eventCollectorToken: token,
-#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
+                    renderTemplate: false,
                     messageHandler: new HttpClientHandler
                     {
                         ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                    },
-                    renderTemplate: false);
+                    });
+#pragma warning restore CA2000 // Dispose objects before losing scope
 #pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
         }
 
