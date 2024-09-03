@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
@@ -21,6 +22,7 @@ internal class BizMemberManager :
         IRequestHandler<GetBizMembersQuery, Members>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
+        IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
         IBizMemberManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -51,6 +53,43 @@ internal class BizMemberManager :
         _bizContactRepository = bizContactRepository;
         _cmInviteRepository = cmInviteRepository;
     }
+
+    public async Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand cmd, CancellationToken cancellationToken)
+    {
+        ControllingMemberInviteVerifyResp resp = await _cmInviteRepository.VerifyControllingMemberInviteAsync(new ControllingMemberInviteVerifyCmd(cmd.InviteEncryptedCode), cancellationToken);
+
+        var response = _mapper.Map<ControllingMemberAppInviteVerifyResponse>(resp);
+
+        //get biz app id
+        IEnumerable<LicenceAppListResp> list = await _licAppRepository.QueryAsync(
+            new LicenceAppQuery(
+                null,
+                resp.BizId,
+                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
+                new List<ApplicationPortalStatusEnum>
+                {
+                    ApplicationPortalStatusEnum.Draft,
+                    ApplicationPortalStatusEnum.Incomplete,
+                    ApplicationPortalStatusEnum.VerifyIdentity,
+                    ApplicationPortalStatusEnum.AwaitingPayment
+                }),
+            cancellationToken);
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+            .OrderByDescending(a => a.CreatedOn)
+            .FirstOrDefault();
+        response.BizLicAppId = app?.LicenceAppId;
+
+        //get existing controlling member crc app
+        BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
+        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
+            throw new ApiException(HttpStatusCode.InternalServerError, "The business contact is not controlling member ");
+        response.ControllingMemberCrcAppId = contactResp.LatestControllingMemberCrcAppId;
+        response.ControllingMemberCrcAppPortalStatusCode = contactResp.LatestControllingMemberCrcAppPortalStatusEnum == null ? null :
+            Enum.Parse<ApplicationPortalStatusCode>(contactResp.LatestControllingMemberCrcAppPortalStatusEnum.Value.ToString());
+
+        return response;
+    }
+
     public async Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand cmd, CancellationToken cancellationToken)
     {
         //check if bizContact already has invitation

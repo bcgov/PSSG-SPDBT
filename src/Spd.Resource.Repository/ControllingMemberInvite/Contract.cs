@@ -4,7 +4,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
     {
         public Task<IEnumerable<ControllingMemberInviteResp>> QueryAsync(ControllingMemberInviteQuery query, CancellationToken cancellationToken);
         public Task ManageAsync(ControllingMemberInviteCmd cmd, CancellationToken cancellationToken);
-        public Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInvitesAsync(ControllingMemberInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
+        public Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInviteAsync(ControllingMemberInviteVerifyCmd createInviteCmd, CancellationToken cancellationToken);
     }
 
     public record ControllingMemberInviteQuery(Guid BizContactId, bool IncludeInactive = false);
@@ -28,12 +28,14 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         public bool? Viewed { get; set; }
     }
 
-    public record ControllingMemberInviteVerifyCmd
-    {
-    }
+    public record ControllingMemberInviteVerifyCmd(string EncryptedInviteId);
 
     public record ControllingMemberInviteVerifyResp
-    { }
+    {
+        public Guid BizContactId { get; set; }
+        public Guid BizId { get; set; }
+        public Guid InviteId { get; set; }
+    }
 
     public record ControllingMemberInvite
     {

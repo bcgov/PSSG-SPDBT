@@ -29,6 +29,11 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             .ForMember(d => d.CreatedByUserId, opt => opt.MapFrom(s => s._spd_invitedby_value))
             .ForMember(d => d.Status, opt => opt.MapFrom(s => s.statuscode == null ? ApplicationInviteStatusEnum.Draft : Enum.Parse<ApplicationInviteStatusEnum>(((InvitationStatus)s.statuscode).ToString())))
             .ForMember(d => d.Viewed, opt => opt.MapFrom(s => s.spd_views != null && s.spd_views > 0));
+
+            _ = CreateMap<spd_portalinvitation, ControllingMemberInviteVerifyResp>()
+            .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
+            .ForMember(d => d.BizContactId, opt => opt.MapFrom(s => s._spd_businesscontact_value))
+            .ForMember(d => d.InviteId, opt => opt.MapFrom(s => s.spd_portalinvitationid));
         }
     }
 }

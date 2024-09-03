@@ -80,10 +80,32 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             await _dynaContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInvitesAsync(ControllingMemberInviteVerifyCmd verifyInviteCmd, CancellationToken ct)
+        public async Task<ControllingMemberInviteVerifyResp> VerifyControllingMemberInviteAsync(ControllingMemberInviteVerifyCmd verifyInviteCmd, CancellationToken ct)
         {
-            //to be implemented
-            return null;
+            Guid inviteId;
+            try
+            {
+                string inviteIdStr = _dataProtector.Unprotect(WebUtility.UrlDecode(verifyInviteCmd.EncryptedInviteId));
+                inviteId = Guid.Parse(inviteIdStr);
+            }
+            catch
+            {
+                throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+            }
+            var invite = await _dynaContext.spd_portalinvitations
+                .Expand(i => i.spd_OrganizationId)
+                .Where(i => i.spd_portalinvitationid == inviteId)
+                .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC)
+                .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
+                .FirstOrDefaultAsync(ct);
+            if (invite == null)
+                throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
+
+            //set invite views
+            invite.spd_views = (invite.spd_views ?? 0) + 1;
+            _dynaContext.UpdateObject(invite);
+            await _dynaContext.SaveChangesAsync(ct);
+            return _mapper.Map<ControllingMemberInviteVerifyResp>(invite);
         }
     }
 }

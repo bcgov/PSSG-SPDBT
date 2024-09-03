@@ -79,12 +79,26 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
         {
             var userIdStr = _currentUser.GetUserId();
-            if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
+            if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Unauthorized");
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
             var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl);
             return await _mediator.Send(inviteCreateCmd, ct);
         }
+
+        /// <summary>
+        /// Verify if the current controlling member crc application invite is correct, and return needed info
+        /// </summary>
+        /// <param name="appInviteVerifyRequest">which include InviteEncryptedCode</param>
+        /// <returns></returns>
+        [Route("api/controlling-members/invites")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ControllingMemberAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] ControllingMemberAppInviteVerifyRequest inviteVerifyRequest)
+        {
+            return await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
+        }
+
     }
 }
