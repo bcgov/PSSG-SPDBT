@@ -80,23 +80,12 @@ internal class BizMemberManager :
         response.BizLicAppId = app?.LicenceAppId;
 
         //get existing controlling member crc app
-        IEnumerable<LicenceAppListResp> cmApps = await _licAppRepository.QueryAsync(
-            new LicenceAppQuery(
-                null,
-                resp.BizId,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC },
-                new List<ApplicationPortalStatusEnum>
-                {
-                            ApplicationPortalStatusEnum.Draft,
-                            ApplicationPortalStatusEnum.Incomplete,
-                            ApplicationPortalStatusEnum.VerifyIdentity,
-                            ApplicationPortalStatusEnum.AwaitingPayment
-                }),
-            cancellationToken);
-        LicenceAppListResp? cmApp = cmApps.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
-            .OrderByDescending(a => a.CreatedOn)
-            .FirstOrDefault();
-        response.ControllingMemberCrcAppId = cmApp?.LicenceAppId;
+        BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
+        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
+            throw new ApiException(HttpStatusCode.InternalServerError, "The business contact is not controlling member ");
+        response.ControllingMemberCrcAppId = contactResp.LatestControllingMemberCrcAppId;
+        response.ControllingMemberCrcAppPortalStatusCode = contactResp.LatestControllingMemberCrcAppPortalStatusEnum == null ? null :
+            Enum.Parse<ApplicationPortalStatusCode>(contactResp.LatestControllingMemberCrcAppPortalStatusEnum.Value.ToString());
 
         return response;
     }
