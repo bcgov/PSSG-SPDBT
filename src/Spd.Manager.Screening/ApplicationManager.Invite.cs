@@ -25,6 +25,11 @@ namespace Spd.Manager.Screening
                     throw new ApiException(HttpStatusCode.BadRequest, "Payee Type is required");
                 }
             }
+            //if any invites whose service type is pe-crc or pe-crc vs, then need PayeeType.
+            if (createCmd.ApplicationInvitesCreateRequest.ApplicationInviteCreateRequests.Any(i =>
+                (i.ServiceType == Shared.ServiceTypeCode.PE_CRC || i.ServiceType == Shared.ServiceTypeCode.PE_CRC_VS) &&
+                i.PayeeType == null))
+                throw new ApiException(HttpStatusCode.BadRequest, "Payee Type is required for pe-crc or pe-crc vs");
 
             ApplicationInvitesCreateResponse resp = new(createCmd.OrgId);
             if (createCmd.ApplicationInvitesCreateRequest.RequireDuplicateCheck)

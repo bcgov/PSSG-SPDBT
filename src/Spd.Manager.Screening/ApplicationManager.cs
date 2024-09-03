@@ -155,8 +155,23 @@ namespace Spd.Manager.Screening
                     }, ct);
             }
 
-            //update status : if psso or volunteer, go directly to submitted
-            if ((request.ParentOrgId == SpdConstants.BcGovOrgId || request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+            //update status : if volunteer, go directly to submitted
+            if (request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER
+                && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+            {
+                await _applicationRepository.UpdateAsync(
+                    new UpdateCmd()
+                    {
+                        ApplicationId = applicationId.Value,
+                        OrgId = request.ApplicationCreateRequest.OrgId,
+                        Status = ApplicationStatusEnum.Submitted
+                    },
+                    ct);
+            }
+
+            //if psso, if payeeType is org, go directly to submitted
+            if (request.ParentOrgId == SpdConstants.BcGovOrgId
+                && request.ApplicationCreateRequest.PayeeType != Shared.PayerPreferenceTypeCode.Applicant
                 && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
             {
                 await _applicationRepository.UpdateAsync(
@@ -228,7 +243,7 @@ namespace Spd.Manager.Screening
 
         public async Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct)
         {
-            OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
+            ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
             UpdateCmd updateCmd = new()
             {
                 OrgId = request.OrgId,
@@ -242,18 +257,15 @@ namespace Spd.Manager.Screening
             }
             else
             {
-                //if org is psso or if org is volunteer crrp, set application status to submitted.
-                if (org.OrgResult.ParentOrgId == SpdConstants.BcGovOrgId ||
-                    org.OrgResult.Id == SpdConstants.BcGovOrgId ||
-                    org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER || t == ServiceTypeEnum.PSSO || t == ServiceTypeEnum.PSSO_VS || t == ServiceTypeEnum.MCFD || t == ServiceTypeEnum.PE_CRC || t == ServiceTypeEnum.PE_CRC_VS)) //is PSSO
+                //if application service type is not need paid service type, go directly to submitted.
+                if (app.ServiceType == ServiceTypeEnum.CRRP_VOLUNTEER || app.ServiceType == ServiceTypeEnum.PSSO || app.ServiceType == ServiceTypeEnum.PSSO_VS || app.ServiceType == ServiceTypeEnum.MCFD
+                    || ((app.ServiceType == ServiceTypeEnum.PE_CRC || app.ServiceType == ServiceTypeEnum.PE_CRC_VS) && app.PayeeType.Value != Resource.Repository.PayerPreferenceTypeCode.Applicant))
                 {
                     updateCmd.Status = ApplicationStatusEnum.Submitted;
                 }
                 else
                 {
-                    //if org is non-volunteer crrp
-                    ApplicationResult result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
-                    if (result.PaidOn != null) //already paid
+                    if (app.PaidOn != null) //already paid
                         updateCmd.Status = ApplicationStatusEnum.Submitted;
                     else //not paid
                         updateCmd.Status = ApplicationStatusEnum.PaymentPending;
