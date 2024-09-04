@@ -29,6 +29,7 @@ import {
 } from '@app/api/models';
 import {
 	BizLicensingService,
+	BizMembersService,
 	BizPortalUserService,
 	BizProfileService,
 	LicenceService,
@@ -128,6 +129,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
+		private bizMembersService: BizMembersService,
 		private authUserBceidService: AuthUserBceidService,
 		private bizPortalUserService: BizPortalUserService,
 		private commonApplicationService: ApplicationService,
@@ -629,7 +631,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					);
 				}
 
-				return this.bizLicensingService
+				return this.bizMembersService
 					.apiBusinessLicenceApplicationBizIdMembersGet({
 						bizId,
 					})
@@ -703,7 +705,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return forkJoin([
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizLicensingService.apiBusinessLicenceApplicationBizIdMembersGet({
+			this.bizMembersService.apiBusinessLicenceApplicationBizIdMembersGet({
 				bizId,
 			}),
 		]).pipe(
@@ -1959,7 +1961,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	private saveControllingMembersAndEmployees(bizId: string, body: MembersRequest): Observable<any> {
-		return this.bizLicensingService.apiBusinessLicenceApplicationBizIdMembersPost({
+		return this.bizMembersService.apiBusinessLicenceApplicationBizIdMembersPost({
 			bizId,
 			body,
 		});

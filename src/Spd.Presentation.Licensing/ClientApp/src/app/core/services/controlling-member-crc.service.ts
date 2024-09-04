@@ -7,6 +7,7 @@ import {
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceDocumentTypeCode,
+	LicenceTermCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { ControllingMemberCrcAppService } from '@app/api/services';
@@ -235,6 +236,12 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+
+		body.parentBizLicApplicationId = '7943e30e-bf8f-ee11-b849-00505683fbf4'; // TODO remove hardcoding
+		body.bizContactId = '40831603-075f-ee11-b846-00505683fbf4';
+		body.workerLicenceTypeCode = WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc;
+		body.licenceTermCode = LicenceTermCode.OneYear;
+		body.applicationTypeCode = ApplicationTypeCode.New;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;

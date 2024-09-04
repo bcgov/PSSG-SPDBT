@@ -1,5 +1,10 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ControllingMemberCrcAppSubmitRequest, LicenceDocumentTypeCode } from '@app/api/models';
+import {
+	ControllingMemberCrcAppSubmitRequest,
+	Document,
+	DocumentExpiredInfo,
+	LicenceDocumentTypeCode,
+} from '@app/api/models';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
@@ -92,11 +97,69 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
 		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
+		const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
 		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
 		const personalInformationData = {
 			...controllingMemberCrcFormValue.personalInformationData,
 		};
 		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryData;
+
+		const documentInfos: Array<Document> = [];
+
+		fingerprintProofData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.ProofOfFingerprint,
+			});
+		});
+
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+			});
+		});
+
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+			});
+		});
+
+		citizenshipData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				expiryDate: citizenshipData.expiryDate
+					? this.formatDatePipe.transform(citizenshipData.expiryDate, SPD_CONSTANTS.date.backendDateFormat)
+					: null,
+				licenceDocumentTypeCode:
+					citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes
+						? citizenshipData.canadianCitizenProofTypeCode
+						: citizenshipData.notCanadianCitizenProofTypeCode,
+			});
+		});
+
+		const isIncludeAdditionalGovermentIdStepData = this.utilService.getSwlShowAdditionalGovIdData(
+			citizenshipData.isCanadianCitizen == BooleanTypeCode.Yes,
+			citizenshipData.canadianCitizenProofTypeCode,
+			citizenshipData.notCanadianCitizenProofTypeCode
+		);
+
+		if (isIncludeAdditionalGovermentIdStepData && citizenshipData.governmentIssuedAttachments) {
+			citizenshipData.governmentIssuedAttachments?.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					expiryDate: citizenshipData.governmentIssuedExpiryDate
+						? this.formatDatePipe.transform(
+								citizenshipData.governmentIssuedExpiryDate,
+								SPD_CONSTANTS.date.backendDateFormat
+						  )
+						: null,
+					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
+				});
+			});
+		}
 
 		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
 			personalInformationData.dateOfBirth,
@@ -108,6 +171,16 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
 		);
 		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
+
+		const documentExpiredInfos: Array<DocumentExpiredInfo> =
+			documentInfos
+				.filter((doc) => doc.expiryDate)
+				.map((doc: Document) => {
+					return {
+						expiryDate: doc.expiryDate,
+						licenceDocumentTypeCode: doc.licenceDocumentTypeCode,
+					} as DocumentExpiredInfo;
+				}) ?? [];
 
 		const body = {
 			givenName: personalInformationData.givenName,
@@ -145,6 +218,9 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
 			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			//-----------------------------------
+			documentExpiredInfos: [...documentExpiredInfos],
+			documentInfos: [...documentInfos],
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
