@@ -42,6 +42,20 @@ import { BusinessLicenceApplicationRoutes } from '../business-licence-applicatio
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
+					<div class="row mb-4">
+						<div class="col-12 text-end">
+							<a
+								class="large"
+								tabindex="0"
+								(click)="onManageMembersAndEmployees()"
+								(keydown)="onKeydownManageMembersAndEmployees($event)"
+								*ngIf="!applicationIsInProgress"
+							>
+								Manage Controlling Members and Employees
+							</a>
+						</div>
+					</div>
+
 					<ng-container *ngFor="let msg of errorMessages; let i = index">
 						<app-alert type="danger" icon="error">
 							<div [innerHTML]="msg"></div>
@@ -202,6 +216,12 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				take(1)
 			)
 			.subscribe();
+	}
+
+	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
+		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
+
+		this.onManageMembersAndEmployees();
 	}
 
 	onResume(appl: MainApplicationResponse): void {
