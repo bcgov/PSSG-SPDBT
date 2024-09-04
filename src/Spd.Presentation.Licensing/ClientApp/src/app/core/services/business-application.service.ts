@@ -15,6 +15,7 @@ import {
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
+	ControllingMemberAppInviteVerifyResponse,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -493,6 +494,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		return this.saveControllingMembersAndEmployees(bizId, body);
+	}
+
+	sendControllingMembersWithoutSwlInvitation(
+		bizContactId: string
+	): Observable<ControllingMemberAppInviteVerifyResponse> {
+		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+			bizContactId,
+		});
 	}
 
 	/**
