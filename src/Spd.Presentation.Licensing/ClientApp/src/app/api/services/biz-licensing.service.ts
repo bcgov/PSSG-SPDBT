@@ -9,13 +9,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { ActionResult } from '../models/action-result';
 import { apiBusinessBizIdAppLatestGet } from '../fn/biz-licensing/api-business-biz-id-app-latest-get';
 import { ApiBusinessBizIdAppLatestGet$Params } from '../fn/biz-licensing/api-business-biz-id-app-latest-get';
-import { apiBusinessLicenceApplicationBizIdMembersGet } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-get';
-import { ApiBusinessLicenceApplicationBizIdMembersGet$Params } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-get';
-import { apiBusinessLicenceApplicationBizIdMembersPost } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-post';
-import { ApiBusinessLicenceApplicationBizIdMembersPost$Params } from '../fn/biz-licensing/api-business-licence-application-biz-id-members-post';
 import { apiBusinessLicenceApplicationBrandImageDocumentIdGet } from '../fn/biz-licensing/api-business-licence-application-brand-image-document-id-get';
 import { ApiBusinessLicenceApplicationBrandImageDocumentIdGet$Params } from '../fn/biz-licensing/api-business-licence-application-brand-image-document-id-get';
 import { apiBusinessLicenceApplicationChangePost } from '../fn/biz-licensing/api-business-licence-application-change-post';
@@ -33,7 +28,6 @@ import { ApiBusinessLicenceApplicationSubmitPost$Params } from '../fn/biz-licens
 import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
 import { BizLicAppResponse } from '../models/biz-lic-app-response';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
-import { Members } from '../models/members';
 
 @Injectable({ providedIn: 'root' })
 export class BizLicensingService extends BaseService {
@@ -205,74 +199,6 @@ export class BizLicensingService extends BaseService {
   apiBusinessLicenceApplicationChangePost(params?: ApiBusinessLicenceApplicationChangePost$Params, context?: HttpContext): Observable<BizLicAppCommandResponse> {
     return this.apiBusinessLicenceApplicationChangePost$Response(params, context).pipe(
       map((r: StrictHttpResponse<BizLicAppCommandResponse>): BizLicAppCommandResponse => r.body)
-    );
-  }
-
-  /** Path part for operation `apiBusinessLicenceApplicationBizIdMembersGet()` */
-  static readonly ApiBusinessLicenceApplicationBizIdMembersGetPath = '/api/business-licence-application/{bizId}/members';
-
-  /**
-   * Get Biz controlling members and employees, controlling member includes swl and non-swl
-   * This is the latest active biz controlling members and employees, irrelevent to application.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationBizIdMembersGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBusinessLicenceApplicationBizIdMembersGet$Response(params: ApiBusinessLicenceApplicationBizIdMembersGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Members>> {
-    return apiBusinessLicenceApplicationBizIdMembersGet(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Get Biz controlling members and employees, controlling member includes swl and non-swl
-   * This is the latest active biz controlling members and employees, irrelevent to application.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationBizIdMembersGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiBusinessLicenceApplicationBizIdMembersGet(params: ApiBusinessLicenceApplicationBizIdMembersGet$Params, context?: HttpContext): Observable<Members> {
-    return this.apiBusinessLicenceApplicationBizIdMembersGet$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Members>): Members => r.body)
-    );
-  }
-
-  /** Path part for operation `apiBusinessLicenceApplicationBizIdMembersPost()` */
-  static readonly ApiBusinessLicenceApplicationBizIdMembersPostPath = '/api/business-licence-application/{bizId}/members';
-
-  /**
-   * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationBizIdMembersPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiBusinessLicenceApplicationBizIdMembersPost$Response(params: ApiBusinessLicenceApplicationBizIdMembersPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
-    return apiBusinessLicenceApplicationBizIdMembersPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Upsert Biz Application controlling members and employees, controlling members include swl and non-swl.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationBizIdMembersPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiBusinessLicenceApplicationBizIdMembersPost(params: ApiBusinessLicenceApplicationBizIdMembersPost$Params, context?: HttpContext): Observable<ActionResult> {
-    return this.apiBusinessLicenceApplicationBizIdMembersPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<ActionResult>): ActionResult => r.body)
     );
   }
 
