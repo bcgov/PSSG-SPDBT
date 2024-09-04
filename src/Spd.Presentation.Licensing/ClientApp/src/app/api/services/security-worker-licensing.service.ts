@@ -11,6 +11,8 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { apiApplicantsApplicantIdSwlLatestGet } from '../fn/security-worker-licensing/api-applicants-applicant-id-swl-latest-get';
 import { ApiApplicantsApplicantIdSwlLatestGet$Params } from '../fn/security-worker-licensing/api-applicants-applicant-id-swl-latest-get';
+import { apiSpWorkerLicenceApplicationGet } from '../fn/security-worker-licensing/api-sp-worker-licence-application-get';
+import { ApiSpWorkerLicenceApplicationGet$Params } from '../fn/security-worker-licensing/api-sp-worker-licence-application-get';
 import { apiWorkerLicenceApplicationGet } from '../fn/security-worker-licensing/api-worker-licence-application-get';
 import { ApiWorkerLicenceApplicationGet$Params } from '../fn/security-worker-licensing/api-worker-licence-application-get';
 import { apiWorkerLicenceApplicationsAnonymousFilesPost } from '../fn/security-worker-licensing/api-worker-licence-applications-anonymous-files-post';
@@ -306,6 +308,41 @@ export class SecurityWorkerLicensingService extends BaseService {
    */
   apiWorkerLicenceApplicationGet(params?: ApiWorkerLicenceApplicationGet$Params, context?: HttpContext): Observable<WorkerLicenceAppResponse> {
     return this.apiWorkerLicenceApplicationGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<WorkerLicenceAppResponse>): WorkerLicenceAppResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiSpWorkerLicenceApplicationGet()` */
+  static readonly ApiSpWorkerLicenceApplicationGetPath = '/api/sp-worker-licence-application';
+
+  /**
+   * Get Security Worker Licence SoleProprietor Application, anonymous one, so, we get the swlAppId from cookies.
+   * Used for sole proprietor, biz app is aborted, fe needs to get the swl application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiSpWorkerLicenceApplicationGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiSpWorkerLicenceApplicationGet$Response(params?: ApiSpWorkerLicenceApplicationGet$Params, context?: HttpContext): Observable<StrictHttpResponse<WorkerLicenceAppResponse>> {
+    return apiSpWorkerLicenceApplicationGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get Security Worker Licence SoleProprietor Application, anonymous one, so, we get the swlAppId from cookies.
+   * Used for sole proprietor, biz app is aborted, fe needs to get the swl application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiSpWorkerLicenceApplicationGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiSpWorkerLicenceApplicationGet(params?: ApiSpWorkerLicenceApplicationGet$Params, context?: HttpContext): Observable<WorkerLicenceAppResponse> {
+    return this.apiSpWorkerLicenceApplicationGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<WorkerLicenceAppResponse>): WorkerLicenceAppResponse => r.body)
     );
   }

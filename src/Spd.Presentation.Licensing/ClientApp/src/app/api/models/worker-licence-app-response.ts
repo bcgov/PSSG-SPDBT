@@ -64,6 +64,7 @@ export interface WorkerLicenceAppResponse {
   phoneNumber?: string | null;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddress?: ResidentialAddress;
+  soleProprietorBizAppId?: string | null;
   surname?: string | null;
   useDogs?: boolean | null;
   weight?: number | null;

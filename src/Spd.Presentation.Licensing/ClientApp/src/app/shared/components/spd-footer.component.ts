@@ -39,17 +39,6 @@ import { ApplicationService } from '@app/core/services/application.service';
 					padding: 3px;
 				}
 			}
-
-			@media print {
-				.no-print,
-				.no-print * {
-					display: none !important;
-				}
-
-				.print-only {
-					display: block;
-				}
-			}
 		`,
 	],
 })

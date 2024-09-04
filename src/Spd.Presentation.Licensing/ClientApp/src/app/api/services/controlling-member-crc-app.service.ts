@@ -15,13 +15,121 @@ import { apiControllingMemberCrcApplicationsAnonymousKeyCodePost } from '../fn/c
 import { ApiControllingMemberCrcApplicationsAnonymousKeyCodePost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-anonymous-key-code-post';
 import { apiControllingMemberCrcApplicationsAnonymousSubmitPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-anonymous-submit-post';
 import { ApiControllingMemberCrcApplicationsAnonymousSubmitPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-anonymous-submit-post';
+import { apiControllingMemberCrcApplicationsCrcAppIdFilesPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-crc-app-id-files-post';
+import { ApiControllingMemberCrcApplicationsCrcAppIdFilesPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-crc-app-id-files-post';
+import { apiControllingMemberCrcApplicationsPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-post';
+import { ApiControllingMemberCrcApplicationsPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-post';
+import { apiControllingMemberCrcApplicationsSubmitPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-submit-post';
+import { ApiControllingMemberCrcApplicationsSubmitPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-submit-post';
 import { ControllingMemberCrcAppCommandResponse } from '../models/controlling-member-crc-app-command-response';
 import { IActionResult } from '../models/i-action-result';
+import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 
 @Injectable({ providedIn: 'root' })
 export class ControllingMemberCrcAppService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `apiControllingMemberCrcApplicationsPost()` */
+  static readonly ApiControllingMemberCrcApplicationsPostPath = '/api/controlling-member-crc-applications';
+
+  /**
+   * Create Controlling member CRC Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiControllingMemberCrcApplicationsPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiControllingMemberCrcApplicationsPost$Response(params: ApiControllingMemberCrcApplicationsPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+    return apiControllingMemberCrcApplicationsPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Create Controlling member CRC Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiControllingMemberCrcApplicationsPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiControllingMemberCrcApplicationsPost(params: ApiControllingMemberCrcApplicationsPost$Params, context?: HttpContext): Observable<ControllingMemberCrcAppCommandResponse> {
+    return this.apiControllingMemberCrcApplicationsPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>): ControllingMemberCrcAppCommandResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiControllingMemberCrcApplicationsCrcAppIdFilesPost()` */
+  static readonly ApiControllingMemberCrcApplicationsCrcAppIdFilesPostPath = '/api/controlling-member-crc-applications/{CrcAppId}/files';
+
+  /**
+   * Upload Controlling Member application files to transient storage.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiControllingMemberCrcApplicationsCrcAppIdFilesPost()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response(params: ApiControllingMemberCrcApplicationsCrcAppIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+    return apiControllingMemberCrcApplicationsCrcAppIdFilesPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Upload Controlling Member application files to transient storage.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response()` instead.
+   *
+   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
+   */
+  apiControllingMemberCrcApplicationsCrcAppIdFilesPost(params: ApiControllingMemberCrcApplicationsCrcAppIdFilesPost$Params, context?: HttpContext): Observable<Array<LicenceAppDocumentResponse>> {
+    return this.apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>): Array<LicenceAppDocumentResponse> => r.body)
+    );
+  }
+
+  /** Path part for operation `apiControllingMemberCrcApplicationsSubmitPost()` */
+  static readonly ApiControllingMemberCrcApplicationsSubmitPostPath = '/api/controlling-member-crc-applications/submit';
+
+  /**
+   * Submit Controlling Member Crc Application
+   * authenticated.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiControllingMemberCrcApplicationsSubmitPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiControllingMemberCrcApplicationsSubmitPost$Response(params: ApiControllingMemberCrcApplicationsSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+    return apiControllingMemberCrcApplicationsSubmitPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Submit Controlling Member Crc Application
+   * authenticated.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiControllingMemberCrcApplicationsSubmitPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiControllingMemberCrcApplicationsSubmitPost(params: ApiControllingMemberCrcApplicationsSubmitPost$Params, context?: HttpContext): Observable<ControllingMemberCrcAppCommandResponse> {
+    return this.apiControllingMemberCrcApplicationsSubmitPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>): ControllingMemberCrcAppCommandResponse => r.body)
+    );
   }
 
   /** Path part for operation `apiControllingMemberCrcApplicationsAnonymousKeyCodePost()` */
@@ -98,7 +206,8 @@ export class ControllingMemberCrcAppService extends BaseService {
   static readonly ApiControllingMemberCrcApplicationsAnonymousSubmitPostPath = '/api/controlling-member-crc-applications/anonymous/submit';
 
   /**
-   * Save New Licence Crc Controlling Member.
+   * Submit Controlling Member Crc Application
+   * anonymous.
    *
    *
    *
@@ -112,7 +221,8 @@ export class ControllingMemberCrcAppService extends BaseService {
   }
 
   /**
-   * Save New Licence Crc Controlling Member.
+   * Submit Controlling Member Crc Application
+   * anonymous.
    *
    *
    *
