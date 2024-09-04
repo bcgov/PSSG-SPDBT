@@ -4,23 +4,24 @@ import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
-import { DocumentExpiredInfo } from '../models/document-expired-info';
+import { Document } from '../models/document';
 import { GenderCode } from '../models/gender-code';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
-export interface ControllingMemberCrcAppSubmitRequest {
+export interface ControllingMemberCrcAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
+  applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;
   bizContactId?: string;
   bizTypeCode?: BizTypeCode;
+  controllingMemberAppId?: string | null;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
-  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
-  documentKeyCodes?: Array<string> | null;
+  documentInfos?: Array<Document> | null;
   emailAddress?: string | null;
   genderCode?: GenderCode;
   givenName?: string | null;

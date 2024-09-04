@@ -86,6 +86,10 @@ internal partial class ApplicationRepository : IApplicationRepository
             else
                 app.statecode = DynamicsConstants.StateCode_Active;
         }
+        if (cmd.HaveVerifiedIdentity != null)
+        {
+            app.spd_identityconfirmed = cmd.HaveVerifiedIdentity;
+        }
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
     }
