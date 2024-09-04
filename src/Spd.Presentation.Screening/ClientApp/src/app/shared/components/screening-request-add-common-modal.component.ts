@@ -150,7 +150,10 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showPaidBys[i]">
+								<div
+									class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
+									*ngIf="showPaidByPsso[i] || isNotVolunteerOrg"
+								>
 									<mat-form-field>
 										<mat-label>Paid by</mat-label>
 										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
@@ -234,7 +237,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	showServiceType = false;
 	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: Array<SelectOptions[]> = [];
-	showPaidBys: Array<boolean> = [];
+	showPaidByPsso: Array<boolean> = [];
 	portalTypeCodes = PortalTypeCode;
 
 	showScreeningType = false;
@@ -326,7 +329,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 					FormGroupValidators.conditionalRequiredValidator('screeningType', (_form) => this.showScreeningType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (_form) => this.showServiceType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('payeeType', (_form) =>
-						this.isPeCrc(_form.get('serviceType')?.value ?? false)
+						this.isPayeeTypeRequired(_form.get('serviceType')?.value ?? false)
 					),
 					FormGroupValidators.conditionalRequiredValidator(
 						'orgId',
@@ -343,7 +346,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	onChangeServiceType(event: MatSelectChange, index: number): void {
-		this.setShowPaidBy(event.value, index);
+		this.setShowPaidByPsso(event.value, index);
 	}
 
 	onAddRow() {
@@ -621,13 +624,12 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.showServiceType = true;
 	}
 
-	private setShowPaidBy(serviceTypeCode: ServiceTypeCode, index: number) {
+	private setShowPaidByPsso(serviceTypeCode: ServiceTypeCode, index: number) {
 		if (this.portal != PortalTypeCode.Psso) {
-			this.showPaidBys[index] = this.isNotVolunteerOrg;
 			return;
 		}
 
-		this.showPaidBys[index] = this.isPeCrc(serviceTypeCode);
+		this.showPaidByPsso[index] = this.isPeCrc(serviceTypeCode);
 	}
 
 	private populatePssoServiceTypes(orgId: string, index: number) {
@@ -652,6 +654,14 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			const defaultServiceTypeCode = serviceTypes.length === 1 ? (serviceTypes[0].code as string) : null;
 			crcFormGroup.patchValue({ serviceType: defaultServiceTypeCode }, { emitEvent: false });
 		}
+	}
+
+	isPayeeTypeRequired(serviceTypeCode: ServiceTypeCode): boolean {
+		if (this.portal === PortalTypeCode.Psso) {
+			return this.isPeCrc(serviceTypeCode);
+		}
+
+		return this.isNotVolunteerOrg;
 	}
 
 	private isPeCrc(serviceTypeCode: ServiceTypeCode): boolean {
