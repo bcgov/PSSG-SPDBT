@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Licence;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
@@ -184,5 +185,18 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         };
     }
 
-    public async Task<ControllingMemberCrcApplicationCmdResp> ManageAsync(UpdateControllingMemberCrcAppCmd cmd, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public async Task<ControllingMemberCrcApplicationCmdResp> ManageAsync(UpdateControllingMemberCrcAppCmd cmd, CancellationToken ct)
+    {
+        IQueryable<spd_application> appQuery = _context.spd_applications
+                .Where(i => i.spd_applicationid == cmd.ApplicationId);
+        spd_application? app = appQuery.FirstOrDefault();
+        if (app == null)
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid applicationId");
+        //TODO: check the mappings
+        _mapper.Map<ControllingMemberCrcApplication, spd_application>(cmd.ControllingMemberCrcApplication, app);
+        _context.UpdateObject(app);
+        await _context.SaveChangesAsync(ct);
+        //TODO: check mappings
+        return _mapper.Map<ControllingMemberCrcApplicationCmdResp>(app);
+    }
 }
