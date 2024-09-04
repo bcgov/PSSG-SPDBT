@@ -57,7 +57,6 @@ export const SPD_CONSTANTS = {
 		peCrcApplication: 'https://www2.gov.bc.ca/gov/content/home',
 		mcfdApplication:
 			'https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/children-and-family-development',
-		pssoCheck:
-			'https://www2.gov.bc.ca/gov/content/careers-myhr/hiring-managers/process/extend-offer/security-screening/about',
+		pssoCheck: 'https://www2.gov.bc.ca/gov/content/careers-myhr',
 	},
 };
