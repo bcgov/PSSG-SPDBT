@@ -1,6 +1,7 @@
 export { AddressAutoCompleteService } from './services/address-auto-complete.service';
 export { ApplicantProfileService } from './services/applicant-profile.service';
 export { BizLicensingService } from './services/biz-licensing.service';
+export { BizMembersService } from './services/biz-members.service';
 export { BizPortalUserService } from './services/biz-portal-user.service';
 export { BizProfileService } from './services/biz-profile.service';
 export { ConfigurationService } from './services/configuration.service';

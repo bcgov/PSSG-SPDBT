@@ -74,20 +74,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 			</section>
 		</app-container>
 	`,
-	styles: [
-		`
-			@media print {
-				.no-print,
-				.no-print * {
-					display: none !important;
-				}
-
-				.print-only {
-					display: block;
-				}
-			}
-		`,
-	],
+	styles: [],
 })
 export class PermitUpdateReceivedSuccessComponent implements OnInit {
 	permitModelData: any = {};
