@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HotToastService } from '@ngneat/hot-toast';
 import { DelegateResponse } from 'src/app/api/models';
 import { DelegateService } from 'src/app/api/services';
@@ -38,9 +38,6 @@ export interface DelegateDialogData {
 						<mat-form-field>
 							<mat-label>Email</mat-label>
 							<input matInput formControlName="emailaddress" placeholder="name@domain.com" maxlength="75" />
-							<mat-error *ngIf="form.get('emailaddress')?.hasError('govEmail')">
-								Must be a valid government email address (end with 'gov.bc.ca')
-							</mat-error>
 							<mat-error *ngIf="form.get('emailaddress')?.hasError('required')">This is required</mat-error>
 						</mat-form-field>
 					</div>
@@ -64,7 +61,7 @@ export class DelegateAddModalComponent {
 	form: FormGroup = this.formBuilder.group({
 		lastName: new FormControl('', [FormControlValidators.required]),
 		firstName: new FormControl('', [FormControlValidators.required]),
-		emailaddress: new FormControl('', [Validators.required, FormControlValidators.govEmail]),
+		emailaddress: new FormControl('', [Validators.required]), // SPDBT-2951 remove FormControlValidators.govEmail
 	});
 
 	constructor(
