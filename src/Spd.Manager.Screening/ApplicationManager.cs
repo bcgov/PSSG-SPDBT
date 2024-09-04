@@ -155,9 +155,8 @@ namespace Spd.Manager.Screening
                     }, ct);
             }
 
-            //update status : if volunteer, go directly to submitted
-            if (request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER
-                && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+            //update status 
+            if (IfSubmittedDirectly(request.ApplicationCreateRequest))
             {
                 await _applicationRepository.UpdateAsync(
                     new UpdateCmd()
@@ -459,9 +458,8 @@ namespace Spd.Manager.Screening
                     result.CreateSuccess = true;
                 }
 
-                //update status : if psso or volunteer, go directly to submitted
-                if ((cmd.ParentOrgId == SpdConstants.BcGovOrgId || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
-                    && command.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+                //update status 
+                if (IfSubmittedDirectly(command.ApplicationCreateRequest))
                 {
                     await _applicationRepository.UpdateAsync(
                         new UpdateCmd()
@@ -631,5 +629,23 @@ namespace Spd.Manager.Screening
             return new FileResponse();
         }
         #endregion
+
+        private bool IfSubmittedDirectly(ApplicationCreateRequest request)
+        {
+            bool noNeedToPay = false;
+            if (request.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER) noNeedToPay = true;
+            if (request.ServiceType == ServiceTypeCode.PSSO) noNeedToPay = true;
+            if (request.ServiceType == ServiceTypeCode.MCFD) noNeedToPay = true;
+            if (request.ServiceType == ServiceTypeCode.PSSO_VS) noNeedToPay = true;
+            if (request.ServiceType == ServiceTypeCode.PE_CRC || request.ServiceType == ServiceTypeCode.PE_CRC_VS)
+            {
+                if (request.PayeeType == Shared.PayerPreferenceTypeCode.Organization || request.PayeeType == null) noNeedToPay = true;
+                else noNeedToPay = false;
+            }
+            if (request.ServiceType == ServiceTypeCode.CRRP_EMPLOYEE) noNeedToPay = false;
+            if (noNeedToPay)
+                if (request.HaveVerifiedIdentity.Value) return true;
+            return false;
+        }
     }
 }
