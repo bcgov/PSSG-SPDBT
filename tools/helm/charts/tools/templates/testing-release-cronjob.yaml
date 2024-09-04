@@ -4,7 +4,7 @@ metadata:
   name: testing-release-cronjob
 spec:
   suspend: false
-  schedule: "0 17 * * Mon-Fri"
+  schedule: "0 12 * * Mon-Fri"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
   successfulJobsHistoryLimit: 1
