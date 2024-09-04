@@ -117,13 +117,21 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									</mat-cell>
 								</ng-container>
 
-								<ng-container matColumnDef="clearanceStatus">
+								<ng-container matColumnDef="email">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Email </mat-header-cell>
+									<mat-cell class="mat-cell-email" *matCellDef="let member">
+										<span class="mobile-label">Email:</span>
+										{{ member.emailAddress | default }}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="inviteStatusCode">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
 										Controlling Member Clearance
 									</mat-header-cell>
 									<mat-cell *matCellDef="let member">
 										<span class="mobile-label">Controlling Member Clearance:</span>
-										{{ member.clearanceStatus | default }}
+										{{ member.inviteStatusCode | default }}
 									</mat-cell>
 								</ng-container>
 
@@ -256,7 +264,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
 
 	dataSourceWithoutSWL!: MatTableDataSource<any>;
-	columnsWithoutSWL: string[] = ['licenceHolderName', 'clearanceStatus', 'action1', 'action2'];
+	columnsWithoutSWL: string[] = ['licenceHolderName', 'email', 'inviteStatusCode', 'action1', 'action2'];
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -425,7 +433,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			licenceStatusCode: [memberData.licenceStatusCode],
 			licenceTermCode: [memberData.licenceTermCode],
 			expiryDate: [memberData.expiryDate],
-			clearanceStatus: [memberData.clearanceStatus],
+			inviteStatusCode: [memberData.inviteStatusCode],
 		});
 	}
 
@@ -448,7 +456,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			licenceStatusCode: memberData.licenceStatusCode,
 			licenceTermCode: memberData.licenceTermCode,
 			expiryDate: memberData.expiryDate,
-			clearanceStatus: memberData.clearanceStatus,
+			inviteStatusCode: memberData.inviteStatusCode,
 		});
 	}
 

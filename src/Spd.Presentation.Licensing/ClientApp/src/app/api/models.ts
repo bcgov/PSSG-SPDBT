@@ -32,6 +32,8 @@ export { ConfigurationResponse } from './models/configuration-response';
 export { ContactAuthorizationTypeCode } from './models/contact-authorization-type-code';
 export { ContactInfo } from './models/contact-info';
 export { ContactRoleCode } from './models/contact-role-code';
+export { ControllingMemberAppInviteVerifyRequest } from './models/controlling-member-app-invite-verify-request';
+export { ControllingMemberAppInviteVerifyResponse } from './models/controlling-member-app-invite-verify-response';
 export { ControllingMemberCrcAppCommandResponse } from './models/controlling-member-crc-app-command-response';
 export { ControllingMemberCrcAppSubmitRequest } from './models/controlling-member-crc-app-submit-request';
 export { ControllingMemberCrcAppUpsertRequest } from './models/controlling-member-crc-app-upsert-request';

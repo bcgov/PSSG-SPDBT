@@ -66,7 +66,6 @@ export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceNumber?: string | null;
 	licenceStatusCode?: string;
 	expiryDate?: string | null;
-	clearanceStatus?: string | null;
 }
 
 @Injectable({
@@ -1835,7 +1834,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					item.middleName2,
 					item.surname
 				),
-				clearanceStatus: 'todo', // TODO removed hardcoded clearanceStatus
+				inviteStatusCode: item.inviteStatusCode,
 			});
 		});
 
@@ -1858,7 +1857,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					surname: new FormControl(item.surname),
 					phoneNumber: new FormControl(item.phoneNumber),
 					emailAddress: new FormControl(item.emailAddress),
-					clearanceStatus: new FormControl(item.clearanceStatus),
+					inviteStatusCode: new FormControl(item.inviteStatusCode),
 				})
 			);
 		});
@@ -1878,7 +1877,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceNumber: matchingLicence?.licenceNumber!,
 				licenceStatusCode: matchingLicence?.licenceStatusCode,
 				expiryDate: matchingLicence?.expiryDate,
-				clearanceStatus: 'todo', // TODO removed hardcoded clearanceStatus
 			});
 		});
 
@@ -1897,7 +1895,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					licenceNumber: new FormControl(item.licenceNumber),
 					licenceStatusCode: new FormControl(item.licenceStatusCode),
 					expiryDate: new FormControl(item.expiryDate),
-					clearanceStatus: new FormControl(item.clearanceStatus),
 				})
 			);
 		});
