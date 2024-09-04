@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: testing-release-cronjob
+spec:
+  suspend: false
+  schedule: "0 17 * * Mon-Fri"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 5
+      template:
+        metadata:
+          labels:
+            app: CD
+            DataClass: Low
+        spec:
+          serviceAccountName: pipeline
+          containers:
+            - name: job
+              image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+              env:
+                - name: HTTP_PROXY
+                  value: http://swpxkam.gov.bc.ca:8080
+                - name: HTTPS_PROXY
+                  value: http://swpxkam.gov.bc.ca:8080
+                - name: NO_PROXY
+                  value: .cluster.local,.svc,10.91.0.0/16,172.30.0.0/16,127.0.0.1,localhost,.gov.bc.ca
+              resources:
+                limits:
+                  cpu: 30m
+                  memory: 128Mi
+                requests:
+                  cpu: 15m
+                  memory: 64Mi
+              command:
+                - "/bin/sh"
+                - "-c"
+                - "cd /tmp && curl -o tkn-linux-amd64.tar.gz -sL http://tkn-cli-serve.openshift-pipelines.svc:8080/tkn/tkn-linux-amd64.tar.gz && tar -xvf tkn-linux-amd64.tar.gz && ./tkn pipeline start testing-release-pipeline"
+              volumeMounts:
+                - name: temp
+                  mountPath: /tmp
+                  readOnly: false
+          restartPolicy: Never
+          volumes:
+            - name: temp
+              emptyDir:
+                sizeLimit: 500Mi
