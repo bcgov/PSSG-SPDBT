@@ -184,4 +184,5 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         };
     }
 
+    public async Task<ControllingMemberCrcApplicationCmdResp> ManageAsync(UpdateControllingMemberCrcAppCmd cmd, CancellationToken cancellationToken) => throw new NotImplementedException();
 }

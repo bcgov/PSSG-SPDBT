@@ -41,6 +41,7 @@ public record ControllingMemberCrcAppBase : LicenceAppBase
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
     public Guid BizContactId { get; set; }
+    public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
 
@@ -58,23 +59,28 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 #region anonymous user
 public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
 {
-    public Guid ControllingMemberAppId { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+    public bool? HasNewMentalHealthCondition { get; set; }
 
+    public Guid? LatestApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be latest application id. 
+    public Guid? OriginalApplicationId { get; set; } //for new, it should be null. for renew, replace, update, it should be original application id. 
+    public string? CriminalChargeDescription { get; set; }
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
+    public Guid? OriginalLicenceId { get; set; } //for new, it should be null. for renew, replace, update, it should be original licence id. 
 };
 
 public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
-public record ControllingMemberCrcAppCommandResponse
-{
-    public Guid ControllingMemberAppId { get; set; }
-    public decimal? Cost { get; set; }
-
-};
-
 public record ControllingMemberCrcAppUpdateCommand(
     ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAnonymousRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppCommandResponse
+{
+    public Guid? ControllingMemberAppId { get; set; }
+    public decimal? Cost { get; set; }
+
+};
+
 
 #endregion

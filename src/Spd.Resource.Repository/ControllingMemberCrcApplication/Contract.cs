@@ -9,6 +9,8 @@ public partial interface IControllingMemberCrcRepository
     public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationListResp> QueryAsync(ControllingMemberCrcQry qry, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationCmdResp> ManageAsync(UpdateControllingMemberCrcAppCmd cmd, CancellationToken cancellationToken);
+
 }
 
 public record ControllingMemberCrcApplication
@@ -58,17 +60,18 @@ public record SaveControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
     public Guid ContactId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 }
+public record UpdateControllingMemberCrcAppCmd(ControllingMemberCrcApplication ControllingMemberCrcApplication, Guid ApplicationId);
 public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplication
 {
     //TODO: what are response props?
     public Guid? ControllingMemberCrcAppId { get; set; }
     public Guid? ContactId { get; set; }
 }
-public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId, Guid? ContactId = null);
 public record ControllingMemberCrcApplicationListResp
 {
     public IEnumerable<ControllingMemberCrcApplicationResp> Items { get; set; } = Array.Empty<ControllingMemberCrcApplicationResp>();
 }
+public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId, Guid? ContactId = null);
 
 public record ControllingMemberCrcQry
 {
