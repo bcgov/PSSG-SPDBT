@@ -158,6 +158,27 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     #endregion authenticated
     #region anonymous
     /// <summary>
+    /// Get controlling memeber crc Application, anonymous one, so, we get the controllingMemeberAppId from cookies.
+    /// </summary>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications")]
+    [HttpGet]
+    public async Task<ControllingMemberCrcAppResponse> GetControllingMemberCrcApplicationAnonymous()
+    {
+        string crcAppIdString = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicationContext);
+        string? crcAppId;
+        try
+        {
+            crcAppId = crcAppIdString.Split("*")[1];
+        }
+        catch
+        {
+            throw new ApiException(HttpStatusCode.Unauthorized, "licence app id is incorrect");
+        }
+        return await _mediator.Send(new GetControllingMemberCrcAppQuery(Guid.Parse(crcAppId)));
+    }
+
+    /// <summary>
     /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
     /// the keycode will be set in the cookies
     /// </summary>

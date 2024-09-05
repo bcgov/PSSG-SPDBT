@@ -31,7 +31,8 @@ internal class ControllingMemberCrcAppManager :
         IRequestHandler<ControllingMemberCrcSubmitCommand, ControllingMemberCrcAppCommandResponse>,
         IRequestHandler<ControllingMemberCrcAppUpdateCommand, ControllingMemberCrcAppCommandResponse>,
         IRequestHandler<ControllingMemberCrcAppRenewCommand, ControllingMemberCrcAppCommandResponse>,
-    IControllingMemberCrcAppManager
+        IRequestHandler<GetControllingMemberCrcAppQuery, ControllingMemberCrcAppResponse>,
+IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
     private readonly IContactRepository _contactRepository;
@@ -380,6 +381,9 @@ internal class ControllingMemberCrcAppManager :
         }
         return changes;
     }
+
+    public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcAppQuery query, CancellationToken ct) => throw new NotImplementedException();
+
     private sealed record ChangeSpec
     {
         public bool PeaceOfficerStatusChanged { get; set; } //task
@@ -389,5 +393,4 @@ internal class ControllingMemberCrcAppManager :
         public bool CriminalHistoryChanged { get; set; } //task
         public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
     }
-
 }

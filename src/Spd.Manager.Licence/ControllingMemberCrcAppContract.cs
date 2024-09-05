@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 namespace Spd.Manager.Licence;
 public interface IControllingMemberCrcAppManager
 {
+    public Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcAppQuery query, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppRenewCommand command, CancellationToken ct);
 
 }
 public record ControllingMemberCrcAppBase : LicenceAppBase
@@ -44,7 +47,16 @@ public record ControllingMemberCrcAppBase : LicenceAppBase
     public bool? HasNewCriminalRecordCharge { get; set; }
 }
 
-
+public record GetControllingMemberCrcAppQuery(Guid ControllingMemberAppId) : IRequest<ControllingMemberCrcAppResponse>;
+public record ControllingMemberCrcAppResponse : ControllingMemberCrcAppBase
+{
+    public Guid ControllingMemberAppId { get; set; }
+    public DateOnly? ExpiryDate { get; set; }
+    public string? CaseNumber { get; set; }
+    public string? ExpiredLicenceNumber { get; set; }
+    public ApplicationPortalStatusCode? ApplicationPortalStatus { get; set; }
+    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+}
 #region authenticated
 public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcAppUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
 public record ControllingMemberCrcSubmitCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcUpsertRequest)
@@ -80,6 +92,7 @@ public record ControllingMemberCrcAppRenewCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos,
     bool IsAuthenticated = false)
     : IRequest<ControllingMemberCrcAppCommandResponse>;
+
 public record ControllingMemberCrcAppCommandResponse
 {
     public Guid? ControllingMemberAppId { get; set; }
