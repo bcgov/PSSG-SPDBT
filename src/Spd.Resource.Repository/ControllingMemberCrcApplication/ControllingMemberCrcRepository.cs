@@ -192,11 +192,9 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         spd_application? app = appQuery.FirstOrDefault();
         if (app == null) 
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid applicationId");
-        //TODO: check the mappings
         _mapper.Map<ControllingMemberCrcApplication, spd_application>(cmd.ControllingMemberCrcApplication, app);
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
-        //TODO: check mappings
         return _mapper.Map<ControllingMemberCrcApplicationCmdResp>(app);
     }
     //public async Task<ContactResp> ManageAsync(ContactCmd cmd, CancellationToken ct)

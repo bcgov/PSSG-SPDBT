@@ -70,7 +70,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     [HttpPost]
     [RequestSizeLimit(26214400)] //25M
     [Authorize(Policy = "OnlyBcsc")]
-    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid CrcAppId, CancellationToken ct)
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadControllingMemberAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid CrcAppId, CancellationToken ct)
     {
         VerifyFiles(fileUploadRequest.Documents);
         var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
@@ -94,6 +94,26 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
         return await _mediator.Send(new ControllingMemberCrcSubmitCommand(controllingMemberCrcSubmitRequest));
+    }
+    /// <summary>
+    /// Upload Controlling Member application files for authenticated users.
+    /// </summary>
+    /// <param name="fileUploadRequest"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/authenticated/files")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpPost]
+    [RequestSizeLimit(26214400)] //25M
+    public async Task<Guid> UploadControllingMemberAppFilesAuthenticated([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+    {
+        VerifyFiles(fileUploadRequest.Documents);
+
+        CreateDocumentInCacheCommand command = new(fileUploadRequest);
+        var newFileInfos = await _mediator.Send(command, ct);
+        Guid fileKeyCode = Guid.NewGuid();
+        await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
+        return fileKeyCode;
     }
 
     /// <summary>
