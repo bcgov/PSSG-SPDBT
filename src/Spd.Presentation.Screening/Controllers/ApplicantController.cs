@@ -71,8 +71,8 @@ namespace Spd.Presentation.Screening.Controllers
             if (appCreateRequest.DateOfBirth == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Date Of Birth cannot be empty.");
             DateOnly requestBirthDate = (DateOnly)appCreateRequest.DateOfBirth;
-            if (!string.Equals(applicantInfo.FirstName, appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
-                !string.Equals(applicantInfo.LastName, appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
+            if (!string.Equals(StringHelper.ToTitleCase(applicantInfo.FirstName), appCreateRequest.GivenName, StringComparison.InvariantCultureIgnoreCase) ||
+                !string.Equals(StringHelper.ToTitleCase(applicantInfo.LastName), appCreateRequest.Surname, StringComparison.InvariantCultureIgnoreCase) ||
                 applicantInfo.BirthDate != requestBirthDate)
                 throw new ApiException(HttpStatusCode.BadRequest, "The submitted user identity data is different than BCSC identity data.");
 
