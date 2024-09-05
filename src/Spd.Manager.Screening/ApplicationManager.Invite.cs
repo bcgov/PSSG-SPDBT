@@ -88,7 +88,5 @@ namespace Spd.Manager.Screening
                  ct);
             return _mapper.Map<AppOrgResponse>(result);
         }
-
-
     }
 }

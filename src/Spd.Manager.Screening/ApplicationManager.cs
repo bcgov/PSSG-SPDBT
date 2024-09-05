@@ -167,21 +167,6 @@ namespace Spd.Manager.Screening
                     },
                     ct);
             }
-
-            //if psso, if payeeType is org, go directly to submitted
-            if (request.ParentOrgId == SpdConstants.BcGovOrgId
-                && request.ApplicationCreateRequest.PayeeType != Shared.PayerPreferenceTypeCode.Applicant
-                && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
-            {
-                await _applicationRepository.UpdateAsync(
-                    new UpdateCmd()
-                    {
-                        ApplicationId = applicationId.Value,
-                        OrgId = request.ApplicationCreateRequest.OrgId,
-                        Status = ApplicationStatusEnum.Submitted
-                    },
-                    ct);
-            }
             return result;
         }
 
