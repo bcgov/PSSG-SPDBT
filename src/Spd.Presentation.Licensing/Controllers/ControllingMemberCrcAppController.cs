@@ -140,6 +140,11 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         {
             throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
         }
+        if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+        {
+            ControllingMemberCrcAppRenewCommand command = new(jsonRequest, newDocInfos, true);
+            response = await _mediator.Send(command, ct);
+        }
 
         if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
         {
@@ -214,11 +219,20 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
             ControllingMemberCrcAppNewCommand command = new(jsonRequest, newDocInfos);
             response = await _mediator.Send(command, ct);
         }
+        if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
+        {
+            ControllingMemberCrcAppRenewCommand command = new(jsonRequest, newDocInfos);
+            response = await _mediator.Send(command, ct);
+        }
         if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
         {
             ControllingMemberCrcAppUpdateCommand command = new(jsonRequest, newDocInfos);
             response = await _mediator.Send(command, ct);
         }
+
+        SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+        SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+
         return response;
     }
     #endregion anonymous

@@ -21,6 +21,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
+using Spd.Resource.Repository;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -29,6 +30,7 @@ internal class ControllingMemberCrcAppManager :
         IRequestHandler<ControllingMemberCrcUpsertCommand, ControllingMemberCrcAppCommandResponse>,
         IRequestHandler<ControllingMemberCrcSubmitCommand, ControllingMemberCrcAppCommandResponse>,
         IRequestHandler<ControllingMemberCrcAppUpdateCommand, ControllingMemberCrcAppCommandResponse>,
+        IRequestHandler<ControllingMemberCrcAppRenewCommand, ControllingMemberCrcAppCommandResponse>,
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
@@ -105,6 +107,55 @@ internal class ControllingMemberCrcAppManager :
         decimal cost = await CommitApplicationAsync(cmd.ControllingMemberCrcAppUpsertRequest, cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId.Value, ct, false);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId, Cost = cost };
     }
+    /// <summary>
+    /// create spd_application with the same content as renewed app with type=renew, 
+    /// copy all the old files(except the file types of new uploaded files) to the new application.
+    /// </summary>
+    /// <param name="cmd"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppRenewCommand cmd, CancellationToken cancellationToken)
+    {
+        ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAnonymousRequest;
+        if (cmd.ControllingMemberCrcAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
+            throw new ArgumentException("should be a renewal request");
+
+       
+        var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAnonymousRequest.LatestApplicationId, cmd.ControllingMemberCrcAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        await ValidateFilesForRenewUpdateAppAsync(cmd.ControllingMemberCrcAnonymousRequest,
+            cmd.LicAppFileInfos.ToList(),
+            existingFiles.ToList(),
+            cmd.IsAuthenticated,
+            cancellationToken);
+
+        CreateControllingMemberCrcAppCmd? createApp = _mapper.Map<CreateControllingMemberCrcAppCmd>(request);
+        createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
+        var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, cancellationToken);
+        await UploadNewDocsAsync(request.DocumentExpiredInfos,
+                cmd.LicAppFileInfos,
+                response?.ControllingMemberCrcAppId,
+                response?.ContactId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                cancellationToken);
+
+        //copying all old files to new application in PreviousFileIds 
+        if (cmd.ControllingMemberCrcAnonymousRequest.PreviousDocumentIds != null && cmd.ControllingMemberCrcAnonymousRequest.PreviousDocumentIds.Any())
+        {
+            foreach (var docUrlId in cmd.ControllingMemberCrcAnonymousRequest.PreviousDocumentIds)
+            {
+                await _documentRepository.ManageAsync(
+                    new CopyDocumentCmd(docUrlId, response.ControllingMemberCrcAppId, response.ContactId),
+                    cancellationToken);
+            }
+        }
+        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberCrcAppId };
+    }
+
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand cmd, CancellationToken cancellationToken)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAnonymousRequest;

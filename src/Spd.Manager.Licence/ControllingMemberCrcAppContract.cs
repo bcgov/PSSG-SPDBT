@@ -75,6 +75,11 @@ public record ControllingMemberCrcAppUpdateCommand(
     IEnumerable<LicAppFileInfo> LicAppFileInfos,
     bool IsAuthenticated = false)
     : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppRenewCommand(
+    ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAnonymousRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos,
+    bool IsAuthenticated = false)
+    : IRequest<ControllingMemberCrcAppCommandResponse>;
 public record ControllingMemberCrcAppCommandResponse
 {
     public Guid? ControllingMemberAppId { get; set; }
