@@ -252,9 +252,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 		const applicationData: ApplicantApplicationResponse = (this.location.getState() as any)?.applicationData;
 		if (applicationData) {
 			this.loadList(applicationData);
-			this.showDownloadReceipt =
-				applicationData.serviceType === ServiceTypeCode.CrrpEmployee &&
-				applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
+			this.showDownloadReceipt = applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
 		} else {
 			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);
 		}
