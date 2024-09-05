@@ -92,6 +92,12 @@ internal class Mappings : Profile
             .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode));
 
+        CreateMap<ControllingMemberCrcAppSubmitRequest, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode));
+
         CreateMap<ApplicantUpdateRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))

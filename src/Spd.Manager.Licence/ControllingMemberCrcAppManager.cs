@@ -109,20 +109,29 @@ internal class ControllingMemberCrcAppManager :
         if (cmd.ControllingMemberCrcAnonymousRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
             throw new ArgumentException("should be an update request");
 
-        //validation: check if original licence meet update condition.
+        //validation: check if original application meet update condition.
         ControllingMemberCrcApplicationListResp originalCrcApp = await _controllingMemberCrcRepository.QueryAsync(
             new ControllingMemberCrcQry() { ControllingMemberCrcAppId = request.OriginalApplicationId },
             cancellationToken);
         if (originalCrcApp == null || !originalCrcApp.Items.Any())
-            throw new ArgumentException("cannot find the licence that needs to be updated.");
+            throw new ArgumentException("cannot find the application that needs to be updated.");
+        
         ControllingMemberCrcApplicationResp originalApp = originalCrcApp.Items.First();
+        
         //TODO: should we add expiryDate for crcApp?
-        //if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > crcApp.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+        //if (DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays) > originalCrcApp.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
         //    throw new ArgumentException($"can't request an update within {Constants.LicenceUpdateValidBeforeExpirationInDays} days of expiry date.");
+
+
+        var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAnonymousRequest.LatestApplicationId, cmd.ControllingMemberCrcAnonymousRequest.PreviousDocumentIds, cancellationToken);
+        await ValidateFilesForRenewUpdateAppAsync(cmd.ControllingMemberCrcAnonymousRequest,
+            cmd.LicAppFileInfos.ToList(),
+            existingFiles,
+            cmd.IsAuthenticated,
+            cancellationToken);
 
         ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, cancellationToken);
         ControllingMemberCrcApplicationCmdResp? createAppResponse = null;
-
 
         //update contact directly
         //TODO: mappings
@@ -131,31 +140,32 @@ internal class ControllingMemberCrcAppManager :
         await _contactRepository.ManageAsync(updateCmd, cancellationToken);
 
         //clean up old files
+        //TODO: check how to recognizie documents(using applicant or applicationId)? compare to permit app (swl  doesn't have this) 
         DocumentListResp docResp = await _documentRepository.QueryAsync(
             new DocumentQry()
             {
-                //TODO: check how to recognizie documents(using applicant or applicationId)?
                 ApplicationId = originalApp.ControllingMemberCrcAppId,
+                
                 //which file types should be passed here? 
                 //FileType = originalApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit ?
                 //    DocumentTypeEnum.BodyArmourRationale :
                 //    DocumentTypeEnum.ArmouredVehicleRationale
             },
             cancellationToken);
-        
+
         //TODO: when want to update files, shuld we consider deactivating old files?
         //If yes, PreviousDocumentsIds
 
-        //IEnumerable<Guid> removeDocIds = docResp.Items
-        //    .Where(i => request.PreviousDocumentIds == null || !request.PreviousDocumentIds.Any(d => d == i.DocumentUrlId))
-        //    .Select(i => i.DocumentUrlId);
-        //foreach (var id in removeDocIds)
-        //{ 
-        //    await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
-        //}
+        IEnumerable<Guid> removeDocIds = docResp.Items
+            .Where(i => request.PreviousDocumentIds == null || !request.PreviousDocumentIds.Any(d => d == i.DocumentUrlId))
+            .Select(i => i.DocumentUrlId);
+        foreach (var id in removeDocIds)
+        {
+            await _documentRepository.ManageAsync(new DeactivateDocumentCmd(id), cancellationToken);
+        }
 
 
-        //update lic
+        //update application
         //check mappings
         await _controllingMemberCrcRepository.ManageAsync(
             new UpdateControllingMemberCrcAppCmd(_mapper.Map<ControllingMemberCrcApplication>(cmd.ControllingMemberCrcAnonymousRequest), (Guid)originalApp.ControllingMemberCrcAppId),
@@ -166,13 +176,13 @@ internal class ControllingMemberCrcAppManager :
             cmd.LicAppFileInfos,
             createAppResponse?.ControllingMemberCrcAppId,
             originalApp.ContactId,
-            null,
-            null,
+            changes.PeaceOfficerStatusChangeTaskId,
+            changes.MentalHealthStatusChangeTaskId,
             null,
             null,
             null,
             cancellationToken);
-        return new ControllingMemberCrcAppCommandResponse() { ControllingMemberAppId = createAppResponse?.ControllingMemberCrcAppId, Cost = 0 };
+        return new ControllingMemberCrcAppCommandResponse() { ControllingMemberAppId = createAppResponse?.ControllingMemberCrcAppId};
     }
     #endregion
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
@@ -208,6 +218,56 @@ internal class ControllingMemberCrcAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
     }
+    private async Task ValidateFilesForRenewUpdateAppAsync(ControllingMemberCrcAppSubmitRequest request,
+        IList<LicAppFileInfo> newFileInfos,
+        IList<LicAppFileInfo> existingFileInfos,
+        bool isAuthenticated,
+        CancellationToken ct)
+    {
+        if (request.HasLegalNameChanged == true && !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.LegalNameChange))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing LegalNameChange file");
+        }
+
+        if (request.IsPoliceOrPeaceOfficer == true && isAuthenticated == false)
+        {
+            if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict) &&
+                !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing PoliceBackgroundLetterOfNoConflict file");
+            }
+        }
+
+        if (request.HasNewMentalHealthCondition == true &&
+            isAuthenticated == false &&
+            !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
+        }
+
+        if (request.IsCanadianCitizen == false)
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
+            }
+        }
+        else
+        {
+            if (!newFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
+                !existingFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian.");
+            }
+        }
+
+        if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) &&
+            !existingFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
+        }
+    }
     private async Task<ChangeSpec> MakeChanges(ControllingMemberCrcApplicationResp originalApp,
         ControllingMemberCrcAppSubmitRequest newRequest,
         IEnumerable<LicAppFileInfo> newFileInfos,
@@ -228,11 +288,12 @@ internal class ControllingMemberCrcAppManager :
             changes.PeaceOfficerStatusChanged = true;
             changes.PeaceOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents : {string.Join(";", fileNames)} ",
+                Description = $"Applicant have submitted an update that they have a Peace Officer Status update along with the supporting documents : {string.Join(";", fileNames)} ",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
                 Subject = $"Peace Officer Update on  {originalApp.ControllingMemberCrcAppId}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingContactId = originalApp.ContactId,
+                //TODO: 
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
             }, ct)).TaskId;
         }
@@ -244,7 +305,7 @@ internal class ControllingMemberCrcAppManager :
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
             changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the attached mental health condition form submitted by the Licensee : {string.Join(";", fileNames)}  ",
+                Description = $"Please see the attached mental health condition form submitted by the applicant : {string.Join(";", fileNames)}  ",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Mental Health Condition Update on {originalApp.ControllingMemberCrcAppId}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
@@ -258,7 +319,7 @@ internal class ControllingMemberCrcAppManager :
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the criminal charges submitted by the licensee with details as following : {newRequest.CriminalChargeDescription}",
+                Description = $"Please see the criminal charges submitted by the applicant with details as following : {newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
                 Subject = $"Criminal Charges or New Conviction Update on {originalApp.ControllingMemberCrcAppId}",
                 TaskPriorityEnum = TaskPriorityEnum.High,

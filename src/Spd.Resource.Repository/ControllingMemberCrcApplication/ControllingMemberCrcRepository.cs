@@ -190,7 +190,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         IQueryable<spd_application> appQuery = _context.spd_applications
                 .Where(i => i.spd_applicationid == cmd.ApplicationId);
         spd_application? app = appQuery.FirstOrDefault();
-        if (app == null)
+        if (app == null) 
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid applicationId");
         //TODO: check the mappings
         _mapper.Map<ControllingMemberCrcApplication, spd_application>(cmd.ControllingMemberCrcApplication, app);
@@ -199,4 +199,14 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         //TODO: check mappings
         return _mapper.Map<ControllingMemberCrcApplicationCmdResp>(app);
     }
+    //public async Task<ContactResp> ManageAsync(ContactCmd cmd, CancellationToken ct)
+    //{
+    //    return cmd switch
+    //    {
+    //        UpdateContactCmd c => await UpdateContactAsync(c, ct),
+    //        CreateContactCmd c => await CreateContactAsync(c, ct),
+    //        TermAgreementCmd c => await TermAgreeAsync(c, ct),
+    //        _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+    //    };
+    //}
 }
