@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
+using Spd.Manager.Shared;
 
 namespace Spd.Presentation.Licensing.Controllers;
 
@@ -95,6 +96,40 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         return await _mediator.Send(new ControllingMemberCrcSubmitCommand(controllingMemberCrcSubmitRequest));
     }
 
+    /// <summary>
+    /// Submit Controlling member Crc Application Json part for authenticated users, supports only:  update  
+    /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+    /// </summary>
+    /// <param name="jsonRequest">ControllingMemberCrcAppAnonymousSubmitRequestJson data</param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/authenticated/submit")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpPost]
+    public async Task<ControllingMemberCrcAppCommandResponse?> SubmitControllingMemberCrcApplicationJsonAuthenticated(ControllingMemberCrcAppSubmitRequest jsonRequest, CancellationToken ct)
+    {
+        ControllingMemberCrcAppCommandResponse? response = null;
+
+        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
+        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(jsonRequest, ct);
+        if (!validateResult.IsValid)
+            throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+        
+        //TODO:check this
+        if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "New application type is not supported");
+        }
+
+        if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+        {
+            ControllingMemberCrcAppUpdateCommand command = new(jsonRequest, newDocInfos, true);
+            response = await _mediator.Send(command, ct);
+        }
+
+        return response;
+    }
+
     #endregion authenticated
     #region anonymous
     /// <summary>
@@ -140,19 +175,30 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// Submit Controlling Member Crc Application
     /// anonymous
     /// </summary>
-    /// <param name="ControllingMemberCrcSubmitRequest"></param>
+    /// <param name="jsonRequest"></param>
     /// <returns></returns>
     [Route("api/controlling-member-crc-applications/anonymous/submit")]
     [HttpPost]
-    public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppSubmitRequest ControllingMemberCrcSubmitRequest, CancellationToken ct)
+    public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplicationJsonAnonymous([FromBody][Required] ControllingMemberCrcAppSubmitRequest jsonRequest, CancellationToken ct)
     {
-        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(ControllingMemberCrcSubmitRequest.DocumentKeyCodes, ct);
-        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(ControllingMemberCrcSubmitRequest, ct);
+        await VerifyKeyCode();
+        
+        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
+        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(jsonRequest, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
         ControllingMemberCrcAppCommandResponse? response = null;
-        response = await _mediator.Send(new ControllingMemberCrcAppNewCommand(ControllingMemberCrcSubmitRequest, newDocInfos), ct);
+        if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
+        {
+            ControllingMemberCrcAppNewCommand command = new(jsonRequest, newDocInfos);
+            response = await _mediator.Send(command, ct);
+        }
+        if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
+        {
+            ControllingMemberCrcAppUpdateCommand command = new(jsonRequest, newDocInfos);
+            response = await _mediator.Send(command, ct);
+        }
         return response;
     }
     #endregion anonymous

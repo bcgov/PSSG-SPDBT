@@ -26,6 +26,9 @@ namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
     LicenceAppManagerBase,
     IRequestHandler<ControllingMemberCrcAppNewCommand, ControllingMemberCrcAppCommandResponse>,
+        IRequestHandler<ControllingMemberCrcUpsertCommand, ControllingMemberCrcAppCommandResponse>,
+        IRequestHandler<ControllingMemberCrcSubmitCommand, ControllingMemberCrcAppCommandResponse>,
+        IRequestHandler<ControllingMemberCrcAppUpdateCommand, ControllingMemberCrcAppCommandResponse>,
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
@@ -134,7 +137,6 @@ internal class ControllingMemberCrcAppManager :
         ControllingMemberCrcApplicationCmdResp? createAppResponse = null;
 
         //update contact directly
-        //TODO: mappings
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
         updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
         await _contactRepository.ManageAsync(updateCmd, cancellationToken);
@@ -166,7 +168,6 @@ internal class ControllingMemberCrcAppManager :
 
 
         //update application
-        //check mappings
         await _controllingMemberCrcRepository.ManageAsync(
             new UpdateControllingMemberCrcAppCmd(_mapper.Map<ControllingMemberCrcApplication>(cmd.ControllingMemberCrcAnonymousRequest), (Guid)originalApp.ControllingMemberCrcAppId),
             cancellationToken);
