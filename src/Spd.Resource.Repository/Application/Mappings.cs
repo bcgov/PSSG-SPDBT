@@ -130,10 +130,10 @@ namespace Spd.Resource.Repository.Application
             return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
         }
 
-        private static ServiceTypeEnum? GetServiceType(Guid? serviceTypeGuid)
+        private static ServiceTypeCode? GetServiceType(Guid? serviceTypeGuid)
         {
             if (serviceTypeGuid == null) return null;
-            return Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(serviceTypeGuid));
+            return Enum.Parse<ServiceTypeCode>(DynamicsContextLookupHelpers.GetServiceTypeName(serviceTypeGuid));
         }
 
         private static CaseSubStatusEnum? GetSubStatusEnum(string str)

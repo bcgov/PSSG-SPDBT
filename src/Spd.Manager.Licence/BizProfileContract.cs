@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Utilities.LogonUser;
 
@@ -8,9 +7,13 @@ namespace Spd.Manager.Licence;
 public interface IBizProfileManager
 {
     public Task<IEnumerable<BizListResponse>> Handle(GetBizsQuery query, CancellationToken ct);
+
     public Task<BizProfileResponse> Handle(GetBizProfileQuery query, CancellationToken ct);
+
     public Task<BizUserLoginResponse> Handle(BizLoginCommand cmd, CancellationToken ct); //used for biz lic portal
+
     public Task<Unit> Handle(BizTermAgreeCommand cmd, CancellationToken ct);
+
     public Task<Unit> Handle(BizProfileUpdateCommand cmd, CancellationToken ct);
 }
 
@@ -32,13 +35,12 @@ public record BizInfo
     public Address? BizBCAddress { get; set; }
     public Address? BizMailingAddress { get; set; }
     public IEnumerable<BranchInfo>? Branches { get; set; }
-    public IEnumerable<ServiceTypeCode>? ServiceTypeCodes { get; set; }
+    public IEnumerable<Shared.ServiceTypeCode>? ServiceTypeCodes { get; set; }
 
     //sole proprietor properties
     public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } //for sole proprietor (registered or non-registered)
     public string? SoleProprietorSwlPhoneNumber { get; set; } //for sole proprietor (registered or non-registered)
     public string? SoleProprietorSwlEmailAddress { get; set; } //for sole proprietor (registered or non-registered)
-
 }
 
 public record BranchInfo
@@ -56,7 +58,7 @@ public record BizListResponse
     public string? BizLegalName { get; set; }
     public string? BizName { get; set; }
     public Guid? BizGuid { get; set; }
-    public IEnumerable<ServiceTypeCode> ServiceTypeCodes { get; set; }
+    public IEnumerable<Shared.ServiceTypeCode> ServiceTypeCodes { get; set; }
 }
 
 public record BizProfileResponse : BizInfo

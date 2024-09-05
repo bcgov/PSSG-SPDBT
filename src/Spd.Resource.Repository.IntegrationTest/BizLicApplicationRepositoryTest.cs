@@ -424,13 +424,13 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
             .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
             .With(a => a.ManagerPhoneNumber, "1234567")
-            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocument> { UploadedDocument.StudyPermit, UploadedDocument.Fingerprint })
             .With(a => a.HasExpiredLicence, false)
-            .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
+            .With(a => a.BizTypeCode, BizType.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
-            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryType>() { WorkerCategoryType.PrivateInvestigator })
             .With(a => a.AgreeToCompleteAndAccurate, false)
             .Without(a => a.LicenceAppId)
             .Create();
@@ -577,13 +577,13 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
             .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
             .With(a => a.ManagerPhoneNumber, "1234567")
-            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocument> { UploadedDocument.StudyPermit, UploadedDocument.Fingerprint })
             .With(a => a.HasExpiredLicence, false)
-            .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
+            .With(a => a.BizTypeCode, BizType.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
-            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryType>() { WorkerCategoryType.PrivateInvestigator })
             .With(a => a.AgreeToCompleteAndAccurate, true)
             .Create();
 
@@ -718,13 +718,13 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
             .With(a => a.ManagerMiddleName1, IntegrationTestSetup.DataPrefix + "ManagerMiddleName1")
             .With(a => a.ManagerMiddleName2, IntegrationTestSetup.DataPrefix + "ManagerMiddleName2")
             .With(a => a.ManagerPhoneNumber, "1234567")
-            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocument> { UploadedDocument.StudyPermit, UploadedDocument.Fingerprint })
             .With(a => a.HasExpiredLicence, false)
-            .With(a => a.BizTypeCode, BizTypeEnum.Corporation)
+            .With(a => a.BizTypeCode, BizType.Corporation)
             .With(a => a.NoBranding, false)
             .With(a => a.UseDogs, false)
             .With(a => a.PrivateInvestigatorSwlInfo, privateInvestigator)
-            .With(a => a.CategoryCodes, new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.PrivateInvestigator })
+            .With(a => a.CategoryCodes, new List<WorkerCategoryType>() { WorkerCategoryType.PrivateInvestigator })
             .With(a => a.AgreeToCompleteAndAccurate, true)
             .Create();
 
@@ -1144,7 +1144,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
     public async Task CreateBizLicApplicationAsync_WithWrongApplicationType_Throw_Exception()
     {
         // Arrange
-        CreateBizLicApplicationCmd cmd = new() { ApplicationTypeCode = ApplicationTypeEnum.New };
+        CreateBizLicApplicationCmd cmd = new() { ApplicationTypeCode = ApplicationType.New };
 
         // Action and Assert
         await Assert.ThrowsAsync<ArgumentException>(async () => await _bizLicAppRepository.CreateBizLicApplicationAsync(cmd, CancellationToken.None));
@@ -1156,7 +1156,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         // Arrange
         CreateBizLicApplicationCmd cmd = new()
         {
-            ApplicationTypeCode = ApplicationTypeEnum.Renewal,
+            ApplicationTypeCode = ApplicationType.Renewal,
         };
 
         // Action and Assert
@@ -1169,7 +1169,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         // Arrange
         CreateBizLicApplicationCmd cmd = new()
         {
-            ApplicationTypeCode = ApplicationTypeEnum.Renewal,
+            ApplicationTypeCode = ApplicationType.Renewal,
             OriginalApplicationId = Guid.NewGuid()
         };
 
@@ -1190,7 +1190,7 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
 
         CreateBizLicApplicationCmd cmd = new()
         {
-            ApplicationTypeCode = ApplicationTypeEnum.Renewal,
+            ApplicationTypeCode = ApplicationType.Renewal,
             OriginalApplicationId = latestApplicationId
         };
 

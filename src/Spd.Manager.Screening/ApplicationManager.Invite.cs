@@ -78,7 +78,7 @@ namespace Spd.Manager.Screening
         public async Task<Unit> Handle(ApplicationInviteDeleteCommand request, CancellationToken ct)
         {
             var cmd = _mapper.Map<ApplicationInviteUpdateCmd>(request);
-            cmd.ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Cancelled;
+            cmd.ApplicationInviteStatusEnum = ApplicationInviteStatus.Cancelled;
             await _applicationInviteRepository.ManageAsync(cmd, ct);
             return default;
         }

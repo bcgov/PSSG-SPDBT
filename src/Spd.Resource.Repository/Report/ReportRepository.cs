@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.Report
@@ -17,9 +16,10 @@ namespace Spd.Resource.Repository.Report
 
         public async Task<OrgReportsResult> QueryReportsAsync(OrgReportListQry qry, CancellationToken ct)
         {
-            IQueryable<spd_pdfreport> reports = _dynaContext.spd_pdfreports
-            .Where(r => r._spd_organizationid_value == qry.OrgId)
-            .OrderByDescending(r => r.spd_reportdate);
+            var reports = await _dynaContext.spd_pdfreports
+                .Where(r => r._spd_organizationid_value == qry.OrgId)
+                .OrderByDescending(r => r.spd_reportdate)
+                .GetAllPagesAsync(ct);
 
             return new OrgReportsResult(_mapper.Map<IEnumerable<OrgReportResult>>(reports));
         }

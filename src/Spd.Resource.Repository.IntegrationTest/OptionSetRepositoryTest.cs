@@ -16,10 +16,10 @@ public class OptionSetRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Theory]
-    [InlineData(GenderEnum.M, "Male")]
-    [InlineData(GenderEnum.F, "Female")]
-    [InlineData(GenderEnum.U, "Unspecified")]
-    public async Task GetLabelAsync_GenderEnum_Run_Correctly(GenderEnum t, string expected)
+    [InlineData(Gender.M, "Male")]
+    [InlineData(Gender.F, "Female")]
+    [InlineData(Gender.U, "Unspecified")]
+    public async Task GetLabelAsync_GenderEnum_Run_Correctly(Gender t, string expected)
     {
         //Action
         var response = await _optionsetRepo.GetLabelAsync(t, CancellationToken.None);

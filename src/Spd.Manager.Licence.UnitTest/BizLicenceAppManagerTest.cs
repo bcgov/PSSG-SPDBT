@@ -106,7 +106,7 @@ public class BizLicenceAppManagerTest
         Guid applicationId = Guid.NewGuid();
         mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
             .ReturnsAsync(new List<LicenceAppListResp> {
-                    new() {ApplicationTypeCode = ApplicationTypeEnum.Update, LicenceAppId = applicationId}
+                    new() {ApplicationTypeCode = ApplicationType.Update, LicenceAppId = applicationId}
             });
         mockBizLicAppRepo.Setup(a => a.GetBizLicApplicationAsync(It.Is<Guid>(p => p == applicationId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new BizLicApplicationResp() { LicenceAppId = applicationId, ApplicantIsBizManager = true });
@@ -551,7 +551,7 @@ public class BizLicenceAppManagerTest
                 LicenceAppId = licAppId,
                 BizId = bizId,
                 UseDogs = true,
-                CategoryCodes = new List<WorkerCategoryTypeEnum>() { WorkerCategoryTypeEnum.ArmouredCarGuard }
+                CategoryCodes = new List<WorkerCategoryType>() { WorkerCategoryType.ArmouredCarGuard }
             });
 
         BizLicAppSubmitRequest request = new()
@@ -784,7 +784,7 @@ public class BizLicenceAppManagerTest
         {
             LicenceAppId = appId,
             ApplicationPortalStatus = Resource.Repository.Application.ApplicationPortalStatusEnum.Draft,
-            ApplicationTypeCode = Resource.Repository.ApplicationTypeEnum.New
+            ApplicationTypeCode = Resource.Repository.ApplicationType.New
         };
         FileQueryResult fileResult = new("key", "folder", new Utilities.FileStorage.File(), null);
 
@@ -821,7 +821,7 @@ public class BizLicenceAppManagerTest
         {
             LicenceAppId = appId,
             ApplicationPortalStatus = Resource.Repository.Application.ApplicationPortalStatusEnum.AwaitingThirdParty,
-            ApplicationTypeCode = Resource.Repository.ApplicationTypeEnum.New
+            ApplicationTypeCode = Resource.Repository.ApplicationType.New
         };
         FileQueryResult fileResult = new("key", "folder", new Utilities.FileStorage.File(), null);
 

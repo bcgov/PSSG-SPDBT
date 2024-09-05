@@ -62,7 +62,7 @@ internal class SecurityWorkerAppManager :
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.LicenceUpsertRequest.ApplicantId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<WorkerLicenceType>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
             cmd.LicenceUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -98,11 +98,11 @@ internal class SecurityWorkerAppManager :
         LicenceAppQuery q = new(
             query.ApplicantId,
             null,
-            new List<WorkerLicenceTypeEnum>
+            new List<WorkerLicenceType>
             {
-                WorkerLicenceTypeEnum.ArmouredVehiclePermit,
-                WorkerLicenceTypeEnum.BodyArmourPermit,
-                WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                WorkerLicenceType.ArmouredVehiclePermit,
+                WorkerLicenceType.BodyArmourPermit,
+                WorkerLicenceType.SecurityWorkerLicence,
             },
             new List<ApplicationPortalStatusEnum>
             {
@@ -136,7 +136,7 @@ internal class SecurityWorkerAppManager :
         //get the latest app id
         return await GetLatestApplicationId(query.ApplicantId,
                 null,
-                Enum.Parse<WorkerLicenceTypeEnum>(WorkerLicenceTypeEnum.SecurityWorkerLicence.ToString()),
+                Enum.Parse<WorkerLicenceType>(WorkerLicenceType.SecurityWorkerLicence.ToString()),
                 cancellationToken);
     }
 
@@ -224,7 +224,7 @@ internal class SecurityWorkerAppManager :
         if (originalLicences == null || !originalLicences.Items.Any())
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         LicenceResp originalLic = originalLicences.Items.First();
-        if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
+        if (originalLic.LicenceTermCode == LicenceTerm.NinetyDays)
         {
             if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays} days of the expiry date.");
@@ -268,8 +268,8 @@ internal class SecurityWorkerAppManager :
         }
 
         //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
-        bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
-            originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
+        bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTerm.NinetyDays &&
+            originalLic.WorkerLicenceTypeCode == WorkerLicenceType.SecurityWorkerLicence;
 
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence);
 
@@ -409,7 +409,7 @@ internal class SecurityWorkerAppManager :
                 Description = $"Licensee have submitted an update that they have a Peace Officer Status update along with the supporting documents : {string.Join(";", fileNames)} ",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
                 Subject = $"Peace Officer Update on  {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                TaskPriorityEnum = TaskPriority.Normal,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
                 LicenceId = originalLic.LicenceId
@@ -426,7 +426,7 @@ internal class SecurityWorkerAppManager :
                 Description = $"Please see the attached mental health condition form submitted by the Licensee : {string.Join(";", fileNames)}  ",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Mental Health Condition Update on {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                TaskPriorityEnum = TaskPriority.Normal,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
@@ -442,7 +442,7 @@ internal class SecurityWorkerAppManager :
                 Description = $"Please see the criminal charges submitted by the licensee with details as following : {newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.High,
+                TaskPriorityEnum = TaskPriority.High,
                 RegardingContactId = originalApp.ContactId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId

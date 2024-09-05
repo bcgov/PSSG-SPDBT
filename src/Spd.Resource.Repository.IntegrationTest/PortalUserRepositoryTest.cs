@@ -121,7 +121,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         CreatePortalUserCmd cmd = new()
         {
-            PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing,
+            PortalUserServiceCategory = PortalUserServiceCategory.Licensing,
             EmailAddress = "test@test.com",
             IdentityId = identityId,
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
@@ -225,7 +225,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         CreatePortalUserCmd createCmd = new()
         {
-            PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing,
+            PortalUserServiceCategory = PortalUserServiceCategory.Licensing,
             EmailAddress = "test@test.com",
             IdentityId = identityId,
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
@@ -280,7 +280,7 @@ public class PortalUserRepositoryTest : IClassFixture<IntegrationTestSetup>
 
         CreatePortalUserCmd createCmd = new()
         {
-            PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing,
+            PortalUserServiceCategory = PortalUserServiceCategory.Licensing,
             EmailAddress = "test@test.com",
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
             OrgId = accountId

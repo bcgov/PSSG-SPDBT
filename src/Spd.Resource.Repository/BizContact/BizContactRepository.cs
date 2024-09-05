@@ -105,7 +105,7 @@ namespace Spd.Resource.Repository.BizContact
                     if (item.LicenceId != null)
                     {
                         spd_licence? swlLic = _context.spd_licences.Where(l => l.spd_licenceid == item.LicenceId && l.statecode == DynamicsConstants.StateCode_Active).FirstOrDefault();
-                        Guid swlServiceTypeId = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeEnum.SecurityWorkerLicence.ToString()];
+                        Guid swlServiceTypeId = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeCode.SecurityWorkerLicence.ToString()];
                         //only swl can be linked to.
                         if (swlLic == null || swlLic._spd_licencetype_value != swlServiceTypeId)
                             throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid licence {item.LicenceId}");

@@ -15,10 +15,10 @@ internal class Mappings : Profile
          .ForMember(d => d.WorkerCategoryTypeCode, opt => opt.MapFrom(s => GeWorkerCategoryTypeCode(s.spd_licencecategoryid)));
     }
 
-    internal static WorkerCategoryTypeEnum GeWorkerCategoryTypeCode(Guid? workerCatgoryId)
+    internal static WorkerCategoryType GeWorkerCategoryTypeCode(Guid? workerCatgoryId)
     {
         string key = DynamicsContextLookupHelpers.LicenceCategoryDictionary.FirstOrDefault(s => s.Value == workerCatgoryId).Key;
-        return Enum.Parse<WorkerCategoryTypeEnum>(key);
+        return Enum.Parse<WorkerCategoryType>(key);
     }
 }
 

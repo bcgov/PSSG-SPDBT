@@ -1,4 +1,5 @@
 namespace Spd.Resource.Repository.Tasks;
+
 public partial interface ITaskRepository
 {
     public Task<TaskResp> ManageAsync(TaskCmd cmd, CancellationToken ct);
@@ -7,9 +8,9 @@ public partial interface ITaskRepository
 public abstract record TaskCmd;
 public record CreateTaskCmd : TaskCmd
 {
-    public string Subject { get; set; }
-    public string Description { get; set; }
-    public TaskPriorityEnum TaskPriorityEnum { get; set; }
+    public string Subject { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    public TaskPriority TaskPriorityEnum { get; set; }
     public DateTimeOffset DueDateTime { get; set; }
     public Guid? RegardingContactId { get; set; }
     public Guid? RegardingCaseId { get; set; }
@@ -27,12 +28,9 @@ public record TaskListResp
     public IEnumerable<TaskResp> TaskResps { get; set; } = Array.Empty<TaskResp>();
 }
 
-public enum TaskPriorityEnum
+public enum TaskPriority
 {
     Low,
     Normal,
     High
 }
-
-
-

@@ -9,12 +9,12 @@
     //command
     public abstract record BizCmd : Biz;
     public record UpdateBizCmd() : BizCmd;
-    public record UpdateBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
+    public record UpdateBizServiceTypeCmd(Guid BizId, ServiceTypeCode ServiceTypeEnum) : BizCmd;
     public record CreateBizCmd() : BizCmd;
-    public record AddBizServiceTypeCmd(Guid BizId, ServiceTypeEnum ServiceTypeEnum) : BizCmd;
+    public record AddBizServiceTypeCmd(Guid BizId, ServiceTypeCode ServiceTypeEnum) : BizCmd;
 
     //query
-    public record BizsQry(Guid? BizGuid = null, bool IncludeInactive = false, string? BizCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null);
+    public record BizsQry(Guid? BizGuid = null, bool IncludeInactive = false, string? BizCode = null, IEnumerable<ServiceTypeCode>? ServiceTypes = null);
 
     //shared content
     public record Biz
@@ -25,11 +25,11 @@
         public Addr? MailingAddress { get; set; }
         public Addr? BusinessAddress { get; set; }
         public Addr? BCBusinessAddress { get; set; }
-        public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
+        public IEnumerable<ServiceTypeCode> ServiceTypes { get; set; } = Array.Empty<ServiceTypeCode>();
         public string? BizName { get; set; }
         public string? BizLegalName { get; set; }
         public Guid? BizGuid { get; set; }
-        public BizTypeEnum? BizType { get; set; }
+        public BizType? BizType { get; set; }
         public IEnumerable<BranchAddr> BranchAddresses { get; set; } = Array.Empty<BranchAddr>();
 
         public bool UpdateSoleProprietor { get; set; } = true;

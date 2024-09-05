@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.Licence
         public string? AccessCode { get; set; }
         public Guid? ContactId { get; set; }
         public Guid? AccountId { get; set; }
-        public WorkerLicenceTypeEnum? Type { get; set; }
+        public WorkerLicenceType? Type { get; set; }
         public bool IncludeInactive { get; set; }
         public bool? IsExpired { get; set; }
     };
@@ -40,8 +40,8 @@ namespace Spd.Resource.Repository.Licence
     {
         public string? LicenceNumber { get; set; }
         public DateOnly ExpiryDate { get; set; }
-        public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
-        public LicenceTermEnum? LicenceTermCode { get; set; }
+        public WorkerLicenceType? WorkerLicenceTypeCode { get; set; }
+        public LicenceTerm? LicenceTermCode { get; set; }
         public Guid? LicenceHolderId { get; set; }
         public string? LicenceHolderFirstName { get; set; }
         public string? LicenceHolderLastName { get; set; }
@@ -50,7 +50,7 @@ namespace Spd.Resource.Repository.Licence
         public string? NameOnCard { get; set; }
 
         //issued categories 
-        public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
+        public IEnumerable<WorkerCategoryType> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryType>();
     }
 
     public record PermitLicence : Licence
@@ -63,7 +63,7 @@ namespace Spd.Resource.Repository.Licence
         public string? SupervisorPhoneNumber { get; set; }
         public Addr? EmployerPrimaryAddress { get; set; }
         public string? Rationale { get; set; }
-        public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+        public IEnumerable<PermitPurpose>? PermitPurposeEnums { get; set; }
         //permit
     }
     public enum LicenceStatusEnum

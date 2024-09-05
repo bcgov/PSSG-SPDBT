@@ -75,9 +75,9 @@ namespace Spd.Resource.Repository.Org
             return Enum.Parse<WorksWithChildrenOptionSet>(code.ToString());
         }
 
-        private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
+        private static IEnumerable<ServiceTypeCode>? GetServiceTypeEnums(IEnumerable<spd_servicetype> servicetypes)
         {
-            return servicetypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid))).ToArray();
+            return servicetypes.Select(s => Enum.Parse<ServiceTypeCode>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid))).ToArray();
         }
     }
 }

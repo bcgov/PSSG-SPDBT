@@ -58,8 +58,8 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test",
-            BizType = BizTypeEnum.Corporation,
-            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
+            BizType = BizType.Corporation,
+            ServiceTypes = new List<ServiceTypeCode>() { ServiceTypeCode.MDRA }
         };
 
         await _bizRepository.ManageBizAsync(createBizCmd, CancellationToken.None);

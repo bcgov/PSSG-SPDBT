@@ -1,13 +1,14 @@
 ﻿using Microsoft.Dynamics.CRM;
-using Polly;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository;
+
 internal static class SharedRepositoryFuncs
 {
-    public static void ProcessCategories(DynamicsContext _context, IEnumerable<WorkerCategoryTypeEnum> categories, spd_application app)
+    public static void ProcessCategories(DynamicsContext _context, IEnumerable<WorkerCategoryType> categories, spd_application app)
     {
+        categories = categories.ToList();
         foreach (var c in categories)
         {
             var cat = _context.LookupLicenceCategory(c.ToString());
@@ -27,7 +28,7 @@ internal static class SharedRepositoryFuncs
         }
     }
 
-    public static void LinkServiceType(DynamicsContext _context, WorkerLicenceTypeEnum? licenceType, spd_application app)
+    public static void LinkServiceType(DynamicsContext _context, WorkerLicenceType? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
         spd_servicetype? servicetype = _context.LookupServiceType(licenceType.ToString());
@@ -46,10 +47,11 @@ internal static class SharedRepositoryFuncs
             _context.SetLink(app, nameof(spd_application.spd_CurrentExpiredLicenceId), licence);
         }
     }
+
     public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
     {
         Guid teamGuid = Guid.Parse(teamGuidStr);
-        team? serviceTeam =  _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 }

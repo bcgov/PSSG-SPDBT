@@ -1,8 +1,9 @@
-namespace Spd.Resource.Repository.User
+namespace Spd.Resource.Repository.Users
 {
     public interface IOrgUserRepository
     {
         Task<OrgUserQryResult> QueryOrgUserAsync(OrgUserQry qry, CancellationToken ct);
+
         Task<OrgUserManageResult> ManageOrgUserAsync(OrgUserCmd cmd, CancellationToken ct);
     }
 
@@ -23,7 +24,6 @@ namespace Spd.Resource.Repository.User
     public record OrgUserResult(UserResult UserResult) : OrgUserQryResult;
     public record OrgUsersResult(IEnumerable<UserResult> UserResults) : OrgUserQryResult;
 
-
     //shared content
     public record User
     {
@@ -34,7 +34,7 @@ namespace Spd.Resource.Repository.User
         public string Email { get; set; } = null!;
         public string? JobTitle { get; set; }
         public string? PhoneNumber { get; set; }
-        public bool IsFirstTimeLogin { get; set; } = false;
+        public bool IsFirstTimeLogin { get; set; }
     }
     public record UserResult() : User()
     {
@@ -43,7 +43,4 @@ namespace Spd.Resource.Repository.User
         public Guid? UserGuid { get; set; }
         public bool IsActive { get; set; }
     };
-
-
-
 }

@@ -35,9 +35,9 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         LicenceResp lic = lics.Items.First();
         LicencePreviewJson preview = mapper.Map<LicencePreviewJson>(lic);
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
-                new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), cancellationToken);
+                new ServiceTypeQry(null, Enum.Parse<ServiceTypeCode>(preview.LicenceType)), cancellationToken);
         preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceType.SecurityWorkerLicence)
             preview.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, cancellationToken);
 
         LicenceApplicationResp app = await personLicAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);
@@ -58,10 +58,10 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
 
         return preview;
     }
-    private async Task<IEnumerable<string>> GetCategoryNamesAsync(IEnumerable<WorkerCategoryTypeEnum> categoryTypeEnums, CancellationToken ct)
+    private async Task<IEnumerable<string>> GetCategoryNamesAsync(IEnumerable<WorkerCategoryType> categoryTypeEnums, CancellationToken ct)
     {
         List<string> names = new();
-        foreach (WorkerCategoryTypeEnum categoryTypeEnum in categoryTypeEnums)
+        foreach (WorkerCategoryType categoryTypeEnum in categoryTypeEnums)
         {
             var listResult = await workerLicenceCategoryRepository.QueryAsync(
                 new WorkerLicenceCategoryQry(null, categoryTypeEnum),

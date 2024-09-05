@@ -25,12 +25,12 @@ namespace Spd.Resource.Repository.Contact
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public DateOnly BirthDate { get; set; }
-        public GenderEnum? Gender { get; set; }
+        public Gender? Gender { get; set; }
         public ResidentialAddr? ResidentialAddress { get; set; }
         public MailingAddr? MailingAddress { get; set; }
         public IEnumerable<AliasResp> Aliases { get; set; } = Array.Empty<AliasResp>();
         public bool? IsPoliceOrPeaceOfficer { get; set; }
-        public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
+        public PoliceOfficerRole? PoliceOfficerRoleCode { get; set; }
         public string? OtherOfficerRole { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }

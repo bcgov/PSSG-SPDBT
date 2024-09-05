@@ -3,59 +3,63 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.LicApp;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
+
 public partial interface IPersonLicApplicationRepository
 {
     public Task<LicenceApplicationCmdResp> CreateLicenceApplicationAsync(CreateLicenceApplicationCmd cmd, CancellationToken ct);
+
     public Task<LicenceApplicationCmdResp> SaveLicenceApplicationAsync(SaveLicenceApplicationCmd cmd, CancellationToken ct);
+
     public Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
+
     public Task<LicenceApplicationCmdResp> UpdateSwlSoleProprietorApplicationAsync(Guid swlAppId, Guid bizLicAppId, CancellationToken ct);
 }
 
 public record LicenceApplication
 {
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
-    public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public BizTypeEnum? BizTypeCode { get; set; }
+    public WorkerLicenceType WorkerLicenceTypeCode { get; set; }
+    public ApplicationType ApplicationTypeCode { get; set; }
+    public BizType? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public string? Surname { get; set; }
     public DateOnly? DateOfBirth { get; set; }
-    public GenderEnum? GenderCode { get; set; }
+    public Gender? GenderCode { get; set; }
     public bool? OneLegalName { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
-    public LicenceTermEnum? LicenceTermCode { get; set; }
+    public LicenceTerm? LicenceTermCode { get; set; }
     public bool? HasCriminalHistory { get; set; }
     public bool? HasPreviousName { get; set; }
     public bool? UseDogs { get; set; }
-    public IEnumerable<AliasResp>? Aliases { get; set; }
+    public IEnumerable<AliasResp> Aliases { get; set; } = [];
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
-    public HairColourEnum? HairColourCode { get; set; }
-    public EyeColourEnum? EyeColourCode { get; set; }
+    public HairColour? HairColourCode { get; set; }
+    public EyeColour? EyeColourCode { get; set; }
     public int? Height { get; set; }
-    public HeightUnitEnum? HeightUnitCode { get; set; }
+    public HeightUnit? HeightUnitCode { get; set; }
     public int? Weight { get; set; }
-    public WeightUnitEnum? WeightUnitCode { get; set; }
+    public WeightUnit? WeightUnitCode { get; set; }
     public string? ContactEmailAddress { get; set; }
     public string? ContactPhoneNumber { get; set; }
     public bool? IsMailingTheSameAsResidential { get; set; }
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public MailingAddr? MailingAddressData { get; set; }
     public bool? IsPoliceOrPeaceOfficer { get; set; }
-    public PoliceOfficerRoleEnum? PoliceOfficerRoleCode { get; set; }
+    public PoliceOfficerRole? PoliceOfficerRoleCode { get; set; }
     public string? OtherOfficerRole { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public bool? CarryAndUseRestraints { get; set; }
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
-    public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
+    public IEnumerable<WorkerCategoryType> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryType>();
     public bool? IsCanadianCitizen { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? HasLegalNameChanged { get; set; }
-    public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
+    public IEnumerable<PermitPurpose>? PermitPurposeEnums { get; set; }
     public string? PermitOtherRequiredReason { get; set; }
     public string? EmployerName { get; set; }
     public string? SupervisorName { get; set; }
@@ -65,7 +69,7 @@ public record LicenceApplication
     public string? Rationale { get; set; }
     public bool? IsCanadianResident { get; set; }
     public string? CriminalChargeDescription { get; set; }
-    public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
+    public IEnumerable<UploadedDocument>? UploadedDocumentEnums { get; set; }
 }
 
 public record SaveLicenceApplicationCmd() : LicenceApplication
@@ -80,7 +84,6 @@ public record CreateLicenceApplicationCmd() : LicenceApplication
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
-
 };
 
 public record LicenceApplicationResp() : LicenceApplication
@@ -90,14 +93,14 @@ public record LicenceApplicationResp() : LicenceApplication
     public DateOnly? ExpiryDate { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
     public string? CaseNumber { get; set; }
-    public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
+    public LicenceTerm? OriginalLicenceTermCode { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
     public Guid? SoleProprietorBizAppId { get; set; } //this is for sole-proprietor biz application id for combo app
 };
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
-public enum WorkerLicenceTypeEnum
+public enum WorkerLicenceType
 {
     SecurityWorkerLicence,
     ArmouredVehiclePermit,
@@ -106,7 +109,7 @@ public enum WorkerLicenceTypeEnum
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
 }
 
-public enum HairColourEnum
+public enum HairColour
 {
     Black,
     Blonde,
@@ -116,7 +119,7 @@ public enum HairColourEnum
     Bald,
 }
 
-public enum EyeColourEnum
+public enum EyeColour
 {
     Blue,
     Brown,
@@ -125,19 +128,19 @@ public enum EyeColourEnum
     Hazel,
 }
 
-public enum HeightUnitEnum
+public enum HeightUnit
 {
     Centimeters,
     Inches,
 }
 
-public enum WeightUnitEnum
+public enum WeightUnit
 {
     Kilograms,
     Pounds,
 }
 
-public enum WorkerCategoryTypeEnum
+public enum WorkerCategoryType
 {
     ArmouredCarGuard,
     BodyArmourSales,
@@ -158,7 +161,7 @@ public enum WorkerCategoryTypeEnum
     SecurityConsultant,
 }
 
-public enum PermitPurposeEnum
+public enum PermitPurpose
 {
     ProtectionOfPersonalProperty, //armoured vehicle
     ProtectionOfOtherProperty, //armoured vehicle
@@ -170,7 +173,7 @@ public enum PermitPurposeEnum
     Other //av,ba
 }
 
-public enum UploadedDocumentEnum
+public enum UploadedDocument
 {
     Fingerprint,
     StudyPermit,

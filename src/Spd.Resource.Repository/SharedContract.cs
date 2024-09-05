@@ -1,4 +1,5 @@
 ﻿namespace Spd.Resource.Repository;
+
 public enum PayerPreferenceTypeCode
 {
     Organization,
@@ -12,6 +13,7 @@ public record PaginationResp
     public int PageIndex { get; set; }
     public int Length { get; set; }
 }
+
 public enum EmployeeOrganizationTypeCode
 {
     Childcare,
@@ -53,7 +55,7 @@ public enum EmployeeInteractionTypeCode
     Neither
 }
 
-public enum ServiceTypeEnum
+public enum ServiceTypeCode
 {
     PSSO,
     CRRP_EMPLOYEE,
@@ -70,7 +72,7 @@ public enum ServiceTypeEnum
     SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
 }
 
-public enum GenderEnum
+public enum Gender
 {
     M,
     F,
@@ -90,7 +92,7 @@ public record Addr
     public string? Province { get; set; }
 }
 
-public enum ApplicationTypeEnum
+public enum ApplicationType
 {
     New,
     Renewal,
@@ -98,7 +100,7 @@ public enum ApplicationTypeEnum
     Update,
 }
 
-public enum LicenceTermEnum
+public enum LicenceTerm
 {
     NinetyDays,
     OneYear,
@@ -107,7 +109,7 @@ public enum LicenceTermEnum
     FiveYears
 }
 
-public enum PoliceOfficerRoleEnum
+public enum PoliceOfficerRole
 {
     AuxiliaryorReserveConstable,
     SheriffDeputySheriff,
@@ -119,7 +121,7 @@ public enum PoliceOfficerRoleEnum
     None
 }
 
-public enum ServiceTypeCategoryEnum
+public enum ServiceTypeCategory
 {
     Screening,
     Licensing
@@ -133,13 +135,13 @@ public enum ContactRoleCode
     BusinessManager //licensing
 }
 
-public enum PortalUserServiceCategoryEnum
+public enum PortalUserServiceCategory
 {
     Screening,
     Licensing
 }
 
-public enum BizTypeEnum
+public enum BizType
 {
     NonRegisteredSoleProprietor,
     NonRegisteredPartnership,
@@ -154,7 +156,7 @@ public record SwlContactInfo
     public Guid? LicenceId { get; set; }
 }
 
-public enum ApplicationInviteStatusEnum
+public enum ApplicationInviteStatus
 {
     Draft,
     Sent,

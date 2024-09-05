@@ -23,12 +23,12 @@ internal class Mappings : Profile
         .ForMember(d => d.telephone1, opt => opt.MapFrom(s => s.ContactPhoneNumber))
         .ForMember(d => d.spd_bcdriverslicense, opt => opt.MapFrom(s => s.BcDriversLicenceNumber))
         .ForMember(d => d.spd_birthplace, opt => opt.Ignore())
-        .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s).AddressLine1)))
-        .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s).AddressLine2)))
-        .ForMember(d => d.address1_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s).City)))
-        .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s).PostalCode)))
-        .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s).Province)))
-        .ForMember(d => d.address1_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s).Country)))
+        .ForMember(d => d.address1_line1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s)!.AddressLine1)))
+        .ForMember(d => d.address1_line2, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s)!.AddressLine2)))
+        .ForMember(d => d.address1_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s)!.City)))
+        .ForMember(d => d.address1_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s)!.PostalCode)))
+        .ForMember(d => d.address1_stateorprovince, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s)!.Province)))
+        .ForMember(d => d.address1_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : StringHelper.SanitizeEmpty(GetMailingAddress(s)!.Country)))
         .ForMember(d => d.address2_line1, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : StringHelper.SanitizeEmpty(s.ResidentialAddressData.AddressLine1)))
         .ForMember(d => d.address2_line2, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : StringHelper.SanitizeEmpty(s.ResidentialAddressData.AddressLine2)))
         .ForMember(d => d.address2_city, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : StringHelper.SanitizeEmpty(s.ResidentialAddressData.City)))
@@ -84,12 +84,12 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_weight, opt => opt.MapFrom(s => GetWeightStr(s)))
          .ForMember(d => d.spd_emailaddress1, opt => opt.MapFrom(s => s.ContactEmailAddress))
          .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
-         .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine1))
-         .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).AddressLine2))
-         .ForMember(d => d.spd_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).City))
-         .ForMember(d => d.spd_province, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Province))
-         .ForMember(d => d.spd_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).Country))
-         .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s).PostalCode))
+         .ForMember(d => d.spd_addressline1, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s)!.AddressLine1))
+         .ForMember(d => d.spd_addressline2, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s)!.AddressLine2))
+         .ForMember(d => d.spd_city, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s)!.City))
+         .ForMember(d => d.spd_province, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s)!.Province))
+         .ForMember(d => d.spd_country, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s)!.Country))
+         .ForMember(d => d.spd_postalcode, opt => opt.MapFrom(s => GetMailingAddress(s) == null ? null : GetMailingAddress(s)!.PostalCode))
          .ForMember(d => d.spd_residentialaddress1, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine1))
          .ForMember(d => d.spd_residentialaddress2, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.AddressLine2))
          .ForMember(d => d.spd_residentialcity, opt => opt.MapFrom(s => s.ResidentialAddressData == null ? null : s.ResidentialAddressData.City))
@@ -200,7 +200,7 @@ internal class Mappings : Profile
           .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
           .ForMember(d => d.OriginalLicenceTermCode, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : SharedMappingFuncs.GetLicenceTermEnum(s.spd_CurrentExpiredLicenceId.spd_licenceterm)))
           .ForMember(d => d.ExpiredLicenceNumber, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? null : s.spd_CurrentExpiredLicenceId.spd_licencenumber))
-          .ForMember(d => d.SoleProprietorBizAppId, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetServiceTypeName(s._spd_servicetypeid_value) == WorkerLicenceTypeEnum.SecurityWorkerLicence.ToString() ? s._spd_businesslicenseid_value : null))
+          .ForMember(d => d.SoleProprietorBizAppId, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetServiceTypeName(s._spd_servicetypeid_value) == WorkerLicenceType.SecurityWorkerLicence.ToString() ? s._spd_businesslicenseid_value : null))
           .IncludeBase<spd_application, LicenceApplication>();
 
         _ = CreateMap<AliasResp, spd_alias>()
@@ -217,59 +217,42 @@ internal class Mappings : Profile
         return app.AgreeToCompleteAndAccurate != null && app.AgreeToCompleteAndAccurate == true ? DateTime.Now : null;
     }
 
-    private static int? GetLicenceTerm(LicenceTermEnum? code)
+    private static int? GetLicenceTerm(LicenceTerm? code)
     {
-        if (code == null) return null;
-        return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());
+        return (int?)code.ConvertEnum<LicenceTerm, LicenceTermOptionSet>();
     }
 
-    private static int? GetHairColor(HairColourEnum? code)
+    private static int? GetHairColor(HairColour? code)
     {
-        if (code == null) return null;
-        return (int)Enum.Parse<HairColorOptionSet>(code.ToString());
+        return (int?)code.ConvertEnum<HairColour, HairColorOptionSet>();
     }
 
-    private static HairColourEnum? GetHairColorEnum(int? optionset)
+    private static int? GetEyeColor(EyeColour? code)
     {
-        if (optionset == null) return null;
-        return Enum.Parse<HairColourEnum>(Enum.GetName(typeof(HairColorOptionSet), optionset));
+        return (int?)code.ConvertEnum<EyeColour, EyeColorOptionSet>();
     }
 
-    private static int? GetEyeColor(EyeColourEnum? code)
+    private static HairColour? GetHairColorEnum(int? optionset)
     {
-        if (code == null) return null;
-        return (int)Enum.Parse<EyeColorOptionSet>(code.ToString());
+        return optionset.ConvertEnum<HairColorOptionSet, HairColour>();
     }
 
-    private static EyeColourEnum? GetEyeColorEnum(int? optionset)
+    private static EyeColour? GetEyeColorEnum(int? optionset)
     {
-        if (optionset == null) return null;
-        return Enum.Parse<EyeColourEnum>(Enum.GetName(typeof(EyeColorOptionSet), optionset));
+        return optionset.ConvertEnum<EyeColorOptionSet, EyeColour>();
     }
 
-    private static Addr GetMailingAddress(LicenceApplication app)
-    {
-        //if residential address is the same as mailing address, fe will send an empty mailing address
-        if (app.IsMailingTheSameAsResidential == null || !(bool)app.IsMailingTheSameAsResidential)
-            return app.MailingAddressData;
-        if ((bool)app.IsMailingTheSameAsResidential) return app.ResidentialAddressData;
-        return app.MailingAddressData;
-    }
+    private static Addr? GetMailingAddress(LicenceApplication app) =>
+        app.IsMailingTheSameAsResidential == true ? app.ResidentialAddressData : app.MailingAddressData;
 
     private static string? GetWeightStr(LicenceApplication app)
     {
-        if (app.WeightUnitCode != null)
+        return app.WeightUnitCode switch
         {
-            return app.WeightUnitCode switch
-            {
-                WeightUnitEnum.Kilograms => app.Weight + "kg",
-                WeightUnitEnum.Pounds => app.Weight + "lb",
-            };
-        }
-        else
-        {
-            return app.Weight.ToString();
-        }
+            WeightUnit.Kilograms => app.Weight + "kg",
+            WeightUnit.Pounds => app.Weight + "lb",
+            _ => app.Weight.ToString()
+        };
     }
 
     //str should be like 130lb or 65kg or lb or kg or 130
@@ -281,45 +264,38 @@ internal class Mappings : Profile
             string temp = str.Replace("lb", string.Empty).Replace("kg", string.Empty);
             return int.Parse(temp);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return null;
         }
     }
 
     //str should be like 130lb or 65kg or lb or kg or 130
-    private static WeightUnitEnum? GetWeightUnitCode(string? str)
+    private static WeightUnit? GetWeightUnitCode(string? str)
     {
         if (str == null) return null;
         try
         {
             string temp = Regex.Replace(str, @"\d", string.Empty);
-            if (temp == "kg") return WeightUnitEnum.Kilograms;
-            if (temp == "lb") return WeightUnitEnum.Pounds;
+            if (temp == "kg") return WeightUnit.Kilograms;
+            if (temp == "lb") return WeightUnit.Pounds;
             else
                 return null;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return null;
         }
     }
 
-    private static string GetHeightStr(LicenceApplication app)
+    private static string? GetHeightStr(LicenceApplication app)
     {
-        //if residential address is the same as mailing address, fe will send an empty mailing address
-        if (app.HeightUnitCode != null)
+        return app.HeightUnitCode switch
         {
-            return app.HeightUnitCode switch
-            {
-                HeightUnitEnum.Centimeters => app.Height + "cm",
-                HeightUnitEnum.Inches => app.Height + "in", //todo: when ui decide what to use.
-            };
-        }
-        else
-        {
-            return app.Height.ToString();
-        }
+            HeightUnit.Centimeters => (app.Height ?? 0) + "cm",
+            HeightUnit.Inches => (app.Height ?? 0) + "in",
+            _ => app.Height?.ToString()
+        };
     }
 
     //str should be like 130lb or 65kg or lb or kg or 130
@@ -331,28 +307,22 @@ internal class Mappings : Profile
             string temp = str.Replace("cm", string.Empty).Replace("in", string.Empty);
             return int.Parse(temp);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return null;
         }
     }
 
     //str should be like 130lb or 65kg or lb or kg or 130
-    private static HeightUnitEnum? GetHeightUnitCode(string? str)
+    private static HeightUnit? GetHeightUnitCode(string? str)
     {
         if (str == null) return null;
-        try
-        {
-            string temp = Regex.Replace(str, @"\d", string.Empty);
-            if (temp == "in") return HeightUnitEnum.Inches;
-            if (temp == "cm") return HeightUnitEnum.Centimeters;
-            else
-                return null;
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
+
+        string temp = Regex.Replace(str, @"\d", string.Empty);
+        if (temp == "in") return HeightUnit.Inches;
+        if (temp == "cm") return HeightUnit.Centimeters;
+
+        return null;
     }
 
     private static MailingAddr? GetMailingAddressData(contact c)
@@ -378,6 +348,7 @@ internal class Mappings : Profile
         addr.PostalCode = app.spd_employerpostalcode;
         return addr;
     }
+
     private static ResidentialAddr? GetResidentialAddressData(contact c)
     {
         ResidentialAddr mailingAddress = new();
@@ -389,6 +360,7 @@ internal class Mappings : Profile
         mailingAddress.PostalCode = c.address2_postalcode;
         return mailingAddress;
     }
+
     private static bool? IsMailingResidentialSame(contact c)
     {
         if (c.address1_line1 == null
@@ -427,14 +399,10 @@ internal class Mappings : Profile
         return string.IsNullOrWhiteSpace(result) ? null : result;
     }
 
-    private static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
+    private static bool? GetDogReasonFlag(string? dogreasonsStr, RequestDogPurposeOptionSet type)
     {
         if (dogreasonsStr == null) return null;
-        string[] reasons = dogreasonsStr.Split(',');
-        string str = ((int)type).ToString();
-        if (reasons.Any(s => s == str)) return true;
-
-        return false;
+        string purpose = ((int)type).ToString();
+        return dogreasonsStr.Split(',').Select(r => r.Trim()).Contains(purpose);
     }
 }
-

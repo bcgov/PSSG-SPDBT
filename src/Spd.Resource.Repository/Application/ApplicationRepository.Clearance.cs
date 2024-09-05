@@ -89,10 +89,10 @@ internal partial class ApplicationRepository : IApplicationRepository
         //spdbt-2629
         if (clearanceQry.IncludeServiceTypeEnum != null)
         {
-            if (clearanceQry.IncludeServiceTypeEnum == ServiceTypeEnum.CRRP_EMPLOYEE || clearanceQry.IncludeServiceTypeEnum == ServiceTypeEnum.CRRP_VOLUNTEER)
+            if (clearanceQry.IncludeServiceTypeEnum == ServiceTypeCode.CRRP_EMPLOYEE || clearanceQry.IncludeServiceTypeEnum == ServiceTypeCode.CRRP_VOLUNTEER)
             {
-                DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_VOLUNTEER.ToString(), out Guid volunteerGuid);
-                DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_EMPLOYEE.ToString(), out Guid employeeGuid);
+                DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.CRRP_VOLUNTEER.ToString(), out Guid volunteerGuid);
+                DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.CRRP_EMPLOYEE.ToString(), out Guid employeeGuid);
                 clearances = clearances.Where(c => c._spd_servicetype_value == volunteerGuid || c._spd_servicetype_value == employeeGuid);
             }
             else

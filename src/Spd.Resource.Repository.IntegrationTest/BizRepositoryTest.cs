@@ -33,8 +33,8 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test",
-            BizType = BizTypeEnum.Corporation,
-            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
+            BizType = BizType.Corporation,
+            ServiceTypes = new List<ServiceTypeCode>() { ServiceTypeCode.MDRA }
         };
 
         // Act
@@ -62,8 +62,8 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test",
-            BizType = BizTypeEnum.Corporation,
-            ServiceTypes = new List<ServiceTypeEnum>()
+            BizType = BizType.Corporation,
+            ServiceTypes = new List<ServiceTypeCode>()
         };
 
         // Act
@@ -83,8 +83,8 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizGuid = Guid.NewGuid(),
             Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test",
-            BizType = BizTypeEnum.Corporation,
-            ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
+            BizType = BizType.Corporation,
+            ServiceTypes = new List<ServiceTypeCode>() { ServiceTypeCode.MDRA }
         };
 
         // Act
@@ -120,7 +120,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             BizLegalName = IntegrationTestSetup.DataPrefix + "test"
         };
         var biz = await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
-        AddBizServiceTypeCmd cmd = new(bizId, ServiceTypeEnum.SecurityBusinessLicence);
+        AddBizServiceTypeCmd cmd = new(bizId, ServiceTypeCode.SecurityBusinessLicence);
 
         // Act
         await _bizRepository.ManageBizAsync(cmd, CancellationToken.None);
@@ -292,10 +292,10 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
-            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MCFD })
+            .With(c => c.ServiceTypes, new List<ServiceTypeCode>() { ServiceTypeCode.MCFD })
             .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
             .With(c => c.PhoneNumber, "80000000")
-            .With(c => c.BizType, BizTypeEnum.Corporation)
+            .With(c => c.BizType, BizType.Corporation)
             .With(c => c.BCBusinessAddress, address)
             .With(c => c.BusinessAddress, address)
             .With(c => c.MailingAddress, address)
@@ -305,14 +305,14 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         UpdateBizCmd updateCmd = fixture.Build<UpdateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "updated test")
-            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA })
+            .With(c => c.ServiceTypes, new List<ServiceTypeCode>() { ServiceTypeCode.MDRA })
             .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
             .With(c => c.PhoneNumber, "90000000")
             .With(c => c.Email, "test@test.com")
             .With(c => c.BCBusinessAddress, updatedAddress)
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
-            .With(c => c.BizType, BizTypeEnum.RegisteredSoleProprietor)
+            .With(c => c.BizType, BizType.RegisteredSoleProprietor)
             .With(c => c.BizManagerContactInfo, updatedBizManagerContactInfo)
             .Without(c => c.SoleProprietorSwlContactInfo)
             .Create();
@@ -407,10 +407,10 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
-            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MCFD })
+            .With(c => c.ServiceTypes, new List<ServiceTypeCode>() { ServiceTypeCode.MCFD })
             .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
             .With(c => c.PhoneNumber, "80000000")
-            .With(c => c.BizType, BizTypeEnum.RegisteredSoleProprietor)
+            .With(c => c.BizType, BizType.RegisteredSoleProprietor)
             .With(c => c.BCBusinessAddress, address)
             .With(c => c.BusinessAddress, address)
             .With(c => c.MailingAddress, address)
@@ -420,14 +420,14 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         UpdateBizCmd updateCmd = fixture.Build<UpdateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "updated test")
-            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA })
+            .With(c => c.ServiceTypes, new List<ServiceTypeCode>() { ServiceTypeCode.MDRA })
             .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
             .With(c => c.PhoneNumber, "90000000")
             .With(c => c.Email, "test@test.com")
             .With(c => c.BCBusinessAddress, updatedAddress)
             .With(c => c.BusinessAddress, updatedAddress)
             .With(c => c.MailingAddress, updatedAddress)
-            .With(c => c.BizType, BizTypeEnum.Corporation)
+            .With(c => c.BizType, BizType.Corporation)
             .With(c => c.BizManagerContactInfo, updatedBizManagerContactInfo)
             .Without(c => c.SoleProprietorSwlContactInfo)
             .Create();
@@ -484,7 +484,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
         CreateBizCmd createCmd = fixture.Build<CreateBizCmd>()
             .With(c => c.Id, bizId)
             .With(c => c.BizLegalName, IntegrationTestSetup.DataPrefix + "test")
-            .With(c => c.ServiceTypes, new List<ServiceTypeEnum>() { ServiceTypeEnum.MCFD })
+            .With(c => c.ServiceTypes, new List<ServiceTypeCode>() { ServiceTypeCode.MCFD })
             .With(c => c.BranchAddresses, new List<BranchAddr>() { branchAddress })
             .With(c => c.PhoneNumber, "80000000")
             .With(c => c.BCBusinessAddress, address)
@@ -493,7 +493,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
             .With(c => c.BizManagerContactInfo, bizManagerContactInfo)
             .Create();
 
-        UpdateBizServiceTypeCmd updateServiceTypeCmd = new(bizId, ServiceTypeEnum.PSSO);
+        UpdateBizServiceTypeCmd updateServiceTypeCmd = new(bizId, ServiceTypeCode.PSSO);
 
         // Act
         await _bizRepository.ManageBizAsync(createCmd, CancellationToken.None);
@@ -514,7 +514,7 @@ public class BizRepositoryTest : IClassFixture<IntegrationTestSetup>
     public async void UpdateBizServiceTypeAsync_BizNotFound_Throw_Exception()
     {
         // Arrange
-        UpdateBizServiceTypeCmd cmd = new(Guid.NewGuid(), ServiceTypeEnum.PSSO);
+        UpdateBizServiceTypeCmd cmd = new(Guid.NewGuid(), ServiceTypeCode.PSSO);
 
         // Act and Assert
         await Assert.ThrowsAsync<ApiException>(async () => await _bizRepository.ManageBizAsync(cmd, CancellationToken.None));

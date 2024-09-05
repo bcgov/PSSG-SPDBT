@@ -25,7 +25,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
 
-        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+        if (cmd.ApplicationTypeCode == ApplicationType.New)
             throw new ArgumentException("New application type is not supported for business licence.");
 
         if (cmd.OriginalApplicationId == null)
@@ -62,7 +62,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         LinkOrganization(applicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryType.PrivateInvestigator))
         {
             contact? contact = await _context.GetContactById((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId, ct);
             if (contact == null)
@@ -116,7 +116,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         LinkOrganization(cmd.ApplicantId, app);
 
-        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryType.PrivateInvestigator) &&
             cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
             cmd.PrivateInvestigatorSwlInfo?.LicenceId != null)
         {

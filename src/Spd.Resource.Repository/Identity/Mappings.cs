@@ -39,10 +39,10 @@ namespace Spd.Resource.Repository.Identity
             if (date == null) return null;
             return new DateOnly(date.Value.Year, date.Value.Month, date.Value.Day);
         }
-        internal static GenderEnum? GetGenderEnum(int? optionset)
+        internal static Gender? GetGenderEnum(int? optionset)
         {
             if (optionset == null) return null;
-            return Enum.Parse<GenderEnum>(Enum.GetName(typeof(GenderOptionSet), optionset));
+            return Enum.Parse<Gender>(Enum.GetName(typeof(GenderOptionSet), optionset));
         }
     }
 }

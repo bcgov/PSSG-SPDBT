@@ -30,7 +30,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
     {
         public Guid Id { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
-        public ApplicationInviteStatusEnum Status { get; set; }
+        public ApplicationInviteStatus Status { get; set; }
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
         public Guid? CreatedByUserId { get; set; }
@@ -68,7 +68,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode PayeeType { get; set; }
         public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
-        public ServiceTypeEnum ServiceType { get; set; } = ServiceTypeEnum.CRRP_EMPLOYEE;
+        public ServiceTypeCode ServiceType { get; set; } = ServiceTypeCode.CRRP_EMPLOYEE;
     };
 
     public record ApplicationInvite
@@ -78,7 +78,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
         public string? Email { get; set; }
         public string? JobTitle { get; set; }
         public PayerPreferenceTypeCode? PayeeType { get; set; }
-        public ServiceTypeEnum ServiceType { get; set; }
+        public ServiceTypeCode ServiceType { get; set; }
         public ScreenTypeEnum ScreeningType { get; set; }
         public Guid? OriginalClearanceAccessId { get; set; }
         public Guid? OrgId { get; set; }
@@ -88,7 +88,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
     {
         public Guid OrgId { get; set; }
         public Guid ApplicationInviteId { get; set; }
-        public ApplicationInviteStatusEnum ApplicationInviteStatusEnum { get; set; }
+        public ApplicationInviteStatus ApplicationInviteStatusEnum { get; set; }
     }
 
     public record ApplicationInviteCreateResp

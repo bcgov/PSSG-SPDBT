@@ -77,14 +77,14 @@ internal class BizLicAppManager :
     public async Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, WorkerLicenceTypeEnum.SecurityBusinessLicence, cancellationToken);
+        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, WorkerLicenceType.SecurityBusinessLicence, cancellationToken);
         return await Handle(new GetBizLicAppQuery(latestAppId), cancellationToken);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.BizLicAppUpsertRequest.BizId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<WorkerLicenceType>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.ToString()),
             cmd.BizLicAppUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -304,9 +304,9 @@ internal class BizLicAppManager :
         LicenceAppQuery q = new(
             null,
             query.BizId,
-            new List<WorkerLicenceTypeEnum>
+            new List<WorkerLicenceType>
             {
-                WorkerLicenceTypeEnum.SecurityBusinessLicence,
+                WorkerLicenceType.SecurityBusinessLicence,
             },
             new List<ApplicationPortalStatusEnum>
             {
@@ -338,7 +338,7 @@ internal class BizLicAppManager :
             {
                 BizLicApplicationResp appResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)docResp.ApplicationId, ct);
                 if (appResp != null
-                    && appResp.ApplicationTypeCode == Resource.Repository.ApplicationTypeEnum.New
+                    && appResp.ApplicationTypeCode == Resource.Repository.ApplicationType.New
                     && (appResp.ApplicationPortalStatus == ApplicationPortalStatusEnum.Draft || appResp.ApplicationPortalStatus == ApplicationPortalStatusEnum.Incomplete))
                 {
                     fileResult = (FileQueryResult)await _transientFileService.HandleQuery(
@@ -478,7 +478,7 @@ internal class BizLicAppManager :
                     $"Updated Categories: {updatedCategories}",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
                 Subject = $"Licence Category update {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                TaskPriorityEnum = TaskPriority.Normal,
                 RegardingAccountId = originalApp.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
                 LicenceId = originalApp.ExpiredLicenceId
@@ -496,7 +496,7 @@ internal class BizLicAppManager :
                     $"DSV certificate (Attachment)",
                 DueDateTime = DateTimeOffset.Now.AddDays(1),
                 Subject = $"Dog validation information to be updated for Business Licence {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                TaskPriorityEnum = TaskPriority.Normal,
                 RegardingAccountId = originalApp.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid),
                 LicenceId = originalApp.ExpiredLicenceId

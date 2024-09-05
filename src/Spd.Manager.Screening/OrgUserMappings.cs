@@ -1,6 +1,6 @@
 using AutoMapper;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Screening

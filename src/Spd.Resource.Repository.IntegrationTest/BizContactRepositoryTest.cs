@@ -234,7 +234,7 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         _context.AddTospd_licences(lic);
         _context.SetLink(lic, nameof(lic.spd_CaseId), incident);
         _context.SetLink(lic, nameof(lic.spd_LicenceHolder_contact), c);
-        _context.SetLink(lic, nameof(lic.spd_LicenceType), _context.LookupServiceType(ServiceTypeEnum.SecurityWorkerLicence.ToString()));
+        _context.SetLink(lic, nameof(lic.spd_LicenceType), _context.LookupServiceType(ServiceTypeCode.SecurityWorkerLicence.ToString()));
         return lic;
     }
 }

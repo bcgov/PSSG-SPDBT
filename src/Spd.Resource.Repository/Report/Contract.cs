@@ -12,6 +12,6 @@ namespace Spd.Resource.Repository.Report
     public record OrgReportResult
     {
         public Guid? Id { get; set; }
-        public DateOnly ReportDate { get; set; }
+        public DateOnly? ReportDate { get; set; }
     }
 }

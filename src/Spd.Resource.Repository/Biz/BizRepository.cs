@@ -13,10 +13,10 @@ namespace Spd.Resource.Repository.Biz
         private readonly DynamicsContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<BizRepository> _logger;
-        private readonly List<BizTypeEnum> soleProprietorTypes = new()
+        private readonly List<BizType> soleProprietorTypes = new()
         {
-            BizTypeEnum.RegisteredSoleProprietor,
-            BizTypeEnum.NonRegisteredSoleProprietor
+            BizType.RegisteredSoleProprietor,
+            BizType.NonRegisteredSoleProprietor
         };
 
         public BizRepository(IDynamicsContextFactory ctx,
@@ -72,7 +72,7 @@ namespace Spd.Resource.Repository.Biz
                 .FirstOrDefault()?.spd_licenceid;
 
             var response = _mapper.Map<BizResult>(biz);
-            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
+            response.ServiceTypes = serviceTypes.Select(s => Enum.Parse<ServiceTypeCode>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid)));
             response.SoleProprietorSwlContactInfo.LicenceId = licenceId;
 
             return response;
@@ -146,7 +146,7 @@ namespace Spd.Resource.Repository.Biz
             var account = _mapper.Map<account>(createBizCmd);
             _context.AddToaccounts(account);
 
-            foreach (ServiceTypeEnum serviceType in createBizCmd.ServiceTypes)
+            foreach (ServiceTypeCode serviceType in createBizCmd.ServiceTypes)
             {
                 spd_servicetype? st = _context.LookupServiceType(serviceType.ToString());
                 _context.AddLink(account, nameof(account.spd_account_spd_servicetype), st);
@@ -175,7 +175,7 @@ namespace Spd.Resource.Repository.Biz
             return await GetBizAsync(addBizServiceTypeCmd.BizId, ct);
         }
 
-        private void UpdateLicenceLink(account account, Guid? licenceId, BizTypeEnum? bizType)
+        private void UpdateLicenceLink(account account, Guid? licenceId, BizType? bizType)
         {
             spd_licence? licence = account.spd_organization_spd_licence_soleproprietor
                 .FirstOrDefault(a => a.statecode == DynamicsConstants.StateCode_Active);
@@ -203,7 +203,7 @@ namespace Spd.Resource.Repository.Biz
             }
         }
 
-        private bool IsSoleProprietor(BizTypeEnum? bizType)
+        private bool IsSoleProprietor(BizType? bizType)
         {
             if (bizType == null) return false;
 

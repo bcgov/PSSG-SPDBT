@@ -33,9 +33,9 @@ namespace Spd.Resource.Repository.OptionSet
                 ct) ?? [];
             (List<OptionData> optionData, int option) = query switch
             {
-                GenderEnum q => (GetOptionLabels(optionsets, "spd_sex"), (int)Enum.Parse<GenderOptionSet>(q.ToString())),
+                Gender q => (GetOptionLabels(optionsets, "spd_sex"), (int)Enum.Parse<GenderOptionSet>(q.ToString())),
                 EmployeeInteractionTypeCode q => (GetOptionLabels(optionsets, "spd_organizationclientbase"), (int)Enum.Parse<WorksWithChildrenOptionSet>(q.ToString())),
-                HairColourEnum q => (GetOptionLabels(optionsets, "spd_haircolour"), (int)Enum.Parse<HairColorOptionSet>(q.ToString())),
+                HairColour q => (GetOptionLabels(optionsets, "spd_haircolour"), (int)Enum.Parse<HairColorOptionSet>(q.ToString())),
 
                 _ => throw new NotImplementedException($"{nameof(GetLabelAsync)} does not handle {typeof(T).Name}")
             };

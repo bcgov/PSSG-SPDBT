@@ -63,7 +63,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid applicantId = Guid.NewGuid();
             mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                 .ReturnsAsync(new List<LicenceAppListResp> {
-                    new() {ApplicationTypeCode = ApplicationTypeEnum.Replacement}
+                    new() {ApplicationTypeCode = ApplicationType.Replacement}
                 });
 
             //Act
@@ -81,7 +81,7 @@ namespace Spd.Manager.Licence.UnitTest
             Guid applicationId = Guid.NewGuid();
             mockLicAppRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                 .ReturnsAsync(new List<LicenceAppListResp> {
-                    new() {ApplicationTypeCode = ApplicationTypeEnum.Update, LicenceAppId=applicationId}
+                    new() {ApplicationTypeCode = ApplicationType.Update, LicenceAppId=applicationId}
                 });
             mockPersonLicAppRepo.Setup(a => a.GetLicenceApplicationAsync(It.Is<Guid>(p => p == applicationId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationResp() { LicenceAppId = applicationId });
@@ -354,7 +354,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.ExpiryDate, expiryDate)
-                .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
+                .With(r => r.LicenceTermCode, LicenceTerm.NinetyDays)
                 .Create();
 
             mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
@@ -391,7 +391,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.ExpiryDate, expiryDate)
-                .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
+                .With(r => r.LicenceTermCode, LicenceTerm.NinetyDays)
                 .Create();
 
             mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
@@ -428,7 +428,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.ExpiryDate, expiryDate)
-                .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
+                .With(r => r.LicenceTermCode, LicenceTerm.NinetyDays)
                 .Create();
 
             mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))

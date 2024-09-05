@@ -4,7 +4,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PortalUser;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
@@ -36,7 +36,7 @@ internal class BizPortalUserManager :
             {
                 OrgId = request.BizPortalUserCreateRequest.BizId,
                 ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
-                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+                PortalUserServiceCategory = PortalUserServiceCategory.Licensing
             },
             ct);
 
@@ -68,7 +68,7 @@ internal class BizPortalUserManager :
             {
                 OrgId = request.BizPortalUserUpdateRequest.BizId,
                 ContactRoleCode = new List<ContactRoleCode> { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
-                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+                PortalUserServiceCategory = PortalUserServiceCategory.Licensing
             },
             ct);
 
@@ -109,7 +109,7 @@ internal class BizPortalUserManager :
                 OrgId = query.BizId,
                 IncludeInactive = !query.OnlyReturnActiveUsers,
                 ContactRoleCode = new List<ContactRoleCode>() { ContactRoleCode.PrimaryBusinessManager, ContactRoleCode.BusinessManager },
-                PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+                PortalUserServiceCategory = PortalUserServiceCategory.Licensing
             },
             ct);
 
@@ -128,7 +128,7 @@ internal class BizPortalUserManager :
     {
         //check role max number rule
         var existingUsersResult = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-            new PortalUserQry() { OrgId = request.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
+            new PortalUserQry() { OrgId = request.BizId, PortalUserServiceCategory = PortalUserServiceCategory.Licensing },
             cancellationToken);
         var toDeleteUser = existingUsersResult.Items.FirstOrDefault(u => u.Id == request.UserId);
         var newUsers = existingUsersResult.Items.ToList();

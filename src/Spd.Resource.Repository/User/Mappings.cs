@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
-namespace Spd.Resource.Repository.User
+namespace Spd.Resource.Repository.Users
 {
     public class Mappings : Profile
     {
@@ -39,14 +39,13 @@ namespace Spd.Resource.Repository.User
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.PortalUser));
         }
 
-        private ContactRoleCode GetAuthorizationTypeCode(ICollection<spd_role> roles)
+        private static ContactRoleCode GetAuthorizationTypeCode(ICollection<spd_role> roles)
         {
             Guid? roleId = roles?.FirstOrDefault()?.spd_roleid;
             if (roleId == null) return ContactRoleCode.Contact;
             return
                 Enum.Parse<ContactRoleCode>(
                     DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == roleId).Key);
-
         }
     }
 }

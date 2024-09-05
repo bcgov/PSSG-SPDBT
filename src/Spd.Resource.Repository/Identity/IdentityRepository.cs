@@ -38,7 +38,7 @@ namespace Spd.Resource.Repository.Identity
         private async Task<IdentityQueryResult> HandleIdentityQry(IdentityQry qry, CancellationToken ct)
         {
             IQueryable<spd_identity> identities;
-            if (qry.IdentityProviderType != null && qry.IdentityProviderType == IdentityProviderTypeEnum.BcServicesCard)
+            if (qry.IdentityProviderType != null && qry.IdentityProviderType == IdentityProviderType.BcServicesCard)
             {
                 identities = _dynaContext.spd_identities.Expand(i => i.spd_ContactId);
             }

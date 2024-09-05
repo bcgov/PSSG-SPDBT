@@ -1,19 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>CA1701;CA1702;CA1711;S2344;CA1707;</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>CA1701;CA1702;CA1711;S2344;CA1707;</NoWarn>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="MediatR" />
@@ -30,4 +16,9 @@
     <ItemGroup>
 	    <InternalsVisibleTo Include="Spd.Resource.Repository.IntegrationTest" />
     </ItemGroup>
+
+		<ItemGroup>
+				<None Include="..\.editorconfig" Link=".editorconfig" />
+		</ItemGroup>
+
 </Project>

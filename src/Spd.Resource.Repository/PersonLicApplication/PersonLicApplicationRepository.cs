@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
-using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.LicApp;
 using Spd.Utilities.Dynamics;
@@ -8,6 +7,7 @@ using Spd.Utilities.Shared.Exceptions;
 using System.Net;
 
 namespace Spd.Resource.Repository.PersonLicApplication;
+
 internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 {
     private readonly DynamicsContext _context;
@@ -27,21 +27,22 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         _context.AddTospd_applications(app);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         contact? contact = _mapper.Map<contact>(cmd);
-        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+        if (cmd.ApplicationTypeCode == ApplicationType.New)
         {
             if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
                 SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
             //for new, always create a new contact
-            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            contact = _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases));
         }
         else
         {
             if (cmd.OriginalApplicationId != null)
             {
-                spd_application originApp = await _context.spd_applications.Where(a => a.spd_applicationid == cmd.OriginalApplicationId).FirstOrDefaultAsync(ct);
+                var originApp = await _context.spd_applications
+                    .Where(a => a.spd_applicationid == cmd.OriginalApplicationId).SingleOrDefaultAsync(ct) ?? throw new InvalidOperationException($"application {cmd.OriginalApplicationId} not found");
                 //for replace, renew, update, "contact" is already exists, so, do update.
-                contact? existingContact = await _context.GetContactById((Guid)originApp._spd_applicantid_value, ct);
-                contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+                var existingContact = await _context.GetContactById(originApp._spd_applicantid_value!.Value, ct) ?? throw new InvalidOperationException($"contact {originApp.spd_applicationid} not found");
+                contact = _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases));
             }
             else
             {
@@ -62,12 +63,12 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        if (cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
+        if (cmd.WorkerLicenceTypeCode == WorkerLicenceType.SecurityWorkerLicence)
         {
             SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         }
         await _context.SaveChangesAsync(ct);
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid, null);
+        return new LicenceApplicationCmdResp(app.spd_applicationid!.Value, contact.contactid!.Value, null);
     }
 
     //for auth, do not need to create contact.
@@ -101,33 +102,24 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
-        SharedRepositoryFuncs.LinkTeam(_context,DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
-        await _context.SaveChangesAsync();
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+        await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
         SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
-        await _context.SaveChangesAsync();
-        return new LicenceApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId, null);
+        await _context.SaveChangesAsync(ct);
+        return new LicenceApplicationCmdResp(app.spd_applicationid!.Value, cmd.ApplicantId, null);
     }
+
     public async Task<LicenceApplicationResp> GetLicenceApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
     {
-        spd_application? app;
-        try
-        {
-            app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
-                .Expand(a => a.spd_ApplicantId_contact)
-                .Expand(a => a.spd_application_spd_licencecategory)
-                .Expand(a => a.spd_CurrentExpiredLicenceId)
-                .Where(a => a.spd_applicationid == licenceApplicationId)
-                .SingleOrDefaultAsync(ct);
-        }
-        catch (DataServiceQueryException ex)
-        {
-            if (ex.Response.StatusCode == 404)
-                throw new ArgumentException("invalid app id");
-            else
-                throw;
-        }
+        var app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
+                        .Expand(a => a.spd_ApplicantId_contact)
+                        .Expand(a => a.spd_application_spd_licencecategory)
+                        .Expand(a => a.spd_CurrentExpiredLicenceId)
+                        .Where(a => a.spd_applicationid == licenceApplicationId)
+                        .SingleOrDefaultAsync(ct);
+        if (app == null) throw new ArgumentException("invalid app id");
 
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
 
@@ -153,10 +145,8 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 
         _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
         await _context.SaveChangesAsync(ct);
-        return new LicenceApplicationCmdResp((Guid)swlApp.spd_applicationid, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
+        return new LicenceApplicationCmdResp(swlApp.spd_applicationid!.Value, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
     }
-
-   
 
     private List<spd_alias>? GetAliases(Guid contactId)
     {

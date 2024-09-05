@@ -9,9 +9,9 @@ internal class WorkerLicenceCategoryRepository(IDynamicsContextFactory ctx, IMap
 {
     private readonly DynamicsContext _context = ctx.Create();
 
-    public async Task<WorkerLicenceCategoryListResp> QueryAsync(WorkerLicenceCategoryQry qry, CancellationToken cancellationToken)
+    public async Task<WorkerLicenceCategoryListResp> QueryAsync(WorkerLicenceCategoryQry query, CancellationToken cancellationToken)
     {
-        if (qry.WorkerCategoryType == null && qry.WorkerCategoryTypeId == null)
+        if (query.WorkerCategoryType == null && query.WorkerCategoryTypeId == null)
         {
             throw new ArgumentException("must have at least one qry parameter.");
         }
@@ -22,11 +22,11 @@ internal class WorkerLicenceCategoryRepository(IDynamicsContextFactory ctx, IMap
             TimeSpan.FromMinutes(10),
             cancellationToken) ?? [];
 
-        if (qry.WorkerCategoryTypeId != null)
+        if (query.WorkerCategoryTypeId != null)
         {
-            categories = categories.Where(s => s.spd_licencecategoryid == qry.WorkerCategoryTypeId);
+            categories = categories.Where(s => s.spd_licencecategoryid == query.WorkerCategoryTypeId);
         }
-        if (qry.WorkerCategoryType != null && DynamicsContextLookupHelpers.LicenceCategoryDictionary.TryGetValue(qry.WorkerCategoryType.ToString()!, out Guid guid))
+        if (query.WorkerCategoryType != null && DynamicsContextLookupHelpers.LicenceCategoryDictionary.TryGetValue(query.WorkerCategoryType.ToString()!, out Guid guid))
         {
             categories = categories.Where(s => s.spd_licencecategoryid == guid);
         }

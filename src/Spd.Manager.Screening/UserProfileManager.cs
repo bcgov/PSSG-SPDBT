@@ -9,7 +9,7 @@ using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Registration;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
@@ -125,19 +125,19 @@ namespace Spd.Manager.Screening
 
         public async Task<ApplicantProfileResponse> Handle(GetApplicantProfileQuery request, CancellationToken ct)
         {
-            var result = await _idRepository.Query(new IdentityQry(request.BcscSub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var result = await _idRepository.Query(new IdentityQry(request.BcscSub, null, IdentityProviderType.BcServicesCard), ct);
             return _mapper.Map<ApplicantProfileResponse>(result.Items.FirstOrDefault());
         }
 
         public async Task<ApplicantProfileResponse> Handle(ManageApplicantProfileCommand cmd, CancellationToken ct)
         {
             ContactResp contactResp = null;
-            var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderType.BcServicesCard), ct);
 
             if (result == null || !result.Items.Any()) //first time to use system
             {
                 //add identity
-                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderType.BcServicesCard), ct);
                 CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                 createContactCmd.IdentityId = id.Id;
                 contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
@@ -196,7 +196,7 @@ namespace Spd.Manager.Screening
 
             Guid orgId = org?.Id ?? SpdConstants.BcGovOrgId;
 
-            var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
+            var existingIdentities = await _idRepository.Query(new IdentityQry(cmd.IdirUserIdentity.UserGuid, null, IdentityProviderType.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
             _logger.LogDebug($"identityId = {identityId}");
@@ -204,7 +204,7 @@ namespace Spd.Manager.Screening
             bool isFirstTimeLogin = false;
             if (identity == null)
             {
-                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, orgId, IdentityProviderTypeEnum.Idir), ct);
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.IdirUserIdentity.UserGuid, orgId, IdentityProviderType.Idir), ct);
                 identityId = id?.Id;
                 isFirstTimeLogin = true;
             }
@@ -226,7 +226,7 @@ namespace Spd.Manager.Screening
                         FirstName = cmd.IdirUserIdentity.FirstName,
                         LastName = cmd.IdirUserIdentity.LastName,
                         IdentityId = identityId,
-                        PortalUserServiceCategory = PortalUserServiceCategoryEnum.Screening
+                        PortalUserServiceCategory = PortalUserServiceCategory.Screening
                     };
                     result = await _portalUserRepository.ManageAsync(createUserCmd, ct);
                 }
@@ -261,7 +261,7 @@ namespace Spd.Manager.Screening
 
         public async Task<IdirUserProfileResponse?> Handle(GetIdirUserProfileQuery qry, CancellationToken ct)
         {
-            var existingIdentities = await _idRepository.Query(new IdentityQry(qry.IdirUserIdentity.UserGuid, null, IdentityProviderTypeEnum.Idir), ct);
+            var existingIdentities = await _idRepository.Query(new IdentityQry(qry.IdirUserIdentity.UserGuid, null, IdentityProviderType.Idir), ct);
             var identity = existingIdentities.Items.FirstOrDefault();
             Guid? identityId = identity?.Id;
             if (identity != null)

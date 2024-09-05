@@ -5,6 +5,7 @@ using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Resource.Repository.Contact;
+
 internal class ContactRepository : IContactRepository
 {
     private readonly DynamicsContext _context;
@@ -130,8 +131,8 @@ internal class ContactRepository : IContactRepository
         contact newContact = _mapper.Map<contact>(c);
         ContactResp resp = new();
         contact? existingContact = await _context.GetContactById(c.Id, ct);
-        List<spd_alias> newAliasesToAdd = (List<spd_alias>)_mapper.Map<IEnumerable<spd_alias>>(c.Aliases.Where(a => a.Id == null || a.Id == Guid.Empty)); // Only aliases with Id null or empty are considered as new
-        existingContact = await _context.UpdateContact(existingContact, newContact, null, newAliasesToAdd, ct);
+        var newAliasesToAdd = _mapper.Map<IEnumerable<spd_alias>>(c.Aliases.Where(a => a.Id == null || a.Id == Guid.Empty)).ToList(); // Only aliases with Id null or empty are considered as new
+        existingContact = _context.UpdateContact(existingContact, newContact, null, newAliasesToAdd);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
@@ -152,7 +153,7 @@ internal class ContactRepository : IContactRepository
             }
         }
         //two saveChanges because "Associate of 1:N navigation property with Create of Update is not supported in CRM"
-        contact = await _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases), ct);
+        contact = _context.CreateContact(contact, identity, _mapper.Map<IEnumerable<spd_alias>>(c.Aliases));
         await _context.SaveChangesAsync(ct);
         ContactResp resp = _mapper.Map<ContactResp>(contact);
         return resp;
@@ -173,5 +174,3 @@ internal class ContactRepository : IContactRepository
         return _mapper.Map<contact, ContactResp>(existingContact, resp);
     }
 }
-
-

@@ -271,13 +271,13 @@ internal partial class ApplicationRepository : IApplicationRepository
             delegateFilters = $"spd_delegateid eq '{appFilterBy.DelegatePortalUserId}'";
         }
 
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_EMPLOYEE.ToString(), out Guid crrpEmployeeServiceTypeId);
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.CRRP_VOLUNTEER.ToString(), out Guid crrpVolunteerServiceTypeId);
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.PSSO.ToString(), out Guid pssoServiceTypeId);
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.PSSO_VS.ToString(), out Guid pssoVsServiceTypeId);
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.MCFD.ToString(), out Guid mcfdServiceTypeId);
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.PE_CRC.ToString(), out Guid pecrcServiceTypeId);
-        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeEnum.PE_CRC_VS.ToString(), out Guid pecrcvsServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.CRRP_EMPLOYEE.ToString(), out Guid crrpEmployeeServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.CRRP_VOLUNTEER.ToString(), out Guid crrpVolunteerServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.PSSO.ToString(), out Guid pssoServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.PSSO_VS.ToString(), out Guid pssoVsServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.MCFD.ToString(), out Guid mcfdServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.PE_CRC.ToString(), out Guid pecrcServiceTypeId);
+        DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(ServiceTypeCode.PE_CRC_VS.ToString(), out Guid pecrcvsServiceTypeId);
         string? serviceTypeFilters = $"_spd_servicetypeid_value eq '{crrpEmployeeServiceTypeId}' or _spd_servicetypeid_value eq '{crrpVolunteerServiceTypeId}' or _spd_servicetypeid_value eq '{pssoServiceTypeId}' or _spd_servicetypeid_value eq '{pssoVsServiceTypeId}' or _spd_servicetypeid_value eq '{mcfdServiceTypeId}' or _spd_servicetypeid_value eq '{pecrcServiceTypeId}' or _spd_servicetypeid_value eq '{pecrcvsServiceTypeId}'";
 
         //get result filter string

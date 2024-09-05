@@ -91,9 +91,9 @@ namespace Spd.Resource.Repository.Biz
 
         }
 
-        private static IEnumerable<ServiceTypeEnum>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
+        private static IEnumerable<ServiceTypeCode>? GetServiceTypeEnums(IEnumerable<spd_servicetype> serviceTypes)
         {
-            return serviceTypes.Select(s => Enum.Parse<ServiceTypeEnum>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid))).ToArray();
+            return serviceTypes.Select(s => Enum.Parse<ServiceTypeCode>(DynamicsContextLookupHelpers.GetServiceTypeName(s.spd_servicetypeid))).ToArray();
         }
     }
 }

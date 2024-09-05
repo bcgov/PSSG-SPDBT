@@ -3,8 +3,10 @@ namespace Spd.Resource.Repository.PortalUser
     public interface IPortalUserRepository
     {
         public Task<PortalUserQryResp> QueryAsync(PortalUserQry qry, CancellationToken cancellationToken);
+
         public Task<PortalUserResp> ManageAsync(PortalUserCmd cmd, CancellationToken cancellationToken);
     }
+
     public abstract record PortalUserQryResp;
     public record PortalUserListResp : PortalUserQryResp
     {
@@ -29,13 +31,13 @@ namespace Spd.Resource.Repository.PortalUser
 
     public record PortalUserQry
     {
-        public Guid? OrgIdOrParentOrgId { get; set; } = null;
+        public Guid? OrgIdOrParentOrgId { get; set; }
         public Guid? OrgId { get; set; }
-        public Guid? ParentOrgId { get; set; } = null;
+        public Guid? ParentOrgId { get; set; }
         public Guid? IdentityId { get; set; }
         public string? UserEmail { get; set; }
-        public bool IncludeInactive { get; set; } = false;
-        public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
+        public bool IncludeInactive { get; set; }
+        public PortalUserServiceCategory? PortalUserServiceCategory { get; set; }
         public IEnumerable<ContactRoleCode>? ContactRoleCode { get; set; } = Array.Empty<ContactRoleCode>();
     };
     public record PortalUserByIdQry(Guid UserId) : PortalUserQry;
@@ -58,12 +60,10 @@ namespace Spd.Resource.Repository.PortalUser
     };
     public record CreatePortalUserCmd : PortalUserCmd
     {
-        public PortalUserServiceCategoryEnum? PortalUserServiceCategory { get; set; }
-        public string HostUrl { get; set; }
-        public Guid? CreatedByUserId { get; set; } = null;
-
+        public PortalUserServiceCategory? PortalUserServiceCategory { get; set; }
+        public string HostUrl { get; set; } = null!;
+        public Guid? CreatedByUserId { get; set; }
     };
     public record PortalUserDeleteCmd(Guid Id) : PortalUserCmd;
     public record BizPortalUserInvitationVerify(string InviteIdEncryptedCode, Guid OrgGuid, Guid UserGuid) : PortalUserCmd;
-
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
+using Spd.Utilities.Shared.Tools;
 
 namespace Spd.Resource.Repository.Tasks;
 
@@ -16,16 +17,5 @@ internal class Mappings : Profile
          .ForMember(d => d.scheduledend, opt => opt.MapFrom(s => s.DueDateTime));
     }
 
-    internal static int? GetPriority(TaskPriorityEnum? code)
-    {
-        if (code == null) return (int)TaskPriorityOptionSet.Normal;
-        return (int)Enum.Parse<TaskPriorityOptionSet>(code.ToString());
-    }
-
-    internal static TaskPriorityEnum? GetTaskPriorityEnum(int? optionset)
-    {
-        if (optionset == null) return null;
-        return Enum.Parse<TaskPriorityEnum>(Enum.GetName(typeof(TaskPriorityOptionSet), optionset));
-    }
+    private static int GetPriority(TaskPriority? code) => (int)code.ConvertEnum(TaskPriorityOptionSet.Normal);
 }
-

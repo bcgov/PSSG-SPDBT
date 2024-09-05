@@ -5,7 +5,7 @@ using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PortalUser;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 
 namespace Spd.Manager.Screening
 {
@@ -51,15 +51,15 @@ namespace Spd.Manager.Screening
                .ForMember(d => d.ApplicantId, opt => opt.MapFrom(s => s.Id));
         }
 
-        public static GenderEnum? GetGenderEnum(string? bscsGender)
+        public static Gender? GetGenderEnum(string? bscsGender)
         {
             if (bscsGender == null) return null;
             string? str = bscsGender?.ToLower();
-            GenderEnum? gender = str switch
+            Gender? gender = str switch
             {
-                "female" => GenderEnum.F,
-                "male" => GenderEnum.M,
-                "diverse" => GenderEnum.U,
+                "female" => Gender.F,
+                "male" => Gender.M,
+                "diverse" => Gender.U,
                 _ => null,
             };
             return gender;

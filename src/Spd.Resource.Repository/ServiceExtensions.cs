@@ -29,7 +29,7 @@ using Spd.Resource.Repository.Registration;
 using Spd.Resource.Repository.Report;
 using Spd.Resource.Repository.ServiceTypes;
 using Spd.Resource.Repository.Tasks;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Resource.Repository.WorkerLicenceCategory;
 using Spd.Utilities.Hosting;
 

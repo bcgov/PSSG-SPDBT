@@ -65,7 +65,7 @@ internal class BizMemberManager :
             new LicenceAppQuery(
                 null,
                 resp.BizId,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
+                new List<WorkerLicenceType> { WorkerLicenceType.SecurityBusinessLicence },
                 new List<ApplicationPortalStatusEnum>
                 {
                     ApplicationPortalStatusEnum.Draft,
@@ -74,7 +74,7 @@ internal class BizMemberManager :
                     ApplicationPortalStatusEnum.AwaitingPayment
                 }),
             cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationType.Replacement)
             .OrderByDescending(a => a.CreatedOn)
             .FirstOrDefault();
         response.BizLicAppId = app?.LicenceAppId;

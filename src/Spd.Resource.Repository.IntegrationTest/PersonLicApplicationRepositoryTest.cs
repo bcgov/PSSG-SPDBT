@@ -42,7 +42,7 @@ public class PersonLicApplicationRepositoryTest : IClassFixture<IntegrationTestS
             .With(a => a.ResidentialAddressData, fixture.Build<ResidentialAddr>().With(a => a.PostalCode, "V9N 5J2").Create())
             .With(a => a.MailingAddressData, fixture.Build<MailingAddr>().With(a => a.PostalCode, "V9N 5J2").Create())
             .With(a => a.Aliases, new List<AliasResp> { new() { Surname = "surname", GivenName = "givenname" } })
-            .With(a => a.UploadedDocumentEnums, new List<UploadedDocumentEnum> { UploadedDocumentEnum.StudyPermit, UploadedDocumentEnum.Fingerprint })
+            .With(a => a.UploadedDocumentEnums, new List<UploadedDocument> { UploadedDocument.StudyPermit, UploadedDocument.Fingerprint })
             .Create();
 
         // Action

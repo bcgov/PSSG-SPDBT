@@ -3,7 +3,9 @@ namespace Spd.Resource.Repository.Registration
     public interface IOrgRegistrationRepository
     {
         Task<bool> AddRegistrationAsync(CreateOrganizationRegistrationCommand createRegistrationCmd, CancellationToken ct);
+
         Task<bool> CheckDuplicateAsync(SearchRegistrationQry searchQry, CancellationToken ct);
+
         Task<OrgRegistrationQueryResult> Query(OrgRegistrationQuery query, CancellationToken ct);
     }
 
@@ -50,7 +52,7 @@ namespace Spd.Resource.Repository.Registration
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
         public ScreeningsCountTypeCode ScreeningsCount { get; set; }
-        public IdentityProviderTypeEnum? IdentityProviderTypeCode { get; set; }
+        public IdentityProviderType? IdentityProviderTypeCode { get; set; }
         public Guid? BizIdentityGuid { get; set; }
         public Guid? BCeIDUserGuid { get; set; }
         public BooleanTypeCode HasPotentialDuplicate { get; set; } = BooleanTypeCode.No;
@@ -61,7 +63,7 @@ namespace Spd.Resource.Repository.Registration
         public Guid OrgRegistrationId { get; set; }
         public string OrgRegistrationStatusStr { get; set; } = null!;
         public DateTimeOffset CreatedOn { get; set; }
-        public string OrgRegistrationNumber { get; set; }
+        public string OrgRegistrationNumber { get; set; } = null!;
     };
 
     public enum RegistrationTypeCode
@@ -83,7 +85,7 @@ namespace Spd.Resource.Repository.Registration
         NotSure
     }
 
-    public enum IdentityProviderTypeEnum
+    public enum IdentityProviderType
     {
         BusinessBceId,
         BcServicesCard,

@@ -7,7 +7,7 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PortalUser;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.Shared.Exceptions;
 
 namespace Spd.Manager.Licence.UnitTest;

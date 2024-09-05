@@ -116,13 +116,13 @@ namespace Spd.Manager.Screening
             }
         }
 
-        private static Guid? GetParentOrgId(ServiceTypeCode serviceType)
+        private static Guid? GetParentOrgId(Shared.ServiceTypeCode serviceType)
         {
-            if (serviceType == ServiceTypeCode.PSSO ||
-                serviceType == ServiceTypeCode.PSSO_VS ||
-                serviceType == ServiceTypeCode.PE_CRC_VS ||
-                serviceType == ServiceTypeCode.PE_CRC ||
-                serviceType == ServiceTypeCode.MCFD)
+            if (serviceType == Shared.ServiceTypeCode.PSSO ||
+                serviceType == Shared.ServiceTypeCode.PSSO_VS ||
+                serviceType == Shared.ServiceTypeCode.PE_CRC_VS ||
+                serviceType == Shared.ServiceTypeCode.PE_CRC ||
+                serviceType == Shared.ServiceTypeCode.MCFD)
                 return SpdConstants.BcGovOrgId;
             return null;
         }

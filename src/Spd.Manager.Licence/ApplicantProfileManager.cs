@@ -67,12 +67,12 @@ namespace Spd.Manager.Licence
         public async Task<ApplicantLoginResponse> Handle(ApplicantLoginCommand cmd, CancellationToken ct)
         {
             ContactResp? contactResp = null;
-            var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var result = await _idRepository.Query(new IdentityQry(cmd.BcscIdentityInfo.Sub, null, IdentityProviderType.BcServicesCard), ct);
 
             if (result == null || !result.Items.Any()) //first time to use system
             {
                 //add identity
-                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var id = await _idRepository.Manage(new CreateIdentityCmd(cmd.BcscIdentityInfo.Sub, null, IdentityProviderType.BcServicesCard), ct);
                 CreateContactCmd createContactCmd = _mapper.Map<CreateContactCmd>(cmd);
                 createContactCmd.IdentityId = id.Id;
                 contactResp = await _contactRepository.ManageAsync(createContactCmd, ct);
@@ -139,11 +139,11 @@ namespace Spd.Manager.Licence
             LicenceAppQuery q = new(
                 cmd.ApplicantId,
                 null,
-                new List<WorkerLicenceTypeEnum>
+                new List<WorkerLicenceType>
                 {
-                    WorkerLicenceTypeEnum.ArmouredVehiclePermit,
-                    WorkerLicenceTypeEnum.BodyArmourPermit,
-                    WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                    WorkerLicenceType.ArmouredVehiclePermit,
+                    WorkerLicenceType.BodyArmourPermit,
+                    WorkerLicenceType.SecurityWorkerLicence,
                 },
                 new List<ApplicationPortalStatusEnum>
                 {

@@ -59,7 +59,7 @@ public class BizProfileManager :
             _logger.LogError("Cannot get the business information from BCeID web service.");
 
         IdentityQueryResult idResult = await _idRepository.Query(
-            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderTypeEnum.BusinessBceId),
+            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderType.BusinessBceId),
             ct);
         if (idResult != null && idResult.Items.Any())
             currentUserIdentity = idResult.Items.FirstOrDefault();
@@ -75,7 +75,7 @@ public class BizProfileManager :
             else
             {
                 //add biz type to org
-                BizResult b = await _bizRepository.ManageBizAsync(new AddBizServiceTypeCmd((Guid)cmd.BizId, ServiceTypeEnum.SecurityBusinessLicence), ct);
+                BizResult b = await _bizRepository.ManageBizAsync(new AddBizServiceTypeCmd((Guid)cmd.BizId, ServiceTypeCode.SecurityBusinessLicence), ct);
                 await UpdateBiz(cmd, bizInfoFormBceid, ct);
                 bizId = b.Id;
             }
@@ -145,11 +145,11 @@ public class BizProfileManager :
         if (cmd.BizId == null) return true;
         BizResult? biz = await _bizRepository.GetBizAsync((Guid)cmd.BizId, ct);
         if (biz == null) return true;
-        if (!biz.ServiceTypes.Contains(ServiceTypeEnum.SecurityBusinessLicence))
+        if (!biz.ServiceTypes.Contains(ServiceTypeCode.SecurityBusinessLicence))
             return true;
 
         var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-            new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
+            new PortalUserQry { OrgId = cmd.BizId, PortalUserServiceCategory = PortalUserServiceCategory.Licensing },
             ct);
         if (portalUsers == null || !portalUsers.Items.Any())
         {
@@ -165,7 +165,7 @@ public class BizProfileManager :
             return null;
 
         var portalUsers = (PortalUserListResp)await _portalUserRepository.QueryAsync(
-            new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id, PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing },
+            new PortalUserQry { OrgId = cmd.BizId, IdentityId = currentUserIdentity.Id, PortalUserServiceCategory = PortalUserServiceCategory.Licensing },
             ct);
         PortalUserResp resp = portalUsers.Items.FirstOrDefault();
         if (resp != null && (resp.ContactRoleCode == ContactRoleCode.PrimaryBusinessManager || resp.ContactRoleCode == ContactRoleCode.BusinessManager))
@@ -178,7 +178,7 @@ public class BizProfileManager :
         IdentityCmdResult? identity = await _idRepository.Manage(new CreateIdentityCmd(
             cmd.BceidIdentityInfo.UserGuid.ToString(),
             cmd.BceidIdentityInfo.BizGuid,
-            IdentityProviderTypeEnum.BusinessBceId), ct);
+            IdentityProviderType.BusinessBceId), ct);
         if ((identity == null))
         {
             throw new ApiException(System.Net.HttpStatusCode.InternalServerError, "create identity failed.");
@@ -193,7 +193,7 @@ public class BizProfileManager :
     {
         CreateBizCmd createCmd = new()
         {
-            ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
+            ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.SecurityBusinessLicence },
             BizLegalName = bizInfoFromBceid?.LegalName,
             BizName = bizInfoFromBceid?.TradeName,
             Email = cmd.BceidIdentityInfo.Email,
@@ -231,7 +231,7 @@ public class BizProfileManager :
             LastName = info.LastName,
             OrgId = bizId,
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
-            PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+            PortalUserServiceCategory = PortalUserServiceCategory.Licensing
         }, ct);
     }
 

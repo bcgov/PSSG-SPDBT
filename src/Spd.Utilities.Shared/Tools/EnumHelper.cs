@@ -25,4 +25,25 @@ public static class EnumHelper
         }
         throw new ArgumentException("Not found.", nameof(description));
     }
+
+    public static TDestinationEnum? ConvertEnum<TSourceEnum, TDestinationEnum>(this TSourceEnum? value)
+     where TSourceEnum : struct
+     where TDestinationEnum : struct
+     => value == null
+        ? null
+        : Enum.Parse<TDestinationEnum>(value.ToString()!);
+
+    public static TDestinationEnum ConvertEnum<TSourceEnum, TDestinationEnum>(this TSourceEnum? value, TDestinationEnum defaultValue)
+     where TSourceEnum : struct
+     where TDestinationEnum : struct
+     => value == null
+        ? defaultValue
+        : Enum.Parse<TDestinationEnum>(value.ToString()!);
+
+    public static TDestinationEnum? ConvertEnum<TSourceEnum, TDestinationEnum>(this int? value)
+        where TSourceEnum : struct
+        where TDestinationEnum : struct
+        => value == null
+        ? null
+        : Enum.Parse<TDestinationEnum>(Enum.GetName(typeof(TSourceEnum), value) ?? throw new ArgumentException($"Value {value} not found in enum {typeof(TSourceEnum).FullName}", nameof(value)));
 }

@@ -12,7 +12,7 @@ public class BcMailPlusTests : IAsyncLifetime
     private IServiceScope serviceScope = null!;
     private IServiceProvider services => serviceScope.ServiceProvider;
 
-    [Theory]
+    [Theory(Skip = "only run when required")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 1 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 3 bad).json")]
@@ -26,7 +26,7 @@ public class BcMailPlusTests : IAsyncLifetime
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "only run when required")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 1 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Armoured Vehicle Permit (Photo 3 bad).json")]
@@ -37,7 +37,7 @@ public class BcMailPlusTests : IAsyncLifetime
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "only run when required")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 1 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 2 good).json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Body Armour Permit (Photo 3 bad).json")]
@@ -48,7 +48,7 @@ public class BcMailPlusTests : IAsyncLifetime
         (await Run(Jobs.SecurityWorkerLicense, fileName)).ShouldBeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "only run when required")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Business Licence.json")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Business Licence - Sole Proprietor.json")]
     public async Task RunBusinessLicenseJob(string fileName)
@@ -56,14 +56,14 @@ public class BcMailPlusTests : IAsyncLifetime
         (await Run(Jobs.BusinessLicense, fileName)).ShouldBeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "only run when required")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Fingerprint Request Letter.json")]
     public async Task RunFingerprintLetterJob(string fileName)
     {
         (await Run(Jobs.FingerprintsLetter, fileName)).ShouldBeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "only run when required")]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Metal Dealers and Recyclers Permit.json")]
     public async Task RunMetalDealerAndRecyclersPermitJob(string fileName)
     {

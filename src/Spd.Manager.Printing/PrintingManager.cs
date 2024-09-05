@@ -117,7 +117,7 @@ internal class PrintingManager
     public async Task<PreviewDocumentResp> Handle(PreviewDocumentCommand cmd, CancellationToken cancellationToken)
     {
         LicenceResp? licence = await _licenceRepository.GetAsync(cmd.LicenceId, cancellationToken);
-        if (licence == null || licence.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (licence == null || licence.WorkerLicenceTypeCode == WorkerLicenceType.SecurityBusinessLicence)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the licence or the licence is not person licence.");
         PrintJob printJob = new(DocumentType.PersonalLicencePreview, null, cmd.LicenceId);
         var transformResponse = await _documentTransformationEngine.Transform(CreateDocumentTransformRequest(printJob), cancellationToken);

@@ -62,11 +62,11 @@ internal class LicenceManager :
         }
         LicenceResp lic = response.Items.OrderByDescending(i => i.ExpiryDate).First();
         DocumentListResp? docResp = null;
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.ArmouredVehiclePermit)
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceType.ArmouredVehiclePermit)
             docResp = await _documentRepository.QueryAsync(
                     new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
                     cancellationToken);
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit)
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceType.BodyArmourPermit)
             docResp = await _documentRepository.QueryAsync(
                 new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.BodyArmourRationale },
                 cancellationToken);

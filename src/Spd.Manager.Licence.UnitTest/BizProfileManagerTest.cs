@@ -92,7 +92,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
-                    ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
+                    ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.SecurityBusinessLicence }
                 });
             mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<AddBizServiceTypeCmd>(c => c.BizId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { Id = bizId });
@@ -128,7 +128,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
-                    ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
+                    ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.SecurityBusinessLicence }
                 });
             mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<AddBizServiceTypeCmd>(c => c.BizId == bizId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult() { Id = bizId });
@@ -167,14 +167,14 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
-                    ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
+                    ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.SecurityBusinessLicence }
                 });
 
             mockBizRepo.Setup(m => m.ManageBizAsync(It.Is<UpdateBizCmd>(c => c.BizGuid == identityInfo.BizGuid), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
-                    ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
+                    ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.SecurityBusinessLicence },
                     MailingAddress = new Addr() { AddressLine1 = "address line1" }
                 });
 
@@ -226,7 +226,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new BizResult()
                 {
                     Id = bizId,
-                    ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence }
+                    ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.SecurityBusinessLicence }
                 });
 
             mockPortalUserRepo.Setup(a => a.QueryAsync(

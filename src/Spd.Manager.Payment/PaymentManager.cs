@@ -105,7 +105,7 @@ namespace Spd.Manager.Payment
 
             var paymentId = Guid.NewGuid();
             var encryptedPaymentId = WebUtility.UrlEncode(_dataProtector.Protect(paymentId.ToString(), DateTimeOffset.UtcNow.AddDays(SpdConstants.PrePaymentLinkValidDays)));
-            if (IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
+            if (IApplicationRepository.ScreeningServiceTypes.Contains((Resource.Repository.ServiceTypeCode)app.ServiceType))
                 //if it is screening application
                 return new PrePaymentLinkResponse($"{command.ScreeningAppPaymentUrl}?encodedAppId={encryptedApplicationId}&encodedPaymentId={encryptedPaymentId}");
             else
@@ -344,7 +344,7 @@ namespace Spd.Manager.Payment
                 TimeSpan.FromMinutes(60),
                 ct);
 
-            if (app.ServiceType != null && IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType))
+            if (app.ServiceType != null && IApplicationRepository.ScreeningServiceTypes.Contains((Resource.Repository.ServiceTypeCode)app.ServiceType))
             {
                 //screening price and payment setting
                 var pbcRefnumberConfig = configResult.ConfigItems.FirstOrDefault(c => c.Key == IConfigRepository.PAYBC_PBCREFNUMBER_KEY);
@@ -363,7 +363,7 @@ namespace Spd.Manager.Payment
                 {
                     PbcRefNumber = pbcRefnumberConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountConfig.Value,
-                    ServiceCost = Decimal.Round(serviceTypeListResp.Items.First().ScreeningCost ?? 0, 2)
+                    ServiceCost = decimal.Round(serviceTypeListResp.Items.First().ScreeningCost ?? 0, 2)
                 };
                 return spdPaymentConfig;
             }
@@ -379,16 +379,16 @@ namespace Spd.Manager.Payment
                     throw new ApiException(HttpStatusCode.InternalServerError, "Dynamics did not set paybc revenue account licensing correctly.");
 
                 var licApp = await _personLicAppRepository.GetLicenceApplicationAsync(app.Id, ct);
-                LicenceFeeListResp feeList = await _licFeeRepository.QueryAsync(
+                var feeList = await _licFeeRepository.QueryAsync(
                     new LicenceFeeQry
                     {
                         WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
                         ApplicationTypeEnum = licApp.ApplicationTypeCode,
                         LicenceTermEnum = licApp.LicenceTermCode,
-                        BizTypeEnum = licApp.BizTypeCode ?? BizTypeEnum.None,
-                        HasValidSwl90DayLicence = licApp.OriginalLicenceTermCode == LicenceTermEnum.NinetyDays &&
-                            licApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence &&
-                            licApp.ApplicationTypeCode == ApplicationTypeEnum.Renewal
+                        BizTypeEnum = licApp.BizTypeCode ?? BizType.None,
+                        HasValidSwl90DayLicence = licApp.OriginalLicenceTermCode == LicenceTerm.NinetyDays &&
+                            licApp.WorkerLicenceTypeCode == WorkerLicenceType.SecurityWorkerLicence &&
+                            licApp.ApplicationTypeCode == ApplicationType.Renewal
                     },
                     ct);
 
@@ -399,7 +399,7 @@ namespace Spd.Manager.Payment
                 {
                     PbcRefNumber = pbcRefnumberLicConfig.Value,
                     PaybcRevenueAccount = PaybcRevenueAccountLicConfig.Value,
-                    ServiceCost = Decimal.Round((decimal)price, 2)
+                    ServiceCost = decimal.Round((decimal)price, 2)
                 };
             }
         }

@@ -49,7 +49,7 @@ namespace Spd.Resource.Repository.Registration
             .ForMember(d => d.OrgRegistrationStatusStr, opt => opt.MapFrom(s => ((OrgRegistrationStatus)s.statuscode).ToString()));
         }
 
-        private static int? GetPortalUserIdentityType(IdentityProviderTypeEnum? code)
+        private static int? GetPortalUserIdentityType(IdentityProviderType? code)
         {
             if (code == null) return null;
             return (int)Enum.Parse<IdentityTypeOptionSet>(code.ToString());

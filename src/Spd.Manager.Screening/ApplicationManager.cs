@@ -159,7 +159,7 @@ namespace Spd.Manager.Screening
             }
 
             //update status : if psso or volunteer, go directly to submitted
-            if ((request.ParentOrgId == SpdConstants.BcGovOrgId || request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+            if ((request.ParentOrgId == SpdConstants.BcGovOrgId || request.ApplicationCreateRequest.ServiceType == Shared.ServiceTypeCode.CRRP_VOLUNTEER)
                 && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
             {
                 await _applicationRepository.UpdateAsync(
@@ -248,14 +248,14 @@ namespace Spd.Manager.Screening
                 //if org is psso or if org is volunteer crrp, set application status to submitted.
                 if (org.OrgResult.ParentOrgId == SpdConstants.BcGovOrgId ||
                     org.OrgResult.Id == SpdConstants.BcGovOrgId ||
-                    org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER || t == ServiceTypeEnum.PSSO || t == ServiceTypeEnum.PSSO_VS || t == ServiceTypeEnum.MCFD || t == ServiceTypeEnum.PE_CRC || t == ServiceTypeEnum.PE_CRC_VS)) //is PSSO
+                    org.OrgResult.ServiceTypes.Any(t => t == Resource.Repository.ServiceTypeCode.CRRP_VOLUNTEER || t == Resource.Repository.ServiceTypeCode.PSSO || t == Resource.Repository.ServiceTypeCode.PSSO_VS || t == Resource.Repository.ServiceTypeCode.MCFD || t == Resource.Repository.ServiceTypeCode.PE_CRC || t == Resource.Repository.ServiceTypeCode.PE_CRC_VS)) //is PSSO
                 {
                     updateCmd.Status = ApplicationStatusEnum.Submitted;
                 }
                 else
                 {
                     //if org is non-volunteer crrp
-                    ApplicationResult result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
+                    var result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
                     if (result.PaidOn != null) //already paid
                         updateCmd.Status = ApplicationStatusEnum.Submitted;
                     else //not paid
@@ -421,7 +421,7 @@ namespace Spd.Manager.Screening
                         FilterBy = new AppInviteFilterBy(null, null, AppInviteId: command.ApplicationCreateRequest.AppInviteId)
                     }, ct);
                 invite = invites.ApplicationInvites.FirstOrDefault();
-                if (invite != null && (invite.Status == ApplicationInviteStatusEnum.Completed || invite.Status == ApplicationInviteStatusEnum.Cancelled || invite.Status == ApplicationInviteStatusEnum.Expired))
+                if (invite != null && (invite.Status == ApplicationInviteStatus.Completed || invite.Status == ApplicationInviteStatus.Cancelled || invite.Status == ApplicationInviteStatus.Expired))
                     throw new ArgumentException("Invalid Invite status.");
             }
 
@@ -435,7 +435,7 @@ namespace Spd.Manager.Screening
                cmd.SharedClearanceId.HasValue &&
                cmd.CreatedByApplicantBcscId != null)//bcsc authenticated and has sharable clearance
             {
-                var contacts = await _identityRepository.Query(new IdentityQry(cmd.CreatedByApplicantBcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+                var contacts = await _identityRepository.Query(new IdentityQry(cmd.CreatedByApplicantBcscId, null, IdentityProviderType.BcServicesCard), ct);
                 var contact = contacts.Items.FirstOrDefault();
                 if (contact == null)
                     throw new ArgumentException("No contact found");
@@ -455,7 +455,7 @@ namespace Spd.Manager.Screening
                 }
 
                 //update status : if psso or volunteer, go directly to submitted
-                if ((cmd.ParentOrgId == SpdConstants.BcGovOrgId || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
+                if ((cmd.ParentOrgId == SpdConstants.BcGovOrgId || command.ApplicationCreateRequest.ServiceType == Shared.ServiceTypeCode.CRRP_VOLUNTEER)
                     && command.ApplicationCreateRequest.HaveVerifiedIdentity == true)
                 {
                     await _applicationRepository.UpdateAsync(
@@ -493,7 +493,7 @@ namespace Spd.Manager.Screening
                     {
                         ApplicationInviteId = (Guid)command.ApplicationCreateRequest.AppInviteId,
                         OrgId = command.ApplicationCreateRequest.OrgId,
-                        ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Completed
+                        ApplicationInviteStatusEnum = ApplicationInviteStatus.Completed
                     }, ct);
             }
             return result;
@@ -515,7 +515,7 @@ namespace Spd.Manager.Screening
 
         public async Task<ApplicantApplicationFileListResponse> Handle(ApplicantApplicationFileQuery query, CancellationToken ct)
         {
-            var contacts = await _identityRepository.Query(new IdentityQry(query.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepository.Query(new IdentityQry(query.BcscId, null, IdentityProviderType.BcServicesCard), ct);
             var contact = contacts.Items.FirstOrDefault();
             if (contact == null)
                 throw new ArgumentException("No contact found");
@@ -531,7 +531,7 @@ namespace Spd.Manager.Screening
 
         public async Task<IEnumerable<ApplicantAppFileCreateResponse>> Handle(CreateApplicantAppFileCommand command, CancellationToken ct)
         {
-            var contacts = await _identityRepository.Query(new IdentityQry(command.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepository.Query(new IdentityQry(command.BcscId, null, IdentityProviderType.BcServicesCard), ct);
             var contact = contacts.Items.FirstOrDefault();
             if (contact == null)
                 throw new ArgumentException("No contact found");

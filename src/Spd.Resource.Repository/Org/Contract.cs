@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.Org
 
     //query
     public abstract record OrgQry;
-    public record OrgsQry(Guid? OrgGuid = null, Guid? ParentOrgId = null, bool IncludeInactive = false, string? OrgCode = null, IEnumerable<ServiceTypeEnum>? ServiceTypes = null) : OrgQry;
+    public record OrgsQry(Guid? OrgGuid = null, Guid? ParentOrgId = null, bool IncludeInactive = false, string? OrgCode = null, IEnumerable<ServiceTypeCode>? ServiceTypes = null) : OrgQry;
     public record OrgByIdentifierQry(Guid? OrgId, string? AccessCode = null) : OrgQry;
     public record SearchOrgQry : OrgQry
     {
@@ -59,7 +59,7 @@ namespace Spd.Resource.Repository.Org
         public bool GenericUploadEnabled { get; set; }
         public string? EmployeeOrganizationTypeCode { get; set; }
         public string? VolunteerOrganizationTypeCode { get; set; }
-        public IEnumerable<ServiceTypeEnum> ServiceTypes { get; set; } = Array.Empty<ServiceTypeEnum>();
+        public IEnumerable<ServiceTypeCode> ServiceTypes { get; set; } = Array.Empty<ServiceTypeCode>();
         public bool IsActive { get; set; } = true;
         public Guid? ParentOrgId { get; set; }
     }

@@ -82,7 +82,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.EmailAddress));
     }
 
-    private static int? GetLicenceTerm(LicenceTermEnum? code)
+    private static int? GetLicenceTerm(LicenceTerm? code)
     {
         if (code == null) return null;
         return (int)Enum.Parse<LicenceTermOptionSet>(code.ToString());

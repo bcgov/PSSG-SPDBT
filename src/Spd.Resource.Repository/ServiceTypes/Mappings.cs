@@ -15,14 +15,14 @@ internal class Mappings : Profile
          .ForMember(d => d.ScreeningCost, opt => opt.MapFrom(s => s.spd_screeningcost));
     }
 
-    internal static ServiceTypeCategoryEnum? GetServiceTypeCategoryEnum(int? serviceCategory)
+    internal static ServiceTypeCategory? GetServiceTypeCategoryEnum(int? serviceCategory)
     {
         if (serviceCategory == null)
             return null;
         return serviceCategory switch
         {
-            (int)ServiceTypeCategoryOptionSet.Screening => ServiceTypeCategoryEnum.Screening,
-            (int)ServiceTypeCategoryOptionSet.Licensing => ServiceTypeCategoryEnum.Licensing,
+            (int)ServiceTypeCategoryOptionSet.Screening => ServiceTypeCategory.Screening,
+            (int)ServiceTypeCategoryOptionSet.Licensing => ServiceTypeCategory.Licensing,
             _ => throw new ArgumentException("invalid int application type option set")
         };
     }

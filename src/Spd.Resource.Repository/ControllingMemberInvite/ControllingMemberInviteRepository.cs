@@ -54,7 +54,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_OrganizationId), biz);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_InvitedBy), user);
             _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_BusinessContact), bizContact);
-            spd_servicetype? servicetype = _dynaContext.LookupServiceType(ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
+            spd_servicetype? servicetype = _dynaContext.LookupServiceType(ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
             if (servicetype != null)
             {
                 _dynaContext.SetLink(invitation, nameof(spd_portalinvitation.spd_ServiceTypeId), servicetype);

@@ -5,14 +5,14 @@ namespace Spd.Resource.Repository.Application;
 
 public partial interface IApplicationRepository
 {
-    public static readonly List<ServiceTypeEnum> ScreeningServiceTypes = new() {
-        ServiceTypeEnum.PSSO,
-        ServiceTypeEnum.CRRP_EMPLOYEE,
-        ServiceTypeEnum.CRRP_VOLUNTEER,
-        ServiceTypeEnum.PSSO_VS,
-        ServiceTypeEnum.MCFD,
-        ServiceTypeEnum.PE_CRC_VS,
-        ServiceTypeEnum.PE_CRC
+    public static readonly List<ServiceTypeCode> ScreeningServiceTypes = new() {
+        ServiceTypeCode.PSSO,
+        ServiceTypeCode.CRRP_EMPLOYEE,
+        ServiceTypeCode.CRRP_VOLUNTEER,
+        ServiceTypeCode.PSSO_VS,
+        ServiceTypeCode.MCFD,
+        ServiceTypeCode.PE_CRC_VS,
+        ServiceTypeCode.PE_CRC
     };
     public Task<Guid?> AddApplicationAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
     public Task ProcessAppWithSharableClearanceAsync(ApplicationCreateCmd createApplicationCmd, CancellationToken cancellationToken);
@@ -74,7 +74,7 @@ public record ApplicationCreateCmd
     public string? DriversLicense { get; set; }
     public DateOnly? DateOfBirth { get; set; }
     public string? BirthPlace { get; set; }
-    public GenderEnum? GenderCode { get; set; }
+    public Gender? GenderCode { get; set; }
     public string? JobTitle { get; set; }
     public string? ContractedCompanyName { get; set; }
     public string? AddressLine1 { get; set; }
@@ -89,7 +89,7 @@ public record ApplicationCreateCmd
     public IEnumerable<AliasCreateCmd> Aliases { get; set; } = Array.Empty<AliasCreateCmd>();
     public Guid CreatedByUserId { get; set; }
     public PayerPreferenceTypeCode PayeeType { get; set; }
-    public ServiceTypeEnum? ServiceType { get; set; }
+    public ServiceTypeCode? ServiceType { get; set; }
     public ScreenTypeEnum ScreeningType { get; set; } = ScreenTypeEnum.Staff;
     public string? CreatedByApplicantBcscId { get; set; } = null;
     public Guid? SharedClearanceId { get; set; } = null;
@@ -152,7 +152,7 @@ public record ApplicationResult
     public bool? HaveVerifiedIdentity { get; set; }
     public DateTimeOffset? CreatedOn { get; set; }
     public string? OrgName { get; set; }
-    public ServiceTypeEnum? ServiceType { get; set; }
+    public ServiceTypeCode? ServiceType { get; set; }
     public ScreenTypeEnum? ScreeningType { get; set; }
     public DateTimeOffset? PaidOn { get; set; }
     public int? NumberOfAttempts { get; set; }
@@ -248,15 +248,15 @@ public record ClearanceAccessDeleteCmd
 public record ClearanceQry(Guid? ContactId = null,
     EmployeeInteractionTypeCode? WorkWith = null,
     DateTimeOffset? FromDate = null,
-    ServiceTypeEnum? ServiceType = null,
+    ServiceTypeCode? ServiceType = null,
     bool? Shareable = null,
     Guid? ClearanceId = null,
-    ServiceTypeEnum? IncludeServiceTypeEnum = null,
+    ServiceTypeCode? IncludeServiceTypeEnum = null,
     EmployeeInteractionTypeCode? IncludeWorkWith = null);
 public record ClearanceResp
 {
     public Guid OrgId { get; set; }
-    public ServiceTypeEnum ServiceType { get; set; }
+    public ServiceTypeCode ServiceType { get; set; }
     public DateTimeOffset? GrantedDate { get; set; }
     public DateTimeOffset? ExpiryDate { get; set; }
     public EmployeeInteractionTypeCode? WorkWith { get; set; }

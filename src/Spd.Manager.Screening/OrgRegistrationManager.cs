@@ -50,7 +50,7 @@ namespace Spd.Manager.Screening
                 var userIdentityInfo = _currentUser.GetBceidUserIdentityInfo();
                 orgRegistration.IdentityProviderTypeCode = _currentUser.GetIdentityProvider() switch
                 {
-                    "bceidboth" or "bceidbusiness" => IdentityProviderTypeEnum.BusinessBceId,
+                    "bceidboth" or "bceidbusiness" => IdentityProviderType.BusinessBceId,
                     _ => null
                 };
                 orgRegistration.BCeIDUserGuid = userIdentityInfo.UserGuid;

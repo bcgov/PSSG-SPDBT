@@ -9,12 +9,12 @@ namespace Spd.Resource.Repository.Identity
     }
 
     //query
-    public record IdentityQry(string? UserGuid, Guid? OrgGuid, IdentityProviderTypeEnum? IdentityProviderType, bool includeInactive = false);
+    public record IdentityQry(string? UserGuid, Guid? OrgGuid, IdentityProviderType? IdentityProviderType, bool includeInactive = false);
     public record IdentityQueryResult(IEnumerable<Identity> Items);
 
     //cmd
     public abstract record IdentityCmd;
-    public record CreateIdentityCmd(string UserGuid, Guid? OrgGuid, IdentityProviderTypeEnum IdentityProviderType) : IdentityCmd;
+    public record CreateIdentityCmd(string UserGuid, Guid? OrgGuid, IdentityProviderType IdentityProviderType) : IdentityCmd;
     public record IdentityCmdResult()
     {
         public Guid Id { get; set; }
@@ -33,7 +33,7 @@ namespace Spd.Resource.Repository.Identity
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public DateOnly? BirthDate { get; set; }
-        public GenderEnum? Gender { get; set; }
+        public Gender? Gender { get; set; }
         public string? Sub { get; set; }
     }
 

@@ -31,7 +31,7 @@ namespace Spd.Resource.Repository.BizContact
         public Guid? LatestControllingMemberCrcAppId { get; set; }
         public ApplicationPortalStatusEnum? LatestControllingMemberCrcAppPortalStatusEnum { get; set; }
         public Guid? LatestControllingMemberInvitationId { get; set; }
-        public ApplicationInviteStatusEnum? LatestControllingMemberInvitationStatusEnum { get; set; }
+        public ApplicationInviteStatus? LatestControllingMemberInvitationStatusEnum { get; set; }
     }
 
     public enum BizContactRoleEnum

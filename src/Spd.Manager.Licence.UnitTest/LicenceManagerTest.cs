@@ -203,7 +203,7 @@ public class LicenceManagerTest
         Guid licenceId = Guid.NewGuid();
         LicenceResp licenceResp = fixture.Build<LicenceResp>()
             .With(r => r.LicenceId, licenceId)
-            .With(r => r.PermitPurposeEnums, new List<PermitPurposeEnum>() { PermitPurposeEnum.ProtectionOfPersonalProperty })
+            .With(r => r.PermitPurposeEnums, new List<PermitPurpose>() { PermitPurpose.ProtectionOfPersonalProperty })
             .Create();
 
         mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(g => g.Equals(licenceId)), It.IsAny<CancellationToken>()))

@@ -4,7 +4,7 @@ using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Registration;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.Shared.Exceptions;
 using Spd.Manager.Shared;
 using System.Net;
@@ -165,14 +165,14 @@ namespace Spd.Manager.Screening
             Guid identityId;
             IdentityQueryResult idResult = await _idRepository.Query(new IdentityQry(request.IdentityInfo.UserGuid.ToString(),
                 request.IdentityInfo.BizGuid,
-                IdentityProviderTypeEnum.BusinessBceId),
+                IdentityProviderType.BusinessBceId),
                 ct);
 
             if (idResult == null || !idResult.Items.Any())
             {
                 IdentityCmdResult result = await _idRepository.Manage(new CreateIdentityCmd(request.IdentityInfo.UserGuid.ToString(),
                    request.IdentityInfo.BizGuid,
-                   IdentityProviderTypeEnum.BusinessBceId),
+                   IdentityProviderType.BusinessBceId),
                 ct);
                 identityId = result.Id;
             }

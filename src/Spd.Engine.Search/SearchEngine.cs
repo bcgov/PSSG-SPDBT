@@ -36,7 +36,7 @@ namespace Spd.Engine.Search
         {
             ShareableClearanceSearchResponse response = new();
             var org = (OrgQryResult)await _orgRepo.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
-            var contacts = await _identityRepo.Query(new IdentityQry(request.BcscId, null, IdentityProviderTypeEnum.BcServicesCard), ct);
+            var contacts = await _identityRepo.Query(new IdentityQry(request.BcscId, null, IdentityProviderType.BcServicesCard), ct);
             var contact = contacts.Items.FirstOrDefault();
             if (contact == null) return response;
 
@@ -45,7 +45,7 @@ namespace Spd.Engine.Search
                 FromDate: DateTimeOffset.UtcNow.AddMonths(SpdConstants.ShareableClearanceExpiredDateBufferInMonths),
                 Shareable: true,
                 IncludeWorkWith: org.OrgResult.EmployeeInteractionType,
-                IncludeServiceTypeEnum: Enum.Parse<ServiceTypeEnum>(request.ServiceType.ToString())
+                IncludeServiceTypeEnum: Enum.Parse<ServiceTypeCode>(request.ServiceType.ToString())
             );
             var results = await _appRepo.QueryAsync(qry, ct);
             response.Items = _mapper.Map<IEnumerable<ShareableClearance>>(results.Clearances);

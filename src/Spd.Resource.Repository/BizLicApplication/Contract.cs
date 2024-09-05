@@ -14,9 +14,9 @@ public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);
 
 public record BizLicApplication
 {
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
-    public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public BizTypeEnum? BizTypeCode { get; set; }
+    public WorkerLicenceType WorkerLicenceTypeCode { get; set; }
+    public ApplicationType ApplicationTypeCode { get; set; }
+    public BizType? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -31,11 +31,11 @@ public record BizLicApplication
     public string? ManagerPhoneNumber { get; set; }
     public string? ExpiredLicenceNumber { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
-    public LicenceTermEnum? LicenceTermCode { get; set; }
+    public LicenceTerm? LicenceTermCode { get; set; }
     public bool? NoBranding { get; set; }
     public bool? UseDogs { get; set; }
-    public IEnumerable<WorkerCategoryTypeEnum> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeEnum>();
-    public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
+    public IEnumerable<WorkerCategoryType> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryType>();
+    public IEnumerable<UploadedDocument>? UploadedDocumentEnums { get; set; }
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
 }
@@ -64,7 +64,7 @@ public record BizLicApplicationResp() : BizLicApplication
     public DateOnly? ExpiryDate { get; set; }
     public ApplicationPortalStatusEnum? ApplicationPortalStatus { get; set; }
     public string? CaseNumber { get; set; }
-    public LicenceTermEnum? OriginalLicenceTermCode { get; set; }
+    public LicenceTerm? OriginalLicenceTermCode { get; set; }
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
     public Guid? SoleProprietorSWLAppId { get; set; }

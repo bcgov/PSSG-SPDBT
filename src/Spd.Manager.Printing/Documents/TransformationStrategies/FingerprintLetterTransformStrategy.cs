@@ -41,13 +41,13 @@ internal class FingerprintLetterTransformStrategy(IApplicationRepository applica
         if (applicant.Gender == null)
             letter.Applicant.Sex = string.Empty;
         else
-            letter.Applicant.Sex = await optionsetRepository.GetLabelAsync((GenderEnum)applicant.Gender, CancellationToken.None);
+            letter.Applicant.Sex = await optionsetRepository.GetLabelAsync((Gender)applicant.Gender, CancellationToken.None);
 
         letter.Organization = mapper.Map<Organization>(org.OrgResult);
         return letter;
     }
 
-    private async Task<string> GetServiceTypeForLetter(ServiceTypeEnum? serviceType, CancellationToken cancellationToken)
+    private async Task<string> GetServiceTypeForLetter(ServiceTypeCode? serviceType, CancellationToken cancellationToken)
     {
         if (serviceType == null) return string.Empty;
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(

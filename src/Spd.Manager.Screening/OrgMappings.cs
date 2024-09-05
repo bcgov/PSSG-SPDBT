@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Org;
 
@@ -25,11 +23,11 @@ namespace Spd.Manager.Screening
             return (T)Enum.Parse(typeof(T), enumName, true);
         }
 
-        private IEnumerable<ServiceTypeCode> GetScreeningServiceTypes(IEnumerable<ServiceTypeEnum> services)
+        private IEnumerable<Shared.ServiceTypeCode> GetScreeningServiceTypes(IEnumerable<Resource.Repository.ServiceTypeCode> services)
         {
             return services
                 .Where(s => IApplicationRepository.ScreeningServiceTypes.Contains(s))
-                .Select(s => Enum.Parse<ServiceTypeCode>(s.ToString()));
+                .Select(s => Enum.Parse<Shared.ServiceTypeCode>(s.ToString()));
         }
     }
 }

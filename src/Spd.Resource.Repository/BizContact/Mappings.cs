@@ -45,7 +45,7 @@ namespace Spd.Resource.Repository.BizContact
             }
         }
 
-        private (Guid? InviteId, ApplicationInviteStatusEnum? InviteStatus) GetLastestControllingMemberInvite(IEnumerable<spd_portalinvitation> invites)
+        private (Guid? InviteId, ApplicationInviteStatus? InviteStatus) GetLastestControllingMemberInvite(IEnumerable<spd_portalinvitation> invites)
         {
             spd_portalinvitation? invite = invites.OrderByDescending(app => app.createdon).FirstOrDefault();
             if (invite == null) return (null, null);
@@ -55,7 +55,7 @@ namespace Spd.Resource.Repository.BizContact
                 else
                 {
                     string status = ((InvitationStatus)invite.statuscode.Value).ToString();
-                    ApplicationInviteStatusEnum statusEnum = Enum.Parse<ApplicationInviteStatusEnum>(status);
+                    ApplicationInviteStatus statusEnum = Enum.Parse<ApplicationInviteStatus>(status);
                     return (invite.spd_portalinvitationid, statusEnum);
                 }
             }

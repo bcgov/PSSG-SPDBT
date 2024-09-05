@@ -13,15 +13,15 @@ namespace Spd.Resource.Repository.Licence
             _ = CreateMap<spd_licence, LicenceResp>()
              .ForMember(d => d.LicenceId, opt => opt.MapFrom(s => s.spd_licenceid))
              .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_CaseId._spd_applicationid_value))
-             .ForMember(d => d.LicenceHolderId, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? s.spd_LicenceHolder_account.accountid : s.spd_LicenceHolder_contact.contactid))
+             .ForMember(d => d.LicenceHolderId, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeCode.SecurityBusinessLicence ? s.spd_LicenceHolder_account.accountid : s.spd_LicenceHolder_contact.contactid))
              .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.spd_licencenumber))
              .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnlyFromDateTimeOffset(s.spd_expirydate)))
              .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value)))
              .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
-             .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? s.spd_LicenceHolder_account.name : s.spd_LicenceHolder_contact.firstname))
+             .ForMember(d => d.LicenceHolderFirstName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeCode.SecurityBusinessLicence ? s.spd_LicenceHolder_account.name : s.spd_LicenceHolder_contact.firstname))
              .ForMember(d => d.LicenceStatusCode, opt => opt.MapFrom(s => GetLicenceStatusEnum(s.statuscode)))
-             .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.lastname))
-             .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.spd_middlename1))
+             .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeCode.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.lastname))
+             .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeCode.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.spd_middlename1))
              .ForMember(d => d.NameOnCard, opt => opt.MapFrom(s => s.spd_nameonlicence))
              .ForMember(d => d.PermitOtherRequiredReason, opt => opt.MapFrom(s => s.spd_permitpurposeother))
              .ForMember(d => d.EmployerName, opt => opt.MapFrom(s => s.spd_employername))
@@ -68,11 +68,11 @@ namespace Spd.Resource.Repository.Licence
             return Enum.Parse<LicenceStatusEnum>(Enum.GetName(typeof(LicenceStatusOptionSet), optionset));
         }
 
-        internal static IEnumerable<WorkerCategoryTypeEnum> GetCategoryCodes(List<spd_caselicencecategory> categories)
+        internal static IEnumerable<WorkerCategoryType> GetCategoryCodes(List<spd_caselicencecategory> categories)
         {
             return categories
                 .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes)
-                .Select(c => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
+                .Select(c => Enum.Parse<WorkerCategoryType>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
         }
     }
 }

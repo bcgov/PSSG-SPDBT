@@ -44,10 +44,10 @@ internal abstract class LicenceAppManagerBase
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
         {
-            ApplicationTypeEnum = licAppBase.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(licAppBase.ApplicationTypeCode.ToString()),
-            BizTypeEnum = licAppBase.BizTypeCode == null ? BizTypeEnum.None : Enum.Parse<BizTypeEnum>(licAppBase.BizTypeCode.ToString()),
-            LicenceTermEnum = licAppBase.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = licAppBase.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(licAppBase.WorkerLicenceTypeCode.ToString()),
+            ApplicationTypeEnum = licAppBase.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationType>(licAppBase.ApplicationTypeCode.ToString()),
+            BizTypeEnum = licAppBase.BizTypeCode == null ? BizType.None : Enum.Parse<BizType>(licAppBase.BizTypeCode.ToString()),
+            LicenceTermEnum = licAppBase.LicenceTermCode == null ? null : Enum.Parse<LicenceTerm>(licAppBase.LicenceTermCode.ToString()),
+            WorkerLicenceTypeEnum = licAppBase.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceType>(licAppBase.WorkerLicenceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
@@ -171,9 +171,9 @@ internal abstract class LicenceAppManagerBase
         }
     }
 
-    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, WorkerLicenceTypeEnum licenceTypeEnum, CancellationToken cancellationToken)
+    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, WorkerLicenceType licenceTypeEnum, CancellationToken cancellationToken)
     {
-        if (licenceTypeEnum == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (licenceTypeEnum == WorkerLicenceType.SecurityBusinessLicence)
         {
             contactId = null;
             if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is a Security Business Licence.");
@@ -189,13 +189,13 @@ internal abstract class LicenceAppManagerBase
             new LicenceAppQuery(
                 contactId,
                 bizId,
-                new List<WorkerLicenceTypeEnum> { licenceTypeEnum },
+                new List<WorkerLicenceType> { licenceTypeEnum },
                 new List<ApplicationPortalStatusEnum>
                 {
                     ApplicationPortalStatusEnum.Completed,
                 }),
             cancellationToken);
-        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationTypeEnum.Replacement)
+        LicenceAppListResp? app = list.Where(a => a.ApplicationTypeCode != ApplicationType.Replacement)
             .OrderByDescending(a => a.SubmittedOn)
             .FirstOrDefault();
         if (app == null)
@@ -203,12 +203,12 @@ internal abstract class LicenceAppManagerBase
         return app.LicenceAppId;
     }
 
-    protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
+    protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceType workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new(
             applicantId,
             null,
-            new List<WorkerLicenceTypeEnum>
+            new List<WorkerLicenceType>
             {
                 workerLicenceType
             },
@@ -253,31 +253,31 @@ internal abstract class LicenceAppManagerBase
         return false;
     }
 
-    protected IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnums(IEnumerable<LicAppFileInfo> newLicAppFiles, IEnumerable<LicAppFileInfo> existingLicAppFiles)
+    protected IEnumerable<UploadedDocument> GetUploadedDocumentEnums(IEnumerable<LicAppFileInfo> newLicAppFiles, IEnumerable<LicAppFileInfo> existingLicAppFiles)
     {
-        List<UploadedDocumentEnum> docEnums = new();
+        List<UploadedDocument> docEnums = new();
         if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) ||
             existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
-            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+            docEnums.Add(UploadedDocument.Fingerprint);
         if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit) ||
             existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
-            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+            docEnums.Add(UploadedDocument.WorkPermit);
         if (newLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit) ||
             existingLicAppFiles.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
-            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+            docEnums.Add(UploadedDocument.StudyPermit);
         return docEnums;
     }
 
-    protected IEnumerable<UploadedDocumentEnum> GetUploadedDocumentEnumsFromDocumentInfo(List<Document>? documentInfos)
+    protected IEnumerable<UploadedDocument> GetUploadedDocumentEnumsFromDocumentInfo(List<Document>? documentInfos)
     {
-        List<UploadedDocumentEnum> docEnums = new();
+        List<UploadedDocument> docEnums = new();
         if (documentInfos == null) { return docEnums; }
         if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint))
-            docEnums.Add(UploadedDocumentEnum.Fingerprint);
+            docEnums.Add(UploadedDocument.Fingerprint);
         if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.WorkPermit))
-            docEnums.Add(UploadedDocumentEnum.WorkPermit);
+            docEnums.Add(UploadedDocument.WorkPermit);
         if (documentInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.StudyPermit))
-            docEnums.Add(UploadedDocumentEnum.StudyPermit);
+            docEnums.Add(UploadedDocument.StudyPermit);
         return docEnums;
     }
 

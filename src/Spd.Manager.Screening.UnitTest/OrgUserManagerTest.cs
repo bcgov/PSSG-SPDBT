@@ -6,7 +6,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Identity;
 using Spd.Resource.Repository.Org;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared.Exceptions;
 
@@ -46,7 +46,7 @@ public class OrgUserManagerTest
         Guid orgGuid = Guid.NewGuid();
         Guid orgId = Guid.NewGuid();
         mockIdRepo.Setup(id => id.Query(
-                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderTypeEnum.BusinessBceId),
+                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderType.BusinessBceId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new IdentityQueryResult(new List<Identity> { new() }));
         mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(
@@ -82,7 +82,7 @@ public class OrgUserManagerTest
         Guid orgGuid = Guid.NewGuid();
         Guid orgId = Guid.NewGuid();
         mockIdRepo.Setup(id => id.Query(
-                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderTypeEnum.BusinessBceId),
+                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderType.BusinessBceId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((IdentityQueryResult)null);
         mockIdRepo.Setup(id => id.Manage(
@@ -128,7 +128,7 @@ public class OrgUserManagerTest
             .With(o => o.UserResults, new List<UserResult> { userResult })
             .Create();
         mockIdRepo.Setup(id => id.Query(
-                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderTypeEnum.BusinessBceId),
+                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderType.BusinessBceId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new IdentityQueryResult(new List<Identity> { new() }));
         mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(
@@ -162,7 +162,7 @@ public class OrgUserManagerTest
             .With(o => o.UserResults, new List<UserResult> { userResult1, userResult2 })
             .Create();
         mockIdRepo.Setup(id => id.Query(
-                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderTypeEnum.BusinessBceId),
+                It.Is<IdentityQry>(i => i.UserGuid == userGuid.ToString() && i.OrgGuid == orgGuid && i.IdentityProviderType == Resource.Repository.Registration.IdentityProviderType.BusinessBceId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new IdentityQueryResult(new List<Identity> { new() }));
         mockOrgUserRepo.Setup(u => u.QueryOrgUserAsync(

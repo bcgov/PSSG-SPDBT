@@ -20,7 +20,7 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.ContactRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetContactRoleCode(s.spd_spd_role_spd_portaluser)))
             .ForMember(d => d.IsFirstTimeLogin, opt => opt.MapFrom(s => s.spd_lastloggedin == null))
-            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value == null ? false : true));
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s._spd_identityid_value != null));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portaluser>()
             .ForMember(d => d.spd_portaluserid, opt => opt.MapFrom(s => Guid.NewGuid()))
@@ -30,7 +30,7 @@ namespace Spd.Resource.Repository.PortalUser
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.PhoneNumber))
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => s.JobTitle))
             .ForMember(d => d.spd_servicecategory, opt => opt.MapFrom(s =>
-                s.PortalUserServiceCategory == PortalUserServiceCategoryEnum.Licensing ?
+                s.PortalUserServiceCategory == PortalUserServiceCategory.Licensing ?
                 (int)PortalUserServiceCategoryOptionSet.Licensing : (int)PortalUserServiceCategoryOptionSet.Screening));
 
             _ = CreateMap<CreatePortalUserCmd, spd_portalinvitation>()

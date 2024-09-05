@@ -60,7 +60,7 @@ internal class PermitAppManager :
     public async Task<PermitAppCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<WorkerLicenceType>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
             cmd.PermitUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -96,7 +96,7 @@ internal class PermitAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, $"Invalid WorkerLicenceTypeCode");
         return await GetLatestApplicationId(query.ApplicantId,
             null,
-            Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<WorkerLicenceType>(query.WorkerLicenceTypeCode.ToString()),
             cancellationToken);
     }
     #endregion
@@ -261,7 +261,7 @@ internal class PermitAppManager :
             new DocumentQry()
             {
                 LicenceId = originalLic.LicenceId,
-                FileType = originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit ?
+                FileType = originalLic.WorkerLicenceTypeCode == WorkerLicenceType.BodyArmourPermit ?
                     DocumentTypeEnum.BodyArmourRationale :
                     DocumentTypeEnum.ArmouredVehicleRationale
             },
@@ -359,7 +359,7 @@ internal class PermitAppManager :
                 $" - {string.Join(";", fileNames)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Rational update for {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                TaskPriorityEnum = TaskPriority.Normal,
                 RegardingContactId = originalLic.LicenceHolderId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
@@ -376,7 +376,7 @@ internal class PermitAppManager :
                 $" - {newRequest.CriminalChargeDescription}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
                 Subject = $"Criminal Charges or New Conviction Update on {originalLic.LicenceNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.High,
+                TaskPriorityEnum = TaskPriority.High,
                 RegardingContactId = originalLic.LicenceHolderId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
                 LicenceId = originalLic.LicenceId
@@ -480,13 +480,13 @@ internal class PermitAppManager :
 
     private bool ChangeInPurpose(LicenceResp originalLic, PermitAppSubmitRequest newRequest)
     {
-        List<PermitPurposeEnum> permitPurposeRequest = [];
+        List<PermitPurpose> permitPurposeRequest = [];
 
         if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
         {
             foreach (BodyArmourPermitReasonCode bodyArmourPermitReason in newRequest.BodyArmourPermitReasonCodes)
             {
-                PermitPurposeEnum permitPurpose = Enum.Parse<PermitPurposeEnum>(bodyArmourPermitReason.ToString());
+                PermitPurpose permitPurpose = Enum.Parse<PermitPurpose>(bodyArmourPermitReason.ToString());
                 permitPurposeRequest.Add(permitPurpose);
             }
         }
@@ -494,7 +494,7 @@ internal class PermitAppManager :
         {
             foreach (ArmouredVehiclePermitReasonCode armouredVehiclePermitReason in newRequest.ArmouredVehiclePermitReasonCodes)
             {
-                PermitPurposeEnum permitPurpose = Enum.Parse<PermitPurposeEnum>(armouredVehiclePermitReason.ToString());
+                PermitPurpose permitPurpose = Enum.Parse<PermitPurpose>(armouredVehiclePermitReason.ToString());
                 permitPurposeRequest.Add(permitPurpose);
             }
         }
@@ -504,9 +504,9 @@ internal class PermitAppManager :
             return true;
         else
         {
-            List<PermitPurposeEnum> newList = permitPurposeRequest;
+            List<PermitPurpose> newList = permitPurposeRequest;
             newList.Sort();
-            List<PermitPurposeEnum> originalList = originalLic.PermitPurposeEnums.ToList();
+            List<PermitPurpose> originalList = originalLic.PermitPurposeEnums.ToList();
             originalList.Sort();
 
             if (!newList.SequenceEqual(originalList))
@@ -514,14 +514,14 @@ internal class PermitAppManager :
         }
 
         // Check if there is a different reason when selected value is "other"
-        if (permitPurposeRequest.Contains(PermitPurposeEnum.Other) &&
-            originalLic.PermitPurposeEnums.Contains(PermitPurposeEnum.Other) &&
+        if (permitPurposeRequest.Contains(PermitPurpose.Other) &&
+            originalLic.PermitPurposeEnums.Contains(PermitPurpose.Other) &&
             !String.Equals(newRequest.PermitOtherRequiredReason, originalLic.PermitOtherRequiredReason, StringComparison.OrdinalIgnoreCase))
             return true;
 
         // Check if there is a change in employer when selected value is "my employment"
-        if (permitPurposeRequest.Contains(PermitPurposeEnum.MyEmployment) &&
-            originalLic.PermitPurposeEnums.Contains(PermitPurposeEnum.MyEmployment) &&
+        if (permitPurposeRequest.Contains(PermitPurpose.MyEmployment) &&
+            originalLic.PermitPurposeEnums.Contains(PermitPurpose.MyEmployment) &&
             ChangeInEmployerInfo(originalLic, newRequest))
             return true;
 

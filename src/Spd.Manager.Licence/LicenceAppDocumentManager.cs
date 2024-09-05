@@ -46,7 +46,7 @@ internal partial class LicenceAppDocumentManager :
 
         // For business licence, the contact info is pulled from account, thus accountId must be set in "CreateDocumentCmd"
         // For others, the info is pulled from contact, thus contactId must be set in "CreateDocumentCmd"
-        if (app.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (app.WorkerLicenceTypeCode == WorkerLicenceType.SecurityBusinessLicence)
             bizLicApplicationResp = await _bizLicApplicationRepository.GetBizLicApplicationAsync(command.AppId, cancellationToken);
         else
             contactId = app.ContactId;

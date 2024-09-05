@@ -35,7 +35,7 @@ public class OrgManagerTest
         //Arrange
         Guid orgId = Guid.NewGuid();
         mockOrgRepo.Setup(m => m.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == orgId), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new OrgQryResult(new OrgResult() { ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.CRRP_EMPLOYEE } }));
+            .ReturnsAsync(new OrgQryResult(new OrgResult() { ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.CRRP_EMPLOYEE } }));
         OrgInvitationLinkCreateCommand cmd = new(orgId, "localhost");
 
         //Act
@@ -57,7 +57,7 @@ public class OrgManagerTest
             Handle_OrgInvitationLinkCreateCommand_Return_CorrectLinkResponse();
         }
         mockOrgRepo.Setup(m => m.QueryOrgAsync(It.Is<OrgByIdentifierQry>(q => q.OrgId == this.orgId), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new OrgQryResult(new OrgResult() { ServiceTypes = new List<ServiceTypeEnum> { ServiceTypeEnum.CRRP_EMPLOYEE } }));
+            .ReturnsAsync(new OrgQryResult(new OrgResult() { ServiceTypes = new List<ServiceTypeCode> { ServiceTypeCode.CRRP_EMPLOYEE } }));
         OrgInvitationLinkVerifyCommand cmd = new(this.encodedOrgId);
 
         //Act

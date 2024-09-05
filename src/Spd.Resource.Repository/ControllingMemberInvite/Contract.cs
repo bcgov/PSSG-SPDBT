@@ -16,14 +16,14 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
     public record ControllingMemberInviteUpdateCmd : ControllingMemberInviteCmd
     {
         public Guid ControllingMemberInviteId { get; set; }
-        public ApplicationInviteStatusEnum ApplicationInviteStatusEnum { get; set; }
+        public ApplicationInviteStatus ApplicationInviteStatusEnum { get; set; }
     }
 
     public record ControllingMemberInviteResp : ControllingMemberInvite
     {
         public Guid Id { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
-        public ApplicationInviteStatusEnum Status { get; set; }
+        public ApplicationInviteStatus Status { get; set; }
         public string? ErrorMsg { get; set; }
         public bool? Viewed { get; set; }
     }

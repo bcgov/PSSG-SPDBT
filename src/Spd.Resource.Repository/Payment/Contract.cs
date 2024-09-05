@@ -17,8 +17,8 @@ namespace Spd.Resource.Repository.Payment
     public record PaymentResp
     {
         public Guid ApplicationId { get; set; }
-        public ApplicationTypeEnum? ApplicationTypeCode { get; set; }
-        public LicenceTermEnum? LicenceTermCode { get; set; }
+        public ApplicationType? ApplicationTypeCode { get; set; }
+        public LicenceTerm? LicenceTermCode { get; set; }
         public Guid PaymentId { get; set; }
         public string? TransactionNumber { get; set; }
         public string CaseNumber { get; set; }
@@ -29,7 +29,7 @@ namespace Spd.Resource.Repository.Payment
         public decimal TransAmount { get; set; }
         public PaymentTypeEnum? PaymentType { get; set; }
         public bool? Refunded { get; set; } = null;
-        public ServiceTypeEnum? ServiceType { get; set; }
+        public ServiceTypeCode? ServiceType { get; set; }
         public string? Email { get; set; }
     }
 

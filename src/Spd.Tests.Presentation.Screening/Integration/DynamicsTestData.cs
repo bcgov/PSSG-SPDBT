@@ -1,8 +1,8 @@
-using System.Net;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Dynamics.CRM;
-using Spd.Resource.Repository.User;
+using Spd.Resource.Repository.Users;
 using Spd.Utilities.Dynamics;
+using System.Net;
 
 namespace Spd.Tests.Presentation.Screening.Integration;
 
@@ -56,10 +56,9 @@ public class DynamicsTestData
             };
             _context.AddToaccounts(newOne);
 
-            foreach (var serviceType in DynamicsContextLookupHelpers.ServiceTypeGuidDictionary)
+            foreach (var serviceType in DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.Keys)
             {
-                var st = new spd_servicetype { spd_servicetypeid = serviceType.Value };
-                _context.AttachTo(nameof(_context.spd_servicetypes), st);
+                var st = _context.LookupServiceType(serviceType);
                 _context.AddLink(newOne, nameof(account.spd_account_spd_servicetype), st);
             }
 

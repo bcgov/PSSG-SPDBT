@@ -3,11 +3,11 @@ using Microsoft.Dynamics.CRM;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
+
 public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
 {
     private readonly DynamicsContext _context;
     private readonly IMapper _mapper;
-
 
     public ControllingMemberCrcRepository(IDynamicsContextFactory ctx, IMapper mapper)
     {
@@ -35,11 +35,11 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         _context.AddTospd_applications(app);
         // create contact
         contact? contact = _mapper.Map<contact>(cmd);
-        if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
+        if (cmd.ApplicationTypeCode == ApplicationType.New)
         {
-            //for new, always create a new contact 
+            //for new, always create a new contact
             //todo: probably needs to change if hasExpiredLicence
-            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            contact = _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases));
         }
         else
         {
@@ -133,5 +133,4 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         await _context.SaveChangesAsync();
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, cmd.ContactId);
     }
-
 }

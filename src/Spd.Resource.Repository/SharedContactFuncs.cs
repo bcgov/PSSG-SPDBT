@@ -2,38 +2,34 @@
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository;
+
 internal static class SharedContactFuncs
 {
-    public static async Task<contact?> CreateContact(this DynamicsContext context,
+    public static contact CreateContact(this DynamicsContext context,
         contact contact,
         spd_identity? identity,
-        IEnumerable<spd_alias> aliases,
-        CancellationToken ct)
+        IEnumerable<spd_alias> aliases)
     {
         context.AddTocontacts(contact);
         if (identity != null)
             context.AddLink(contact, nameof(contact.spd_contact_spd_identity), identity);
-        if (aliases.Any())
+        foreach (var alias in aliases)
         {
-            foreach (var alias in aliases)
+            if (AliasExists(context, alias, contact) == null)
             {
-                if (AliasExists(context, alias, contact) == null)
-                {
-                    context.AddTospd_aliases(alias);
-                    // associate alias to contact
-                    context.SetLink(alias, nameof(alias.spd_ContactId), contact);
-                }
+                context.AddTospd_aliases(alias);
+                // associate alias to contact
+                context.SetLink(alias, nameof(alias.spd_ContactId), contact);
             }
         }
         return contact;
     }
 
-    public static async Task<contact?> UpdateContact(this DynamicsContext context,
+    public static contact UpdateContact(this DynamicsContext context,
         contact existingContact,
         contact newContact,
         spd_identity? identity,
-        IEnumerable<spd_alias> aliases,
-        CancellationToken ct)
+        IEnumerable<spd_alias> aliases)
     {
         if (!NameIsSame(existingContact, newContact))
         {
@@ -83,16 +79,13 @@ internal static class SharedContactFuncs
         existingContact = UpdateExistingContact(existingContact, newContact);
         context.UpdateObject(existingContact);
 
-        if (aliases.Any())
+        foreach (var alias in aliases)
         {
-            foreach (var alias in aliases)
+            if (AliasExists(context, alias, existingContact) == null)
             {
-                if (AliasExists(context, alias, existingContact) == null)
-                {
-                    context.AddTospd_aliases(alias);
-                    // associate alias to contact
-                    context.SetLink(alias, nameof(alias.spd_ContactId), existingContact);
-                }
+                context.AddTospd_aliases(alias);
+                // associate alias to contact
+                context.SetLink(alias, nameof(alias.spd_ContactId), existingContact);
             }
         }
 
@@ -140,6 +133,7 @@ internal static class SharedContactFuncs
             && string.Equals(existingContact.address2_postalcode, newContact.address2_postalcode, StringComparison.InvariantCultureIgnoreCase)
             && string.Equals(existingContact.address2_stateorprovince, newContact.address2_stateorprovince, StringComparison.InvariantCultureIgnoreCase));
     }
+
     private static spd_address? AddressExists(DynamicsContext context, spd_address newAddr, contact contact)
     {
         var matchingAddr = context.spd_addresses.Where(o =>

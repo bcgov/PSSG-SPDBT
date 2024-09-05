@@ -25,17 +25,17 @@ public class ApplicationRepositoryTest : IClassFixture<IntegrationTestSetup>
     }
 
     [Theory]
-    [InlineData(EmployeeInteractionTypeCode.Adults, ServiceTypeEnum.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.Adults, ServiceTypeEnum.CRRP_VOLUNTEER, 1)]
-    [InlineData(EmployeeInteractionTypeCode.Adults, ServiceTypeEnum.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeEnum.CRRP_VOLUNTEER, 1)]
-    [InlineData(EmployeeInteractionTypeCode.Adults, ServiceTypeEnum.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.Children, ServiceTypeEnum.CRRP_VOLUNTEER, 0)]
-    [InlineData(EmployeeInteractionTypeCode.Children, ServiceTypeEnum.CRRP_VOLUNTEER, EmployeeInteractionTypeCode.Adults, ServiceTypeEnum.CRRP_VOLUNTEER, 0)]
-    [InlineData(EmployeeInteractionTypeCode.Children, ServiceTypeEnum.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeEnum.CRRP_VOLUNTEER, 1)]
-    [InlineData(EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeEnum.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.Adults, ServiceTypeEnum.CRRP_VOLUNTEER, 0)]
-    [InlineData(EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeEnum.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeEnum.CRRP_VOLUNTEER, 1)]
+    [InlineData(EmployeeInteractionTypeCode.Adults, ServiceTypeCode.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.Adults, ServiceTypeCode.CRRP_VOLUNTEER, 1)]
+    [InlineData(EmployeeInteractionTypeCode.Adults, ServiceTypeCode.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeCode.CRRP_VOLUNTEER, 1)]
+    [InlineData(EmployeeInteractionTypeCode.Adults, ServiceTypeCode.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.Children, ServiceTypeCode.CRRP_VOLUNTEER, 0)]
+    [InlineData(EmployeeInteractionTypeCode.Children, ServiceTypeCode.CRRP_VOLUNTEER, EmployeeInteractionTypeCode.Adults, ServiceTypeCode.CRRP_VOLUNTEER, 0)]
+    [InlineData(EmployeeInteractionTypeCode.Children, ServiceTypeCode.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeCode.CRRP_VOLUNTEER, 1)]
+    [InlineData(EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeCode.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.Adults, ServiceTypeCode.CRRP_VOLUNTEER, 0)]
+    [InlineData(EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeCode.CRRP_EMPLOYEE, EmployeeInteractionTypeCode.ChildrenAndAdults, ServiceTypeCode.CRRP_VOLUNTEER, 1)]
     public async Task ClearanceQry_QueryAsync_Run_Correctly(EmployeeInteractionTypeCode queryWorkWith,
-        ServiceTypeEnum queryServiceType,
+        ServiceTypeCode queryServiceType,
         EmployeeInteractionTypeCode existingClearanceWorkWith,
-        ServiceTypeEnum existingClearanceServiceType,
+        ServiceTypeCode existingClearanceServiceType,
         int expectedClearanceCount)
     {
         // Arrange

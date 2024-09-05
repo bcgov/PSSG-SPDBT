@@ -18,9 +18,9 @@ internal class ServiceTypeRepository : IServiceTypeRepository
         _cache = cache;
     }
 
-    public async Task<ServiceTypeListResp> QueryAsync(ServiceTypeQry qry, CancellationToken cancellationToken)
+    public async Task<ServiceTypeListResp> QueryAsync(ServiceTypeQry query, CancellationToken cancellationToken)
     {
-        if (qry.ServiceTypeCode == null && qry.ServiceTypeId == null)
+        if (query.ServiceTypeCode == null && query.ServiceTypeId == null)
         {
             throw new ArgumentException("must be at leaset one qry parameter.");
         }
@@ -31,11 +31,11 @@ internal class ServiceTypeRepository : IServiceTypeRepository
             TimeSpan.FromMinutes(60),
             cancellationToken) ?? [];
 
-        if (qry.ServiceTypeId != null)
+        if (query.ServiceTypeId != null)
         {
-            servicetypes = servicetypes.Where(s => s.spd_servicetypeid == qry.ServiceTypeId);
+            servicetypes = servicetypes.Where(s => s.spd_servicetypeid == query.ServiceTypeId);
         }
-        if (qry.ServiceTypeCode != null && DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.ServiceTypeCode.ToString()!, out Guid guid))
+        if (query.ServiceTypeCode != null && DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(query.ServiceTypeCode.ToString()!, out Guid guid))
         {
             servicetypes = servicetypes.Where(s => s.spd_servicetypeid == guid);
         }

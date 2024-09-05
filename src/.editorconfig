@@ -269,3 +269,6 @@ dotnet_diagnostic.S2139.severity = suggestion
 
 # S2094: Classes should not be empty
 dotnet_diagnostic.S2094.severity = suggestion
+
+# CA1054: URI-like parameters should not be strings
+dotnet_diagnostic.CA1054.severity = suggestion
