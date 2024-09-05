@@ -154,7 +154,7 @@ IControllingMemberCrcAppManager
                     cancellationToken);
             }
         }
-        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberCrcAppId };
+        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response?.ControllingMemberCrcAppId };
     }
 
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand cmd, CancellationToken cancellationToken)
@@ -185,8 +185,6 @@ IControllingMemberCrcAppManager
             cancellationToken);
 
         ChangeSpec changes = await MakeChanges(originalApp, request, cmd.LicAppFileInfos, cancellationToken);
-        ControllingMemberCrcApplicationCmdResp? createAppResponse = null;
-
         //update contact directly
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
         updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
@@ -226,7 +224,7 @@ IControllingMemberCrcAppManager
         //upload new files
         await UploadNewDocsAsync(request.DocumentExpiredInfos,
             cmd.LicAppFileInfos,
-            createAppResponse?.ControllingMemberCrcAppId,
+            originalApp.ControllingMemberCrcAppId,
             originalApp.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
@@ -234,7 +232,7 @@ IControllingMemberCrcAppManager
             null,
             null,
             cancellationToken);
-        return new ControllingMemberCrcAppCommandResponse() { ControllingMemberAppId = createAppResponse?.ControllingMemberCrcAppId};
+        return new ControllingMemberCrcAppCommandResponse() { ControllingMemberAppId = originalApp.ControllingMemberCrcAppId};
     }
     #endregion
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
@@ -381,9 +379,7 @@ IControllingMemberCrcAppManager
         }
         return changes;
     }
-
     public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcAppQuery query, CancellationToken ct) => throw new NotImplementedException();
-
     private sealed record ChangeSpec
     {
         public bool PeaceOfficerStatusChanged { get; set; } //task
