@@ -156,7 +156,7 @@ namespace Spd.Manager.Screening
             }
 
             //update status 
-            if (IfSubmittedDirectly(request.ApplicationCreateRequest))
+            if (IfSubmittedDirectly(request.ApplicationCreateRequest.ServiceType, request.ApplicationCreateRequest.PayeeType, request.ApplicationCreateRequest.HaveVerifiedIdentity ?? false))
             {
                 await _applicationRepository.UpdateAsync(
                     new UpdateCmd()
@@ -241,9 +241,8 @@ namespace Spd.Manager.Screening
             }
             else
             {
-                //if application service type is not need paid service type, go directly to submitted.
-                if (app.ServiceType == ServiceTypeEnum.CRRP_VOLUNTEER || app.ServiceType == ServiceTypeEnum.PSSO || app.ServiceType == ServiceTypeEnum.PSSO_VS || app.ServiceType == ServiceTypeEnum.MCFD
-                    || ((app.ServiceType == ServiceTypeEnum.PE_CRC || app.ServiceType == ServiceTypeEnum.PE_CRC_VS) && app.PayeeType.Value != Resource.Repository.PayerPreferenceTypeCode.Applicant))
+                Shared.PayerPreferenceTypeCode? payerPreference = app.PayeeType == null ? null : Enum.Parse<Shared.PayerPreferenceTypeCode>(app.PayeeType.Value.ToString());
+                if (IfSubmittedDirectly(Enum.Parse<ServiceTypeCode>(app.ServiceType.Value.ToString()), payerPreference, true))
                 {
                     updateCmd.Status = ApplicationStatusEnum.Submitted;
                 }
@@ -444,7 +443,7 @@ namespace Spd.Manager.Screening
                 }
 
                 //update status 
-                if (IfSubmittedDirectly(command.ApplicationCreateRequest))
+                if (IfSubmittedDirectly(command.ApplicationCreateRequest.ServiceType, command.ApplicationCreateRequest.PayeeType, command.ApplicationCreateRequest.HaveVerifiedIdentity ?? false))
                 {
                     await _applicationRepository.UpdateAsync(
                         new UpdateCmd()
@@ -615,21 +614,24 @@ namespace Spd.Manager.Screening
         }
         #endregion
 
-        private bool IfSubmittedDirectly(ApplicationCreateRequest request)
+        private static bool IfSubmittedDirectly(ServiceTypeCode serviceType, Shared.PayerPreferenceTypeCode? payerPreference, bool IdentityVerified)
         {
             bool noNeedToPay = false;
-            if (request.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER) noNeedToPay = true;
-            if (request.ServiceType == ServiceTypeCode.PSSO) noNeedToPay = true;
-            if (request.ServiceType == ServiceTypeCode.MCFD) noNeedToPay = true;
-            if (request.ServiceType == ServiceTypeCode.PSSO_VS) noNeedToPay = true;
-            if (request.ServiceType == ServiceTypeCode.PE_CRC || request.ServiceType == ServiceTypeCode.PE_CRC_VS)
+            if (serviceType == ServiceTypeCode.CRRP_VOLUNTEER) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.PSSO) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.MCFD) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.PSSO_VS) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.PE_CRC || serviceType == ServiceTypeCode.PE_CRC_VS)
             {
-                if (request.PayeeType == Shared.PayerPreferenceTypeCode.Organization || request.PayeeType == null) noNeedToPay = true;
+                if (payerPreference == Shared.PayerPreferenceTypeCode.Organization || payerPreference == null) noNeedToPay = true;
                 else noNeedToPay = false;
             }
-            if (request.ServiceType == ServiceTypeCode.CRRP_EMPLOYEE) noNeedToPay = false;
+            if (serviceType == ServiceTypeCode.CRRP_EMPLOYEE) noNeedToPay = false;
             if (noNeedToPay)
-                if (request.HaveVerifiedIdentity.Value) return true;
+            {
+                if (IdentityVerified) return true;
+            }
+
             return false;
         }
     }
