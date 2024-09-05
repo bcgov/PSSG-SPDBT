@@ -39,7 +39,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
+        [Route("api/business/{bizId}/members")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
@@ -48,13 +48,13 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
+        /// Deprecated. Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
         /// </summary>
         /// <param name="bizId"></param>
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
+        [Route("api/business/{bizId}/members")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
@@ -68,6 +68,21 @@ namespace Spd.Presentation.Licensing.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Create Biz employee
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="employee"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/employees")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<ActionResult> CreateEmployee([FromRoute] Guid bizId, [FromBody] SwlContactInfo employee, CancellationToken ct)
+        {
+            await _mediator.Send(new CreateBizEmployeeCommand(bizId, employee), ct);
+            return Ok();
+        }
         /// <summary>
         /// Create controlling member crc invitation for this biz contact
         /// </summary>

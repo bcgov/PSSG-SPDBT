@@ -1,5 +1,4 @@
 using AutoMapper;
-using MediatR;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
 using Spd.Utilities.Dynamics;
@@ -52,7 +51,55 @@ namespace Spd.Resource.Repository.BizContact
             return _mapper.Map<IEnumerable<BizContactResp>>(bizContacts.ToList());
         }
 
-        public async Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct)
+        public async Task<Guid?> ManageBizContactsAsync(BizContactCmd cmd, CancellationToken ct)
+        {
+            return cmd switch
+            {
+                BizContactCreateCmd c => await CreateBizContactAsync(c, ct),
+                BizContactUpdateCmd c => await UpdateBizContactAsync(c, ct),
+                BizContactDeleteCmd c => await DeleteBizContactAsync(c, ct),
+                _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
+            };
+        }
+
+        private async Task<Guid?> CreateBizContactAsync(BizContactCreateCmd cmd, CancellationToken ct)
+        {
+            account? biz = await _context.GetOrgById(cmd.BizContact.BizId, ct);
+            spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(cmd.BizContact);
+            if (cmd.BizContact.ContactId != null)
+            {
+                contact? c = await _context.GetContactById((Guid)cmd.BizContact.ContactId, ct);
+                if (c == null)
+                    throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {cmd.BizContact.ContactId.Value}");
+                bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
+                _context.AddTospd_businesscontacts(bizContact);
+                _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
+            }
+            if (cmd.BizContact.LicenceId != null)
+            {
+                spd_licence? swlLic = _context.spd_licences.Where(l => l.spd_licenceid == cmd.BizContact.LicenceId && l.statecode == DynamicsConstants.StateCode_Active).FirstOrDefault();
+                Guid swlServiceTypeId = DynamicsContextLookupHelpers.ServiceTypeGuidDictionary[ServiceTypeEnum.SecurityWorkerLicence.ToString()];
+                //only swl can be linked to.
+                if (swlLic == null || swlLic._spd_licencetype_value != swlServiceTypeId)
+                    throw new ApiException(System.Net.HttpStatusCode.BadRequest, $"invalid licence {cmd.BizContact.LicenceId}");
+                _context.SetLink(bizContact, nameof(bizContact.spd_SWLNumber), swlLic);
+            }
+            _context.SetLink(bizContact, nameof(bizContact.spd_OrganizationId), biz);
+            await _context.SaveChangesAsync(ct);
+            return bizContact.spd_businesscontactid;
+        }
+
+        private async Task<Guid?> UpdateBizContactAsync(BizContactUpdateCmd cmd, CancellationToken ct)
+        {
+            return null;
+        }
+
+        private async Task<Guid?> DeleteBizContactAsync(BizContactDeleteCmd cmd, CancellationToken ct)
+        {
+            return null;
+        }
+
+        private async Task<Guid?> UpsertBizContacts(BizContactUpsertCmd cmd, CancellationToken ct)
         {
             IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
                 .Expand(b => b.spd_businesscontact_spd_application)
@@ -116,7 +163,7 @@ namespace Spd.Resource.Repository.BizContact
                 }
             }
             await _context.SaveChangesAsync(ct);
-            return default;
+            return null;
         }
 
     }

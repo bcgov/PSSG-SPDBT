@@ -352,6 +352,7 @@ internal class Mappings : Profile
         CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
+        CreateMap<SwlContactInfo, BizContact>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -637,7 +638,6 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
         {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
     }.ToImmutableDictionary();
-
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {

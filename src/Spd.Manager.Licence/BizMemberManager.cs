@@ -23,6 +23,7 @@ internal class BizMemberManager :
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
         IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
+        IRequestHandler<CreateBizEmployeeCommand, Unit>,
         IBizMemberManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -135,6 +136,15 @@ internal class BizMemberManager :
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.Employee)
             .Select(c => _mapper.Map<SwlContactInfo>(c));
         return members;
+    }
+
+    public async Task<Unit> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.Employee);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.Employee;
+        bizContact.BizId = cmd.BizId;
+        await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return default;
     }
 
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
