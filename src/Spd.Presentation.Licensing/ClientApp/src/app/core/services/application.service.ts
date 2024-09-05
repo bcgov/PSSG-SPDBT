@@ -656,7 +656,7 @@ export class ApplicationService {
 		this.dialog
 			.open(DialogComponent, { data })
 			.afterClosed()
-			.subscribe((response: boolean) => {
+			.subscribe((_response: boolean) => {
 				this.onGoToHome();
 			});
 	}
