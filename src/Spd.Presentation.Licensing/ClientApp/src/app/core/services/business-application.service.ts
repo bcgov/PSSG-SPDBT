@@ -208,7 +208,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return this.saveBusinessProfile().pipe(
 			switchMap((_resp: any) => {
-				// return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 				return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
 					take(1),
 					tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
