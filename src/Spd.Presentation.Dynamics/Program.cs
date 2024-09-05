@@ -86,7 +86,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
 builder.Services.AddBCeIDService(builder.Configuration);
-builder.Services.AddHealthChecks(builder.Configuration);
+builder.Services.AddHealthChecks(builder.Configuration, assemblies);
 
 var app = builder.Build();
 

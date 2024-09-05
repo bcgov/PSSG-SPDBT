@@ -89,7 +89,7 @@ namespace Spd.Presentation.Screening
               .AddAddressAutoComplete(configuration);
 
             services.ConfigureComponentServices(configuration, hostEnvironment, assemblies);
-            services.AddHealthChecks(configuration);
+            services.AddHealthChecks(configuration, assemblies);
         }
 
         public void SetupHttpRequestPipeline(WebApplication app, IWebHostEnvironment env)
