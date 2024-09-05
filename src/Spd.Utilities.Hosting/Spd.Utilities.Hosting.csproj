@@ -22,8 +22,4 @@
 				<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
 		</ItemGroup>
 
-		<ItemGroup>
-		  <ProjectReference Include="..\Spd.Utilities.Dynamics\Spd.Utilities.Dynamics.csproj" />
-		</ItemGroup>
-
 </Project>
