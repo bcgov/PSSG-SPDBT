@@ -4,6 +4,7 @@ import {
 	Document,
 	DocumentExpiredInfo,
 	LicenceDocumentTypeCode,
+	LicenceTermCode,
 } from '@app/api/models';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
@@ -82,6 +83,13 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		super(formBuilder);
 	}
 
+	getSaveBodyBaseAuthenticated(controllingMemberCrcFormValue: any): any {
+		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, true);
+		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
+
+		return baseData;
+	}
+
 	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): ControllingMemberCrcAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
@@ -93,6 +101,8 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		controllingMemberCrcFormValue: any,
 		_isAuthenticated: boolean
 	): ControllingMemberCrcAppSubmitRequest {
+		const workerLicenceTypeData = { ...controllingMemberCrcFormValue.workerLicenceTypeData };
+		const applicationTypeData = { ...controllingMemberCrcFormValue.applicationTypeData };
 		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
 		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
@@ -183,6 +193,13 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 				}) ?? [];
 
 		const body = {
+			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			bizContactId: controllingMemberCrcFormValue.bizContactId,
+			bizTypeCode: controllingMemberCrcFormValue.bizTypeCode,
+			licenceTermCode: LicenceTermCode.OneYear, // TODO remove licenceTermCode
+			parentBizLicApplicationId: controllingMemberCrcFormValue.parentBizLicApplicationId,
+			//-----------------------------------
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,

@@ -48,6 +48,26 @@ export class UtilService {
 	constructor(@Inject(DOCUMENT) private document: Document) {}
 
 	//------------------------------------
+	// Session storage
+	readonly CM_CRC_STATE_KEY: string = SPD_CONSTANTS.sessionStorage.cmCrcStateKey;
+
+	setSessionData(key: string, data: any): void {
+		sessionStorage.setItem(key, data);
+	}
+
+	getSessionData(key: string): any {
+		return sessionStorage.getItem(key);
+	}
+
+	clearSessionData(key: string): void {
+		sessionStorage.removeItem(key);
+	}
+
+	clearAllSessionData(): void {
+		this.clearSessionData(this.CM_CRC_STATE_KEY);
+	}
+
+	//------------------------------------
 	// Table config
 	getDefaultQueryParams(): any {
 		return { page: 0, pageSize: SPD_CONSTANTS.list.defaultPageSize };

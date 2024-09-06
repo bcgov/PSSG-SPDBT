@@ -7,90 +7,98 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, ControllingMemberCrcAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
+import { AuthenticationService } from '@app/core/services/authentication.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
-import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-background.component';
-import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-citizenship-residency.component';
-import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-personal-information.component';
-import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-member-crc/shared/steps-controlling-member-review.component';
+import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-background.component';
+import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-citizenship-residency.component';
+import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-personal-information.component';
+import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-review.component';
+import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routing.module';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { ControllingMemberCrcRoutes } from '../controlling-member-crc-routing.module';
 
 @Component({
-	selector: 'app-controlling-member-wizard-anonymous-new',
+	selector: 'app-controlling-member-wizard-new',
 	template: `
-		<mat-stepper
-			linear
-			labelPosition="bottom"
-			[orientation]="orientation"
-			(selectionChange)="onStepSelectionChange($event)"
-			#stepper
-		>
-			<!-- 
-					[showSaveAndExit]="false"
-			-->
-			<mat-step [completed]="step1Complete">
-				<ng-template matStepLabel>Personal Information</ng-template>
-				<app-steps-controlling-member-personal-information
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					(scrollIntoView)="onScrollIntoView()"
-					(cancelAndExit)="onCancelAndExit()"
-					(childNextStep)="onChildNextStep()"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(nextReview)="onGoToReview()"
-				></app-steps-controlling-member-personal-information>
-			</mat-step>
+		<div class="container px-0 my-0 px-md-2 my-md-3">
+			<mat-stepper
+				linear
+				labelPosition="bottom"
+				[orientation]="orientation"
+				(selectionChange)="onStepSelectionChange($event)"
+				#stepper
+			>
+				<mat-step [completed]="step1Complete">
+					<ng-template matStepLabel>Personal Information</ng-template>
+					<app-steps-controlling-member-personal-information
+						[isFormValid]="isFormValid"
+						[applicationTypeCode]="applicationTypeCode"
+						[showSaveAndExit]="isLoggedIn"
+						(saveAndExit)="onSaveAndExit()"
+						(scrollIntoView)="onScrollIntoView()"
+						(cancelAndExit)="onCancelAndExit()"
+						(childNextStep)="onChildNextStep()"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(nextReview)="onGoToReview()"
+					></app-steps-controlling-member-personal-information>
+				</mat-step>
 
-			<mat-step [completed]="step2Complete">
-				<ng-template matStepLabel>Citizenship & Residency</ng-template>
-				<app-steps-controlling-member-citizenship-residency
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					(scrollIntoView)="onScrollIntoView()"
-					(cancelAndExit)="onCancelAndExit()"
-					(childNextStep)="onChildNextStep()"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextReview)="onGoToReview()"
-				></app-steps-controlling-member-citizenship-residency>
-			</mat-step>
+				<mat-step [completed]="step2Complete">
+					<ng-template matStepLabel>Citizenship & Residency</ng-template>
+					<app-steps-controlling-member-citizenship-residency
+						[isFormValid]="isFormValid"
+						[applicationTypeCode]="applicationTypeCode"
+						[showSaveAndExit]="isLoggedIn"
+						(saveAndExit)="onSaveAndExit()"
+						(scrollIntoView)="onScrollIntoView()"
+						(cancelAndExit)="onCancelAndExit()"
+						(childNextStep)="onChildNextStep()"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextReview)="onGoToReview()"
+					></app-steps-controlling-member-citizenship-residency>
+				</mat-step>
 
-			<mat-step [completed]="step3Complete">
-				<ng-template matStepLabel>Background</ng-template>
-				<app-steps-controlling-member-background
-					[isFormValid]="isFormValid"
-					[applicationTypeCode]="applicationTypeCode"
-					(scrollIntoView)="onScrollIntoView()"
-					(cancelAndExit)="onCancelAndExit()"
-					(childNextStep)="onChildNextStep()"
-					(nextStepperStep)="onNextStepperStep(stepper)"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextReview)="onGoToReview()"
-				></app-steps-controlling-member-background>
-			</mat-step>
+				<mat-step [completed]="step3Complete">
+					<ng-template matStepLabel>Background</ng-template>
+					<app-steps-controlling-member-background
+						[isFormValid]="isFormValid"
+						[applicationTypeCode]="applicationTypeCode"
+						[showSaveAndExit]="isLoggedIn"
+						(saveAndExit)="onSaveAndExit()"
+						(scrollIntoView)="onScrollIntoView()"
+						(cancelAndExit)="onCancelAndExit()"
+						(childNextStep)="onChildNextStep()"
+						(nextStepperStep)="onNextStepperStep(stepper)"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(nextReview)="onGoToReview()"
+					></app-steps-controlling-member-background>
+				</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Review</ng-template>
-				<app-steps-controlling-member-review
-					(scrollIntoView)="onScrollIntoView()"
-					(cancelAndExit)="onCancelAndExit()"
-					(childNextStep)="onChildNextStep()"
-					(nextStepperStep)="onSubmitNow()"
-					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(goToStep)="onGoToStep($event)"
-				></app-steps-controlling-member-review>
-			</mat-step>
+				<mat-step completed="false">
+					<ng-template matStepLabel>Review</ng-template>
+					<app-steps-controlling-member-review
+						(scrollIntoView)="onScrollIntoView()"
+						[showSaveAndExit]="isLoggedIn"
+						(saveAndExit)="onSaveAndExit()"
+						(cancelAndExit)="onCancelAndExit()"
+						(childNextStep)="onChildNextStep()"
+						(nextStepperStep)="onSubmitNow()"
+						(previousStepperStep)="onPreviousStepperStep(stepper)"
+						(goToStep)="onGoToStep($event)"
+					></app-steps-controlling-member-review>
+				</mat-step>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Submit</ng-template>
-			</mat-step>
-		</mat-stepper>
+				<mat-step completed="false">
+					<ng-template matStepLabel>Submit</ng-template>
+				</mat-step>
+			</mat-stepper>
+		</div>
 	`,
 	styles: [],
 })
-export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+export class ControllingMemberWizardNewComponent extends BaseWizardComponent implements OnInit, OnDestroy {
 	readonly STEP_PERSONAL_INFORMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
 	readonly STEP_CITIZENSHIP_RESIDENCY = 1;
 	readonly STEP_BACKGROUND = 2;
@@ -101,7 +109,7 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 	step3Complete = false;
 
 	isFormValid = false;
-	showSaveAndExit = false;
+	isLoggedIn = false;
 
 	applicationTypeCode!: ApplicationTypeCode;
 
@@ -121,12 +129,22 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 		private router: Router,
 		private dialog: MatDialog,
 		private hotToastService: HotToastService,
+		private authenticationService: AuthenticationService,
 		private controllingMembersService: ControllingMemberCrcService
 	) {
 		super(breakpointObserver);
 	}
 
 	ngOnInit(): void {
+		if (!this.controllingMembersService.initialized) {
+			this.router.navigateByUrl(
+				ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
+			);
+			return;
+		}
+
+		this.isLoggedIn = this.authenticationService.isLoggedIn();
+
 		this.breakpointObserver
 			.observe([Breakpoints.Large, Breakpoints.Medium, Breakpoints.Small, '(min-width: 500px)'])
 			.pipe(distinctUntilChanged())
@@ -168,17 +186,46 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 	}
 
 	onSubmitNow(): void {
-		this.controllingMembersService.submitControllingMemberCrcAnonymous().subscribe({
+		if (this.isLoggedIn) {
+			this.controllingMembersService.submitControllingMemberCrcNewAuthenticated().subscribe({
+				// TODO update for authenticated
+				next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
+					this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
+
+					this.router.navigateByUrl(
+						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED)
+					);
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
+			return;
+		}
+
+		this.controllingMembersService.submitControllingMemberCrcNewAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
 				this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
 
 				this.router.navigateByUrl(
-					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMIT)
+					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED)
 				);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
 			},
+		});
+	}
+
+	onSaveAndExit(): void {
+		if (!this.controllingMembersService.isSaveAndExit()) {
+			return;
+		}
+
+		this.controllingMembersService.partialSaveStep(true).subscribe((_resp: any) => {
+			this.router.navigateByUrl(
+				ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
+			); // change to save in-progress app. screen
 		});
 	}
 
@@ -197,7 +244,7 @@ export class ControllingMemberWizardAnonymousNewComponent extends BaseWizardComp
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.router.navigateByUrl(
-						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN)
+						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
 					);
 				}
 			});

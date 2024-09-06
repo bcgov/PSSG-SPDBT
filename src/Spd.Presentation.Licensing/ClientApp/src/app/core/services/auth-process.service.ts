@@ -36,7 +36,10 @@ export class AuthProcessService {
 	//----------------------------------------------------------
 	// * Licencing Portal - BCSC
 	// *
-	async initializeLicencingBCSC(returnComponentRoute: string | undefined = undefined): Promise<string | null> {
+	async initializeLicencingBCSC(
+		returnComponentRoute: string | undefined = undefined,
+		stateInfo: string | null = null
+	): Promise<string | null> {
 		this.notify(false);
 
 		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
@@ -45,7 +48,8 @@ export class AuthProcessService {
 
 		const loginInfo = await this.authenticationService.login(
 			this.identityProvider,
-			returnComponentRoute ?? returningRoute
+			returnComponentRoute ?? returningRoute,
+			stateInfo
 		);
 
 		this.notifyValidToken(loginInfo.loggedIn);
@@ -61,6 +65,66 @@ export class AuthProcessService {
 		}
 
 		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Controlling Member Crc Invite - BCSC - try login
+	// *
+	async tryInitializeControllingMemberCrcInviteBcsc(returningRoute: string): Promise<string | null> {
+		this.notify(false);
+
+		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		// const returningRoute = ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN);
+		const loginInfo = await this.authenticationService.tryLogin(this.identityProvider, returningRoute);
+
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		if (loginInfo.loggedIn) {
+			const success = await this.authUserBcscService.applicantLoginAsync();
+			this.notify(success);
+
+			if (loginInfo.state) {
+				const stateInfo = this.utilService.getSessionData(this.utilService.CM_CRC_STATE_KEY);
+				if (stateInfo) {
+					return Promise.resolve(stateInfo);
+				}
+			}
+			return Promise.resolve(null);
+		}
+
+		this.notify(false);
+		return Promise.resolve(null);
+	}
+
+	//----------------------------------------------------------
+	// * Controlling Member Crc Invite - BCSC - login
+	// *
+	async initializeControllingMemberCrcInviteBcsc(
+		stateInfo: string,
+		returningRoute: string
+	): Promise<{
+		returnRoute: string | null;
+		state: string | null;
+		loggedIn: boolean;
+	}> {
+		this.notify(false);
+
+		this.identityProvider = IdentityProviderTypeCode.BcServicesCard;
+
+		// const returningRoute = ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_LOGIN);
+		const loginInfo = await this.authenticationService.login(this.identityProvider, returningRoute, stateInfo);
+
+		this.notifyValidToken(loginInfo.loggedIn);
+
+		if (loginInfo.loggedIn) {
+			const success = await this.authUserBcscService.applicantLoginAsync();
+			this.notify(success);
+
+			return Promise.resolve(loginInfo);
+		}
+
+		return Promise.resolve(loginInfo);
 	}
 
 	//----------------------------------------------------------
@@ -146,6 +210,7 @@ export class AuthProcessService {
 
 		this.identityProvider = null;
 		this.oauthService.logOut();
+		this.utilService.clearAllSessionData();
 
 		this.authUserBcscService.clearUserData();
 		this.authUserBceidService.clearUserData();

@@ -1,10 +1,13 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ControllingMemberAppInviteVerifyResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
+import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
-import { take, tap } from 'rxjs';
+import { UtilService } from '@app/core/services/util.service';
+import { take, takeWhile, tap } from 'rxjs';
 import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
 
 @Component({
@@ -85,45 +88,88 @@ export class ControllingMemberLoginComponent implements OnInit {
 	title!: string;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 
+	private subscribeAlive = true;
+	private defaultRoute!: string;
+
+	crcInviteData: ControllingMemberAppInviteVerifyResponse | null = null;
+
 	constructor(
 		private router: Router,
+		private utilService: UtilService,
+		private authProcessService: AuthProcessService,
 		private commonApplicationService: ApplicationService,
-		private controllingMembersService: ControllingMemberCrcService
+		private controllingMembersService: ControllingMemberCrcService,
+		private location: Location
 	) {}
 
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
+		this.authProcessService.logoutBceid();
+
+		this.crcInviteData = (this.location.getState() as any).crcInviteData;
+
+		const currentPath = location.pathname;
+		// to handle relative urls, look for '/controlling-member-crc/' to get the default route
+		const startOfRoute = currentPath.indexOf('/' + ControllingMemberCrcRoutes.MODULE_PATH + '/');
+		this.defaultRoute = currentPath.substring(startOfRoute);
+
+		if (!this.crcInviteData) {
+			const stateInfo = await this.authProcessService.tryInitializeControllingMemberCrcInviteBcsc(this.defaultRoute);
+			if (stateInfo) {
+				this.crcInviteData = JSON.parse(stateInfo);
+			}
+		}
+
+		if (!this.crcInviteData) {
+			this.router.navigateByUrl(
+				ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
+			);
+			return;
+		}
+
 		this.title = 'Log in to submit your consent to a criminal record check'; //If process = NEW or RENEWAL
 		// this.title = 'Log in to update your profile as a controlling member'; //if process = UPDATE
 
 		this.commonApplicationService.setApplicationTitle(
 			WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc
 		);
+
+		this.authProcessService.waitUntilAuthentication$
+			.pipe(takeWhile(() => this.subscribeAlive))
+			.subscribe((isLoggedIn: boolean) => {
+				if (isLoggedIn) {
+					this.subscribeAlive = false;
+
+					this.controllingMembersService
+						.createNewCrc(this.crcInviteData!)
+						.pipe(
+							tap((_resp: any) => {
+								this.router.navigateByUrl(
+									ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
+								);
+							}),
+							take(1)
+						)
+						.subscribe();
+				}
+			});
 	}
 
 	async onRegisterWithBcServicesCard(): Promise<void> {
-		// this.controllingMembersService
-		// 	.createNewCrcAnonymous() // TODO update to authenticated
-		// 	.pipe(
-		// 		tap((_resp: any) => {
-		// 			this.router.navigateByUrl(
-		// 				ControllingMembersCrcRoutes.pathControllingMembers(ControllingMembersCrcRoutes.CONTROLLING_MEMBERS_NEW)
-		// 			);
-		// 		}),
-		// 		take(1)
-		// 	)
-		// 	.subscribe();
+		const stateInfo = JSON.stringify({ ...this.crcInviteData });
+		this.utilService.setSessionData(this.utilService.CM_CRC_STATE_KEY, stateInfo);
+
+		await this.authProcessService.initializeControllingMemberCrcInviteBcsc(stateInfo, this.defaultRoute);
 	}
 
 	onContinueAnonymous(): void {
+		this.authProcessService.logoutBceid();
+		this.authProcessService.logoutBcsc();
+
 		this.controllingMembersService
-			.createNewCrcAnonymous()
+			.createNewCrcAnonymous(this.crcInviteData!)
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(
-						ControllingMemberCrcRoutes.pathControllingMemberCrcAnonymous(
-							ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW
-						)
-					);
+					this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW));
 				}),
 				take(1)
 			)

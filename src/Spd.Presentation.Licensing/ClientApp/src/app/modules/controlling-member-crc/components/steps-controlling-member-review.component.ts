@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
@@ -14,6 +14,8 @@ import { StepControllingMemberSummaryReviewAnonymousComponent } from './step-con
 				></app-step-controlling-member-summary-review-anonymous>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_REVIEW)"
@@ -24,6 +26,8 @@ import { StepControllingMemberSummaryReviewAnonymousComponent } from './step-con
 				<app-step-controlling-member-consent-and-declaration></app-step-controlling-member-consent-and-declaration>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
 					nextButtonLabel="Submit"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -39,8 +43,8 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 	readonly STEP_REVIEW = 0;
 	readonly STEP_CONSENT = 1;
 
-	// @Input() isFormValid!: boolean;
-	// @Input() showSaveAndExit!: boolean;
+	@Input() isFormValid!: boolean;
+	@Input() showSaveAndExit!: boolean;
 	// @Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();

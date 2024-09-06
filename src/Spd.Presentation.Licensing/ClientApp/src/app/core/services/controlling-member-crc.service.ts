@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
+	BizTypeCode,
+	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppSubmitRequest,
+	ControllingMemberCrcAppUpsertRequest,
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceDocumentTypeCode,
-	LicenceTermCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { ControllingMemberCrcAppService } from '@app/api/services';
@@ -40,7 +42,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	controllingMembersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	controllingMembersModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(),
+		controllingMemberAppId: new FormControl(),
+		bizContactId: new FormControl(),
+		bizTypeCode: new FormControl(),
+		parentBizLicApplicationId: new FormControl(),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -66,9 +71,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
-		private commonApplicationService: ApplicationService,
-		private hotToastService: HotToastService
+		private commonApplicationService: ApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
@@ -194,11 +199,28 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Create an empty anonymous licence
+	 * Create an empty anonymous crc
 	 * @returns
 	 */
-	createNewCrcAnonymous(): Observable<any> {
-		return this.getCrcEmptyAnonymous().pipe(
+	createNewCrc(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
+		if (crcInviteData.controllingMemberCrcAppId) {
+			return this.getCrcDraft(
+				crcInviteData.bizContactId!,
+				crcInviteData.bizLicAppId!,
+				crcInviteData.controllingMemberCrcAppId!
+			).pipe(
+				tap((_resp: any) => {
+					this.initialized = true;
+
+					this.commonApplicationService.setApplicationTitle(
+						WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+						ApplicationTypeCode.New
+					);
+				})
+			);
+		}
+
+		return this.getCrcEmptyAnonymous(crcInviteData.bizContactId!, crcInviteData.bizLicAppId!).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -210,7 +232,28 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 	}
 
-	private getCrcEmptyAnonymous(): Observable<any> {
+	/**
+	 * Create an empty anonymous crc
+	 * @returns
+	 */
+	createNewCrcAnonymous(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
+		return this.getCrcEmptyAnonymous(crcInviteData.bizContactId!, crcInviteData.bizLicAppId!).pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+					ApplicationTypeCode.New
+				);
+			})
+		);
+	}
+
+	private getCrcDraft(
+		bizContactId: string,
+		parentBizLicApplicationId: string,
+		controllingMemberCrcAppId: string
+	): Observable<any> {
 		this.reset();
 
 		this.controllingMembersModelFormGroup.patchValue(
@@ -218,6 +261,32 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				workerLicenceTypeData: {
 					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
+				applicationTypeData: { applicationTypeCode: ApplicationTypeCode.New },
+				bizTypeCode: BizTypeCode.None,
+				controllingMemberAppId: controllingMemberCrcAppId,
+				parentBizLicApplicationId,
+				bizContactId,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		return of(this.controllingMembersModelFormGroup.value);
+	}
+
+	private getCrcEmptyAnonymous(bizContactId: string, parentBizLicApplicationId: string): Observable<any> {
+		this.reset();
+
+		this.controllingMembersModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData: {
+					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+				},
+				applicationTypeData: { applicationTypeCode: ApplicationTypeCode.New },
+				bizTypeCode: BizTypeCode.None,
+				parentBizLicApplicationId,
+				bizContactId,
 			},
 			{
 				emitEvent: false,
@@ -228,20 +297,61 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Submit the licence data anonymous
+	 * Partial Save - Save the application data as is.
+	 * @returns StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
+	 */
+	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsPost({ body }).pipe(
+			tap((resp: ControllingMemberCrcAppCommandResponse) => {
+				this.resetModelChangeFlags();
+
+				let msg = 'Your application has been saved';
+				if (isSaveAndExit) {
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!controllingMembersModelFormValue.controllingMemberAppId) {
+					this.controllingMembersModelFormGroup.patchValue(
+						{ controllingMemberAppId: resp.controllingMemberAppId! },
+						{ emitEvent: false }
+					);
+				}
+				return resp;
+			})
+		);
+	}
+
+	/**
+	 * Submit the licence data
 	 * @returns
 	 */
-	submitControllingMemberCrcAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpsertRequest;
+
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsSubmitPost$Response({ body });
+	}
+
+	/**
+	 * Submit the crc data anonymous
+	 * @returns
+	 */
+	submitControllingMemberCrcNewAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
-
-		body.parentBizLicApplicationId = '7943e30e-bf8f-ee11-b849-00505683fbf4'; // TODO remove hardcoding
-		body.bizContactId = '40831603-075f-ee11-b846-00505683fbf4';
-		body.workerLicenceTypeCode = WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc;
-		body.licenceTermCode = LicenceTermCode.OneYear;
-		body.applicationTypeCode = ApplicationTypeCode.New;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -274,7 +384,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Post licence documents anonymous.
+	 * Post crc documents anonymous.
 	 * @returns
 	 */
 	private postCrcAnonymousDocuments(
@@ -301,7 +411,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Reset the licence data
+	 * Reset the crc data
 	 * @returns
 	 */
 	reset(): void {

@@ -21,7 +21,12 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 					(previousStepperStep)="onGoToPreviousStep()"
 					(previousStepperStep)="onGotoBusinessProfile()"-->
 
-				<app-wizard-footer (cancelAndExit)="onCancelAndExit()" (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
+				<app-wizard-footer
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_CHECKLIST)"
+					(cancelAndExit)="onCancelAndExit()"
+					(nextStepperStep)="onGoToNextStep()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -31,6 +36,8 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_PERSONAL_INFO)"
@@ -45,6 +52,8 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_ALIASES)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_ALIASES)"
@@ -59,6 +68,8 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_RESIDENTIAL_ADDRESS)"
@@ -77,7 +88,7 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 	readonly STEP_RESIDENTIAL_ADDRESS = 3;
 
 	@Input() isFormValid!: boolean;
-	// @Input() showSaveAndExit!: boolean;
+	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberPersonalInfoComponent) stepPersonalInfo!: StepControllingMemberPersonalInfoComponent;
