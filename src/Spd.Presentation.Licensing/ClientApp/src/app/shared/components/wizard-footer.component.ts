@@ -7,38 +7,26 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 	selector: 'app-wizard-footer',
 	template: `
 		<div class="row wizard-button-row">
-			<ng-container *ngIf="isSoleProprietorCombinedFlow; else defaultFlow">
-				<div class="col-xxl-4 col-xl-5 col-lg-6 col-md-12">
-					<button mat-flat-button class="large bordered mb-2" style="color: var(--color-red);" (click)="onCancel()">
-						Cancel Business Licence Application
-					</button>
-				</div>
-			</ng-container>
-			<ng-template #defaultFlow>
-				<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
-					<ng-container *ngIf="showExit">
-						<ng-container *ngIf="showSaveAndExit; else showCancel">
-							<button
-								*ngIf="isSaveAndExitObserved"
-								mat-flat-button
-								class="large button-small-caps bordered mb-2"
-								(click)="onSaveAndExit()"
-							>
-								Save & Exit
-							</button>
-						</ng-container>
-						<ng-template #showCancel>
-							<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
-						</ng-template>
+			<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-12">
+				<ng-container *ngIf="showExit">
+					<ng-container *ngIf="showSaveAndExit; else showCancel">
+						<button
+							*ngIf="isSaveAndExitObserved"
+							mat-flat-button
+							class="large button-small-caps bordered mb-2"
+							(click)="onSaveAndExit()"
+						>
+							Save & Exit
+						</button>
 					</ng-container>
-				</div>
-			</ng-template>
+					<ng-template #showCancel>
+						<button mat-flat-button class="large bordered mb-2" (click)="onCancel()">Cancel</button>
+					</ng-template>
+				</ng-container>
+			</div>
 
 			<ng-container *ngIf="isPreviousStepperStepObserved; else noPreviousButton">
-				<div
-					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
-					[ngClass]="isSoleProprietorCombinedFlow ? '' : 'offset-xxl-2'"
-				>
+				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12">
 					<button
 						*ngIf="isPreviousStepperStepObserved"
 						mat-stroked-button
@@ -63,8 +51,10 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 			</ng-container>
 			<ng-template #noPreviousButton>
 				<div
-					class="col-xxl-4 col-xl-6 col-lg-6 col-md-12"
-					[ngClass]="isSoleProprietorCombinedFlow ? '' : 'offset-xxl-2'"
+					class="col-md-12"
+					[ngClass]="
+						isWideNext ? 'offset-xxl-2 col-xxl-4 col-xl-4 col-lg-6' : 'offset-xxl-3 col-xxl-2 col-xl-3 col-lg-3'
+					"
 				>
 					<button
 						*ngIf="isNextStepperStepObserved"
@@ -78,21 +68,35 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-template>
 
-			<div
-				class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
-				[ngClass]="isSoleProprietorCombinedFlow ? '' : 'offset-xxl-2'"
-				*ngIf="isFormValid"
-			>
-				<button
-					*ngIf="isNextReviewStepperStepObserved"
-					mat-stroked-button
-					color="primary"
-					class="large button-small-caps mb-2"
-					(click)="onReview()"
+			<ng-container *ngIf="isSoleProprietorReturnToSwl; else defaultFlow">
+				<div
+					class="col-xxl-4 col-xl-5 col-lg-6 col-md-12"
+					[ngClass]="isSoleProprietorReturnToSwl ? '' : 'offset-xxl-2'"
+					[ngClass]="isPreviousStepperStepObserved ? '' : 'offset-xxl-1'"
 				>
-					Next: Review
-				</button>
-			</div>
+					<button
+						mat-flat-button
+						class="large bordered mb-2"
+						(click)="onCancelAndExit()"
+						*ngIf="isCancelAndExitObserved"
+					>
+						Return to Worker Application
+					</button>
+				</div>
+			</ng-container>
+			<ng-template #defaultFlow>
+				<div class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12" *ngIf="isFormValid">
+					<button
+						*ngIf="isNextReviewStepperStepObserved"
+						mat-stroked-button
+						color="primary"
+						class="large button-small-caps mb-2"
+						(click)="onReview()"
+					>
+						Next: Review
+					</button>
+				</div>
+			</ng-template>
 		</div>
 	`,
 	styles: [
@@ -105,6 +109,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 })
 export class WizardFooterComponent implements OnInit {
 	isSaveAndExitObserved = false;
+	isCancelObserved = false;
 	isCancelAndExitObserved = false;
 	isPreviousStepperStepObserved = false;
 	isNextStepperStepObserved = false;
@@ -115,9 +120,10 @@ export class WizardFooterComponent implements OnInit {
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
 	@Input() showExit = true;
-	@Input() isSoleProprietorCombinedFlow = false;
+	@Input() isSoleProprietorReturnToSwl = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
+	@Output() cancel: EventEmitter<any> = new EventEmitter();
 	@Output() cancelAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
@@ -127,6 +133,7 @@ export class WizardFooterComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.isSaveAndExitObserved = this.saveAndExit.observed;
+		this.isCancelObserved = this.cancel.observed;
 		this.isCancelAndExitObserved = this.cancelAndExit.observed;
 		this.isPreviousStepperStepObserved = this.previousStepperStep.observed;
 		this.isNextStepperStepObserved = this.nextStepperStep.observed;
@@ -149,9 +156,13 @@ export class WizardFooterComponent implements OnInit {
 		this.nextReviewStepperStep.emit();
 	}
 
+	onCancelAndExit(): void {
+		this.cancelAndExit.emit();
+	}
+
 	onCancel(): void {
-		if (this.isCancelAndExitObserved) {
-			this.cancelAndExit.emit();
+		if (this.isCancelObserved) {
+			this.cancel.emit();
 			return;
 		}
 

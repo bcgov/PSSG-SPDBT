@@ -127,6 +127,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	applicationTypeCode!: ApplicationTypeCode;
 
 	private licenceModelChangedSubscription!: Subscription;
+	private soleProprietorBizAppId: string | null = null;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -159,7 +160,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
 					BooleanTypeCode.Yes;
 
-				this.showSaveAndExit = this.licenceApplicationService.isAutoSave();
+				this.showSaveAndExit = this.licenceApplicationService.isSaveAndExit();
 
 				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
@@ -168,6 +169,9 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				this.showCitizenshipStep =
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+
+				this.soleProprietorBizAppId =
+					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorBizAppId')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -238,7 +242,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextSoleProprietor(): void {
-		this.submitStep(true);
+		this.submitSoleProprietorComboFlowStep();
 	}
 
 	onGoToStep(step: number) {
@@ -305,12 +309,24 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		}
 	}
 
-	private submitStep(isSoleProprietorFlow: boolean = false): void {
+	private submitStep(): void {
 		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 
-				if (isSoleProprietorFlow) {
+				this.payNow(_resp.body.licenceAppId!);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	private submitSoleProprietorComboFlowStep(): void {
+		this.licenceApplicationService.submitSoleProprietorComboFlow().subscribe({
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				// if a business licence app already exists, use it
+				if (this.soleProprietorBizAppId) {
 					this.router.navigate(
 						[
 							BusinessLicenceApplicationRoutes.MODULE_PATH,
@@ -318,13 +334,21 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 						],
 						{
 							queryParams: {
-								licenceAppId: _resp.body.licenceAppId!,
+								bizLicAppId: this.soleProprietorBizAppId,
 							},
 						}
 					);
-				} else {
-					this.payNow(_resp.body.licenceAppId!);
+					return;
 				}
+
+				this.router.navigate(
+					[BusinessLicenceApplicationRoutes.MODULE_PATH, BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR],
+					{
+						queryParams: {
+							swlLicAppId: _resp.body.licenceAppId!,
+						},
+					}
+				);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

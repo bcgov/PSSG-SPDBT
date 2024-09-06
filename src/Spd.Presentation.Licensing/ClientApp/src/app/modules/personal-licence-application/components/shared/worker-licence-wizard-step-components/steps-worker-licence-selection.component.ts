@@ -64,8 +64,12 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				></app-step-worker-licence-sole-proprietor>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_SOLE_PROPRIETOR)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_SOLE_PROPRIETOR)"
+					(nextReviewStepperStep)="onNextReview(STEP_SOLE_PROPRIETOR)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -73,8 +77,12 @@ import { StepWorkerLicenceTermsOfUseComponent } from './step-worker-licence-term
 				<app-step-worker-licence-expired [isLoggedIn]="isLoggedIn"></app-step-worker-licence-expired>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
+					[showSaveAndExit]="showSaveAndExit"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_EXPIRED)"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
 
