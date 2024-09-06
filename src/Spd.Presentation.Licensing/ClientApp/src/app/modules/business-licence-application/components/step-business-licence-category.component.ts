@@ -300,11 +300,11 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				break;
 		}
 
-		this.setupCategory(changedItem, preventDisable);
+		if (!this.isBusinessLicenceSoleProprietor) {
+			this.setupCategory(changedItem, preventDisable);
 
-		this.soleProprietorCategoryChange();
-
-		this.checkInsuranceRequirements();
+			this.checkInsuranceRequirements();
+		}
 	}
 
 	isFormValid(): boolean {
@@ -358,18 +358,16 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			return;
 		}
 
-		this.businessApplicationService
-			.addUploadDocument(LicenceDocumentTypeCode.BizInsurance, file) // TODO is this the correct file type?
-			.subscribe({
-				next: (resp: any) => {
-					const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
-					matchingFile.documentUrlId = resp.body[0].documentUrlId;
-				},
-				error: (error: any) => {
-					console.log('An error occurred during file upload', error);
-					this.fileUploadComponent.removeFailedFile(file);
-				},
-			});
+		this.businessApplicationService.addUploadDocument(LicenceDocumentTypeCode.BizInsurance, file).subscribe({
+			next: (resp: any) => {
+				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
+				this.fileUploadComponent.removeFailedFile(file);
+			},
+		});
 	}
 
 	onFileRemoved(): void {
@@ -379,21 +377,22 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	private initialSetupCategories(): void {
 		const formValue = this.form.value;
 
-		// TODO autocheck the categories that apply?
-		if (formValue.Locksmith) {
-			this.setupCategory(WorkerCategoryTypeCode.Locksmith);
-		}
+		if (!this.isBusinessLicenceSoleProprietor) {
+			if (formValue.Locksmith) {
+				this.setupCategory(WorkerCategoryTypeCode.Locksmith);
+			}
 
-		if (formValue.SecurityGuard) {
-			this.setupCategory(WorkerCategoryTypeCode.SecurityGuard);
-		}
+			if (formValue.SecurityGuard) {
+				this.setupCategory(WorkerCategoryTypeCode.SecurityGuard);
+			}
 
-		if (formValue.SecurityAlarmInstaller) {
-			this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmInstaller);
-		}
+			if (formValue.SecurityAlarmInstaller) {
+				this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+			}
 
-		if (formValue.SecurityAlarmResponse) {
-			this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmResponse);
+			if (formValue.SecurityAlarmResponse) {
+				this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmResponse);
+			}
 		}
 
 		if (this.isUpdate) {
