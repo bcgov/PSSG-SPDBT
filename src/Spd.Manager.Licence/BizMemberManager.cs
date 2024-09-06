@@ -26,6 +26,7 @@ internal class BizMemberManager :
         IRequestHandler<CreateBizEmployeeCommand, BizMemberResponse>,
         IRequestHandler<CreateBizSwlControllingMemberCommand, BizMemberResponse>,
         IRequestHandler<CreateBizNonSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<UpdateBizNonSwlControllingMemberCommand, BizMemberResponse>,
         IRequestHandler<DeleteBizMemberCommand, Unit>,
         IBizMemberManager
 {
@@ -168,6 +169,14 @@ internal class BizMemberManager :
     {
         await _bizContactRepository.ManageBizContactsAsync(new BizContactDeleteCmd(cmd.BizContactId), ct);
         return default;
+    }
+    public async Task<BizMemberResponse> Handle(UpdateBizNonSwlControllingMemberCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.NonSwlControllingMember);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactUpdateCmd(cmd.BizContactId, bizContact), ct);
+        return new BizMemberResponse(bizContactId);
     }
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
     {

@@ -10,7 +10,6 @@ namespace Spd.Resource.Repository.BizContact
         public Mappings()
         {
             _ = CreateMap<BizContact, spd_businesscontact>()
-                .ForMember(d => d.spd_businesscontactid, opt => opt.MapFrom(s => Guid.NewGuid()))
                 .ForMember(d => d.spd_role, opt => opt.MapFrom(s => SharedMappingFuncs.GetOptionset<BizContactRoleEnum, BizContactRoleOptionSet>(s.BizContactRoleCode)))
                 .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
                 .ForMember(d => d.spd_firstname, opt => opt.MapFrom(s => s.GivenName))

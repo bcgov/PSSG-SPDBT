@@ -8,6 +8,7 @@ public interface IBizMemberManager
     public Task<BizMemberResponse> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct);
     public Task<BizMemberResponse> Handle(CreateBizSwlControllingMemberCommand cmd, CancellationToken ct);
     public Task<BizMemberResponse> Handle(CreateBizNonSwlControllingMemberCommand cmd, CancellationToken ct);
+    public Task<BizMemberResponse> Handle(UpdateBizNonSwlControllingMemberCommand cmd, CancellationToken ct);
     public Task<Unit> Handle(DeleteBizMemberCommand cmd, CancellationToken ct);
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand command, CancellationToken ct);
@@ -25,6 +26,7 @@ public record UpsertBizMembersCommand(
 public record CreateBizEmployeeCommand(Guid BizId, SwlContactInfo Employee) : IRequest<BizMemberResponse>;
 public record CreateBizSwlControllingMemberCommand(Guid BizId, SwlContactInfo SwlControllingMember) : IRequest<BizMemberResponse>;
 public record CreateBizNonSwlControllingMemberCommand(Guid BizId, NonSwlContactInfo NonSwlControllingMember) : IRequest<BizMemberResponse>;
+public record UpdateBizNonSwlControllingMemberCommand(Guid BizId, Guid BizContactId, NonSwlContactInfo NonSwlControllingMember) : IRequest<BizMemberResponse>;
 public record DeleteBizMemberCommand(Guid BizId, Guid BizContactId) : IRequest<Unit>;
 public record BizMemberResponse(Guid? bizContactId);
 public record Members

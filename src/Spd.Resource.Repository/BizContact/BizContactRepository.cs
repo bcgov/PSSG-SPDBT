@@ -66,6 +66,7 @@ namespace Spd.Resource.Repository.BizContact
         {
             account? biz = await _context.GetOrgById(cmd.BizContact.BizId, ct);
             spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(cmd.BizContact);
+            bizContact.spd_businesscontactid = Guid.NewGuid();
             contact? c = null;
             if (cmd.BizContact.ContactId != null)
             {
@@ -102,7 +103,16 @@ namespace Spd.Resource.Repository.BizContact
 
         private async Task<Guid?> UpdateBizContactAsync(BizContactUpdateCmd cmd, CancellationToken ct)
         {
-            return null;
+            spd_businesscontact? bizContact = await _context.GetBizContactById(cmd.BizContactId, ct);
+            if (bizContact == null) throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the member.");
+            if (bizContact.spd_role != (int)BizContactRoleOptionSet.ControllingMember)
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot update non-controlling member.");
+            if (bizContact._spd_swlnumber_value != null)
+                throw new ApiException(HttpStatusCode.BadRequest, "Cannot update controlling member with secure worker licence.");
+            _mapper.Map<BizContact, spd_businesscontact>(cmd.BizContact, bizContact);
+            _context.UpdateObject(bizContact);
+            await _context.SaveChangesAsync(ct);
+            return cmd.BizContactId;
         }
 
         private async Task<Guid?> UpsertBizContacts(BizContactUpsertCmd cmd, CancellationToken ct)

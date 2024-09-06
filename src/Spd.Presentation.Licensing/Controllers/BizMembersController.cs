@@ -108,9 +108,24 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/business/{bizId}/non-swl-controlling-members")]
         [HttpPost]
         //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<BizMemberResponse> CreateSwlControllingMember([FromRoute] Guid bizId, [FromBody] NonSwlContactInfo controllingMember, CancellationToken ct)
+        public async Task<BizMemberResponse> CreateNonSwlControllingMember([FromRoute] Guid bizId, [FromBody] NonSwlContactInfo controllingMember, CancellationToken ct)
         {
             return await _mediator.Send(new CreateBizNonSwlControllingMemberCommand(bizId, controllingMember), ct);
+        }
+
+        /// <summary>
+        /// Update Non swl biz controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizContactId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-controlling-members/{bizContactId}")]
+        [HttpPut]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> UpdateNonSwlControllingMember([FromRoute] Guid bizId, [FromRoute] Guid bizContactId, NonSwlContactInfo controllingMember, CancellationToken ct)
+        {
+            return await _mediator.Send(new UpdateBizNonSwlControllingMemberCommand(bizId, bizContactId, controllingMember), ct);
         }
 
         /// <summary>
