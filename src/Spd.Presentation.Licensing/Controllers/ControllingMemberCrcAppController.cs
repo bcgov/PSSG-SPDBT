@@ -43,7 +43,18 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         _controllingMemberCrcAppUpsertValidator = controllingMemberCrcAppUpsertValidator;
     }
     #region authenticated
-
+    /// <summary>
+    /// Get Controlling member CRC Application
+    /// </summary>
+    /// <param name="cmCrcAppId"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/{cmCrcAppId}")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpGet]
+    public async Task<ControllingMemberCrcAppResponse> GetControllingMemberCrcApplication([FromRoute][Required] Guid cmCrcAppId)
+    {
+        return await _mediator.Send(new GetControllingMemberCrcApplicationQuery(cmCrcAppId));
+    }
     /// <summary>
     /// Create Controlling member CRC Application
     /// </summary>
