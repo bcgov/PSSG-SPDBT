@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ApplicationPortalStatusCode } from 'src/app/api/models';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -107,13 +106,7 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	}
 
 	ngOnInit(): void {
-		if (this.portal == PortalTypeCode.Psso) {
-			this.applicationPortalStatusCodes = this.utilService
-				.getCodeDescSorted('ApplicationPortalStatusTypes')
-				.filter((item) => item.code != ApplicationPortalStatusCode.AwaitingPayment);
-		} else {
-			this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
-		}
+		this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
 	}
 
 	onItemRemoved(item: string) {

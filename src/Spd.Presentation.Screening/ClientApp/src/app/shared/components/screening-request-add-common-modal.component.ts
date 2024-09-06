@@ -106,18 +106,6 @@ export interface ScreeningRequestAddDialogData {
 									</mat-form-field>
 								</div>
 
-								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="isNotVolunteerOrg">
-									<mat-form-field>
-										<mat-label>Paid by</mat-label>
-										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
-											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
-												{{ payer.desc }}
-											</mat-option>
-										</mat-select>
-										<mat-error *ngIf="group.get('payeeType')?.hasError('required')">This is required</mat-error>
-									</mat-form-field>
-								</div>
-
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showScreeningType">
 									<mat-form-field>
 										<mat-label>Application Type</mat-label>
@@ -149,12 +137,31 @@ export interface ScreeningRequestAddDialogData {
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showServiceType">
 									<mat-form-field>
 										<mat-label>Service Type</mat-label>
-										<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
+										<mat-select
+											formControlName="serviceType"
+											(selectionChange)="onChangeServiceType($event, i)"
+											[errorStateMatcher]="matcher"
+										>
 											<mat-option *ngFor="let srv of serviceTypes[i]" [value]="srv.code">
 												{{ srv.desc }}
 											</mat-option>
 										</mat-select>
 										<mat-error *ngIf="group.get('serviceType')?.hasError('required')">This is required</mat-error>
+									</mat-form-field>
+								</div>
+
+								<div
+									class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0"
+									*ngIf="showPaidByPsso[i] || isNotVolunteerOrg"
+								>
+									<mat-form-field>
+										<mat-label>Paid by</mat-label>
+										<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
+											<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
+												{{ payer.desc }}
+											</mat-option>
+										</mat-select>
+										<mat-error *ngIf="group.get('payeeType')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
 
@@ -230,6 +237,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	showServiceType = false;
 	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: Array<SelectOptions[]> = [];
+	showPaidByPsso: Array<boolean> = [];
 	portalTypeCodes = PortalTypeCode;
 
 	showScreeningType = false;
@@ -320,7 +328,9 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 				validators: [
 					FormGroupValidators.conditionalRequiredValidator('screeningType', (_form) => this.showScreeningType ?? false),
 					FormGroupValidators.conditionalRequiredValidator('serviceType', (_form) => this.showServiceType ?? false),
-					FormGroupValidators.conditionalRequiredValidator('payeeType', (_form) => this.isNotVolunteerOrg ?? false),
+					FormGroupValidators.conditionalRequiredValidator('payeeType', (_form) =>
+						this.isPayeeTypeRequired(_form.get('serviceType')?.value ?? false)
+					),
 					FormGroupValidators.conditionalRequiredValidator(
 						'orgId',
 						(_form) => this.portal == PortalTypeCode.Psso && this.isPsaUser
@@ -333,6 +343,10 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 
 	onChangeMinistry(event: MatSelectChange, index: number): void {
 		this.populatePssoServiceTypes(event.value, index);
+	}
+
+	onChangeServiceType(event: MatSelectChange, index: number): void {
+		this.setShowPaidByPsso(event.value, index);
 	}
 
 	onAddRow() {
@@ -610,6 +624,14 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.showServiceType = true;
 	}
 
+	private setShowPaidByPsso(serviceTypeCode: ServiceTypeCode, index: number) {
+		if (this.portal != PortalTypeCode.Psso) {
+			return;
+		}
+
+		this.showPaidByPsso[index] = this.isPeCrc(serviceTypeCode);
+	}
+
 	private populatePssoServiceTypes(orgId: string, index: number) {
 		if (this.portal != PortalTypeCode.Psso) {
 			return;
@@ -632,6 +654,18 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 			const defaultServiceTypeCode = serviceTypes.length === 1 ? (serviceTypes[0].code as string) : null;
 			crcFormGroup.patchValue({ serviceType: defaultServiceTypeCode }, { emitEvent: false });
 		}
+	}
+
+	isPayeeTypeRequired(serviceTypeCode: ServiceTypeCode): boolean {
+		if (this.portal === PortalTypeCode.Psso) {
+			return this.isPeCrc(serviceTypeCode);
+		}
+
+		return this.isNotVolunteerOrg;
+	}
+
+	private isPeCrc(serviceTypeCode: ServiceTypeCode): boolean {
+		return serviceTypeCode === ServiceTypeCode.PeCrc || serviceTypeCode === ServiceTypeCode.PeCrcVs;
 	}
 
 	get getFormControls() {

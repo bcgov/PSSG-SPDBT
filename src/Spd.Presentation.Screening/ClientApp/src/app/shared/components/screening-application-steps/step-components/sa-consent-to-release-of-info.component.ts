@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ServiceTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -73,7 +73,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 		`,
 	],
 })
-export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
+export class SaConsentToReleaseOfInfoComponent implements OnInit, CrcFormStepComponent {
 	matcher = new FormErrorStateMatcher();
 	// crrpa flow uses agreeToCriminalCheck, agreeToVulnerableSectorSearch, check1, check2, check3, check4, check5, check6
 	// pssoa flow uses agreeToCriminalCheck, check1, check2, check3

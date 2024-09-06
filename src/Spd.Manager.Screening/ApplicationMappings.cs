@@ -10,6 +10,8 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Utilities.Shared;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Screening
 {
@@ -19,7 +21,8 @@ namespace Spd.Manager.Screening
         {
             _ = CreateMap<ApplicationInvitesCreateRequest, ApplicationInvitesCreateCmd>()
             .ForMember(d => d.ApplicationInvites, opt => opt.MapFrom(s => s.ApplicationInviteCreateRequests));
-            CreateMap<ApplicationInviteCreateRequest, Resource.Repository.ApplicationInvite.ApplicationInvite>();
+            CreateMap<ApplicationInviteCreateRequest, Resource.Repository.ApplicationInvite.ApplicationInvite>()
+            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayerPreferenceTypeCode(s)));
             CreateMap<ApplicationInviteCreateRequest, AppInviteDuplicateCheck>();
             CreateMap<AppInviteDuplicateCheckResult, ApplicationInviteDuplicateResponse>();
             CreateMap<ApplicationInviteCreateRequest, ApplicationInviteDuplicateResponse>();
@@ -124,6 +127,26 @@ namespace Spd.Manager.Screening
                 serviceType == ServiceTypeCode.PE_CRC ||
                 serviceType == ServiceTypeCode.MCFD)
                 return SpdConstants.BcGovOrgId;
+            return null;
+        }
+
+        private Resource.Repository.PayerPreferenceTypeCode? GetPayerPreferenceTypeCode(ApplicationInviteCreateRequest inviteRequest)
+        {
+            if (inviteRequest.ServiceType == ServiceTypeCode.CRRP_EMPLOYEE)
+            {
+                if (inviteRequest.PayeeType == null) throw new ApiException(HttpStatusCode.BadRequest, "Payee type is required.");
+                return Enum.Parse<Resource.Repository.PayerPreferenceTypeCode>(inviteRequest.PayeeType.Value.ToString());
+            }
+
+            if (inviteRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER) return null;
+            if (inviteRequest.ServiceType == ServiceTypeCode.PSSO || inviteRequest.ServiceType == ServiceTypeCode.PSSO_VS || inviteRequest.ServiceType == ServiceTypeCode.MCFD)
+                return null;
+            if (inviteRequest.ServiceType == ServiceTypeCode.PE_CRC || inviteRequest.ServiceType == ServiceTypeCode.PE_CRC_VS)
+            {
+                if (inviteRequest.PayeeType == Shared.PayerPreferenceTypeCode.Applicant) return Resource.Repository.PayerPreferenceTypeCode.Applicant;
+                if (inviteRequest.PayeeType == Shared.PayerPreferenceTypeCode.Organization) return null;
+                if (inviteRequest.PayeeType == null) throw new ApiException(HttpStatusCode.BadRequest, "Payee type is required.");
+            }
             return null;
         }
     }
