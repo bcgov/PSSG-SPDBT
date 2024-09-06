@@ -17,29 +17,30 @@ using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Resource.Repository.Application;
 
 namespace Spd.Manager.Licence;
-internal class ControllingMemberCrcAppManager : 
+internal class ControllingMemberCrcAppManager :
     LicenceAppManagerBase,
     IRequestHandler<ControllingMemberCrcAppNewCommand, ControllingMemberCrcAppCommandResponse>,
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
 
-    public ControllingMemberCrcAppManager(IMapper mapper, 
-        IDocumentRepository documentRepository, 
-        ILicenceFeeRepository feeRepository, 
-        ILicenceRepository licenceRepository, 
-        IMainFileStorageService mainFileService, 
+    public ControllingMemberCrcAppManager(IMapper mapper,
+        IDocumentRepository documentRepository,
+        ILicenceFeeRepository feeRepository,
+        ILicenceRepository licenceRepository,
+        IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
         ILicAppRepository licAppRepository) : base(
-            mapper, 
-            documentRepository, 
-            feeRepository, 
-            licenceRepository, 
-            mainFileService, 
-            transientFileService, 
+            mapper,
+            documentRepository,
+            feeRepository,
+            licenceRepository,
+            mainFileService,
+            transientFileService,
             licAppRepository)
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
@@ -56,14 +57,14 @@ internal class ControllingMemberCrcAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
 
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
-        
+
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberCrcAppId, response.ContactId, null, null, null, null, null, ct);
-        decimal cost = await CommitApplicationAsync(request, response.ControllingMemberCrcAppId, ct);
+
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberCrcAppId, ApplicationStatusEnum.Submitted, ct);
 
         return new ControllingMemberCrcAppCommandResponse
         {
             ControllingMemberAppId = response.ControllingMemberCrcAppId,
-            Cost = cost
         };
     }
     #endregion
@@ -71,7 +72,7 @@ internal class ControllingMemberCrcAppManager :
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand cmd, CancellationToken ct)
     {
         SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
-        
+
         //TODO: find the purpose, add related enums if needed (ask peggy)
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos);
         saveCmd.WorkerLicenceTypeCode = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC;
@@ -89,8 +90,9 @@ internal class ControllingMemberCrcAppManager :
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId, ct);
-        decimal cost = await CommitApplicationAsync(cmd.ControllingMemberCrcAppUpsertRequest, cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId.Value, ct, false);
-        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId, Cost = cost};
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+
+        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
     #endregion
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
@@ -127,4 +129,12 @@ internal class ControllingMemberCrcAppManager :
         }
     }
 
+    public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
+    {
+        var response = await _controllingMemberCrcRepository.GetCrcApplicationAsync(query.ControllingMemberApplicationId, ct);
+        ControllingMemberCrcAppResponse result = _mapper.Map<ControllingMemberCrcAppResponse>(response);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.ControllingMemberApplicationId), ct);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();  // Exclude licence document type code that are not defined in the related dictionary
+        return result;
+    }
 }
