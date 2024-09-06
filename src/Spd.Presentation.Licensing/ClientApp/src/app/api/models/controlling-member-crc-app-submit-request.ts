@@ -3,10 +3,8 @@
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationTypeCode } from '../models/application-type-code';
-import { BizTypeCode } from '../models/biz-type-code';
 import { DocumentExpiredInfo } from '../models/document-expired-info';
 import { GenderCode } from '../models/gender-code';
-import { LicenceTermCode } from '../models/licence-term-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface ControllingMemberCrcAppSubmitRequest {
@@ -16,7 +14,6 @@ export interface ControllingMemberCrcAppSubmitRequest {
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;
   bizContactId?: string;
-  bizTypeCode?: BizTypeCode;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
   documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
@@ -31,7 +28,6 @@ export interface ControllingMemberCrcAppSubmitRequest {
   isCanadianCitizen?: boolean | null;
   isPoliceOrPeaceOfficer?: boolean | null;
   isTreatedForMHC?: boolean | null;
-  licenceTermCode?: LicenceTermCode;
   middleName1?: string | null;
   middleName2?: string | null;
   otherOfficerRole?: string | null;

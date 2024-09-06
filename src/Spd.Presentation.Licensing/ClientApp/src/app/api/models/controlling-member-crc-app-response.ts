@@ -7,15 +7,15 @@ import { Document } from '../models/document';
 import { GenderCode } from '../models/gender-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
-export interface ControllingMemberCrcAppUpsertRequest {
+export interface ControllingMemberCrcAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
-  applicantId?: string;
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;
   bizContactId?: string;
-  controllingMemberAppId?: string | null;
+  caseNumber?: string | null;
+  controllingMemberCrcAppId?: string;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
   documentInfos?: Array<Document> | null;

@@ -35,6 +35,7 @@ export { ContactRoleCode } from './models/contact-role-code';
 export { ControllingMemberAppInviteVerifyRequest } from './models/controlling-member-app-invite-verify-request';
 export { ControllingMemberAppInviteVerifyResponse } from './models/controlling-member-app-invite-verify-response';
 export { ControllingMemberCrcAppCommandResponse } from './models/controlling-member-crc-app-command-response';
+export { ControllingMemberCrcAppResponse } from './models/controlling-member-crc-app-response';
 export { ControllingMemberCrcAppSubmitRequest } from './models/controlling-member-crc-app-submit-request';
 export { ControllingMemberCrcAppUpsertRequest } from './models/controlling-member-crc-app-upsert-request';
 export { ControllingMemberInvitesCreateResponse } from './models/controlling-member-invites-create-response';
