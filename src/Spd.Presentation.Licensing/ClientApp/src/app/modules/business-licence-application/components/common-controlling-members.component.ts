@@ -2,7 +2,13 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceDocumentTypeCode, LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import {
+	ControllingMemberInvitesCreateResponse,
+	LicenceDocumentTypeCode,
+	LicenceResponse,
+	NonSwlContactInfo,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -10,6 +16,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { HotToastService } from '@ngneat/hot-toast';
+import { take, tap } from 'rxjs';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
@@ -117,13 +125,19 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									</mat-cell>
 								</ng-container>
 
-								<ng-container matColumnDef="clearanceStatus">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>
-										Controlling Member Clearance
-									</mat-header-cell>
+								<ng-container matColumnDef="email">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Email </mat-header-cell>
+									<mat-cell class="mat-cell-email" *matCellDef="let member">
+										<span class="mobile-label">Email:</span>
+										{{ member.emailAddress | default }}
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="inviteStatusCode">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Invitation Status </mat-header-cell>
 									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Controlling Member Clearance:</span>
-										{{ member.clearanceStatus | default }}
+										<span class="mobile-label">Invitation Status:</span>
+										{{ member.inviteStatusCode | default }}
 									</mat-cell>
 								</ng-container>
 
@@ -155,6 +169,34 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
+									</mat-cell>
+								</ng-container>
+
+								<ng-container matColumnDef="action3">
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
+									<mat-cell *matCellDef="let member">
+										<ng-container *ngIf="member.emailAddress; else noEmailAddress">
+											<button
+												mat-stroked-button
+												class="w-100"
+												aria-label="Send invitation"
+												matTooltip="Send invitation"
+												(click)="onSendInvitation(member)"
+											>
+												<mat-icon>send</mat-icon>Invitation
+											</button>
+										</ng-container>
+										<ng-template #noEmailAddress>
+											<a
+												mat-stroked-button
+												class="w-100"
+												aria-label="Download Business Member Auth Consent"
+												download="Business Member Auth Consent"
+												matTooltip="Download Business Member Auth Consent"
+												[href]="downloadFilePath"
+												><mat-icon>download</mat-icon>Manual Form</a
+											>
+										</ng-template>
 									</mat-cell>
 								</ng-container>
 
@@ -243,6 +285,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 })
 export class CommonControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
+	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
 	form = this.businessApplicationService.controllingMembersFormGroup;
 
@@ -255,14 +298,15 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	dataSourceWithSWL!: MatTableDataSource<any>;
 	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
 
-	dataSourceWithoutSWL!: MatTableDataSource<any>;
-	columnsWithoutSWL: string[] = ['licenceHolderName', 'clearanceStatus', 'action1', 'action2'];
+	dataSourceWithoutSWL!: MatTableDataSource<NonSwlContactInfo>;
+	columnsWithoutSWL: string[] = ['licenceHolderName', 'email', 'inviteStatusCode', 'action1', 'action2', 'action3'];
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private hotToastService: HotToastService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
@@ -337,8 +381,23 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.onAddMemberWithSWL();
 	}
 
-	onEditMemberWithoutSWL(member: any): void {
+	onEditMemberWithoutSWL(member: NonSwlContactInfo): void {
 		this.memberDialogWithoutSWL(member, false);
+	}
+
+	onSendInvitation(member: NonSwlContactInfo): void {
+		this.businessApplicationService
+			.sendControllingMembersWithoutSwlInvitation(member.bizContactId!)
+			.pipe(
+				tap((_resp: ControllingMemberInvitesCreateResponse) => {
+					if (_resp.createSuccess) {
+						this.hotToastService.success('Invitation was successfully sent');
+					}
+					// TODO - crc update status after sent ??
+				}),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	onAddMemberWithoutSWL(): void {
@@ -425,7 +484,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			licenceStatusCode: [memberData.licenceStatusCode],
 			licenceTermCode: [memberData.licenceTermCode],
 			expiryDate: [memberData.expiryDate],
-			clearanceStatus: [memberData.clearanceStatus],
+			inviteStatusCode: [memberData.inviteStatusCode],
 		});
 	}
 
@@ -448,7 +507,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			licenceStatusCode: memberData.licenceStatusCode,
 			licenceTermCode: memberData.licenceTermCode,
 			expiryDate: memberData.expiryDate,
-			clearanceStatus: memberData.clearanceStatus,
+			inviteStatusCode: memberData.inviteStatusCode,
 		});
 	}
 

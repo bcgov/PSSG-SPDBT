@@ -84,7 +84,11 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 			</div>
 		</div>
 
-		<app-wizard-footer [nextButtonLabel]="saveAndContinueLabel" (nextStepperStep)="onContinue()"></app-wizard-footer>
+		<app-wizard-footer
+			[nextButtonLabel]="saveAndContinueLabel"
+			[isWideNext]="true"
+			(nextStepperStep)="onContinue()"
+		></app-wizard-footer>
 	`,
 	styles: [],
 })

@@ -401,7 +401,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		switch (appl.serviceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
 				this.licenceApplicationService
-					.getLicenceToResume(appl.licenceAppId!)
+					.getWorkerLicenceToResume(appl.licenceAppId!)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(

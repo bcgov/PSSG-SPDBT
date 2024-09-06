@@ -375,7 +375,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	private handlePartialSaveError(error: HttpErrorResponse): void {
 		// only 403s will be here as an error
 		if (error.status == 403) {
-			this.commonApplicationService.handleDuplicateLicence();
+			this.commonApplicationService.handleDuplicateBusinessLicence();
 		}
 	}
 

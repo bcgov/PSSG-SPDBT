@@ -11,10 +11,7 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.BizAddress).NotEmpty();
         RuleFor(r => r.BizBCAddress)
             .NotEmpty()
-            .When(r => r.BizAddress.Province != "BC");
-        RuleFor(r => r.SoleProprietorLicenceId)
-            .NotEmpty()
-            .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
+            .When(r => r.BizAddress?.Province != "BC" && r.BizAddress?.Province != "British Columbia");
         RuleFor(r => r.SoleProprietorSwlEmailAddress)
             .NotEmpty()
             .EmailAddress()

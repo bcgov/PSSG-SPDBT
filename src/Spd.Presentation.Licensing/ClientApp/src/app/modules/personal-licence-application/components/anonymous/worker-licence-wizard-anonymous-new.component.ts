@@ -237,7 +237,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		this.submitStep(true);
 	}
 
-	private submitStep(isSoleProprietorFlow: boolean = false): void {
+	private submitStep(isSoleProprietorComboFlow: boolean = false): void {
 		// If the creation worked and the payment failed, do not post again
 		if (this.licenceAppId) {
 			this.payNow(this.licenceAppId);
@@ -249,7 +249,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 					this.hotToastService.success('Your licence has been successfully submitted');
 
-					if (isSoleProprietorFlow) {
+					if (isSoleProprietorComboFlow) {
 						this.router.navigate(
 							[
 								BusinessLicenceApplicationRoutes.MODULE_PATH,
@@ -257,8 +257,8 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 							],
 							{
 								queryParams: {
-									licenceAppId: this.licenceAppId,
-									isSwlAnonymous: 'Y',
+									swlLicAppId: this.licenceAppId,
+									isSoleProprietorSWLAnonymous: 'Y',
 								},
 							}
 						);
