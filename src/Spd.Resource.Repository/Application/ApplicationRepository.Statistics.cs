@@ -34,6 +34,8 @@ internal partial class ApplicationRepository : IApplicationRepository
             var pssoUserStatistics = await user.spd_GetPSSOOrganizationStatistics().GetValueAsync(ct);
             var statisticsDictionary = new Dictionary<ApplicationPortalStatisticsCd, int>();
             if (pssoUserStatistics.AwaitingApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingApplicant, pssoUserStatistics.AwaitingApplicant.Value);
+            //todo: Need dynamics to add awaiting payment for PSSO
+            // if (pssoUserStatistics.AwaitingPayment.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingPayment, pssoUserStatistics.AwaitingPayment.Value);
             if (pssoUserStatistics.AwaitingThirdParty.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.AwaitingThirdParty, pssoUserStatistics.AwaitingThirdParty.Value);
             if (pssoUserStatistics.CancelledByApplicant.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.CancelledByApplicant, pssoUserStatistics.CancelledByApplicant.Value);
             if (pssoUserStatistics.ClosedNoConsent.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.ClosedNoConsent, pssoUserStatistics.ClosedNoConsent.Value);
