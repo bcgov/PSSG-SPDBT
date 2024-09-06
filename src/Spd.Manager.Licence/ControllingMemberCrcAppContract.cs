@@ -12,10 +12,12 @@ public interface IControllingMemberCrcAppManager
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand command, CancellationToken ct);
-
+    public Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct);
 }
-public record ControllingMemberCrcAppBase : LicenceAppBase
+public record ControllingMemberCrcAppBase
 {
+    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
