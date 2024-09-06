@@ -6,6 +6,7 @@ namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
 {
     public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
 }
 
@@ -56,7 +57,7 @@ public record SaveControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 }
 public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplication
 {
-    //TODO: what are response props?
+    public string? CaseNumber { get; set; }
     public Guid? ControllingMemberCrcAppId { get; set; }
     public Guid? ContactId { get; set; }
 }
