@@ -48,7 +48,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             .Expand(a => a.spd_account_spd_servicetype)
             .Where(a => a.accountid == cmd.OrgId)
             .SingleOrDefaultAsync(ct);
-        spd_servicetype? servicetype = org.spd_account_spd_servicetype.First();
+        spd_servicetype? servicetype = org.spd_account_spd_servicetype.First(s => s.spd_servicecategory == (int)ServiceTypeCategoryOptionSet.Screening);
         spd_portaluser? user = await _context.GetUserById(cmd.UserId, ct);
         Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
         team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
@@ -57,7 +57,7 @@ internal partial class ApplicationRepository : IApplicationRepository
 
         //create applications
         List<ApplicationCreateCmd> createApps = cmd.CreateApps.ToList();
-        List<ApplicationCreateRslt> results = new List<ApplicationCreateRslt>();
+        List<ApplicationCreateRslt> results = new();
         for (int i = 0; i < createApps.Count; i++)
         {
             results.Add(new ApplicationCreateRslt { LineNumber = i + 1 });
@@ -109,7 +109,7 @@ internal partial class ApplicationRepository : IApplicationRepository
         //add history
         if (bulkResult != BulkAppsCreateResultCd.Failed)
         {
-            spd_genericupload bulkInfo = new spd_genericupload
+            spd_genericupload bulkInfo = new()
             {
                 spd_genericuploadid = Guid.NewGuid(),
                 spd_filename = cmd.FileName,
