@@ -18,6 +18,8 @@ using Spd.Utilities.FileStorage;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.ApplicationInvite;
+using Spd.Resource.Repository;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -26,6 +28,7 @@ internal class ControllingMemberCrcAppManager :
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
+    private readonly IApplicationInviteRepository _applicationInviteRepository;
 
     public ControllingMemberCrcAppManager(IMapper mapper,
         IDocumentRepository documentRepository,
@@ -34,6 +37,7 @@ internal class ControllingMemberCrcAppManager :
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
+        IApplicationInviteRepository applicationInviteRepository,
         ILicAppRepository licAppRepository) : base(
             mapper,
             documentRepository,
@@ -44,10 +48,24 @@ internal class ControllingMemberCrcAppManager :
             licAppRepository)
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
+        _applicationInviteRepository = applicationInviteRepository;
     }
     #region anonymous new
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
+        ApplicationInviteResult? invite = null;
+        //check if invite is still valid
+        if (cmd.ControllingMemberCrcAppSubmitRequest?.InviteId != null)
+        {
+            var invites = await _applicationInviteRepository.QueryAsync(
+                new ApplicationInviteQuery()
+                {
+                    FilterBy = new AppInviteFilterBy(null, null, AppInviteId: cmd.ControllingMemberCrcAppSubmitRequest.InviteId)
+                }, ct);
+            invite = invites.ApplicationInvites.FirstOrDefault();
+            if (invite != null && (invite.Status == ApplicationInviteStatusEnum.Completed || invite.Status == ApplicationInviteStatusEnum.Cancelled || invite.Status == ApplicationInviteStatusEnum.Expired))
+                throw new ArgumentException("Invalid Invite status.");
+        }
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
         ValidateFilesForNewApp(cmd);
@@ -60,8 +78,19 @@ internal class ControllingMemberCrcAppManager :
 
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberCrcAppId, response.ContactId, null, null, null, null, null, ct);
 
+        //
         await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberCrcAppId, ApplicationStatusEnum.Submitted, ct);
 
+        //inactivate invite
+        if (cmd.ControllingMemberCrcAppSubmitRequest?.InviteId != null)
+        {
+            await _applicationInviteRepository.ManageAsync(
+                new ApplicationInviteUpdateCmd()
+                {
+                    ApplicationInviteId = (Guid)cmd.ControllingMemberCrcAppSubmitRequest.InviteId,
+                    ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Completed
+                }, ct);
+        }
         return new ControllingMemberCrcAppCommandResponse
         {
             ControllingMemberAppId = response.ControllingMemberCrcAppId,
