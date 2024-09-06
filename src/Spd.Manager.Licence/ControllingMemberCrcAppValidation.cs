@@ -117,7 +117,6 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
             .MaximumLength(8)
             .When(r => r.HasBcDriversLicence == true);
         RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
-        RuleFor(r => r.LicenceTermCode).NotNull();
         RuleFor(r => r.ApplicationTypeCode).NotNull();
     }
 }
@@ -231,7 +230,6 @@ public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<C
             .MaximumLength(8)
             .When(r => r.HasBcDriversLicence == true);
         RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
-        RuleFor(r => r.LicenceTermCode).NotNull();
         RuleFor(r => r.ApplicationTypeCode).NotNull();
     }
 

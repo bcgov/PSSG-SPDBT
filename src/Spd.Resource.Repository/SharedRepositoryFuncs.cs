@@ -52,4 +52,15 @@ internal static class SharedRepositoryFuncs
         team? serviceTeam =  _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
+
+    public static List<spd_alias>? GetAliases(Guid contactId, DynamicsContext _context)
+    {
+        var matchingAliases = _context.spd_aliases.Where(o =>
+           o._spd_contactid_value == contactId &&
+           o.statecode != DynamicsConstants.StateCode_Inactive &&
+           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+       ).ToList();
+        return matchingAliases;
+    }
+
 }

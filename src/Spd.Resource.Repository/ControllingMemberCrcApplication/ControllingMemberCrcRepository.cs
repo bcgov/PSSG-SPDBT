@@ -1,5 +1,8 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
+using Microsoft.OData.Client;
+using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
@@ -72,6 +75,35 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
         await _context.SaveChangesAsync(ct);
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
+    }
+
+    public async Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct) 
+    {
+        spd_application? app;
+        try
+        {
+            app = await _context.spd_applications.Expand(a => a.spd_ServiceTypeId)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Where(a => a.spd_applicationid == controllingMemberApplicationId)
+                .SingleOrDefaultAsync(ct);
+        }
+        catch (DataServiceQueryException ex)
+        {
+            if (ex.Response.StatusCode == 404)
+                throw new ArgumentException("invalid app id");
+            else
+                throw;
+        }
+        ControllingMemberCrcApplicationResp appResp = _mapper.Map<ControllingMemberCrcApplicationResp>(app);
+
+        if (app.spd_ApplicantId_contact?.contactid != null)
+        {
+            var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
+            appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
+            _mapper.Map<contact, ControllingMemberCrcApplicationResp>(app.spd_ApplicantId_contact, appResp);
+        }
+
+        return appResp;
     }
 
     public async Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd cmd, CancellationToken ct)
