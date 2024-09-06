@@ -66,15 +66,17 @@ namespace Spd.Resource.Repository.BizContact
         {
             account? biz = await _context.GetOrgById(cmd.BizContact.BizId, ct);
             spd_businesscontact bizContact = _mapper.Map<spd_businesscontact>(cmd.BizContact);
+            contact? c = null;
             if (cmd.BizContact.ContactId != null)
             {
-                contact? c = await _context.GetContactById((Guid)cmd.BizContact.ContactId, ct);
+                c = await _context.GetContactById((Guid)cmd.BizContact.ContactId, ct);
                 if (c == null)
                     throw new ApiException(HttpStatusCode.BadRequest, $"invalid contact {cmd.BizContact.ContactId.Value}");
                 bizContact.spd_fullname = $"{c.lastname},{c.firstname}";
-                _context.AddTospd_businesscontacts(bizContact);
-                _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
             }
+            _context.AddTospd_businesscontacts(bizContact);
+            if (c != null)
+                _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), c);
             if (cmd.BizContact.LicenceId != null)
             {
                 spd_licence? swlLic = _context.spd_licences.Where(l => l.spd_licenceid == cmd.BizContact.LicenceId && l.statecode == DynamicsConstants.StateCode_Active).FirstOrDefault();

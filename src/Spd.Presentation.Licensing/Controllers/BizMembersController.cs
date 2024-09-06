@@ -41,7 +41,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business/{bizId}/members")]
         [HttpGet]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
         {
             return await _mediator.Send(new GetBizMembersQuery(bizId), ct);
@@ -87,16 +87,48 @@ namespace Spd.Presentation.Licensing.Controllers
         /// Create Biz swl controlling member
         /// </summary>
         /// <param name="bizId"></param>
-        /// <param name="employee"></param>
+        /// <param name="controllingMember"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [Route("api/business/{bizId}/swl-controlling-members")]
         [HttpPost]
         //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<BizMemberResponse> CreateNonSwlControllingMember([FromRoute] Guid bizId, [FromBody] SwlContactInfo controllingMember, CancellationToken ct)
+        public async Task<BizMemberResponse> CreateSwlControllingMember([FromRoute] Guid bizId, [FromBody] SwlContactInfo controllingMember, CancellationToken ct)
         {
             return await _mediator.Send(new CreateBizSwlControllingMemberCommand(bizId, controllingMember), ct);
         }
+
+        /// <summary>
+        /// Create Biz swl controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="employee"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-controlling-members")]
+        [HttpPost]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateSwlControllingMember([FromRoute] Guid bizId, [FromBody] NonSwlContactInfo controllingMember, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizNonSwlControllingMemberCommand(bizId, controllingMember), ct);
+        }
+
+        /// <summary>
+        /// Delete Biz swl controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizContactId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/members/{bizContactId}")]
+        [HttpDelete]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<ActionResult> DeleteBizMember([FromRoute] Guid bizId, [FromRoute] Guid bizContactId, CancellationToken ct)
+        {
+            await _mediator.Send(new DeleteBizMemberCommand(bizId, bizContactId), ct);
+            return Ok();
+        }
+
         /// <summary>
         /// Create controlling member crc invitation for this biz contact
         /// </summary>

@@ -353,6 +353,7 @@ internal class Mappings : Profile
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
         CreateMap<SwlContactInfo, BizContact>();
+        CreateMap<NonSwlContactInfo, BizContact>();
     }
 
     private static WorkerCategoryTypeEnum[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)

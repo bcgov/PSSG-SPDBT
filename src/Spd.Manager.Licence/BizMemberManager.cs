@@ -26,6 +26,7 @@ internal class BizMemberManager :
         IRequestHandler<CreateBizEmployeeCommand, BizMemberResponse>,
         IRequestHandler<CreateBizSwlControllingMemberCommand, BizMemberResponse>,
         IRequestHandler<CreateBizNonSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<DeleteBizMemberCommand, Unit>,
         IBizMemberManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -109,7 +110,6 @@ internal class BizMemberManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
         if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null)
             throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
-        //todo : how can we check if the CRC approved but it has been expired.
 
         var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
         createCmd.CreatedByUserId = cmd.UserId;
@@ -164,7 +164,11 @@ internal class BizMemberManager :
         Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
         return new BizMemberResponse(bizContactId);
     }
-
+    public async Task<Unit> Handle(DeleteBizMemberCommand cmd, CancellationToken ct)
+    {
+        await _bizContactRepository.ManageBizContactsAsync(new BizContactDeleteCmd(cmd.BizContactId), ct);
+        return default;
+    }
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
     {
         await UpdateMembersAsync(cmd.Members, cmd.BizId, ct);
