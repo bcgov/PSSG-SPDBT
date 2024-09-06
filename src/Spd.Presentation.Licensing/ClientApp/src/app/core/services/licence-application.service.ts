@@ -64,6 +64,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
 		latestApplicationId: new FormControl(), // placeholder for id
 
+		soleProprietorBizAppId: new FormControl(), // placeholder for combo flow
+
 		originalLicenceData: this.originalLicenceFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
@@ -423,6 +425,22 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
+	submitSoleProprietorComboFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsPost$Response({ body });
+	}
+
+	/**
+	 * Partial Save - Save the licence data as is.
+	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
+	 */
 	partialSaveLicenceStepAuthenticated(
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
@@ -438,8 +456,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
-					msg =
-						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
 				this.hotToastService.success(msg);
 
@@ -540,7 +557,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
+	getWorkerLicenceToResume(licenceAppId: string): Observable<WorkerLicenceAppResponse> {
 		return this.loadExistingLicenceWithIdAuthenticated(licenceAppId).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
@@ -1007,6 +1024,34 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				);
 
 				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
+			})
+		);
+	}
+
+	/**
+	 * Load an existing licence application with an access code
+	 * @param licenceAppId
+	 * @returns
+	 */
+	populateSoleProprietorComboFlowAnonymous(): Observable<any> {
+		return this.getSoleProprietorComboFlowAnonymous().pipe(
+			tap((_resp: any) => {
+				this.initialized = true;
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	private getSoleProprietorComboFlowAnonymous(): Observable<any> {
+		this.reset();
+
+		return this.securityWorkerLicensingService.apiSpWorkerLicenceApplicationGet().pipe(
+			switchMap((resp: WorkerLicenceAppResponse) => {
+				return this.applyLicenceAndProfileIntoModel(resp, null);
 			})
 		);
 	}
@@ -1717,6 +1762,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				licenceAppId: workerLicenceAppl.licenceAppId,
 				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
+				soleProprietorBizAppId: workerLicenceAppl.soleProprietorBizAppId,
 				workerLicenceTypeData,
 				applicationTypeData,
 				soleProprietorData,

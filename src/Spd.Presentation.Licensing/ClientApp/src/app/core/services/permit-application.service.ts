@@ -342,8 +342,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
-					msg =
-						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
 				this.hotToastService.success(msg);
 

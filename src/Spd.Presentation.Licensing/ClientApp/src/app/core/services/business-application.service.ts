@@ -15,6 +15,7 @@ import {
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
+	ControllingMemberAppInviteVerifyResponse,
 	Document,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
@@ -66,7 +67,6 @@ export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceNumber?: string | null;
 	licenceStatusCode?: string;
 	expiryDate?: string | null;
-	clearanceStatus?: string | null;
 }
 
 @Injectable({
@@ -80,8 +80,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
-		isSwlAnonymous: new FormControl(), // placeholder for sole proprietor flow
+		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
+		isSoleProprietorReturnToSwl: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
@@ -198,6 +199,37 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
+	 * Partial Save - Save the licence data and profile data as is.
+	 * @returns StrictHttpResponse<BizLicAppCommandResponse>
+	 */
+	partialSaveBusinessLicenceWithSwlCombinedFlow(isSaveAndExit?: boolean): Observable<any> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		return this.saveBusinessProfile().pipe(
+			switchMap((_resp: any) => {
+				return this.bizLicensingService.apiBusinessLicenceApplicationPost$Response({ body }).pipe(
+					take(1),
+					tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+						this.resetModelChangeFlags();
+
+						let msg = 'Your application has been saved';
+						if (isSaveAndExit) {
+							msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+						}
+						this.hotToastService.success(msg);
+
+						if (!businessModelFormValue.licenceAppId) {
+							this.businessModelFormGroup.patchValue({ licenceAppId: resp.body.licenceAppId! }, { emitEvent: false });
+						}
+						return resp;
+					})
+				);
+			})
+		);
+	}
+
+	/**
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<BizLicAppCommandResponse>
 	 */
@@ -210,10 +242,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			tap((resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.resetModelChangeFlags();
 
-				let msg = 'Business Licence information has been saved';
+				let msg = 'Your application has been saved';
 				if (isSaveAndExit) {
-					msg =
-						'Your application has been successfully saved. Please note that inactive applications will expire in 30 days';
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
 				}
 				this.hotToastService.success(msg);
 
@@ -241,6 +272,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId });
+	}
+
+	submitBusinessLicenceWithSwlCombinedFlowNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		body.agreeToCompleteAndAccurate = true;
+
+		// save the business profile then the licence application
+		return this.saveBusinessProfile().pipe(
+			switchMap((_resp: any) => {
+				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+			})
+		);
 	}
 
 	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
@@ -450,6 +495,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.saveControllingMembersAndEmployees(bizId, body);
 	}
 
+	sendControllingMembersWithoutSwlInvitation(
+		bizContactId: string
+	): Observable<ControllingMemberAppInviteVerifyResponse> {
+		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+			bizContactId,
+		});
+	}
+
 	/**
 	 * Save the login user profile
 	 * @returns
@@ -558,30 +611,48 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}
 
 	/**
-	 * Create an empty licence
+	 * Either create an empty licence or continue with the existing business lic app
 	 * @returns
 	 */
-	createNewBusinessLicenceWithSwlCombinedFlow(
-		soleProprietorSWLAppId: string,
-		isSwlAnonymous: boolean
+	getBusinessLicenceWithSwlCombinedFlow(
+		soleProprietorSWLAppId: string | null | undefined,
+		soleProprietorBizAppId: string | null | undefined,
+		isSoleProprietorSWLAnonymous: boolean
 	): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
-			switchMap((businessProfile: BizProfileResponse) => {
-				return this.createEmptyLicenceForSoleProprietor({
-					soleProprietorSWLAppId,
-					businessProfile,
-					isSwlAnonymous,
-				}).pipe(
-					tap((_resp: any) => {
-						this.setAsInitialized();
+		if (soleProprietorSWLAppId) {
+			return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+				switchMap((businessProfile: BizProfileResponse) => {
+					return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
+						soleProprietorSWLAppId,
+						businessProfile,
+						isSoleProprietorSWLAnonymous,
+					}).pipe(
+						tap((_resp: any) => {
+							this.setAsInitialized();
 
-						this.commonApplicationService.setApplicationTitle(
-							WorkerLicenceTypeCode.SecurityBusinessLicence,
-							ApplicationTypeCode.New
-						);
-					})
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ApplicationTypeCode.New
+							);
+						})
+					);
+				})
+			);
+		}
+
+		return this.loadExistingBusinessLicenceWithSwlCombinedFlow({
+			licenceAppId: soleProprietorBizAppId!,
+			applicationTypeCode: ApplicationTypeCode.New,
+			isSoleProprietorSWLAnonymous,
+		}).pipe(
+			tap((_resp: any) => {
+				this.setAsInitialized();
+
+				this.commonApplicationService.setApplicationTitle(
+					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
 		);
@@ -848,14 +919,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			);
 	}
 
-	private createEmptyLicenceForSoleProprietor({
+	private createEmptyBusinessLicenceWithSwlCombinedFlow({
 		soleProprietorSWLAppId,
 		businessProfile,
-		isSwlAnonymous,
+		isSoleProprietorSWLAnonymous,
 	}: {
 		soleProprietorSWLAppId: string;
 		businessProfile: BizProfileResponse;
-		isSwlAnonymous: boolean;
+		isSoleProprietorSWLAnonymous: boolean;
 	}): Observable<any> {
 		this.reset();
 
@@ -865,7 +936,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			soleProprietorSWLAppId,
 		}).pipe(
 			tap((_resp: any) => {
-				this.businessModelFormGroup.patchValue({ isSwlAnonymous }, { emitEvent: false });
+				this.businessModelFormGroup.patchValue(
+					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: true },
+					{ emitEvent: false }
+				);
 
 				this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 			})
@@ -974,6 +1048,35 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					default:
 						return this.applyReplacementDataUpdatesToModel(resp);
 				}
+			})
+		);
+	}
+
+	/**
+	 * Loads the current profile and a licence
+	 * @returns
+	 */
+	private loadExistingBusinessLicenceWithSwlCombinedFlow({
+		licenceAppId,
+		applicationTypeCode,
+		isSoleProprietorSWLAnonymous,
+	}: {
+		licenceAppId: string;
+		applicationTypeCode: ApplicationTypeCode;
+		isSoleProprietorSWLAnonymous: boolean;
+	}): Observable<any> {
+		return this.loadExistingBusinessLicenceToResume({
+			licenceAppId,
+			originalLicence: undefined,
+			applicationTypeCode,
+		}).pipe(
+			tap((_resp: any) => {
+				this.businessModelFormGroup.patchValue(
+					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: true },
+					{ emitEvent: false }
+				);
+
+				this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
 			})
 		);
 	}
@@ -1367,10 +1470,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		// const xxx = this.businessInformationFormGroup.value;
-		// console.log('************ soleProprietorCategoryCodes', xxx.soleProprietorCategoryCodes);
-		// console.log('************ categoryData', categoryData);
-
 		if (categoryData.PrivateInvestigator && privateInvestigatorSwlLicence) {
 			categoryPrivateInvestigatorFormGroup = {
 				isInclude: true,
@@ -1398,32 +1497,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			};
 		}
 
-		// TODO autocheck the categories that apply?
-		// if (categoryData.Locksmith) {
-		// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-		// }
-
-		// if (categoryData.SecurityGuard) {
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-		// }
-
-		// if (categoryData.SecurityAlarmInstaller) {
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmSales] = true;
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-		// 	categoryData[WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller] = true;
-		// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-		// }
-
-		// if (categoryData.SecurityAlarmResponse) {
-		// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-		// }
-
 		this.businessModelFormGroup.patchValue(
 			{
 				licenceAppId: businessLicenceAppl.licenceAppId,
 				latestApplicationId: businessLicenceAppl.licenceAppId,
+				soleProprietorSWLAppId: businessLicenceAppl.soleProprietorSWLAppId,
+				isSoleProprietorReturnToSwl: false,
+
 				workerLicenceTypeData,
 				applicationTypeData,
 				originalLicenceData,
@@ -1631,34 +1711,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					};
 				}
 
-				// TODO autocheck the categories that apply?
-				// if (categoryData.Locksmith) {
-				// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-				// }
-
-				// if (categoryData.SecurityGuard) {
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-				// }
-
-				// if (categoryData.SecurityAlarmInstaller) {
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmSales] = true;
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmResponse] = true;
-				// 	categoryData[WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller] = true;
-				// 	categoryData[WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller] = true;
-				// }
-
-				// if (categoryData.SecurityAlarmResponse) {
-				// 	categoryData[WorkerCategoryTypeCode.SecurityAlarmMonitor] = true;
-				// }
-
-				// console.log(
-				// 	'**************** soleProprietorCategoryCodes',
-				// 	businessInformationData.soleProprietorCategoryCodes
-				// );
-				// console.log('**************** categoryData', categoryData);
-
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
@@ -1713,11 +1765,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					};
 				}
 
-				// TODO autocheck the categories that apply?
-
 				this.businessModelFormGroup.patchValue(
 					{
-						soleProprietorSWLAppId: licenceAppId,
+						soleProprietorSWLAppId: null,
 						businessInformationData,
 						categoryData,
 						categoryArmouredCarGuardFormGroup,
@@ -1792,7 +1842,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					item.middleName2,
 					item.surname
 				),
-				clearanceStatus: 'todo', // TODO removed hardcoded clearanceStatus
+				inviteStatusCode: item.inviteStatusCode,
 			});
 		});
 
@@ -1815,7 +1865,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					surname: new FormControl(item.surname),
 					phoneNumber: new FormControl(item.phoneNumber),
 					emailAddress: new FormControl(item.emailAddress),
-					clearanceStatus: new FormControl(item.clearanceStatus),
+					inviteStatusCode: new FormControl(item.inviteStatusCode),
 				})
 			);
 		});
@@ -1835,7 +1885,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceNumber: matchingLicence?.licenceNumber!,
 				licenceStatusCode: matchingLicence?.licenceStatusCode,
 				expiryDate: matchingLicence?.expiryDate,
-				clearanceStatus: 'todo', // TODO removed hardcoded clearanceStatus
 			});
 		});
 
@@ -1854,7 +1903,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					licenceNumber: new FormControl(item.licenceNumber),
 					licenceStatusCode: new FormControl(item.licenceStatusCode),
 					expiryDate: new FormControl(item.expiryDate),
-					clearanceStatus: new FormControl(item.clearanceStatus),
 				})
 			);
 		});
