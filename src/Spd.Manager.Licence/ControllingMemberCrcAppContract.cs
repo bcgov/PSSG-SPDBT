@@ -63,12 +63,21 @@ public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
 
 };
 
-public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, 
+    IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
+public record GetControllingMemberCrcApplicationQuery(Guid ControllingMemberApplicationId) : IRequest<ControllingMemberCrcAppResponse>;
+
 public record ControllingMemberCrcAppCommandResponse
 {
     public Guid ControllingMemberAppId { get; set; }
     public decimal? Cost { get; set; }
 
 };
+public record ControllingMemberCrcAppResponse : ControllingMemberCrcAppBase
+{
+    public Guid ControllingMemberCrcAppId { get; set; }
+    public string? CaseNumber { get; set; }
+    public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+}
 
 #endregion
