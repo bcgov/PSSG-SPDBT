@@ -11,6 +11,7 @@ import {
 	CaseSubStatusCode,
 	FileTemplateTypeCode,
 	FileTypeCode,
+	PayerPreferenceTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
@@ -253,7 +254,7 @@ export class SecurityScreeningDetailComponent implements OnInit, AfterViewInit {
 		if (applicationData) {
 			this.loadList(applicationData);
 			this.showDownloadReceipt =
-				applicationData.serviceType === ServiceTypeCode.CrrpEmployee &&
+				applicationData.payeeType === PayerPreferenceTypeCode.Applicant &&
 				applicationData.status != ApplicationPortalStatusCode.AwaitingPayment;
 		} else {
 			this.router.navigate([SecurityScreeningRoutes.path(SecurityScreeningRoutes.CRC_LIST)]);

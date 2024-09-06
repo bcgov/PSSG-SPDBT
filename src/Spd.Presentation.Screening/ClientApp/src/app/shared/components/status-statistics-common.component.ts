@@ -31,10 +31,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
-					<div
-						class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2"
-						*ngIf="portal === portalTypeCodes.Crrp"
-					>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
 						</div>
