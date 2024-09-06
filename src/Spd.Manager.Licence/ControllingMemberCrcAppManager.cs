@@ -17,6 +17,7 @@ using Spd.Resource.Repository.Licence;
 using Spd.Utilities.FileStorage;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Resource.Repository.Application;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -58,8 +59,8 @@ internal class ControllingMemberCrcAppManager :
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
 
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberCrcAppId, response.ContactId, null, null, null, null, null, ct);
-        //TODO: develop new commit method for cm-crc app
-        //decimal cost = await CommitApplicationAsync(request, response.ControllingMemberCrcAppId, ct);
+
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberCrcAppId, ApplicationStatusEnum.Submitted, ct);
 
         return new ControllingMemberCrcAppCommandResponse
         {
@@ -89,8 +90,8 @@ internal class ControllingMemberCrcAppManager :
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId, ct);
-        //TODO: Create new commit method for cm-crc app
-        //decimal cost = await CommitApplicationAsync(cmd.ControllingMemberCrcAppUpsertRequest, cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId.Value, ct, false);
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
     #endregion
