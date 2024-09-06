@@ -77,11 +77,25 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/business/{bizId}/employees")]
         [HttpPost]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<ActionResult> CreateEmployee([FromRoute] Guid bizId, [FromBody] SwlContactInfo employee, CancellationToken ct)
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateEmployee([FromRoute] Guid bizId, [FromBody] SwlContactInfo employee, CancellationToken ct)
         {
-            await _mediator.Send(new CreateBizEmployeeCommand(bizId, employee), ct);
-            return Ok();
+            return await _mediator.Send(new CreateBizEmployeeCommand(bizId, employee), ct);
+        }
+
+        /// <summary>
+        /// Create Biz swl controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="employee"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/swl-controlling-members")]
+        [HttpPost]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateNonSwlControllingMember([FromRoute] Guid bizId, [FromBody] SwlContactInfo controllingMember, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizSwlControllingMemberCommand(bizId, controllingMember), ct);
         }
         /// <summary>
         /// Create controlling member crc invitation for this biz contact

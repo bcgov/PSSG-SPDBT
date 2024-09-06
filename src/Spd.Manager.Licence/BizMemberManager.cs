@@ -23,7 +23,9 @@ internal class BizMemberManager :
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
         IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
-        IRequestHandler<CreateBizEmployeeCommand, Unit>,
+        IRequestHandler<CreateBizEmployeeCommand, BizMemberResponse>,
+        IRequestHandler<CreateBizSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<CreateBizNonSwlControllingMemberCommand, BizMemberResponse>,
         IBizMemberManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -138,13 +140,29 @@ internal class BizMemberManager :
         return members;
     }
 
-    public async Task<Unit> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct)
+    public async Task<BizMemberResponse> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct)
     {
         BizContact bizContact = _mapper.Map<BizContact>(cmd.Employee);
         bizContact.BizContactRoleCode = BizContactRoleEnum.Employee;
         bizContact.BizId = cmd.BizId;
-        await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
-        return default;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return new BizMemberResponse(bizContactId);
+    }
+    public async Task<BizMemberResponse> Handle(CreateBizSwlControllingMemberCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.SwlControllingMember);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return new BizMemberResponse(bizContactId);
+    }
+    public async Task<BizMemberResponse> Handle(CreateBizNonSwlControllingMemberCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.NonSwlControllingMember);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return new BizMemberResponse(bizContactId);
     }
 
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)

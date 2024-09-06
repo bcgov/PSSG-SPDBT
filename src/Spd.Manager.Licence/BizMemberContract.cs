@@ -5,7 +5,9 @@ namespace Spd.Manager.Licence;
 public interface IBizMemberManager
 {
     public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
-    public Task<Unit> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct);
+    public Task<BizMemberResponse> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct);
+    public Task<BizMemberResponse> Handle(CreateBizSwlControllingMemberCommand cmd, CancellationToken ct);
+    public Task<BizMemberResponse> Handle(CreateBizNonSwlControllingMemberCommand cmd, CancellationToken ct);
     public Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct);
     public Task<ControllingMemberInvitesCreateResponse> Handle(BizControllingMemberNewInviteCommand command, CancellationToken ct);
     public Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand command, CancellationToken ct);
@@ -19,8 +21,10 @@ public record UpsertBizMembersCommand(
     Guid? ApplicationId,
     Members Members,
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<Unit>; //deprecated
-public record CreateBizEmployeeCommand(Guid BizId, SwlContactInfo Employee) : IRequest<Unit>;
-
+public record CreateBizEmployeeCommand(Guid BizId, SwlContactInfo Employee) : IRequest<BizMemberResponse>;
+public record CreateBizSwlControllingMemberCommand(Guid BizId, SwlContactInfo SwlControllingMember) : IRequest<BizMemberResponse>;
+public record CreateBizNonSwlControllingMemberCommand(Guid BizId, NonSwlContactInfo NonSwlControllingMember) : IRequest<BizMemberResponse>;
+public record BizMemberResponse(Guid? bizContactId);
 public record Members
 {
     public IEnumerable<SwlContactInfo> SwlControllingMembers { get; set; }

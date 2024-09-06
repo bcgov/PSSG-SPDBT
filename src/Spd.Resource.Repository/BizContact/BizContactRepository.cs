@@ -89,12 +89,16 @@ namespace Spd.Resource.Repository.BizContact
             return bizContact.spd_businesscontactid;
         }
 
-        private async Task<Guid?> UpdateBizContactAsync(BizContactUpdateCmd cmd, CancellationToken ct)
+        private async Task<Guid?> DeleteBizContactAsync(BizContactDeleteCmd cmd, CancellationToken ct)
         {
+            spd_businesscontact? bizContact = await _context.GetBizContactById(cmd.BizContactId, ct);
+            bizContact.statecode = DynamicsConstants.StateCode_Inactive;
+            _context.UpdateObject(bizContact);
+            await _context.SaveChangesAsync(ct);
             return null;
         }
 
-        private async Task<Guid?> DeleteBizContactAsync(BizContactDeleteCmd cmd, CancellationToken ct)
+        private async Task<Guid?> UpdateBizContactAsync(BizContactUpdateCmd cmd, CancellationToken ct)
         {
             return null;
         }
