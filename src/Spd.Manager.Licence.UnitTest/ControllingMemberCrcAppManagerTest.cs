@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Moq;
 using Spd.Manager.Licence;
+using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -21,6 +22,8 @@ public class ControllingMemberCrcAppManagerTests
     private readonly Mock<ITransientFileStorageService> _transientFileServiceMock;
     private readonly Mock<IControllingMemberCrcRepository> _controllingMemberCrcRepositoryMock;
     private readonly Mock<ILicAppRepository> _licAppRepositoryMock;
+    private readonly Mock<IApplicationInviteRepository> _applicationInviteRepositoryMock;
+
     private ControllingMemberCrcAppManager sut;
 
     public ControllingMemberCrcAppManagerTests()
@@ -33,6 +36,7 @@ public class ControllingMemberCrcAppManagerTests
         _transientFileServiceMock = new Mock<ITransientFileStorageService>();
         _controllingMemberCrcRepositoryMock = new Mock<IControllingMemberCrcRepository>();
         _licAppRepositoryMock = new Mock<ILicAppRepository>();
+        _applicationInviteRepositoryMock = new Mock<IApplicationInviteRepository>();
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<Mappings>();
@@ -43,7 +47,7 @@ public class ControllingMemberCrcAppManagerTests
         _feeRepositoryMock.Object,
         _licenceRepositoryMock.Object,
         _mainFileServiceMock.Object,
-        _transientFileServiceMock.Object, _controllingMemberCrcRepositoryMock.Object, _licAppRepositoryMock.Object);
+        _transientFileServiceMock.Object, _controllingMemberCrcRepositoryMock.Object, _applicationInviteRepositoryMock.Object, _licAppRepositoryMock.Object);
     }
 
     [Fact]
