@@ -7,7 +7,10 @@ using Spd.Resource.Repository.Event;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Printing;
+using Spd.Utilities.Printing.BCMailPlus;
 using Spd.Utilities.Shared.Exceptions;
+using System.Net;
+using System.Text.Json;
 
 namespace Spd.Manager.Printing;
 
@@ -47,41 +50,12 @@ internal class PrintingManager
 
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPScreeningFingerprintPrinting)
         {
-            //the returned RegardingObjectTypeName should be spd_application
-            if (eventResp.RegardingObjectName != "spd_application")
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid Regarding Object type.");
-
-            try
-            {
-                PrintJob printJob = new(DocumentType.FingerprintLetter, eventResp.RegardingObjectId, null);
-                var transformResponse = await _documentTransformationEngine.Transform(
-                    CreateDocumentTransformRequest(printJob),
-                    cancellationToken);
-                if (transformResponse is BcMailPlusTransformResponse)
-                {
-                    BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
-                    var printResponse = await _printer.Send(
-                        new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
-                        cancellationToken);
-                    ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
-                    await UpdateResultInEvent(result, request.EventId, cancellationToken);
-                    return result;
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message, null);
-                ResultResponse result = new()
-                {
-                    PrintJobId = null,
-                    Status = JobStatusCode.Error,
-                    Error = $"{ex.Message} {ex.InnerException?.Message}"
-                };
-                await UpdateResultInEvent(result, request.EventId, cancellationToken);
-                return result;
-            }
+            return await DoFingerPrintPrintingAsync(eventResp, cancellationToken);
         }
-
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPSecurityWorkerLicencePrinting || eventResp.EventTypeEnum == EventTypeEnum.BCMPArmouredVehiclePermitPrinting)
+        {
+            return await DoPersonalLicencePrintingAsync(eventResp, cancellationToken);
+        }
         return null;
     }
 
@@ -129,6 +103,92 @@ internal class PrintingManager
         };
     }
 
+    private async Task<ResultResponse> DoFingerPrintPrintingAsync(EventResp eventResp, CancellationToken cancellationToken)
+    {
+        //the returned RegardingObjectTypeName should be spd_application
+        if (eventResp.RegardingObjectName != "spd_application")
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid Regarding Object type.");
+
+        try
+        {
+            PrintJob printJob = new(DocumentType.FingerprintLetter, eventResp.RegardingObjectId, null);
+            var transformResponse = await _documentTransformationEngine.Transform(
+                CreateDocumentTransformRequest(printJob),
+                cancellationToken);
+            if (transformResponse is BcMailPlusTransformResponse)
+            {
+                BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
+                var printResponse = await _printer.Send(
+                    new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
+                    cancellationToken);
+                ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
+                await UpdateResultInEvent(result, eventResp.Id, cancellationToken);
+                return result;
+            }
+            else
+            {
+                throw new ApiException(HttpStatusCode.InternalServerError, "Invalid transform response.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, null);
+            ResultResponse result = new()
+            {
+                PrintJobId = null,
+                Status = JobStatusCode.Error,
+                Error = $"{ex.Message} {ex.InnerException?.Message}"
+            };
+            await UpdateResultInEvent(result, eventResp.Id, cancellationToken);
+            return result;
+        }
+    }
+
+    private async Task<ResultResponse> DoPersonalLicencePrintingAsync(EventResp eventResp, CancellationToken cancellationToken)
+    {
+        //the returned RegardingObjectTypeName should be spd_licence
+        if (eventResp.RegardingObjectName != "spd_licence")
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid Regarding Object type.");
+
+        try
+        {
+            PrintJob printJob = new(DocumentType.PersonalLicencePreview, null, eventResp.RegardingObjectId); //licenceId
+            var transformResponse = await _documentTransformationEngine.Transform(
+                CreateDocumentTransformRequest(printJob),
+                cancellationToken);
+            if (transformResponse is BcMailPlusTransformResponse)
+            {
+                PreviewDocumentResp resp = await PreviewViaBcMailPlus((BcMailPlusTransformResponse)transformResponse, cancellationToken);
+                //release the job
+                ReleasePayload payload = new ReleasePayload()
+                {
+                    Jobs = new() { resp.JobId }
+                };
+                var printResponse = await _printer.Send(
+                    new BCMailPlusPrintRequest(Jobs.SecurityWorkerLicenseRelease, JsonSerializer.SerializeToDocument(payload)),
+                    cancellationToken);
+                ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
+                await UpdateResultInEvent(result, eventResp.Id, cancellationToken);
+                return result;
+            }
+            else
+            {
+                throw new ApiException(HttpStatusCode.InternalServerError, "Invalid transform response.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, null);
+            ResultResponse result = new()
+            {
+                PrintJobId = null,
+                Status = JobStatusCode.Error,
+                Error = $"{ex.Message} {ex.InnerException?.Message}"
+            };
+            await UpdateResultInEvent(result, eventResp.Id, cancellationToken);
+            return result;
+        }
+    }
     private static DocumentTransformRequest CreateDocumentTransformRequest(PrintJob printJob)
     {
         if (printJob.DocumentType == DocumentType.FingerprintLetter && printJob.ApplicationId == null)
@@ -158,7 +218,12 @@ internal class PrintingManager
     {
         var previewResponse = await _printer.Preview(new BCMailPlusPrintRequest(bcmailplusResponse.JobTemplateId, bcmailplusResponse.Document), cancellationToken);
         if (previewResponse.Status != JobStatus.Completed) throw new InvalidOperationException(previewResponse.Error);
-        return new PreviewDocumentResp(previewResponse.ContentType!, previewResponse.Content!);
+        return new PreviewDocumentResp(previewResponse.ContentType!, previewResponse.Content!, previewResponse.PrintJobId);
     }
 
+}
+
+public class ReleasePayload
+{
+    public List<string> Jobs { get; set; }
 }

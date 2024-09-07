@@ -35,4 +35,4 @@ public enum JobStatusCode
     Fail //Inactive State status reason
 }
 
-public record PreviewDocumentResp(string ContentType, IEnumerable<byte> Content);
+public record PreviewDocumentResp(string ContentType, IEnumerable<byte> Content, string JobId);
