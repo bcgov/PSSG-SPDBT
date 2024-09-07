@@ -159,7 +159,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
 
             //link to bizContact
-            _context.SetLink(app, nameof(spd_application.spd_businesscontact_spd_application), bizContact);
+            _context.AddLink(bizContact, nameof(spd_application.spd_businesscontact_spd_application), app);
         }
 
         await _context.SaveChangesAsync();
