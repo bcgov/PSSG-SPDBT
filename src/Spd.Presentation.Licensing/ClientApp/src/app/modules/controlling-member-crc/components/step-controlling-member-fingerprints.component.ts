@@ -30,7 +30,7 @@ export class StepControllingMemberFingerprintsComponent implements LicenceChildS
 
 	onFileUploaded(file: File): void {
 		this.controllingMembersService.fileUploaded(
-			LicenceDocumentTypeCode.MentalHealthCondition,
+			LicenceDocumentTypeCode.ProofOfFingerprint,
 			file,
 			this.formFingerprintsComponent.attachments,
 			this.formFingerprintsComponent.fileUploadComponent

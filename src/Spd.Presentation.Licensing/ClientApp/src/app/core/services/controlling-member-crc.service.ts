@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
+	Alias,
 	ApplicationTypeCode,
 	BizTypeCode,
 	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
+	ControllingMemberCrcAppResponse,
 	ControllingMemberCrcAppSubmitRequest,
 	ControllingMemberCrcAppUpsertRequest,
+	Document,
+	GenderCode,
 	GoogleRecaptcha,
 	IActionResult,
+	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -29,11 +34,14 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { ApplicationService } from './application.service';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
-import { LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -71,6 +79,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private authUserBcscService: AuthUserBcscService,
 		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
 		private commonApplicationService: ApplicationService
@@ -164,26 +173,47 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	fileUploaded(
-		_documentCode: LicenceDocumentTypeCode, // type of the document
-		_document: File,
-		_attachments: FormControl, // the FormControl containing the documents
-		_fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
+		documentCode: LicenceDocumentTypeCode, // type of the document
+		document: File,
+		attachments: FormControl, // the FormControl containing the documents
+		fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
 	) {
 		this.hasValueChanged = true;
 
-		// 	if (!this.isAutoSave()) return;
+		if (!this.isAutoSave()) return;
 
-		// 	this.addUploadDocument(documentCode, document).subscribe({
-		// 		next: (resp: any) => {
-		// 			const matchingFile = attachments.value.find((item: File) => item.name == document.name);
-		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during file upload', error);
+		this.addUploadDocument(documentCode, document).subscribe({
+			next: (resp: any) => {
+				const matchingFile = attachments.value.find((item: File) => item.name == document.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
 
-		// 			fileUploadComponent.removeFailedFile(document);
-		// 		},
-		// 	});
+				fileUploadComponent.removeFailedFile(document);
+			},
+		});
+	}
+
+	/**
+	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	 * @param documentCode
+	 * @param document
+	 * @returns
+	 */
+	addUploadDocument(
+		documentCode: LicenceDocumentTypeCode,
+		documentFile: File
+	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+		const doc: LicenceDocument = {
+			Documents: [documentFile],
+			LicenceDocumentTypeCode: documentCode,
+		};
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response({
+			CrcAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
+			body: doc,
+		});
 	}
 
 	/**
@@ -199,12 +229,12 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Create an empty anonymous crc
+	 * Create an empty crc or if one already exists, resume it
 	 * @returns
 	 */
-	createNewCrc(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
+	createOrResumeCrc(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
 		if (crcInviteData.controllingMemberCrcAppId) {
-			return this.getCrcDraft(
+			return this.loadCrcToResume(
 				crcInviteData.bizContactId!,
 				crcInviteData.bizLicAppId!,
 				crcInviteData.controllingMemberCrcAppId!
@@ -249,29 +279,213 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 	}
 
-	private getCrcDraft(
+	private loadCrcToResume(
 		bizContactId: string,
 		parentBizLicApplicationId: string,
 		controllingMemberCrcAppId: string
 	): Observable<any> {
 		this.reset();
 
+		return this.controllingMemberCrcAppService
+			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: controllingMemberCrcAppId })
+			.pipe(
+				switchMap((resp: ControllingMemberCrcAppResponse) => {
+					return this.applyCrcAppIntoModel(resp);
+				})
+			);
+	}
+
+	private applyCrcAppIntoModel(crcAppl: ControllingMemberCrcAppResponse): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode: crcAppl.applicationTypeCode };
+
+		const personalInformationData = {
+			givenName: 'a', //crcAppl.givenName,
+			middleName1: 'a', //crcAppl.middleName1,
+			middleName2: 'a', //crcAppl.middleName2,
+			surname: 'a', //crcAppl.surname,
+			genderCode: GenderCode.M, // crcAppl.genderCode,
+			dateOfBirth: '1990-01-01', //crcAppl.dateOfBirth,
+			emailAddress: 'a@gov.bc.ca', //crcAppl.emailAddress,
+			phoneNumber: '2503365858', //crcAppl.phoneNumber,
+		};
+
+		const bcDriversLicenceData = {
+			hasBcDriversLicence: this.utilService.booleanToBooleanType(crcAppl.hasBcDriversLicence),
+			bcDriversLicenceNumber: crcAppl.bcDriversLicenceNumber,
+		};
+
+		const fingerprintProofDataAttachments: Array<File> = [];
+		const citizenshipDataAttachments: Array<File> = [];
+		const governmentIssuedAttachments: Array<File> = [];
+
+		const citizenshipData: {
+			isCanadianCitizen: BooleanTypeCode | null;
+			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			expiryDate: string | null;
+			attachments: File[];
+			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
+			governmentIssuedExpiryDate: string | null;
+			governmentIssuedAttachments: File[];
+		} = {
+			isCanadianCitizen: null,
+			canadianCitizenProofTypeCode: null,
+			notCanadianCitizenProofTypeCode: null,
+			expiryDate: null,
+			attachments: [],
+			governmentIssuedPhotoTypeCode: null,
+			governmentIssuedExpiryDate: null,
+			governmentIssuedAttachments: [],
+		};
+
+		citizenshipData.isCanadianCitizen =
+			crcAppl.isCanadianCitizen === null ? null : this.utilService.booleanToBooleanType(crcAppl.isCanadianCitizen);
+
+		const policeBackgroundDataAttachments: Array<File> = [];
+		const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+		crcAppl.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.Bcid:
+				case LicenceDocumentTypeCode.BcServicesCard:
+				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
+				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
+				case LicenceDocumentTypeCode.NonCanadianPassport:
+				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
+					// Additional Government ID: GovernmentIssuedPhotoIdTypes
+
+					const aFile = this.fileUtilService.dummyFile(doc);
+					governmentIssuedAttachments.push(aFile);
+
+					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
+					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.BirthCertificate:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
+				case LicenceDocumentTypeCode.CanadianPassport:
+				case LicenceDocumentTypeCode.CanadianCitizenship:
+				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument:
+				case LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus:
+				case LicenceDocumentTypeCode.PermanentResidentCard:
+				case LicenceDocumentTypeCode.RecordOfLandingDocument:
+				case LicenceDocumentTypeCode.StudyPermit:
+				case LicenceDocumentTypeCode.WorkPermit: {
+					// Is Canadian:  ProofOfCanadianCitizenshipTypes
+					// Is Not Canadian: ProofOfAbilityToWorkInCanadaTypes
+
+					const aFile = this.fileUtilService.dummyFile(doc);
+					citizenshipDataAttachments.push(aFile);
+
+					citizenshipData.canadianCitizenProofTypeCode = crcAppl.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
+					citizenshipData.notCanadianCitizenProofTypeCode = crcAppl.isCanadianCitizen
+						? null
+						: doc.licenceDocumentTypeCode;
+					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.attachments = citizenshipDataAttachments;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.ProofOfFingerprint: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					fingerprintProofDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.MentalHealthCondition: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					mentalHealthConditionsDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					policeBackgroundDataAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const residentialAddressData = {
+			addressSelected: true, // !!crcAppl.residentialAddress?.addressLine1,
+			addressLine1: 'a', //crcAppl.residentialAddress?.addressLine1,
+			addressLine2: 'a', //crcAppl.residentialAddress?.addressLine2,
+			city: 'a', //crcAppl.residentialAddress?.city,
+			country: 'a', //crcAppl.residentialAddress?.country,
+			postalCode: 'a', //crcAppl.residentialAddress?.postalCode,
+			province: 'a', //crcAppl.residentialAddress?.province,
+		};
+
+		const fingerprintProofData = {
+			attachments: fingerprintProofDataAttachments,
+		};
+
+		const policeBackgroundData = {
+			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(crcAppl.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: crcAppl.policeOfficerRoleCode,
+			otherOfficerRole: crcAppl.otherOfficerRole,
+			attachments: policeBackgroundDataAttachments,
+		};
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: this.utilService.booleanToBooleanType(crcAppl.isTreatedForMHC),
+			attachments: mentalHealthConditionsDataAttachments,
+		};
+
+		const bcSecurityLicenceHistoryData = {
+			hasCriminalHistory: this.utilService.booleanToBooleanType(crcAppl.hasCriminalHistory),
+			criminalHistoryDetail: crcAppl.criminalHistoryDetail,
+			hasBankruptcyHistory: this.utilService.booleanToBooleanType(crcAppl.hasBankruptcyHistory),
+			bankruptcyHistoryDetail: crcAppl.bankruptcyHistoryDetail,
+		};
+
 		this.controllingMembersModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData: {
-					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-				},
-				applicationTypeData: { applicationTypeCode: ApplicationTypeCode.New },
+				workerLicenceTypeData,
+				applicationTypeData,
 				bizTypeCode: BizTypeCode.None,
-				controllingMemberAppId: controllingMemberCrcAppId,
-				parentBizLicApplicationId,
-				bizContactId,
+				controllingMemberAppId: crcAppl.controllingMemberCrcAppId, //'148824fa-3340-4e63-95de-3d7d522cd3ba', //crcAppl.controllingMemberCrcAppId,
+				parentBizLicApplicationId: 'b6609734-a172-4d1d-a66f-7a8a0a3e8dab', // crcAppl.parentBizLicApplicationId,
+				bizContactId: 'dad29ce7-d26a-ef11-b851-00505683fbf4', // crcAppl.bizContactId,
+
+				personalInformationData,
+				aliasesData: {
+					previousNameFlag: this.utilService.booleanToBooleanType(crcAppl.aliases && crcAppl.aliases.length > 0),
+					aliases: [],
+				},
+				residentialAddressData,
+				citizenshipData,
+				fingerprintProofData,
+				bcDriversLicenceData,
+				bcSecurityLicenceHistoryData,
+				policeBackgroundData,
+				mentalHealthConditionsData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
+		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
+		crcAppl.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					id: new FormControl(alias.id),
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		console.debug(
+			'[applyCrcAppIntoModel] controllingMembersModelFormGroup',
+			this.controllingMembersModelFormGroup.value
+		);
 		return of(this.controllingMembersModelFormGroup.value);
 	}
 
@@ -302,7 +516,11 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
 		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsPost({ body }).pipe(
 			tap((resp: ControllingMemberCrcAppCommandResponse) => {
@@ -335,7 +553,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			controllingMembersModelFormValue
 		) as ControllingMemberCrcAppUpsertRequest;
 
-		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;

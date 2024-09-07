@@ -140,7 +140,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 					this.subscribeAlive = false;
 
 					this.controllingMembersService
-						.createNewCrc(this.crcInviteData!)
+						.createOrResumeCrc(this.crcInviteData!)
 						.pipe(
 							tap((_resp: any) => {
 								this.router.navigateByUrl(

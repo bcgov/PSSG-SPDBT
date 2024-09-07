@@ -6,6 +6,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ControllingMemberCrcAppCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
@@ -159,41 +160,42 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 	}
 
 	ngOnDestroy() {
-		if (this.controllingMembersModelValueChangedSubscription)
+		if (this.controllingMembersModelValueChangedSubscription) {
 			this.controllingMembersModelValueChangedSubscription.unsubscribe();
+		}
 	}
 
 	onChildNextStep() {
-		switch (this.stepper.selectedIndex) {
-			case this.STEP_PERSONAL_INFORMATION:
-				this.stepsPersonalInformationComponent?.onGoToNextStep();
-				break;
-			case this.STEP_CITIZENSHIP_RESIDENCY:
-				this.stepsCitizenshipResidencyComponent?.onGoToNextStep();
-				break;
-			case this.STEP_BACKGROUND:
-				this.stepBackgroundComponent?.onGoToNextStep();
-				break;
-			case this.STEP_REVIEW:
-				this.stepReviewComponent?.onGoToNextStep();
-				break;
+		if (this.controllingMembersService.isAutoSave()) {
+			this.controllingMembersService.partialSaveStep(false).subscribe((_resp: any) => {
+				this.goToChildNextStep();
+			});
+		} else {
+			this.goToChildNextStep();
 		}
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (stepper?.selected) stepper.selected.completed = true;
-		stepper.next();
+		if (this.controllingMembersService.isAutoSave()) {
+			this.controllingMembersService.partialSaveStep(false).subscribe((_resp: any) => {
+				if (stepper?.selected) stepper.selected.completed = true;
+				stepper.next();
+			});
+		} else {
+			if (stepper?.selected) stepper.selected.completed = true;
+			stepper.next();
+		}
 	}
 
 	onSubmitNow(): void {
 		if (this.isLoggedIn) {
 			this.controllingMembersService.submitControllingMemberCrcNewAuthenticated().subscribe({
-				// TODO update for authenticated
 				next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
 					this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
 
 					this.router.navigateByUrl(
-						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED)
+						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),
+						{ state: { isSubmit: BooleanTypeCode.Yes } }
 					);
 				},
 				error: (error: any) => {
@@ -208,7 +210,8 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 				this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
 
 				this.router.navigateByUrl(
-					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED)
+					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),
+					{ state: { isSubmit: BooleanTypeCode.Yes } }
 				);
 			},
 			error: (error: any) => {
@@ -224,8 +227,9 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 
 		this.controllingMembersService.partialSaveStep(true).subscribe((_resp: any) => {
 			this.router.navigateByUrl(
-				ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_INVITATION)
-			); // change to save in-progress app. screen
+				ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),
+				{ state: { isSubmit: BooleanTypeCode.No } }
+			);
 		});
 	}
 
@@ -255,6 +259,25 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 		this.stepsCitizenshipResidencyComponent?.onGoToFirstStep();
 		this.stepBackgroundComponent?.onGoToFirstStep();
 		this.stepper.selectedIndex = step;
+	}
+
+	private goToNextStep() {} // TODO fill in
+
+	private goToChildNextStep() {
+		switch (this.stepper.selectedIndex) {
+			case this.STEP_PERSONAL_INFORMATION:
+				this.stepsPersonalInformationComponent?.onGoToNextStep();
+				break;
+			case this.STEP_CITIZENSHIP_RESIDENCY:
+				this.stepsCitizenshipResidencyComponent?.onGoToNextStep();
+				break;
+			case this.STEP_BACKGROUND:
+				this.stepBackgroundComponent?.onGoToNextStep();
+				break;
+			case this.STEP_REVIEW:
+				this.stepReviewComponent?.onGoToNextStep();
+				break;
+		}
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

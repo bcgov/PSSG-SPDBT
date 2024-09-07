@@ -171,10 +171,9 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			});
 		}
 
-		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalInformationData.dateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
+		personalInformationData.dateOfBirth = personalInformationData.dateOfBirth
+			? this.formatDatePipe.transform(personalInformationData.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
 
 		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
 		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
@@ -198,6 +197,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			bizContactId: controllingMemberCrcFormValue.bizContactId,
 			bizTypeCode: controllingMemberCrcFormValue.bizTypeCode,
 			licenceTermCode: LicenceTermCode.OneYear, // TODO remove licenceTermCode
+			controllingMemberAppId: controllingMemberCrcFormValue.controllingMemberAppId,
 			parentBizLicApplicationId: controllingMemberCrcFormValue.parentBizLicApplicationId,
 			//-----------------------------------
 			givenName: personalInformationData.givenName,
