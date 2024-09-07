@@ -49,7 +49,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// <param name="cmCrcAppId"></param>
     /// <returns></returns>
     [Route("api/controlling-member-crc-applications/{cmCrcAppId}")]
-    [Authorize(Policy = "OnlyBcsc")]
+    //[Authorize(Policy = "OnlyBcsc")]
     [HttpGet]
     public async Task<ControllingMemberCrcAppResponse> GetControllingMemberCrcApplication([FromRoute][Required] Guid cmCrcAppId)
     {
@@ -61,11 +61,11 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// <param name="controllingMemberCrcAppUpsertRequest"></param>
     /// <returns></returns>
     [Route("api/controlling-member-crc-applications")]
-    [Authorize(Policy = "OnlyBcsc")]
+    //[Authorize(Policy = "OnlyBcsc")]
     [HttpPost]
     public async Task<ControllingMemberCrcAppCommandResponse> SaveControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcAppUpsertRequest)
     {
-        if (controllingMemberCrcAppUpsertRequest.ApplicantId == Guid.Empty)
+        if (controllingMemberCrcAppUpsertRequest.ApplicantId == null || controllingMemberCrcAppUpsertRequest.ApplicantId == Guid.Empty)
             throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
         return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
     }

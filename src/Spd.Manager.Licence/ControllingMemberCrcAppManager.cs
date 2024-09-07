@@ -79,10 +79,10 @@ internal class ControllingMemberCrcAppManager :
 
         var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
 
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberCrcAppId, response.ContactId, null, null, null, null, null, ct);
+        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //
-        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberCrcAppId, ApplicationStatusEnum.Submitted, ct);
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
 
         //inactivate invite
         if (cmd.ControllingMemberCrcAppSubmitRequest?.InviteId != null)
@@ -96,7 +96,7 @@ internal class ControllingMemberCrcAppManager :
         }
         return new ControllingMemberCrcAppCommandResponse
         {
-            ControllingMemberAppId = response.ControllingMemberCrcAppId,
+            ControllingMemberAppId = response.ControllingMemberAppId,
         };
     }
     #endregion
@@ -107,10 +107,9 @@ internal class ControllingMemberCrcAppManager :
 
         //TODO: find the purpose, add related enums if needed (ask peggy)
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos);
-        saveCmd.WorkerLicenceTypeCode = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC;
         var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(saveCmd, ct);
         if (cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId == null)
-            cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId = response.ControllingMemberCrcAppId;
+            cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId = response.ControllingMemberAppId;
         await UpdateDocumentsAsync(
             (Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId,
             (List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos,

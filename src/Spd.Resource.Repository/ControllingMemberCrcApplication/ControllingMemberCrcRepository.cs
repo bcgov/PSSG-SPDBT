@@ -77,7 +77,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, (Guid)contact.contactid);
     }
 
-    public async Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct) 
+    public async Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct)
     {
         spd_application? app;
         try
@@ -100,7 +100,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         {
             var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
             appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
-            _mapper.Map<contact, ControllingMemberCrcApplicationResp>(app.spd_ApplicantId_contact, appResp);
+            _mapper.Map<spd_application, ControllingMemberCrcApplicationResp>(app, appResp);
         }
 
         return appResp;
@@ -117,40 +117,58 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
                 .SingleOrDefaultAsync(ct);
 
         if (bizLicApplication == null)
-            throw new ArgumentException("Original business licence application was not found.");
+            throw new ArgumentException("Parent business licence application was not found.");
 
         var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
         spd_application? app;
-        if (cmd.ControllingMemberCrcAppId != null)
+        if (cmd.ControllingMemberAppId != null)
         {
             app = _context.spd_applications
                 .Expand(a => a.spd_application_spd_licencecategory)
-                .Where(a => a.spd_applicationid == cmd.ControllingMemberCrcAppId).FirstOrDefault();
+                .Where(a => a.spd_applicationid == cmd.ControllingMemberAppId).FirstOrDefault();
             if (app == null)
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveControllingMemberCrcAppCmd, spd_application>(cmd, app);
-            app.spd_applicationid = (Guid)(cmd.ControllingMemberCrcAppId);
+            app.spd_applicationid = (Guid)(cmd.ControllingMemberAppId);
             _context.UpdateObject(app);
+
+            var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
+            if (contact == null)
+            {
+                throw new ArgumentException("applicant not found");
+            }
+            //update contact
+            contact = await _context.UpdateContact(contact, _mapper.Map<SaveControllingMemberCrcAppCmd, contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
             var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
-            if (contact != null)
+            if (contact == null)
             {
-                _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
-                //link bizContact with contact
-                _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
+                throw new ArgumentException("applicant not found");
             }
+            //update contact
+            contact = await _context.UpdateContact(contact, _mapper.Map<SaveControllingMemberCrcAppCmd, contact>(cmd),null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases),ct);
+
+            //set applicant lookup
+            _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+            _context.AddLink(contact, nameof(contact.spd_contact_spd_application_ApplicantId), app);
+            
+            //link bizContact with contact
+            _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
+
             //link to biz
             var account = _context.accounts
-                .Where(a => a.accountid == cmd.ParentBizLicApplicationId)
+                .Where(a => a.accountid == bizLicApplication._spd_applicantid_value)
                 .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
                 .FirstOrDefault();
             if (account != null)
             {
+                //set organization lookup
                 _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+                _context.AddLink(account, nameof(account.spd_account_spd_application_OrganizationId), app);
             }
             // add link to parent business application
             _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
