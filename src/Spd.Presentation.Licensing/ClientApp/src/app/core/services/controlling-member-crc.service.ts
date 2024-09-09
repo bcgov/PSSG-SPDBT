@@ -467,7 +467,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				workerLicenceTypeData,
 				applicationTypeData,
 				inviteId: crcAppl.inviteId,
-				controllingMemberAppId: crcAppl.controllingMemberCrcAppId,
+				controllingMemberAppId: crcAppl.controllingMemberAppId,
 				parentBizLicApplicationId: crcAppl.parentBizLicApplicationId,
 				bizContactId: crcAppl.bizContactId,
 

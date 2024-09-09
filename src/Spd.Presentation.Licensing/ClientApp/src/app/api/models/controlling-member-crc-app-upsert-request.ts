@@ -10,7 +10,7 @@ import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface ControllingMemberCrcAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
-  applicantId?: string;
+  applicantId?: string | null;
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;

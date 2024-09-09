@@ -148,11 +148,11 @@ export class ControllingMemberLoginComponent implements OnInit {
 
 								if (applicationTypeCode === ApplicationTypeCode.New) {
 									this.router.navigateByUrl(
-										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE)
+										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
 									);
 								} else {
 									this.router.navigateByUrl(
-										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
+										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE)
 									);
 								}
 							}),
@@ -182,11 +182,11 @@ export class ControllingMemberLoginComponent implements OnInit {
 
 					if (applicationTypeCode === ApplicationTypeCode.New) {
 						this.router.navigateByUrl(
-							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE)
+							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
 						);
 					} else {
 						this.router.navigateByUrl(
-							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
+							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE)
 						);
 					}
 				}),

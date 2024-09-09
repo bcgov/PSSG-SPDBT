@@ -15,7 +15,7 @@ export interface ControllingMemberCrcAppResponse {
   bcDriversLicenceNumber?: string | null;
   bizContactId?: string;
   caseNumber?: string | null;
-  controllingMemberCrcAppId?: string;
+  controllingMemberAppId?: string;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
   documentInfos?: Array<Document> | null;
