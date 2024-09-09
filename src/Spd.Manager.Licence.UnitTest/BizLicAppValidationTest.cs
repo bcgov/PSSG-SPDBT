@@ -194,56 +194,6 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.PrivateInvestigatorSwlInfo);
     }
 
-    [Fact]
-    public void ControllingMembers_WhenHasEmptyFields_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-
-        List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() };
-        List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() };
-        List<SwlContactInfo> employees = new() { new SwlContactInfo() };
-        Members members = new()
-        {
-            SwlControllingMembers = swlControllingMembers,
-            NonSwlControllingMembers = nonSwlControllingMembers,
-            Employees = employees
-        };
-        model.Members = members;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.Members.SwlControllingMembers);
-        result.ShouldHaveValidationErrorFor(r => r.Members.NonSwlControllingMembers);
-        result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
-    }
-
-    [Fact]
-    public void ControllingMembers_WhenExceedsMaxAllowed_ShouldThrowException()
-    {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
-
-        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        List<SwlContactInfo> swlControllingMembers = fixture.CreateMany<SwlContactInfo>(10).ToList();
-        List<NonSwlContactInfo> nonSwlControllingMembers = fixture.Build<NonSwlContactInfo>()
-            .With(c => c.EmailAddress, "test@test.com")
-            .CreateMany(11)
-            .ToList();
-        List<SwlContactInfo> employees = fixture.CreateMany<SwlContactInfo>(21).ToList();
-
-        Members members = new()
-        {
-            SwlControllingMembers = swlControllingMembers,
-            NonSwlControllingMembers = nonSwlControllingMembers,
-            Employees = employees
-        };
-        model.Members = members;
-
-        var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.Members);
-        result.ShouldHaveValidationErrorFor(r => r.Members.Employees);
-    }
-
     private T GenerateValidRequest<T>()
     {
         object model;
@@ -265,13 +215,6 @@ public class BizLicAppValidationTest
         List<SwlContactInfo> swlControllingMembers = new() { new SwlContactInfo() { LicenceId = Guid.NewGuid() } };
         List<NonSwlContactInfo> nonSwlControllingMembers = new() { new NonSwlContactInfo() { Surname = "test", EmailAddress = "test@test.com" } };
         List<SwlContactInfo> employees = new() { new SwlContactInfo() { LicenceId = Guid.NewGuid() } };
-
-        Members members = new()
-        {
-            SwlControllingMembers = swlControllingMembers,
-            NonSwlControllingMembers = nonSwlControllingMembers,
-            Employees = employees
-        };
 
         if (typeof(T).Name == "BizLicAppUpsertRequest")
         {
@@ -297,7 +240,6 @@ public class BizLicAppValidationTest
                 .With(r => r.DocumentInfos, documentInfos)
                 .With(r => r.CategoryCodes, categories)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
-                .With(r => r.Members, members)
                 .Create();
         }
         else
@@ -310,7 +252,6 @@ public class BizLicAppValidationTest
                 .With(r => r.NoBranding, false)
                 .With(r => r.CategoryCodes, categories)
                 .With(r => r.ApplicantContactInfo, applicantContactInfo)
-                .With(r => r.Members, members)
                 .Create();
         }
 
