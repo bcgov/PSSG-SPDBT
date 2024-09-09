@@ -28,6 +28,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
 
     /// <summary>
     /// return the preview picture of licence.
+    /// The bcmp job id will be returned in the http header as "bcmp-personal-licence-preview-jobid"
     /// </summary>
     /// <param name="eventId"></param>
     /// <param name="ct"></param>
@@ -36,6 +37,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     public async Task<Results<FileContentHttpResult, BadRequest>> GetPersonLicencePreview([FromRoute] Guid licenceId, CancellationToken ct)
     {
         var previewResponse = await mediator.Send(new PreviewDocumentCommand(licenceId), ct);
+        Response.Headers.Append("bcmp-personal-licence-preview-jobid", previewResponse.JobId);
         return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
     }
 

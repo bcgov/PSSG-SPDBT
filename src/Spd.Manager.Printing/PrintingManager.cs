@@ -158,7 +158,7 @@ internal class PrintingManager
     {
         var previewResponse = await _printer.Preview(new BCMailPlusPrintRequest(bcmailplusResponse.JobTemplateId, bcmailplusResponse.Document), cancellationToken);
         if (previewResponse.Status != JobStatus.Completed) throw new InvalidOperationException(previewResponse.Error);
-        return new PreviewDocumentResp(previewResponse.ContentType!, previewResponse.Content!);
+        return new PreviewDocumentResp(previewResponse.ContentType!, previewResponse.Content!, previewResponse.PrintJobId);
     }
 
 }
