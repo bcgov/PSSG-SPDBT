@@ -32,7 +32,7 @@ internal class ControllingMemberCrcAppManager :
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
-    private readonly IControllingMemberInviteRepository _applicationInviteRepository;
+    private readonly IControllingMemberInviteRepository _cmInviteRepository;
 
     public ControllingMemberCrcAppManager(IMapper mapper,
         IDocumentRepository documentRepository,
@@ -41,7 +41,7 @@ internal class ControllingMemberCrcAppManager :
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
-        IControllingMemberInviteRepository applicationInviteRepository,
+        IControllingMemberInviteRepository cmInviteRepository,
         ILicAppRepository licAppRepository) : base(
             mapper,
             documentRepository,
@@ -52,7 +52,7 @@ internal class ControllingMemberCrcAppManager :
             licAppRepository)
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
-        _applicationInviteRepository = applicationInviteRepository;
+        _cmInviteRepository = cmInviteRepository;
     }
     public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
     {
@@ -65,7 +65,9 @@ internal class ControllingMemberCrcAppManager :
     #region anonymous new
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
-        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
+        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId,
+            cmd.ControllingMemberCrcAppSubmitRequest.BizContactId,
+            ct);
         ValidateFilesForNewApp(cmd);
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -90,7 +92,8 @@ internal class ControllingMemberCrcAppManager :
     #region authenticated
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand cmd, CancellationToken ct)
     {
-        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
+        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId,
+            cmd.ControllingMemberCrcAppUpsertRequest.BizContactId, ct);
 
         SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
 
@@ -149,18 +152,15 @@ internal class ControllingMemberCrcAppManager :
         }
     }
 
-    private async Task ValidateInviteIdAsync(Guid? inviteId, CancellationToken ct)
+    private async Task ValidateInviteIdAsync(Guid inviteId, Guid bizContactId, CancellationToken ct)
     {
-        ApplicationInviteResult? invite = null;
+        ControllingMemberInviteResp? invite = null;
         //check if invite is still valid
         if (inviteId != null)
         {
-            var invites = await _applicationInviteRepository.QueryAsync(
-                new ApplicationInviteQuery()
-                {
-                    FilterBy = new AppInviteFilterBy(null, null, AppInviteId: inviteId)
-                }, ct);
-            invite = invites.ApplicationInvites.FirstOrDefault();
+            var invites = await _cmInviteRepository.QueryAsync(
+                new ControllingMemberInviteQuery(bizContactId), ct);
+            invite = invites.Where(i => i.Id == inviteId).SingleOrDefault();
             if (invite != null && (invite.Status == ApplicationInviteStatusEnum.Completed || 
                 invite.Status == ApplicationInviteStatusEnum.Cancelled || invite.Status == ApplicationInviteStatusEnum.Expired))
                 throw new ArgumentException("Invalid Invite status.");
@@ -171,7 +171,7 @@ internal class ControllingMemberCrcAppManager :
         //inactivate invite
         if (inviteId != null)
         {
-            await _applicationInviteRepository.ManageAsync(
+            await _cmInviteRepository.ManageAsync(
                 new ControllingMemberInviteUpdateCmd()
                 {
                     ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Completed,
