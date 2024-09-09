@@ -28,6 +28,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
 
     /// <summary>
     /// return the preview picture of licence.
+    /// The bcmp job id will be returned in the http header as "bcmp-personal-licence-preview-jobid"
     /// </summary>
     /// <param name="eventId"></param>
     /// <param name="ct"></param>
