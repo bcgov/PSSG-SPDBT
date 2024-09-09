@@ -8,12 +8,12 @@ import { RequestBuilder } from '../../request-builder';
 
 import { Members } from '../../models/members';
 
-export interface ApiBusinessLicenceApplicationBizIdMembersGet$Params {
+export interface ApiBusinessBizIdMembersGet$Params {
   bizId: string;
 }
 
-export function apiBusinessLicenceApplicationBizIdMembersGet(http: HttpClient, rootUrl: string, params: ApiBusinessLicenceApplicationBizIdMembersGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Members>> {
-  const rb = new RequestBuilder(rootUrl, apiBusinessLicenceApplicationBizIdMembersGet.PATH, 'get');
+export function apiBusinessBizIdMembersGet(http: HttpClient, rootUrl: string, params: ApiBusinessBizIdMembersGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Members>> {
+  const rb = new RequestBuilder(rootUrl, apiBusinessBizIdMembersGet.PATH, 'get');
   if (params) {
     rb.path('bizId', params.bizId, {});
   }
@@ -28,4 +28,4 @@ export function apiBusinessLicenceApplicationBizIdMembersGet(http: HttpClient, r
   );
 }
 
-apiBusinessLicenceApplicationBizIdMembersGet.PATH = '/api/business-licence-application/{bizId}/members';
+apiBusinessBizIdMembersGet.PATH = '/api/business/{bizId}/members';

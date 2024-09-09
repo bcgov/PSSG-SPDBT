@@ -4,7 +4,6 @@ import {
 	Document,
 	DocumentExpiredInfo,
 	LicenceDocumentTypeCode,
-	LicenceTermCode,
 } from '@app/api/models';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
@@ -196,9 +195,9 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			bizContactId: controllingMemberCrcFormValue.bizContactId,
 			bizTypeCode: controllingMemberCrcFormValue.bizTypeCode,
-			licenceTermCode: LicenceTermCode.OneYear, // TODO remove licenceTermCode
 			controllingMemberAppId: controllingMemberCrcFormValue.controllingMemberAppId,
 			parentBizLicApplicationId: controllingMemberCrcFormValue.parentBizLicApplicationId,
+			inviteId: controllingMemberCrcFormValue.inviteId,
 			//-----------------------------------
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,

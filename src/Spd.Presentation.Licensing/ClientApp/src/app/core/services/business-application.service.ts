@@ -701,7 +701,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				}
 
 				return this.bizMembersService
-					.apiBusinessLicenceApplicationBizIdMembersGet({
+					.apiBusinessBizIdMembersGet({
 						bizId,
 					})
 					.pipe(
@@ -774,7 +774,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return forkJoin([
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizMembersService.apiBusinessLicenceApplicationBizIdMembersGet({
+			this.bizMembersService.apiBusinessBizIdMembersGet({
 				bizId,
 			}),
 		]).pipe(
@@ -2007,7 +2007,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	private saveControllingMembersAndEmployees(bizId: string, body: MembersRequest): Observable<any> {
-		return this.bizMembersService.apiBusinessLicenceApplicationBizIdMembersPost({
+		return this.bizMembersService.apiBusinessBizIdMembersPost({
 			bizId,
 			body,
 		});
