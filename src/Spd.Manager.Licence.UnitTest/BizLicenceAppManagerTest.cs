@@ -156,7 +156,6 @@ public class BizLicenceAppManagerTest
             WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
             BizId = bizId,
             DocumentInfos = new List<Document>() { workPermit },
-            Members = members
         };
 
         //Act
@@ -254,20 +253,12 @@ public class BizLicenceAppManagerTest
             .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.WorkPermit)
             .Create();
 
-        Members members = new()
-        {
-            SwlControllingMembers = new List<SwlContactInfo>(),
-            NonSwlControllingMembers = new List<NonSwlContactInfo>(),
-            Employees = new List<SwlContactInfo>()
-        };
-
         BizLicAppUpsertRequest request = new()
         {
             LicenceAppId = null,
             WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
             BizId = bizId,
             DocumentInfos = new List<Document>() { workPermit },
-            Members = members
         };
 
         //Act
