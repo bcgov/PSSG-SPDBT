@@ -49,8 +49,6 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<BizLicAppResponse> GetBizLicenceApplication([FromRoute][Required] Guid licenceAppId, CancellationToken ct)
         {
             BizLicAppResponse response = await _mediator.Send(new GetBizLicAppQuery(licenceAppId));
-            if (response.BizId != null)
-                response.Members = await _mediator.Send(new GetBizMembersQuery((Guid)response.BizId, null), ct);
             return response;
         }
 
