@@ -5,7 +5,6 @@ using Spd.Resource.Repository.PersonLicApplication;
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
 {
-    public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
 }
@@ -40,10 +39,6 @@ public record ControllingMemberCrcApplication
     public ResidentialAddr? ResidentialAddressData { get; set; }
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
     public Guid BizContactId { get; set; }
-    //TODO: check these fields
-    public Guid? ExpiredLicenceId { get; set; }
-    public bool? HasExpiredLicence { get; set; }
-    public LicenceTermEnum? LicenceTermCode { get; set; }
 }
 public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
@@ -51,14 +46,14 @@ public record CreateControllingMemberCrcAppCmd() : ControllingMemberCrcApplicati
 };
 public record SaveControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
 {
-    public Guid? ControllingMemberCrcAppId { get; set; }
+    public Guid? ControllingMemberAppId { get; set; }
     public Guid ContactId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
 }
 public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplication
 {
     public string? CaseNumber { get; set; }
-    public Guid? ControllingMemberCrcAppId { get; set; }
+    public Guid? ControllingMemberAppId { get; set; }
     public Guid? ContactId { get; set; }
 }
-public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberCrcAppId, Guid? ContactId = null);
+public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberAppId, Guid? ContactId = null);
