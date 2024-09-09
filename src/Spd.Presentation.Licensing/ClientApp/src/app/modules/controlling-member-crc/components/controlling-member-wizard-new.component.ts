@@ -261,8 +261,6 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 		this.stepper.selectedIndex = step;
 	}
 
-	private goToNextStep() {} // TODO fill in
-
 	private goToChildNextStep() {
 		switch (this.stepper.selectedIndex) {
 			case this.STEP_PERSONAL_INFORMATION:
