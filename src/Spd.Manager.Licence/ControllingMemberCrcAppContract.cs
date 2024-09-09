@@ -55,7 +55,7 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? ControllingMemberAppId { get; set; }
-    public Guid ApplicantId { get; set; }
+    public Guid? ApplicantId { get; set; }
 };
 #endregion
 #region anonymous user
@@ -73,12 +73,10 @@ public record GetControllingMemberCrcApplicationQuery(Guid ControllingMemberAppl
 public record ControllingMemberCrcAppCommandResponse
 {
     public Guid ControllingMemberAppId { get; set; }
-    public decimal? Cost { get; set; }
-
 };
 public record ControllingMemberCrcAppResponse : ControllingMemberCrcAppBase
 {
-    public Guid ControllingMemberCrcAppId { get; set; }
+    public Guid ControllingMemberAppId { get; set; }
     public string? CaseNumber { get; set; }
     public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
 }
