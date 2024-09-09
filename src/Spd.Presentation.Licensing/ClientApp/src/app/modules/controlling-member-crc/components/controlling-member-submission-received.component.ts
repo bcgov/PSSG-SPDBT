@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
@@ -77,7 +77,7 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 	`,
 	styles: [],
 })
-export class ControllingMemberSubmissionReceivedComponent {
+export class ControllingMemberSubmissionReceivedComponent implements OnInit {
 	isSubmit: BooleanTypeCode | null | undefined = null;
 	booleanYes = BooleanTypeCode.Yes;
 
