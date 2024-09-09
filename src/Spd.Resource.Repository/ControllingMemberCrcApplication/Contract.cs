@@ -5,7 +5,6 @@ using Spd.Resource.Repository.PersonLicApplication;
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public partial interface IControllingMemberCrcRepository
 {
-    public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(CreateControllingMemberCrcAppCmd cmd, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
 }
