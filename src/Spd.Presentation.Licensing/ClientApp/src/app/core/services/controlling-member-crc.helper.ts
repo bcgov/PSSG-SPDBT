@@ -194,7 +194,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			bizContactId: controllingMemberCrcFormValue.bizContactId,
-			bizTypeCode: controllingMemberCrcFormValue.bizTypeCode,
 			controllingMemberAppId: controllingMemberCrcFormValue.controllingMemberAppId,
 			parentBizLicApplicationId: controllingMemberCrcFormValue.parentBizLicApplicationId,
 			inviteId: controllingMemberCrcFormValue.inviteId,

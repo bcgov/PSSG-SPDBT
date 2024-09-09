@@ -5,7 +5,6 @@ import {
 	ContactInfo,
 	Document,
 	LicenceDocumentTypeCode,
-	Members,
 	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
@@ -514,22 +513,6 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			this.clearPrivateInvestigatorModelData();
 		}
 
-		// Only save members if business is not a sole proprietor
-		let members: Members = {
-			employees: [],
-			nonSwlControllingMembers: [],
-			swlControllingMembers: [],
-		};
-		if (!this.isSoleProprietor(bizTypeCode)) {
-			members = {
-				employees: this.saveEmployeesBody(businessModelFormValue.employeesData),
-				nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(
-					businessModelFormValue.controllingMembersData
-				),
-				swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue.controllingMembersData),
-			};
-		}
-
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
 		if (!hasExpiredLicence) {
@@ -552,8 +535,6 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
-			//-----------------------------------
-			members,
 			//-----------------------------------
 			originalApplicationId: originalLicenceData ? originalLicenceData.originalApplicationId : null,
 			originalLicenceId: originalLicenceData ? originalLicenceData.originalLicenceId : null,

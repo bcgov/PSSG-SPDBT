@@ -3,15 +3,19 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {
+	BizMemberResponse,
 	ControllingMemberInvitesCreateResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	NonSwlContactInfo,
+	SwlContactInfo,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { BizMembersService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -83,7 +87,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											class="table-button w-auto"
 											style="color: var(--color-red);"
 											aria-label="Remove controlling member"
-											(click)="onRemoveMember(true, i)"
+											(click)="onRemoveMember(member.bizContactId, true, i)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
@@ -165,7 +169,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											class="table-button w-auto"
 											style="color: var(--color-red);"
 											aria-label="Remove controlling member"
-											(click)="onRemoveMember(false, i)"
+											(click)="onRemoveMember(member.bizContactId, false, i)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
@@ -279,6 +283,13 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 					min-width: 130px;
 				}
 			}
+			.mat-column-action3 {
+				min-width: 200px;
+				max-width: 200px;
+				.table-button {
+					min-width: 130px;
+				}
+			}
 		`,
 	],
 	animations: [showHideTriggerSlideAnimation],
@@ -287,6 +298,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	booleanTypeCodes = BooleanTypeCode;
 	downloadFilePath = SPD_CONSTANTS.files.businessMemberAuthConsentManualForm;
 
+	bizId!: string;
 	form = this.businessApplicationService.controllingMembersFormGroup;
 
 	@Input() defaultExpanded = false;
@@ -306,11 +318,14 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private authUserBceidService: AuthUserBceidService,
 		private hotToastService: HotToastService,
+		private bizMembersService: BizMembersService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	ngOnInit(): void {
+		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
@@ -322,7 +337,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		return this.form.valid;
 	}
 
-	onRemoveMember(isWithSwl: boolean, index: number) {
+	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -338,13 +353,22 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				this.controllingMemberChanged();
 
 				if (response) {
-					if (isWithSwl) {
-						this.membersWithSwlList.removeAt(index);
-						this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
-					} else {
-						this.membersWithoutSwlList.removeAt(index);
-						this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
-					}
+					this.bizMembersService
+						.apiBusinessBizIdMembersBizContactIdDelete({
+							bizId: this.bizId,
+							bizContactId,
+						})
+						.subscribe((_resp: any) => {
+							if (isWithSwl) {
+								this.membersWithSwlList.removeAt(index);
+								this.dataSourceWithSWL.data = this.membersWithSwlList.value;
+							} else {
+								this.membersWithoutSwlList.removeAt(index);
+								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
+							}
+
+							this.hotToastService.success('The member has been successfully removed');
+						});
 				}
 			});
 	}
@@ -369,8 +393,23 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				if (memberData) {
 					this.controllingMemberChanged();
 
-					this.membersWithSwlList.push(this.newMemberRow(memberData));
-					this.dataSourceWithSWL.data = this.membersWithSwlList.value;
+					const body = {
+						bizContactId: null,
+						contactId: memberData.licenceHolderId,
+						licenceId: memberData.licenceId,
+					} as SwlContactInfo;
+
+					this.bizMembersService
+						.apiBusinessBizIdSwlControllingMembersPost({
+							bizId: this.bizId,
+							body,
+						})
+						.subscribe((resp: BizMemberResponse) => {
+							this.membersWithSwlList.push(this.newMemberRow(resp.bizContactId!, memberData));
+							this.dataSourceWithSWL.data = this.membersWithSwlList.value;
+
+							this.hotToastService.success('The member has been successfully added');
+						});
 				}
 			});
 	}
@@ -426,7 +465,6 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				},
 				error: (error: any) => {
 					console.log('An error occurred during file upload', error);
-
 					this.fileUploadComponent.removeFailedFile(file);
 				},
 			});
@@ -437,6 +475,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	private controllingMemberChanged(): void {
+		if (!this.isWizard) {
+			return;
+		}
+
+		// document upload only needed in wizard flow
+
 		this.allowDocumentUpload = true;
 		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });
 	}
@@ -453,24 +497,43 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 				const memberData = resp?.data;
 				if (memberData) {
 					if (isCreate) {
-						this.controllingMemberChanged();
-						this.membersWithoutSwlList.push(this.newMemberRow(memberData));
-					} else {
-						const memberIndex = this.membersWithoutSwlList.value.findIndex(
-							(item: any) => item.bizContactId == dialogOptions.bizContactId!
-						);
-						this.patchMemberData(memberIndex, memberData);
-					}
+						this.bizMembersService
+							.apiBusinessBizIdNonSwlControllingMembersPost({
+								bizId: this.bizId,
+								body: memberData,
+							})
+							.subscribe((resp: BizMemberResponse) => {
+								this.controllingMemberChanged();
+								this.membersWithoutSwlList.push(this.newMemberRow(resp.bizContactId!, memberData));
+								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
 
-					this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
+								this.hotToastService.success('The member has been successfully added');
+							});
+					} else {
+						this.bizMembersService
+							.apiBusinessBizIdNonSwlControllingMembersBizContactIdPut({
+								bizId: this.bizId,
+								bizContactId: dialogOptions.bizContactId!,
+								body: memberData,
+							})
+							.subscribe((_resp: BizMemberResponse) => {
+								const memberIndex = this.membersWithoutSwlList.value.findIndex(
+									(item: any) => item.bizContactId == dialogOptions.bizContactId!
+								);
+								this.patchMemberData(memberIndex, memberData);
+								this.dataSourceWithoutSWL.data = this.membersWithoutSwlList.value;
+
+								this.hotToastService.success('The member has been successfully updated');
+							});
+					}
 				}
 			});
 	}
 
-	private newMemberRow(memberData: any): FormGroup {
+	private newMemberRow(bizContactId: string, memberData: any): FormGroup {
 		return this.formBuilder.group({
 			licenceHolderName: [memberData.licenceHolderName ?? `${memberData.givenName} ${memberData.surname}`],
-			bizContactId: null,
+			bizContactId: bizContactId,
 			contactId: [memberData.licenceHolderId],
 			givenName: [memberData.givenName],
 			middleName1: [memberData.middleName1],

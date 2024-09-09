@@ -3,7 +3,6 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
 	Alias,
 	ApplicationTypeCode,
-	BizTypeCode,
 	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
@@ -53,7 +52,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		inviteId: new FormControl(),
 		controllingMemberAppId: new FormControl(),
 		bizContactId: new FormControl(),
-		bizTypeCode: new FormControl(),
 		parentBizLicApplicationId: new FormControl(),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
@@ -439,11 +437,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			{
 				workerLicenceTypeData,
 				applicationTypeData,
-				bizTypeCode: BizTypeCode.None,
 				inviteId: crcAppl.inviteId,
-				controllingMemberAppId: crcAppl.controllingMemberCrcAppId, //'148824fa-3340-4e63-95de-3d7d522cd3ba', //crcAppl.controllingMemberCrcAppId,
-				parentBizLicApplicationId: 'b6609734-a172-4d1d-a66f-7a8a0a3e8dab', // crcAppl.parentBizLicApplicationId,
-				bizContactId: 'dad29ce7-d26a-ef11-b851-00505683fbf4', // crcAppl.bizContactId,
+				controllingMemberAppId: crcAppl.controllingMemberCrcAppId,
+				parentBizLicApplicationId: crcAppl.parentBizLicApplicationId,
+				bizContactId: crcAppl.bizContactId,
 
 				personalInformationData,
 				aliasesData: {
@@ -492,7 +489,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
 				applicationTypeData: { applicationTypeCode: ApplicationTypeCode.New },
-				bizTypeCode: BizTypeCode.None,
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,

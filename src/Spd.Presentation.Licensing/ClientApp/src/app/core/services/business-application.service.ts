@@ -67,6 +67,7 @@ export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceNumber?: string | null;
 	licenceStatusCode?: string;
 	expiryDate?: string | null;
+	noEmailAddress?: boolean | null;
 }
 
 @Injectable({
@@ -1829,6 +1830,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			controllingMembersWithoutSwlData.push({
 				bizContactId: item.bizContactId,
 				emailAddress: item.emailAddress,
+				noEmailAddress: !item.emailAddress,
 				givenName: item.givenName,
 				middleName1: item.middleName1,
 				middleName2: item.middleName2,
@@ -1863,6 +1865,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					surname: new FormControl(item.surname),
 					phoneNumber: new FormControl(item.phoneNumber),
 					emailAddress: new FormControl(item.emailAddress),
+					noEmailAddress: new FormControl(item.noEmailAddress),
 					inviteStatusCode: new FormControl(item.inviteStatusCode),
 				})
 			);
