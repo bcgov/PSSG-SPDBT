@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 namespace Spd.Manager.Licence;
@@ -59,34 +58,5 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
                  r.BizTypeCode != BizTypeCode.RegisteredSoleProprietor)
             .WithMessage("Missing private investigator information.");
-
-        // Controlling members
-        RuleFor(r => r.Members.SwlControllingMembers)
-            .ForEach(r => r
-                .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
-            .When(r => r.Members != null && r.Members.SwlControllingMembers != null)
-            .WithMessage("Missing licence Id in Controlling members (SWL)");
-
-        RuleFor(r => r.Members.NonSwlControllingMembers)
-            .ForEach(r => r
-                .Must(m => m.Surname.IsNullOrEmpty() != true)
-                .Must(m => m.EmailAddress != null ? emailRegex.IsMatch(m.EmailAddress) : true))
-                .WithMessage("Missing surname in Controlling members (not SWL)")
-            .When(r => r.Members != null && r.Members.NonSwlControllingMembers != null);
-
-        RuleFor(r => r.Members)
-            .Must(r => r.SwlControllingMembers.Count() + r.NonSwlControllingMembers.Count() <= 20)
-            .When(r => r.Members != null && r.Members.SwlControllingMembers != null && r.Members.NonSwlControllingMembers != null);
-
-        // Employees
-        RuleFor(r => r.Members.Employees)
-            .ForEach(r => r
-                .Must(m => m.LicenceId != null && m.LicenceId != Guid.Empty))
-            .When(r => r.Members != null && r.Members.Employees != null)
-            .WithMessage("Missing information in employees");
-        RuleFor(r => r.Members.Employees)
-            .Must(r => r.Count() <= 20)
-            .When(r => r.Members != null && r.Members.Employees != null)
-            .WithMessage("No more than 20 employees are allowed");
     }
 }
