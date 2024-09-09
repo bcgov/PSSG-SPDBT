@@ -36,6 +36,7 @@ public class PrintingController(IMediator mediator, IMapper mapper) : SpdControl
     public async Task<Results<FileContentHttpResult, BadRequest>> GetPersonLicencePreview([FromRoute] Guid licenceId, CancellationToken ct)
     {
         var previewResponse = await mediator.Send(new PreviewDocumentCommand(licenceId), ct);
+        Response.Headers.Append("bcmp-personal-licence-preview-jobid", previewResponse.JobId);
         return TypedResults.File(previewResponse.Content.ToArray(), previewResponse.ContentType);
     }
 
