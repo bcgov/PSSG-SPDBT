@@ -239,7 +239,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
 
 		if (crcInviteData.controllingMemberCrcAppId) {
-			return this.loadCrcToResume(crcInviteData.controllingMemberCrcAppId, applicationTypeCode).pipe(
+			return this.loadCrcToResume(crcInviteData, applicationTypeCode).pipe(
 				tap((_resp: any) => {
 					this.initialized = true;
 
@@ -283,22 +283,25 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	private loadCrcToResume(
-		controllingMemberCrcAppId: string,
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		this.reset();
 
 		return this.controllingMemberCrcAppService
-			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: controllingMemberCrcAppId! })
+			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((resp: ControllingMemberCrcAppResponse) => {
 					resp.applicationTypeCode = applicationTypeCode; // TODO remove
-					return this.applyCrcAppIntoModel(resp);
+					return this.applyCrcAppIntoModel(resp, crcInviteData);
 				})
 			);
 	}
 
-	private applyCrcAppIntoModel(crcAppl: ControllingMemberCrcAppResponse): Observable<any> {
+	private applyCrcAppIntoModel(
+		crcAppl: ControllingMemberCrcAppResponse,
+		crcInviteData: ControllingMemberAppInviteVerifyResponse
+	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: crcAppl.applicationTypeCode };
 
@@ -466,10 +469,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			{
 				workerLicenceTypeData,
 				applicationTypeData,
-				inviteId: crcAppl.inviteId,
+				parentBizLicApplicationId: crcInviteData.bizLicAppId,
+				bizContactId: crcInviteData.bizContactId,
+				inviteId: crcInviteData.inviteId,
 				controllingMemberAppId: crcAppl.controllingMemberAppId,
-				parentBizLicApplicationId: crcAppl.parentBizLicApplicationId,
-				bizContactId: crcAppl.bizContactId,
 
 				personalInformationData,
 				aliasesData: {
