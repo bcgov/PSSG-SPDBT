@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Moq;
 using Spd.Manager.Licence;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.Document;
@@ -55,12 +56,14 @@ public class ControllingMemberCrcAppManagerTests
     {
         Guid applicantId = Guid.NewGuid();
         Guid controllingMemberAppId = Guid.NewGuid();
+        Guid inviteId = Guid.NewGuid();
         // Arrange
         var request = new ControllingMemberCrcAppSubmitRequest
         {
             IsCanadianCitizen = true,
             IsPoliceOrPeaceOfficer = true,
             IsTreatedForMHC = false,
+            InviteId = inviteId,
         };
 
         var command = new ControllingMemberCrcAppNewCommand(request,
@@ -78,7 +81,7 @@ public class ControllingMemberCrcAppManagerTests
             {
                 Items = new List<LicenceResp> { }
             });
-        _controllingMemberCrcRepositoryMock.Setup(a => a.CreateControllingMemberCrcApplicationAsync(It.IsAny<CreateControllingMemberCrcAppCmd>(), CancellationToken.None))
+        _controllingMemberCrcRepositoryMock.Setup(a => a.SaveControllingMemberCrcApplicationAsync(It.IsAny<SaveControllingMemberCrcAppCmd>(), CancellationToken.None))
             .ReturnsAsync(new ControllingMemberCrcApplicationCmdResp(controllingMemberAppId, applicantId));
         _documentRepositoryMock.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == controllingMemberAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp()
@@ -91,6 +94,17 @@ public class ControllingMemberCrcAppManagerTests
             .ReturnsAsync("string");
         _transientFileServiceMock.Setup(m => m.HandleDeleteCommand(It.IsAny<StorageDeleteCommand>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync("string");
+        _applicationInviteRepositoryMock.Setup(i => i.QueryAsync(It.IsAny<ApplicationInviteQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ApplicationInviteListResp()
+            {
+                ApplicationInvites = new List<ApplicationInviteResult>()
+                {
+                    new()
+                    {
+                        Status = ApplicationInviteStatusEnum.Sent
+                    }
+                }
+            });
 
         // Act
         var result = await sut.Handle(command, CancellationToken.None);
@@ -131,7 +145,7 @@ public class ControllingMemberCrcAppManagerTests
             {
                 Items = new List<LicenceResp> { }
             });
-        _controllingMemberCrcRepositoryMock.Setup(a => a.CreateControllingMemberCrcApplicationAsync(It.IsAny<CreateControllingMemberCrcAppCmd>(), CancellationToken.None))
+        _controllingMemberCrcRepositoryMock.Setup(a => a.SaveControllingMemberCrcApplicationAsync(It.IsAny<SaveControllingMemberCrcAppCmd>(), CancellationToken.None))
             .ReturnsAsync(new ControllingMemberCrcApplicationCmdResp(controllingMemberAppId, applicantId));
         _documentRepositoryMock.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == controllingMemberAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp()
