@@ -352,7 +352,8 @@ internal class Mappings : Profile
         CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
-
+        CreateMap<SwlContactInfo, BizContact>();
+        CreateMap<NonSwlContactInfo, BizContact>();
         CreateMap<ControllingMemberCrcApplicationResp, ControllingMemberCrcAppResponse>()
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddressData.AddressLine1))
@@ -646,7 +647,6 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
         {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
     }.ToImmutableDictionary();
-
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {

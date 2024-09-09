@@ -23,6 +23,11 @@ internal class BizMemberManager :
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
         IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
+        IRequestHandler<CreateBizEmployeeCommand, BizMemberResponse>,
+        IRequestHandler<CreateBizSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<CreateBizNonSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<UpdateBizNonSwlControllingMemberCommand, BizMemberResponse>,
+        IRequestHandler<DeleteBizMemberCommand, Unit>,
         IBizMemberManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -106,7 +111,6 @@ internal class BizMemberManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
         if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null)
             throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
-        //todo : how can we check if the CRC approved but it has been expired.
 
         var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
         createCmd.CreatedByUserId = cmd.UserId;
@@ -137,6 +141,43 @@ internal class BizMemberManager :
         return members;
     }
 
+    public async Task<BizMemberResponse> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.Employee);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.Employee;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return new BizMemberResponse(bizContactId);
+    }
+    public async Task<BizMemberResponse> Handle(CreateBizSwlControllingMemberCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.SwlControllingMember);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return new BizMemberResponse(bizContactId);
+    }
+    public async Task<BizMemberResponse> Handle(CreateBizNonSwlControllingMemberCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.NonSwlControllingMember);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactCreateCmd(bizContact), ct);
+        return new BizMemberResponse(bizContactId);
+    }
+    public async Task<Unit> Handle(DeleteBizMemberCommand cmd, CancellationToken ct)
+    {
+        await _bizContactRepository.ManageBizContactsAsync(new BizContactDeleteCmd(cmd.BizContactId), ct);
+        return default;
+    }
+    public async Task<BizMemberResponse> Handle(UpdateBizNonSwlControllingMemberCommand cmd, CancellationToken ct)
+    {
+        BizContact bizContact = _mapper.Map<BizContact>(cmd.NonSwlControllingMember);
+        bizContact.BizContactRoleCode = BizContactRoleEnum.ControllingMember;
+        bizContact.BizId = cmd.BizId;
+        Guid? bizContactId = await _bizContactRepository.ManageBizContactsAsync(new BizContactUpdateCmd(cmd.BizContactId, bizContact), ct);
+        return new BizMemberResponse(bizContactId);
+    }
     public async Task<Unit> Handle(UpsertBizMembersCommand cmd, CancellationToken ct)
     {
         await UpdateMembersAsync(cmd.Members, cmd.BizId, ct);

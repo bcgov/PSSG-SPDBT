@@ -43,6 +43,7 @@ public record ControllingMemberCrcAppBase
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
     public Guid BizContactId { get; set; }
+    public Guid InviteId { get; set; }
 }
 
 

@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Spd.Resource.Repository.Application;
+﻿using Spd.Resource.Repository.Application;
 
 namespace Spd.Resource.Repository.BizContact
 {
@@ -7,18 +6,30 @@ namespace Spd.Resource.Repository.BizContact
     {
         Task<BizContactResp> GetBizContactAsync(Guid bizContactId, CancellationToken ct);
         Task<IEnumerable<BizContactResp>> QueryBizContactsAsync(BizContactQry qry, CancellationToken ct);
-        Task<Unit> ManageBizContactsAsync(BizContactUpsertCmd cmd, CancellationToken ct);
+        Task<Guid?> ManageBizContactsAsync(BizContactCmd cmd, CancellationToken ct);
     }
     //command
-    public record BizContactUpsertCmd(Guid BizId, List<BizContactResp> Data);
+    public interface BizContactCmd;
+    public record BizContactUpsertCmd(Guid BizId, List<BizContactResp> Data) : BizContactCmd; //deprecated
+    public record BizContactCreateCmd(BizContact BizContact) : BizContactCmd;
+    public record BizContactUpdateCmd(Guid BizContactId, BizContact BizContact) : BizContactCmd;
+    public record BizContactDeleteCmd(Guid BizContactId) : BizContactCmd;
 
     //query
     public record BizContactQry(Guid? BizId, Guid? AppId, BizContactRoleEnum? RoleCode = null, bool IncludeInactive = false);
 
-    //shared content
-    public record BizContactResp
+    public record BizContactResp : BizContact
     {
         public Guid? BizContactId { get; set; }
+        public Guid? LatestControllingMemberCrcAppId { get; set; }
+        public ApplicationPortalStatusEnum? LatestControllingMemberCrcAppPortalStatusEnum { get; set; }
+        public Guid? LatestControllingMemberInvitationId { get; set; }
+        public ApplicationInviteStatusEnum? LatestControllingMemberInvitationStatusEnum { get; set; }
+    }
+
+    //shared content
+    public record BizContact
+    {
         public string? EmailAddress { get; set; }
         public string? GivenName { get; set; }
         public string? MiddleName1 { get; set; }
@@ -28,10 +39,6 @@ namespace Spd.Resource.Repository.BizContact
         public Guid? LicenceId { get; set; }
         public BizContactRoleEnum BizContactRoleCode { get; set; } = BizContactRoleEnum.ControllingMember;
         public Guid BizId { get; set; }
-        public Guid? LatestControllingMemberCrcAppId { get; set; }
-        public ApplicationPortalStatusEnum? LatestControllingMemberCrcAppPortalStatusEnum { get; set; }
-        public Guid? LatestControllingMemberInvitationId { get; set; }
-        public ApplicationInviteStatusEnum? LatestControllingMemberInvitationStatusEnum { get; set; }
     }
 
     public enum BizContactRoleEnum

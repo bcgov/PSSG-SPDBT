@@ -39,7 +39,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
+        [Route("api/business/{bizId}/members")]
         [HttpGet]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<Members> GetMembers([FromRoute] Guid bizId, CancellationToken ct)
@@ -48,13 +48,13 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
+        /// Deprecated. Upsert Biz Application controlling members and employees, controlling members include swl and non-swl
         /// </summary>
         /// <param name="bizId"></param>
         /// <param name="applicationId"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/business-licence-application/{bizId}/members")]
+        [Route("api/business/{bizId}/members")]
         [HttpPost]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         public async Task<ActionResult> UpsertMembers([FromRoute] Guid bizId, [FromBody] MembersRequest members, CancellationToken ct)
@@ -65,6 +65,82 @@ namespace Spd.Presentation.Licensing.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Cannot find all files in the cache.");
             }
             await _mediator.Send(new UpsertBizMembersCommand(bizId, null, members, newDocInfos), ct);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Create Biz employee
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="employee"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/employees")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateEmployee([FromRoute] Guid bizId, [FromBody] SwlContactInfo employee, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizEmployeeCommand(bizId, employee), ct);
+        }
+
+        /// <summary>
+        /// Create Biz swl controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="controllingMember"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/swl-controlling-members")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateSwlControllingMember([FromRoute] Guid bizId, [FromBody] SwlContactInfo controllingMember, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizSwlControllingMemberCommand(bizId, controllingMember), ct);
+        }
+
+        /// <summary>
+        /// Create Biz swl controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="employee"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-controlling-members")]
+        [HttpPost]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> CreateNonSwlControllingMember([FromRoute] Guid bizId, [FromBody] NonSwlContactInfo controllingMember, CancellationToken ct)
+        {
+            return await _mediator.Send(new CreateBizNonSwlControllingMemberCommand(bizId, controllingMember), ct);
+        }
+
+        /// <summary>
+        /// Update Non swl biz controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizContactId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-controlling-members/{bizContactId}")]
+        [HttpPut]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<BizMemberResponse> UpdateNonSwlControllingMember([FromRoute] Guid bizId, [FromRoute] Guid bizContactId, NonSwlContactInfo controllingMember, CancellationToken ct)
+        {
+            return await _mediator.Send(new UpdateBizNonSwlControllingMemberCommand(bizId, bizContactId, controllingMember), ct);
+        }
+
+        /// <summary>
+        /// Delete Biz swl controlling member
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizContactId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/members/{bizContactId}")]
+        [HttpDelete]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<ActionResult> DeleteBizMember([FromRoute] Guid bizId, [FromRoute] Guid bizContactId, CancellationToken ct)
+        {
+            await _mediator.Send(new DeleteBizMemberCommand(bizId, bizContactId), ct);
             return Ok();
         }
 
