@@ -65,7 +65,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     [HttpPost]
     public async Task<ControllingMemberCrcAppCommandResponse> SaveControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcAppUpsertRequest)
     {
-        if (controllingMemberCrcAppUpsertRequest.ApplicantId == Guid.Empty)
+        if (controllingMemberCrcAppUpsertRequest.ApplicantId == null || controllingMemberCrcAppUpsertRequest.ApplicantId == Guid.Empty)
             throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
         return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
     }
