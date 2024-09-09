@@ -10,10 +10,8 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 	selector: 'app-steps-controlling-member-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-controlling-member-bc-security-licence-history
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-bc-security-licence-history>
+			<mat-step *ngIf="isNew">
+				<app-step-controlling-member-bc-security-licence-history></app-step-controlling-member-bc-security-licence-history>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -34,7 +32,7 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onPoliceBackgroundPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
 					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
 				></app-wizard-footer>
@@ -79,6 +77,15 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 		super(commonApplicationService);
 	}
 
+	onPoliceBackgroundPreviousStep(): void {
+		if (this.isNew) {
+			super.onGoToPreviousStep();
+			return;
+		}
+
+		super.onStepPrevious();
+	}
+
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_LICENCE_HISTORY:
@@ -91,5 +98,9 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

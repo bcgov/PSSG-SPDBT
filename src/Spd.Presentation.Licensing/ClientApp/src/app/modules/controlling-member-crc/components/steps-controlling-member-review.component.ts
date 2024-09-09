@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
@@ -10,6 +11,7 @@ import { StepControllingMemberSummaryReviewAnonymousComponent } from './step-con
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-controlling-member-summary-review-anonymous
+					[applicationTypeCode]="applicationTypeCode"
 					(editStep)="onEditStep($event)"
 				></app-step-controlling-member-summary-review-anonymous>
 
@@ -45,7 +47,7 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
-	// @Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 

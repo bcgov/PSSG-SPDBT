@@ -117,6 +117,7 @@ export class StepControllingMemberPersonalInfoComponent implements OnInit, Licen
 
 	maxBirthDate = this.utilService.getBirthDateMax();
 
+	@Input() isReadonly!: boolean;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	form: FormGroup = this.controllingMembersService.personalNameAndContactInformationFormGroup;
@@ -124,29 +125,31 @@ export class StepControllingMemberPersonalInfoComponent implements OnInit, Licen
 	constructor(private utilService: UtilService, private controllingMembersService: ControllingMemberCrcService) {}
 
 	ngOnInit(): void {
-		this.title = this.isRenewalOrUpdate ? 'Confirm your personal information' : 'Your personal information';
+		this.title = this.isUpdate ? 'Confirm your personal information' : 'Your personal information';
 
-		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
+		if (this.isReadonly) {
+			this.subtitle =
+				'This information is from your BC Services Card. If you need to make any updates, please <a href="https://www.icbc.com/driver-licensing/getting-licensed/Pages/Change-your-address-or-name.aspx" target="_blank">visit ICBC</a>.';
 
-		// fields may have been previously disabled if user was using
-		// this formGroup (personalInformationFormGroup) in a different component.
-		// for example, if the user does an 'update' (which displays the fields as readonly),
-		// then does a 'new' - fields would display as disabled.
-		this.enableData();
+			this.givenName.disable({ emitEvent: false });
+			this.middleName1.disable({ emitEvent: false });
+			this.middleName2.disable({ emitEvent: false });
+			this.surname.disable({ emitEvent: false });
+			this.emailAddress.disable({ emitEvent: false });
+		} else {
+			this.subtitle = this.isUpdate ? 'Update any information that has changed since your last application' : '';
+
+			this.givenName.enable();
+			this.middleName1.enable();
+			this.middleName2.enable();
+			this.surname.enable();
+			this.emailAddress.enable();
+		}
 	}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
-	}
-
-	private enableData(): void {
-		this.surname.enable({ emitEvent: false });
-		this.givenName.enable({ emitEvent: false });
-		this.middleName1.enable({ emitEvent: false });
-		this.middleName2.enable({ emitEvent: false });
-		this.genderCode.enable({ emitEvent: false });
-		this.dateOfBirth.enable({ emitEvent: false });
 	}
 
 	get surname(): FormControl {
@@ -167,11 +170,11 @@ export class StepControllingMemberPersonalInfoComponent implements OnInit, Licen
 	get genderCode(): FormControl {
 		return this.form.get('genderCode') as FormControl;
 	}
+	get emailAddress(): FormControl {
+		return this.form.get('emailAddress') as FormControl;
+	}
 
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

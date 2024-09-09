@@ -9,7 +9,6 @@ import {
 	ControllingMemberCrcAppSubmitRequest,
 	ControllingMemberCrcAppUpsertRequest,
 	Document,
-	GenderCode,
 	GoogleRecaptcha,
 	IActionResult,
 	LicenceAppDocumentResponse,
@@ -37,6 +36,7 @@ import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { ApplicationService } from './application.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
+import { AuthenticationService } from './authentication.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
@@ -78,6 +78,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private authenticationService: AuthenticationService,
 		private authUserBcscService: AuthUserBcscService,
 		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
@@ -220,7 +221,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	isSaveAndExit(): boolean {
-		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
 			return false;
 		}
 
@@ -232,26 +236,28 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	createOrResumeCrc(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
+		const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
+
 		if (crcInviteData.controllingMemberCrcAppId) {
-			return this.loadCrcToResume(crcInviteData.controllingMemberCrcAppId).pipe(
+			return this.loadCrcToResume(crcInviteData.controllingMemberCrcAppId, applicationTypeCode).pipe(
 				tap((_resp: any) => {
 					this.initialized = true;
 
 					this.commonApplicationService.setApplicationTitle(
 						WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-						ApplicationTypeCode.New
+						applicationTypeCode
 					);
 				})
 			);
 		}
 
-		return this.getCrcEmptyAnonymous(crcInviteData).pipe(
+		return this.getCrcEmptyAuthenticated(crcInviteData, applicationTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
 					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-					ApplicationTypeCode.New
+					applicationTypeCode
 				);
 			})
 		);
@@ -262,25 +268,31 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	createNewCrcAnonymous(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
-		return this.getCrcEmptyAnonymous(crcInviteData).pipe(
+		const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
+
+		return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
 					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-					ApplicationTypeCode.New
+					applicationTypeCode
 				);
 			})
 		);
 	}
 
-	private loadCrcToResume(controllingMemberCrcAppId: string): Observable<any> {
+	private loadCrcToResume(
+		controllingMemberCrcAppId: string,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
 		this.reset();
 
 		return this.controllingMemberCrcAppService
 			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((resp: ControllingMemberCrcAppResponse) => {
+					resp.applicationTypeCode = applicationTypeCode; // TODO remove
 					return this.applyCrcAppIntoModel(resp);
 				})
 			);
@@ -290,16 +302,33 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: crcAppl.applicationTypeCode };
 
-		const personalInformationData = {
-			givenName: 'a', //crcAppl.givenName,
-			middleName1: 'a', //crcAppl.middleName1,
-			middleName2: 'a', //crcAppl.middleName2,
-			surname: 'a', //crcAppl.surname,
-			genderCode: GenderCode.M, // crcAppl.genderCode,
-			dateOfBirth: '1990-01-01', //crcAppl.dateOfBirth,
-			emailAddress: 'a@gov.bc.ca', //crcAppl.emailAddress,
-			phoneNumber: '2503365858', //crcAppl.phoneNumber,
-		};
+		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
+
+		let personalInformationData = {};
+
+		if (applicantLoginProfile) {
+			personalInformationData = {
+				givenName: applicantLoginProfile.firstName,
+				middleName1: applicantLoginProfile.middleName1,
+				middleName2: applicantLoginProfile.middleName2,
+				surname: applicantLoginProfile.lastName,
+				genderCode: crcAppl.genderCode,
+				dateOfBirth: crcAppl.dateOfBirth,
+				emailAddress: applicantLoginProfile.emailAddress,
+				phoneNumber: crcAppl.phoneNumber,
+			};
+		} else {
+			personalInformationData = {
+				givenName: crcAppl.givenName,
+				middleName1: crcAppl.middleName1,
+				middleName2: crcAppl.middleName2,
+				surname: crcAppl.surname,
+				genderCode: crcAppl.genderCode,
+				dateOfBirth: crcAppl.dateOfBirth,
+				emailAddress: crcAppl.emailAddress,
+				phoneNumber: crcAppl.phoneNumber,
+			};
+		}
 
 		const bcDriversLicenceData = {
 			hasBcDriversLicence: this.utilService.booleanToBooleanType(crcAppl.hasBcDriversLicence),
@@ -401,13 +430,13 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		});
 
 		const residentialAddressData = {
-			addressSelected: true, // !!crcAppl.residentialAddress?.addressLine1,
-			addressLine1: 'a', //crcAppl.residentialAddress?.addressLine1,
-			addressLine2: 'a', //crcAppl.residentialAddress?.addressLine2,
-			city: 'a', //crcAppl.residentialAddress?.city,
-			country: 'a', //crcAppl.residentialAddress?.country,
-			postalCode: 'a', //crcAppl.residentialAddress?.postalCode,
-			province: 'a', //crcAppl.residentialAddress?.province,
+			addressSelected: !!crcAppl.residentialAddress?.addressLine1,
+			addressLine1: crcAppl.residentialAddress?.addressLine1,
+			addressLine2: crcAppl.residentialAddress?.addressLine2,
+			city: crcAppl.residentialAddress?.city,
+			country: crcAppl.residentialAddress?.country,
+			postalCode: crcAppl.residentialAddress?.postalCode,
+			province: crcAppl.residentialAddress?.province,
 		};
 
 		const fingerprintProofData = {
@@ -480,7 +509,48 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		return of(this.controllingMembersModelFormGroup.value);
 	}
 
-	private getCrcEmptyAnonymous(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
+	private getCrcEmptyAuthenticated(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		this.reset();
+
+		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
+
+		const personalInformationData = {
+			givenName: applicantLoginProfile?.firstName,
+			middleName1: applicantLoginProfile?.middleName1,
+			middleName2: applicantLoginProfile?.middleName2,
+			surname: applicantLoginProfile?.lastName,
+			genderCode: null,
+			dateOfBirth: null,
+			emailAddress: applicantLoginProfile?.emailAddress,
+			phoneNumber: null,
+		};
+
+		this.controllingMembersModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData: {
+					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+				},
+				applicationTypeData: { applicationTypeCode },
+				parentBizLicApplicationId: crcInviteData.bizLicAppId,
+				bizContactId: crcInviteData.bizContactId,
+				inviteId: crcInviteData.inviteId,
+				personalInformationData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		return of(this.controllingMembersModelFormGroup.value);
+	}
+
+	private getCrcEmptyAnonymous(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
 		this.reset();
 
 		this.controllingMembersModelFormGroup.patchValue(
@@ -488,7 +558,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				workerLicenceTypeData: {
 					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
-				applicationTypeData: { applicationTypeCode: ApplicationTypeCode.New },
+				applicationTypeData: { applicationTypeCode },
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,

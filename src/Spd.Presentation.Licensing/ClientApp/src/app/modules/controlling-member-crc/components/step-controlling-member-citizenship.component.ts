@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
@@ -10,7 +10,7 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 	template: `
 		<app-step-section [title]="title">
 			<app-form-swl-citizenship
-				[applicationTypeCode]="applicationTypeCode"
+				[applicationTypeCode]="applicationTypeCodeNew"
 				[form]="form"
 				(fileUploaded)="onFileUploaded($event)"
 				(fileRemoved)="onFileRemoved()"
@@ -21,21 +21,14 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 	`,
 	styles: [],
 })
-export class StepControllingMemberCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepControllingMemberCitizenshipComponent implements LicenceChildStepperStepComponent {
+	applicationTypeCodeNew = ApplicationTypeCode.New;
 	title = 'Are you a Canadian citizen?';
 	form: FormGroup = this.controllingMembersService.citizenshipFormGroup;
-
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FormSwlCitizenshipComponent) formSwlCitizenshipComponent!: FormSwlCitizenshipComponent;
 
 	constructor(private controllingMembersService: ControllingMemberCrcService) {}
-
-	ngOnInit(): void {
-		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
-			this.title = 'Provide proof of ability to work in Canada';
-		}
-	}
 
 	onFileUploaded(file: File): void {
 		this.controllingMembersService.fileUploaded(

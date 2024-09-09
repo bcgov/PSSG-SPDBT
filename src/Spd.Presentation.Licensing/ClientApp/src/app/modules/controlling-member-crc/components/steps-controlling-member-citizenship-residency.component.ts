@@ -10,10 +10,8 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 	selector: 'app-steps-controlling-member-citizenship-residency',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-controlling-member-citizenship
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-citizenship>
+			<mat-step *ngIf="isNew">
+				<app-step-controlling-member-citizenship></app-step-controlling-member-citizenship>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -32,16 +30,14 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_FINGERPRINTS)"
+					(previousStepperStep)="onFingerprintsPreviousStep()"
+					(nextStepperStep)="onFingerprintsNextStep(STEP_FINGERPRINTS)"
 					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
-				<app-step-controlling-member-bc-driver-licence
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-bc-driver-licence>
+			<mat-step *ngIf="isNew">
+				<app-step-controlling-member-bc-driver-licence></app-step-controlling-member-bc-driver-licence>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -75,6 +71,24 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 		super(commonApplicationService);
 	}
 
+	onFingerprintsPreviousStep(): void {
+		if (this.isNew) {
+			super.onGoToPreviousStep();
+			return;
+		}
+
+		super.onStepPrevious();
+	}
+
+	onFingerprintsNextStep(step: number): void {
+		if (this.isNew) {
+			super.onFormValidNextStep(step);
+			return;
+		}
+
+		super.onStepNext(step);
+	}
+
 	override dirtyForm(step: number): boolean {
 		switch (step) {
 			case this.STEP_CITIZENSHIP:
@@ -87,5 +101,9 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

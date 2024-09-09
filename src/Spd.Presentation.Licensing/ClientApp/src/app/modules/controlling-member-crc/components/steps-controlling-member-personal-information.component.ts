@@ -11,18 +11,15 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<!-- <ng-container *ngIf="isNew"> -->
-				<app-step-controlling-member-checklist-new></app-step-controlling-member-checklist-new>
-				<!-- </ng-container>
-
-				<ng-container *ngIf="isRenewal">
-					<app-step-controlling-member-checklist-renewal></app-step-controlling-member-checklist-renewal>
-				</ng-container> 
-					(previousStepperStep)="onGoToPreviousStep()"
-					(previousStepperStep)="onGotoBusinessProfile()"-->
+				<ng-container *ngIf="isNew; else isUpdate">
+					<app-step-controlling-member-checklist-new></app-step-controlling-member-checklist-new>
+				</ng-container>
+				<ng-template #isUpdate>
+					<app-step-controlling-member-checklist-update></app-step-controlling-member-checklist-update>
+				</ng-template>
 
 				<app-wizard-footer
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
 					(saveAndExit)="onSaveAndExit(STEP_CHECKLIST)"
 					(cancelAndExit)="onCancelAndExit()"
 					(nextStepperStep)="onGoToNextStep()"
@@ -31,12 +28,13 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 
 			<mat-step>
 				<app-step-controlling-member-personal-info
+					[isReadonly]="isLoggedIn"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-controlling-member-personal-info>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
 					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -45,14 +43,14 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
+			<mat-step *ngIf="isNew">
 				<app-step-controlling-member-aliases
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-controlling-member-aliases>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
 					(saveAndExit)="onSaveAndExit(STEP_ALIASES)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -68,7 +66,7 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
 					(saveAndExit)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -88,7 +86,7 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 	readonly STEP_RESIDENTIAL_ADDRESS = 3;
 
 	@Input() isFormValid!: boolean;
-	@Input() showSaveAndExit!: boolean;
+	@Input() isLoggedIn!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberPersonalInfoComponent) stepPersonalInfo!: StepControllingMemberPersonalInfoComponent;
@@ -114,5 +112,9 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

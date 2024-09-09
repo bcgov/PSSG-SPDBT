@@ -34,8 +34,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<ng-template matStepLabel>Personal Information</ng-template>
 					<app-steps-controlling-member-personal-information
 						[isFormValid]="isFormValid"
-						[applicationTypeCode]="applicationTypeCode"
-						[showSaveAndExit]="isLoggedIn"
+						[applicationTypeCode]="applicationTypeCodeNew"
+						[isLoggedIn]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -49,7 +49,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<ng-template matStepLabel>Citizenship & Residency</ng-template>
 					<app-steps-controlling-member-citizenship-residency
 						[isFormValid]="isFormValid"
-						[applicationTypeCode]="applicationTypeCode"
+						[applicationTypeCode]="applicationTypeCodeNew"
 						[showSaveAndExit]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
@@ -65,7 +65,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<ng-template matStepLabel>Background</ng-template>
 					<app-steps-controlling-member-background
 						[isFormValid]="isFormValid"
-						[applicationTypeCode]="applicationTypeCode"
+						[applicationTypeCode]="applicationTypeCodeNew"
 						[showSaveAndExit]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
@@ -112,7 +112,7 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 	isFormValid = false;
 	isLoggedIn = false;
 
-	applicationTypeCode!: ApplicationTypeCode;
+	applicationTypeCodeNew = ApplicationTypeCode.New;
 
 	private controllingMembersModelValueChangedSubscription!: Subscription;
 

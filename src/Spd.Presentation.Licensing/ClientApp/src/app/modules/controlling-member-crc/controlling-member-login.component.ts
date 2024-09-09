@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ControllingMemberAppInviteVerifyResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ControllingMemberAppInviteVerifyResponse, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
@@ -126,8 +126,9 @@ export class ControllingMemberLoginComponent implements OnInit {
 			return;
 		}
 
-		this.title = 'Log in to submit your consent to a criminal record check'; //If process = NEW or RENEWAL
-		// this.title = 'Log in to update your profile as a controlling member'; //if process = UPDATE
+		// TODO CRC title use isUpdate flag
+		this.title = 'Log in to submit your consent to a criminal record check'; //TODO If process = NEW or RENEWAL
+		// this.title = 'Log in to update your profile as a controlling member'; // TODO if process = UPDATE
 
 		this.commonApplicationService.setApplicationTitle(
 			WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc
@@ -143,9 +144,17 @@ export class ControllingMemberLoginComponent implements OnInit {
 						.createOrResumeCrc(this.crcInviteData!)
 						.pipe(
 							tap((_resp: any) => {
-								this.router.navigateByUrl(
-									ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
-								);
+								const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
+
+								if (applicationTypeCode === ApplicationTypeCode.New) {
+									this.router.navigateByUrl(
+										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE)
+									);
+								} else {
+									this.router.navigateByUrl(
+										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
+									);
+								}
 							}),
 							take(1)
 						)
@@ -169,7 +178,17 @@ export class ControllingMemberLoginComponent implements OnInit {
 			.createNewCrcAnonymous(this.crcInviteData!)
 			.pipe(
 				tap((_resp: any) => {
-					this.router.navigateByUrl(ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW));
+					const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
+
+					if (applicationTypeCode === ApplicationTypeCode.New) {
+						this.router.navigateByUrl(
+							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_UPDATE)
+						);
+					} else {
+						this.router.navigateByUrl(
+							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
+						);
+					}
 				}),
 				take(1)
 			)
