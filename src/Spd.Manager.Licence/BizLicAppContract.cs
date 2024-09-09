@@ -86,7 +86,6 @@ public abstract record BizLicenceApp : LicenceAppBase
 
     //non sole proprietor properties
     public ContactInfo? ApplicantContactInfo { get; set; }
-    public Members? Members { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; } //it does not put into spd_businesscontact, so no id for it
     public bool? AgreeToCompleteAndAccurate { get; set; }
