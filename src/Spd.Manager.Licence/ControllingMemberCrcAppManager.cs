@@ -20,6 +20,7 @@ using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository;
+using Spd.Resource.Repository.ControllingMemberInvite;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -31,7 +32,7 @@ internal class ControllingMemberCrcAppManager :
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
-    private readonly IApplicationInviteRepository _applicationInviteRepository;
+    private readonly IControllingMemberInviteRepository _applicationInviteRepository;
 
     public ControllingMemberCrcAppManager(IMapper mapper,
         IDocumentRepository documentRepository,
@@ -40,7 +41,7 @@ internal class ControllingMemberCrcAppManager :
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
-        IApplicationInviteRepository applicationInviteRepository,
+        IControllingMemberInviteRepository applicationInviteRepository,
         ILicAppRepository licAppRepository) : base(
             mapper,
             documentRepository,
@@ -171,10 +172,10 @@ internal class ControllingMemberCrcAppManager :
         if (inviteId != null)
         {
             await _applicationInviteRepository.ManageAsync(
-                new ApplicationInviteUpdateCmd()
+                new ControllingMemberInviteUpdateCmd()
                 {
-                    ApplicationInviteId = (Guid)inviteId,
-                    ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Completed
+                    ApplicationInviteStatusEnum = ApplicationInviteStatusEnum.Completed,
+                    ControllingMemberInviteId = (Guid)inviteId
                 }, ct);
         }
     }
