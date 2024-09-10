@@ -235,9 +235,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * Create an empty crc or if one already exists, resume it
 	 * @returns
 	 */
-	createOrResumeCrc(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
-		const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
-
+	createOrResumeCrc(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
 		if (crcInviteData.controllingMemberCrcAppId) {
 			return this.loadCrcToResume(crcInviteData, applicationTypeCode).pipe(
 				tap((_resp: any) => {
@@ -267,9 +268,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * Create an empty anonymous crc
 	 * @returns
 	 */
-	createNewCrcAnonymous(crcInviteData: ControllingMemberAppInviteVerifyResponse): Observable<any> {
-		const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
-
+	createNewCrcAnonymous(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
 		return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
@@ -292,18 +294,18 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((resp: ControllingMemberCrcAppResponse) => {
-					resp.applicationTypeCode = applicationTypeCode; // TODO remove
-					return this.applyCrcAppIntoModel(resp, crcInviteData);
+					return this.applyCrcAppIntoModel(resp, crcInviteData, applicationTypeCode);
 				})
 			);
 	}
 
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
-		crcInviteData: ControllingMemberAppInviteVerifyResponse
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
-		const applicationTypeData = { applicationTypeCode: crcAppl.applicationTypeCode };
+		const applicationTypeData = { applicationTypeCode };
 
 		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
 
@@ -556,6 +558,17 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	): Observable<any> {
 		this.reset();
 
+		const personalInformationData = {
+			givenName: crcInviteData?.givenName,
+			middleName1: crcInviteData?.middleName1,
+			middleName2: crcInviteData?.middleName2,
+			surname: crcInviteData?.surname,
+			genderCode: null,
+			dateOfBirth: null,
+			emailAddress: crcInviteData?.emailAddress,
+			phoneNumber: null,
+		};
+
 		this.controllingMembersModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData: {
@@ -565,6 +578,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
+				personalInformationData,
 			},
 			{
 				emitEvent: false,

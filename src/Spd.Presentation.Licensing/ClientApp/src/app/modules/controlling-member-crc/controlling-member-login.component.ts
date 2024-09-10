@@ -1,7 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, ControllingMemberAppInviteVerifyResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import {
+	ApplicationTypeCode,
+	ControllingMemberAppInviteTypeCode,
+	ControllingMemberAppInviteVerifyResponse,
+	WorkerLicenceTypeCode,
+} from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
@@ -93,6 +98,8 @@ export class ControllingMemberLoginComponent implements OnInit {
 
 	crcInviteData: ControllingMemberAppInviteVerifyResponse | null = null;
 
+	private applicationTypeCode!: ApplicationTypeCode;
+
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
@@ -126,9 +133,12 @@ export class ControllingMemberLoginComponent implements OnInit {
 			return;
 		}
 
-		// TODO CRC title use isUpdate flag
-		this.title = 'Log in to submit your consent to a criminal record check'; //TODO If process = NEW or RENEWAL
-		// this.title = 'Log in to update your profile as a controlling member'; // TODO if process = UPDATE
+		this.applicationTypeCode = this.getCrcApplicationTypeCode(this.crcInviteData!);
+
+		this.title =
+			this.applicationTypeCode === ApplicationTypeCode.New
+				? 'Log in to submit your consent to a criminal record check'
+				: 'Log in to update your profile as a controlling member';
 
 		this.commonApplicationService.setApplicationTitle(
 			WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc
@@ -141,12 +151,10 @@ export class ControllingMemberLoginComponent implements OnInit {
 					this.subscribeAlive = false;
 
 					this.controllingMembersService
-						.createOrResumeCrc(this.crcInviteData!)
+						.createOrResumeCrc(this.crcInviteData!, this.applicationTypeCode)
 						.pipe(
 							tap((_resp: any) => {
-								const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
-
-								if (applicationTypeCode === ApplicationTypeCode.New) {
+								if (this.applicationTypeCode === ApplicationTypeCode.New) {
 									this.router.navigateByUrl(
 										ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
 									);
@@ -175,12 +183,10 @@ export class ControllingMemberLoginComponent implements OnInit {
 		this.authProcessService.logoutBcsc();
 
 		this.controllingMembersService
-			.createNewCrcAnonymous(this.crcInviteData!)
+			.createNewCrcAnonymous(this.crcInviteData!, this.applicationTypeCode)
 			.pipe(
 				tap((_resp: any) => {
-					const applicationTypeCode = ApplicationTypeCode.New; // TODO CRC use isUpdate flag
-
-					if (applicationTypeCode === ApplicationTypeCode.New) {
+					if (this.applicationTypeCode === ApplicationTypeCode.New) {
 						this.router.navigateByUrl(
 							ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_NEW)
 						);
@@ -199,5 +205,11 @@ export class ControllingMemberLoginComponent implements OnInit {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onContinueAnonymous();
+	}
+
+	private getCrcApplicationTypeCode(crcInviteData: ControllingMemberAppInviteVerifyResponse): ApplicationTypeCode {
+		return crcInviteData.type === ControllingMemberAppInviteTypeCode.Update
+			? ApplicationTypeCode.Update
+			: ApplicationTypeCode.New;
 	}
 }

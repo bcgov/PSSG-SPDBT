@@ -10,8 +10,8 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.mod
 	selector: 'app-controlling-member-invitation',
 	template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
-			<mat-icon>no_accounts</mat-icon>
-			<h1>Invite Denied</h1>
+			<mat-icon class="my-4">error</mat-icon>
+			<h1>CRC Invitation</h1>
 			<h2 class="mt-4">
 				{{ message }}
 			</h2>
