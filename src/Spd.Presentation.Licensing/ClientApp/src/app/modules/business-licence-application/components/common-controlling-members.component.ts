@@ -425,18 +425,32 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	onSendInvitation(member: NonSwlContactInfo): void {
-		this.businessApplicationService
-			.sendControllingMembersWithoutSwlInvitation(member.bizContactId!)
-			.pipe(
-				tap((_resp: ControllingMemberInvitesCreateResponse) => {
-					if (_resp.createSuccess) {
-						this.hotToastService.success('Invitation was successfully sent');
-					}
-					// TODO - crc update status after sent ??
-				}),
-				take(1)
-			)
-			.subscribe();
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: `Are you sure you send an invitation to ${member.emailAddress}?`,
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.businessApplicationService
+						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!)
+						.pipe(
+							tap((_resp: ControllingMemberInvitesCreateResponse) => {
+								if (_resp.createSuccess) {
+									this.hotToastService.success('Invitation was successfully sent');
+								}
+							}),
+							take(1)
+						)
+						.subscribe();
+				}
+			});
 	}
 
 	onAddMemberWithoutSWL(): void {
@@ -475,11 +489,10 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	private controllingMemberChanged(): void {
+		// document upload only needed in wizard flow
 		if (!this.isWizard) {
 			return;
 		}
-
-		// document upload only needed in wizard flow
 
 		this.allowDocumentUpload = true;
 		this.form.patchValue({ attachmentIsRequired: !this.isBcBusinessAddress });

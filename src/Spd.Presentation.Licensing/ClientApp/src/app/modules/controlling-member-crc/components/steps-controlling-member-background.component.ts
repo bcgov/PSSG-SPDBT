@@ -15,7 +15,8 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_HISTORY)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_HISTORY)"
@@ -30,7 +31,8 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onPoliceBackgroundPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
@@ -45,7 +47,8 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_MENTAL_HEALTH)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_MENTAL_HEALTH)"
@@ -63,7 +66,7 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 	readonly STEP_MENTAL_HEALTH = 2;
 
 	@Input() isFormValid!: boolean;
-	@Input() showSaveAndExit!: boolean;
+	@Input() isLoggedIn!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberBcSecurityLicenceHistoryComponent)

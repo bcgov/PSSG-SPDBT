@@ -15,7 +15,7 @@ import { StepControllingMemberMentalHealthConditionsComponent } from './componen
 import { StepControllingMemberPersonalInfoComponent } from './components/step-controlling-member-personal-info.component';
 import { StepControllingMemberPoliceBackgroundComponent } from './components/step-controlling-member-police-background.component';
 import { StepControllingMemberResidentialAddressComponent } from './components/step-controlling-member-residential-address.component';
-import { StepControllingMemberSummaryReviewAnonymousComponent } from './components/step-controlling-member-summary-review-anonymous.component';
+import { StepControllingMemberSummaryReviewComponent } from './components/step-controlling-member-summary-review.component';
 import { StepsControllingMemberBackgroundComponent } from './components/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from './components/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from './components/steps-controlling-member-personal-information.component';
@@ -39,7 +39,7 @@ import { ControllingMemberLoginComponent } from './controlling-member-login.comp
 		StepControllingMemberMentalHealthConditionsComponent,
 		StepControllingMemberCitizenshipComponent,
 		StepControllingMemberBcSecurityLicenceHistoryComponent,
-		StepControllingMemberSummaryReviewAnonymousComponent,
+		StepControllingMemberSummaryReviewComponent,
 		StepControllingMemberConsentAndDeclarationComponent,
 		ControllingMemberSubmissionReceivedComponent,
 		ControllingMemberWizardNewComponent,

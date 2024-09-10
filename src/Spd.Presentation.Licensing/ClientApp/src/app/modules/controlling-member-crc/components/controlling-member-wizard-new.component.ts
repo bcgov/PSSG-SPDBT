@@ -50,7 +50,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<app-steps-controlling-member-citizenship-residency
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeNew"
-						[showSaveAndExit]="isLoggedIn"
+						[isLoggedIn]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -66,7 +66,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<app-steps-controlling-member-background
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeNew"
-						[showSaveAndExit]="isLoggedIn"
+						[isLoggedIn]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -81,7 +81,8 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<ng-template matStepLabel>Review</ng-template>
 					<app-steps-controlling-member-review
 						(scrollIntoView)="onScrollIntoView()"
-						[showSaveAndExit]="isLoggedIn"
+						[isLoggedIn]="isLoggedIn"
+						[applicationTypeCode]="applicationTypeCodeNew"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onCancelAndExit()"
 						(childNextStep)="onChildNextStep()"

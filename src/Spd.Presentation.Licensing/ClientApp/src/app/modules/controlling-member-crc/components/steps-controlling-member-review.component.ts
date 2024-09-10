@@ -3,21 +3,22 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
-import { StepControllingMemberSummaryReviewAnonymousComponent } from './step-controlling-member-summary-review-anonymous.component';
+import { StepControllingMemberSummaryReviewComponent } from './step-controlling-member-summary-review.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
-				<app-step-controlling-member-summary-review-anonymous
+				<app-step-controlling-member-summary-review
 					[applicationTypeCode]="applicationTypeCode"
 					(editStep)="onEditStep($event)"
-				></app-step-controlling-member-summary-review-anonymous>
+				></app-step-controlling-member-summary-review>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_REVIEW)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_REVIEW)"
@@ -29,7 +30,7 @@ import { StepControllingMemberSummaryReviewAnonymousComponent } from './step-con
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="isLoggedIn"
 					nextButtonLabel="Submit"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -46,13 +47,13 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 	readonly STEP_CONSENT = 1;
 
 	@Input() isFormValid!: boolean;
-	@Input() showSaveAndExit!: boolean;
+	@Input() isLoggedIn!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
-	@ViewChild(StepControllingMemberSummaryReviewAnonymousComponent)
-	stepReview!: StepControllingMemberSummaryReviewAnonymousComponent;
+	@ViewChild(StepControllingMemberSummaryReviewComponent)
+	stepReview!: StepControllingMemberSummaryReviewComponent;
 	@ViewChild(StepControllingMemberConsentAndDeclarationComponent)
 	stepConsent!: StepControllingMemberConsentAndDeclarationComponent;
 
