@@ -14,7 +14,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 						<div class="row">
 							<div class="conditions px-3 mb-3">
 								<div class="text-minor-heading my-2">
-									ON BEHALF OF the applicant business entity, I hereby consent to and acknowledge that:
+									ON BEHALF OF the applicant business entity, I hereby acknowledge that:
 								</div>
 								<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update; else newOrRenewal">
 									<div class="my-3">
@@ -159,10 +159,11 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 										as those placed on the security business licensee.
 									</ng-container>
 									<ng-template #newOrRenewalCertifyText>
-										I HEREBY CERTIFY THAT I have read and understand all portions of this application form and the
+										I HEREBY CERTIFY THAT I have read and understand all portions of this application form and
 										information set out by me in this application is true and correct to the best of my knowledge and
-										belief. I have read and understand the <i>Security Services Act</i> and Regulations; and I am aware
-										of, and understand, the conditions that will be placed on me as a licensee.
+										belief. I have read and understood the <i>Security Services Act</i> and Regulations; and I am aware
+										of and understand the conditions attached the security business licence as well as those placed on
+										the security business licensee.
 									</ng-template>
 								</mat-checkbox>
 								<mat-error
