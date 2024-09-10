@@ -59,4 +59,7 @@ export const SPD_CONSTANTS = {
 			'https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/children-and-family-development',
 		pssoCheck: 'https://www2.gov.bc.ca/gov/content/careers-myhr',
 	},
+	message: {
+		mcfdWarning: 'I confirm I am submitting a combined check on behalf of the Centralized Services Hub (CSH) team.',
+	},
 };
