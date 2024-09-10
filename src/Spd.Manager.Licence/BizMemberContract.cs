@@ -59,6 +59,7 @@ public record ControllingMemberAppInviteVerifyResponse()
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
     public ControllingMemberAppInviteTypeCode Type { get; set; }
+    public string? EmailAddress { get; set; }
 };
 
 public enum ControllingMemberAppInviteTypeCode
