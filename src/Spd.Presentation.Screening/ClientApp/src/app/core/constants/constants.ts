@@ -60,4 +60,7 @@ export const SPD_CONSTANTS = {
 		pssoCheck:
 			'https://www2.gov.bc.ca/gov/content/careers-myhr/hiring-managers/process/extend-offer/security-screening/about',
 	},
+	message: {
+		mcfdWarning: 'I confirm I am submitting a combined check on behalf of the Centralized Services Hub (CSH) team.',
+	},
 };
