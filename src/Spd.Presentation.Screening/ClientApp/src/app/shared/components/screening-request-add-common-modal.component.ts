@@ -20,6 +20,7 @@ import {
 	ServiceTypes,
 } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
+import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -55,7 +56,7 @@ export interface ScreeningRequestAddDialogData {
 							</div>
 						</div>
 						<ng-container formArrayName="crcs" *ngFor="let group of getFormControls.controls; let i = index">
-							<mat-divider class="mb-3" *ngIf="i > 0"></mat-divider>
+							<mat-divider class="mat-divider-main mb-3" *ngIf="i > 0"></mat-divider>
 							<div class="row" [formGroupName]="i">
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0">
 									<mat-form-field>
@@ -149,7 +150,11 @@ export interface ScreeningRequestAddDialogData {
 								<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pe-md-0" *ngIf="showServiceType">
 									<mat-form-field>
 										<mat-label>Service Type</mat-label>
-										<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
+										<mat-select
+											formControlName="serviceType"
+											(selectionChange)="onChangeServiceType($event, i)"
+											[errorStateMatcher]="matcher"
+										>
 											<mat-option *ngFor="let srv of serviceTypes[i]" [value]="srv.code">
 												{{ srv.desc }}
 											</mat-option>
@@ -171,6 +176,9 @@ export interface ScreeningRequestAddDialogData {
 									</button>
 								</div>
 							</div>
+							<ng-container *ngIf="showMcfdWarning[i]">
+								<app-alert type="warning">{{ mcfdWarning }}</app-alert>
+							</ng-container>
 						</ng-container>
 					</div>
 					<div class="row" *ngIf="isAllowMultiple">
@@ -214,6 +222,8 @@ export interface ScreeningRequestAddDialogData {
 	],
 })
 export class ScreeningRequestAddCommonModalComponent implements OnInit {
+	mcfdWarning = SPD_CONSTANTS.message.mcfdWarning;
+
 	ministries: Array<MinistryResponse> = [];
 	portal: PortalTypeCode | null = null;
 	isNotVolunteerOrg = false;
@@ -231,6 +241,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: Array<SelectOptions[]> = [];
 	portalTypeCodes = PortalTypeCode;
+	showMcfdWarning: Array<boolean> = [];
 
 	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
@@ -335,6 +346,10 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		this.populatePssoServiceTypes(event.value, index);
 	}
 
+	onChangeServiceType(event: MatSelectChange, index: number): void {
+		this.setMcfdWarning(event.value, index);
+	}
+
 	onAddRow() {
 		const crcsArray = this.form.get('crcs') as FormArray;
 		crcsArray.push(this.initiateForm());
@@ -424,6 +439,10 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		} else {
 			this.promptVulnerableSector(body);
 		}
+	}
+
+	private setMcfdWarning(serviceTypeCode: ServiceTypeCode, index: number) {
+		this.showMcfdWarning[index] = serviceTypeCode === ServiceTypeCode.Mcfd;
 	}
 
 	private addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest) {
