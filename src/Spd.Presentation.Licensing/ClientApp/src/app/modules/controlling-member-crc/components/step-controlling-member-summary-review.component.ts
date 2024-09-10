@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	PoliceOfficerRoleCode,
@@ -10,7 +10,7 @@ import { ControllingMemberCrcService } from '@app/core/services/controlling-memb
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-step-controlling-member-summary-review-anonymous',
+	selector: 'app-step-controlling-member-summary-review',
 	template: `
 		<app-step-section title="Application Summary" subtitle="Review your information before submitting your application">
 			<div class="row">
@@ -74,29 +74,31 @@ import { UtilService } from '@app/core/services/util.service';
 											</div>
 										</div>
 
-										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<ng-container *ngIf="isNew">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
 
-										<div class="text-minor-heading">Aliases</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Previous Names or Aliases</div>
-												<div class="summary-text-data">{{ previousNameFlag }}</div>
-											</div>
-											<div class="col-lg-4 col-md-12">
-												<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
-													<div class="text-label d-block text-muted">Alias Name(s)</div>
-													<div class="summary-text-data">
-														<div
-															*ngFor="let alias of aliases; let i = index; let first = first"
-															[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
-														>
-															{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
-															{{ alias.surname }}
+											<div class="text-minor-heading">Aliases</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Previous Names or Aliases</div>
+													<div class="summary-text-data">{{ previousNameFlag }}</div>
+												</div>
+												<div class="col-lg-4 col-md-12">
+													<ng-container *ngIf="previousNameFlag === booleanTypeCodes.Yes">
+														<div class="text-label d-block text-muted">Alias Name(s)</div>
+														<div class="summary-text-data">
+															<div
+																*ngFor="let alias of aliases; let i = index; let first = first"
+																[ngClass]="first ? 'mt-lg-0' : 'mt-lg-2'"
+															>
+																{{ alias.givenName }} {{ alias.middleName1 }} {{ alias.middleName2 }}
+																{{ alias.surname }}
+															</div>
 														</div>
-													</div>
-												</ng-container>
+													</ng-container>
+												</div>
 											</div>
-										</div>
+										</ng-container>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 
@@ -153,52 +155,38 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading">Identification</div>
-										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">Canadian Citizen?</div>
-												<div class="summary-text-data">{{ isCanadianCitizen }}</div>
-											</div>
-											<div class="col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">
-													<span *ngIf="canadianCitizenProofTypeCode">
-														{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
-													</span>
-													<span *ngIf="notCanadianCitizenProofTypeCode">
-														{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
-													</span>
-												</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-
-											<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
-												<div class="text-label d-block text-muted">
-													{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
-												</div>
-												<div class="summary-text-data">
-													<ul class="m-0">
-														<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
-															<li>{{ doc.name }}</li>
-														</ng-container>
-													</ul>
-												</div>
-											</div>
-
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-
-											<div class="text-minor-heading">Fingerprints</div>
+										<ng-container *ngIf="isNew">
+											<div class="text-minor-heading">Identification</div>
 											<div class="row mt-0">
-												<div class="col-12">
-													<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Canadian Citizen?</div>
+													<div class="summary-text-data">{{ isCanadianCitizen }}</div>
+												</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">
+														<span *ngIf="canadianCitizenProofTypeCode">
+															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+														</span>
+														<span *ngIf="notCanadianCitizenProofTypeCode">
+															{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+														</span>
+													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
-															<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+															<ng-container *ngFor="let doc of citizenshipAttachments; let i = index">
+																<li>{{ doc.name }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
+
+												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
+													<div class="text-label d-block text-muted">
+														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+													</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let doc of governmentIssuedPhotoAttachments; let i = index">
 																<li>{{ doc.name }}</li>
 															</ng-container>
 														</ul>
@@ -207,13 +195,33 @@ import { UtilService } from '@app/core/services/util.service';
 											</div>
 
 											<mat-divider class="mt-3 mb-2"></mat-divider>
+										</ng-container>
 
-											<div class="text-minor-heading">BC Driver's Licence</div>
-											<div class="col-lg-6 col-md-12">
-												<div class="text-label d-block text-muted">BC Driver's Licence</div>
-												<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+										<div class="text-minor-heading">Fingerprints</div>
+										<div class="row mt-0">
+											<div class="col-12">
+												<div class="text-label d-block text-muted">Request for Fingerprinting Form</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of proofOfFingerprintAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
+												</div>
 											</div>
 										</div>
+
+										<ng-container *ngIf="isNew">
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+
+											<div class="text-minor-heading">BC Driver's Licence</div>
+											<div class="row mt-0">
+												<div class="col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">BC Driver's Licence</div>
+													<div class="summary-text-data">{{ bcDriversLicenceNumber | default }}</div>
+												</div>
+											</div>
+										</ng-container>
 									</div>
 								</mat-expansion-panel>
 
@@ -236,28 +244,30 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Business Involvement</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
-												<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+										<ng-container *ngIf="isNew">
+											<div class="text-minor-heading mt-4">Business Involvement</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
+													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
+												</div>
+												<div class="col-lg-8 col-md-12" *ngIf="criminalHistoryDetail">
+													<div class="text-label d-block text-muted">Criminal History Details</div>
+													<div class="summary-text-data">{{ criminalHistoryDetail }}</div>
+												</div>
 											</div>
-											<div class="col-lg-8 col-md-12" *ngIf="criminalHistoryDetail">
-												<div class="text-label d-block text-muted">Criminal History Details</div>
-												<div class="summary-text-data">{{ criminalHistoryDetail }}</div>
+											<div class="row mt-0">
+												<div class="col-lg-4 col-md-12">
+													<div class="text-label d-block text-muted">Bankruptcy History</div>
+													<div class="summary-text-data">{{ hasBankruptcyHistory }}</div>
+												</div>
+												<div class="col-lg-8 col-md-12" *ngIf="bankruptcyHistoryDetail">
+													<div class="text-label d-block text-muted">Bankruptcy History Details</div>
+													<div class="summary-text-data">{{ bankruptcyHistoryDetail }}</div>
+												</div>
 											</div>
-										</div>
-										<div class="row mt-0">
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">Bankruptcy History</div>
-												<div class="summary-text-data">{{ hasBankruptcyHistory }}</div>
-											</div>
-											<div class="col-lg-8 col-md-12" *ngIf="bankruptcyHistoryDetail">
-												<div class="text-label d-block text-muted">Bankruptcy History Details</div>
-												<div class="summary-text-data">{{ bankruptcyHistoryDetail }}</div>
-											</div>
-										</div>
-										<mat-divider class="mt-3 mb-2"></mat-divider>
+											<mat-divider class="mt-3 mb-2"></mat-divider>
+										</ng-container>
 
 										<div class="text-minor-heading">Police Background</div>
 										<div class="row mt-0">
@@ -365,7 +375,7 @@ import { UtilService } from '@app/core/services/util.service';
 		`,
 	],
 })
-export class StepControllingMemberSummaryReviewAnonymousComponent implements OnInit {
+export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	controllingMemberModelData: any = {};
 
 	booleanTypeCodes = BooleanTypeCode;
@@ -374,6 +384,7 @@ export class StepControllingMemberSummaryReviewAnonymousComponent implements OnI
 	swlCategoryTypes = WorkerCategoryTypes;
 	applicationTypeCodes = ApplicationTypeCode;
 
+	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(private controllingMembersService: ControllingMemberCrcService, private utilService: UtilService) {}
@@ -394,12 +405,12 @@ export class StepControllingMemberSummaryReviewAnonymousComponent implements OnI
 		};
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.controllingMemberModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
-	get applicationTypeCode(): ApplicationTypeCode | null {
-		return this.controllingMemberModelData.applicationTypeData?.applicationTypeCode ?? null;
+	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
+		return this.controllingMemberModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
 	}
 
 	get isPoliceOrPeaceOfficer(): string {

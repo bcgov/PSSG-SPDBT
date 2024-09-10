@@ -9,13 +9,13 @@ import { RequestBuilder } from '../../request-builder';
 import { ActionResult } from '../../models/action-result';
 import { MembersRequest } from '../../models/members-request';
 
-export interface ApiBusinessLicenceApplicationBizIdMembersPost$Params {
+export interface ApiBusinessBizIdMembersPost$Params {
   bizId: string;
       body?: MembersRequest
 }
 
-export function apiBusinessLicenceApplicationBizIdMembersPost(http: HttpClient, rootUrl: string, params: ApiBusinessLicenceApplicationBizIdMembersPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
-  const rb = new RequestBuilder(rootUrl, apiBusinessLicenceApplicationBizIdMembersPost.PATH, 'post');
+export function apiBusinessBizIdMembersPost(http: HttpClient, rootUrl: string, params: ApiBusinessBizIdMembersPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ActionResult>> {
+  const rb = new RequestBuilder(rootUrl, apiBusinessBizIdMembersPost.PATH, 'post');
   if (params) {
     rb.path('bizId', params.bizId, {});
     rb.body(params.body, 'application/*+json');
@@ -31,4 +31,4 @@ export function apiBusinessLicenceApplicationBizIdMembersPost(http: HttpClient, 
   );
 }
 
-apiBusinessLicenceApplicationBizIdMembersPost.PATH = '/api/business-licence-application/{bizId}/members';
+apiBusinessBizIdMembersPost.PATH = '/api/business/{bizId}/members';

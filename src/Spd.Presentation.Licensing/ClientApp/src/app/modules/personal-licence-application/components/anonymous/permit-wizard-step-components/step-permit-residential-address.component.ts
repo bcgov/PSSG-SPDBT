@@ -24,24 +24,7 @@ export class StepPermitResidentialAddressComponent implements OnInit, LicenceChi
 	constructor(private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
-		switch (this.applicationTypeCode) {
-			case ApplicationTypeCode.Replacement: {
-				this.title = 'Review your residential address';
-				this.subtitle = 'Ensure your residential address is correct before submitting your application';
-				break;
-			}
-			case ApplicationTypeCode.Renewal:
-			case ApplicationTypeCode.Update: {
-				this.title = 'Confirm your residential address';
-				this.subtitle = 'Ensure your residential address is correct before submitting your application';
-				break;
-			}
-			default: {
-				this.title = 'Provide your residential address';
-				this.subtitle = 'This is the address where you currently live';
-				break;
-			}
-		}
+		[this.title, this.subtitle] = this.permitApplicationService.getResidentialAddressTitle(this.applicationTypeCode);
 	}
 
 	isFormValid(): boolean {

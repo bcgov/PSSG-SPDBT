@@ -44,7 +44,34 @@ export class AuthenticationService {
 			.catch((_) => false);
 
 		const returnState = this.oauthService.state ? this.oauthService.state : stateInfo;
-		console.debug('[AuthenticationService] login stateInfo', this.oauthService.state, stateInfo);
+		console.debug('[AuthenticationService] login isLoggedIn', isLoggedIn);
+
+		return {
+			returnRoute: isLoggedIn ? returnRoute || null : null,
+			state: returnState,
+			loggedIn: isLoggedIn,
+		};
+	}
+
+	//----------------------------------------------------------
+	// *
+	// *
+	public async tryLogin(
+		loginType: IdentityProviderTypeCode,
+		returnComponentRoute: string,
+		stateInfo: string | null = null
+	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
+		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
+
+		const returnRoute = location.pathname.substring(1); // TODO CRC
+
+		const isLoggedIn = await this.oauthService
+			.loadDiscoveryDocumentAndTryLogin()
+			.then((_) => this.oauthService.hasValidAccessToken())
+			.catch((_) => false);
+
+		const returnState = this.oauthService.state ? this.oauthService.state : stateInfo;
+		console.debug('[AuthenticationService.tryLogin] isLoggedIn', isLoggedIn, this.oauthService.hasValidAccessToken());
 
 		return {
 			returnRoute: isLoggedIn ? returnRoute || null : null,
