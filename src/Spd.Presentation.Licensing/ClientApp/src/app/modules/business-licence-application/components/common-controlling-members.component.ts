@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {
+	ApplicationInviteStatusCode,
 	BizMemberResponse,
 	ControllingMemberInvitesCreateResponse,
 	LicenceDocumentTypeCode,
@@ -16,7 +17,10 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import {
+	BusinessApplicationService,
+	ControllingMemberContactInfo,
+} from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -138,9 +142,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<ng-container matColumnDef="inviteStatusCode">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Invitation Status </mat-header-cell>
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Status </mat-header-cell>
 									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Invitation Status:</span>
+										<span class="mobile-label">Status:</span>
 										{{ member.inviteStatusCode | default }}
 									</mat-cell>
 								</ng-container>
@@ -154,7 +158,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											style="color: var(--color-green);"
 											aria-label="Edit controlling member"
 											(click)="onEditMemberWithoutSWL(member)"
-											*ngIf="!member.licenceNumber"
+											*ngIf="isCrcWithoutSwlReadonly(member)"
 										>
 											<mat-icon>edit</mat-icon>Edit
 										</button>
@@ -170,6 +174,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											style="color: var(--color-red);"
 											aria-label="Remove controlling member"
 											(click)="onRemoveMember(member.bizContactId, false, i)"
+											*ngIf="isCrcWithoutSwlReadonly(member)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
@@ -488,6 +493,14 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
+	isCrcWithoutSwlReadonly(member: ControllingMemberContactInfo): boolean {
+		return (
+			!member.inviteStatusCode ||
+			member.inviteStatusCode === ApplicationInviteStatusCode.Draft ||
+			member.inviteStatusCode === ApplicationInviteStatusCode.Sent
+		);
+	}
+
 	private controllingMemberChanged(): void {
 		// document upload only needed in wizard flow
 		if (!this.isWizard) {
@@ -560,7 +573,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			licenceStatusCode: [memberData.licenceStatusCode],
 			licenceTermCode: [memberData.licenceTermCode],
 			expiryDate: [memberData.expiryDate],
-			inviteStatusCode: [memberData.inviteStatusCode],
+			inviteStatusCode: [memberData.inviteStatusCode ?? ApplicationInviteStatusCode.Draft],
 		});
 	}
 

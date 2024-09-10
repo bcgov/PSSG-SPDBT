@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
 	Alias,
+	ApplicantProfileResponse,
 	ApplicationTypeCode,
 	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
@@ -15,7 +16,7 @@ import {
 	LicenceDocumentTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { ControllingMemberCrcAppService } from '@app/api/services';
+import { ApplicantProfileService, ControllingMemberCrcAppService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -78,6 +79,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private applicantProfileService: ApplicantProfileService,
 		private authenticationService: AuthenticationService,
 		private authUserBcscService: AuthUserBcscService,
 		private hotToastService: HotToastService,
@@ -239,29 +241,35 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		if (crcInviteData.controllingMemberCrcAppId) {
-			return this.loadCrcToResume(crcInviteData, applicationTypeCode).pipe(
-				tap((_resp: any) => {
-					this.initialized = true;
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((applicantProfile: ApplicantProfileResponse) => {
+					if (crcInviteData.controllingMemberCrcAppId) {
+						return this.loadCrcToResume(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+							tap((_resp: any) => {
+								this.initialized = true;
 
-					this.commonApplicationService.setApplicationTitle(
-						WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-						applicationTypeCode
+								this.commonApplicationService.setApplicationTitle(
+									WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+									applicationTypeCode
+								);
+							})
+						);
+					}
+
+					return this.getCrcEmptyAuthenticated(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+								applicationTypeCode
+							);
+						})
 					);
 				})
 			);
-		}
-
-		return this.getCrcEmptyAuthenticated(crcInviteData, applicationTypeCode).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
-
-				this.commonApplicationService.setApplicationTitle(
-					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-					applicationTypeCode
-				);
-			})
-		);
 	}
 
 	/**
@@ -286,15 +294,16 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private loadCrcToResume(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
 		this.reset();
 
 		return this.controllingMemberCrcAppService
 			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
-				switchMap((resp: ControllingMemberCrcAppResponse) => {
-					return this.applyCrcAppIntoModel(resp, crcInviteData, applicationTypeCode);
+				switchMap((crcApp: ControllingMemberCrcAppResponse) => {
+					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode, applicantProfile);
 				})
 			);
 	}
@@ -302,7 +311,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode };
@@ -478,7 +488,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 				personalInformationData,
 				aliasesData: {
-					previousNameFlag: this.utilService.booleanToBooleanType(crcAppl.aliases && crcAppl.aliases.length > 0),
+					previousNameFlag: this.utilService.booleanToBooleanType(
+						applicantProfile.aliases && applicantProfile.aliases.length > 0
+					),
 					aliases: [],
 				},
 				residentialAddressData,
@@ -495,7 +507,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 
 		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
-		crcAppl.aliases?.forEach((alias: Alias) => {
+		applicantProfile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -516,7 +528,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private getCrcEmptyAuthenticated(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
 	): Observable<any> {
 		this.reset();
 
@@ -543,11 +556,30 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
 				personalInformationData,
+				aliasesData: {
+					previousNameFlag: this.utilService.booleanToBooleanType(
+						applicantProfile.aliases && applicantProfile.aliases.length > 0
+					),
+					aliases: [],
+				},
 			},
 			{
 				emitEvent: false,
 			}
 		);
+
+		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
+		applicantProfile.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					id: new FormControl(alias.id),
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
 
 		return of(this.controllingMembersModelFormGroup.value);
 	}

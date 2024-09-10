@@ -21,7 +21,6 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	Members,
-	MembersRequest,
 	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
@@ -470,30 +469,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		if (isBusinessLicenceSoleProprietor) return true;
 
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
-	}
-
-	/**
-	 * Save the controlling members and employees
-	 * @returns
-	 */
-	submitControllingMembersAndEmployees(): Observable<any> {
-		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-		const bizId = businessModelFormValue.bizId;
-		const applicationId = businessModelFormValue.licenceAppId;
-
-		const body: MembersRequest = {
-			employees: this.saveEmployeesBody(businessModelFormValue.employeesData),
-			nonSwlControllingMembers: this.saveControllingMembersWithoutSwlBody(
-				businessModelFormValue.controllingMembersData
-			),
-			swlControllingMembers: this.saveControllingMembersWithSwlBody(businessModelFormValue.controllingMembersData),
-		};
-
-		if (businessModelFormValue.controllingMembersData.attachments) {
-			return this.saveControllingMembersAndEmployeesWithDocument(bizId, applicationId, body);
-		}
-
-		return this.saveControllingMembersAndEmployees(bizId, body);
 	}
 
 	sendControllingMembersWithoutSwlInvitation(bizContactId: string): Observable<ControllingMemberInvitesCreateResponse> {
@@ -1015,6 +990,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				})
 			);
 		} else {
+			this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
+
 			return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
 				tap((_resp: any) => {
 					this.setAsInitialized();
@@ -1972,51 +1949,5 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		console.debug('[applyReplacementDataUpdatesToModel] businessModel', this.businessModelFormGroup.value);
 		return of(this.businessModelFormGroup.value);
-	}
-
-	/**
-	 * Save the controlling members and employees with documents added
-	 * @returns
-	 */
-	private saveControllingMembersAndEmployeesWithDocument(
-		bizId: string,
-		applicationId: string,
-		body: MembersRequest
-	): Observable<any> {
-		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-
-		// Get the keyCode for the existing documents to save.
-		const documentsToSaveApis: Observable<string>[] = [];
-
-		businessModelFormValue.controllingMembersData.attachments.forEach((document: any) => {
-			documentsToSaveApis.push(
-				this.bizLicensingService.apiBusinessLicenceApplicationFilesPost({
-					body: {
-						Documents: document,
-						LicenceDocumentTypeCode: LicenceDocumentTypeCode.CorporateRegistryDocument,
-					},
-				})
-			);
-		});
-
-		return forkJoin(documentsToSaveApis).pipe(
-			switchMap((resps: string[]) => {
-				// pass in the list of document key codes
-				body.controllingMemberDocumentKeyCodes = [...resps];
-
-				return this.saveControllingMembersAndEmployees(bizId, body);
-			})
-		);
-	}
-
-	/**
-	 * Save the controlling members and employees - no documents added
-	 * @returns
-	 */
-	private saveControllingMembersAndEmployees(bizId: string, body: MembersRequest): Observable<any> {
-		return this.bizMembersService.apiBusinessBizIdMembersPost({
-			bizId,
-			body,
-		});
 	}
 }

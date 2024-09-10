@@ -58,7 +58,7 @@ public record ControllingMemberAppInviteVerifyResponse()
     public string? Surname { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
-    public ControllingMemberAppInviteTypeCode Type { get; set; }
+    public ControllingMemberAppInviteTypeCode InviteTypeCode { get; set; }
     public string? EmailAddress { get; set; }
 };
 

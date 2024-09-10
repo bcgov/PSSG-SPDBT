@@ -5,7 +5,6 @@ import {
 	ContactInfo,
 	Document,
 	LicenceDocumentTypeCode,
-	NonSwlContactInfo,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
@@ -18,7 +17,6 @@ import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.ser
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { ControllingMemberContactInfo } from './business-application.service';
 
 export abstract class BusinessApplicationHelper extends ApplicationHelper {
 	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
@@ -665,74 +663,6 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		}
 
 		return documents;
-	}
-
-	saveControllingMembersWithSwlBody(controllingMembersData: any): null | Array<SwlContactInfo> {
-		const controllingMembersWithSwlArray = controllingMembersData.membersWithSwl;
-
-		if (!controllingMembersWithSwlArray) {
-			return null;
-		}
-
-		const swlControllingMembers: null | Array<SwlContactInfo> = controllingMembersWithSwlArray.map(
-			(item: ControllingMemberContactInfo) => {
-				const contactInfo: SwlContactInfo = {
-					bizContactId: item.bizContactId,
-					contactId: item.contactId,
-					licenceId: item.licenceId,
-				};
-				return contactInfo;
-			}
-		);
-
-		console.debug('saveControllingMembersWithSwlBody', swlControllingMembers);
-		return swlControllingMembers;
-	}
-
-	saveControllingMembersWithoutSwlBody(controllingMembersData: any): null | Array<NonSwlContactInfo> {
-		const controllingMembersWithoutSwlArray = controllingMembersData.membersWithoutSwl;
-
-		if (!controllingMembersWithoutSwlArray) {
-			return null;
-		}
-
-		const nonSwlControllingMembers: null | Array<NonSwlContactInfo> = controllingMembersWithoutSwlArray.map(
-			(item: ControllingMemberContactInfo) => {
-				const contactInfo: NonSwlContactInfo = {
-					bizContactId: item.bizContactId,
-					emailAddress: item.emailAddress,
-					givenName: item.givenName,
-					middleName1: item.middleName1,
-					middleName2: item.middleName2,
-					phoneNumber: item.phoneNumber,
-					surname: item.surname,
-				};
-				return contactInfo;
-			}
-		);
-
-		console.debug('saveControllingMembersWithoutSwlBody', nonSwlControllingMembers);
-		return nonSwlControllingMembers;
-	}
-
-	saveEmployeesBody(employeesData: any): null | Array<SwlContactInfo> {
-		const employeesArray = employeesData.employees;
-
-		if (!employeesArray) {
-			return null;
-		}
-
-		const employees: null | Array<SwlContactInfo> = employeesArray.map((item: ControllingMemberContactInfo) => {
-			const contactInfo: SwlContactInfo = {
-				bizContactId: item.bizContactId,
-				contactId: item.contactId,
-				licenceId: item.licenceId,
-			};
-			return contactInfo;
-		});
-
-		console.debug('saveEmployeesBody', employees);
-		return employees;
 	}
 
 	isSoleProprietor(bizTypeCode: BizTypeCode | undefined): boolean {

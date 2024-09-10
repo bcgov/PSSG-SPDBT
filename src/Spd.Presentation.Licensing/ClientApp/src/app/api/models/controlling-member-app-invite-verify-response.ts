@@ -11,8 +11,8 @@ export interface ControllingMemberAppInviteVerifyResponse {
   emailAddress?: string | null;
   givenName?: string | null;
   inviteId?: string;
+  inviteTypeCode?: ControllingMemberAppInviteTypeCode;
   middleName1?: string | null;
   middleName2?: string | null;
   surname?: string | null;
-  type?: ControllingMemberAppInviteTypeCode;
 }

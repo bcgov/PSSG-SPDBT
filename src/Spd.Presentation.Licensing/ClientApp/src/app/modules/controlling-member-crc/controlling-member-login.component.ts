@@ -208,7 +208,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 	}
 
 	private getCrcApplicationTypeCode(crcInviteData: ControllingMemberAppInviteVerifyResponse): ApplicationTypeCode {
-		return crcInviteData.type === ControllingMemberAppInviteTypeCode.Update
+		return crcInviteData.inviteTypeCode === ControllingMemberAppInviteTypeCode.Update
 			? ApplicationTypeCode.Update
 			: ApplicationTypeCode.New;
 	}
