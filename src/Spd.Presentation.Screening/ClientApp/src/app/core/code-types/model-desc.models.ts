@@ -84,14 +84,14 @@ export const PayerPreferenceTypes: SelectOptions[] = [
 export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Armoured Vehicle Permit', code: ServiceTypeCode.ArmouredVehiclePermit },
 	{ desc: 'Body Armour Permit', code: ServiceTypeCode.BodyArmourPermit },
+	{ desc: 'Combined Criminal Check (CSH ONLY)', code: ServiceTypeCode.PssoVs },
 	{ desc: 'CRRP - Employee', code: ServiceTypeCode.CrrpEmployee },
 	{ desc: 'CRRP - Volunteer', code: ServiceTypeCode.CrrpVolunteer },
-	{ desc: 'CSH Only - Consolidated Criminal Record Check', code: ServiceTypeCode.PssoVs },
+	{ desc: 'Foster, OOC, Adoptions and Relief Provider', code: ServiceTypeCode.Mcfd },
 	{ desc: 'MDRA', code: ServiceTypeCode.Mdra },
 	{ desc: 'PE-CRC', code: ServiceTypeCode.PeCrc },
 	{ desc: 'PE-CRC + Vulnerable Sector', code: ServiceTypeCode.PeCrcVs },
 	{ desc: 'Public Service Employment Check', code: ServiceTypeCode.Psso },
-	{ desc: 'Residential Care Provider Check', code: ServiceTypeCode.Mcfd },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{
