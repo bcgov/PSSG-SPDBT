@@ -47,6 +47,9 @@ export const SPD_CONSTANTS = {
 	api: {
 		debounceTime: 500, // milliseconds
 	},
+	sessionStorage: {
+		cmCrcStateKey: 'cm-crc-state',
+	},
 	payment: {
 		maxNumberOfAttempts: 10,
 	},
