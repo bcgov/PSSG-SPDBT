@@ -132,7 +132,7 @@ internal class BizMemberManager :
                 LicenceId = c.LicenceId,
                 ContactId = c.ContactId,
             });
-        members.NonSwlControllingMembers = bizMembers.Where(c => c.ContactId == null && c.LicenceId == null)
+        members.NonSwlControllingMembers = bizMembers.Where(c => c.LicenceId == null)
             .Where(c => c.BizContactRoleCode == BizContactRoleEnum.ControllingMember)
             .Select(c => _mapper.Map<NonSwlContactInfo>(c));
         members.Employees = bizMembers.Where(c => c.ContactId != null && c.LicenceId != null)

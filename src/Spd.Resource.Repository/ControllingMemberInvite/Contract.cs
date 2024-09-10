@@ -35,6 +35,8 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         public Guid BizContactId { get; set; }
         public Guid BizId { get; set; }
         public Guid InviteId { get; set; }
+        public string? GivenName { get; set; }
+        public string? Surname { get; set; }
     }
 
     public record ControllingMemberInvite

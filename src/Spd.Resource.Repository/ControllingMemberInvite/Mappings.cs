@@ -33,7 +33,9 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             _ = CreateMap<spd_portalinvitation, ControllingMemberInviteVerifyResp>()
             .ForMember(d => d.BizId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.BizContactId, opt => opt.MapFrom(s => s._spd_businesscontact_value))
-            .ForMember(d => d.InviteId, opt => opt.MapFrom(s => s.spd_portalinvitationid));
+            .ForMember(d => d.InviteId, opt => opt.MapFrom(s => s.spd_portalinvitationid))
+            .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
+            .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname));
         }
     }
 }
