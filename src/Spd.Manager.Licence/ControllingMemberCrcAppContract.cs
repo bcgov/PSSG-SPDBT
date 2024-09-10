@@ -18,7 +18,6 @@ public record ControllingMemberCrcAppBase
 {
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
-    public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -42,8 +41,6 @@ public record ControllingMemberCrcAppBase
     public string? BankruptcyHistoryDetail { get; set; }
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
-    public Guid BizContactId { get; set; }
-    public Guid InviteId { get; set; }
 }
 
 
@@ -56,11 +53,19 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
     public IEnumerable<Document>? DocumentInfos { get; set; }
     public Guid? ControllingMemberAppId { get; set; }
     public Guid? ApplicantId { get; set; }
+    public Guid BizContactId { get; set; }
+    public Guid InviteId { get; set; }
+    public Guid? ParentBizLicApplicationId { get; set; }
 };
 #endregion
 #region anonymous user
 public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
 {
+    public Guid? ControllingMemberAppId { get; set; }
+    public Guid? ApplicantId { get; set; }
+    public Guid BizContactId { get; set; }
+    public Guid InviteId { get; set; }
+    public Guid? ParentBizLicApplicationId { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
 

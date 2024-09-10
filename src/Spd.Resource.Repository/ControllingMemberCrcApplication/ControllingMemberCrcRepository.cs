@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 
@@ -61,6 +62,8 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             throw new ArgumentException("Parent business licence application was not found.");
 
         var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
+        var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
+       
         spd_application? app;
         if (cmd.ControllingMemberAppId != null)
         {
@@ -73,26 +76,13 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             app.spd_applicationid = (Guid)(cmd.ControllingMemberAppId);
             _context.UpdateObject(app);
 
-            var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
-            if (contact == null)
-            {
-                throw new ArgumentException("applicant not found");
-            }
-            //update contact
-            contact = await _context.UpdateContact(contact, _mapper.Map<SaveControllingMemberCrcAppCmd, contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
-            var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
-            if (contact == null)
-            {
-                throw new ArgumentException("applicant not found");
-            }
-            //update contact
-            contact = await _context.UpdateContact(contact, _mapper.Map<SaveControllingMemberCrcAppCmd, contact>(cmd),null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases),ct);
-
+           
             //set applicant lookup
             _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             _context.AddLink(contact, nameof(contact.spd_contact_spd_application_ApplicantId), app);

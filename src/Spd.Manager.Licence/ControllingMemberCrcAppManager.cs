@@ -21,6 +21,8 @@ using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.ControllingMemberInvite;
+using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.Alias;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -33,6 +35,8 @@ internal class ControllingMemberCrcAppManager :
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
+    private readonly IContactRepository _contactRepository;
+    private readonly IAliasRepository _aliasRepository;
 
     public ControllingMemberCrcAppManager(IMapper mapper,
         IDocumentRepository documentRepository,
@@ -42,6 +46,8 @@ internal class ControllingMemberCrcAppManager :
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
         IControllingMemberInviteRepository cmInviteRepository,
+        IContactRepository contactRepository,
+        IAliasRepository aliasRepository,
         ILicAppRepository licAppRepository) : base(
             mapper,
             documentRepository,
@@ -53,6 +59,8 @@ internal class ControllingMemberCrcAppManager :
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
         _cmInviteRepository = cmInviteRepository;
+        _contactRepository = contactRepository;
+        _aliasRepository = aliasRepository;
     }
     public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
     {
@@ -60,6 +68,7 @@ internal class ControllingMemberCrcAppManager :
         ControllingMemberCrcAppResponse result = _mapper.Map<ControllingMemberCrcAppResponse>(response);
         var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.ControllingMemberApplicationId), ct);
         result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();  // Exclude licence document type code that are not defined in the related dictionary
+        result.HasPreviousNames = result.Aliases.Any();
         return result;
     }
     #region anonymous new
@@ -71,6 +80,14 @@ internal class ControllingMemberCrcAppManager :
         ValidateFilesForNewApp(cmd);
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
+        ContactResp contact = await _contactRepository.GetAsync((Guid)cmd.ControllingMemberCrcAppSubmitRequest.ApplicantId, ct);
+        if (contact == null)
+        {
+            throw new ArgumentException("applicant not found");
+        }
+        UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ControllingMemberCrcAppSubmitRequest);
+        updateContactCmd.Id = contact.Id;
+        await _contactRepository.ManageAsync(updateContactCmd, ct);
 
         //save the application
         SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
@@ -83,6 +100,8 @@ internal class ControllingMemberCrcAppManager :
 
         await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
+
+        await ApplicantProfileManager.ProcessAliases(_aliasRepository, contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
         return new ControllingMemberCrcAppCommandResponse
         {
             ControllingMemberAppId = response.ControllingMemberAppId,
@@ -95,6 +114,15 @@ internal class ControllingMemberCrcAppManager :
         await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId,
             cmd.ControllingMemberCrcAppUpsertRequest.BizContactId, ct);
 
+        ContactResp contact = await _contactRepository.GetAsync((Guid)cmd.ControllingMemberCrcAppUpsertRequest.ApplicantId, ct);
+        if (contact == null)
+        {
+            throw new ArgumentException("applicant not found");
+        }
+        UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
+        updateContactCmd.Id = contact.Id;
+        await _contactRepository.ManageAsync(updateContactCmd, ct);
+
         SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
 
         //TODO: find the purpose, add related enums if needed (ask peggy)
@@ -106,6 +134,8 @@ internal class ControllingMemberCrcAppManager :
             (Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId,
             (List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos,
             ct);
+        
+        await ApplicantProfileManager.ProcessAliases(_aliasRepository,contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
     }
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand cmd, CancellationToken ct)
