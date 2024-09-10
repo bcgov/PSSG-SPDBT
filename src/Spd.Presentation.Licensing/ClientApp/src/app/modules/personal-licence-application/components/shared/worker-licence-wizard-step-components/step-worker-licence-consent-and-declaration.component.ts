@@ -151,9 +151,9 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 										*ngIf="applicationTypeCode === applicationTypeCodes.Update; else newOrRenewalCertifyText"
 									>
 										I HEREBY CERTIFY THAT I have read and understand all portions of this update form and the
-										information set out by me in this application is true and correct to the best of my knowledge and
-										belief. I have read and understand the <i>Security Services Act</i> and Regulations; and I am aware
-										of, and understand, the conditions that will be placed on me as a licensee.
+										information set out by me herein is true and correct to the best of my knowledge and belief. I have
+										read and understand the SSA and Regulations; and I confirm that I am aware of, understand and remain
+										bound by the conditions that are placed on me as a licensee.
 									</ng-container>
 
 									<ng-template #newOrRenewalCertifyText>
