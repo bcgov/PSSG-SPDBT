@@ -38,6 +38,7 @@ internal class PrintingManager
         this._mapper = mapper;
         this._logger = logger;
     }
+
     public async Task<ResultResponse> Handle(StartPrintJobCommand request, CancellationToken cancellationToken)
     {
         //get event 
@@ -45,43 +46,36 @@ internal class PrintingManager
         if (eventResp == null)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid eventqueue id.");
 
-        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPScreeningFingerprintPrinting)
-        {
-            //the returned RegardingObjectTypeName should be spd_application
-            if (eventResp.RegardingObjectName != "spd_application")
-                throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Invalid Regarding Object type.");
+        DocumentTransformRequest transformRequest = CreateDocumentTransformRequest(eventResp);
 
-            try
+        try
+        {
+            var transformResponse = await _documentTransformationEngine.Transform(
+                transformRequest,
+                cancellationToken);
+            if (transformResponse is BcMailPlusTransformResponse)
             {
-                PrintJob printJob = new(DocumentType.FingerprintLetter, eventResp.RegardingObjectId, null);
-                var transformResponse = await _documentTransformationEngine.Transform(
-                    CreateDocumentTransformRequest(printJob),
+                BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
+                var printResponse = await _printer.Send(
+                    new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
                     cancellationToken);
-                if (transformResponse is BcMailPlusTransformResponse)
-                {
-                    BcMailPlusTransformResponse transformResult = (BcMailPlusTransformResponse)transformResponse;
-                    var printResponse = await _printer.Send(
-                        new BCMailPlusPrintRequest(transformResult.JobTemplateId, transformResult.Document),
-                        cancellationToken);
-                    ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
-                    await UpdateResultInEvent(result, request.EventId, cancellationToken);
-                    return result;
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message, null);
-                ResultResponse result = new()
-                {
-                    PrintJobId = null,
-                    Status = JobStatusCode.Error,
-                    Error = $"{ex.Message} {ex.InnerException?.Message}"
-                };
+                ResultResponse result = _mapper.Map<ResultResponse>(printResponse);
                 await UpdateResultInEvent(result, request.EventId, cancellationToken);
                 return result;
-            }
+            };
         }
-
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, null);
+            ResultResponse result = new()
+            {
+                PrintJobId = null,
+                Status = JobStatusCode.Error,
+                Error = $"{ex.Message} {ex.InnerException?.Message}"
+            };
+            await UpdateResultInEvent(result, request.EventId, cancellationToken);
+            return result;
+        }
         return null;
     }
 
@@ -119,8 +113,8 @@ internal class PrintingManager
         LicenceResp? licence = await _licenceRepository.GetAsync(cmd.LicenceId, cancellationToken);
         if (licence == null || licence.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the licence or the licence is not person licence.");
-        PrintJob printJob = new(DocumentType.PersonalLicencePreview, null, cmd.LicenceId);
-        var transformResponse = await _documentTransformationEngine.Transform(CreateDocumentTransformRequest(printJob), cancellationToken);
+        DocumentTransformRequest transformRequest = new PersonalLicencePreviewTransformRequest(cmd.LicenceId);
+        var transformResponse = await _documentTransformationEngine.Transform(transformRequest, cancellationToken);
         return transformResponse switch
         {
             BcMailPlusTransformResponse bcmailplusResponse => await PreviewViaBcMailPlus(bcmailplusResponse, cancellationToken),
@@ -129,18 +123,26 @@ internal class PrintingManager
         };
     }
 
-    private static DocumentTransformRequest CreateDocumentTransformRequest(PrintJob printJob)
+    private static DocumentTransformRequest CreateDocumentTransformRequest(EventResp eventResp)
     {
-        if (printJob.DocumentType == DocumentType.FingerprintLetter && printJob.ApplicationId == null)
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationId cannot be null if documentType is FingerprintLetter");
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPScreeningFingerprintPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_application"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "ApplicationId cannot be null if it is BCMPScreeningFingerprintPrinting");
 
-        if (printJob.DocumentType == DocumentType.PersonalLicencePreview && printJob.LicenceId == null)
-            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if documentType is LicencePreview");
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPSecurityWorkerLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPSecurityWorkerLicencePrinting");
 
-        return printJob.DocumentType switch
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPArmouredVehiclePermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPArmouredVehiclePermitPrinting");
+
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBodyArmourPermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBodyArmourPermitPrinting");
+
+        return eventResp.EventTypeEnum switch
         {
-            DocumentType.FingerprintLetter => new FingerprintLetterTransformRequest((Guid)printJob.ApplicationId),
-            DocumentType.PersonalLicencePreview => new PersonalLicencePreviewTransformRequest((Guid)printJob.LicenceId),
+            EventTypeEnum.BCMPScreeningFingerprintPrinting => new FingerprintLetterTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPSecurityWorkerLicencePrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPBodyArmourPermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPArmouredVehiclePermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             _ => throw new NotImplementedException()
         };
     }
