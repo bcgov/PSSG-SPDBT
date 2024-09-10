@@ -85,12 +85,10 @@ internal class BizMemberManager :
         response.BizLicAppId = app?.LicenceAppId;
 
         //get existing controlling member crc app
-        BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
-        if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.InternalServerError, "The business contact is not controlling member ");
-        response.ControllingMemberCrcAppId = contactResp.LatestControllingMemberCrcAppId;
-        response.ControllingMemberCrcAppPortalStatusCode = contactResp.LatestControllingMemberCrcAppPortalStatusEnum == null ? null :
-            Enum.Parse<ApplicationPortalStatusCode>(contactResp.LatestControllingMemberCrcAppPortalStatusEnum.Value.ToString());
+        BizContactResp? contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
+        if (contactResp == null || contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
+            throw new ApiException(HttpStatusCode.InternalServerError, "Invalid business contact");
+        _mapper.Map<BizContactResp, ControllingMemberAppInviteVerifyResponse>(contactResp, response);
 
         return response;
     }

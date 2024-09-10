@@ -56,6 +56,8 @@ public record ControllingMemberAppInviteVerifyResponse()
     public Guid InviteId { get; set; }
     public string? GivenName { get; set; }
     public string? Surname { get; set; }
+    public string? MiddleName1 { get; set; }
+    public string? MiddleName2 { get; set; }
     public ControllingMemberAppInviteTypeCode Type { get; set; }
 };
 
