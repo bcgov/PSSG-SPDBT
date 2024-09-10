@@ -10,13 +10,13 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 	selector: 'app-steps-controlling-member-citizenship-residency',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-controlling-member-citizenship
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-citizenship>
+			<mat-step *ngIf="isNew">
+				<app-step-controlling-member-citizenship></app-step-controlling-member-citizenship>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_CITIZENSHIP)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_CITIZENSHIP)"
@@ -29,20 +29,22 @@ import { StepControllingMemberFingerprintsComponent } from './step-controlling-m
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_FINGERPRINTS)"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_FINGERPRINTS)"
+					(previousStepperStep)="onFingerprintsPreviousStep()"
+					(nextStepperStep)="onFingerprintsNextStep(STEP_FINGERPRINTS)"
 					(nextReviewStepperStep)="onNextReview(STEP_FINGERPRINTS)"
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step>
-				<app-step-controlling-member-bc-driver-licence
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-bc-driver-licence>
+			<mat-step *ngIf="isNew">
+				<app-step-controlling-member-bc-driver-licence></app-step-controlling-member-bc-driver-licence>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_DRIVERS_LICENCE)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_DRIVERS_LICENCE)"
@@ -60,7 +62,7 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 	readonly STEP_DRIVERS_LICENCE = 2;
 
 	@Input() isFormValid!: boolean;
-	// @Input() showSaveAndExit!: boolean;
+	@Input() isLoggedIn!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberCitizenshipComponent) stepCitizenship!: StepControllingMemberCitizenshipComponent;
@@ -70,6 +72,24 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
+	}
+
+	onFingerprintsPreviousStep(): void {
+		if (this.isNew) {
+			super.onGoToPreviousStep();
+			return;
+		}
+
+		super.onStepPrevious();
+	}
+
+	onFingerprintsNextStep(step: number): void {
+		if (this.isNew) {
+			super.onFormValidNextStep(step);
+			return;
+		}
+
+		super.onStepNext(step);
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -84,5 +104,9 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }

@@ -1,10 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
-import { CommonControllingMembersComponent } from './common-controlling-members.component';
-import { CommonEmployeesComponent } from './common-employees.component';
 
 @Component({
 	selector: 'app-business-controlling-members-and-employees',
@@ -19,7 +15,7 @@ import { CommonEmployeesComponent } from './common-employees.component';
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<!-- <button TODO remove button?
+								<button
 									mat-stroked-button
 									color="primary"
 									class="large w-auto mb-3"
@@ -27,7 +23,7 @@ import { CommonEmployeesComponent } from './common-employees.component';
 									(click)="onCancel()"
 								>
 									<mat-icon>arrow_back</mat-icon>Back
-								</button> -->
+								</button>
 							</div>
 						</div>
 						<div class="col-12 mb-3">
@@ -53,40 +49,11 @@ import { CommonEmployeesComponent } from './common-employees.component';
 				</div>
 			</div>
 		</section>
-
-		<app-wizard-outside-footer
-			nextButtonLabel="Save"
-			(nextStepperStep)="onSave()"
-			(cancel)="onCancel()"
-		></app-wizard-outside-footer>
 	`,
 	styles: [],
 })
 export class BusinessControllingMembersAndEmployeesComponent {
-	@ViewChild(CommonControllingMembersComponent) controllingMembersComponent!: CommonControllingMembersComponent;
-	@ViewChild(CommonEmployeesComponent) employeesComponent!: CommonEmployeesComponent;
-
-	constructor(
-		private router: Router,
-		private hotToastService: HotToastService,
-		private businessApplicationService: BusinessApplicationService
-	) {}
-
-	onSave(): void {
-		const valid1 = this.controllingMembersComponent.isFormValid();
-		const valid2 = this.employeesComponent.isFormValid();
-		if (!valid1 || !valid2) return;
-
-		this.businessApplicationService.submitControllingMembersAndEmployees().subscribe({
-			next: (_resp: any) => {
-				this.hotToastService.success('Your controlling members & employees has been successfully updated');
-				this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
-	}
+	constructor(private router: Router) {}
 
 	onCancel(): void {
 		this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());

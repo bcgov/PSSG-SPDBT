@@ -3,21 +3,22 @@
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationTypeCode } from '../models/application-type-code';
-import { DocumentExpiredInfo } from '../models/document-expired-info';
+import { Document } from '../models/document';
 import { GenderCode } from '../models/gender-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
-export interface ControllingMemberCrcAppSubmitRequest {
+export interface ControllingMemberCrcAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;
   bizContactId?: string;
+  caseNumber?: string | null;
+  controllingMemberAppId?: string;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
-  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
-  documentKeyCodes?: Array<string> | null;
+  documentInfos?: Array<Document> | null;
   emailAddress?: string | null;
   genderCode?: GenderCode;
   givenName?: string | null;

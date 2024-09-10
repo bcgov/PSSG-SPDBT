@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
+	Alias,
+	ApplicantProfileResponse,
 	ApplicationTypeCode,
+	ControllingMemberAppInviteVerifyResponse,
 	ControllingMemberCrcAppCommandResponse,
+	ControllingMemberCrcAppResponse,
 	ControllingMemberCrcAppSubmitRequest,
+	ControllingMemberCrcAppUpsertRequest,
+	Document,
 	GoogleRecaptcha,
 	IActionResult,
+	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	LicenceTermCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { ControllingMemberCrcAppService } from '@app/api/services';
+import { ApplicantProfileService, ControllingMemberCrcAppService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -27,11 +33,15 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { BooleanTypeCode } from '../code-types/model-desc.models';
+import { FormControlValidators } from '../validators/form-control.validators';
 import { ApplicationService } from './application.service';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
+import { AuthenticationService } from './authentication.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
-import { LicenceDocumentsToSave, UtilService } from './util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -40,7 +50,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	controllingMembersModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	controllingMembersModelFormGroup: FormGroup = this.formBuilder.group({
-		licenceAppId: new FormControl(),
+		inviteId: new FormControl(),
+		controllingMemberAppId: new FormControl(),
+		bizContactId: new FormControl(),
+		parentBizLicApplicationId: new FormControl(),
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -66,9 +79,12 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		formatDatePipe: FormatDatePipe,
 		utilService: UtilService,
 		fileUtilService: FileUtilService,
+		private applicantProfileService: ApplicantProfileService,
+		private authenticationService: AuthenticationService,
+		private authUserBcscService: AuthUserBcscService,
+		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
-		private commonApplicationService: ApplicationService,
-		private hotToastService: HotToastService
+		private commonApplicationService: ApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
@@ -159,26 +175,47 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	fileUploaded(
-		_documentCode: LicenceDocumentTypeCode, // type of the document
-		_document: File,
-		_attachments: FormControl, // the FormControl containing the documents
-		_fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
+		documentCode: LicenceDocumentTypeCode, // type of the document
+		document: File,
+		attachments: FormControl, // the FormControl containing the documents
+		fileUploadComponent: FileUploadComponent // the associated fileUploadComponent on the screen.
 	) {
 		this.hasValueChanged = true;
 
-		// 	if (!this.isAutoSave()) return;
+		if (!this.isAutoSave()) return;
 
-		// 	this.addUploadDocument(documentCode, document).subscribe({
-		// 		next: (resp: any) => {
-		// 			const matchingFile = attachments.value.find((item: File) => item.name == document.name);
-		// 			matchingFile.documentUrlId = resp.body[0].documentUrlId;
-		// 		},
-		// 		error: (error: any) => {
-		// 			console.log('An error occurred during file upload', error);
+		this.addUploadDocument(documentCode, document).subscribe({
+			next: (resp: any) => {
+				const matchingFile = attachments.value.find((item: File) => item.name == document.name);
+				matchingFile.documentUrlId = resp.body[0].documentUrlId;
+			},
+			error: (error: any) => {
+				console.log('An error occurred during file upload', error);
 
-		// 			fileUploadComponent.removeFailedFile(document);
-		// 		},
-		// 	});
+				fileUploadComponent.removeFailedFile(document);
+			},
+		});
+	}
+
+	/**
+	 * Upload a file of a certain type. Return a reference to the file that will used when the licence is saved
+	 * @param documentCode
+	 * @param document
+	 * @returns
+	 */
+	addUploadDocument(
+		documentCode: LicenceDocumentTypeCode,
+		documentFile: File
+	): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+		const doc: LicenceDocument = {
+			Documents: [documentFile],
+			LicenceDocumentTypeCode: documentCode,
+		};
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response({
+			CrcAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
+			body: doc,
+		});
 	}
 
 	/**
@@ -186,7 +223,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * @returns
 	 */
 	isSaveAndExit(): boolean {
-		if (this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New) {
+		if (
+			!this.authenticationService.isLoggedIn() ||
+			this.applicationTypeFormGroup.get('applicationTypeCode')?.value != ApplicationTypeCode.New
+		) {
 			return false;
 		}
 
@@ -194,30 +234,383 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Create an empty anonymous licence
+	 * Create an empty crc or if one already exists, resume it
 	 * @returns
 	 */
-	createNewCrcAnonymous(): Observable<any> {
-		return this.getCrcEmptyAnonymous().pipe(
+	createOrResumeCrc(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		return this.applicantProfileService
+			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
+			.pipe(
+				switchMap((applicantProfile: ApplicantProfileResponse) => {
+					if (crcInviteData.controllingMemberCrcAppId) {
+						return this.loadCrcToResume(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+							tap((_resp: any) => {
+								this.initialized = true;
+
+								this.commonApplicationService.setApplicationTitle(
+									WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+									applicationTypeCode
+								);
+							})
+						);
+					}
+
+					return this.getCrcEmptyAuthenticated(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+						tap((_resp: any) => {
+							this.initialized = true;
+
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+								applicationTypeCode
+							);
+						})
+					);
+				})
+			);
+	}
+
+	/**
+	 * Create an empty anonymous crc
+	 * @returns
+	 */
+	createNewCrcAnonymous(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
 					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-					ApplicationTypeCode.New
+					applicationTypeCode
 				);
 			})
 		);
 	}
 
-	private getCrcEmptyAnonymous(): Observable<any> {
+	private loadCrcToResume(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
+	): Observable<any> {
 		this.reset();
+
+		return this.controllingMemberCrcAppService
+			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: crcInviteData.controllingMemberCrcAppId! })
+			.pipe(
+				switchMap((crcApp: ControllingMemberCrcAppResponse) => {
+					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode, applicantProfile);
+				})
+			);
+	}
+
+	private applyCrcAppIntoModel(
+		crcAppl: ControllingMemberCrcAppResponse,
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
+	): Observable<any> {
+		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
+		const applicationTypeData = { applicationTypeCode };
+
+		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
+
+		let personalInformationData = {};
+
+		if (applicantLoginProfile) {
+			personalInformationData = {
+				givenName: applicantLoginProfile.firstName,
+				middleName1: applicantLoginProfile.middleName1,
+				middleName2: applicantLoginProfile.middleName2,
+				surname: applicantLoginProfile.lastName,
+				genderCode: crcAppl.genderCode,
+				dateOfBirth: crcAppl.dateOfBirth,
+				emailAddress: applicantLoginProfile.emailAddress,
+				phoneNumber: crcAppl.phoneNumber,
+			};
+		} else {
+			personalInformationData = {
+				givenName: crcAppl.givenName,
+				middleName1: crcAppl.middleName1,
+				middleName2: crcAppl.middleName2,
+				surname: crcAppl.surname,
+				genderCode: crcAppl.genderCode,
+				dateOfBirth: crcAppl.dateOfBirth,
+				emailAddress: crcAppl.emailAddress,
+				phoneNumber: crcAppl.phoneNumber,
+			};
+		}
+
+		const bcDriversLicenceData = {
+			hasBcDriversLicence: this.utilService.booleanToBooleanType(crcAppl.hasBcDriversLicence),
+			bcDriversLicenceNumber: crcAppl.bcDriversLicenceNumber,
+		};
+
+		const fingerprintProofDataAttachments: Array<File> = [];
+		const citizenshipDataAttachments: Array<File> = [];
+		const governmentIssuedAttachments: Array<File> = [];
+
+		const citizenshipData: {
+			isCanadianCitizen: BooleanTypeCode | null;
+			canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null;
+			expiryDate: string | null;
+			attachments: File[];
+			governmentIssuedPhotoTypeCode: LicenceDocumentTypeCode | null;
+			governmentIssuedExpiryDate: string | null;
+			governmentIssuedAttachments: File[];
+		} = {
+			isCanadianCitizen: null,
+			canadianCitizenProofTypeCode: null,
+			notCanadianCitizenProofTypeCode: null,
+			expiryDate: null,
+			attachments: [],
+			governmentIssuedPhotoTypeCode: null,
+			governmentIssuedExpiryDate: null,
+			governmentIssuedAttachments: [],
+		};
+
+		citizenshipData.isCanadianCitizen =
+			crcAppl.isCanadianCitizen === null ? null : this.utilService.booleanToBooleanType(crcAppl.isCanadianCitizen);
+
+		const policeBackgroundDataAttachments: Array<File> = [];
+		const mentalHealthConditionsDataAttachments: Array<File> = [];
+
+		crcAppl.documentInfos?.forEach((doc: Document) => {
+			switch (doc.licenceDocumentTypeCode) {
+				case LicenceDocumentTypeCode.Bcid:
+				case LicenceDocumentTypeCode.BcServicesCard:
+				case LicenceDocumentTypeCode.CanadianFirearmsLicence:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional:
+				case LicenceDocumentTypeCode.DriversLicenceAdditional:
+				case LicenceDocumentTypeCode.PermanentResidentCardAdditional:
+				case LicenceDocumentTypeCode.NonCanadianPassport:
+				case LicenceDocumentTypeCode.GovernmentIssuedPhotoId: {
+					// Additional Government ID: GovernmentIssuedPhotoIdTypes
+
+					const aFile = this.fileUtilService.dummyFile(doc);
+					governmentIssuedAttachments.push(aFile);
+
+					citizenshipData.governmentIssuedPhotoTypeCode = doc.licenceDocumentTypeCode;
+					citizenshipData.governmentIssuedExpiryDate = doc.expiryDate ?? null;
+					citizenshipData.governmentIssuedAttachments = governmentIssuedAttachments;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.BirthCertificate:
+				case LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen:
+				case LicenceDocumentTypeCode.CanadianPassport:
+				case LicenceDocumentTypeCode.CanadianCitizenship:
+				case LicenceDocumentTypeCode.ConfirmationOfPermanentResidenceDocument:
+				case LicenceDocumentTypeCode.DocumentToVerifyLegalWorkStatus:
+				case LicenceDocumentTypeCode.PermanentResidentCard:
+				case LicenceDocumentTypeCode.RecordOfLandingDocument:
+				case LicenceDocumentTypeCode.StudyPermit:
+				case LicenceDocumentTypeCode.WorkPermit: {
+					// Is Canadian:  ProofOfCanadianCitizenshipTypes
+					// Is Not Canadian: ProofOfAbilityToWorkInCanadaTypes
+
+					const aFile = this.fileUtilService.dummyFile(doc);
+					citizenshipDataAttachments.push(aFile);
+
+					citizenshipData.canadianCitizenProofTypeCode = crcAppl.isCanadianCitizen ? doc.licenceDocumentTypeCode : null;
+					citizenshipData.notCanadianCitizenProofTypeCode = crcAppl.isCanadianCitizen
+						? null
+						: doc.licenceDocumentTypeCode;
+					citizenshipData.expiryDate = doc.expiryDate ?? null;
+					citizenshipData.attachments = citizenshipDataAttachments;
+
+					break;
+				}
+				case LicenceDocumentTypeCode.ProofOfFingerprint: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					fingerprintProofDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.MentalHealthCondition: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					mentalHealthConditionsDataAttachments.push(aFile);
+					break;
+				}
+				case LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict: {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					policeBackgroundDataAttachments.push(aFile);
+					break;
+				}
+			}
+		});
+
+		const residentialAddressData = {
+			addressSelected: !!crcAppl.residentialAddress?.addressLine1,
+			addressLine1: crcAppl.residentialAddress?.addressLine1,
+			addressLine2: crcAppl.residentialAddress?.addressLine2,
+			city: crcAppl.residentialAddress?.city,
+			country: crcAppl.residentialAddress?.country,
+			postalCode: crcAppl.residentialAddress?.postalCode,
+			province: crcAppl.residentialAddress?.province,
+		};
+
+		const fingerprintProofData = {
+			attachments: fingerprintProofDataAttachments,
+		};
+
+		const policeBackgroundData = {
+			isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(crcAppl.isPoliceOrPeaceOfficer),
+			policeOfficerRoleCode: crcAppl.policeOfficerRoleCode,
+			otherOfficerRole: crcAppl.otherOfficerRole,
+			attachments: policeBackgroundDataAttachments,
+		};
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: this.utilService.booleanToBooleanType(crcAppl.isTreatedForMHC),
+			attachments: mentalHealthConditionsDataAttachments,
+		};
+
+		const bcSecurityLicenceHistoryData = {
+			hasCriminalHistory: this.utilService.booleanToBooleanType(crcAppl.hasCriminalHistory),
+			criminalHistoryDetail: crcAppl.criminalHistoryDetail,
+			hasBankruptcyHistory: this.utilService.booleanToBooleanType(crcAppl.hasBankruptcyHistory),
+			bankruptcyHistoryDetail: crcAppl.bankruptcyHistoryDetail,
+		};
+
+		this.controllingMembersModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData,
+				applicationTypeData,
+				parentBizLicApplicationId: crcInviteData.bizLicAppId,
+				bizContactId: crcInviteData.bizContactId,
+				inviteId: crcInviteData.inviteId,
+				controllingMemberAppId: crcAppl.controllingMemberAppId,
+
+				personalInformationData,
+				aliasesData: {
+					previousNameFlag: this.utilService.booleanToBooleanType(
+						applicantProfile.aliases && applicantProfile.aliases.length > 0
+					),
+					aliases: [],
+				},
+				residentialAddressData,
+				citizenshipData,
+				fingerprintProofData,
+				bcDriversLicenceData,
+				bcSecurityLicenceHistoryData,
+				policeBackgroundData,
+				mentalHealthConditionsData,
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
+		applicantProfile.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					id: new FormControl(alias.id),
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		console.debug(
+			'[applyCrcAppIntoModel] controllingMembersModelFormGroup',
+			this.controllingMembersModelFormGroup.value
+		);
+		return of(this.controllingMembersModelFormGroup.value);
+	}
+
+	private getCrcEmptyAuthenticated(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile: ApplicantProfileResponse
+	): Observable<any> {
+		this.reset();
+
+		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
+
+		const personalInformationData = {
+			givenName: applicantLoginProfile?.firstName,
+			middleName1: applicantLoginProfile?.middleName1,
+			middleName2: applicantLoginProfile?.middleName2,
+			surname: applicantLoginProfile?.lastName,
+			genderCode: null,
+			dateOfBirth: null,
+			emailAddress: applicantLoginProfile?.emailAddress,
+			phoneNumber: null,
+		};
 
 		this.controllingMembersModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData: {
 					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
+				applicationTypeData: { applicationTypeCode },
+				parentBizLicApplicationId: crcInviteData.bizLicAppId,
+				bizContactId: crcInviteData.bizContactId,
+				inviteId: crcInviteData.inviteId,
+				personalInformationData,
+				aliasesData: {
+					previousNameFlag: this.utilService.booleanToBooleanType(
+						applicantProfile.aliases && applicantProfile.aliases.length > 0
+					),
+					aliases: [],
+				},
+			},
+			{
+				emitEvent: false,
+			}
+		);
+
+		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
+		applicantProfile.aliases?.forEach((alias: Alias) => {
+			aliasesArray.push(
+				new FormGroup({
+					id: new FormControl(alias.id),
+					givenName: new FormControl(alias.givenName),
+					middleName1: new FormControl(alias.middleName1),
+					middleName2: new FormControl(alias.middleName2),
+					surname: new FormControl(alias.surname, [FormControlValidators.required]),
+				})
+			);
+		});
+
+		return of(this.controllingMembersModelFormGroup.value);
+	}
+
+	private getCrcEmptyAnonymous(
+		crcInviteData: ControllingMemberAppInviteVerifyResponse,
+		applicationTypeCode: ApplicationTypeCode
+	): Observable<any> {
+		this.reset();
+
+		const personalInformationData = {
+			givenName: crcInviteData?.givenName,
+			middleName1: crcInviteData?.middleName1,
+			middleName2: crcInviteData?.middleName2,
+			surname: crcInviteData?.surname,
+			genderCode: null,
+			dateOfBirth: null,
+			emailAddress: crcInviteData?.emailAddress,
+			phoneNumber: null,
+		};
+
+		this.controllingMembersModelFormGroup.patchValue(
+			{
+				workerLicenceTypeData: {
+					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+				},
+				applicationTypeData: { applicationTypeCode },
+				parentBizLicApplicationId: crcInviteData.bizLicAppId,
+				bizContactId: crcInviteData.bizContactId,
+				inviteId: crcInviteData.inviteId,
+				personalInformationData,
 			},
 			{
 				emitEvent: false,
@@ -228,20 +621,65 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Submit the licence data anonymous
+	 * Partial Save - Save the application data as is.
+	 * @returns StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
+	 */
+	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsPost({ body }).pipe(
+			tap((resp: ControllingMemberCrcAppCommandResponse) => {
+				this.resetModelChangeFlags();
+
+				let msg = 'Your application has been saved';
+				if (isSaveAndExit) {
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!controllingMembersModelFormValue.controllingMemberAppId) {
+					this.controllingMembersModelFormGroup.patchValue(
+						{ controllingMemberAppId: resp.controllingMemberAppId! },
+						{ emitEvent: false }
+					);
+				}
+				return resp;
+			})
+		);
+	}
+
+	/**
+	 * Submit the licence data
 	 * @returns
 	 */
-	submitControllingMemberCrcAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsSubmitPost$Response({ body });
+	}
+
+	/**
+	 * Submit the crc data anonymous
+	 * @returns
+	 */
+	submitControllingMemberCrcNewAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
-
-		body.parentBizLicApplicationId = '7943e30e-bf8f-ee11-b849-00505683fbf4'; // TODO remove hardcoding
-		body.bizContactId = '40831603-075f-ee11-b846-00505683fbf4';
-		body.workerLicenceTypeCode = WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc;
-		body.licenceTermCode = LicenceTermCode.OneYear;
-		body.applicationTypeCode = ApplicationTypeCode.New;
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
@@ -274,7 +712,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Post licence documents anonymous.
+	 * Post crc documents anonymous.
 	 * @returns
 	 */
 	private postCrcAnonymousDocuments(
@@ -301,7 +739,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Reset the licence data
+	 * Reset the crc data
 	 * @returns
 	 */
 	reset(): void {

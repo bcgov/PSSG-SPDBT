@@ -82,6 +82,13 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		super(formBuilder);
 	}
 
+	getSaveBodyBaseAuthenticated(controllingMemberCrcFormValue: any): any {
+		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, true);
+		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
+
+		return baseData;
+	}
+
 	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): ControllingMemberCrcAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
@@ -93,6 +100,8 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		controllingMemberCrcFormValue: any,
 		_isAuthenticated: boolean
 	): ControllingMemberCrcAppSubmitRequest {
+		const workerLicenceTypeData = { ...controllingMemberCrcFormValue.workerLicenceTypeData };
+		const applicationTypeData = { ...controllingMemberCrcFormValue.applicationTypeData };
 		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
 		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
@@ -161,10 +170,9 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			});
 		}
 
-		personalInformationData.dateOfBirth = this.formatDatePipe.transform(
-			personalInformationData.dateOfBirth,
-			SPD_CONSTANTS.date.backendDateFormat
-		);
+		personalInformationData.dateOfBirth = personalInformationData.dateOfBirth
+			? this.formatDatePipe.transform(personalInformationData.dateOfBirth, SPD_CONSTANTS.date.backendDateFormat)
+			: null;
 
 		const hasBcDriversLicence = this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence);
 		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
@@ -183,6 +191,13 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 				}) ?? [];
 
 		const body = {
+			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			applicationTypeCode: applicationTypeData.applicationTypeCode,
+			bizContactId: controllingMemberCrcFormValue.bizContactId,
+			controllingMemberAppId: controllingMemberCrcFormValue.controllingMemberAppId,
+			parentBizLicApplicationId: controllingMemberCrcFormValue.parentBizLicApplicationId,
+			inviteId: controllingMemberCrcFormValue.inviteId,
+			//-----------------------------------
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
 			middleName1: personalInformationData.middleName1,
