@@ -125,7 +125,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
 
         if (app.spd_ApplicantId_contact?.contactid != null)
         {
-            var aliases = GetAliases((Guid)app.spd_ApplicantId_contact.contactid);
+            var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);
             appResp.Aliases = _mapper.Map<AliasResp[]>(aliases);
             _mapper.Map<contact, LicenceApplicationResp>(app.spd_ApplicantId_contact, appResp);
         }
@@ -146,15 +146,5 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         _context.SetLink(swlApp, nameof(swlApp.spd_BusinessLicenseId), bizLicApp);
         await _context.SaveChangesAsync(ct);
         return new LicenceApplicationCmdResp(swlApp.spd_applicationid!.Value, swlApp._spd_applicantid_value, swlApp._spd_organizationid_value);
-    }
-
-    private List<spd_alias>? GetAliases(Guid contactId)
-    {
-        var matchingAliases = _context.spd_aliases.Where(o =>
-           o._spd_contactid_value == contactId &&
-           o.statecode != DynamicsConstants.StateCode_Inactive &&
-           o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
-       ).ToList();
-        return matchingAliases;
     }
 }

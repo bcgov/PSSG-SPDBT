@@ -1,98 +1,122 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Repository.BizLicApplication;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
+using Spd.Resource.Repository.ControllingMemberInvite;
 using Spd.Resource.Repository.Document;
-using Spd.Manager.Licence;
-using Spd.Utilities.Shared.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Spd.Resource.Repository.LicenceFee;
-using Spd.Resource.Repository.Licence;
-using Spd.Utilities.FileStorage;
 using Spd.Resource.Repository.LicApp;
-using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceFee;
+using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
 
 namespace Spd.Manager.Licence;
-internal class ControllingMemberCrcAppManager : 
+
+internal class ControllingMemberCrcAppManager :
     LicenceAppManagerBase,
     IRequestHandler<ControllingMemberCrcAppNewCommand, ControllingMemberCrcAppCommandResponse>,
+    IRequestHandler<ControllingMemberCrcUpsertCommand, ControllingMemberCrcAppCommandResponse>,
+    IRequestHandler<ControllingMemberCrcSubmitCommand, ControllingMemberCrcAppCommandResponse>,
+    IRequestHandler<GetControllingMemberCrcApplicationQuery, ControllingMemberCrcAppResponse>,
     IControllingMemberCrcAppManager
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
+    private readonly IControllingMemberInviteRepository _cmInviteRepository;
 
-    public ControllingMemberCrcAppManager(IMapper mapper, 
-        IDocumentRepository documentRepository, 
-        ILicenceFeeRepository feeRepository, 
-        ILicenceRepository licenceRepository, 
-        IMainFileStorageService mainFileService, 
+    public ControllingMemberCrcAppManager(IMapper mapper,
+        IDocumentRepository documentRepository,
+        ILicenceFeeRepository feeRepository,
+        ILicenceRepository licenceRepository,
+        IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
+        IControllingMemberInviteRepository cmInviteRepository,
         ILicAppRepository licAppRepository) : base(
-            mapper, 
-            documentRepository, 
-            feeRepository, 
-            licenceRepository, 
-            mainFileService, 
-            transientFileService, 
+            mapper,
+            documentRepository,
+            feeRepository,
+            licenceRepository,
+            mainFileService,
+            transientFileService,
             licAppRepository)
     {
         _controllingMemberCrcRepository = controllingMemberCrcRepository;
+        _cmInviteRepository = cmInviteRepository;
     }
+
+    public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
+    {
+        var response = await _controllingMemberCrcRepository.GetCrcApplicationAsync(query.ControllingMemberApplicationId, ct);
+        ControllingMemberCrcAppResponse result = _mapper.Map<ControllingMemberCrcAppResponse>(response);
+        var existingDocs = await _documentRepository.QueryAsync(new DocumentQry(query.ControllingMemberApplicationId), ct);
+        result.DocumentInfos = _mapper.Map<Document[]>(existingDocs.Items).Where(d => d.LicenceDocumentTypeCode != null).ToList();  // Exclude licence document type code that are not defined in the related dictionary
+        return result;
+    }
+
     #region anonymous new
+
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
-
-        ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
+        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId,
+            cmd.ControllingMemberCrcAppSubmitRequest.BizContactId,
+            ct);
         ValidateFilesForNewApp(cmd);
 
+        ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
+
         //save the application
-        CreateControllingMemberCrcAppCmd createApp = _mapper.Map<CreateControllingMemberCrcAppCmd>(request);
+        SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
 
-        var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
-        
-        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberCrcAppId, response.ContactId, null, null, null, null, null, ct);
-        decimal cost = await CommitApplicationAsync(request, response.ControllingMemberCrcAppId, ct);
+        var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(createApp, ct);
 
+        await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
+
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+        await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse
         {
-            ControllingMemberAppId = response.ControllingMemberCrcAppId,
-            Cost = cost
+            ControllingMemberAppId = response.ControllingMemberAppId,
         };
     }
-    #endregion
+
+    #endregion anonymous new
+
     #region authenticated
+
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand cmd, CancellationToken ct)
     {
+        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId,
+            cmd.ControllingMemberCrcAppUpsertRequest.BizContactId, ct);
+
         SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(cmd.ControllingMemberCrcAppUpsertRequest);
-        
+
         //TODO: find the purpose, add related enums if needed (ask peggy)
         saveCmd.UploadedDocumentEnums = GetUploadedDocumentEnumsFromDocumentInfo((List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos);
-        saveCmd.WorkerLicenceTypeCode = WorkerLicenceType.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC;
         var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(saveCmd, ct);
         if (cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId == null)
-            cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId = response.ControllingMemberCrcAppId;
+            cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId = response.ControllingMemberAppId;
         await UpdateDocumentsAsync(
             (Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId,
             (List<Document>?)cmd.ControllingMemberCrcAppUpsertRequest.DocumentInfos,
             ct);
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
     }
+
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand cmd, CancellationToken ct)
     {
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId, ct);
-        decimal cost = await CommitApplicationAsync(cmd.ControllingMemberCrcAppUpsertRequest, cmd.ControllingMemberCrcAppUpsertRequest.ControllingMemberAppId.Value, ct, false);
-        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId, Cost = cost};
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+        await DeactiveInviteAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
+        return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
-    #endregion
+
+    #endregion authenticated
+
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -127,4 +151,32 @@ internal class ControllingMemberCrcAppManager :
         }
     }
 
+    private async Task ValidateInviteIdAsync(Guid inviteId, Guid bizContactId, CancellationToken ct)
+    {
+        ControllingMemberInviteResp? invite = null;
+        //check if invite is still valid
+        if (inviteId != null)
+        {
+            var invites = await _cmInviteRepository.QueryAsync(
+                new ControllingMemberInviteQuery(bizContactId), ct);
+            invite = invites.Where(i => i.Id == inviteId).SingleOrDefault();
+            if (invite != null && (invite.Status == ApplicationInviteStatus.Completed ||
+                invite.Status == ApplicationInviteStatus.Cancelled || invite.Status == ApplicationInviteStatus.Expired))
+                throw new ArgumentException("Invalid Invite status.");
+        }
+    }
+
+    private async Task DeactiveInviteAsync(Guid? inviteId, CancellationToken ct)
+    {
+        //inactivate invite
+        if (inviteId != null)
+        {
+            await _cmInviteRepository.ManageAsync(
+                new ControllingMemberInviteUpdateCmd()
+                {
+                    ApplicationInviteStatusEnum = ApplicationInviteStatus.Completed,
+                    ControllingMemberInviteId = (Guid)inviteId
+                }, ct);
+        }
+    }
 }

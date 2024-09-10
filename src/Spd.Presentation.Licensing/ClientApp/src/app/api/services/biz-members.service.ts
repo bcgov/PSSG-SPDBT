@@ -16,6 +16,9 @@ import { apiBusinessLicenceApplicationBizIdMembersPost } from '../fn/biz-members
 import { ApiBusinessLicenceApplicationBizIdMembersPost$Params } from '../fn/biz-members/api-business-licence-application-biz-id-members-post';
 import { apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet } from '../fn/biz-members/api-business-licence-application-controlling-member-invitation-biz-contact-id-get';
 import { ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params } from '../fn/biz-members/api-business-licence-application-controlling-member-invitation-biz-contact-id-get';
+import { apiControllingMembersInvitesPost } from '../fn/biz-members/api-controlling-members-invites-post';
+import { ApiControllingMembersInvitesPost$Params } from '../fn/biz-members/api-controlling-members-invites-post';
+import { ControllingMemberAppInviteVerifyResponse } from '../models/controlling-member-app-invite-verify-response';
 import { ControllingMemberInvitesCreateResponse } from '../models/controlling-member-invites-create-response';
 import { Members } from '../models/members';
 
@@ -123,6 +126,39 @@ export class BizMembersService extends BaseService {
   apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet(params: ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params, context?: HttpContext): Observable<ControllingMemberInvitesCreateResponse> {
     return this.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ControllingMemberInvitesCreateResponse>): ControllingMemberInvitesCreateResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiControllingMembersInvitesPost()` */
+  static readonly ApiControllingMembersInvitesPostPath = '/api/controlling-members/invites';
+
+  /**
+   * Verify if the current controlling member crc application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiControllingMembersInvitesPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiControllingMembersInvitesPost$Response(params: ApiControllingMembersInvitesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberAppInviteVerifyResponse>> {
+    return apiControllingMembersInvitesPost(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Verify if the current controlling member crc application invite is correct, and return needed info.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiControllingMembersInvitesPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiControllingMembersInvitesPost(params: ApiControllingMembersInvitesPost$Params, context?: HttpContext): Observable<ControllingMemberAppInviteVerifyResponse> {
+    return this.apiControllingMembersInvitesPost$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ControllingMemberAppInviteVerifyResponse>): ControllingMemberAppInviteVerifyResponse => r.body)
     );
   }
 

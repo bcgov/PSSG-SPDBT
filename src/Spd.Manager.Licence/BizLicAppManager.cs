@@ -103,11 +103,6 @@ internal class BizLicAppManager :
         if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
             cmd.BizLicAppUpsertRequest.LicenceAppId = response.LicenceAppId;
 
-        if (cmd.BizLicAppUpsertRequest.Members != null && cmd.BizLicAppUpsertRequest.BizId != null)
-            await UpdateMembersAsync(cmd.BizLicAppUpsertRequest.Members,
-                cmd.BizLicAppUpsertRequest.BizId,
-                cancellationToken);
-
         if (cmd.BizLicAppUpsertRequest.DocumentInfos != null && cmd.BizLicAppUpsertRequest.DocumentInfos.Any())
             await UpdateDocumentsAsync(
                 (Guid)cmd.BizLicAppUpsertRequest.LicenceAppId,
@@ -151,12 +146,6 @@ internal class BizLicAppManager :
 
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
-        // Update members
-        if (cmd.LicenceRequest.Members != null)
-            await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originalLic.BizId,
-                cancellationToken);
-
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -196,12 +185,6 @@ internal class BizLicAppManager :
         createApp = await SetBizManagerInfo((Guid)originalBizLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
-
-        // Update members
-        if (cmd.LicenceRequest.Members != null)
-            await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originalBizLic.BizId,
-                cancellationToken);
 
         // Upload new files
         await UploadNewDocsAsync(null,
@@ -289,12 +272,6 @@ internal class BizLicAppManager :
 
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
-
-        // Update members
-        if (cmd.LicenceRequest.Members != null)
-            await UpdateMembersAsync(cmd.LicenceRequest.Members,
-                (Guid)originalLicApp.BizId,
-                cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };
     }
@@ -542,24 +519,6 @@ internal class BizLicAppManager :
         }
 
         return createApp;
-    }
-
-
-    //todo: if fe can make seperate call to members and application, then we can give all members related info to BizMemberManager, then this function
-    //can be removed.
-    private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, CancellationToken ct)
-    {
-        List<BizContactResp> contacts = _mapper.Map<List<BizContactResp>>(members.NonSwlControllingMembers);
-        contacts.AddRange(_mapper.Map<IList<BizContactResp>>(members.SwlControllingMembers));
-        IList<BizContactResp> employees = _mapper.Map<IList<BizContactResp>>(members.Employees);
-        foreach (var e in employees)
-        {
-            e.BizContactRoleCode = BizContactRoleEnum.Employee;
-        }
-        contacts.AddRange(employees);
-        BizContactUpsertCmd upsertCmd = new(bizId, contacts);
-        await _bizContactRepository.ManageBizContactsAsync(upsertCmd, ct);
-        return default;
     }
 
     private sealed record ChangeSpec

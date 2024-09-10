@@ -17,8 +17,8 @@ import { LicenceAccessCodeAuthorizedComponent } from './components/authenticated
 import { LicenceApplicationBaseAuthenticatedComponent } from './components/authenticated/licence-application-base-authenticated.component';
 import { LicenceFirstTimeUserSelectionComponent } from './components/authenticated/licence-first-time-user-selection.component';
 import { LicenceFirstTimeUserTermsOfUseComponent } from './components/authenticated/licence-first-time-user-terms-of-use.component';
-import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
 import { LicenceReturnFromBlSoleProprietorComponent } from './components/authenticated/licence-return-from-bl-sole-proprietor.component';
+import { LicenceUserApplicationsComponent } from './components/authenticated/licence-user-applications.component';
 import { PermitWizardAuthenticatedNewComponent } from './components/authenticated/permit-wizard-authenticated-new.component';
 import { PermitWizardAuthenticatedRenewalComponent } from './components/authenticated/permit-wizard-authenticated-renewal.component';
 import { PermitWizardAuthenticatedUpdateComponent } from './components/authenticated/permit-wizard-authenticated-update.component';
@@ -50,6 +50,7 @@ export class PersonalLicenceApplicationRoutes {
 	public static readonly LICENCE_USER_APPLICATIONS_AUTHENTICATED = 'user-applications';
 
 	public static readonly LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR = 'return-user-applications';
+	public static readonly LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS = 'return-user-applications-anonymous';
 
 	public static readonly LICENCE_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 	public static readonly LICENCE_FIRST_TIME_USER_SELECTION = 'user-selection';
@@ -152,6 +153,10 @@ const routes: Routes = [
 			{
 				path: PersonalLicenceApplicationRoutes.LICENCE_ACCESS_CODE_ANONYMOUS,
 				component: StepWorkerLicenceAccessCodeComponent,
+			},
+			{
+				path: PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS,
+				component: LicenceReturnFromBlSoleProprietorComponent,
 			},
 			{
 				path: PersonalLicenceApplicationRoutes.WORKER_LICENCE_NEW_ANONYMOUS,

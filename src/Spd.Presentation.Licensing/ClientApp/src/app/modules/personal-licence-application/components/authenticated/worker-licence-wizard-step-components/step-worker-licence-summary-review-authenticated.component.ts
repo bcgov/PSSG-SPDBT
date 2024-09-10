@@ -10,7 +10,6 @@ import {
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { UtilService } from '@app/core/services/util.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-authenticated',
@@ -251,7 +250,7 @@ import { UtilService } from '@app/core/services/util.service';
 											<div class="text-minor-heading">Restraints Authorization</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Request to use restraints?</div>
+													<div class="text-label d-block text-muted">Request to Use Restraints?</div>
 													<div class="summary-text-data">
 														{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 													</div>
@@ -276,7 +275,7 @@ import { UtilService } from '@app/core/services/util.service';
 											<div class="text-minor-heading">Dogs Authorization</div>
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Request to use dogs?</div>
+													<div class="text-label d-block text-muted">Request to Use Dogs?</div>
 													<div class="summary-text-data">{{ useDogs }}</div>
 												</div>
 												<ng-container *ngIf="useDogs === booleanTypeCodes.Yes">
@@ -501,8 +500,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 	constructor(
 		private licenceApplicationService: LicenceApplicationService,
-		private commonApplicationService: ApplicationService,
-		private utilService: UtilService
+		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {

@@ -58,7 +58,7 @@ import { UtilService } from '@app/core/services/util.service';
 
 						<ng-container *ngIf="showDogsAndRestraints">
 							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Request to use restraints?</div>
+								<div class="text-label d-block text-muted">Request to Use Restraints?</div>
 								<div class="summary-text-data">
 									{{ carryAndUseRestraints | options : 'BooleanTypes' }}
 								</div>
@@ -79,7 +79,7 @@ import { UtilService } from '@app/core/services/util.service';
 							</ng-container>
 
 							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Request to use dogs?</div>
+								<div class="text-label d-block text-muted">Request to Use Dogs?</div>
 								<div class="summary-text-data">{{ useDogs }}</div>
 							</div>
 							<ng-container *ngIf="useDogs === booleanTypeCodeYes">

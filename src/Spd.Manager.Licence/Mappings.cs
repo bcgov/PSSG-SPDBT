@@ -330,7 +330,7 @@ internal class Mappings : Profile
             .ForMember(d => d.BizContactRoleCode, opt => opt.MapFrom(s => BizContactRoleEnum.ControllingMember))
             .ReverseMap();
 
-        CreateMap<ControllingMemberCrcAppSubmitRequest, CreateControllingMemberCrcAppCmd>()
+        CreateMap<ControllingMemberCrcAppSubmitRequest, SaveControllingMemberCrcAppCmd>()
             .ForPath(d => d.ResidentialAddressData.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddressData.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddressData.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
@@ -339,6 +339,7 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
 
         CreateMap<ControllingMemberCrcAppUpsertRequest, SaveControllingMemberCrcAppCmd>()
+            .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.ApplicantId))
             .ForPath(d => d.ResidentialAddressData.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddressData.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddressData.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
@@ -352,6 +353,16 @@ internal class Mappings : Profile
         CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
+        CreateMap<SwlContactInfo, BizContact>();
+        CreateMap<NonSwlContactInfo, BizContact>();
+        CreateMap<ControllingMemberCrcApplicationResp, ControllingMemberCrcAppResponse>()
+            .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddressData.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddressData.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddressData.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddressData.City))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddressData.Country))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddressData.PostalCode));
     }
 
     private static WorkerCategoryType[] GetCategories(IEnumerable<WorkerCategoryTypeCode> codes)
@@ -637,7 +648,6 @@ internal class Mappings : Profile
         {LicenceDocumentTypeCode.BizBCReport, DocumentTypeEnum.CorporateSummary },
         {LicenceDocumentTypeCode.CorporateRegistryDocument, DocumentTypeEnum.CorporateRegistryDocument }
     }.ToImmutableDictionary();
-
 
     private static readonly ImmutableDictionary<LicenceDocumentTypeCode, DocumentTypeEnum> LicenceDocumentType2Dictionary = new Dictionary<LicenceDocumentTypeCode, DocumentTypeEnum>()
     {
