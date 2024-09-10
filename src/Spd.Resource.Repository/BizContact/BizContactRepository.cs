@@ -22,7 +22,7 @@ namespace Spd.Resource.Repository.BizContact
             _logger = logger;
         }
 
-        public async Task<BizContactResp> GetBizContactAsync(Guid bizContactId, CancellationToken ct)
+        public async Task<BizContactResp?> GetBizContactAsync(Guid bizContactId, CancellationToken ct, bool includeInactive = false)
         {
             spd_businesscontact? bizContact = await _context.spd_businesscontacts
                 .Expand(c => c.spd_businesscontact_spd_application)
@@ -31,6 +31,8 @@ namespace Spd.Resource.Repository.BizContact
 
             if (bizContact == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the business contact");
+            if (!includeInactive && bizContact.statecode == DynamicsConstants.StateCode_Inactive)
+                return null;
 
             return _mapper.Map<BizContactResp>(bizContact);
         }
