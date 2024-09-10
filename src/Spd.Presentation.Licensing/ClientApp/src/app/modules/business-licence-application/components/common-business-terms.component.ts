@@ -180,7 +180,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								In accessing or using the Site, you represent and warrant that:
 								<ol type="a">
-									<li>You are at least 16 years of age; and</li>
+									<li>You are at least 19 years of age; and</li>
 									<li>You have the power and capacity to accept, execute and comply with these Terms of Use.</li>
 								</ol>
 							</li>
@@ -190,21 +190,21 @@ import { UtilService } from '@app/core/services/util.service';
 								<ol type="a">
 									<li>
 										use the Services for any unlawful or inappropriate purpose, including hacking, data mining or other
-										intrusion activities.
+										intrusion activities;
 									</li>
 									<li>
-										input or upload any information which contains computer viruses such asTrojan horses, worms, time
-										bombs or other computer programming routines that may damage or interfere with the performance or
-										function of the Services or any Associated Service.
+										input or upload any information which contains viruses, Trojan horses, worms, time bombs or other
+										computer programming routines that may damage or interfere with the performance or function of the
+										Services or any Associated Service;
 									</li>
 									<li>
 										divulge, share, compromise or permit any other person to use your login and password to access the
-										Services.
+										Services;
 									</li>
 									<li>
 										take any action that might reasonably be construed as altering, destroying, defeating, compromising,
 										or rendering ineffective the security related to the Site or any Associated Service, or being likely
-										to affect other users of the Services.
+										to affect other users of the Services;
 									</li>
 									<li>attempt to collect any information about other users of the Services; or</li>
 									<li>
