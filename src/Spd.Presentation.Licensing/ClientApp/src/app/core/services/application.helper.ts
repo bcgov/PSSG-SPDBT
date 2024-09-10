@@ -479,4 +479,30 @@ export abstract class ApplicationHelper {
 
 		return [title, subtitle];
 	}
+
+	getResidentialAddressTitle(applicationTypeCode: ApplicationTypeCode | null): [string, string] {
+		let title = '';
+		let subtitle = '';
+
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.Replacement: {
+				title = 'Review your residential address';
+				subtitle = 'Ensure your residential address is correct before submitting your application';
+				break;
+			}
+			case ApplicationTypeCode.Renewal:
+			case ApplicationTypeCode.Update: {
+				title = 'Confirm your residential address';
+				subtitle = 'Ensure your residential address is correct before submitting your application';
+				break;
+			}
+			default: {
+				title = 'Provide your residential address';
+				subtitle = 'This is the address where you currently live';
+				break;
+			}
+		}
+
+		return [title, subtitle];
+	}
 }

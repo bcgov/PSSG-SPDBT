@@ -10,8 +10,8 @@ import { BusinessLicenceApplicationRoutes } from '../business-licence-applicatio
 	selector: 'app-business-manager-invitation',
 	template: `
 		<div class="container-fluid text-center mt-4" *ngIf="message">
-			<mat-icon>no_accounts</mat-icon>
-			<h1>Invite Denied</h1>
+			<mat-icon class="my-4">error</mat-icon>
+			<h1>Business Manager Invitation</h1>
 			<h4 class="mt-4">
 				{{ message }}
 			</h4>

@@ -2,12 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { BizMemberResponse, LicenceResponse, SwlContactInfo, WorkerLicenceTypeCode } from '@app/api/models';
+import { BizMembersService } from '@app/api/services';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
+import { HotToastService } from '@ngneat/hot-toast';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
@@ -68,7 +71,7 @@ import {
 											class="table-button w-auto"
 											style="color: var(--color-red);"
 											aria-label="Remove controlling member"
-											(click)="onRemoveEmployee(i)"
+											(click)="onRemoveEmployee(member.bizContactId, i)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
@@ -118,23 +121,12 @@ import {
 export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStepComponent {
 	booleanTypeCodes = BooleanTypeCode;
 
+	bizId!: string;
 	form = this.businessApplicationService.employeesFormGroup;
 	controllingMembersFormGroup = this.businessApplicationService.controllingMembersFormGroup;
 
 	@Input() defaultExpanded = false;
 	@Input() isWizard = false;
-
-	// @Input() applicationTypeCode!: ApplicationTypeCode;
-
-	// get isNewOrRenewal(): boolean {
-	// 	return (
-	// 		this.applicationTypeCode === ApplicationTypeCode.Renewal || this.applicationTypeCode === ApplicationTypeCode.New
-	// 	);
-	// }
-
-	// get isUpdate(): boolean {
-	// 	return this.applicationTypeCode === ApplicationTypeCode.Update;
-	// }
 
 	dataSource!: MatTableDataSource<any>;
 	columns: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
@@ -142,10 +134,15 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private authUserBceidService: AuthUserBceidService,
+		private hotToastService: HotToastService,
+		private bizMembersService: BizMembersService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	ngOnInit(): void {
+		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
 		this.dataSource = new MatTableDataSource(this.employeesList.value);
 	}
 
@@ -153,7 +150,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 		return true;
 	}
 
-	onRemoveEmployee(index: number) {
+	onRemoveEmployee(bizContactId: string, index: number) {
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
@@ -167,8 +164,17 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.employeesList.removeAt(index);
-					this.dataSource = new MatTableDataSource(this.employeesList.value);
+					this.bizMembersService
+						.apiBusinessBizIdMembersBizContactIdDelete({
+							bizId: this.bizId,
+							bizContactId,
+						})
+						.subscribe((_resp: any) => {
+							this.employeesList.removeAt(index);
+							this.dataSource = new MatTableDataSource(this.employeesList.value);
+
+							this.hotToastService.success('The employees has been successfully removed');
+						});
 				}
 			});
 	}
@@ -198,8 +204,23 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 						return;
 					}
 
-					this.employeesList.push(this.newMemberRow(memberData));
-					this.dataSource.data = this.employeesList.value;
+					const body = {
+						bizContactId: null,
+						contactId: memberData.licenceHolderId,
+						licenceId: memberData.licenceId,
+					} as SwlContactInfo;
+
+					this.bizMembersService
+						.apiBusinessBizIdEmployeesPost({
+							bizId: this.bizId,
+							body,
+						})
+						.subscribe((resp: BizMemberResponse) => {
+							this.employeesList.push(this.newMemberRow(resp.bizContactId!, memberData));
+							this.dataSource.data = this.employeesList.value;
+
+							this.hotToastService.success('The employee has been successfully added');
+						});
 				}
 			});
 	}
@@ -210,16 +231,15 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 		this.onAddEmployee();
 	}
 
-	private newMemberRow(memberData: any): FormGroup {
+	private newMemberRow(bizContactId: string, memberData: LicenceResponse): FormGroup {
 		return this.formBuilder.group({
-			bizContactId: [memberData.bizContactId],
+			bizContactId,
 			contactId: [memberData.licenceHolderId],
 			licenceId: [memberData.licenceId],
 			licenceHolderName: [memberData.licenceHolderName],
 			licenceNumber: [memberData.licenceNumber],
 			licenceStatusCode: [memberData.licenceStatusCode],
 			expiryDate: [memberData.expiryDate],
-			clearanceStatus: [memberData.clearanceStatus],
 		});
 	}
 

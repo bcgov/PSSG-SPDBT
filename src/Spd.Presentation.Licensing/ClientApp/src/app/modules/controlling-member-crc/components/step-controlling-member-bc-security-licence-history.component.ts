@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
@@ -115,8 +114,6 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent implements L
 
 	form: FormGroup = this.controllingMembersService.bcSecurityLicenceHistoryFormGroup;
 
-	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-
 	constructor(private controllingMembersService: ControllingMemberCrcService) {}
 
 	isFormValid(): boolean {
@@ -130,12 +127,5 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent implements L
 
 	get hasBankruptcyHistory(): FormControl {
 		return this.form.get('hasBankruptcyHistory') as FormControl;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }

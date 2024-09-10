@@ -166,6 +166,11 @@ export class WizardFooterComponent implements OnInit {
 			return;
 		}
 
+		if (this.isCancelAndExitObserved) {
+			this.cancelAndExit.emit();
+			return;
+		}
+
 		this.commonApplicationService.cancelAndLoseChanges();
 	}
 }

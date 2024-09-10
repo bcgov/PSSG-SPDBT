@@ -10,13 +10,13 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 	selector: 'app-steps-controlling-member-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step>
-				<app-step-controlling-member-bc-security-licence-history
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-controlling-member-bc-security-licence-history>
+			<mat-step *ngIf="isNew">
+				<app-step-controlling-member-bc-security-licence-history></app-step-controlling-member-bc-security-licence-history>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_LICENCE_HISTORY)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_HISTORY)"
@@ -31,8 +31,10 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onGoToPreviousStep()"
+					(previousStepperStep)="onPoliceBackgroundPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
 					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
 				></app-wizard-footer>
@@ -45,6 +47,8 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
+					[showSaveAndExit]="isLoggedIn"
+					(saveAndExit)="onSaveAndExit(STEP_MENTAL_HEALTH)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_MENTAL_HEALTH)"
@@ -62,7 +66,7 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 	readonly STEP_MENTAL_HEALTH = 2;
 
 	@Input() isFormValid!: boolean;
-	// @Input() showSaveAndExit!: boolean;
+	@Input() isLoggedIn!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberBcSecurityLicenceHistoryComponent)
@@ -74,6 +78,15 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
+	}
+
+	onPoliceBackgroundPreviousStep(): void {
+		if (this.isNew) {
+			super.onGoToPreviousStep();
+			return;
+		}
+
+		super.onStepPrevious();
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -88,5 +101,9 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 				console.error('Unknown Form', step);
 		}
 		return false;
+	}
+
+	get isNew(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 }
