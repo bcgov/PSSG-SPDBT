@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ActionResult,
 	Address,
+	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
@@ -80,6 +81,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
+		isControllingMembersWithoutSwlExist: new FormControl(),
+		isControllingMembersWithoutSwlComplete: new FormControl(),
+
 		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorReturnToSwl: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
@@ -153,8 +157,32 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
+					let isControllingMembersWithoutSwlExist = false;
+					let isControllingMembersWithoutSwlComplete = true;
+
+					if (!isBusinessLicenceSoleProprietor) {
+						const membersWithoutSwl =
+							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
+						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
+
+						const membersWithoutSwlAndWithEmail = membersWithoutSwl.filter((item: any) => !!item.emailAddress);
+
+						isControllingMembersWithoutSwlComplete =
+							membersWithoutSwlAndWithEmail?.length > 0
+								? membersWithoutSwlAndWithEmail.find(
+										(item: NonSwlContactInfo) =>
+											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.CompletedCleared
+								  ) < 0
+								: true;
+					}
+
 					this.businessModelFormGroup.patchValue(
-						{ isBcBusinessAddress, isBusinessLicenceSoleProprietor },
+						{
+							isBcBusinessAddress,
+							isBusinessLicenceSoleProprietor,
+							isControllingMembersWithoutSwlExist,
+							isControllingMembersWithoutSwlComplete,
+						},
 						{ emitEvent: false }
 					);
 
@@ -468,6 +496,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (isBusinessLicenceSoleProprietor) return true;
 
+		const isControllingMembersWithoutSwlComplete = this.businessModelFormGroup.get(
+			'isControllingMembersWithoutSwlComplete'
+		)?.value;
+		if (!isControllingMembersWithoutSwlComplete) return false;
+
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
@@ -589,8 +622,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	getBusinessLicenceWithSwlCombinedFlow(
-		soleProprietorSWLAppId: string | null | undefined,
-		soleProprietorBizAppId: string | null | undefined,
+		soleProprietorSWLAppId: string | null | undefined, // one of these two must have a value
+		soleProprietorBizAppId: string | null | undefined, // one of these two must have a value // TODO remove this??
 		isSoleProprietorSWLAnonymous: boolean
 	): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
@@ -1823,6 +1856,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					item.middleName2,
 					item.surname
 				),
+				controllingMemberAppStatusCode: item.controllingMemberAppStatusCode,
 				inviteStatusCode: item.inviteStatusCode,
 			});
 		});
@@ -1847,6 +1881,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					phoneNumber: new FormControl(item.phoneNumber),
 					emailAddress: new FormControl(item.emailAddress),
 					noEmailAddress: new FormControl(item.noEmailAddress),
+					controllingMemberAppStatusCode: new FormControl(item.controllingMemberAppStatusCode),
 					inviteStatusCode: new FormControl(item.inviteStatusCode),
 				})
 			);

@@ -52,8 +52,8 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CATEGORY = 1;
-	readonly STEP_LICENCE_TERM = 2;
+	readonly STEP_LICENCE_CATEGORY = 0;
+	readonly STEP_LICENCE_TERM = 1;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() isSoleProprietorReturnToSwl = false;

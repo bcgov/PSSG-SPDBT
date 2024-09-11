@@ -67,6 +67,8 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		);
 
 		console.debug('BusinessLicenceApplicationBaseComponent loginInfo', loginInfo);
+		console.debug('BusinessLicenceApplicationBaseComponent swlLicAppId', swlLicAppId);
+		console.debug('BusinessLicenceApplicationBaseComponent bizLicAppId', bizLicAppId);
 
 		if (
 			(swlLicAppId || bizLicAppId) &&

@@ -82,7 +82,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
-					[nonSwlControllingMembersExist]="nonSwlControllingMembersExist"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
+					[isControllingMembersWithoutSwlComplete]="isControllingMembersWithoutSwlComplete"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -127,7 +128,8 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 	isFormValid = false;
 	showSaveAndExit = true;
-	nonSwlControllingMembersExist = false;
+	isControllingMembersWithoutSwlExist = false;
+	isControllingMembersWithoutSwlComplete = true;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -179,10 +181,12 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 					'isBusinessLicenceSoleProprietor'
 				)?.value;
 
-				const membersWithoutSwl = this.businessApplicationService.businessModelFormGroup.get(
-					'controllingMembersData.membersWithoutSwl'
+				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
+					'isControllingMembersWithoutSwlExist'
 				)?.value;
-				this.nonSwlControllingMembersExist = membersWithoutSwl?.length > 0;
+				this.isControllingMembersWithoutSwlComplete = this.businessApplicationService.businessModelFormGroup.get(
+					'isControllingMembersWithoutSwlComplete'
+				)?.value;
 
 				this.isFormValid = _resp;
 
