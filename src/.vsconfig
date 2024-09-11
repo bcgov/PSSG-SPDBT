@@ -1,9 +1,11 @@
 {
-  "version": "1.0",
-  "components": [
-  ],
-  "extensions": [
-    "https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid",
-    "https://marketplace.visualstudio.com/items?itemName=marketplace.ODataConnectedService2022",
-  ]
+    "version": "1.0",
+    "components": [
+    ],
+    "extensions": [
+        "https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid",
+        "https://marketplace.visualstudio.com/items?itemName=marketplace.ODataConnectedService2022",
+        "https://marketplace.visualstudio.com/items?itemName=SonarSource.SonarLintforVisualStudio2022",
+        "https://marketplace.visualstudio.com/items?itemName=josefpihrt.Roslynator2022"
+    ]
 }
