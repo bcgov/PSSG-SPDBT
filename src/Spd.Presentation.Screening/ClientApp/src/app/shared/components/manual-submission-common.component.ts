@@ -241,8 +241,8 @@ export interface ManualSubmissionBody {
 							</mat-form-field>
 						</div>
 					</div>
-					<ng-container *ngIf="serviceTypeIsMcfd">
-						<app-alert type="warning">{{ mcfdWarning }}</app-alert>
+					<ng-container *ngIf="serviceTypeIsPssoVs">
+						<app-alert type="warning">{{ pssoVsWarning }}</app-alert>
 					</ng-container>
 				</section>
 
@@ -484,7 +484,7 @@ export interface ManualSubmissionBody {
 	],
 })
 export class ManualSubmissionCommonComponent implements OnInit {
-	mcfdWarning = SPD_CONSTANTS.message.mcfdWarning;
+	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;
 
 	ministries: Array<MinistryResponse> = [];
 	isNotVolunteerOrg = false;
@@ -971,7 +971,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	get oneLegalName(): FormControl {
 		return this.form.get('oneLegalName') as FormControl;
 	}
-	get serviceTypeIsMcfd(): boolean {
-		return this.form.get('serviceType')?.value === ServiceTypeCode.Mcfd;
+	get serviceTypeIsPssoVs(): boolean {
+		return this.form.get('serviceType')?.value === ServiceTypeCode.PssoVs;
 	}
 }
