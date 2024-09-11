@@ -100,6 +100,7 @@ public enum HairColourCode
     Red,
     Grey,
     Bald,
+    White
 }
 
 public enum EyeColourCode
@@ -109,6 +110,8 @@ public enum EyeColourCode
     Black,
     Green,
     Hazel,
+    Grey,
+    Other
 }
 
 public enum HeightUnitCode
