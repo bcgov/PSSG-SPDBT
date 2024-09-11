@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
@@ -202,7 +203,7 @@ internal class BizMemberManager :
     public async Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct) 
     {
         var result = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, ct);
-        if (result == null) throw new ArgumentException($"bizContact with id {cmd.BizContactId} not found");
+        if (result == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizContact with id {cmd.BizContactId} not found");
         return _mapper.Map<NonSwlContactInfo>(result);
     }
 
