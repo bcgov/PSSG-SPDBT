@@ -33,9 +33,10 @@ internal static class SharedContactFuncs
         contact newContact,
         spd_identity? identity,
         IEnumerable<spd_alias> aliases,
-        CancellationToken ct)
+        CancellationToken ct,
+        bool isPartialSave = false)
     {
-        if (!NameIsSame(existingContact, newContact))
+        if (!NameIsSame(existingContact, newContact) && !isPartialSave)
         {
             //put old name to spd_alias
             spd_alias newAlias = new spd_alias
@@ -55,7 +56,7 @@ internal static class SharedContactFuncs
         }
 
         //when we found address is different, need to put current address to previous address.
-        if (newContact.address1_country != null && newContact.address1_line1 != null && !MailingAddressIsSame(existingContact, newContact))
+        if (newContact.address1_country != null && newContact.address1_line1 != null && !MailingAddressIsSame(existingContact, newContact) && !isPartialSave)
         {
             //put old address to spd_address
             spd_address newAddress = CreateAddrFromContact(existingContact, true);
@@ -68,7 +69,7 @@ internal static class SharedContactFuncs
         }
 
         //when we found residential address is different, need to put current address to previous address.
-        if (newContact.address2_country != null && newContact.address2_line1 != null && !ResidentialAddressIsSame(existingContact, newContact))
+        if (newContact.address2_country != null && newContact.address2_line1 != null && !ResidentialAddressIsSame(existingContact, newContact) && !isPartialSave)
         {
             //put old address to spd_address
             spd_address newAddress = CreateAddrFromContact(existingContact, false);

@@ -49,6 +49,7 @@ public record SaveControllingMemberCrcAppCmd() : ControllingMemberCrcApplication
     public Guid? ControllingMemberAppId { get; set; }
     public Guid ContactId { get; set; }
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
+    public bool IsPartialSaving { get; set; }
 }
 public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplication
 {
