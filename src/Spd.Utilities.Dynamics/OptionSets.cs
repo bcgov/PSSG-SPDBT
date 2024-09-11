@@ -296,7 +296,8 @@ namespace Spd.Utilities.Dynamics
         Brown = 100000002,
         Red = 100000003,
         Grey = 100000004,
-        Bald = 100000005
+        Bald = 100000005,
+        White = 100000006
     }
 
     public enum EyeColorOptionSet
@@ -306,6 +307,8 @@ namespace Spd.Utilities.Dynamics
         Black = 100000002,
         Green = 100000003,
         Hazel = 100000004,
+        Grey = 100000005,
+        Other = 100000006
     }
 
     public enum PoliceOfficerRoleOptionSet
