@@ -128,14 +128,14 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 	isFormValid = false;
 	showSaveAndExit = true;
-	isControllingMembersWithoutSwlExist = false;
-	isControllingMembersWithoutSwlComplete = true;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
-
 	isBusinessLicenceSoleProprietor!: boolean;
+	isControllingMembersWithoutSwlExist!: boolean;
+	isControllingMembersWithoutSwlComplete!: boolean;
+
 	private businessModelValueChangedSubscription!: Subscription;
 
 	@ViewChild(StepsBusinessLicenceInformationComponent)

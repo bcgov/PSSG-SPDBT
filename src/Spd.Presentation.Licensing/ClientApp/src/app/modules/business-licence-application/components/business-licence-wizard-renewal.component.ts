@@ -120,15 +120,15 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	step4Complete = false;
 
 	isFormValid = false;
-	isControllingMembersWithoutSwlExist = false;
-	isControllingMembersWithoutSwlComplete = true;
 	isRenewalShortForm = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
-
 	isBusinessLicenceSoleProprietor!: boolean;
+	isControllingMembersWithoutSwlExist!: boolean;
+	isControllingMembersWithoutSwlComplete!: boolean;
+
 	private businessModelValueChangedSubscription!: Subscription;
 
 	@ViewChild(StepsBusinessLicenceInformationComponent)
