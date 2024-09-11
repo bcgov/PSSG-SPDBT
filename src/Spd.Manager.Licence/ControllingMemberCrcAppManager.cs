@@ -128,10 +128,10 @@ internal class ControllingMemberCrcAppManager :
         //create contact for applicant
         CreateContactCmd contactCmd = _mapper.Map<CreateContactCmd>(request);
         ContactResp contact = await _contactRepository.ManageAsync(contactCmd, ct);
-        request.ApplicantId = contact.Id;
        
         //save the application
         SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
+        createApp.ContactId = contact.Id;
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
 
         var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(createApp, ct);

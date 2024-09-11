@@ -68,7 +68,6 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
 {
     public Guid? ControllingMemberAppId { get; set; }
-    public Guid? ApplicantId { get; set; }
     public Guid BizContactId { get; set; }
     public Guid InviteId { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }

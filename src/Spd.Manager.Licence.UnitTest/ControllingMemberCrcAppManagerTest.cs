@@ -68,9 +68,9 @@ public class ControllingMemberCrcAppManagerTests
         Guid inviteId = Guid.NewGuid();
         ContactResp contact = new()
         {
-            Id = applicantId,
+           Id = applicantId
         };
-        SetupMockRepositories(applicantId, controllingMemberAppId, contact);
+        SetupMockRepositories(applicantId, controllingMemberAppId, contact, inviteId);
 
         // Arrange
         var request = new ControllingMemberCrcAppSubmitRequest
@@ -79,7 +79,6 @@ public class ControllingMemberCrcAppManagerTests
             IsPoliceOrPeaceOfficer = true,
             IsTreatedForMHC = false,
             InviteId = inviteId,
-            ApplicantId = applicantId,
         };
 
         var command = new ControllingMemberCrcAppNewCommand(request,
@@ -109,11 +108,12 @@ public class ControllingMemberCrcAppManagerTests
     {
         Guid applicantId = Guid.NewGuid();
         Guid controllingMemberAppId = Guid.NewGuid();
+        Guid inviteId = Guid.NewGuid();
         ContactResp contact = new()
         {
             Id = applicantId,
         };
-        SetupMockRepositories(applicantId, controllingMemberAppId, contact);
+        SetupMockRepositories(applicantId, controllingMemberAppId, contact, inviteId);
 
         // Arrange
         var request = new ControllingMemberCrcAppSubmitRequest
@@ -121,7 +121,7 @@ public class ControllingMemberCrcAppManagerTests
             IsCanadianCitizen = true,
             IsPoliceOrPeaceOfficer = true,
             IsTreatedForMHC = false,
-            ApplicantId = applicantId,
+            InviteId = inviteId,
         };
 
         var command = new ControllingMemberCrcAppNewCommand(request,
@@ -136,7 +136,7 @@ public class ControllingMemberCrcAppManagerTests
         Func<Task> act = () => sut.Handle(command, CancellationToken.None);
         await Assert.ThrowsAsync<ApiException>(act);
     }
-    private void SetupMockRepositories(Guid applicantId, Guid controllingMemberAppId, ContactResp contact)
+    private void SetupMockRepositories(Guid applicantId, Guid controllingMemberAppId, ContactResp contact, Guid inviteId)
     {
         _licAppRepositoryMock.Setup(a => a.QueryAsync(It.IsAny<LicenceAppQuery>(), CancellationToken.None))
                .ReturnsAsync(new List<LicenceAppListResp>()); //no dup lic app
@@ -168,5 +168,16 @@ public class ControllingMemberCrcAppManagerTests
             });
         _contactRepositroyMock.Setup(c => c.GetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(contact);
+        
+        _contactRepositroyMock.Setup(c => c.ManageAsync(It.IsAny<CreateContactCmd>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(contact);
+        _cmInviteRepositoryMock.Setup(i => i.QueryAsync(It.IsAny<ControllingMemberInviteQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ControllingMemberInviteResp>()
+            {
+                new ControllingMemberInviteResp()
+                {
+                    Id = inviteId
+                }
+            });
     }
 }

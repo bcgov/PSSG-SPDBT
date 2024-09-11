@@ -365,7 +365,6 @@ internal class Mappings : Profile
             .ReverseMap();
 
         CreateMap<ControllingMemberCrcAppSubmitRequest, SaveControllingMemberCrcAppCmd>()
-            .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.ApplicantId))
             .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
         
         CreateMap<ControllingMemberCrcAppUpsertRequest, SaveControllingMemberCrcAppCmd>()
