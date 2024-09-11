@@ -202,6 +202,7 @@ namespace Spd.Manager.Payment
                 {
                     createCmd.ApplicationId = bizApp.SoleProprietorSWLAppId.Value;
                     createCmd.PaymentId = Guid.NewGuid();
+                    createCmd.TransAmount = 0;
                     await _paymentRepository.ManageAsync(createCmd, ct);
                     updateCmd.PaymentId = createCmd.PaymentId;
                     updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
