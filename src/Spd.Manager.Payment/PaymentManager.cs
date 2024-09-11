@@ -9,6 +9,7 @@ using Polly.Retry;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Config;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
@@ -54,6 +55,7 @@ namespace Spd.Manager.Payment
         private readonly IPersonLicApplicationRepository _personLicAppRepository;
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ILogger<IPaymentManager> _logger;
+        private readonly IBizLicApplicationRepository _bizAppRepository;
         private readonly IConfiguration _configuration;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
@@ -72,6 +74,7 @@ namespace Spd.Manager.Payment
             IPersonLicApplicationRepository personLicAppRepository,
             IServiceTypeRepository serviceTypeRepository,
             ILogger<IPaymentManager> logger,
+            IBizLicApplicationRepository bizAppRepository,
             IConfiguration configuration)
         {
             _paymentService = paymentService;
@@ -88,6 +91,7 @@ namespace Spd.Manager.Payment
             _personLicAppRepository = personLicAppRepository;
             _serviceTypeRepository = serviceTypeRepository;
             _logger = logger;
+            _bizAppRepository = bizAppRepository;
             _configuration = configuration;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
@@ -188,7 +192,24 @@ namespace Spd.Manager.Payment
             await _paymentRepository.ManageAsync(createCmd, ct);
             var updateCmd = _mapper.Map<UpdatePaymentCmd>(command.PaybcPaymentResult);
             updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
-            return await _paymentRepository.ManageAsync(updateCmd, ct);
+            Guid paymentId = await _paymentRepository.ManageAsync(updateCmd, ct);
+
+            //if application is sole-proprietor combo application, set combo swl applicatoin to be Paid too.
+            BizLicApplicationResp bizApp = await _bizAppRepository.GetBizLicApplicationAsync(command.PaybcPaymentResult.ApplicationId, ct);
+            if (bizApp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || bizApp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor)
+            {
+                if (bizApp.SoleProprietorSWLAppId != null)
+                {
+                    createCmd.ApplicationId = bizApp.SoleProprietorSWLAppId.Value;
+                    createCmd.PaymentId = Guid.NewGuid();
+                    createCmd.TransAmount = 0;
+                    await _paymentRepository.ManageAsync(createCmd, ct);
+                    updateCmd.PaymentId = createCmd.PaymentId;
+                    updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
+                    await _paymentRepository.ManageAsync(updateCmd, ct);
+                }
+            }
+            return paymentId;
         }
 
         public async Task<PaymentRefundResponse> Handle(PaymentRefundCommand command, CancellationToken ct)
