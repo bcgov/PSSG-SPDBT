@@ -176,8 +176,8 @@ export interface ScreeningRequestAddDialogData {
 									</button>
 								</div>
 							</div>
-							<ng-container *ngIf="showMcfdWarning[i]">
-								<app-alert type="warning">{{ mcfdWarning }}</app-alert>
+							<ng-container *ngIf="showPssoVsWarning[i]">
+								<app-alert type="warning">{{ pssoVsWarning }}</app-alert>
 							</ng-container>
 						</ng-container>
 					</div>
@@ -222,7 +222,7 @@ export interface ScreeningRequestAddDialogData {
 	],
 })
 export class ScreeningRequestAddCommonModalComponent implements OnInit {
-	mcfdWarning = SPD_CONSTANTS.message.mcfdWarning;
+	pssoVsWarning = SPD_CONSTANTS.message.pssoVsWarning;
 
 	ministries: Array<MinistryResponse> = [];
 	portal: PortalTypeCode | null = null;
@@ -241,7 +241,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: Array<SelectOptions[]> = [];
 	portalTypeCodes = PortalTypeCode;
-	showMcfdWarning: Array<boolean> = [];
+	showPssoVsWarning: Array<boolean> = [];
 
 	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
@@ -347,7 +347,7 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 	}
 
 	onChangeServiceType(event: MatSelectChange, index: number): void {
-		this.setMcfdWarning(event.value, index);
+		this.setPssoVsWarning(event.value, index);
 	}
 
 	onAddRow() {
@@ -441,8 +441,8 @@ export class ScreeningRequestAddCommonModalComponent implements OnInit {
 		}
 	}
 
-	private setMcfdWarning(serviceTypeCode: ServiceTypeCode, index: number) {
-		this.showMcfdWarning[index] = serviceTypeCode === ServiceTypeCode.Mcfd;
+	private setPssoVsWarning(serviceTypeCode: ServiceTypeCode, index: number) {
+		this.showPssoVsWarning[index] = serviceTypeCode === ServiceTypeCode.PssoVs;
 	}
 
 	private addFirstRow(inviteDefault?: ApplicationInvitePrepopulateDataResponse | ApplicationInviteCreateRequest) {
