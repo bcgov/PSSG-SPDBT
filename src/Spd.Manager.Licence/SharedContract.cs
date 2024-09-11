@@ -91,7 +91,6 @@ public enum PoliceOfficerRoleCode
     PoliceOfficer,
     PoliceOfficerRetired,
     Other,
-    None,
 }
 
 public enum HairColourCode
