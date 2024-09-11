@@ -163,13 +163,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					if (!isBusinessLicenceSoleProprietor) {
 						const membersWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
+
 						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
 
 						const membersWithoutSwlAndWithEmail = membersWithoutSwl.filter((item: any) => !!item.emailAddress);
 
 						isControllingMembersWithoutSwlComplete =
 							membersWithoutSwlAndWithEmail?.length > 0
-								? membersWithoutSwlAndWithEmail.find(
+								? membersWithoutSwlAndWithEmail.findIndex(
 										(item: NonSwlContactInfo) =>
 											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.CompletedCleared
 								  ) < 0
