@@ -381,13 +381,26 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
 
         CreateMap<ControllingMemberCrcApplicationCmdResp, ControllingMemberCrcAppCommandResponse>();
+
         CreateMap<ControllingMemberInviteVerifyResp, ControllingMemberAppInviteVerifyResponse>();
+
         CreateMap<BizContactResp, ControllingMemberInvite>();
+
         CreateMap<BizContactResp, ControllingMemberInviteCreateCmd>()
             .IncludeBase<BizContactResp, ControllingMemberInvite>()
             .ForMember(d => d.HostUrl, opt => opt.Ignore());
+
+        CreateMap<BizContactResp, ControllingMemberAppInviteVerifyResponse>()
+            .ForMember(d => d.InviteId, opt => opt.Ignore())
+            .ForMember(d => d.BizContactId, opt => opt.Ignore())
+            .ForMember(d => d.BizLicAppId, opt => opt.Ignore())
+            .ForMember(d => d.ControllingMemberCrcAppId, opt => opt.MapFrom(s => s.LatestControllingMemberCrcAppId))
+            .ForMember(d => d.ControllingMemberCrcAppPortalStatusCode, opt => opt.MapFrom(s => GetControllingMemberCrcAppPortalStatusCode(s.LatestControllingMemberCrcAppPortalStatusEnum)));
+
         CreateMap<SwlContactInfo, BizContact>();
+
         CreateMap<NonSwlContactInfo, BizContact>();
+
         CreateMap<ControllingMemberCrcApplicationResp, ControllingMemberCrcAppResponse>()
             .ForMember(d => d.ResidentialAddress, opt => opt.MapFrom(s => s.ResidentialAddressData))
             .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddressData.AddressLine1))
@@ -772,6 +785,12 @@ internal class Mappings : Profile
             return true;
 
         return false;
+    }
+
+    private static ApplicationPortalStatusCode? GetControllingMemberCrcAppPortalStatusCode(ApplicationPortalStatusEnum? status)
+    {
+        if (status == null) return null;
+        else return Enum.Parse<ApplicationPortalStatusCode>(status.Value.ToString());
     }
 }
 

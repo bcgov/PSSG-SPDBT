@@ -101,20 +101,17 @@ import { UtilService } from '@app/core/services/util.service';
 							</li>
 							<div class="fs-5 terms-subtitle">Authentication:</div>
 							<li>
-								You must be authenticated to submit an online update to, or request a replacement of, your security
-								licence or permit, including submitting to Prescribed Checks, if applicable. Your identity will be
-								verified through your BC Services Card account login, approved government-issued ID, or other approved
-								authentication method as may be implemented from time to time, which at the time of an update to your
-								licence or permit may require that you gain access to the Site by way of a unique access code provided
-								to you
+								You must be authenticated before you can submit an online application for a new or renewed security
+								licence or permit, including a request to submit to Prescribed Checks. Your identity will be verified
+								through your BC Services Card account login, approved government-issued ID, or other approved
+								authentication method as may be implemented from time to time.
 							</li>
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
 								used, you may be required to follow a link to an external site, including the
 								<a href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card" target="_blank"
 									>BC Services Card Site</a
-								>, following which you will be returned to, and allowed to access the application or update portions of,
-								the Site.
+								>, following which you will be returned to, and allowed to access the application portions of, the Site.
 							</li>
 							<div class="fs-5 terms-subtitle">Payment:</div>
 							<li>
@@ -136,7 +133,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								In accessing or using the Site, you represent and warrant that:
 								<ol type="a">
-									<li>You are at least 16 years of age; and</li>
+									<li>You are at least 19 years of age; and</li>
 									<li>You have the power and capacity to accept, execute and comply with these Terms of Use.</li>
 								</ol>
 							</li>
@@ -146,21 +143,21 @@ import { UtilService } from '@app/core/services/util.service';
 								<ol type="a">
 									<li>
 										use the Services for any unlawful or inappropriate purpose, including hacking, data mining or other
-										intrusion activities.
+										intrusion activities;
 									</li>
 									<li>
-										input or upload any information which contains computer viruses such asTrojan horses, worms, time
-										bombs or other computer programming routines that may damage or interfere with the performance or
-										function of the Services or any Associated Service.
+										input or upload any information which contains viruses, Trojan horses, worms, time bombs or other
+										computer programming routines that may damage or interfere with the performance or function of the
+										Services or any Associated Service;
 									</li>
 									<li>
 										divulge, share, compromise or permit any other person to use your login and password to access the
-										Services.
+										Services;
 									</li>
 									<li>
 										take any action that might reasonably be construed as altering, destroying, defeating, compromising,
 										or rendering ineffective the security related to the Site or any Associated Service, or being likely
-										to affect other users of the Services.
+										to affect other users of the Services;
 									</li>
 									<li>attempt to collect any information about other users of the Services; or</li>
 									<li>

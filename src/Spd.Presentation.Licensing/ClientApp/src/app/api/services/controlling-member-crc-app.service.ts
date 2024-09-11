@@ -15,6 +15,8 @@ import { apiControllingMemberCrcApplicationsAnonymousKeyCodePost } from '../fn/c
 import { ApiControllingMemberCrcApplicationsAnonymousKeyCodePost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-anonymous-key-code-post';
 import { apiControllingMemberCrcApplicationsAnonymousSubmitPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-anonymous-submit-post';
 import { ApiControllingMemberCrcApplicationsAnonymousSubmitPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-anonymous-submit-post';
+import { apiControllingMemberCrcApplicationsCmCrcAppIdGet } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-cm-crc-app-id-get';
+import { ApiControllingMemberCrcApplicationsCmCrcAppIdGet$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-cm-crc-app-id-get';
 import { apiControllingMemberCrcApplicationsCrcAppIdFilesPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-crc-app-id-files-post';
 import { ApiControllingMemberCrcApplicationsCrcAppIdFilesPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-crc-app-id-files-post';
 import { apiControllingMemberCrcApplicationsPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-post';
@@ -22,6 +24,7 @@ import { ApiControllingMemberCrcApplicationsPost$Params } from '../fn/controllin
 import { apiControllingMemberCrcApplicationsSubmitPost } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-submit-post';
 import { ApiControllingMemberCrcApplicationsSubmitPost$Params } from '../fn/controlling-member-crc-app/api-controlling-member-crc-applications-submit-post';
 import { ControllingMemberCrcAppCommandResponse } from '../models/controlling-member-crc-app-command-response';
+import { ControllingMemberCrcAppResponse } from '../models/controlling-member-crc-app-response';
 import { IActionResult } from '../models/i-action-result';
 import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 
@@ -29,6 +32,39 @@ import { LicenceAppDocumentResponse } from '../models/licence-app-document-respo
 export class ControllingMemberCrcAppService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `apiControllingMemberCrcApplicationsCmCrcAppIdGet()` */
+  static readonly ApiControllingMemberCrcApplicationsCmCrcAppIdGetPath = '/api/controlling-member-crc-applications/{cmCrcAppId}';
+
+  /**
+   * Get Controlling member CRC Application.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiControllingMemberCrcApplicationsCmCrcAppIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiControllingMemberCrcApplicationsCmCrcAppIdGet$Response(params: ApiControllingMemberCrcApplicationsCmCrcAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppResponse>> {
+    return apiControllingMemberCrcApplicationsCmCrcAppIdGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get Controlling member CRC Application.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiControllingMemberCrcApplicationsCmCrcAppIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiControllingMemberCrcApplicationsCmCrcAppIdGet(params: ApiControllingMemberCrcApplicationsCmCrcAppIdGet$Params, context?: HttpContext): Observable<ControllingMemberCrcAppResponse> {
+    return this.apiControllingMemberCrcApplicationsCmCrcAppIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ControllingMemberCrcAppResponse>): ControllingMemberCrcAppResponse => r.body)
+    );
   }
 
   /** Path part for operation `apiControllingMemberCrcApplicationsPost()` */
