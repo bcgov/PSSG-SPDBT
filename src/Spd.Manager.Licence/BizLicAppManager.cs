@@ -109,6 +109,10 @@ internal class BizLicAppManager :
                 (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
                 cancellationToken);
 
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(cmd.BizLicAppUpsertRequest.BizId, response.LicenceAppId),
+            cancellationToken);
         return _mapper.Map<BizLicAppCommandResponse>(response);
     }
 
