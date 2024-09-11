@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
+using Spd.Manager.Shared;
 
 namespace Spd.Presentation.Licensing.Controllers;
 
@@ -46,17 +47,17 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// <summary>
     /// Get Controlling member CRC Application
     /// </summary>
-    /// <param name="cmCrcAppId"></param>
+    /// <param name="originalAppId"></param>
     /// <returns></returns>
-    [Route("api/controlling-member-crc-applications/{cmCrcAppId}")]
+    [Route("api/controlling-member-crc-applications/{originalAppId}")]
     [Authorize(Policy = "OnlyBcsc")]
     [HttpGet]
-    public async Task<ControllingMemberCrcAppResponse> GetControllingMemberCrcApplication([FromRoute][Required] Guid cmCrcAppId)
+    public async Task<ControllingMemberCrcAppResponse> GetControllingMemberCrcApplication([FromRoute][Required] Guid originalAppId)
     {
-        return await _mediator.Send(new GetControllingMemberCrcApplicationQuery(cmCrcAppId));
+        return await _mediator.Send(new GetControllingMemberCrcApplicationQuery(originalAppId));
     }
     /// <summary>
-    /// Create Controlling member CRC Application
+    /// Create or save Controlling member CRC Application
     /// </summary>
     /// <param name="controllingMemberCrcAppUpsertRequest"></param>
     /// <returns></returns>
@@ -73,22 +74,22 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     /// Upload Controlling Member application files to transient storage
     /// </summary>
     /// <param name="fileUploadRequest"></param>
-    /// <param name="CrcAppId"></param>
+    /// <param name="originalAppId"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [Route("api/controlling-member-crc-applications/{CrcAppId}/files")]
+    [Route("api/controlling-member-crc-applications/{originalAppId}/files")]
     [HttpPost]
     [RequestSizeLimit(26214400)] //25M
     [Authorize(Policy = "OnlyBcsc")]
-    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid CrcAppId, CancellationToken ct)
+    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid originalAppId, CancellationToken ct)
     {
         VerifyFiles(fileUploadRequest.Documents);
         var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
 
-        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, CrcAppId), ct);
+        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, originalAppId), ct);
     }
     /// <summary>
-    /// Submit Controlling Member Crc Application
+    /// Submit Controlling Member Crc New Application
     /// authenticated
     /// </summary>
     /// <param name="ControllingMemberCrcSubmitRequest"></param>
@@ -98,18 +99,64 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     [HttpPost]
     public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppUpsertRequest controllingMemberCrcSubmitRequest, CancellationToken ct)
     {
-        //TODO: modify validator condition
         var validateResult = await _controllingMemberCrcAppUpsertValidator.ValidateAsync(controllingMemberCrcSubmitRequest, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
         return await _mediator.Send(new ControllingMemberCrcSubmitCommand(controllingMemberCrcSubmitRequest));
     }
+    /// <summary>
+    /// Upload Controlling member crc application files for authenticated users.
+    /// </summary>
+    /// <param name="fileUploadRequest"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/authenticated/files")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpPost]
+    [RequestSizeLimit(26214400)] //25M
+    public async Task<Guid> UploadControllingMemberCrcAppFilesAuthenticated([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
+    {
+        VerifyFiles(fileUploadRequest.Documents);
+
+        CreateDocumentInCacheCommand command = new(fileUploadRequest);
+        var newFileInfos = await _mediator.Send(command, ct);
+        Guid fileKeyCode = Guid.NewGuid();
+        await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
+        return fileKeyCode;
+    }
+    /// <summary>
+    /// Submit an update for Controlling member crc application for authenticated users,
+    /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+    /// </summary>
+    /// <param name="request">ControllingMemberCrcAppUpdateRequest Json data</param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/update")]
+    [Authorize(Policy = "OnlyBcsc")]
+    [HttpPost]
+    public async Task<ControllingMemberCrcAppCommandResponse?> SubmitUpdateControllingMemberCrcApplicationAuthenticated(ControllingMemberCrcAppUpdateRequest request, CancellationToken ct)
+    {
+        ControllingMemberCrcAppCommandResponse? response = null;
+        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
+        //check validator
+        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(request, ct);
+        if (!validateResult.IsValid)
+            throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+        if (request.ApplicationTypeCode != ApplicationTypeCode.Update)
+        {
+            throw new ApiException(HttpStatusCode.BadRequest, "application type is not Update");
+        }
+        ControllingMemberCrcAppUpdateCommand command = new(request, newDocInfos);
+        response = await _mediator.Send(command, ct);
+        return response;
+    }
 
     #endregion authenticated
     #region anonymous
     /// <summary>
-    /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
+    /// Upload Controlling Member Crc application first step: frontend needs to make this first request to get a Guid code.
     /// the keycode will be set in the cookies
     /// </summary>
     /// <param name="recaptcha"></param>
@@ -126,7 +173,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         return Ok();
     }
     /// <summary>
-    /// Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
+    /// Upload Controlling Member Crc application files: frontend use the keyCode (in cookies) to upload following files.
     /// Uploading file only save files in cache, the files are not connected to the application yet.
     /// </summary>
     /// <param name="fileUploadRequest"></param>
@@ -148,22 +195,56 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     }
 
     /// <summary>
-    /// Submit Controlling Member Crc Application
+    /// Submit Controlling Member Crc New Application Anonymously.
+    /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
     /// anonymous
     /// </summary>
-    /// <param name="ControllingMemberCrcSubmitRequest"></param>
+    /// <param name="request">ControllingMemberCrcAppSubmitRequest Json data</param>
     /// <returns></returns>
     [Route("api/controlling-member-crc-applications/anonymous/submit")]
     [HttpPost]
-    public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplication([FromBody][Required] ControllingMemberCrcAppSubmitRequest ControllingMemberCrcSubmitRequest, CancellationToken ct)
+    public async Task<ControllingMemberCrcAppCommandResponse> SubmitControllingMemberCrcApplicationAnonymous([FromBody][Required] ControllingMemberCrcAppSubmitRequest request, CancellationToken ct)
     {
-        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(ControllingMemberCrcSubmitRequest.DocumentKeyCodes, ct);
-        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(ControllingMemberCrcSubmitRequest, ct);
+        await VerifyKeyCode();
+        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
+        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(request, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
         ControllingMemberCrcAppCommandResponse? response = null;
-        response = await _mediator.Send(new ControllingMemberCrcAppNewCommand(ControllingMemberCrcSubmitRequest, newDocInfos), ct);
+        if (request.ApplicationTypeCode == ApplicationTypeCode.New)
+            response = await _mediator.Send(new ControllingMemberCrcAppNewCommand(request, newDocInfos), ct);
+        
+        SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+        SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+        
+        return response;
+    }
+    /// <summary>
+    /// Submit an update for Controlling Member Crc Application Anonymously
+    /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
+    /// </summary>
+    /// <param name="request">ControllingMemberCrcAppUpdateRequest data</param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [Route("api/controlling-member-crc-applications/anonymous/update")]
+    [HttpPost]
+    public async Task<ControllingMemberCrcAppCommandResponse> UpdateControllingMemberCrcApplicationAnonymous([FromBody][Required] ControllingMemberCrcAppUpdateRequest request, CancellationToken ct)
+    {
+        await VerifyKeyCode();
+
+        IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
+        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(request, ct);
+        if (!validateResult.IsValid)
+            throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+
+        ControllingMemberCrcAppCommandResponse? response = null;
+        if (request.ApplicationTypeCode == ApplicationTypeCode.Update)
+            response = await _mediator.Send(new ControllingMemberCrcAppUpdateCommand(request, newDocInfos), ct);
+        
+        SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
+        SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
+        
         return response;
     }
     #endregion anonymous
