@@ -110,6 +110,40 @@ internal class Mappings : Profile
             .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.MailingAddress.Country));
 
+
+        CreateMap<ControllingMemberCrcAppBase, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+        
+        CreateMap<ControllingMemberCrcAppBase, CreateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+
+        CreateMap<ControllingMemberCrcAppSubmitRequest, UpdateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>(); 
+        
+        CreateMap<ControllingMemberCrcAppSubmitRequest, CreateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, CreateContactCmd>(); 
+
+        CreateMap<ControllingMemberCrcAppUpsertRequest, UpdateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
+
         CreateMap<BizLicenceApp, BizLicApplication>()
             .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
@@ -331,15 +365,13 @@ internal class Mappings : Profile
             .ReverseMap();
 
         CreateMap<ControllingMemberCrcAppSubmitRequest, SaveControllingMemberCrcAppCmd>()
-            .ForPath(d => d.ResidentialAddressData.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
-            .ForPath(d => d.ResidentialAddressData.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
-            .ForPath(d => d.ResidentialAddressData.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
-            .ForPath(d => d.ResidentialAddressData.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
-            .ForPath(d => d.ResidentialAddressData.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
-            .ForPath(d => d.ResidentialAddressData.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
-
+            .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
+        
         CreateMap<ControllingMemberCrcAppUpsertRequest, SaveControllingMemberCrcAppCmd>()
             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.ApplicantId))
+            .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
+
+        CreateMap<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>()
             .ForPath(d => d.ResidentialAddressData.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
             .ForPath(d => d.ResidentialAddressData.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
             .ForPath(d => d.ResidentialAddressData.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
