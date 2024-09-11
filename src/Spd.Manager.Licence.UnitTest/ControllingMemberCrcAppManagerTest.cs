@@ -3,7 +3,6 @@ using Microsoft.Dynamics.CRM;
 using Moq;
 using Spd.Manager.Licence;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
@@ -12,6 +11,7 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using Mappings = Spd.Manager.Licence.Mappings;
@@ -29,7 +29,7 @@ public class ControllingMemberCrcAppManagerTests
     private readonly Mock<ILicAppRepository> _licAppRepositoryMock;
     private readonly Mock<IControllingMemberInviteRepository> _cmInviteRepositoryMock;
     private readonly Mock<IContactRepository> _contactRepositroyMock;
-    private readonly Mock<IAliasRepository> _aliasRepositoryMock;
+    private readonly Mock<ITaskRepository> _taskRepositoryMock;
 
     private ControllingMemberCrcAppManager sut;
 
@@ -45,7 +45,7 @@ public class ControllingMemberCrcAppManagerTests
         _licAppRepositoryMock = new Mock<ILicAppRepository>();
         _cmInviteRepositoryMock = new Mock<IControllingMemberInviteRepository>();
         _contactRepositroyMock = new Mock<IContactRepository>();
-        _aliasRepositoryMock = new Mock<IAliasRepository>();
+        _taskRepositoryMock = new Mock<ITaskRepository>();
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<Mappings>();
@@ -57,7 +57,7 @@ public class ControllingMemberCrcAppManagerTests
         _licenceRepositoryMock.Object,
         _mainFileServiceMock.Object,
         _transientFileServiceMock.Object, _controllingMemberCrcRepositoryMock.Object, 
-        _cmInviteRepositoryMock.Object,_contactRepositroyMock.Object, _aliasRepositoryMock.Object, _licAppRepositoryMock.Object);
+        _cmInviteRepositoryMock.Object,_contactRepositroyMock.Object, _taskRepositoryMock.Object, _licAppRepositoryMock.Object);
     }
 
     [Fact]

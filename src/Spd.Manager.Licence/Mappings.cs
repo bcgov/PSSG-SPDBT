@@ -122,9 +122,24 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
             .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
             .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+        
+        CreateMap<ControllingMemberCrcAppBase, CreateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.BirthDate, opt => opt.MapFrom(s => s.DateOfBirth))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
 
         CreateMap<ControllingMemberCrcAppSubmitRequest, UpdateContactCmd>()
             .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>(); 
+        
+        CreateMap<ControllingMemberCrcAppSubmitRequest, CreateContactCmd>()
+            .IncludeBase<ControllingMemberCrcAppBase, CreateContactCmd>(); 
 
         CreateMap<ControllingMemberCrcAppUpsertRequest, UpdateContactCmd>()
             .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();

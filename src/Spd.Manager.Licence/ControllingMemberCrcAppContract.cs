@@ -12,6 +12,8 @@ public interface IControllingMemberCrcAppManager
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcUpsertCommand command, CancellationToken ct);
     public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcSubmitCommand command, CancellationToken ct);
+    public Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand command, CancellationToken ct);
+
     public Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct);
 }
 public record ControllingMemberCrcAppBase
@@ -48,6 +50,10 @@ public record ControllingMemberCrcAppBase
 public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcAppUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
 public record ControllingMemberCrcSubmitCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcUpsertRequest)
     : ControllingMemberCrcUpsertCommand(ControllingMemberCrcUpsertRequest), IRequest<ControllingMemberCrcAppCommandResponse>;
+public record ControllingMemberCrcAppUpdateCommand(
+    ControllingMemberCrcAppUpdateRequest ControllingMemberCrcAppRequest,
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
+    : IRequest<ControllingMemberCrcAppCommandResponse>;
 public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }
@@ -68,8 +74,17 @@ public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
     public Guid? ParentBizLicApplicationId { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
-
+    
 };
+
+public record ControllingMemberCrcAppUpdateRequest : ControllingMemberCrcAppSubmitRequest
+{
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
+    public bool? HasLegalNameChanged { get; set; }
+    public bool? HasNewCriminalRecordCharge { get; set; }
+    public bool? HasNewMentalHealthCondition { get; set; }
+}
+
 
 public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, 
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
@@ -87,3 +102,12 @@ public record ControllingMemberCrcAppResponse : ControllingMemberCrcAppBase
 }
 
 #endregion
+public sealed record ChangeSpec
+{
+    public bool PeaceOfficerStatusChanged { get; set; } //task
+    public Guid? PeaceOfficerStatusChangeTaskId { get; set; }
+    public bool MentalHealthStatusChanged { get; set; } //task
+    public Guid? MentalHealthStatusChangeTaskId { get; set; }
+    public bool CriminalHistoryChanged { get; set; } //task
+    public Guid? CriminalHistoryStatusChangeTaskId { get; set; }
+}

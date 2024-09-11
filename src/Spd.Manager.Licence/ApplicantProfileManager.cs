@@ -192,7 +192,7 @@ namespace Spd.Manager.Licence
                 }
             }
 
-            await ProcessAliases(_aliasRepository, contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
+            await ProcessAliases(contact.Aliases.ToList(), updateContactCmd.Aliases.ToList(), ct);
             return default;
         }
 
@@ -237,7 +237,7 @@ namespace Spd.Manager.Licence
             }
         }
 
-        public static async Task ProcessAliases(IAliasRepository aliasRepository, List<AliasResp> aliases,
+        private async Task ProcessAliases(List<AliasResp> aliases,
             List<AliasResp> aliasesToProcess,
             CancellationToken ct)
         {
@@ -245,7 +245,7 @@ namespace Spd.Manager.Licence
             var modifiedAliases = aliasesToProcess.Where(a => a.Id != Guid.Empty && a.Id != null);
             List<Guid?> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
 
-            await aliasRepository.DeleteAliasAsync(aliasesToRemove, ct);
+            await _aliasRepository.DeleteAliasAsync(aliasesToRemove, ct);
 
             // Update aliases
             UpdateAliasCommand updateAliasCommand = new()
@@ -253,7 +253,7 @@ namespace Spd.Manager.Licence
                 Aliases = modifiedAliases
             };
 
-            await aliasRepository.UpdateAliasAsync(updateAliasCommand, ct);
+            await _aliasRepository.UpdateAliasAsync(updateAliasCommand, ct);
         }
     }
 }

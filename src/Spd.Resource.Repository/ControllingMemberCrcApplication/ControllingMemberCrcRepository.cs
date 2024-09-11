@@ -62,8 +62,16 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             throw new ArgumentException("Parent business licence application was not found.");
 
         var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
-        var contact = _context.contacts.Where(l => l.contactid == cmd.ContactId).FirstOrDefault();
-       
+        contact? contact = await _context.contacts
+            .Expand(c => c.spd_Contact_Alias)
+            .Where(c => c.contactid == cmd.ContactId).SingleOrDefaultAsync(ct);
+        if (contact == null)
+        {
+            throw new ArgumentException("applicant not found");
+        }
+        //update contact and aliases
+        contact = await UpdatePersonalInformationAsync(cmd, contact, ct);
+
         spd_application? app;
         if (cmd.ControllingMemberAppId != null)
         {
@@ -76,17 +84,17 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             app.spd_applicationid = (Guid)(cmd.ControllingMemberAppId);
             _context.UpdateObject(app);
 
-            
+
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
             _context.AddTospd_applications(app);
-           
+
             //set applicant lookup
             _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             _context.AddLink(contact, nameof(contact.spd_contact_spd_application_ApplicantId), app);
-            
+
             //link bizContact with contact
             _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
 
@@ -115,4 +123,50 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, cmd.ContactId);
     }
 
+    //update contact, aliases and addreses, support partial save (to not add spd_address and spd_alias histroy record)
+    private async Task<contact?> UpdatePersonalInformationAsync(SaveControllingMemberCrcAppCmd cmd, contact? contact, CancellationToken ct)
+    {
+        List<AliasResp> aliases = _mapper.Map<List<AliasResp>>(contact?.spd_Contact_Alias.Where(a=>a.statecode == DynamicsConstants.StateCode_Active &&
+                a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered));
+        contact newContact = _mapper.Map<contact>(cmd);
+        List<spd_alias> aliasesToAdd = (List<spd_alias>)_mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases.Where(a => a.Id == null || a.Id == Guid.Empty)); // Only aliases with Id null or empty are considered as new
+        var modifiedAliases = cmd.Aliases.Where(a => a.Id != Guid.Empty && a.Id != null).ToList();
+        List<Guid?> aliasesToRemove = aliases.Where(a => modifiedAliases.All(ap => ap.Id != a.Id)).Select(a => a.Id).ToList();
+
+        contact = await _context.UpdateContact(contact, newContact, null, aliasesToAdd, ct, cmd.IsPartialSaving);
+        foreach (var aliasId in aliasesToRemove)
+        {
+            spd_alias? alias = _context.spd_aliases.Where(a =>
+                a.spd_aliasid == aliasId &&
+                a.statecode == DynamicsConstants.StateCode_Active &&
+                a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+            ).FirstOrDefault();
+
+            if (alias != null)
+            {
+                alias.statecode = DynamicsConstants.StateCode_Inactive;
+                alias.statuscode = DynamicsConstants.StatusCode_Inactive;
+                _context.UpdateObject(alias);
+            }
+        }
+        foreach (AliasResp alias in modifiedAliases)
+        {
+            spd_alias? existingAlias = _context.spd_aliases.Where(a =>
+                a.spd_aliasid == alias.Id &&
+                a.statecode == DynamicsConstants.StateCode_Active &&
+                a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
+            ).FirstOrDefault();
+
+            if (existingAlias != null)
+            {
+                existingAlias.spd_firstname = alias.GivenName;
+                existingAlias.spd_surname = alias.Surname;
+                existingAlias.spd_middlename1 = alias.MiddleName1;
+                existingAlias.spd_middlename2 = alias.MiddleName2;
+            }
+            _context.UpdateObject(existingAlias);
+        }
+        await _context.SaveChangesAsync(ct);
+        return contact;
+    }
 }
