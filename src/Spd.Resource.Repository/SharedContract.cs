@@ -115,6 +115,7 @@ public enum PoliceOfficerRoleEnum
     CourtAppointedBailiff,
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
+    PoliceOfficerRetired,
     Other,
     None
 }

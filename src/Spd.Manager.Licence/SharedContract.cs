@@ -89,7 +89,9 @@ public enum PoliceOfficerRoleCode
     CourtAppointedBailiff,
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
+    PoliceOfficerRetired,
     Other,
+    None,
 }
 
 public enum HairColourCode
