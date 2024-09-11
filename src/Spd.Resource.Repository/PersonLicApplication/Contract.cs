@@ -114,6 +114,7 @@ public enum HairColourEnum
     Red,
     Grey,
     Bald,
+    White
 }
 
 public enum EyeColourEnum
@@ -123,6 +124,8 @@ public enum EyeColourEnum
     Black,
     Green,
     Hazel,
+    Grey,
+    Other
 }
 
 public enum HeightUnitEnum
