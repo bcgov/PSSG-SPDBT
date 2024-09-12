@@ -18,7 +18,6 @@
 				<PackageReference Include="IdentityModel" />
 				<PackageReference Include="MediatR" />
 				<PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
-				<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
 				<PackageReference Include="Swashbuckle.AspNetCore" />
 		</ItemGroup>
 

@@ -1,5 +1,8 @@
 ﻿using Amazon.Runtime;
 using Amazon.S3;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -47,5 +50,17 @@ public static class ServiceExtensionsHealthChecks
         }
 
         return services;
+    }
+
+    public static void UseHealthChecks(this WebApplication webApplication)
+    {
+        webApplication.MapHealthChecks("/health/startup", new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+        webApplication.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
+           .ShortCircuit();
+        webApplication.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
+           .ShortCircuit();
     }
 }
