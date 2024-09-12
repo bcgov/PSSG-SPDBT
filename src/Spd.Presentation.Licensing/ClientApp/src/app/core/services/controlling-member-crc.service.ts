@@ -212,8 +212,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response({
-			CrcAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsOriginalAppIdFilesPost$Response({
+			originalAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
 			body: doc,
 		});
 	}
@@ -300,7 +300,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		this.reset();
 
 		return this.controllingMemberCrcAppService
-			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: crcInviteData.controllingMemberCrcAppId! })
+			.apiControllingMemberCrcApplicationsOriginalAppIdGet({ originalAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((crcApp: ControllingMemberCrcAppResponse) => {
 					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode, applicantProfile);
