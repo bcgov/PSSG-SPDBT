@@ -103,10 +103,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 1;
-	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_BRANDING = 3;
-	readonly STEP_LICENCE_LIABILITY = 4;
+	readonly STEP_LICENCE_CONFIRMATION = 0;
+	readonly STEP_LICENCE_EXPIRED = 1;
+	readonly STEP_LICENCE_BRANDING = 2;
+	readonly STEP_LICENCE_LIABILITY = 3;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() isFormValid!: boolean;

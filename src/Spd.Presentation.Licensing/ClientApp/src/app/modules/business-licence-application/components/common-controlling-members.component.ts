@@ -3,7 +3,6 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {
-	ApplicationInviteStatusCode,
 	BizMemberResponse,
 	ControllingMemberInvitesCreateResponse,
 	LicenceDocumentTypeCode,
@@ -17,13 +16,11 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import {
-	BusinessApplicationService,
-	ControllingMemberContactInfo,
-} from '@app/core/services/business-application.service';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import { take, tap } from 'rxjs';
 import {
@@ -43,10 +40,10 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 					</mat-expansion-panel-header>
 
 					<ng-container *ngIf="!controllingMembersExist">
-						<div class="fs-5 fw-bold my-3">No controlling members exist</div>
+						<div class="fs-5 my-3">No controlling members with a Security Worker Licence exist</div>
 					</ng-container>
 
-					<div class="row mt-4" *ngIf="controllingMembersWithSwlExist">
+					<div class="row mt-2" *ngIf="controllingMembersWithSwlExist">
 						<div class="col-12">
 							<mat-table [dataSource]="dataSourceWithSWL">
 								<ng-container matColumnDef="licenceHolderName">
@@ -122,8 +119,13 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 					<mat-expansion-panel-header>
 						<mat-panel-title>Controlling Members without a Security Worker Licence</mat-panel-title>
 					</mat-expansion-panel-header>
-					<div class="row mt-4" *ngIf="controllingMembersWithoutSwlExist">
-						<div class="col-12">
+
+					<ng-container *ngIf="!controllingMembersWithoutSwlExist">
+						<div class="fs-5 my-3">No controlling members without a Security Worker Licence exist</div>
+					</ng-container>
+
+					<div class="row mt-2" *ngIf="controllingMembersWithoutSwlExist">
+						<div class="col-12 mb-3">
 							<mat-table [dataSource]="dataSourceWithoutSWL">
 								<ng-container matColumnDef="licenceHolderName">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Full Name</mat-header-cell>
@@ -145,7 +147,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Status </mat-header-cell>
 									<mat-cell *matCellDef="let member">
 										<span class="mobile-label">Status:</span>
-										{{ member.inviteStatusCode | default }}
+										{{ getMemberWithoutSwlStatus(member) | default }}
 									</mat-cell>
 								</ng-container>
 
@@ -158,7 +160,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											style="color: var(--color-green);"
 											aria-label="Edit controlling member"
 											(click)="onEditMemberWithoutSWL(member)"
-											*ngIf="isCrcWithoutSwlReadonly(member)"
 										>
 											<mat-icon>edit</mat-icon>Edit
 										</button>
@@ -174,7 +175,6 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 											style="color: var(--color-red);"
 											aria-label="Remove controlling member"
 											(click)="onRemoveMember(member.bizContactId, false, i)"
-											*ngIf="isCrcWithoutSwlReadonly(member)"
 										>
 											<mat-icon>delete_outline</mat-icon>Remove
 										</button>
@@ -189,10 +189,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 												mat-stroked-button
 												class="w-100"
 												aria-label="Send invitation"
-												matTooltip="Send invitation"
 												(click)="onSendInvitation(member)"
 											>
-												<mat-icon>send</mat-icon>Invitation
+												Send Invitation
 											</button>
 										</ng-container>
 										<ng-template #noEmailAddress>
@@ -213,9 +212,20 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								<mat-row class="mat-data-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
+						<app-alert type="info" icon="">
+							<p>
+								By clicking <strong>'Send Invitation'</strong>, a link to an online application form will be sent to the
+								controlling member via email. They must provide personal information and consent to a criminal record
+								check.
+							</p>
+							<p>
+								We must receive criminal record check consent forms from each individual listed here before the business
+								licence application will be reviewed.
+							</p>
+						</app-alert>
 					</div>
 
-					<div class="row mt-3">
+					<div class="row">
 						<ng-container *ngIf="isMaxNumberOfControllingMembers; else CanAddMember2">
 							<div class="col-12">
 								<app-alert type="warning" icon="warning">
@@ -323,6 +333,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	constructor(
 		private formBuilder: FormBuilder,
 		private dialog: MatDialog,
+		private optionsPipe: OptionsPipe,
 		private authUserBceidService: AuthUserBceidService,
 		private hotToastService: HotToastService,
 		private bizMembersService: BizMembersService,
@@ -340,6 +351,19 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	getMemberWithoutSwlStatus(member: NonSwlContactInfo): string | null {
+		if (member.controllingMemberAppStatusCode) {
+			return `${this.optionsPipe.transform(
+				member.controllingMemberAppStatusCode,
+				'ApplicationPortalStatuses'
+			)} Application`;
+		}
+		if (member.inviteStatusCode) {
+			return `${this.optionsPipe.transform(member.inviteStatusCode, 'ApplicationInviteStatuses')} Invitation`;
+		}
+		return null;
 	}
 
 	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {
@@ -449,6 +473,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
 									this.hotToastService.success('Invitation was successfully sent');
+									// TODO update status to 'Sent' ?
 								}
 							}),
 							take(1)
@@ -493,13 +518,14 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
-	isCrcWithoutSwlReadonly(member: ControllingMemberContactInfo): boolean {
-		return (
-			!member.inviteStatusCode ||
-			member.inviteStatusCode === ApplicationInviteStatusCode.Draft ||
-			member.inviteStatusCode === ApplicationInviteStatusCode.Sent
-		);
-	}
+	// TODO isCrcWithoutSwlReadonly remove?
+	// isCrcWithoutSwlReadonly(member: ControllingMemberContactInfo): boolean {
+	// 	return (
+	// 		!member.inviteStatusCode ||
+	// 		member.inviteStatusCode === ApplicationInviteStatusCode.Draft ||
+	// 		member.inviteStatusCode === ApplicationInviteStatusCode.Sent
+	// 	);
+	// }
 
 	private controllingMemberChanged(): void {
 		// document upload only needed in wizard flow
@@ -573,7 +599,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			licenceStatusCode: [memberData.licenceStatusCode],
 			licenceTermCode: [memberData.licenceTermCode],
 			expiryDate: [memberData.expiryDate],
-			inviteStatusCode: [memberData.inviteStatusCode ?? ApplicationInviteStatusCode.Draft],
+			inviteStatusCode: [memberData.inviteStatusCode],
 		});
 	}
 

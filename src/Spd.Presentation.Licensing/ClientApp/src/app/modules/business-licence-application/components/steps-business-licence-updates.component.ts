@@ -47,11 +47,11 @@ import { StepBusinessLicenceReprintComponent } from './step-business-licence-rep
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponent {
-	applicationTypeCodes = ApplicationTypeCode;
-
 	readonly STEP_LICENCE_CATEGORY = 0;
 	readonly STEP_MANAGER = 1;
 	readonly STEP_REPRINT = 2;
+
+	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() isUpdateFlowWithHideReprintStep!: boolean;
