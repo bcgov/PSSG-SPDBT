@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ActionResult,
 	Address,
+	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
@@ -80,6 +81,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
+		isControllingMembersWithoutSwlExist: new FormControl(),
+		isControllingMembersWithoutSwlComplete: new FormControl(),
+
 		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorReturnToSwl: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
@@ -153,8 +157,33 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
 					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
+					let isControllingMembersWithoutSwlExist = false;
+					let isControllingMembersWithoutSwlComplete = true;
+
+					if (!isBusinessLicenceSoleProprietor) {
+						const membersWithoutSwl =
+							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
+
+						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
+
+						const membersWithoutSwlAndWithEmail = membersWithoutSwl.filter((item: any) => !!item.emailAddress);
+
+						isControllingMembersWithoutSwlComplete =
+							membersWithoutSwlAndWithEmail?.length > 0
+								? membersWithoutSwlAndWithEmail.findIndex(
+										(item: NonSwlContactInfo) =>
+											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.CompletedCleared
+								  ) < 0
+								: true;
+					}
+
 					this.businessModelFormGroup.patchValue(
-						{ isBcBusinessAddress, isBusinessLicenceSoleProprietor },
+						{
+							isBcBusinessAddress,
+							isBusinessLicenceSoleProprietor,
+							isControllingMembersWithoutSwlExist,
+							isControllingMembersWithoutSwlComplete,
+						},
 						{ emitEvent: false }
 					);
 
@@ -468,6 +497,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (isBusinessLicenceSoleProprietor) return true;
 
+		const isControllingMembersWithoutSwlComplete = this.businessModelFormGroup.get(
+			'isControllingMembersWithoutSwlComplete'
+		)?.value;
+		if (!isControllingMembersWithoutSwlComplete) return false;
+
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
@@ -589,8 +623,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	getBusinessLicenceWithSwlCombinedFlow(
-		soleProprietorSWLAppId: string | null | undefined,
-		soleProprietorBizAppId: string | null | undefined,
+		soleProprietorSWLAppId: string | null | undefined, // one of these two must have a value
+		soleProprietorBizAppId: string | null | undefined, // one of these two must have a value // TODO remove this??
 		isSoleProprietorSWLAnonymous: boolean
 	): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
@@ -636,7 +670,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode): Observable<any> {
+	createNewBusinessLicenceWithProfile(applicationTypeCode: ApplicationTypeCode): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
@@ -656,7 +690,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 											this.commonApplicationService.setApplicationTitle(
 												WorkerLicenceTypeCode.SecurityBusinessLicence,
-												applicationTypeCode // if undefined, we are just loading the profile.
+												applicationTypeCode
 											);
 										})
 									);
@@ -670,7 +704,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 							this.commonApplicationService.setApplicationTitle(
 								WorkerLicenceTypeCode.SecurityBusinessLicence,
-								applicationTypeCode // if undefined, we are just loading the profile.
+								applicationTypeCode
 							);
 						})
 					);
@@ -688,12 +722,58 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 									this.commonApplicationService.setApplicationTitle(
 										WorkerLicenceTypeCode.SecurityBusinessLicence,
-										applicationTypeCode // if undefined, we are just loading the profile.
+										applicationTypeCode
 									);
 								})
 							);
 						})
 					);
+			})
+		);
+	}
+
+	/**
+	 * Load the user's business profile
+	 * @returns
+	 */
+	loadBusinessProfile(): Observable<any> {
+		this.reset();
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+			switchMap((businessProfile: BizProfileResponse) => {
+				const isSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
+
+				// If the profile is a sole proprietor, then we need to get the associated licence info
+				if (isSoleProprietor && businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+					return this.licenceService
+						.apiLicencesLicenceIdGet({ licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId })
+						.pipe(
+							switchMap((soleProprietorSwlLicence: LicenceResponse) => {
+								return this.applyLicenceProfileIntoModel({
+									businessProfile,
+									soleProprietorSwlLicence,
+								}).pipe(
+									tap((_resp: any) => {
+										this.setAsInitialized();
+
+										this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+									})
+								);
+							})
+						);
+				}
+
+				return this.applyLicenceProfileIntoModel({
+					businessProfile,
+				}).pipe(
+					tap((_resp: any) => {
+						this.setAsInitialized();
+
+						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+					})
+				);
 			})
 		);
 	}
@@ -1640,14 +1720,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		if (soleProprietorSWLAppId) {
-			// using sole proprietor combined flow
-			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
+		// if there is no applicationTypeCode, then we are supporting just loading the profile
+		if (applicationTypeCode) {
+			if (soleProprietorSWLAppId) {
+				// using sole proprietor combined flow
+				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 		}
 
-		if (soleProprietorSwlLicence?.licenceAppId) {
-			// business licence is sole proprietor
-			return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence?.licenceAppId);
+			if (soleProprietorSwlLicence?.licenceAppId) {
+				// business licence is sole proprietor
+				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence?.licenceAppId);
+			}
 		}
 
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
@@ -1823,6 +1906,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					item.middleName2,
 					item.surname
 				),
+				controllingMemberAppStatusCode: item.controllingMemberAppStatusCode,
 				inviteStatusCode: item.inviteStatusCode,
 			});
 		});
@@ -1847,6 +1931,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					phoneNumber: new FormControl(item.phoneNumber),
 					emailAddress: new FormControl(item.emailAddress),
 					noEmailAddress: new FormControl(item.noEmailAddress),
+					controllingMemberAppStatusCode: new FormControl(item.controllingMemberAppStatusCode),
 					inviteStatusCode: new FormControl(item.inviteStatusCode),
 				})
 			);

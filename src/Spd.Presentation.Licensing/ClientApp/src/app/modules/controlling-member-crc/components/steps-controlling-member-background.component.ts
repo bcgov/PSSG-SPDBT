@@ -10,8 +10,10 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 	selector: 'app-steps-controlling-member-background',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="isNew">
-				<app-step-controlling-member-bc-security-licence-history></app-step-controlling-member-bc-security-licence-history>
+			<mat-step>
+				<app-step-controlling-member-bc-security-licence-history
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-member-bc-security-licence-history>
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
@@ -34,7 +36,7 @@ import { StepControllingMemberPoliceBackgroundComponent } from './step-controlli
 					[showSaveAndExit]="isLoggedIn"
 					(saveAndExit)="onSaveAndExit(STEP_POLICE_BACKGROUND)"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onPoliceBackgroundPreviousStep()"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_POLICE_BACKGROUND)"
 					(nextReviewStepperStep)="onNextReview(STEP_POLICE_BACKGROUND)"
 				></app-wizard-footer>
@@ -78,15 +80,6 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
-	}
-
-	onPoliceBackgroundPreviousStep(): void {
-		if (this.isNew) {
-			super.onGoToPreviousStep();
-			return;
-		}
-
-		super.onStepPrevious();
 	}
 
 	override dirtyForm(step: number): boolean {
