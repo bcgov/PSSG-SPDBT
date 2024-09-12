@@ -196,11 +196,22 @@ namespace Spd.Manager.Payment
 
             //if application is sole-proprietor combo application, set combo swl applicatoin to be Paid too.
             BizLicApplicationResp bizApp = await _bizAppRepository.GetBizLicApplicationAsync(command.PaybcPaymentResult.ApplicationId, ct);
-            if (bizApp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || bizApp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor)
+            if (bizApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence) //first, the application must be bizLicApp
             {
-                if (bizApp.SoleProprietorSWLAppId != null)
+                if (bizApp.SoleProprietorSWLAppId != null && (bizApp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || bizApp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor))
                 {
                     createCmd.ApplicationId = bizApp.SoleProprietorSWLAppId.Value;
+                    createCmd.PaymentId = Guid.NewGuid();
+                    createCmd.TransAmount = 0;
+                    await _paymentRepository.ManageAsync(createCmd, ct);
+                    updateCmd.PaymentId = createCmd.PaymentId;
+                    updateCmd.PaymentStatus = command.PaybcPaymentResult.Success ? PaymentStatusEnum.Successful : PaymentStatusEnum.Failure;
+                    await _paymentRepository.ManageAsync(updateCmd, ct);
+                }
+                //if application has non-swl controlling member crc applications, we need to set all those to paid.
+                foreach (Guid cmCrcAppId in bizApp.NonSwlControllingMemberCrcAppIds)
+                {
+                    createCmd.ApplicationId = cmCrcAppId;
                     createCmd.PaymentId = Guid.NewGuid();
                     createCmd.TransAmount = 0;
                     await _paymentRepository.ManageAsync(createCmd, ct);
