@@ -140,12 +140,12 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 1;
-	readonly STEP_LICENCE_EXPIRED = 2;
-	readonly STEP_LICENCE_INFORMATION = 3;
-	readonly STEP_LICENCE_ADDRESS = 4;
-	readonly STEP_LICENCE_BRANDING = 5;
-	readonly STEP_LICENCE_LIABILITY = 6;
+	readonly STEP_LICENCE_CONFIRMATION = 0;
+	readonly STEP_LICENCE_EXPIRED = 1;
+	readonly STEP_LICENCE_INFORMATION = 2;
+	readonly STEP_LICENCE_ADDRESS = 3;
+	readonly STEP_LICENCE_BRANDING = 4;
+	readonly STEP_LICENCE_LIABILITY = 5;
 
 	@Input() isRenewalShortForm!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;

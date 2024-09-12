@@ -50,7 +50,6 @@ import { StepBusinessLicenceChecklistRenewComponent } from './components/step-bu
 import { StepBusinessLicenceCompanyBrandingComponent } from './components/step-business-licence-company-branding.component';
 import { StepBusinessLicenceConfirmationComponent } from './components/step-business-licence-confirmation.component';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './components/step-business-licence-consent-and-declaration.component';
-import { StepBusinessLicenceControllingMemberConfirmationComponent } from './components/step-business-licence-controlling-member-confirmation.component';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './components/step-business-licence-controlling-member-invites-component';
 import { StepBusinessLicenceControllingMembersComponent } from './components/step-business-licence-controlling-members.component';
 import { StepBusinessLicenceEmployeesComponent } from './components/step-business-licence-employees.component';
@@ -106,7 +105,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		StepBusinessLicenceChecklistRenewComponent,
 		StepBusinessLicenceCompanyBrandingComponent,
 		StepBusinessLicenceConsentAndDeclarationComponent,
-		StepBusinessLicenceControllingMemberConfirmationComponent,
 		StepBusinessLicenceControllingMemberInvitesComponent,
 		StepBusinessLicenceLiabilityComponent,
 		StepBusinessLicenceProfileComponent,
