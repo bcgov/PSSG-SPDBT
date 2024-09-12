@@ -58,7 +58,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 
-		personalInformationData: this.personalNameAndContactInformationFormGroup,
+		personalInformationData: this.personalInformationFormGroup,
+		contactInformationData: this.contactInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
 
@@ -114,13 +115,15 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	isStepPersonalInformationComplete(): boolean {
 		// console.debug(
 		// 	'isStepPersonalInformationComplete',
-		// 	this.personalNameAndContactInformationFormGroup.valid,
+		// 	this.personalInformationFormGroup.valid,
+		// 	this.contactInformationFormGroup.valid,
 		// 	this.aliasesFormGroup.valid,
 		// 	this.residentialAddressFormGroup.valid
 		// );
 
 		return (
-			this.personalNameAndContactInformationFormGroup.valid &&
+			this.personalInformationFormGroup.valid &&
+			this.contactInformationFormGroup.valid &&
 			this.aliasesFormGroup.valid &&
 			this.residentialAddressFormGroup.valid
 		);
@@ -246,7 +249,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
 					if (crcInviteData.controllingMemberCrcAppId) {
-						return this.loadCrcToResume(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+						return this.loadDraftCrcIntoModel(crcInviteData, applicationTypeCode).pipe(
 							tap((_resp: any) => {
 								this.initialized = true;
 
@@ -292,10 +295,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 	}
 
-	private loadCrcToResume(
+	private loadDraftCrcIntoModel(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode,
-		applicantProfile: ApplicantProfileResponse
+		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		this.reset();
 
@@ -303,7 +305,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.apiControllingMemberCrcApplicationsOriginalAppIdGet({ originalAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((crcApp: ControllingMemberCrcAppResponse) => {
-					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode, applicantProfile);
+					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode);
 				})
 			);
 	}
@@ -311,39 +313,23 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode,
-		applicantProfile: ApplicantProfileResponse
+		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode };
 
-		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
-
-		let personalInformationData = {};
-
-		if (applicantLoginProfile) {
-			personalInformationData = {
-				givenName: applicantLoginProfile.firstName,
-				middleName1: applicantLoginProfile.middleName1,
-				middleName2: applicantLoginProfile.middleName2,
-				surname: applicantLoginProfile.lastName,
-				genderCode: crcAppl.genderCode,
-				dateOfBirth: crcAppl.dateOfBirth,
-				emailAddress: applicantLoginProfile.emailAddress,
-				phoneNumber: crcAppl.phoneNumber,
-			};
-		} else {
-			personalInformationData = {
-				givenName: crcAppl.givenName,
-				middleName1: crcAppl.middleName1,
-				middleName2: crcAppl.middleName2,
-				surname: crcAppl.surname,
-				genderCode: crcAppl.genderCode,
-				dateOfBirth: crcAppl.dateOfBirth,
-				emailAddress: crcAppl.emailAddress,
-				phoneNumber: crcAppl.phoneNumber,
-			};
-		}
+		const personalInformationData = {
+			givenName: crcAppl.givenName,
+			middleName1: crcAppl.middleName1,
+			middleName2: crcAppl.middleName2,
+			surname: crcAppl.surname,
+			genderCode: crcAppl.genderCode,
+			dateOfBirth: crcAppl.dateOfBirth,
+		};
+		const contactInformationData = {
+			emailAddress: crcAppl.emailAddress,
+			phoneNumber: crcAppl.phoneNumber,
+		};
 
 		const bcDriversLicenceData = {
 			hasBcDriversLicence: this.utilService.booleanToBooleanType(crcAppl.hasBcDriversLicence),
@@ -444,15 +430,18 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			}
 		});
 
-		const residentialAddressData = {
-			addressSelected: !!crcAppl.residentialAddress?.addressLine1,
-			addressLine1: crcAppl.residentialAddress?.addressLine1,
-			addressLine2: crcAppl.residentialAddress?.addressLine2,
-			city: crcAppl.residentialAddress?.city,
-			country: crcAppl.residentialAddress?.country,
-			postalCode: crcAppl.residentialAddress?.postalCode,
-			province: crcAppl.residentialAddress?.province,
-		};
+		let residentialAddressData = {};
+		if (crcAppl.residentialAddress?.addressLine1) {
+			residentialAddressData = {
+				addressSelected: !!crcAppl.residentialAddress?.addressLine1,
+				addressLine1: crcAppl.residentialAddress?.addressLine1,
+				addressLine2: crcAppl.residentialAddress?.addressLine2,
+				city: crcAppl.residentialAddress?.city,
+				country: crcAppl.residentialAddress?.country,
+				postalCode: crcAppl.residentialAddress?.postalCode,
+				province: crcAppl.residentialAddress?.province,
+			};
+		}
 
 		const fingerprintProofData = {
 			attachments: fingerprintProofDataAttachments,
@@ -487,10 +476,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				controllingMemberAppId: crcAppl.controllingMemberAppId,
 
 				personalInformationData,
+				contactInformationData,
 				aliasesData: {
-					previousNameFlag: this.utilService.booleanToBooleanType(
-						applicantProfile.aliases && applicantProfile.aliases.length > 0
-					),
+					previousNameFlag: this.utilService.booleanToBooleanType(crcAppl.aliases && crcAppl.aliases.length > 0),
 					aliases: [],
 				},
 				residentialAddressData,
@@ -507,7 +495,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 
 		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
-		applicantProfile.aliases?.forEach((alias: Alias) => {
+		crcAppl.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -533,17 +521,27 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	): Observable<any> {
 		this.reset();
 
-		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
-
 		const personalInformationData = {
-			givenName: applicantLoginProfile?.firstName,
-			middleName1: applicantLoginProfile?.middleName1,
-			middleName2: applicantLoginProfile?.middleName2,
-			surname: applicantLoginProfile?.lastName,
-			genderCode: null,
-			dateOfBirth: null,
-			emailAddress: applicantLoginProfile?.emailAddress,
-			phoneNumber: null,
+			givenName: applicantProfile.givenName,
+			middleName1: applicantProfile.middleName1,
+			middleName2: applicantProfile.middleName2,
+			surname: applicantProfile.surname,
+			genderCode: applicantProfile.genderCode,
+			dateOfBirth: applicantProfile?.dateOfBirth,
+		};
+		const contactInformationData = {
+			emailAddress: applicantProfile.emailAddress,
+			phoneNumber: applicantProfile.phoneNumber,
+		};
+
+		const residentialAddressData = {
+			addressSelected: !!applicantProfile.residentialAddress?.addressLine1,
+			addressLine1: applicantProfile.residentialAddress?.addressLine1,
+			addressLine2: applicantProfile.residentialAddress?.addressLine2,
+			city: applicantProfile.residentialAddress?.city,
+			country: applicantProfile.residentialAddress?.country,
+			postalCode: applicantProfile.residentialAddress?.postalCode,
+			province: applicantProfile.residentialAddress?.province,
 		};
 
 		this.controllingMembersModelFormGroup.patchValue(
@@ -556,6 +554,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
 				personalInformationData,
+				contactInformationData,
+				residentialAddressData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
 						applicantProfile.aliases && applicantProfile.aliases.length > 0
@@ -597,6 +597,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			surname: crcInviteData?.surname,
 			genderCode: null,
 			dateOfBirth: null,
+		};
+		const contactInformationData = {
 			emailAddress: crcInviteData?.emailAddress,
 			phoneNumber: null,
 		};
@@ -611,6 +613,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
 				personalInformationData,
+				contactInformationData,
 			},
 			{
 				emitEvent: false,

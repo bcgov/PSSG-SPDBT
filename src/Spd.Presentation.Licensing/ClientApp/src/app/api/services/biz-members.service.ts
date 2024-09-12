@@ -18,6 +18,8 @@ import { apiBusinessBizIdMembersGet } from '../fn/biz-members/api-business-biz-i
 import { ApiBusinessBizIdMembersGet$Params } from '../fn/biz-members/api-business-biz-id-members-get';
 import { apiBusinessBizIdMembersPost } from '../fn/biz-members/api-business-biz-id-members-post';
 import { ApiBusinessBizIdMembersPost$Params } from '../fn/biz-members/api-business-biz-id-members-post';
+import { apiBusinessBizIdNonSwlControllingMembersBizContactIdGet } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-get';
+import { ApiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Params } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-get';
 import { apiBusinessBizIdNonSwlControllingMembersBizContactIdPut } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-put';
 import { ApiBusinessBizIdNonSwlControllingMembersBizContactIdPut$Params } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-biz-contact-id-put';
 import { apiBusinessBizIdNonSwlControllingMembersPost } from '../fn/biz-members/api-business-biz-id-non-swl-controlling-members-post';
@@ -32,6 +34,7 @@ import { BizMemberResponse } from '../models/biz-member-response';
 import { ControllingMemberAppInviteVerifyResponse } from '../models/controlling-member-app-invite-verify-response';
 import { ControllingMemberInvitesCreateResponse } from '../models/controlling-member-invites-create-response';
 import { Members } from '../models/members';
+import { NonSwlContactInfo } from '../models/non-swl-contact-info';
 
 @Injectable({ providedIn: 'root' })
 export class BizMembersService extends BaseService {
@@ -203,6 +206,39 @@ export class BizMembersService extends BaseService {
   apiBusinessBizIdNonSwlControllingMembersPost(params: ApiBusinessBizIdNonSwlControllingMembersPost$Params, context?: HttpContext): Observable<BizMemberResponse> {
     return this.apiBusinessBizIdNonSwlControllingMembersPost$Response(params, context).pipe(
       map((r: StrictHttpResponse<BizMemberResponse>): BizMemberResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBusinessBizIdNonSwlControllingMembersBizContactIdGet()` */
+  static readonly ApiBusinessBizIdNonSwlControllingMembersBizContactIdGetPath = '/api/business/{bizId}/non-swl-controlling-members/{bizContactId}';
+
+  /**
+   * Get non-swl Biz controlling members.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBusinessBizIdNonSwlControllingMembersBizContactIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Response(params: ApiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<NonSwlContactInfo>> {
+    return apiBusinessBizIdNonSwlControllingMembersBizContactIdGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get non-swl Biz controlling members.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBusinessBizIdNonSwlControllingMembersBizContactIdGet(params: ApiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Params, context?: HttpContext): Observable<NonSwlContactInfo> {
+    return this.apiBusinessBizIdNonSwlControllingMembersBizContactIdGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<NonSwlContactInfo>): NonSwlContactInfo => r.body)
     );
   }
 
