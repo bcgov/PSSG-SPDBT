@@ -34,8 +34,9 @@ namespace Spd.Resource.Repository.BizContact
 
         private (Guid? AppId, ApplicationPortalStatusEnum? PortalStatus) GetLastestControllingMemberCrcApp(IEnumerable<spd_application> apps)
         {
+            Guid? cmServiceTypeGuid = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
             spd_application? app = apps
-                .Where(a => a._spd_servicetypeid_value == ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
+                .Where(a => a._spd_servicetypeid_value == cmServiceTypeGuid)
                 .OrderByDescending(app => app.createdon)
                 .FirstOrDefault();
             if (app == null) return (null, null);

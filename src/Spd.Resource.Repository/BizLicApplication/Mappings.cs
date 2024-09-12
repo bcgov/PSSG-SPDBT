@@ -71,6 +71,7 @@ internal class Mappings : Profile
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
          .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.Ignore())
          .ForMember(d => d.SoleProprietorSWLAppId, opt => opt.MapFrom(s => GetSwlAppId(s.spd_businessapplication_spd_workerapplication.ToList())))
+         .ForMember(d => d.NonSwlControllingMemberCrcAppIds, opt => opt.MapFrom(s => GetNonSwlCmAppIds(s.spd_businessapplication_spd_workerapplication.ToList())))
          .IncludeBase<spd_application, BizLicApplication>();
 
         _ = CreateMap<PrivateInvestigatorSwlContactInfo, spd_businesscontact>()
@@ -107,7 +108,15 @@ internal class Mappings : Profile
 
     private static Guid? GetSwlAppId(List<spd_application> apps)
     {
-        return apps.OrderByDescending(a => a.createdon)
+        Guid? swlServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SecurityWorkerLicence.ToString());
+        return apps.Where(a => a._spd_servicetypeid_value == swlServiceTypeId)
+            .OrderByDescending(a => a.createdon)
             .FirstOrDefault()?.spd_applicationid;
+    }
+
+    private static IEnumerable<Guid> GetNonSwlCmAppIds(List<spd_application> apps)
+    {
+        Guid? serviceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
+        return apps.Where(a => a._spd_servicetypeid_value == serviceTypeId).Select(a => a.spd_applicationid.Value).ToList();
     }
 }
