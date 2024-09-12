@@ -670,7 +670,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Create an empty licence
 	 * @returns
 	 */
-	createNewBusinessLicenceWithProfile(applicationTypeCode?: ApplicationTypeCode): Observable<any> {
+	createNewBusinessLicenceWithProfile(applicationTypeCode: ApplicationTypeCode): Observable<any> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
@@ -690,7 +690,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 											this.commonApplicationService.setApplicationTitle(
 												WorkerLicenceTypeCode.SecurityBusinessLicence,
-												applicationTypeCode // if undefined, we are just loading the profile.
+												applicationTypeCode
 											);
 										})
 									);
@@ -704,7 +704,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 							this.commonApplicationService.setApplicationTitle(
 								WorkerLicenceTypeCode.SecurityBusinessLicence,
-								applicationTypeCode // if undefined, we are just loading the profile.
+								applicationTypeCode
 							);
 						})
 					);
@@ -722,12 +722,58 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 									this.commonApplicationService.setApplicationTitle(
 										WorkerLicenceTypeCode.SecurityBusinessLicence,
-										applicationTypeCode // if undefined, we are just loading the profile.
+										applicationTypeCode
 									);
 								})
 							);
 						})
 					);
+			})
+		);
+	}
+
+	/**
+	 * Load the user's business profile
+	 * @returns
+	 */
+	loadBusinessProfile(): Observable<any> {
+		this.reset();
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+			switchMap((businessProfile: BizProfileResponse) => {
+				const isSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
+
+				// If the profile is a sole proprietor, then we need to get the associated licence info
+				if (isSoleProprietor && businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+					return this.licenceService
+						.apiLicencesLicenceIdGet({ licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId })
+						.pipe(
+							switchMap((soleProprietorSwlLicence: LicenceResponse) => {
+								return this.applyLicenceProfileIntoModel({
+									businessProfile,
+									soleProprietorSwlLicence,
+								}).pipe(
+									tap((_resp: any) => {
+										this.setAsInitialized();
+
+										this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+									})
+								);
+							})
+						);
+				}
+
+				return this.applyLicenceProfileIntoModel({
+					businessProfile,
+				}).pipe(
+					tap((_resp: any) => {
+						this.setAsInitialized();
+
+						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+					})
+				);
 			})
 		);
 	}
@@ -1674,14 +1720,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		}
 
-		if (soleProprietorSWLAppId) {
-			// using sole proprietor combined flow
-			return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
+		// if there is no applicationTypeCode, then we are supporting just loading the profile
+		if (applicationTypeCode) {
+			if (soleProprietorSWLAppId) {
+				// using sole proprietor combined flow
+				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 		}
 
-		if (soleProprietorSwlLicence?.licenceAppId) {
-			// business licence is sole proprietor
-			return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence?.licenceAppId);
+			if (soleProprietorSwlLicence?.licenceAppId) {
+				// business licence is sole proprietor
+				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence?.licenceAppId);
+			}
 		}
 
 		console.debug('[applyLicenceProfileIntoModel] businessModelFormGroup', this.businessModelFormGroup.value);
