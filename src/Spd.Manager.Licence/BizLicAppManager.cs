@@ -84,7 +84,7 @@ internal class BizLicAppManager :
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.BizLicAppUpsertRequest.BizId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<WorkerLicenceTypeEnum>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.Value.ToString()),
             cmd.BizLicAppUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -109,11 +109,17 @@ internal class BizLicAppManager :
                 (List<Document>?)cmd.BizLicAppUpsertRequest.DocumentInfos,
                 cancellationToken);
 
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(cmd.BizLicAppUpsertRequest.BizId, response.LicenceAppId),
+            cancellationToken);
         return _mapper.Map<BizLicAppCommandResponse>(response);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppSubmitCommand cmd, CancellationToken cancellationToken)
     {
+        if (cmd.BizLicAppUpsertRequest.LicenceAppId == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "LicenceAppId cannot be null");
         var response = await this.Handle((BizLicAppUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.BizLicAppUpsertRequest.LicenceAppId, cancellationToken);
@@ -144,6 +150,10 @@ internal class BizLicAppManager :
         createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+            cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -185,17 +195,17 @@ internal class BizLicAppManager :
         createApp = await SetBizManagerInfo((Guid)originalBizLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
-
+        if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
         // Upload new files
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
-                response?.LicenceAppId,
+                response.LicenceAppId,
                 null,
                 null,
                 null,
                 null,
                 null,
-                response?.AccountId,
+                response.AccountId,
                 cancellationToken);
 
         // Copying all old files to new application in PreviousFileIds 
@@ -208,6 +218,12 @@ internal class BizLicAppManager :
                     cancellationToken);
             }
         }
+
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+            cancellationToken);
+
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -247,16 +263,18 @@ internal class BizLicAppManager :
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
+            if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
+
             // Upload new files
             await UploadNewDocsAsync(null,
                     cmd.LicAppFileInfos,
-                    response?.LicenceAppId,
+                    response.LicenceAppId,
                     null,
                     null,
                     null,
                     null,
                     null,
-                    response?.AccountId,
+                    response.AccountId,
                     cancellationToken);
 
             // Copying all old files to new application in PreviousFileIds 
@@ -270,6 +288,10 @@ internal class BizLicAppManager :
                 }
             }
 
+            //link biz members to this application
+            await _bizContactRepository.ManageBizContactsAsync(
+                new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+                cancellationToken);
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
 
