@@ -148,6 +148,10 @@ internal class BizLicAppManager :
         createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+            cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -212,6 +216,12 @@ internal class BizLicAppManager :
                     cancellationToken);
             }
         }
+
+        //link biz members to this application
+        await _bizContactRepository.ManageBizContactsAsync(
+            new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+            cancellationToken);
+
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -274,6 +284,10 @@ internal class BizLicAppManager :
                 }
             }
 
+            //link biz members to this application
+            await _bizContactRepository.ManageBizContactsAsync(
+                new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+                cancellationToken);
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
 
