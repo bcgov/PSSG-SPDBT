@@ -60,8 +60,33 @@ namespace Spd.Resource.Repository.BizContact
                 BizContactCreateCmd c => await CreateBizContactAsync(c, ct),
                 BizContactUpdateCmd c => await UpdateBizContactAsync(c, ct),
                 BizContactDeleteCmd c => await DeleteBizContactAsync(c, ct),
+                BizContactsLinkBizAppCmd c => await LinkBizContactsToBizApp(c.BizId, c.BizAppId, ct),
                 _ => throw new NotSupportedException($"{cmd.GetType().Name} is not supported")
             };
+        }
+
+        private async Task<Guid?> LinkBizContactsToBizApp(Guid bizId, Guid bizAppId, CancellationToken ct)
+        {
+            IQueryable<spd_businesscontact> bizContacts = _context.spd_businesscontacts
+                .Expand(c => c.spd_businesscontact_spd_application)
+                .Where(c => c._spd_organizationid_value == bizId);
+            spd_application? bizApp = _context.spd_applications.Where(a => a.spd_applicationid == bizAppId).FirstOrDefault();
+            foreach (spd_businesscontact bc in bizContacts.Where(c => c.statecode == DynamicsConstants.StateCode_Active))
+            {
+                if (!bc.spd_businesscontact_spd_application.Any(a => a.spd_applicationid == bizAppId))
+                {
+                    _context.AddLink(bc, nameof(bc.spd_businesscontact_spd_application), bizApp);
+                }
+            }
+            foreach (spd_businesscontact bc in bizContacts.Where(c => c.statecode == DynamicsConstants.StateCode_Inactive))
+            {
+                if (!bc.spd_businesscontact_spd_application.Any(a => a.spd_applicationid == bizAppId))
+                {
+                    _context.DeleteLink(bc, nameof(bc.spd_businesscontact_spd_application), bizApp);
+                }
+            }
+            await _context.SaveChangesAsync(ct);
+            return null;
         }
 
         private async Task<Guid?> CreateBizContactAsync(BizContactCreateCmd cmd, CancellationToken ct)

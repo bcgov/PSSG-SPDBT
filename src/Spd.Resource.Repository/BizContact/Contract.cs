@@ -14,6 +14,7 @@ namespace Spd.Resource.Repository.BizContact
     public record BizContactCreateCmd(BizContact BizContact) : BizContactCmd;
     public record BizContactUpdateCmd(Guid BizContactId, BizContact BizContact) : BizContactCmd;
     public record BizContactDeleteCmd(Guid BizContactId) : BizContactCmd;
+    public record BizContactsLinkBizAppCmd(Guid BizId, Guid BizAppId) : BizContactCmd;
 
     //query
     public record BizContactQry(Guid? BizId, Guid? AppId, BizContactRoleEnum? RoleCode = null, bool IncludeInactive = false);
