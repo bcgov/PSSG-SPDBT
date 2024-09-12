@@ -26,7 +26,7 @@ import {
 				</mat-expansion-panel-header>
 
 				<form [formGroup]="form" novalidate>
-					<div class="row mt-4" *ngIf="employeesExist">
+					<div class="row mt-2" *ngIf="employeesExist">
 						<div class="col-12">
 							<mat-table [dataSource]="dataSource">
 								<ng-container matColumnDef="licenceHolderName">
@@ -86,7 +86,7 @@ import {
 
 					<div class="row mt-3">
 						<ng-container *ngIf="!employeesExist">
-							<div class="fs-5 fw-bold mb-3">No employees exist</div>
+							<div class="fs-5 mb-3">No employees exist</div>
 						</ng-container>
 
 						<ng-container *ngIf="isMaxNumberOfEmployees; else CanAddEmployee">

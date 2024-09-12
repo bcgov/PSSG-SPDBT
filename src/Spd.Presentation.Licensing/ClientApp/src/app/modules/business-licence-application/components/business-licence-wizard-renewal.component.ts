@@ -76,7 +76,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[applicationTypeCode]="applicationTypeCode"
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
-					[nonSwlControllingMembersExist]="nonSwlControllingMembersExist"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -120,14 +120,15 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	step4Complete = false;
 
 	isFormValid = false;
-	nonSwlControllingMembersExist = false;
 	isRenewalShortForm = false;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
-
 	isBusinessLicenceSoleProprietor!: boolean;
+	isControllingMembersWithoutSwlExist!: boolean;
+	isControllingMembersWithoutSwlComplete!: boolean;
+
 	private businessModelValueChangedSubscription!: Subscription;
 
 	@ViewChild(StepsBusinessLicenceInformationComponent)
@@ -170,10 +171,13 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 					'isBusinessLicenceSoleProprietor'
 				)?.value;
 
-				const membersWithoutSwl = this.businessApplicationService.businessModelFormGroup.get(
-					'controllingMembersData.membersWithoutSwl'
+				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
+					'isControllingMembersWithoutSwlExist'
 				)?.value;
-				this.nonSwlControllingMembersExist = membersWithoutSwl?.length > 0;
+
+				this.isControllingMembersWithoutSwlComplete = this.businessApplicationService.businessModelFormGroup.get(
+					'isControllingMembersWithoutSwlComplete'
+				)?.value;
 
 				this.isFormValid = _resp;
 

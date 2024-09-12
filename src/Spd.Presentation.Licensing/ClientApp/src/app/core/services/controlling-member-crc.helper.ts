@@ -1,5 +1,6 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicationTypeCode,
 	ControllingMemberCrcAppSubmitRequest,
 	Document,
 	DocumentExpiredInfo,
@@ -33,6 +34,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			criminalHistoryDetail: new FormControl(''),
 			hasBankruptcyHistory: new FormControl('', [FormControlValidators.required]),
 			bankruptcyHistoryDetail: new FormControl(''),
+			criminalChargeDescription: new FormControl(''),
 		},
 		{
 			validators: [
@@ -43,6 +45,12 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'bankruptcyHistoryDetail',
 					(form) => form.get('hasBankruptcyHistory')?.value == BooleanTypeCode.Yes
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'criminalChargeDescription',
+					(_form) =>
+						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
 				),
 			],
 		}
