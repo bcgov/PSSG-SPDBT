@@ -6,5 +6,6 @@ export enum HairColourCode {
   Brown = 'Brown',
   Red = 'Red',
   Grey = 'Grey',
-  Bald = 'Bald'
+  Bald = 'Bald',
+  White = 'White'
 }
