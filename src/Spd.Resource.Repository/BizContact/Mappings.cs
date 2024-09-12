@@ -34,7 +34,10 @@ namespace Spd.Resource.Repository.BizContact
 
         private (Guid? AppId, ApplicationPortalStatusEnum? PortalStatus) GetLastestControllingMemberCrcApp(IEnumerable<spd_application> apps)
         {
-            spd_application? app = apps.OrderByDescending(app => app.createdon).FirstOrDefault();
+            spd_application? app = apps
+                .Where(a => a._spd_servicetypeid_value == ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
+                .OrderByDescending(app => app.createdon)
+                .FirstOrDefault();
             if (app == null) return (null, null);
             else
             {
