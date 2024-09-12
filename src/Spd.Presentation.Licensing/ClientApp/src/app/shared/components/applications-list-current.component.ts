@@ -61,7 +61,7 @@ import { MainApplicationResponse } from '@app/core/services/application.service'
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
-									{{ application.applicationPortalStatusCode | options : 'ApplicationPortalStatusTypes' | default }}
+									{{ application.applicationPortalStatusCode | options : 'ApplicationPortalStatuses' | default }}
 								</span>
 							</mat-cell>
 						</ng-container>

@@ -28,7 +28,7 @@ import { StepBusinessLicenceManagerInformationComponent } from './step-business-
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceContactInformationComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_MANAGER_INFORMATION = 1;
+	readonly STEP_LICENCE_MANAGER_INFORMATION = 0;
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;

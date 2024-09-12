@@ -5,5 +5,7 @@ export enum EyeColourCode {
   Brown = 'Brown',
   Black = 'Black',
   Green = 'Green',
-  Hazel = 'Hazel'
+  Hazel = 'Hazel',
+  Grey = 'Grey',
+  Other = 'Other'
 }
