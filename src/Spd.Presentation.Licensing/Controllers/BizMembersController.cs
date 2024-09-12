@@ -176,5 +176,19 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
         }
 
+        /// <summary>
+        /// Get non-swl Biz controlling members
+        /// </summary>
+        /// <param name="bizId"></param>
+        /// <param name="bizContactId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/business/{bizId}/non-swl-controlling-members/{bizContactId}")]
+        [HttpGet]
+        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        public async Task<NonSwlContactInfo> GetNonSwlContactInfo([FromRoute] Guid bizContactId, CancellationToken ct)
+        {
+            return await _mediator.Send(new GetNonSwlBizMemberCommand(bizContactId), ct);
+        }
     }
 }
