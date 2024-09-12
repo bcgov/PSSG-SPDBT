@@ -240,7 +240,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
-							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE
+							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE
 						),
 						{ state: { applicationTypeCode: resp.applicationTypeData.applicationTypeCode } }
 					);
@@ -259,7 +259,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
-							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE
+							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE
 						),
 						{ state: { applicationTypeCode: ApplicationTypeCode.Replacement } }
 					);
@@ -278,7 +278,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
-							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE
+							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE
 						),
 						{ state: { applicationTypeCode: ApplicationTypeCode.Renewal } }
 					);
@@ -313,7 +313,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
 						BusinessLicenceApplicationRoutes.pathBusinessLicence(
-							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE
+							BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE
 						),
 						{ state: { applicationTypeCode: ApplicationTypeCode.New } }
 					);
@@ -328,7 +328,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		// the user can view their Profile page in read-only mode – they can't edit
 		// this info while the application is in progress
 		this.businessApplicationService
-			.createNewBusinessLicenceWithProfile()
+			.loadBusinessProfile()
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

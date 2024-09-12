@@ -5,6 +5,7 @@ namespace Spd.Manager.Licence;
 public interface IBizMemberManager
 {
     public Task<Members> Handle(GetBizMembersQuery query, CancellationToken ct);
+    public Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct);
     public Task<BizMemberResponse> Handle(CreateBizEmployeeCommand cmd, CancellationToken ct);
     public Task<BizMemberResponse> Handle(CreateBizSwlControllingMemberCommand cmd, CancellationToken ct);
     public Task<BizMemberResponse> Handle(CreateBizNonSwlControllingMemberCommand cmd, CancellationToken ct);
@@ -18,6 +19,7 @@ public interface IBizMemberManager
 public record BizControllingMemberNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl) : IRequest<ControllingMemberInvitesCreateResponse>;
 public record VerifyBizControllingMemberInviteCommand(string InviteEncryptedCode) : IRequest<ControllingMemberAppInviteVerifyResponse>;
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
+public record GetNonSwlBizMemberCommand(Guid BizContactId) : IRequest<NonSwlContactInfo>;
 public record UpsertBizMembersCommand(
     Guid BizId,
     Guid? ApplicationId,

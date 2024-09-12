@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
@@ -20,6 +21,7 @@ namespace Spd.Manager.Licence;
 internal class BizMemberManager :
         LicenceAppManagerBase,
         IRequestHandler<GetBizMembersQuery, Members>,
+        IRequestHandler<GetNonSwlBizMemberCommand, NonSwlContactInfo>,
         IRequestHandler<UpsertBizMembersCommand, Unit>,
         IRequestHandler<BizControllingMemberNewInviteCommand, ControllingMemberInvitesCreateResponse>,
         IRequestHandler<VerifyBizControllingMemberInviteCommand, ControllingMemberAppInviteVerifyResponse>,
@@ -196,6 +198,13 @@ internal class BizMemberManager :
             }
         }
         return default;
+    }
+
+    public async Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct) 
+    {
+        var result = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, ct);
+        if (result == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizContact with id {cmd.BizContactId} not found");
+        return _mapper.Map<NonSwlContactInfo>(result);
     }
 
     private async Task<Unit> UpdateMembersAsync(Members members, Guid bizId, CancellationToken ct)

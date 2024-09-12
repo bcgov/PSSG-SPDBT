@@ -1,4 +1,5 @@
 import {
+	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	ArmouredVehiclePermitReasonCode,
@@ -173,7 +174,7 @@ export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'Update', code: ApplicationTypeCode.Update },
 ];
 
-export const ApplicationPortalStatusTypes: SelectOptions[] = [
+export const ApplicationPortalStatuses: SelectOptions[] = [
 	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
 	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
 	{ desc: 'Cancelled by Appl.', code: ApplicationPortalStatusCode.CancelledByApplicant },
@@ -203,6 +204,15 @@ export const BizTypes: SelectOptions[] = [
 export const BusinessLicenceTypes: SelectOptions[] = BizTypes.filter(
 	(item: SelectOptions) => item.code != BizTypeCode.None
 );
+
+export const ApplicationInviteStatuses: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationInviteStatusCode.Draft },
+	{ desc: 'Sent', code: ApplicationInviteStatusCode.Sent },
+	{ desc: 'Failed', code: ApplicationInviteStatusCode.Failed },
+	{ desc: 'Completed', code: ApplicationInviteStatusCode.Completed },
+	{ desc: 'Cancelled', code: ApplicationInviteStatusCode.Cancelled },
+	{ desc: 'Expired', code: ApplicationInviteStatusCode.Expired },
+];
 
 export const GenderTypes: SelectOptions[] = [
 	{ desc: 'M', code: GenderCode.M },
@@ -331,6 +341,7 @@ export const HairColourTypes: SelectOptions[] = [
 	{ desc: 'Brown', code: HairColourCode.Brown },
 	{ desc: 'Grey', code: HairColourCode.Grey },
 	{ desc: 'Red', code: HairColourCode.Red },
+	{ desc: 'White', code: HairColourCode.White },
 ];
 
 export const EyeColourTypes: SelectOptions[] = [
@@ -338,7 +349,9 @@ export const EyeColourTypes: SelectOptions[] = [
 	{ desc: 'Blue', code: EyeColourCode.Blue },
 	{ desc: 'Brown', code: EyeColourCode.Brown },
 	{ desc: 'Green', code: EyeColourCode.Green },
+	{ desc: 'Grey', code: EyeColourCode.Grey },
 	{ desc: 'Hazel', code: EyeColourCode.Hazel },
+	{ desc: 'Other', code: EyeColourCode.Other },
 ];
 
 export const HeightUnitTypes: SelectOptions[] = [

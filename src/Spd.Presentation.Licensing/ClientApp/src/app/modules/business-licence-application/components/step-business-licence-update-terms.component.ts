@@ -34,7 +34,7 @@ export class StepBusinessLicenceUpdateTermsComponent {
 
 		this.router.navigateByUrl(
 			BusinessLicenceApplicationRoutes.pathBusinessLicence(
-				BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_USER_PROFILE
+				BusinessLicenceApplicationRoutes.BUSINESS_LICENCE_APP_PROFILE
 			),
 			{ state: { applicationTypeCode: ApplicationTypeCode.Update } }
 		);
