@@ -16,7 +16,7 @@ public interface IBizMemberManager
     public Task<ControllingMemberAppInviteVerifyResponse> Handle(VerifyBizControllingMemberInviteCommand command, CancellationToken ct);
 }
 
-public record BizControllingMemberNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl) : IRequest<ControllingMemberInvitesCreateResponse>;
+public record BizControllingMemberNewInviteCommand(Guid BizContactId, Guid UserId, string HostUrl, ControllingMemberAppInviteTypeCode InviteType = ControllingMemberAppInviteTypeCode.New) : IRequest<ControllingMemberInvitesCreateResponse>;
 public record VerifyBizControllingMemberInviteCommand(string InviteEncryptedCode) : IRequest<ControllingMemberAppInviteVerifyResponse>;
 public record GetBizMembersQuery(Guid BizId, Guid? AppId = null) : IRequest<Members>;
 public record GetNonSwlBizMemberCommand(Guid BizContactId) : IRequest<NonSwlContactInfo>;
