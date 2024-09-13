@@ -28,7 +28,7 @@ namespace Spd.Utilities.Dynamics
                 ;
 
             services.AddSingleton<IDynamicsContextFactory, DynamicsContextFactory>();
-
+            services.AddTransient<DynamicsHealthCheck>();
             return services;
         }
     }
