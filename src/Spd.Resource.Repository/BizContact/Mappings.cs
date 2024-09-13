@@ -32,7 +32,7 @@ namespace Spd.Resource.Repository.BizContact
                 .ForMember(d => d.LatestControllingMemberCrcAppPortalStatusEnum, opt => opt.MapFrom(s => GetLastestControllingMemberCrcApp(s.spd_businesscontact_spd_application.ToList()).PortalStatus));
         }
 
-        private (Guid? AppId, ApplicationPortalStatusEnum? PortalStatus) GetLastestControllingMemberCrcApp(IEnumerable<spd_application> apps)
+        private static (Guid? AppId, ApplicationPortalStatusEnum? PortalStatus) GetLastestControllingMemberCrcApp(IEnumerable<spd_application> apps)
         {
             Guid? cmServiceTypeGuid = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
             spd_application? app = apps
@@ -52,9 +52,11 @@ namespace Spd.Resource.Repository.BizContact
             }
         }
 
-        private (Guid? InviteId, ApplicationInviteStatusEnum? InviteStatus) GetLastestControllingMemberInvite(IEnumerable<spd_portalinvitation> invites)
+        private static (Guid? InviteId, ApplicationInviteStatusEnum? InviteStatus) GetLastestControllingMemberInvite(IEnumerable<spd_portalinvitation> invites)
         {
-            spd_portalinvitation? invite = invites.OrderByDescending(app => app.createdon).FirstOrDefault();
+            spd_portalinvitation? invite = invites.Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC)
+                .OrderByDescending(app => app.createdon)
+                .FirstOrDefault();
             if (invite == null) return (null, null);
             else
             {
