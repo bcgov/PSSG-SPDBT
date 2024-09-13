@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Spd.Utilities.Shared.Exceptions;
 
+[AttributeUsage(validOn: AttributeTargets.Class)]
 public sealed class ApiExceptionFilterAttribute([NotNull] ILogger<ApiExceptionFilterAttribute> logger) : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
