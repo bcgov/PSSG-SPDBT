@@ -35,6 +35,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         public Guid BizContactId { get; set; }
         public Guid BizId { get; set; }
         public Guid InviteId { get; set; }
+        public ControllingMemberAppInviteTypeEnum InviteTypeCode { get; set; }
     }
 
     public record ControllingMemberInvite
@@ -47,7 +48,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         public Guid BizId { get; set; }
         public Guid CreatedByUserId { get; set; }
         public Guid BizContactId { get; set; }
-        public ControllingMemberAppInviteTypeEnum InviteType { get; set; }
+        public ControllingMemberAppInviteTypeEnum InviteTypeCode { get; set; } = ControllingMemberAppInviteTypeEnum.New;
     }
 
     public enum ControllingMemberAppInviteTypeEnum
