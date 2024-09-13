@@ -52,6 +52,7 @@ public record ControllingMemberAppInviteVerifyResponse()
 {
     public Guid BizContactId { get; set; }
     public Guid? BizLicAppId { get; set; }
+    public Guid? ContactId { get; set; }
     public Guid BizId { get; set; }
     public Guid? ControllingMemberCrcAppId { get; set; }
     public ApplicationPortalStatusCode? ControllingMemberCrcAppPortalStatusCode { get; set; }
