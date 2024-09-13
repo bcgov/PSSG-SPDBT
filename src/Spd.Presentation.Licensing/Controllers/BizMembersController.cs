@@ -146,21 +146,24 @@ namespace Spd.Presentation.Licensing.Controllers
 
         /// <summary>
         /// Create controlling member crc invitation for this biz contact
+        /// Example: http://localhost:5114/api/business-licence-application/controlling-member-invitation/123?inviteType=Update
         /// </summary>
         /// <param name="bizContactId"></param>
+        /// <param name="inviteType"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
         [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
-        public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId, CancellationToken ct)
+        public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId,
+            [FromQuery] ControllingMemberAppInviteTypeCode inviteType = ControllingMemberAppInviteTypeCode.New)
         {
             var userIdStr = _currentUser.GetUserId();
             if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Unauthorized");
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
-            var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl);
-            return await _mediator.Send(inviteCreateCmd, ct);
+            var inviteCreateCmd = new BizControllingMemberNewInviteCommand(bizContactId, Guid.Parse(userIdStr), hostUrl, inviteType);
+            return await _mediator.Send(inviteCreateCmd);
         }
 
         /// <summary>
