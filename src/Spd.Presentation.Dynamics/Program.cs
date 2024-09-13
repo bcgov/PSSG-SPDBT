@@ -1,115 +1,117 @@
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Serilog;
 using Spd.Presentation.Dynamics.Swagger;
 using Spd.Utilities.BCeIDWS;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
-using Spd.Utilities.Hosting.Logging;
 using Spd.Utilities.Payment;
 using Spd.Utilities.Printing;
-using System.Configuration;
-using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
-     .Where(assembly =>
-     {
-         var assemblyName = Path.GetFileName(assembly);
-         return !assemblyName.StartsWith("System.") && !assemblyName.StartsWith("Microsoft.") && assemblyName.StartsWith("Spd");
-     })
-     .Select(assembly => Assembly.LoadFrom(assembly))
-     .ToArray();
+var secretsFilePath = builder.Configuration.GetValue<string>("SECRETS_FILE");
+if (!string.IsNullOrEmpty(secretsFilePath)) builder.Configuration.AddJsonFile(secretsFilePath, true, true);
 
-var secretsFile = Environment.GetEnvironmentVariable($"SECRETS_FILE");
-if (!string.IsNullOrEmpty(secretsFile)) builder.Configuration.AddJsonFile(secretsFile, true, true);
+var logger = builder.ConfigureWebApplicationObservability();
 
-Observability.GetInitialLogger(builder.Configuration);
+logger.Information("Starting up");
 
-builder.Host.UseDefaultLogging(Assembly.GetEntryAssembly()!.GetName().Name!);
-
-builder.Services.Configure<KestrelServerOptions>(options =>
+try
 {
-    options.Limits.MaxRequestBodySize = int.MaxValue; // if don't set default value is: 30 MB
-});
+    var assemblies = ReflectionExtensions.DiscoverLocalAessemblies(prefix: "Spd.");
 
-builder.Services.ConfigureCors(builder.Configuration);
-var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
+    builder.Services.ConfigureCors(builder.Configuration);
+    var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
 
-string? protectionShareKeyAppName = builder.Configuration.GetValue<string>("ProtectionShareKeyAppName");
-if (protectionShareKeyAppName == null)
-    throw new ConfigurationErrorsException("ProtectionShareKeyAppName is not set correctly.");
-builder.Services.ConfigureDataProtection(builder.Configuration, protectionShareKeyAppName);
+    builder.Services.ConfigureDataProtection(builder.Configuration, "ProtectionShareKeyApp");
+    builder.Services.ConfigureSwagger(assemblyName);
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddControllers()
+        .AddJsonOptions(x =>
+        {
+            x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
-builder.Services.ConfigureSwagger(assemblyName);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers()
-    .AddJsonOptions(x =>
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
+    builder.Services.AddAutoMapper(assemblies);
+
+    var redisConnection = builder.Configuration.GetValue<string>("RedisConnection");
+    if (!string.IsNullOrWhiteSpace(redisConnection))
     {
-        x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConnection);
+    }
+    else
+    {
+        logger.Warning("Redis distributed cache is not configure correctly");
+        builder.Services.AddDistributedMemoryCache();
+    }
+
+    builder.Services
+        .AddFileStorageProxy(builder.Configuration)
+        .AddPaymentService(builder.Configuration)
+        .AddDynamicsProxy(builder.Configuration)
+        .AddPrinting(builder.Configuration);
+
+    builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        builder.Configuration.GetSection("authentication:jwt").Bind(options);
+        options.Validate();
+    });
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+        {
+            policy
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser();
+        });
+        options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme)!;
     });
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-builder.Services.AddAutoMapper(assemblies);
-builder.Services.AddDistributedMemoryCache();
-builder.Services
-    .AddFileStorageProxy(builder.Configuration)
-    .AddPaymentService(builder.Configuration)
-    .AddDynamicsProxy(builder.Configuration)
-    .AddPrinting(builder.Configuration);
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddRequestDecompression().AddResponseCompression();
+    builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
+    builder.Services.AddBCeIDService(builder.Configuration);
+    builder.Services.AddHealthChecks(builder.Configuration, assemblies);
 
-builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-{
-    builder.Configuration.GetSection("authentication:jwt").Bind(options);
-    options.Validate();
-});
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
     {
-        policy
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser();
-    });
-    options.DefaultPolicy = options.GetPolicy(JwtBearerDefaults.AuthenticationScheme)!;
-});
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
-builder.Services.AddBCeIDService(builder.Configuration);
-builder.Services.AddHealthChecks(builder.Configuration);
+    app.UseRequestDecompression();
+    app.UseResponseCompression();
+    app.UseRouting();
+    app.UseObservabilityMiddleware();
+    app.UseHealthChecks();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
 
-var app = builder.Build();
+    // Initialize slow dependencies
+    app.Services.GetRequiredService<AutoMapper.IConfigurationProvider>().CompileMappings();
 
-// Initialize slow dependencies
-app.Services.GetRequiredService<AutoMapper.IConfigurationProvider>().CompileMappings();
+    await app.RunAsync();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    logger.Information("Stopped");
+    return 0;
 }
-
-app.UseAuthorization();
-
-app.MapHealthChecks("/health/startup", new HealthCheckOptions
+catch (Exception e)
 {
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
-app.MapHealthChecks("/health/liveness", new HealthCheckOptions { Predicate = _ => false })
-   .ShortCircuit();
-app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = _ => false })
-   .ShortCircuit();
-app.UseDefaultHttpRequestLogging();
-app.MapControllers();
-
-await app.RunAsync();
+    logger.Fatal(e, "An unhandled exception occurred during bootstrapping");
+    return -1;
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}
