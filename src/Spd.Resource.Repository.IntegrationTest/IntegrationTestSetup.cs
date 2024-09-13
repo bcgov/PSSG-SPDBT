@@ -8,6 +8,7 @@ using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
+using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.LicApp;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.OptionSet;
@@ -66,6 +67,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IBizContactRepository, BizContactRepository>();
         serviceCollection.AddTransient<IApplicationRepository, ApplicationRepository>();
         serviceCollection.AddTransient<ITaskRepository, TaskRepository>();
+        serviceCollection.AddTransient<IControllingMemberCrcRepository, ControllingMemberCrcRepository>();
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
 
