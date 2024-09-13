@@ -280,7 +280,30 @@ internal class ControllingMemberCrcAppManager :
         CancellationToken ct)
     {
         ChangeSpec changes = new();
+        //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
+        PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
+            : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
 
+        if (newRequest.IsPoliceOrPeaceOfficer != originalApp.IsPoliceOrPeaceOfficer ||
+            newRequest.PoliceOfficerRoleCode != originalRoleCode ||
+            newRequest.OtherOfficerRole != originalApp.OtherOfficerRole ||
+            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+        {
+            IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
+            changes.PeaceOfficerStatusChanged = true;
+            changes.PeaceOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Business have to requested to update below submitted information for its controlling member:" +
+                $"\nControlling Member - {originalApp.Surname + ", " + originalApp.GivenName}\nUpdated: Peace Officer Status\nFile Names {string.Join("\n* ", fileNames)} ",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Updating controlling member background information for Case Number {originalApp.CaseNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingAccountId = originalApp.OrganizationId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                //TODO: in confluence it says licence, but don't have licence in crc app, currently is filling with null (it should be a Guid, doesn't apply CaseNumber)
+                LicenceId = null,
+            }, ct)).TaskId;
+        }
         //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
         if (newRequest.HasNewMentalHealthCondition == true)
         {
@@ -288,12 +311,15 @@ internal class ControllingMemberCrcAppManager :
             IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
             changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the attached mental health condition form submitted by the controlling member : {string.Join(";", fileNames)}  ",
+                Description = $"Business have to requested to update below submitted information for its controlling member:" +
+                $"\nControlling Member - {originalApp.Surname + ", " + originalApp.GivenName}\nUpdated: Mental Health\nFile Names {string.Join("\n* ", fileNames)} ",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Mental Health Condition Update on {originalApp.CaseNumber}",
+                Subject = $"Updating controlling member background information for {originalApp.CaseNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.ContactId,
+                RegardingAccountId = originalApp.OrganizationId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                //TODO: in confluence it says licence, but don't have licence in crc app, currently is filling with null (it should be a Guid, doesn't apply CaseNumber)
+                LicenceId = null,
             }, ct)).TaskId;
         }
 
@@ -303,13 +329,15 @@ internal class ControllingMemberCrcAppManager :
             changes.CriminalHistoryChanged = true;
             changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Please see the criminal charges submitted by the licensee with details as following : {newRequest.CriminalHistoryDetail}",
+                Description = $"Business have to requested to update below submitted information for its controlling member:" +
+                $"\nControlling Member - {originalApp.Surname + ", " + originalApp.GivenName}\nUpdated: Criminal History with details:\n{newRequest.CriminalHistoryDetail} ",
                 DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
-                Subject = $"Criminal Charges or New Conviction Update on {originalApp.CaseNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.High,
-                RegardingContactId = originalApp.ContactId,
+                Subject = $"Updating controlling member background information for {originalApp.CaseNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingAccountId = originalApp.OrganizationId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                LicenceId = originalApp.ControllingMemberAppId
+                //TODO: in confluence it says licence, but don't have licence in crc app, currently is filling with null (it should be a Guid, doesn't apply CaseNumber)
+                LicenceId = null
             }, ct)).TaskId;
         }
         return changes;

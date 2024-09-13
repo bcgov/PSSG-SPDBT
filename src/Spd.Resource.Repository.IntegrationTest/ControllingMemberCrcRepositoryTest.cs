@@ -341,6 +341,7 @@ public class ControllingMemberCrcRepositoryTest : IClassFixture<IntegrationTestS
             Assert.Equal(getResult.GenderCode, cmd.GenderCode);
             Assert.Equal(getResult.PhoneNumber, cmd.PhoneNumber);
             Assert.Equal(getResult.Aliases, cmd.Aliases);
+            Assert.Equal(getResult.OrganizationId, accountid);
             Assert.NotNull(getResult.CaseNumber);
         }
         catch (Exception e)
