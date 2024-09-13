@@ -13,12 +13,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.IntegrationTest;
-public class ControllingMemberCrcRepositroyTest : IClassFixture<IntegrationTestSetup>
+public class ControllingMemberCrcRepositoryTest : IClassFixture<IntegrationTestSetup>
 {
     private DynamicsContext _context;
     private readonly IFixture fixture;
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
-    public ControllingMemberCrcRepositroyTest(IntegrationTestSetup testSetup)
+    public ControllingMemberCrcRepositoryTest(IntegrationTestSetup testSetup)
     {
         fixture = new Fixture();
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
