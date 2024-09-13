@@ -104,8 +104,10 @@ internal class BizMemberManager :
 
         //get info from bizContactId
         BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, cancellationToken);
+        if (contactResp == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the non-swl controlling member.");
         if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-controlling member.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-swl controlling member.");
         if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
         if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null &&
@@ -115,6 +117,7 @@ internal class BizMemberManager :
         var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
         createCmd.CreatedByUserId = cmd.UserId;
         createCmd.HostUrl = cmd.HostUrl;
+        createCmd.InviteTypeCode = Enum.Parse<ControllingMemberAppInviteTypeEnum>(cmd.InviteTypeCode.ToString());
         await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
 
         return new ControllingMemberInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };

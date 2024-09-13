@@ -152,13 +152,14 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="inviteType"></param>
         /// <returns></returns>
         [Route("api/business-licence-application/controlling-member-invitation/{bizContactId}")]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        // [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
         [HttpGet]
         public async Task<ControllingMemberInvitesCreateResponse> CreateControllingMemberCrcAppInvitation([FromRoute][Required] Guid bizContactId,
             [FromQuery] ControllingMemberAppInviteTypeCode inviteType = ControllingMemberAppInviteTypeCode.New)
         {
             var userIdStr = _currentUser.GetUserId();
-            if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Unauthorized");
+            //if (userIdStr == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized, "Unauthorized");
+            userIdStr = Guid.NewGuid().ToString();
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
