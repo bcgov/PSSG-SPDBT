@@ -28,7 +28,7 @@ namespace Spd.Utilities.Dynamics
             e.RequestMessage.SetHeader("Authorization", $"Bearer {authToken}");
         }
 
-        private void Client_BuildingRequest(object? sender, BuildingRequestEventArgs e)
+        private static void Client_BuildingRequest(object? sender, BuildingRequestEventArgs e)
         {
             if (e.RequestUri.IsAbsoluteUri)
             {
