@@ -66,7 +66,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         {
             spd_portalinvitation? invite = await _dynaContext.spd_portalinvitations
                  .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
-                 .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC)
+                 .Where(i => i.spd_invitationtype != null && (i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC || i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRCUpdate))
                  .Where(i => i.spd_portalinvitationid == cmInviteUpdateCmd.ControllingMemberInviteId)
                  .FirstOrDefaultAsync(cancellationToken);
             if (invite == null)
@@ -95,7 +95,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
             var invite = await _dynaContext.spd_portalinvitations
                 .Expand(i => i.spd_OrganizationId)
                 .Where(i => i.spd_portalinvitationid == inviteId)
-                .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC)
+                .Where(i => i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC || i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRCUpdate)
                 .Where(i => i.statecode != DynamicsConstants.StateCode_Inactive)
                 .FirstOrDefaultAsync(ct);
             if (invite == null)
