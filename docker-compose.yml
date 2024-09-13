@@ -1,0 +1,103 @@
+services:
+  screening-portal:
+    image: screening-portal
+    build:
+      context: ./src
+      dockerfile: screening-portal.dockerfile
+    env_file:
+      - .env
+    environment:
+      OTEL_SERVICE_NAME: "Spd.Presentation.Screening"
+      SECRETS_FILE: /config/secrets.json
+    volumes:
+      - ${SECRETS_BASE_PATH}/5050035b-d63a-4c6e-a973-fe8e5d35829b/secrets.json:/config/secrets.json
+      - ./tmp:/dp:rw
+    expose:
+      - 8080
+    ports:
+      - "4200:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+    depends_on:
+      - redis
+      - otel-collector
+
+  licensing-portal:
+    image: licensing-portal
+    build:
+      context: ./src
+      dockerfile: licensing-portal.dockerfile
+    env_file:
+      - .env
+    environment:
+      OTEL_SERVICE_NAME: "Spd.Presentation.Licensing"
+      SECRETS_FILE: /config/secrets.json
+    volumes:
+      - ${SECRETS_BASE_PATH}/168d0646-71ea-405b-8f2f-d47cdf5a0759/secrets.json:/config/secrets.json
+      - ./tmp:/dp:rw
+    expose:
+      - 8080
+    ports:
+      - "4300:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+    depends_on:
+      - redis
+      - otel-collector
+
+  dynamics-api:
+    image: dynammics-api
+    build:
+      context: ./src
+      dockerfile: dynamics.dockerfile
+    env_file:
+      - .env
+    environment:
+      OTEL_SERVICE_NAME: "Spd.Presentation.Dynamics"
+      SECRETS_FILE: /config/secrets.json
+    volumes:
+      - ${SECRETS_BASE_PATH}/c03da675-16e3-44d2-b265-90779c030de7/secrets.json:/config/secrets.json
+      - ./tmp:/dp:rw
+    expose:
+      - 8080
+    ports:
+      - "4100:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+    depends_on:
+      - redis
+      - otel-collector
+
+  # Redis
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  # OpenTelemetry Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ./tools/compose/otel-config.yaml:/etc/otelcol-contrib/config.yaml
+    environment: []
+    ports:
+      - "4317:4317"
+      - "4318:4318"

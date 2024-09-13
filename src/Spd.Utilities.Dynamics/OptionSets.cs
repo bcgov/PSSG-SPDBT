@@ -320,6 +320,7 @@ namespace Spd.Utilities.Dynamics
         CourtAppointedBailiff = 100000003,
         SpecialProvincialOrMunicipalConstable = 100000004,
         PoliceOfficer = 100000005,
+        PoliceOfficerRetired = 100000007,
         Other = 100000006,
         None = 100000008
     }
