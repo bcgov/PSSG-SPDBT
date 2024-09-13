@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
@@ -109,7 +108,8 @@ internal class BizMemberManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-controlling member.");
         if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
-        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null)
+        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null &&
+            contactResp.LatestControllingMemberCrcAppPortalStatusEnum != ApplicationPortalStatusEnum.CompletedCleared)
             throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
 
         var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
@@ -200,7 +200,7 @@ internal class BizMemberManager :
         return default;
     }
 
-    public async Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct) 
+    public async Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct)
     {
         var result = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, ct);
         if (result == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizContact with id {cmd.BizContactId} not found");
