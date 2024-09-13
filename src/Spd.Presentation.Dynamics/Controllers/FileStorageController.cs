@@ -19,6 +19,7 @@ public class FileStorageController : SpdControllerBase
 {
     private readonly IMainFileStorageService _storageService;
     private readonly ITransientFileStorageService _tranientFileStorageService;
+
     public FileStorageController(IMainFileStorageService storageService, ITransientFileStorageService tranientFileStorageService) : base()
     {
         _storageService = storageService;
@@ -44,6 +45,7 @@ public class FileStorageController : SpdControllerBase
     /// </returns>
     [HttpPost]
     [Route("api/files/{fileId}")]
+    [RequestSizeLimit(100_000_000)]
     public async Task<IActionResult> UploadFileAsync(
         [FromForm] UploadFileRequest request,
         [FromRoute] Guid fileId,
@@ -79,9 +81,9 @@ public class FileStorageController : SpdControllerBase
     }
 
     /// <summary>
-    /// Download the file with fileId and folder name. 
-    /// If a file is expected to be in a folder, the client must pass the correct folder name in the request header, 
-    /// otherwise no file will found; the default header value is the root folder 
+    /// Download the file with fileId and folder name.
+    /// If a file is expected to be in a folder, the client must pass the correct folder name in the request header,
+    /// otherwise no file will found; the default header value is the root folder
     /// </summary>
     /// <param name="fileId">the GUID of the file</param>
     /// <param name="folder">be used to allocate the file in a specific folder in storage, if not specified, defaults to / (root folder)</param>
