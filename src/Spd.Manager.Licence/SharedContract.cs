@@ -89,6 +89,7 @@ public enum PoliceOfficerRoleCode
     CourtAppointedBailiff,
     SpecialProvincialOrMunicipalConstable,
     PoliceOfficer,
+    PoliceOfficerRetired,
     Other,
 }
 
