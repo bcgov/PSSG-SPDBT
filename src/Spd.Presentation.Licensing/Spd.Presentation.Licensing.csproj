@@ -15,7 +15,6 @@
 				<PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
 				<PackageReference Include="AutoMapper" />
 				<PackageReference Include="MediatR" />
-				<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
 				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 				<PackageReference Include="Swashbuckle.AspNetCore" />
 				<PackageReference Include="Microsoft.AspNetCore.OpenApi" />

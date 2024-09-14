@@ -141,7 +141,8 @@ namespace Spd.Utilities.Dynamics
     {
         PortalUser = 100000000,
         ScreeningRequest = 100000001,
-        ControllingMemberCRC = 100000002
+        ControllingMemberCRC = 100000002,
+        ControllingMemberCRCUpdate = 100000003
     }
 
     public enum InvitationStatus
@@ -319,6 +320,7 @@ namespace Spd.Utilities.Dynamics
         CourtAppointedBailiff = 100000003,
         SpecialProvincialOrMunicipalConstable = 100000004,
         PoliceOfficer = 100000005,
+        PoliceOfficerRetired = 100000007,
         Other = 100000006,
         None = 100000008
     }
