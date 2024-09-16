@@ -93,10 +93,7 @@ namespace Spd.Manager.Licence
                     else
                     {
                         //contact exists
-                        UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
-                        updateContactCmd.Id = (Guid)id.ContactId;
-                        updateContactCmd.IdentityId = id.Id;
-                        contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
+                        //Deprecated: Update existing contact information to reflect that BCS info;
                     }
                 }
                 else
