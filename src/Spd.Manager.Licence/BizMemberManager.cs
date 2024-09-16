@@ -88,7 +88,7 @@ internal class BizMemberManager :
         //get existing controlling member crc app
         BizContactResp? contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
         if (contactResp == null || contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.InternalServerError, "Invalid business contact");
+            throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
         _mapper.Map<BizContactResp, ControllingMemberAppInviteVerifyResponse>(contactResp, response);
 
         return response;
