@@ -4,6 +4,7 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.ApplicationInvite;
+using Spd.Resource.Repository.BizLicApplication;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.ControllingMemberCrcApplication;
 using Spd.Resource.Repository.ControllingMemberInvite;
@@ -30,6 +31,7 @@ public class ControllingMemberCrcAppManagerTests
     private readonly Mock<IControllingMemberInviteRepository> _cmInviteRepositoryMock;
     private readonly Mock<IContactRepository> _contactRepositroyMock;
     private readonly Mock<ITaskRepository> _taskRepositoryMock;
+    private readonly Mock<IBizLicApplicationRepository> _bizLicRepositoryMock;
 
     private ControllingMemberCrcAppManager sut;
 
@@ -46,6 +48,7 @@ public class ControllingMemberCrcAppManagerTests
         _cmInviteRepositoryMock = new Mock<IControllingMemberInviteRepository>();
         _contactRepositroyMock = new Mock<IContactRepository>();
         _taskRepositoryMock = new Mock<ITaskRepository>();
+        _bizLicRepositoryMock = new Mock<IBizLicApplicationRepository>();
         var mapperConfig = new MapperConfiguration(x =>
         {
             x.AddProfile<Mappings>();
@@ -56,7 +59,7 @@ public class ControllingMemberCrcAppManagerTests
         _feeRepositoryMock.Object,
         _licenceRepositoryMock.Object,
         _mainFileServiceMock.Object,
-        _transientFileServiceMock.Object, _controllingMemberCrcRepositoryMock.Object, 
+        _transientFileServiceMock.Object, _controllingMemberCrcRepositoryMock.Object, _bizLicRepositoryMock.Object,
         _cmInviteRepositoryMock.Object,_contactRepositroyMock.Object, _taskRepositoryMock.Object, _licAppRepositoryMock.Object);
     }
 
