@@ -39,6 +39,7 @@ internal class ControllingMemberCrcAppManager :
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
+    private readonly IBizLicApplicationRepository _bizLicRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -49,6 +50,7 @@ internal class ControllingMemberCrcAppManager :
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
+        IBizLicApplicationRepository bizLicRepository,
         IControllingMemberInviteRepository cmInviteRepository,
         IContactRepository contactRepository,
         ITaskRepository taskRepository,
@@ -65,6 +67,7 @@ internal class ControllingMemberCrcAppManager :
         _cmInviteRepository = cmInviteRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
+        _bizLicRepository = bizLicRepository;
     }
     public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
     {
@@ -275,12 +278,25 @@ internal class ControllingMemberCrcAppManager :
         }
     }
     private async Task<ChangeSpec> AddDynamicTasks(ControllingMemberCrcApplicationResp originalApp,
-        ControllingMemberCrcAppUpdateRequest newRequest,
-        IEnumerable<LicAppFileInfo> newFileInfos,
-        CancellationToken ct)
+
+    ControllingMemberCrcAppUpdateRequest newRequest,
+    IEnumerable<LicAppFileInfo> newFileInfos,
+    CancellationToken ct)
     {
         ChangeSpec changes = new();
-        //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team
+        StringBuilder descriptionBuilder = new();
+        List<string> fileNames = new List<string>();
+
+        BizLicApplicationResp? bizLicApp = await _bizLicRepository.GetBizLicApplicationAsync((Guid) originalApp.ParentBizLicApplicationId, ct);
+        // Collect file names for attachments
+        fileNames.AddRange(newFileInfos
+            .Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict ||
+                        d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
+            .Select(d => d.FileName));
+
+        bool hasChanges = false;
+
+        // Check PeaceOfficerStatusChanged
         PoliceOfficerRoleCode? originalRoleCode = originalApp.PoliceOfficerRoleCode == null ? null
             : Enum.Parse<PoliceOfficerRoleCode>(originalApp.PoliceOfficerRoleCode.ToString());
 
@@ -289,57 +305,59 @@ internal class ControllingMemberCrcAppManager :
             newRequest.OtherOfficerRole != originalApp.OtherOfficerRole ||
             newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
         {
-            IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict).Select(d => d.FileName);
+            descriptionBuilder.AppendLine("* Peace Officer Status");
             changes.PeaceOfficerStatusChanged = true;
-            changes.PeaceOfficerStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = $"Business have to requested to update below submitted information for its controlling member:" +
-                $"\nControlling Member - {originalApp.Surname + ", " + originalApp.GivenName}\nUpdated: Peace Officer Status\nFile Names {string.Join("\n* ", fileNames)} ",
-                DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Updating controlling member background information for Case Number {originalApp.CaseNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingAccountId = originalApp.OrganizationId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                //TODO: in confluence it says licence, but don't have licence in crc app, currently is filling with null (it should be a Guid, doesn't apply CaseNumber)
-                LicenceId = null,
-            }, ct)).TaskId;
-        }
-        //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
-        if (newRequest.HasNewMentalHealthCondition == true)
-        {
-            changes.MentalHealthStatusChanged = true;
-            IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
-            changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = $"Business have to requested to update below submitted information for its controlling member:" +
-                $"\nControlling Member - {originalApp.Surname + ", " + originalApp.GivenName}\nUpdated: Mental Health\nFile Names {string.Join("\n* ", fileNames)} ",
-                DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Updating controlling member background information for {originalApp.CaseNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingAccountId = originalApp.OrganizationId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                //TODO: in confluence it says licence, but don't have licence in crc app, currently is filling with null (it should be a Guid, doesn't apply CaseNumber)
-                LicenceId = null,
-            }, ct)).TaskId;
+            hasChanges = true;
         }
 
-        //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
+        // Check MentalHealthStatusChanged
+        if (newRequest.HasNewMentalHealthCondition == true)
+        {
+            descriptionBuilder.AppendLine("* Mental Health");
+            changes.MentalHealthStatusChanged = true;
+            hasChanges = true;
+        }
+
+        // Check CriminalHistoryChanged
         if (newRequest.HasNewCriminalRecordCharge == true)
         {
+            descriptionBuilder.AppendLine("* Criminal History");
             changes.CriminalHistoryChanged = true;
-            changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            hasChanges = true;
+        }
+
+        // Create a single task if there are changes
+        if (hasChanges)
+        {
+            var taskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
                 Description = $"Business have to requested to update below submitted information for its controlling member:" +
-                $"\nControlling Member - {originalApp.Surname + ", " + originalApp.GivenName}\nUpdated: Criminal History with details:\n{newRequest.CriminalHistoryDetail} ",
-                DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
-                Subject = $"Updating controlling member background information for {originalApp.CaseNumber}",
+                              $"\nControlling Member - {originalApp.Surname}, {originalApp.GivenName}" +
+                              $"\nUpdated:\n{descriptionBuilder.ToString().Trim()}" +
+                              $"{(fileNames.Any() ? $"\n\nFile Names:\n* {string.Join("\n* ", fileNames)}" : string.Empty)}",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Updating controlling member background information for {bizLicApp.CaseNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
                 RegardingAccountId = originalApp.OrganizationId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                //TODO: in confluence it says licence, but don't have licence in crc app, currently is filling with null (it should be a Guid, doesn't apply CaseNumber)
-                LicenceId = null
+                LicenceId = bizLicApp.LicenceAppId 
             }, ct)).TaskId;
+
+            // Assign the generated task ID to the appropriate properties
+            if (changes.PeaceOfficerStatusChanged)
+            {
+                changes.PeaceOfficerStatusChangeTaskId = taskId;
+            }
+            if (changes.MentalHealthStatusChanged)
+            {
+                changes.MentalHealthStatusChangeTaskId = taskId;
+            }
+            if (changes.CriminalHistoryChanged)
+            {
+                changes.CriminalHistoryStatusChangeTaskId = taskId;
+            }
         }
+
         return changes;
     }
     private static void ValidateFilesForUpdateAppAsync(ControllingMemberCrcAppUpdateRequest request,
