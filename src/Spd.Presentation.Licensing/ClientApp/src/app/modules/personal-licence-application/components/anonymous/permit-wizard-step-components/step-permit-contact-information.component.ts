@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { CommonContactInformationComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-contact-information.component';
+import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-12 mx-auto">
-					<app-common-contact-information [form]="form"></app-common-contact-information>
+					<app-form-contact-information [form]="form"></app-form-contact-information>
 				</div>
 			</div>
 		</app-step-section>
@@ -26,7 +26,7 @@ export class StepPermitContactInformationComponent implements OnInit, LicenceChi
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
+	@ViewChild(FormContactInformationComponent) contactInformationComponent!: FormContactInformationComponent;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 

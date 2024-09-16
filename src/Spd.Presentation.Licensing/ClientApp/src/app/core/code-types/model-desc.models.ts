@@ -411,6 +411,7 @@ export const PoliceOfficerRoleTypes: SelectOptions[] = [
 	{ desc: 'Court Appointed Bailiff', code: PoliceOfficerRoleCode.CourtAppointedBailiff },
 	{ desc: 'Other', code: PoliceOfficerRoleCode.Other },
 	{ desc: 'Police Officer', code: PoliceOfficerRoleCode.PoliceOfficer },
+	{ desc: 'Police Officer - Retired', code: PoliceOfficerRoleCode.PoliceOfficerRetired },
 	{ desc: 'Sheriff Deputy Sheriff', code: PoliceOfficerRoleCode.SheriffDeputySheriff },
 	{
 		desc: 'Special Provincial Or Municipal Constable',

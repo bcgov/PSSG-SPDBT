@@ -22,8 +22,12 @@ import { ExpiredLicenceComponent } from './components/expired-licence.component'
 import { FileUploadComponent } from './components/file-upload.component';
 import { FormAliasesComponent } from './components/form-aliases.component';
 import { FormBcDriverLicenceComponent } from './components/form-bc-driver-licence.component';
+import { FormContactInformationComponent } from './components/form-contact-information.component';
 import { FormFingerprintsComponent } from './components/form-fingerprints.component';
 import { FormMentalHealthConditionsComponent } from './components/form-mental-health-conditions.component';
+import { FormPersonalInformationNewAnonymousComponent } from './components/form-personal-information-new-anonymous.component';
+import { FormPersonalInformationRenewUpdateAnonymousComponent } from './components/form-personal-information-renew-update-anonymous.component';
+import { FormPersonalInformationComponent } from './components/form-personal-information.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
 import { LicenceListExpiredComponent } from './components/licence-list-expired.component';
@@ -99,6 +103,10 @@ const SHARED_COMPONENTS = [
 	FormPoliceBackgroundComponent,
 	FormMentalHealthConditionsComponent,
 	FormSwlCitizenshipComponent,
+	FormContactInformationComponent,
+	FormPersonalInformationComponent,
+	FormPersonalInformationNewAnonymousComponent,
+	FormPersonalInformationRenewUpdateAnonymousComponent,
 ];
 
 @NgModule({

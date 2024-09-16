@@ -19,7 +19,7 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.mod
 	selector: 'app-controlling-member-login',
 	template: `
 		<div class="container px-0 my-0 px-md-2 my-md-3">
-			<app-step-section title="Log in to submit your consent to a criminal record check">
+			<app-step-section [title]="title">
 				<div class="row">
 					<div class="offset-xxl-2 offset-xl-1 col-xxl-8 col-xl-10 col-lg-12">
 						<div class="login-selection-container text-start mb-4 mb-lg-5">
@@ -141,7 +141,8 @@ export class ControllingMemberLoginComponent implements OnInit {
 				: 'Log in to update your profile as a controlling member';
 
 		this.commonApplicationService.setApplicationTitle(
-			WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc
+			WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+			this.applicationTypeCode
 		);
 
 		this.authProcessService.waitUntilAuthentication$

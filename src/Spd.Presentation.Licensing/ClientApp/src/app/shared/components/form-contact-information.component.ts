@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-common-contact-information',
+	selector: 'app-form-contact-information',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -39,7 +39,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonContactInformationComponent {
+export class FormContactInformationComponent {
 	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;
