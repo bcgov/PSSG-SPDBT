@@ -190,9 +190,9 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 
 	onSubmitNow(): void {
 		if (this.isLoggedIn) {
-			this.controllingMembersService.submitControllingMemberCrcNewAuthenticated().subscribe({
+			this.controllingMembersService.submitControllingMemberCrcUpdateAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
-					this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
+					this.hotToastService.success('Your Criminal Record Check update has been successfully submitted');
 
 					this.router.navigateByUrl(
 						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),
@@ -206,9 +206,9 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 			return;
 		}
 
-		this.controllingMembersService.submitControllingMemberCrcNewAnonymous().subscribe({
+		this.controllingMembersService.submitControllingMemberCrcUpdatedAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
-				this.hotToastService.success('Your Criminal Record Check has been successfully submitted');
+				this.hotToastService.success('Your Criminal Record Check update has been successfully submitted');
 
 				this.router.navigateByUrl(
 					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),

@@ -17,22 +17,11 @@ import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 
 export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
-	personalNameAndContactInformationFormGroup: FormGroup = this.formBuilder.group({
-		givenName: new FormControl(''),
-		middleName1: new FormControl(''),
-		middleName2: new FormControl(''),
-		surname: new FormControl('', [FormControlValidators.required]),
-		genderCode: new FormControl('', [FormControlValidators.required]),
-		dateOfBirth: new FormControl('', [Validators.required]),
-		emailAddress: new FormControl('', [Validators.required, FormControlValidators.email]),
-		phoneNumber: new FormControl('', [Validators.required]),
-	});
-
 	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
 		{
 			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
 			criminalHistoryDetail: new FormControl(''),
-			hasBankruptcyHistory: new FormControl('', [FormControlValidators.required]),
+			hasBankruptcyHistory: new FormControl(''),
 			bankruptcyHistoryDetail: new FormControl(''),
 			criminalChargeDescription: new FormControl(''),
 		},
@@ -40,7 +29,19 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'criminalHistoryDetail',
-					(form) => form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes
+					(form) =>
+						form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New
+				),
+				FormGroupValidators.conditionalRequiredValidator(
+					'criminalChargeDescription',
+					(form) =>
+						form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
+						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
+				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'hasBankruptcyHistory',
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'bankruptcyHistoryDetail',
@@ -115,9 +116,13 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
 		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
+		const criminalHistoryData = { ...controllingMemberCrcFormValue.criminalHistoryData };
 		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
 		const personalInformationData = {
 			...controllingMemberCrcFormValue.personalInformationData,
+		};
+		const contactInformationData = {
+			...controllingMemberCrcFormValue.contactInformationData,
 		};
 		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryData;
 
@@ -211,9 +216,9 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			middleName1: personalInformationData.middleName1,
 			middleName2: personalInformationData.middleName2,
 			dateOfBirth: personalInformationData.dateOfBirth,
-			emailAddress: personalInformationData.emailAddress,
-			phoneNumber: personalInformationData.phoneNumber,
 			genderCode: personalInformationData.genderCode,
+			emailAddress: contactInformationData.emailAddress,
+			phoneNumber: contactInformationData.phoneNumber,
 			//-----------------------------------
 			hasPreviousName: this.utilService.booleanTypeToBoolean(
 				controllingMemberCrcFormValue.aliasesData.previousNameFlag
@@ -234,9 +239,11 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
 			//-----------------------------------
 			hasCriminalHistory,
+			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update
 			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update
 			//-----------------------------------
 			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,

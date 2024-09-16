@@ -39,6 +39,7 @@ export { ControllingMemberAppInviteVerifyResponse } from './models/controlling-m
 export { ControllingMemberCrcAppCommandResponse } from './models/controlling-member-crc-app-command-response';
 export { ControllingMemberCrcAppResponse } from './models/controlling-member-crc-app-response';
 export { ControllingMemberCrcAppSubmitRequest } from './models/controlling-member-crc-app-submit-request';
+export { ControllingMemberCrcAppUpdateRequest } from './models/controlling-member-crc-app-update-request';
 export { ControllingMemberCrcAppUpsertRequest } from './models/controlling-member-crc-app-upsert-request';
 export { ControllingMemberInvitesCreateResponse } from './models/controlling-member-invites-create-response';
 export { Document } from './models/document';

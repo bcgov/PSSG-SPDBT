@@ -6,16 +6,19 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { ControllingMemberAppInviteTypeCode } from '../../models/controlling-member-app-invite-type-code';
 import { ControllingMemberInvitesCreateResponse } from '../../models/controlling-member-invites-create-response';
 
 export interface ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params {
   bizContactId: string;
+  inviteType?: ControllingMemberAppInviteTypeCode;
 }
 
 export function apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet(http: HttpClient, rootUrl: string, params: ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberInvitesCreateResponse>> {
   const rb = new RequestBuilder(rootUrl, apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet.PATH, 'get');
   if (params) {
     rb.path('bizContactId', params.bizContactId, {});
+    rb.query('inviteType', params.inviteType, {});
   }
 
   return http.request(
