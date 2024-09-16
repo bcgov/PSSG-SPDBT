@@ -108,7 +108,7 @@ internal class ControllingMemberCrcAppManager :
             response.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
-            null,
+            changes.CriminalHistoryStatusChangeTaskId,
             null,
             null,
             ct);
