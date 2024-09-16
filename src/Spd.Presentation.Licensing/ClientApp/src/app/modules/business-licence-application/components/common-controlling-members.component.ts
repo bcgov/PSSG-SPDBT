@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {
+	ApplicationPortalStatusCode,
 	BizMemberResponse,
 	ControllingMemberInvitesCreateResponse,
 	LicenceDocumentTypeCode,
@@ -191,7 +192,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 												aria-label="Send invitation"
 												(click)="onSendInvitation(member)"
 											>
-												Send Invitation
+												{{ getInvitationButtonLabel(member.controllingMemberAppStatusCode) }}
 											</button>
 										</ng-container>
 										<ng-template #noEmailAddress>
@@ -214,9 +215,9 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 						</div>
 						<app-alert type="info" icon="">
 							<p>
-								By clicking <strong>'Send Invitation'</strong>, a link to an online application form will be sent to the
-								controlling member via email. They must provide personal information and consent to a criminal record
-								check.
+								By clicking <strong>Send</strong> or <strong>Update Invitation</strong>, a link to an online application
+								form will be sent to the controlling member via email. They must provide personal information and
+								consent to a criminal record check.
 							</p>
 							<p>
 								We must receive criminal record check consent forms from each individual listed here before the business
@@ -366,6 +367,13 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		return null;
 	}
 
+	getInvitationButtonLabel(controllingMemberAppStatusCode?: ApplicationPortalStatusCode): string {
+		if (controllingMemberAppStatusCode === ApplicationPortalStatusCode.CompletedCleared) {
+			return 'Update Invitation';
+		}
+		return 'Send Invitation';
+	}
+
 	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -468,7 +476,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.businessApplicationService
-						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!)
+						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, member.controllingMemberAppStatusCode)
 						.pipe(
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {

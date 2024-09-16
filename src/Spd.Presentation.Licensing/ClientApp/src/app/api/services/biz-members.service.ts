@@ -312,7 +312,8 @@ export class BizMembersService extends BaseService {
   static readonly ApiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGetPath = '/api/business-licence-application/controlling-member-invitation/{bizContactId}';
 
   /**
-   * Create controlling member crc invitation for this biz contact.
+   * Create controlling member crc invitation for this biz contact
+   * Example: http://localhost:5114/api/business-licence-application/controlling-member-invitation/123?inviteType=Update.
    *
    *
    *
@@ -326,7 +327,8 @@ export class BizMembersService extends BaseService {
   }
 
   /**
-   * Create controlling member crc invitation for this biz contact.
+   * Create controlling member crc invitation for this biz contact
+   * Example: http://localhost:5114/api/business-licence-application/controlling-member-invitation/123?inviteType=Update.
    *
    *
    *

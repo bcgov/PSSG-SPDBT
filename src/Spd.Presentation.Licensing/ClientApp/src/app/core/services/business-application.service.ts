@@ -16,6 +16,7 @@ import {
 	BizProfileResponse,
 	BizProfileUpdateRequest,
 	BranchInfo,
+	ControllingMemberAppInviteTypeCode,
 	ControllingMemberInvitesCreateResponse,
 	Document,
 	LicenceAppDocumentResponse,
@@ -505,9 +506,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
-	sendControllingMembersWithoutSwlInvitation(bizContactId: string): Observable<ControllingMemberInvitesCreateResponse> {
+	sendControllingMembersWithoutSwlInvitation(
+		bizContactId: string,
+		statusCode?: ApplicationPortalStatusCode
+	): Observable<ControllingMemberInvitesCreateResponse> {
+		const inviteType =
+			statusCode === ApplicationPortalStatusCode.CompletedCleared
+				? ControllingMemberAppInviteTypeCode.Update
+				: ControllingMemberAppInviteTypeCode.New;
+
 		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
 			bizContactId,
+			inviteType,
 		});
 	}
 
@@ -1725,7 +1735,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			if (soleProprietorSWLAppId) {
 				// using sole proprietor combined flow
 				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
-		}
+			}
 
 			if (soleProprietorSwlLicence?.licenceAppId) {
 				// business licence is sole proprietor

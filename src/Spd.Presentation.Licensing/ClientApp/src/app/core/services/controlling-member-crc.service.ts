@@ -8,6 +8,7 @@ import {
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
 	ControllingMemberCrcAppSubmitRequest,
+	ControllingMemberCrcAppUpdateRequest,
 	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	GoogleRecaptcha,
@@ -657,7 +658,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Submit the licence data
+	 * Submit the crc data authenticated NEW
 	 * @returns
 	 */
 	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
@@ -675,10 +676,70 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Submit the crc data anonymous
+	 * Submit the crc data anonymous NEW
 	 * @returns
 	 */
 	submitControllingMemberCrcNewAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+
+		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		return this.postCrcAnonymousDocuments(googleRecaptcha, documentsToSaveApis, body);
+	}
+
+	/**
+	 * Submit the crc data authenticated UPDATE
+	 * @returns
+	 */
+	submitControllingMemberCrcUpdateAuthenticated(): Observable<
+		StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
+	> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpdateRequest;
+
+		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId; // TODO needed?
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsUpdatePost$Response({ body });
+	}
+
+	/**
+	 * Submit the crc data anonymous UPDATE
+	 * @returns
+	 */
+	submitControllingMemberCrcUpdatedAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);

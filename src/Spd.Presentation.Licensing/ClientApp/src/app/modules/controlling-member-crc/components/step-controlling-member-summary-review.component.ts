@@ -533,10 +533,10 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 	}
 
 	get emailAddress(): string {
-		return this.controllingMemberModelData.personalInformationData?.emailAddress ?? '';
+		return this.controllingMemberModelData.contactInformationData?.emailAddress ?? '';
 	}
 	get phoneNumber(): string {
-		return this.controllingMemberModelData.personalInformationData?.phoneNumber ?? '';
+		return this.controllingMemberModelData.contactInformationData?.phoneNumber ?? '';
 	}
 
 	get residentialAddressLine1(): string {
