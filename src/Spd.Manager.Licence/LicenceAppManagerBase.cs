@@ -50,18 +50,20 @@ internal abstract class LicenceAppManagerBase
             WorkerLicenceTypeEnum = licAppBase.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(licAppBase.WorkerLicenceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
-        if (price?.LicenceFees.FirstOrDefault() == null || price?.LicenceFees.FirstOrDefault()?.Amount == 0)
+        LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
+        if (licenceFee == null || licenceFee.Amount == 0)
         {
-            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.Submitted, ct);
-            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, ct);
+            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.Submitted, null, ct);
+            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, null, ct);
         }
         else
         {
-            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, ct);
-            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, ct);
+            //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
+            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, null, ct);
+            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, licenceFee.Amount, ct);
         }
 
-        return price?.LicenceFees.FirstOrDefault()?.Amount ?? 0;
+        return licenceFee?.Amount ?? 0;
     }
 
     //upload file from cache to main bucket
