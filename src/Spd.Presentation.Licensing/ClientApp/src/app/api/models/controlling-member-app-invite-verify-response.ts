@@ -6,6 +6,7 @@ export interface ControllingMemberAppInviteVerifyResponse {
   bizContactId?: string;
   bizId?: string;
   bizLicAppId?: string | null;
+  contactId?: string | null;
   controllingMemberCrcAppId?: string | null;
   controllingMemberCrcAppPortalStatusCode?: ApplicationPortalStatusCode;
   emailAddress?: string | null;

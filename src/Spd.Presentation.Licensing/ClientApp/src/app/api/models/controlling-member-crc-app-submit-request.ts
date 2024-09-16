@@ -14,6 +14,7 @@ export interface ControllingMemberCrcAppSubmitRequest {
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;
   bizContactId?: string;
+  controllingMemberAppId?: string | null;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
   documentExpiredInfos?: Array<DocumentExpiredInfo> | null;

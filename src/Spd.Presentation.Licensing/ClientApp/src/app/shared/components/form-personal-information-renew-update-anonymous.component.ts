@@ -8,7 +8,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-common-personal-information-renew-anonymous',
+	selector: 'app-form-personal-information-renew-update-anonymous',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -112,7 +112,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class CommonPersonalInformationRenewAnonymousComponent implements OnInit {
+export class FormPersonalInformationRenewUpdateAnonymousComponent implements OnInit {
 	genderTypes = GenderTypes;
 	applicationTypeCodes = ApplicationTypeCode;
 	matcher = new FormErrorStateMatcher();

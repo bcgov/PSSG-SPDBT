@@ -69,7 +69,6 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './components/authentic
 import { CommonUserProfileLicenceCriminalHistoryComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from './components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
-import { CommonUserProfilePersonalInformationComponent } from './components/authenticated/user-profile-components/common-user-profile-personal-information.component';
 import { CommonUserProfileComponent } from './components/authenticated/user-profile-components/common-user-profile.component';
 import { UserProfileComponent } from './components/authenticated/user-profile.component';
 import { WorkerLicenceWizardAuthenticatedNewComponent } from './components/authenticated/worker-licence-wizard-authenticated-new.component';
@@ -84,10 +83,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './components/aut
 import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './components/authenticated/worker-licence-wizard-step-components/steps-worker-licence-updates-authenticated.component';
 import { CommonAccessCodeAnonymousComponent } from './components/shared/common-step-components/common-access-code-anonymous.component';
 import { CommonAliasListComponent } from './components/shared/common-step-components/common-alias-list.component';
-import { CommonContactInformationComponent } from './components/shared/common-step-components/common-contact-information.component';
 import { CommonCriminalHistoryComponent } from './components/shared/common-step-components/common-criminal-history.component';
-import { CommonPersonalInformationNewAnonymousComponent } from './components/shared/common-step-components/common-personal-information-new-anonymous.component';
-import { CommonPersonalInformationRenewAnonymousComponent } from './components/shared/common-step-components/common-personal-information-renew-anonymous.component';
 import { CommonPhotographOfYourselfComponent } from './components/shared/common-step-components/common-photograph-of-yourself.component';
 import { CommonPhysicalCharacteristicsComponent } from './components/shared/common-step-components/common-physical-characteristics.component';
 import { CommonSwlPermitTermsComponent } from './components/shared/common-step-components/common-swl-permit-terms.component';
@@ -164,16 +160,12 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		StepPermitUserProfileComponent,
 		CommonAccessCodeAnonymousComponent,
 		CommonAliasListComponent,
-		CommonContactInformationComponent,
 		CommonCriminalHistoryComponent,
-		CommonPersonalInformationNewAnonymousComponent,
-		CommonPersonalInformationRenewAnonymousComponent,
 		CommonPhotographOfYourselfComponent,
 		CommonPhysicalCharacteristicsComponent,
 		CommonSwlPermitTermsComponent,
 		CommonUserProfileComponent,
 		CommonUserProfileLicencePoliceBackgroundComponent,
-		CommonUserProfilePersonalInformationComponent,
 		PersonalLicenceApplicationBaseComponent,
 		LicenceCategoryArmouredCarGuardComponent,
 		LicenceCategoryBodyArmourSalesComponent,
