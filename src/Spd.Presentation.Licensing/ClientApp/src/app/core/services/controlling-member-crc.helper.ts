@@ -41,7 +41,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'hasBankruptcyHistory',
-					(form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New
+					(_form) => this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'bankruptcyHistoryDetail',

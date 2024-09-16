@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -139,7 +139,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepControllingMemberBcSecurityLicenceHistoryComponent implements LicenceChildStepperStepComponent {
+export class StepControllingMemberBcSecurityLicenceHistoryComponent
+	implements OnInit, LicenceChildStepperStepComponent
+{
 	title = '';
 	subtitle = '';
 
@@ -158,6 +160,7 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent implements L
 			? 'Do you have any new criminal charges or convictions to declare?'
 			: 'Have you or your business previously been charged, convicted, or received a court judgement in relation to a lawsuit?';
 	}
+
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
