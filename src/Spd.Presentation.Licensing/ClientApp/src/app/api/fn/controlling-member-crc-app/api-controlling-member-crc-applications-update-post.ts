@@ -7,18 +7,18 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { ControllingMemberCrcAppCommandResponse } from '../../models/controlling-member-crc-app-command-response';
-import { ControllingMemberCrcAppSubmitRequest } from '../../models/controlling-member-crc-app-submit-request';
+import { ControllingMemberCrcAppUpdateRequest } from '../../models/controlling-member-crc-app-update-request';
 
-export interface ApiControllingMemberCrcApplicationsAnonymousSubmitPost$Params {
+export interface ApiControllingMemberCrcApplicationsUpdatePost$Params {
   
     /**
-     * ControllingMemberCrcAppSubmitRequest Json data
+     * ControllingMemberCrcAppUpdateRequest Json data
      */
-    body: ControllingMemberCrcAppSubmitRequest
+    body?: ControllingMemberCrcAppUpdateRequest
 }
 
-export function apiControllingMemberCrcApplicationsAnonymousSubmitPost(http: HttpClient, rootUrl: string, params: ApiControllingMemberCrcApplicationsAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiControllingMemberCrcApplicationsAnonymousSubmitPost.PATH, 'post');
+export function apiControllingMemberCrcApplicationsUpdatePost(http: HttpClient, rootUrl: string, params?: ApiControllingMemberCrcApplicationsUpdatePost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiControllingMemberCrcApplicationsUpdatePost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
@@ -33,4 +33,4 @@ export function apiControllingMemberCrcApplicationsAnonymousSubmitPost(http: Htt
   );
 }
 
-apiControllingMemberCrcApplicationsAnonymousSubmitPost.PATH = '/api/controlling-member-crc-applications/anonymous/submit';
+apiControllingMemberCrcApplicationsUpdatePost.PATH = '/api/controlling-member-crc-applications/update';

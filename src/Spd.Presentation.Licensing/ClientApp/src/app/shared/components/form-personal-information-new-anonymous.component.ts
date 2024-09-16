@@ -5,7 +5,7 @@ import { UtilService } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-common-personal-information-new-anonymous',
+	selector: 'app-form-personal-information-new-anonymous',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -70,7 +70,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonPersonalInformationNewAnonymousComponent implements OnInit {
+export class FormPersonalInformationNewAnonymousComponent implements OnInit {
 	genderTypes = GenderTypes;
 	matcher = new FormErrorStateMatcher();
 

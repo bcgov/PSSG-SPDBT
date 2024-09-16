@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { CommonContactInformationComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-contact-information.component';
+import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 
 @Component({
 	selector: 'app-step-worker-licence-contact-information',
@@ -11,7 +11,7 @@ import { CommonContactInformationComponent } from '@app/modules/personal-licence
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<div class="row">
 				<div class="col-12 mx-auto">
-					<app-common-contact-information [form]="form"></app-common-contact-information>
+					<app-form-contact-information [form]="form"></app-form-contact-information>
 				</div>
 			</div>
 		</app-step-section>
@@ -26,7 +26,7 @@ export class StepWorkerLicenceContactInformationComponent implements OnInit, Lic
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
+	@ViewChild(FormContactInformationComponent) contactInformationComponent!: FormContactInformationComponent;
 
 	constructor(private licenceApplicationService: LicenceApplicationService) {}
 

@@ -9,18 +9,18 @@ import { RequestBuilder } from '../../request-builder';
 import { LicenceAppDocumentResponse } from '../../models/licence-app-document-response';
 import { LicenceDocumentTypeCode } from '../../models/licence-document-type-code';
 
-export interface ApiControllingMemberCrcApplicationsCrcAppIdFilesPost$Params {
-  CrcAppId: string;
+export interface ApiControllingMemberCrcApplicationsOriginalAppIdFilesPost$Params {
+  originalAppId: string;
       body?: {
 'Documents'?: Array<Blob>;
 'LicenceDocumentTypeCode'?: LicenceDocumentTypeCode;
 }
 }
 
-export function apiControllingMemberCrcApplicationsCrcAppIdFilesPost(http: HttpClient, rootUrl: string, params: ApiControllingMemberCrcApplicationsCrcAppIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-  const rb = new RequestBuilder(rootUrl, apiControllingMemberCrcApplicationsCrcAppIdFilesPost.PATH, 'post');
+export function apiControllingMemberCrcApplicationsOriginalAppIdFilesPost(http: HttpClient, rootUrl: string, params: ApiControllingMemberCrcApplicationsOriginalAppIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
+  const rb = new RequestBuilder(rootUrl, apiControllingMemberCrcApplicationsOriginalAppIdFilesPost.PATH, 'post');
   if (params) {
-    rb.path('CrcAppId', params.CrcAppId, {});
+    rb.path('originalAppId', params.originalAppId, {});
     rb.body(params.body, 'multipart/form-data');
   }
 
@@ -34,4 +34,4 @@ export function apiControllingMemberCrcApplicationsCrcAppIdFilesPost(http: HttpC
   );
 }
 
-apiControllingMemberCrcApplicationsCrcAppIdFilesPost.PATH = '/api/controlling-member-crc-applications/{CrcAppId}/files';
+apiControllingMemberCrcApplicationsOriginalAppIdFilesPost.PATH = '/api/controlling-member-crc-applications/{originalAppId}/files';

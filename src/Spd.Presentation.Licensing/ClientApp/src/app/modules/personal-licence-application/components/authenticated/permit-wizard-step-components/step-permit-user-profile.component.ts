@@ -41,7 +41,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						<section>
 							<app-common-user-profile
 								[personalInformationFormGroup]="personalInformationFormGroup"
-								[contactFormGroup]="contactFormGroup"
+								[contactInformationFormGroup]="contactInformationFormGroup"
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
@@ -107,7 +107,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	criminalHistoryComponent!: CommonUserProfileLicenceCriminalHistoryComponent;
 
 	personalInformationFormGroup = this.permitApplicationService.personalInformationFormGroup;
-	contactFormGroup = this.permitApplicationService.contactInformationFormGroup;
+	contactInformationFormGroup = this.permitApplicationService.contactInformationFormGroup;
 	aliasesFormGroup = this.permitApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.permitApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.permitApplicationService.mailingAddressFormGroup;

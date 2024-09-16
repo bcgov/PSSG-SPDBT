@@ -8,14 +8,14 @@ import { RequestBuilder } from '../../request-builder';
 
 import { ControllingMemberCrcAppResponse } from '../../models/controlling-member-crc-app-response';
 
-export interface ApiControllingMemberCrcApplicationsCmCrcAppIdGet$Params {
-  cmCrcAppId: string;
+export interface ApiControllingMemberCrcApplicationsOriginalAppIdGet$Params {
+  originalAppId: string;
 }
 
-export function apiControllingMemberCrcApplicationsCmCrcAppIdGet(http: HttpClient, rootUrl: string, params: ApiControllingMemberCrcApplicationsCmCrcAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiControllingMemberCrcApplicationsCmCrcAppIdGet.PATH, 'get');
+export function apiControllingMemberCrcApplicationsOriginalAppIdGet(http: HttpClient, rootUrl: string, params: ApiControllingMemberCrcApplicationsOriginalAppIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiControllingMemberCrcApplicationsOriginalAppIdGet.PATH, 'get');
   if (params) {
-    rb.path('cmCrcAppId', params.cmCrcAppId, {});
+    rb.path('originalAppId', params.originalAppId, {});
   }
 
   return http.request(
@@ -28,4 +28,4 @@ export function apiControllingMemberCrcApplicationsCmCrcAppIdGet(http: HttpClien
   );
 }
 
-apiControllingMemberCrcApplicationsCmCrcAppIdGet.PATH = '/api/controlling-member-crc-applications/{cmCrcAppId}';
+apiControllingMemberCrcApplicationsOriginalAppIdGet.PATH = '/api/controlling-member-crc-applications/{originalAppId}';

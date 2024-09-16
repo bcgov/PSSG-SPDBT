@@ -37,7 +37,7 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 						<ng-template #isPartialSave>
 							<app-alert type="info" icon="info">
 								<p>Your application for a criminal record check has been saved.</p>
-								<p>Click on the invitation link again to continue working on and submitting the application.</p>
+								<p>Click on the invitation link again to continue working on and submitting your application.</p>
 							</app-alert>
 						</ng-template>
 					</div>
