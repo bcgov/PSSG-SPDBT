@@ -171,7 +171,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			return false;
 		}
 
-		return this.hasValueChanged;
+		// file upload will fail in later steps if the 'controllingMemberAppId' isn't populated.
+		const controllingMemberAppId = this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value;
+
+		return this.hasValueChanged || !controllingMemberAppId;
 	}
 
 	/**
@@ -249,7 +252,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					if (crcInviteData.controllingMemberCrcAppId) {
+					if (applicationTypeCode === ApplicationTypeCode.New && crcInviteData.controllingMemberCrcAppId) {
 						return this.loadDraftCrcIntoModel(crcInviteData, applicationTypeCode).pipe(
 							tap((_resp: any) => {
 								this.initialized = true;
@@ -545,6 +548,12 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			province: applicantProfile.residentialAddress?.province,
 		};
 
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: null,
+			attachments: [],
+			hasPreviousMhcFormUpload: !!applicantProfile.isTreatedForMHC,
+		};
+
 		this.controllingMembersModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData: {
@@ -557,6 +566,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				personalInformationData,
 				contactInformationData,
 				residentialAddressData,
+				mentalHealthConditionsData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
 						applicantProfile.aliases && applicantProfile.aliases.length > 0
@@ -726,8 +736,6 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		const body = this.getSaveBodyBaseAuthenticated(
 			controllingMembersModelFormValue
 		) as ControllingMemberCrcAppUpdateRequest;
-
-		// body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId; // TODO needed?
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
 		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;

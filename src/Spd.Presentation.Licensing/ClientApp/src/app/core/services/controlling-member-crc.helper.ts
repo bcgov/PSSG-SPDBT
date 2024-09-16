@@ -116,6 +116,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
 		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
+		const criminalHistoryData = { ...controllingMemberCrcFormValue.criminalHistoryData };
 		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
 		const personalInformationData = {
 			...controllingMemberCrcFormValue.personalInformationData,
@@ -238,9 +239,11 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
 			//-----------------------------------
 			hasCriminalHistory,
+			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update
 			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
 			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update
 			//-----------------------------------
 			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
 			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
