@@ -9,6 +9,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: "Spd.Presentation.Screening"
       SECRETS_FILE: /config/secrets.json
+      BASE_PATH: /screening
     volumes:
       - ${SECRETS_BASE_PATH}/5050035b-d63a-4c6e-a973-fe8e5d35829b/secrets.json:/config/secrets.json
       - ./tmp:/dp:rw
@@ -38,6 +39,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: "Spd.Presentation.Licensing"
       SECRETS_FILE: /config/secrets.json
+      BASE_PATH: /licensing
     volumes:
       - ${SECRETS_BASE_PATH}/168d0646-71ea-405b-8f2f-d47cdf5a0759/secrets.json:/config/secrets.json
       - ./tmp:/dp:rw
