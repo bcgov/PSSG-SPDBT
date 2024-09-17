@@ -8,7 +8,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsWorkerLicenceBackgroundComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
@@ -146,7 +146,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
@@ -158,22 +158,22 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
 
 				this.isSoleProprietor =
-					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
+					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
 					BooleanTypeCode.Yes;
 
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
 				this.showStepDogsAndRestraints =
-					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
@@ -181,7 +181,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
-				this.policeOfficerRoleCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
 					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
 
@@ -242,7 +242,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		if (this.licenceAppId) {
 			this.payNow(this.licenceAppId);
 		} else {
-			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
+			this.workerApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 					// save this locally just in case payment fails
 					this.licenceAppId = resp.body.licenceAppId!;
@@ -313,9 +313,9 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.workerApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}

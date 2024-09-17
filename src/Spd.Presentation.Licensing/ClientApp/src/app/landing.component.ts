@@ -7,7 +7,7 @@ import { WorkerLicenceTypeCode } from './api/models';
 import { SPD_CONSTANTS } from './core/constants/constants';
 import { ApplicationService } from './core/services/application.service';
 import { AuthProcessService } from './core/services/auth-process.service';
-import { LicenceApplicationService } from './core/services/licence-application.service';
+import { WorkerApplicationService } from './core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-licence-application-routing.module';
 import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routing.module';
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
@@ -191,7 +191,7 @@ export class LandingComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
@@ -215,7 +215,7 @@ export class LandingComponent implements OnInit {
 
 		switch (workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				this.licenceApplicationService
+				this.workerApplicationService
 					.createNewLicenceAnonymous(workerLicenceTypeCode)
 					.pipe(
 						tap((_resp: any) => {

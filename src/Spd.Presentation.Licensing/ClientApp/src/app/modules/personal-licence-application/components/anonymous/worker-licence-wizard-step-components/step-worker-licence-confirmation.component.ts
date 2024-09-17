@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-confirmation',
@@ -71,12 +71,12 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	private licenceModelData: any = {};
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit() {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
 
 		// only show fee for Replacement flow
 		this.applicationTypeCode = this.licenceModelData.applicationTypeData?.applicationTypeCode;
@@ -100,18 +100,18 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	}
 
 	get cardHolderName(): string {
-		return this.licenceApplicationService.getSummarycardHolderName(this.licenceModelData);
+		return this.workerApplicationService.getSummarycardHolderName(this.licenceModelData);
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.licenceApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 	get categoryList(): Array<WorkerCategoryTypeCode> {
-		return this.licenceApplicationService.getSummarycategoryList(this.licenceModelData);
+		return this.workerApplicationService.getSummarycategoryList(this.licenceModelData);
 	}
 }

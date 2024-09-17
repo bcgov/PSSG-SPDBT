@@ -7,7 +7,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -125,7 +125,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
@@ -137,18 +137,18 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
 
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
 				this.showStepDogsAndRestraints =
-					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
@@ -156,11 +156,11 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
-				this.policeOfficerRoleCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
 					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
 
-				const bizTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
 				)?.value;
 				this.showWorkerLicenceSoleProprietorStep =
@@ -247,7 +247,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		if (this.newLicenceAppId) {
 			this.payNow(this.newLicenceAppId);
 		} else {
-			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
+			this.workerApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 					console.debug('[onNextPayStep] submitLicenceAnonymous', resp.body);
 
@@ -265,9 +265,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.workerApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}

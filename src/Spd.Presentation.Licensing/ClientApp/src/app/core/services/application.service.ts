@@ -599,6 +599,7 @@ export class ApplicationService {
 	getApplicationIsInProgress(appls: Array<MainApplicationResponse>): boolean {
 		return !!appls.find(
 			(item: MainApplicationResponse) =>
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingThirdParty ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.InProgress ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingApplicant ||

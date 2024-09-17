@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from '@app/app-routing.module';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { take, tap } from 'rxjs';
 import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routing.module';
 
@@ -24,7 +24,7 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -44,7 +44,7 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 			// handle new business licence creation from swl - for sole proprietor
 			console.debug('BusinessLicenceApplicationBaseComponent populateSoleProprietorComboFlowAnonymous');
 
-			this.licenceApplicationService
+			this.workerApplicationService
 				.populateSoleProprietorComboFlowAnonymous()
 				.pipe(
 					tap((_resp: any) => {
@@ -60,7 +60,7 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 			return;
 		}
 
-		if (!this.licenceApplicationService.initialized) {
+		if (!this.workerApplicationService.initialized) {
 			this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 			return;
 		}

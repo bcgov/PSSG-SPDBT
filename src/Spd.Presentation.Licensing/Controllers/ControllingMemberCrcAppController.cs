@@ -1,19 +1,18 @@
-﻿using Amazon.Runtime.Internal.Util;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
-using Spd.Utilities.Recaptcha;
+using Spd.Manager.Shared;
 using Spd.Utilities.LogonUser;
+using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Principal;
 using System.Text.Json;
-using Spd.Manager.Shared;
 
 namespace Spd.Presentation.Licensing.Controllers;
 
@@ -157,6 +156,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     }
 
     #endregion authenticated
+
     #region anonymous
     /// <summary>
     /// Upload Controlling Member Crc application first step: frontend needs to make this first request to get a Guid code.
@@ -217,12 +217,13 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         ControllingMemberCrcAppCommandResponse? response = null;
         if (request.ApplicationTypeCode == ApplicationTypeCode.New)
             response = await _mediator.Send(new ControllingMemberCrcAppNewCommand(request, newDocInfos), ct);
-        
+
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-        
+
         return response;
     }
+
     /// <summary>
     /// Submit an update for Controlling Member Crc Application Anonymously
     /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
@@ -244,10 +245,10 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         ControllingMemberCrcAppCommandResponse? response = null;
         if (request.ApplicationTypeCode == ApplicationTypeCode.Update)
             response = await _mediator.Send(new ControllingMemberCrcAppUpdateCommand(request, newDocInfos), ct);
-        
+
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);
-        
+
         return response;
     }
     #endregion anonymous

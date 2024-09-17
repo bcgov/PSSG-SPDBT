@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
@@ -27,7 +27,7 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 		private router: Router,
 		private authProcessService: AuthProcessService,
 		private authUserBcscService: AuthUserBcscService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
 
@@ -64,11 +64,11 @@ export class LicenceApplicationBaseAuthenticatedComponent implements OnInit {
 
 		console.debug(
 			'[LicenceApplicationBaseAuthenticatedComponent]',
-			this.licenceApplicationService.initialized,
+			this.workerApplicationService.initialized,
 			this.permitApplicationService.initialized
 		);
 
-		if (!this.licenceApplicationService.initialized && !this.permitApplicationService.initialized) {
+		if (!this.workerApplicationService.initialized && !this.permitApplicationService.initialized) {
 			this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 			return;
 		}

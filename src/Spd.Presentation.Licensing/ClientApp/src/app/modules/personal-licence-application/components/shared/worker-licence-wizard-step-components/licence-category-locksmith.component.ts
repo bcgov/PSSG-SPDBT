@@ -3,8 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LocksmithRequirementCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
@@ -111,27 +111,27 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+	form: FormGroup = this.workerApplicationService.categoryLocksmithFormGroup;
 	title = '';
 
 	locksmithRequirementCodes = LocksmithRequirementCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.Locksmith, 'WorkerCategoryTypes');
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
+		this.workerApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 			next: (resp: any) => {
 				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -145,7 +145,7 @@ export class LicenceCategoryLocksmithComponent implements OnInit, LicenceChildSt
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {
