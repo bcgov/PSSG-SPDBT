@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-expired',
@@ -21,12 +21,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.expiredLicenceFormGroup;
+	form: FormGroup = this.workerApplicationService.expiredLicenceFormGroup;
 	securityWorkerLicenceCode = WorkerLicenceTypeCode.SecurityWorkerLicence;
 
 	@Input() isLoggedIn!: boolean;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

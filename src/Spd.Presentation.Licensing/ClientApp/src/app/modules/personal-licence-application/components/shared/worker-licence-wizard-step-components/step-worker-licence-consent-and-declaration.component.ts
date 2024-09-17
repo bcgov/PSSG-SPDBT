@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-consent-and-declaration',
@@ -218,14 +218,14 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 export class StepWorkerLicenceConsentAndDeclarationComponent implements OnInit, LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.consentAndDeclarationFormGroup;
+	form: FormGroup = this.workerApplicationService.consentAndDeclarationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
 		private utilService: UtilService,
 		private authProcessService: AuthProcessService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {}
 
 	ngOnInit(): void {

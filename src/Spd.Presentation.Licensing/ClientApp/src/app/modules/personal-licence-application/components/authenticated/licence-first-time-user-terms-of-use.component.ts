@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { LoginService } from '@app/api/services';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-swl-permit-terms.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 
@@ -34,7 +34,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 	styles: [],
 })
 export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
-	form = this.licenceApplicationService.termsAndConditionsFormGroup;
+	form = this.workerApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
@@ -46,7 +46,7 @@ export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceC
 		private router: Router,
 		private loginService: LoginService,
 		private authUserBcscService: AuthUserBcscService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {}
 
 	ngOnInit(): void {

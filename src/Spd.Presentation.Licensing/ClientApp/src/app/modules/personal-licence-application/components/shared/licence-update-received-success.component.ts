@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WorkerLicenceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-licence-update-received-success',
@@ -80,14 +80,14 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	licenceModelData: any = {};
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
 
-		if (!this.licenceApplicationService.initialized) {
+		if (!this.workerApplicationService.initialized) {
 			this.commonApplicationService.onGoToHome();
 		}
 	}
@@ -101,12 +101,12 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.licenceApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
+		return this.workerApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
 	}
 	get licenceTermCode(): string {
-		return this.licenceApplicationService.getSummarylicenceTermCode(this.licenceModelData);
+		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 	get caseNumber(): string {
-		return this.licenceApplicationService.getSummarycaseNumber(this.licenceModelData);
+		return this.workerApplicationService.getSummarycaseNumber(this.licenceModelData);
 	}
 }

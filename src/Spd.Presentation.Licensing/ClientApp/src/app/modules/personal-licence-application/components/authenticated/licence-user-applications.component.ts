@@ -11,7 +11,7 @@ import {
 	MainLicenceResponse,
 } from '@app/core/services/application.service';
 import { ConfigService } from '@app/core/services/config.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -207,7 +207,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		private configService: ConfigService,
 		private commonApplicationService: ApplicationService,
 		private permitApplicationService: PermitApplicationService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -290,7 +290,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		// When a user has started an application but has not submitted it yet,
 		// the user can view their Profile page in read-only mode – they can't edit
 		// this info while the application is in progress
-		this.licenceApplicationService
+		this.workerApplicationService
 			.loadUserProfile()
 			.pipe(
 				tap((_resp: any) => {
@@ -307,7 +307,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onNewSecurityWorkerLicence(): void {
-		this.licenceApplicationService
+		this.workerApplicationService
 			.createNewLicenceAuthenticated()
 			.pipe(
 				tap((_resp: any) => {
@@ -372,7 +372,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 		switch (licence.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				this.licenceApplicationService
+				this.workerApplicationService
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
 						tap((_resp: any) => {
@@ -400,7 +400,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	onResume(appl: MainApplicationResponse): void {
 		switch (appl.serviceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				this.licenceApplicationService
+				this.workerApplicationService
 					.getWorkerLicenceToResume(appl.licenceAppId!)
 					.pipe(
 						tap((_resp: any) => {
@@ -445,7 +445,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	onUpdate(licence: MainLicenceResponse): void {
 		switch (licence.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				this.licenceApplicationService
+				this.workerApplicationService
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Update, licence)
 					.pipe(
 						tap((_resp: any) => {
@@ -483,7 +483,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	onRenew(licence: MainLicenceResponse): void {
 		switch (licence.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				this.licenceApplicationService
+				this.workerApplicationService
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
 					.pipe(
 						tap((_resp: any) => {
