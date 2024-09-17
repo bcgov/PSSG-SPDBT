@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
@@ -52,14 +52,14 @@ export class AlertUpdateOrRenewalComponent implements OnInit {
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {}
 
 	ngOnInit() {
 		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
-			this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+			this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
 		} else if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityBusinessLicence) {
 			this.licenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 		} else {
@@ -68,12 +68,12 @@ export class AlertUpdateOrRenewalComponent implements OnInit {
 	}
 
 	get originalLicenceNumber(): string {
-		return this.licenceApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.licenceApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 }

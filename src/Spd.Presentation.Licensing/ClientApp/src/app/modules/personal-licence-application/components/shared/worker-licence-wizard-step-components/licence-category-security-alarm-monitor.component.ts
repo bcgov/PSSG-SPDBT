@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WorkerCategoryTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
@@ -16,10 +16,10 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: [],
 })
 export class LicenceCategorySecurityAlarmMonitorComponent implements OnInit, LicenceChildStepperStepComponent {
-	form = this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
+	form = this.workerApplicationService.categorySecurityAlarmMonitorFormGroup;
 	title = '';
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmMonitor, 'WorkerCategoryTypes');

@@ -3,11 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonAccessCodeAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-access-code-anonymous.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-access-code',
@@ -39,7 +39,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChildStepperStepComponent {
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	form: FormGroup = this.licenceApplicationService.accessCodeFormGroup;
+	form: FormGroup = this.workerApplicationService.accessCodeFormGroup;
 
 	workerLicenceTypeCode!: WorkerLicenceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -49,15 +49,15 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 
 	constructor(
 		private router: Router,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
 
 	ngOnInit(): void {
-		this.workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		this.workerLicenceTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
-		this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
@@ -84,7 +84,7 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 	onLinkSuccess(): void {
 		const accessCodeData = this.form.value;
 
-		this.licenceApplicationService
+		this.workerApplicationService
 			.getLicenceWithAccessCodeDataAnonymous(accessCodeData, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.workerLicenceTypeCode) {

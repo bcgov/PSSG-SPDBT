@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-mailing-address-replacement-anonymous',
@@ -37,12 +37,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepWorkerLicenceMailingAddressReplacementAnonymousComponent
 	implements OnInit, LicenceChildStepperStepComponent
 {
-	form: FormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+	form: FormGroup = this.workerApplicationService.mailingAddressFormGroup;
 	title = 'Review your mailing address';
 	subtitle = 'Ensure your mailing address is correct before submitting your application';
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private authProcessService: AuthProcessService
 	) {}
 

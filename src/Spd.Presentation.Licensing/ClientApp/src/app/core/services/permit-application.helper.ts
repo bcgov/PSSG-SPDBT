@@ -230,16 +230,16 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	 * @returns
 	 */
 	getProfileSaveBody(permitModelFormValue: any): ApplicantUpdateRequest {
-		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
-		const contactInformationData = { ...permitModelFormValue.contactInformationData };
-		const residentialAddressData = { ...permitModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...permitModelFormValue.mailingAddressData };
-		const personalInformationData = { ...permitModelFormValue.personalInformationData };
+		const applicationTypeData = permitModelFormValue.applicationTypeData;
+		const contactInformationData = permitModelFormValue.contactInformationData;
+		const residentialAddressData = permitModelFormValue.residentialAddressData;
+		const mailingAddressData = permitModelFormValue.mailingAddressData;
+		const personalInformationData = permitModelFormValue.personalInformationData;
 		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
 
 		// Even thought this used by permits, still need to save the original data
-		const policeBackgroundData = { ...permitModelFormValue.policeBackgroundData };
-		const mentalHealthConditionsData = { ...permitModelFormValue.mentalHealthConditionsData };
+		const policeBackgroundData = permitModelFormValue.policeBackgroundData;
+		const mentalHealthConditionsData = permitModelFormValue.mentalHealthConditionsData;
 
 		const applicationTypeCode = applicationTypeData.applicationTypeCode;
 
@@ -305,12 +305,12 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	getDocsToSaveBlobs(permitModelFormValue: any): Array<PermitDocumentsToSave> {
 		const documents: Array<PermitDocumentsToSave> = [];
 
-		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
-		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
-		const citizenshipData = { ...permitModelFormValue.citizenshipData };
-		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
-		const personalInformationData = { ...permitModelFormValue.personalInformationData };
-		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
+		const applicationTypeData = permitModelFormValue.applicationTypeData;
+		const workerLicenceTypeData = permitModelFormValue.workerLicenceTypeData;
+		const citizenshipData = permitModelFormValue.citizenshipData;
+		const photographOfYourselfData = permitModelFormValue.photographOfYourselfData;
+		const personalInformationData = permitModelFormValue.personalInformationData;
+		const permitRationaleData = permitModelFormValue.permitRationaleData;
 
 		if (personalInformationData.hasLegalNameChanged && personalInformationData.attachments) {
 			const docs: Array<Blob> = [];
@@ -394,8 +394,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		// so just return the existing documents on the profile
 		const documents: Array<string> = [];
 
-		const policeBackgroundData = { ...permitModelFormValue.policeBackgroundData };
-		const mentalHealthConditionsData = { ...permitModelFormValue.mentalHealthConditionsData };
+		const policeBackgroundData = permitModelFormValue.policeBackgroundData;
+		const mentalHealthConditionsData = permitModelFormValue.mentalHealthConditionsData;
 
 		policeBackgroundData.attachments.forEach((doc: SpdFile) => {
 			documents.push(doc.documentUrlId!);
@@ -429,19 +429,19 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	private getSaveBodyBase(permitModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = permitModelFormValue.licenceAppId;
 		const originalLicenceData = permitModelFormValue.originalLicenceData;
-		const workerLicenceTypeData = { ...permitModelFormValue.workerLicenceTypeData };
-		const applicationTypeData = { ...permitModelFormValue.applicationTypeData };
-		const bcDriversLicenceData = { ...permitModelFormValue.bcDriversLicenceData };
-		const contactInformationData = { ...permitModelFormValue.contactInformationData };
-		const expiredLicenceData = { ...permitModelFormValue.expiredLicenceData };
-		const characteristicsData = { ...permitModelFormValue.characteristicsData };
-		const residentialAddressData = { ...permitModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...permitModelFormValue.mailingAddressData };
-		const citizenshipData = { ...permitModelFormValue.citizenshipData };
-		const photographOfYourselfData = { ...permitModelFormValue.photographOfYourselfData };
-		const personalInformationData = { ...permitModelFormValue.personalInformationData };
-		const permitRequirementData = { ...permitModelFormValue.permitRequirementData };
-		const permitRationaleData = { ...permitModelFormValue.permitRationaleData };
+		const workerLicenceTypeData = permitModelFormValue.workerLicenceTypeData;
+		const applicationTypeData = permitModelFormValue.applicationTypeData;
+		const bcDriversLicenceData = permitModelFormValue.bcDriversLicenceData;
+		const contactInformationData = permitModelFormValue.contactInformationData;
+		const expiredLicenceData = permitModelFormValue.expiredLicenceData;
+		const characteristicsData = permitModelFormValue.characteristicsData;
+		const residentialAddressData = permitModelFormValue.residentialAddressData;
+		const mailingAddressData = permitModelFormValue.mailingAddressData;
+		const citizenshipData = permitModelFormValue.citizenshipData;
+		const photographOfYourselfData = permitModelFormValue.photographOfYourselfData;
+		const personalInformationData = permitModelFormValue.personalInformationData;
+		const permitRequirementData = permitModelFormValue.permitRequirementData;
+		const permitRationaleData = permitModelFormValue.permitRationaleData;
 
 		const documentInfos: Array<Document> = [];
 
@@ -578,7 +578,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		}
 
 		if (includesMyEmployement) {
-			const allEmployerData = { ...permitModelFormValue.employerData };
+			const allEmployerData = permitModelFormValue.employerData;
 			employerData = {
 				employerName: allEmployerData.employerName,
 				supervisorName: allEmployerData.supervisorName,

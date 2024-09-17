@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-personal-information-anonymous',
@@ -32,11 +32,11 @@ export class StepWorkerLicencePersonalInformationAnonymousComponent
 
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	form: FormGroup = this.workerApplicationService.personalInformationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.isRenewalOrUpdate ? 'Confirm your personal information' : 'Your personal information';
@@ -50,11 +50,11 @@ export class StepWorkerLicencePersonalInformationAnonymousComponent
 	}
 
 	onFileUploaded(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	get isRenewalOrUpdate(): boolean {

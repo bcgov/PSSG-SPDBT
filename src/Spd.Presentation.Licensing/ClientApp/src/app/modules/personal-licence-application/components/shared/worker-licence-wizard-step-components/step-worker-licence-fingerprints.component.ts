@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormFingerprintsComponent } from '@app/shared/components/form-fingerprints.component';
 
 @Component({
@@ -22,20 +22,20 @@ import { FormFingerprintsComponent } from '@app/shared/components/form-fingerpri
 	styles: [],
 })
 export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.fingerprintProofFormGroup;
+	form: FormGroup = this.workerApplicationService.fingerprintProofFormGroup;
 
 	@ViewChild(FormFingerprintsComponent) commonFingerprintsComponent!: FormFingerprintsComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
+		this.workerApplicationService.addUploadDocument(LicenceDocumentTypeCode.ProofOfFingerprint, file).subscribe({
 			next: (resp: any) => {
 				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -49,7 +49,7 @@ export class StepWorkerLicenceFingerprintsComponent implements LicenceChildStepp
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-physical-characteristics',
@@ -16,11 +16,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepWorkerLicencePhysicalCharacteristicsComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
-	form: FormGroup = this.licenceApplicationService.characteristicsFormGroup;
+	form: FormGroup = this.workerApplicationService.characteristicsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		if (this.isRenewalOrUpdate) {

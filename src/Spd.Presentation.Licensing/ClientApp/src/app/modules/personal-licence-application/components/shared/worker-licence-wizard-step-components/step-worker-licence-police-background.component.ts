@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
@@ -27,15 +27,15 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	form: FormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
+	form: FormGroup = this.workerApplicationService.policeBackgroundFormGroup;
 
 	@ViewChild(FormPoliceBackgroundComponent)
 	formPoliceBackgroundComponent!: FormPoliceBackgroundComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.licenceApplicationService.getPoliceBackgroundTitle(this.applicationTypeCode);
+		this.title = this.workerApplicationService.getPoliceBackgroundTitle(this.applicationTypeCode);
 	}
 
 	isFormValid(): boolean {
@@ -44,7 +44,7 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.workerApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
 			file,
 			this.formPoliceBackgroundComponent.attachments,
@@ -53,6 +53,6 @@ export class StepWorkerLicencePoliceBackgroundComponent implements OnInit, Licen
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.workerApplicationService.fileRemoved();
 	}
 }

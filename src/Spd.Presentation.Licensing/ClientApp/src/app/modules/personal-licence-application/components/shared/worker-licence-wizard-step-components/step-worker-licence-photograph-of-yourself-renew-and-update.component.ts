@@ -2,8 +2,8 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonPhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-photograph-of-yourself.component';
 
 @Component({
@@ -88,15 +88,15 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	@Input() label = 'licence'; // licence or permit
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	photographOfYourself = this.licenceApplicationService.photographOfYourself;
+	photographOfYourself = this.workerApplicationService.photographOfYourself;
 
 	@ViewChild(CommonPhotographOfYourselfComponent)
 	commonPhotographOfYourselfComponent!: CommonPhotographOfYourselfComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.originalPhotoOfYourselfExpired = this.licenceApplicationService.licenceModelFormGroup.get(
+		this.originalPhotoOfYourselfExpired = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalPhotoOfYourselfExpired'
 		)?.value;
 
@@ -108,7 +108,7 @@ export class StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 @Component({
@@ -75,7 +75,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: [],
 })
 export class LicenceCategoryFireInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
+	form: FormGroup = this.workerApplicationService.categoryFireInvestigatorFormGroup;
 	title = '';
 
 	@ViewChild('fireCourseCertificateAttachmentsRef') fileUploadCertificateComponent!: FileUploadComponent;
@@ -84,7 +84,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	constructor(
 		private optionsPipe: OptionsPipe,
 		private authenticationService: AuthenticationService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {}
 
 	ngOnInit(): void {
@@ -93,7 +93,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 
 	onFileCertificateAdded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService
+			this.workerApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategoryFireInvestigatorCourseCertificate, file)
 				.subscribe({
 					next: (resp: any) => {
@@ -113,7 +113,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 
 	onFileVerificationAdded(file: File): void {
 		if (this.authenticationService.isLoggedIn()) {
-			this.licenceApplicationService
+			this.workerApplicationService
 				.addUploadDocument(LicenceDocumentTypeCode.CategoryFireInvestigatorVerificationLetter, file)
 				.subscribe({
 					next: (resp: any) => {
@@ -132,7 +132,7 @@ export class LicenceCategoryFireInvestigatorComponent implements OnInit, Licence
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {
