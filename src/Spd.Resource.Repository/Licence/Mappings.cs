@@ -31,6 +31,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.EmployerPrimaryAddress, opt => opt.MapFrom(s => s))
              .ForMember(d => d.Rationale, opt => opt.MapFrom(s => s.spd_rationale))
              .ForMember(d => d.PhotoDocumentUrlId, opt => opt.MapFrom(s => s._spd_photographid_value))
+             .ForMember(d => d.PrintingPreviewJobId, opt => opt.MapFrom(s => s.spd_bcmpjobid))
              .ForMember(d => d.IsTemporary, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_temporarylicence)))
              .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
              .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s.spd_spd_licence_spd_caselicencecategory_licenceid.ToList())));
