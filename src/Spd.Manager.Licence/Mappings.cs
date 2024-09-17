@@ -75,7 +75,8 @@ internal class Mappings : Profile
         CreateMap<ApplicantLoginCommand, UpdateContactCmd>()
             .IncludeBase<ApplicantLoginCommand, Contact>()
             .ForMember(d => d.EmailAddress, opt => opt.Ignore())
-            .ForMember(d => d.Gender, opt => opt.Ignore());
+            .ForMember(d => d.Gender, opt => opt.Ignore())
+            .ForMember(d => d.ResidentialAddress, opt => opt.Ignore());
 
         CreateMap<WorkerLicenceAppSubmitRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))

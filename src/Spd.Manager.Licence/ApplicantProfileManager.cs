@@ -93,7 +93,11 @@ namespace Spd.Manager.Licence
                     else
                     {
                         //contact exists
-                        //Deprecated: Update existing contact information to reflect that BCS info;
+                        //updating FirstName, LastName, MiddleName1, MiddleName2 and BirthDate from BcSc info
+                        UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
+                        updateContactCmd.Id = (Guid)id.ContactId;
+                        updateContactCmd.IdentityId = id.Id;
+                        contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
                     }
                 }
                 else
