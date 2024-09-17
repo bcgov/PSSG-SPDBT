@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ApplicationPortalStatusCode } from 'src/app/api/models';
 import { SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { UtilService } from 'src/app/core/services/util.service';
@@ -106,7 +107,18 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	}
 
 	ngOnInit(): void {
-		this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+		const statuses = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+		if (this.portal === PortalTypeCode.Crrp) {
+			this.applicationPortalStatusCodes = statuses.filter(
+				(item: SelectOptions) => item.code != ApplicationPortalStatusCode.Completed
+			);
+		} else {
+			this.applicationPortalStatusCodes = statuses.filter(
+				(item: SelectOptions) =>
+					item.code != ApplicationPortalStatusCode.CompletedCleared &&
+					item.code != ApplicationPortalStatusCode.RiskFound
+			);
+		}
 	}
 
 	onItemRemoved(item: string) {
