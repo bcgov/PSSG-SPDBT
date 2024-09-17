@@ -1,5 +1,6 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
+	ApplicantProfileResponse,
 	ApplicationTypeCode,
 	ControllingMemberCrcAppSubmitRequest,
 	Document,
@@ -323,5 +324,41 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 
 		console.debug('[getDocsToSaveBlobs] documentsToSave', documents);
 		return documents;
+	}
+
+	getApplicantPersonalInformationData(applicantProfile?: ApplicantProfileResponse): any {
+		return {
+			givenName: applicantProfile?.givenName,
+			middleName1: applicantProfile?.middleName1,
+			middleName2: applicantProfile?.middleName2,
+			surname: applicantProfile?.surname,
+			genderCode: applicantProfile?.genderCode,
+			dateOfBirth: applicantProfile?.dateOfBirth,
+			origGivenName: applicantProfile?.givenName,
+			origMiddleName1: applicantProfile?.middleName1,
+			origMiddleName2: applicantProfile?.middleName2,
+			origSurname: applicantProfile?.surname,
+			origDateOfBirth: applicantProfile?.dateOfBirth,
+			origGenderCode: applicantProfile?.genderCode,
+		};
+	}
+
+	getApplicanContactInformationData(applicantProfile?: ApplicantProfileResponse): any {
+		return {
+			emailAddress: applicantProfile?.emailAddress,
+			phoneNumber: applicantProfile?.phoneNumber,
+		};
+	}
+
+	getApplicantResidentialAddressData(applicantProfile?: ApplicantProfileResponse): any {
+		return {
+			addressSelected: !!applicantProfile?.residentialAddress?.addressLine1,
+			addressLine1: applicantProfile?.residentialAddress?.addressLine1,
+			addressLine2: applicantProfile?.residentialAddress?.addressLine2,
+			city: applicantProfile?.residentialAddress?.city,
+			country: applicantProfile?.residentialAddress?.country,
+			postalCode: applicantProfile?.residentialAddress?.postalCode,
+			province: applicantProfile?.residentialAddress?.province,
+		};
 	}
 }

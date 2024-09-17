@@ -46,7 +46,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 				</mat-step>
 
 				<mat-step [completed]="step2Complete">
-					<ng-template matStepLabel>Citizenship & Residency</ng-template>
+					<ng-template matStepLabel>Identification</ng-template>
 					<app-steps-controlling-member-citizenship-residency
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeUpdate"

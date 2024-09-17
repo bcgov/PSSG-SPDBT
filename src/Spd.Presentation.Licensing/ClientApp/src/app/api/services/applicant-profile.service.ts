@@ -13,6 +13,8 @@ import { apiApplicantApplicantIdPut } from '../fn/applicant-profile/api-applican
 import { ApiApplicantApplicantIdPut$Params } from '../fn/applicant-profile/api-applicant-applicant-id-put';
 import { apiApplicantFilesPost } from '../fn/applicant-profile/api-applicant-files-post';
 import { ApiApplicantFilesPost$Params } from '../fn/applicant-profile/api-applicant-files-post';
+import { apiApplicantGet } from '../fn/applicant-profile/api-applicant-get';
+import { ApiApplicantGet$Params } from '../fn/applicant-profile/api-applicant-get';
 import { apiApplicantIdGet } from '../fn/applicant-profile/api-applicant-id-get';
 import { ApiApplicantIdGet$Params } from '../fn/applicant-profile/api-applicant-id-get';
 import { apiApplicantMergeOldApplicantIdNewApplicantIdGet } from '../fn/applicant-profile/api-applicant-merge-old-applicant-id-new-applicant-id-get';
@@ -191,6 +193,41 @@ export class ApplicantProfileService extends BaseService {
   apiApplicantMergeOldApplicantIdNewApplicantIdGet(params: ApiApplicantMergeOldApplicantIdNewApplicantIdGet$Params, context?: HttpContext): Observable<IActionResult> {
     return this.apiApplicantMergeOldApplicantIdNewApplicantIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<IActionResult>): IActionResult => r.body)
+    );
+  }
+
+  /** Path part for operation `apiApplicantGet()` */
+  static readonly ApiApplicantGetPath = '/api/applicant';
+
+  /**
+   * Get applicant profile anonymously, the applicantId is retrieved from cookies.
+   * For controlling member, The cookie is set when the user click the update cm email link, verify the invitation.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiApplicantGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantGet$Response(params?: ApiApplicantGet$Params, context?: HttpContext): Observable<StrictHttpResponse<ApplicantProfileResponse>> {
+    return apiApplicantGet(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Get applicant profile anonymously, the applicantId is retrieved from cookies.
+   * For controlling member, The cookie is set when the user click the update cm email link, verify the invitation.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiApplicantGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiApplicantGet(params?: ApiApplicantGet$Params, context?: HttpContext): Observable<ApplicantProfileResponse> {
+    return this.apiApplicantGet$Response(params, context).pipe(
+      map((r: StrictHttpResponse<ApplicantProfileResponse>): ApplicantProfileResponse => r.body)
     );
   }
 

@@ -188,7 +188,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 										<ng-container *ngIf="member.emailAddress; else noEmailAddress">
 											<button
 												mat-stroked-button
-												class="w-100"
+												class="w-100 invitation-button"
 												aria-label="Send invitation"
 												(click)="onSendInvitation(member)"
 											>
@@ -210,7 +210,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<mat-header-row *matHeaderRowDef="columnsWithoutSWL; sticky: true"></mat-header-row>
-								<mat-row class="mat-data-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
+								<mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
 						<app-alert type="info" icon="">
@@ -285,6 +285,14 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 	`,
 	styles: [
 		`
+			.invitation-row {
+				min-height: 64px !important;
+			}
+
+			.invitation-button {
+				height: fit-content;
+			}
+
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -369,9 +377,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	getInvitationButtonLabel(controllingMemberAppStatusCode?: ApplicationPortalStatusCode): string {
 		if (controllingMemberAppStatusCode === ApplicationPortalStatusCode.CompletedCleared) {
-			return 'Update Invitation';
+			return 'Send Update Invitation';
 		}
-		return 'Send Invitation';
+		return 'Send New Invitation';
 	}
 
 	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {

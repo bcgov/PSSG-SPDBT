@@ -283,17 +283,34 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * Create an empty anonymous crc
 	 * @returns
 	 */
-	createNewCrcAnonymous(
+	createNewOrUpdateCrcAnonymous(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
+				tap((_resp: any) => {
+					this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
-					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-					applicationTypeCode
+					this.commonApplicationService.setApplicationTitle(
+						WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+						applicationTypeCode
+					);
+				})
+			);
+		}
+
+		return this.applicantProfileService.apiApplicantGet().pipe(
+			switchMap((applicantProfile: ApplicantProfileResponse) => {
+				return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+					tap((_resp: any) => {
+						this.initialized = true;
+
+						this.commonApplicationService.setApplicationTitle(
+							WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+							applicationTypeCode
+						);
+					})
 				);
 			})
 		);
@@ -525,28 +542,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	): Observable<any> {
 		this.reset();
 
-		const personalInformationData = {
-			givenName: applicantProfile.givenName,
-			middleName1: applicantProfile.middleName1,
-			middleName2: applicantProfile.middleName2,
-			surname: applicantProfile.surname,
-			genderCode: applicantProfile.genderCode,
-			dateOfBirth: applicantProfile?.dateOfBirth,
-		};
-		const contactInformationData = {
-			emailAddress: applicantProfile.emailAddress,
-			phoneNumber: applicantProfile.phoneNumber,
-		};
-
-		const residentialAddressData = {
-			addressSelected: !!applicantProfile.residentialAddress?.addressLine1,
-			addressLine1: applicantProfile.residentialAddress?.addressLine1,
-			addressLine2: applicantProfile.residentialAddress?.addressLine2,
-			city: applicantProfile.residentialAddress?.city,
-			country: applicantProfile.residentialAddress?.country,
-			postalCode: applicantProfile.residentialAddress?.postalCode,
-			province: applicantProfile.residentialAddress?.province,
-		};
+		const personalInformationData = this.getApplicantPersonalInformationData(applicantProfile);
+		const contactInformationData = this.getApplicanContactInformationData(applicantProfile);
+		const residentialAddressData = this.getApplicantResidentialAddressData(applicantProfile);
 
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
@@ -597,22 +595,42 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private getCrcEmptyAnonymous(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile?: ApplicantProfileResponse
 	): Observable<any> {
 		this.reset();
 
-		const personalInformationData = {
-			givenName: crcInviteData?.givenName,
-			middleName1: crcInviteData?.middleName1,
-			middleName2: crcInviteData?.middleName2,
-			surname: crcInviteData?.surname,
-			genderCode: null,
-			dateOfBirth: null,
-		};
-		const contactInformationData = {
-			emailAddress: crcInviteData?.emailAddress,
-			phoneNumber: null,
-		};
+		let personalInformationData = {};
+		let contactInformationData = {};
+		let residentialAddressData = {};
+
+		let aliasesData = {};
+
+		if (applicantProfile) {
+			personalInformationData = this.getApplicantPersonalInformationData(applicantProfile);
+			contactInformationData = this.getApplicanContactInformationData(applicantProfile);
+			residentialAddressData = this.getApplicantResidentialAddressData(applicantProfile);
+
+			aliasesData = {
+				previousNameFlag: this.utilService.booleanToBooleanType(
+					applicantProfile.aliases && applicantProfile.aliases.length > 0
+				),
+				aliases: [],
+			};
+		} else {
+			personalInformationData = {
+				givenName: crcInviteData?.givenName,
+				middleName1: crcInviteData?.middleName1,
+				middleName2: crcInviteData?.middleName2,
+				surname: crcInviteData?.surname,
+				genderCode: null,
+				dateOfBirth: null,
+			};
+			contactInformationData = {
+				emailAddress: crcInviteData?.emailAddress,
+				phoneNumber: null,
+			};
+		}
 
 		this.controllingMembersModelFormGroup.patchValue(
 			{
@@ -625,11 +643,28 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				inviteId: crcInviteData.inviteId,
 				personalInformationData,
 				contactInformationData,
+				residentialAddressData,
+				aliasesData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
+
+		if (applicantProfile) {
+			const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
+			applicantProfile.aliases?.forEach((alias: Alias) => {
+				aliasesArray.push(
+					new FormGroup({
+						id: new FormControl(alias.id),
+						givenName: new FormControl(alias.givenName),
+						middleName1: new FormControl(alias.middleName1),
+						middleName2: new FormControl(alias.middleName2),
+						surname: new FormControl(alias.surname, [FormControlValidators.required]),
+					})
+				);
+			});
+		}
 
 		return of(this.controllingMembersModelFormGroup.value);
 	}

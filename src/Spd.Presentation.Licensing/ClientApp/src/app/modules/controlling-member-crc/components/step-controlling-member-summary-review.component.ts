@@ -140,7 +140,10 @@ import { UtilService } from '@app/core/services/util.service';
 									<mat-expansion-panel-header>
 										<mat-panel-title class="review-panel-title">
 											<mat-toolbar class="d-flex justify-content-between">
-												<div class="panel-header">Citizenship & Residency</div>
+												<div class="panel-header">
+													<ng-container *ngIf="isNew; else citizenshipTitle"> Citizenship & Residency </ng-container>
+													<ng-template #citizenshipTitle> Identification </ng-template>
+												</div>
 												<button
 													mat-mini-fab
 													color="primary"
