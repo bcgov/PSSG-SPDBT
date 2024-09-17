@@ -9,8 +9,8 @@ import {
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-summary-review-update-authenticated',
@@ -130,44 +130,44 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	booleanTypeCodeYes = BooleanTypeCode.Yes;
 
-	categoryArmouredCarGuardFormGroup: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
-	categoryBodyArmourSalesFormGroup: FormGroup = this.licenceApplicationService.categoryBodyArmourSalesFormGroup;
+	categoryArmouredCarGuardFormGroup: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
+	categoryBodyArmourSalesFormGroup: FormGroup = this.workerApplicationService.categoryBodyArmourSalesFormGroup;
 	categoryClosedCircuitTelevisionInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
+		this.workerApplicationService.categoryClosedCircuitTelevisionInstallerFormGroup;
 	categoryElectronicLockingDeviceInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
-	categoryFireInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryFireInvestigatorFormGroup;
-	categoryLocksmithFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithFormGroup;
+		this.workerApplicationService.categoryElectronicLockingDeviceInstallerFormGroup;
+	categoryFireInvestigatorFormGroup: FormGroup = this.workerApplicationService.categoryFireInvestigatorFormGroup;
+	categoryLocksmithFormGroup: FormGroup = this.workerApplicationService.categoryLocksmithFormGroup;
 	categoryPrivateInvestigatorSupFormGroup: FormGroup =
-		this.licenceApplicationService.categoryPrivateInvestigatorSupFormGroup;
-	categoryPrivateInvestigatorFormGroup: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+		this.workerApplicationService.categoryPrivateInvestigatorSupFormGroup;
+	categoryPrivateInvestigatorFormGroup: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;
 	categorySecurityAlarmInstallerFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmInstallerFormGroup;
-	categorySecurityConsultantFormGroup: FormGroup = this.licenceApplicationService.categorySecurityConsultantFormGroup;
-	categoryLocksmithSupFormGroup: FormGroup = this.licenceApplicationService.categoryLocksmithSupFormGroup;
+		this.workerApplicationService.categorySecurityAlarmInstallerFormGroup;
+	categorySecurityConsultantFormGroup: FormGroup = this.workerApplicationService.categorySecurityConsultantFormGroup;
+	categoryLocksmithSupFormGroup: FormGroup = this.workerApplicationService.categoryLocksmithSupFormGroup;
 	categorySecurityAlarmInstallerSupFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmInstallerSupFormGroup;
+		this.workerApplicationService.categorySecurityAlarmInstallerSupFormGroup;
 	categorySecurityAlarmMonitorFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmMonitorFormGroup;
+		this.workerApplicationService.categorySecurityAlarmMonitorFormGroup;
 	categorySecurityAlarmResponseFormGroup: FormGroup =
-		this.licenceApplicationService.categorySecurityAlarmResponseFormGroup;
-	categorySecurityAlarmSalesFormGroup: FormGroup = this.licenceApplicationService.categorySecurityAlarmSalesFormGroup;
-	categorySecurityGuardFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardFormGroup;
-	categorySecurityGuardSupFormGroup: FormGroup = this.licenceApplicationService.categorySecurityGuardSupFormGroup;
+		this.workerApplicationService.categorySecurityAlarmResponseFormGroup;
+	categorySecurityAlarmSalesFormGroup: FormGroup = this.workerApplicationService.categorySecurityAlarmSalesFormGroup;
+	categorySecurityGuardFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardFormGroup;
+	categorySecurityGuardSupFormGroup: FormGroup = this.workerApplicationService.categorySecurityGuardSupFormGroup;
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService,
 		private utilService: UtilService
 	) {}
 
 	ngOnInit(): void {
-		this.licenceModelData = { ...this.licenceApplicationService.licenceModelFormGroup.getRawValue() };
+		this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
 	}
 
 	onUpdateData(): void {
 		this.licenceModelData = {
-			...this.licenceApplicationService.licenceModelFormGroup.getRawValue(),
+			...this.workerApplicationService.workerModelFormGroup.getRawValue(),
 		};
 	}
 
@@ -184,27 +184,27 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		);
 	}
 	get showPhotographOfYourself(): boolean {
-		return this.licenceApplicationService.getSummaryshowPhotographOfYourself(this.licenceModelData);
+		return this.workerApplicationService.getSummaryshowPhotographOfYourself(this.licenceModelData);
 	}
 
 	get hasBcscNameChanged(): boolean {
-		return this.licenceApplicationService.getSummaryhasBcscNameChanged(this.licenceModelData);
+		return this.workerApplicationService.getSummaryhasBcscNameChanged(this.licenceModelData);
 	}
 	get hasGenderChanged(): boolean {
-		return this.licenceApplicationService.getSummaryhasGenderChanged(this.licenceModelData);
+		return this.workerApplicationService.getSummaryhasGenderChanged(this.licenceModelData);
 	}
 	get originalLicenceNumber(): string {
-		return this.licenceApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 	get originalExpiryDate(): string {
-		return this.licenceApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalExpiryDate(this.licenceModelData);
 	}
 	get originalLicenceTermCode(): string {
-		return this.licenceApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
+		return this.workerApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 
 	get isReprint(): string {
-		return this.licenceApplicationService.getSummaryisReprint(this.licenceModelData);
+		return this.workerApplicationService.getSummaryisReprint(this.licenceModelData);
 	}
 	get licenceFee(): number | null {
 		if (!this.licenceTermCode || !this.isReprint) {
@@ -225,54 +225,54 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	}
 
 	get isSoleProprietor(): string {
-		return this.licenceApplicationService.getSummaryisSoleProprietor(this.licenceModelData);
+		return this.workerApplicationService.getSummaryisSoleProprietor(this.licenceModelData);
 	}
 
 	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.licenceApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
+		return this.workerApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
 	}
 
 	get applicationTypeCode(): ApplicationTypeCode | null {
-		return this.licenceApplicationService.getSummaryapplicationTypeCode(this.licenceModelData);
+		return this.workerApplicationService.getSummaryapplicationTypeCode(this.licenceModelData);
 	}
 
 	get licenceTermCode(): string {
-		return this.licenceApplicationService.getSummarylicenceTermCode(this.licenceModelData);
+		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 
 	get carryAndUseRestraints(): string {
-		return this.licenceApplicationService.getSummarycarryAndUseRestraints(this.licenceModelData);
+		return this.workerApplicationService.getSummarycarryAndUseRestraints(this.licenceModelData);
 	}
 	get carryAndUseRestraintsDocument(): string {
-		return this.licenceApplicationService.getSummarycarryAndUseRestraintsDocument(this.licenceModelData);
+		return this.workerApplicationService.getSummarycarryAndUseRestraintsDocument(this.licenceModelData);
 	}
 	get carryAndUseRestraintsAttachments(): File[] {
-		return this.licenceApplicationService.getSummarycarryAndUseRestraintsAttachments(this.licenceModelData);
+		return this.workerApplicationService.getSummarycarryAndUseRestraintsAttachments(this.licenceModelData);
 	}
 	get showDogsAndRestraints(): boolean {
-		return this.licenceApplicationService.getSummaryshowDogsAndRestraints(this.licenceModelData);
+		return this.workerApplicationService.getSummaryshowDogsAndRestraints(this.licenceModelData);
 	}
 	get useDogs(): string {
-		return this.licenceApplicationService.getSummaryuseDogs(this.licenceModelData);
+		return this.workerApplicationService.getSummaryuseDogs(this.licenceModelData);
 	}
 	get isDogsPurposeProtection(): string {
-		return this.licenceApplicationService.getSummaryisDogsPurposeProtection(this.licenceModelData);
+		return this.workerApplicationService.getSummaryisDogsPurposeProtection(this.licenceModelData);
 	}
 	get isDogsPurposeDetectionDrugs(): string {
-		return this.licenceApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.licenceModelData);
+		return this.workerApplicationService.getSummaryisDogsPurposeDetectionDrugs(this.licenceModelData);
 	}
 	get isDogsPurposeDetectionExplosives(): string {
-		return this.licenceApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.licenceModelData);
+		return this.workerApplicationService.getSummaryisDogsPurposeDetectionExplosives(this.licenceModelData);
 	}
 	get dogsPurposeAttachments(): File[] {
-		return this.licenceApplicationService.getSummarydogsPurposeAttachments(this.licenceModelData);
+		return this.workerApplicationService.getSummarydogsPurposeAttachments(this.licenceModelData);
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		return this.licenceApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {
-		return this.licenceApplicationService.getSummarycategoryList(this.licenceModelData);
+		return this.workerApplicationService.getSummarycategoryList(this.licenceModelData);
 	}
 }

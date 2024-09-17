@@ -8,7 +8,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
@@ -108,7 +108,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -119,18 +119,18 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
 
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
 				this.showStepDogsAndRestraints =
-					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
@@ -138,7 +138,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
-				const bizTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
 				)?.value;
 				this.showWorkerLicenceSoleProprietorStep =
@@ -194,8 +194,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.workerApplicationService.isAutoSave()) {
+			this.workerApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
@@ -219,7 +219,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	onPayNow(): void {
-		this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence renewal has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);
@@ -238,8 +238,8 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.workerApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete);
 	}

@@ -3,9 +3,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { StepWorkerLicenceMailingAddressReplacementAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-mailing-address-replacement-anonymous.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { StepWorkerLicenceMailingAddressReplacementAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-mailing-address-replacement-anonymous.component';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
@@ -47,7 +47,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
@@ -74,7 +74,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 			if (this.newLicenceAppId) {
 				this.payNow(this.newLicenceAppId);
 			} else {
-				this.licenceApplicationService.submitLicenceReplacementAnonymous().subscribe({
+				this.workerApplicationService.submitLicenceReplacementAnonymous().subscribe({
 					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 						console.debug('[onPay] submitLicenceReplacementAnonymous', resp.body);
 

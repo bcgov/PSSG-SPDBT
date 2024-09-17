@@ -3,8 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, RestraintDocumentTypes } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
@@ -92,26 +92,26 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	booleanTypeCodes = BooleanTypeCode;
 	restraintDocumentTypes = RestraintDocumentTypes;
 
-	form: FormGroup = this.licenceApplicationService.restraintsAuthorizationFormGroup;
+	form: FormGroup = this.workerApplicationService.restraintsAuthorizationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService.addUploadDocument(this.carryAndUseRestraintsDocument.value, file).subscribe({
+		this.workerApplicationService.addUploadDocument(this.carryAndUseRestraintsDocument.value, file).subscribe({
 			next: (resp: any) => {
 				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -125,7 +125,7 @@ export class StepWorkerLicenceRestraintsComponent implements OnInit, LicenceChil
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

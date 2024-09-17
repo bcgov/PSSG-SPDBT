@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-photograph-of-yourself-anonymous',
@@ -24,11 +24,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepWorkerLicencePhotographOfYourselfAnonymousComponent implements LicenceChildStepperStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.photographOfYourselfFormGroup;
+	form: FormGroup = this.workerApplicationService.photographOfYourselfFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-bc-driver-licence',
@@ -24,11 +24,11 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepWorkerLicenceBcDriverLicenceComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';
 
-	form: FormGroup = this.licenceApplicationService.bcDriversLicenceFormGroup;
+	form: FormGroup = this.workerApplicationService.bcDriversLicenceFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.subtitle = this.isRenewalOrUpdate
