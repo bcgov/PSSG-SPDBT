@@ -62,6 +62,7 @@ public record ControllingMemberCrcAppUpsertRequest : ControllingMemberCrcAppBase
     public Guid BizContactId { get; set; }
     public Guid InviteId { get; set; }
     public Guid? ParentBizLicApplicationId { get; set; }
+    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
 };
 #endregion
 #region anonymous user

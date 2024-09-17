@@ -90,15 +90,11 @@ internal class ControllingMemberCrcAppManager :
             cmd.LicAppFileInfos.ToList(),
             existingFiles,
             ct);
-        SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
-        saveCmd.IsPartialSaving = false;
+       
         ControllingMemberCrcApplicationResp originalApp =
             await _controllingMemberCrcRepository.GetCrcApplicationAsync((Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, ct);
 
         ChangeSpec changes = await AddDynamicTasks(originalApp, request, cmd.LicAppFileInfos, ct);
-        
-        //update application
-        var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(saveCmd, ct);
 
         //update contact directly
         UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
@@ -107,16 +103,16 @@ internal class ControllingMemberCrcAppManager :
 
         await UploadNewDocsAsync(request.DocumentExpiredInfos,
             cmd.LicAppFileInfos,
-            response.ControllingMemberAppId,
-            response.ContactId,
+            originalApp.ControllingMemberAppId,
+            originalApp.ContactId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
             changes.CriminalHistoryStatusChangeTaskId,
             null,
             null,
             ct);
-        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
-        return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
+        await _licAppRepository.CommitLicenceApplicationAsync((Guid)originalApp.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+        return _mapper.Map<ControllingMemberCrcAppCommandResponse>(originalApp);
     }
     #region anonymous new
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
