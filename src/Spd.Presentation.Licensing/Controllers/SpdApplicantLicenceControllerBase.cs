@@ -52,7 +52,7 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
         string? encodedValue;
         Request.Cookies.TryGetValue(key, out encodedValue);
         if (string.IsNullOrEmpty(encodedValue))
-            throw new ApiException(HttpStatusCode.Unauthorized);
+            throw new ApiException(HttpStatusCode.Unauthorized, "Not valid cookie value");
         string value;
         try
         {

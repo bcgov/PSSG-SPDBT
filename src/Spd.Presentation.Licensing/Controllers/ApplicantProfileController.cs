@@ -132,7 +132,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/applicant")]
         [HttpGet]
-        public async Task<ApplicantProfileResponse?> GetApplicantInfoAnonymous(Guid id)
+        public async Task<ApplicantProfileResponse?> GetApplicantInfoAnonymous()
         {
             string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
             return await _mediator.Send(new GetApplicantProfileQuery(Guid.Parse(applicantIdStr)));
