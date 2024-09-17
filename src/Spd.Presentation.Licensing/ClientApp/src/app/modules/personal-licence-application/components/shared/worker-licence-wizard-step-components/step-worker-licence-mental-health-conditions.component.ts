@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormMentalHealthConditionsComponent } from '@app/shared/components/form-mental-health-conditions.component';
 
 @Component({
@@ -24,17 +24,17 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
+	form: FormGroup = this.workerApplicationService.mentalHealthConditionsFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FormMentalHealthConditionsComponent)
 	formMentalHealthConditionsComponent!: FormMentalHealthConditionsComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		[this.title, this.subtitle] = this.licenceApplicationService.getMentalHealthConditionsTitle(
+		[this.title, this.subtitle] = this.workerApplicationService.getMentalHealthConditionsTitle(
 			this.applicationTypeCode,
 			this.hasPreviousMhcFormUpload.value
 		);
@@ -46,7 +46,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.workerApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.MentalHealthCondition,
 			file,
 			this.formMentalHealthConditionsComponent.attachments,
@@ -55,7 +55,7 @@ export class StepWorkerLicenceMentalHealthConditionsComponent implements OnInit,
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.workerApplicationService.fileRemoved();
 	}
 
 	get hasPreviousMhcFormUpload(): FormControl {

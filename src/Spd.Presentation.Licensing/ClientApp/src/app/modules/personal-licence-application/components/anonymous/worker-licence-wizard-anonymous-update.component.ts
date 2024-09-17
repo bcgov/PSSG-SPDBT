@@ -8,7 +8,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
@@ -135,7 +135,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
@@ -147,18 +147,18 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
 
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
 				this.showStepDogsAndRestraints =
-					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
@@ -166,19 +166,19 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					this.applicationTypeCode === ApplicationTypeCode.New ||
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
-				this.policeOfficerRoleCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
 					'policeBackgroundData.policeOfficerRoleCode'
 				)?.value;
 
 				// for Update flow: only show unauthenticated user option to upload a new photo
 				// if they changed their sex selection earlier in the application
-				this.hasGenderChanged = !!this.licenceApplicationService.licenceModelFormGroup.get(
+				this.hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 
 				// for Update flow: only show unauthenticated user option to upload a new photo
 				// if they changed their sex selection earlier in the application
-				this.hasLegalNameChanged = !!this.licenceApplicationService.licenceModelFormGroup.get(
+				this.hasLegalNameChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hashasLegalNameChangedGenderChanged'
 				)?.value;
 
@@ -281,7 +281,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				);
 			}
 		} else {
-			this.licenceApplicationService.submitLicenceAnonymous().subscribe({
+			this.workerApplicationService.submitLicenceAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 					const workerLicenceCommandResponse = resp.body;
 
@@ -310,9 +310,9 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepBackgroundComplete();
-		this.step3Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.workerApplicationService.isStepBackgroundComplete();
+		this.step3Complete = this.workerApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete, this.step3Complete);
 	}

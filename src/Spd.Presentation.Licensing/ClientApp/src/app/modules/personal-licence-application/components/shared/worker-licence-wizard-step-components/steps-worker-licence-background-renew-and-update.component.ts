@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { ApplicationService } from '@app/core/services/application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { StepWorkerLicenceCriminalHistoryComponent } from './step-worker-licence-criminal-history.component';
 import { StepWorkerLicenceFingerprintsComponent } from './step-worker-licence-fingerprints.component';
 import { StepWorkerLicenceMentalHealthConditionsComponent } from './step-worker-licence-mental-health-conditions.component';
@@ -91,7 +91,7 @@ export class StepsWorkerLicenceBackgroundRenewAndUpdateComponent extends BaseWiz
 
 	constructor(
 		override commonApplicationService: ApplicationService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		super(commonApplicationService);
 	}

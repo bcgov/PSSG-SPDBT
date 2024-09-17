@@ -21,12 +21,14 @@ import {
 	WorkerLicenceCommandResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
+import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from '@app/api/services';
+import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngneat/hot-toast';
 import * as moment from 'moment';
 import {
@@ -42,23 +44,21 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from 'src/app/api/services';
-import { StrictHttpResponse } from 'src/app/api/strict-http-response';
-import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { ConfigService } from 'src/app/core/services/config.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
-import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { ApplicationService, MainLicenceResponse } from './application.service';
-import { LicenceApplicationHelper } from './licence-application.helper';
+import { AuthUserBcscService } from './auth-user-bcsc.service';
+import { AuthenticationService } from './authentication.service';
+import { ConfigService } from './config.service';
+import { FileUtilService, SpdFile } from './file-util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
+import { WorkerApplicationHelper } from './worker-application.helper';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class LicenceApplicationService extends LicenceApplicationHelper {
-	licenceModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+export class WorkerApplicationService extends WorkerApplicationHelper {
+	workerModelValueChanges$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	licenceModelFormGroup: FormGroup = this.formBuilder.group({
+	workerModelFormGroup: FormGroup = this.formBuilder.group({
 		licenceAppId: new FormControl(),
 		applicantId: new FormControl(), // when authenticated, the applicant id
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
@@ -112,7 +112,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		photographOfYourselfData: this.photographOfYourselfFormGroup,
 	});
 
-	licenceModelChangedSubscription!: Subscription;
+	workerModelChangedSubscription!: Subscription;
 
 	constructor(
 		formBuilder: FormBuilder,
@@ -131,7 +131,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 
-		this.licenceModelChangedSubscription = this.licenceModelFormGroup.valueChanges
+		this.workerModelChangedSubscription = this.workerModelFormGroup.valueChanges
 			.pipe(debounceTime(200), distinctUntilChanged())
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
@@ -141,16 +141,16 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					const isValid = step1Complete && step2Complete && step3Complete;
 
 					console.debug(
-						'licenceModelFormGroup CHANGED',
+						'workerModelFormGroup CHANGED',
 						step1Complete,
 						step2Complete,
 						step3Complete,
-						this.licenceModelFormGroup.getRawValue()
+						this.workerModelFormGroup.getRawValue()
 					);
 
 					this.updateModelChangeFlags();
 
-					this.licenceModelValueChanges$.next(isValid);
+					this.workerModelValueChanges$.next(isValid);
 				}
 			});
 	}
@@ -164,15 +164,15 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		this.resetCommon();
 
 		this.consentAndDeclarationFormGroup.reset();
-		this.licenceModelFormGroup.reset();
+		this.workerModelFormGroup.reset();
 
 		// clear the alias data - this does not seem to get reset during a formgroup reset
-		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
+		const aliasesArray = this.workerModelFormGroup.get('aliasesData.aliases') as FormArray;
 		while (aliasesArray.length) {
 			aliasesArray.removeAt(0);
 		}
 
-		console.debug('RESET', this.initialized, this.licenceModelFormGroup.value);
+		console.debug('RESET', this.initialized, this.workerModelFormGroup.value);
 	}
 
 	/**
@@ -191,7 +191,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 		};
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
-			licenceAppId: this.licenceModelFormGroup.get('licenceAppId')?.value,
+			licenceAppId: this.workerModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
 	}
@@ -426,7 +426,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
 	submitSoleProprietorComboFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -444,7 +444,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	partialSaveLicenceStepAuthenticated(
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -461,7 +461,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 				this.hotToastService.success(msg);
 
 				if (!licenceModelFormValue.licenceAppId) {
-					this.licenceModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
+					this.workerModelFormGroup.patchValue({ licenceAppId: res.body.licenceAppId! }, { emitEvent: false });
 				}
 			})
 		);
@@ -620,7 +620,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	private saveUserProfile(): Observable<StrictHttpResponse<string>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body: ApplicantUpdateRequest = this.getProfileSaveBody(licenceModelFormValue);
 		const documentsToSave = this.getProfileDocsToSaveBlobs(licenceModelFormValue);
 
@@ -691,7 +691,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceNewAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
@@ -705,7 +705,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(
 		isUpdateFlowWithHideReprintStep?: boolean
 	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 		delete bodyUpsert.documentInfos;
 
@@ -989,7 +989,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					categorySecurityGuardSupFormGroup,
 				] = this.initializeCategoryFormGroups(accessCodeData.linkedLicenceCategoryCodes);
 
-				this.licenceModelFormGroup.patchValue(
+				this.workerModelFormGroup.patchValue(
 					{
 						originalLicenceData,
 						personalInformationData,
@@ -1023,7 +1023,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 					accessCodeData.licenceNumber
 				);
 
-				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.licenceModelFormGroup.value);
+				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.workerModelFormGroup.value);
 			})
 		);
 	}
@@ -1073,7 +1073,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	private getLicenceEmptyAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
 		this.reset();
 
-		this.licenceModelFormGroup.patchValue(
+		this.workerModelFormGroup.patchValue(
 			{
 				workerLicenceTypeData: { workerLicenceTypeCode: workerLicenceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
@@ -1084,7 +1084,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		return of(this.licenceModelFormGroup.value);
+		return of(this.workerModelFormGroup.value);
 	}
 
 	/**
@@ -1141,7 +1141,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue);
 
@@ -1191,7 +1191,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 	 * @returns
 	 */
 	submitLicenceReplacementAnonymous(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
-		const licenceModelFormValue = this.licenceModelFormGroup.getRawValue();
+		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAnonymous(licenceModelFormValue);
 		const mailingAddressData = this.mailingAddressFormGroup.getRawValue();
 
@@ -1358,17 +1358,17 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			attachments: mentalHealthConditionsDataAttachments,
 		};
 
-		this.licenceModelFormGroup.patchValue(
+		this.workerModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
 				workerLicenceTypeData,
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
-				personalInformationData: { ...personalInformationData },
-				residentialAddressData: { ...residentialAddressData },
-				mailingAddressData: { ...mailingAddressData },
-				contactInformationData: { ...contactInformationData },
+				personalInformationData,
+				residentialAddressData,
+				mailingAddressData,
+				contactInformationData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(profile.aliases && profile.aliases.length > 0),
 					aliases: [],
@@ -1382,7 +1382,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		const aliasesArray = this.licenceModelFormGroup.get('aliasesData.aliases') as FormArray;
+		const aliasesArray = this.workerModelFormGroup.get('aliasesData.aliases') as FormArray;
 		profile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
@@ -1395,8 +1395,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			);
 		});
 
-		console.debug('[applyLicenceProfileIntoModel] licenceModelFormGroup', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		console.debug('[applyLicenceProfileIntoModel] workerModelFormGroup', this.workerModelFormGroup.value);
+		return of(this.workerModelFormGroup.value);
 	}
 
 	private applyLicenceIntoModel(
@@ -1757,7 +1757,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			updateAttachments: [],
 		};
 
-		this.licenceModelFormGroup.patchValue(
+		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: workerLicenceAppl.licenceAppId,
 				latestApplicationId: workerLicenceAppl.licenceAppId,
@@ -1798,8 +1798,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		console.debug('[applyLicenceIntoModel] licenceModelFormGroup', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		console.debug('[applyLicenceIntoModel] workerModelFormGroup', this.workerModelFormGroup.value);
+		return of(this.workerModelFormGroup.value);
 	}
 
 	private initializeCategoryFormGroups(categoryCodes: WorkerCategoryTypeCode[] | null | undefined): any {
@@ -2006,7 +2006,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			};
 		}
 
-		this.licenceModelFormGroup.patchValue(
+		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -2048,8 +2048,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-				return of(this.licenceModelFormGroup.value);
+				console.debug('[applyRenewalDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
+				return of(this.workerModelFormGroup.value);
 			})
 		);
 	}
@@ -2102,7 +2102,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			criminalChargeDescription: null,
 		};
 
-		this.licenceModelFormGroup.patchValue(
+		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -2137,8 +2137,8 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 
 		return this.setPhotographOfYourself(photoOfYourself).pipe(
 			switchMap((_resp: any) => {
-				console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-				return of(this.licenceModelFormGroup.value);
+				console.debug('[applyUpdateDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
+				return of(this.workerModelFormGroup.value);
 			})
 		);
 	}
@@ -2173,7 +2173,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			categorySecurityGuardSupFormGroup,
 		] = this.initializeCategoryFormGroups(userLicenceInformation.licenceCategoryCodes);
 
-		this.licenceModelFormGroup.patchValue(
+		this.workerModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
 				applicationTypeData,
@@ -2204,7 +2204,7 @@ export class LicenceApplicationService extends LicenceApplicationHelper {
 			}
 		);
 
-		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.licenceModelFormGroup.value);
-		return of(this.licenceModelFormGroup.value);
+		console.debug('[applyReplacementDataUpdatesToModel] licenceModel', this.workerModelFormGroup.value);
+		return of(this.workerModelFormGroup.value);
 	}
 }

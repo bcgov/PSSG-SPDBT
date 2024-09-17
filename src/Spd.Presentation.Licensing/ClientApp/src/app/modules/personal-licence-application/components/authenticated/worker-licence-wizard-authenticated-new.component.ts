@@ -9,7 +9,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-licence-application-routing.module';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
@@ -133,7 +133,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {
 		super(breakpointObserver);
@@ -145,24 +145,24 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
 
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
 				this.showStepDogsAndRestraints =
-					this.licenceApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
+					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
 				this.isSoleProprietor =
-					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
+					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
 					BooleanTypeCode.Yes;
 
-				this.showSaveAndExit = this.licenceApplicationService.isSaveAndExit();
+				this.showSaveAndExit = this.workerApplicationService.isSaveAndExit();
 
-				const isCanadianCitizen = this.licenceApplicationService.licenceModelFormGroup.get(
+				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
 					'citizenshipData.isCanadianCitizen'
 				)?.value;
 
@@ -171,7 +171,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
 
 				this.soleProprietorBizAppId =
-					this.licenceApplicationService.licenceModelFormGroup.get('soleProprietorBizAppId')?.value;
+					this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -212,8 +212,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.workerApplicationService.isAutoSave()) {
+			this.workerApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					if (stepper?.selected) stepper.selected.completed = true;
 					stepper.next();
@@ -252,11 +252,11 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onSaveAndExit(): void {
-		if (!this.licenceApplicationService.isSaveAndExit()) {
+		if (!this.workerApplicationService.isSaveAndExit()) {
 			return;
 		}
 
-		this.licenceApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
+		this.workerApplicationService.partialSaveLicenceStepAuthenticated(true).subscribe({
 			next: (_resp: any) => {
 				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 			},
@@ -267,8 +267,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onGoToReview() {
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.workerApplicationService.isAutoSave()) {
+			this.workerApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					setTimeout(() => {
 						// hack... does not navigate without the timeout
@@ -295,8 +295,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onChildNextStep() {
-		if (this.licenceApplicationService.isAutoSave()) {
-			this.licenceApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
+		if (this.workerApplicationService.isAutoSave()) {
+			this.workerApplicationService.partialSaveLicenceStepAuthenticated().subscribe({
 				next: (_resp: any) => {
 					this.goToChildNextStep();
 				},
@@ -310,7 +310,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	private submitStep(): void {
-		this.licenceApplicationService.submitLicenceNewAuthenticated().subscribe({
+		this.workerApplicationService.submitLicenceNewAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence has been successfully submitted');
 
@@ -323,7 +323,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	private submitSoleProprietorComboFlowStep(): void {
-		this.licenceApplicationService.submitSoleProprietorComboFlow().subscribe({
+		this.workerApplicationService.submitSoleProprietorComboFlow().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				// if a business licence app already exists, use it
 				if (this.soleProprietorBizAppId) {
@@ -357,8 +357,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	private updateCompleteStatus(): void {
-		this.step1Complete = this.licenceApplicationService.isStepLicenceSelectionComplete();
-		this.step2Complete = this.licenceApplicationService.isStepIdentificationComplete();
+		this.step1Complete = this.workerApplicationService.isStepLicenceSelectionComplete();
+		this.step2Complete = this.workerApplicationService.isStepIdentificationComplete();
 
 		console.debug('Complete Status', this.step1Complete, this.step2Complete);
 	}
