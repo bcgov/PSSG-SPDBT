@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { ApplicationService } from '@app/core/services/application.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-term',
@@ -47,12 +47,12 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 	workerLicenceTypes = WorkerLicenceTypeCode;
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.licenceTermFormGroup;
+	form: FormGroup = this.workerApplicationService.licenceTermFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
 
@@ -62,19 +62,17 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 	}
 
 	get termCodes(): Array<LicenceFeeResponse> {
-		const workerLicenceTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		const workerLicenceTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 			'workerLicenceTypeData.workerLicenceTypeCode'
 		)?.value;
 
-		const applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		const applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		const bizTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
-			'soleProprietorData.bizTypeCode'
-		)?.value;
+		const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.bizTypeCode')?.value;
 
-		const originalLicenceTermCode = this.licenceApplicationService.licenceModelFormGroup.get(
+		const originalLicenceTermCode = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalLicenceTermCode'
 		)?.value;
 

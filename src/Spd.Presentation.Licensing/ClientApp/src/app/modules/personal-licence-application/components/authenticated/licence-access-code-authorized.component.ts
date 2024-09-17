@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { IActionResult } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -105,14 +105,14 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 
 	isLinkErrorMessage: string | null = null;
 
-	form: FormGroup = this.licenceApplicationService.linkAccountCodeFormGroup;
+	form: FormGroup = this.workerApplicationService.linkAccountCodeFormGroup;
 
 	licenceNumberParam: string | null = null;
 
 	constructor(
 		private router: Router,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
@@ -137,7 +137,7 @@ export class LicenceAccessCodeAuthorizedComponent implements OnInit, LicenceChil
 
 		if (!this.isFormValid()) return;
 
-		this.licenceApplicationService.linkLicenceOrPermit(this.licenceNumber.value, this.accessCode.value).subscribe({
+		this.workerApplicationService.linkLicenceOrPermit(this.licenceNumber.value, this.accessCode.value).subscribe({
 			next: (_resp: StrictHttpResponse<IActionResult>) => {
 				if (_resp.status != 200) {
 					this.isLinkErrorMessage = 'This licence number and access code are not a valid combination.';

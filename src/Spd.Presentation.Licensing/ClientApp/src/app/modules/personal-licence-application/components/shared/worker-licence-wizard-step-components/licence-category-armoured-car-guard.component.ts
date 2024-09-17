@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -57,27 +57,27 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: [],
 })
 export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.categoryArmouredCarGuardFormGroup;
+	form: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
 	matcher = new FormErrorStateMatcher();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService
+		this.workerApplicationService
 			.addUploadDocument(LicenceDocumentTypeCode.CategoryArmouredCarGuardAuthorizationToCarryCertificate, file)
 			.subscribe({
 				next: (resp: any) => {
@@ -93,7 +93,7 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

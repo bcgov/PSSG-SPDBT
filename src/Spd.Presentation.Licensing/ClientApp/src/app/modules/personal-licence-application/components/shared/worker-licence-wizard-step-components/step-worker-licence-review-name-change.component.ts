@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-review-name-change',
@@ -29,11 +29,11 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 	styles: [],
 })
 export class StepWorkerLicenceReviewNameChangeComponent implements LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.personalInformationFormGroup;
+	form: FormGroup = this.workerApplicationService.personalInformationFormGroup;
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	constructor(private utilService: UtilService, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private utilService: UtilService, private workerApplicationService: WorkerApplicationService) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

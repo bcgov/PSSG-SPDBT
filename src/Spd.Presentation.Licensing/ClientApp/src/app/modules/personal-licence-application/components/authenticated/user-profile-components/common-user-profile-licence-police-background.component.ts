@@ -2,8 +2,8 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
 
 @Component({
@@ -44,10 +44,10 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit
 	@ViewChild(FormPoliceBackgroundComponent)
 	formPoliceBackgroundComponent!: FormPoliceBackgroundComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		this.title = this.licenceApplicationService.getPoliceBackgroundTitle(this.applicationTypeCode);
+		this.title = this.workerApplicationService.getPoliceBackgroundTitle(this.applicationTypeCode);
 	}
 
 	isFormValid(): boolean {
@@ -56,7 +56,7 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.workerApplicationService.fileUploaded(
 			LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
 			file,
 			this.formPoliceBackgroundComponent.attachments,
@@ -65,6 +65,6 @@ export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.workerApplicationService.fileRemoved();
 	}
 }
