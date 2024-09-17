@@ -27,7 +27,7 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 
 						<app-common-user-profile
 							[personalInformationFormGroup]="personalInformationFormGroup"
-							[contactFormGroup]="contactFormGroup"
+							[contactInformationFormGroup]="contactInformationFormGroup"
 							[aliasesFormGroup]="aliasesFormGroup"
 							[residentialAddressFormGroup]="residentialAddressFormGroup"
 							[mailingAddressFormGroup]="mailingAddressFormGroup"
@@ -110,7 +110,7 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 	mentalHealthComponent!: CommonUserProfileLicenceMentalHealthConditionsComponent;
 
 	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
-	contactFormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	contactInformationFormGroup = this.licenceApplicationService.contactInformationFormGroup;
 	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;

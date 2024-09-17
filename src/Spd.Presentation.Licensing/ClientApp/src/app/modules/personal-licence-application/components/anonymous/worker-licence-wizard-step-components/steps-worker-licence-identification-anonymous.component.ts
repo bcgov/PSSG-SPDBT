@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepWorkerLicenceAliasesComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-aliases.component';
 import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-bc-driver-licence.component';
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-citizenship.component';
@@ -10,7 +11,6 @@ import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from '@app/mo
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicenceReprintComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-reprint.component';
 import { StepWorkerLicenceResidentialAddressComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-residential-address.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-worker-licence-personal-information-anonymous.component';
 
 @Component({
@@ -161,8 +161,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 	@Input() isFormValid = false;
 	@Input() showCitizenshipStep!: boolean;
 	@Input() showPhotographOfYourself = true;
-	@Input() hasGenderChanged = false;
-	@Input() hasLegalNameChanged = false;
 	@Input() showReprint = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
@@ -186,9 +184,7 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 	@ViewChild(StepWorkerLicenceReprintComponent)
 	stepLicenceReprintComponent!: StepWorkerLicenceReprintComponent;
 
-	constructor(
-		override commonApplicationService: ApplicationService // private licenceApplicationService: LicenceApplicationService
-	) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
