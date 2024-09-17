@@ -2,14 +2,8 @@ using FluentValidation;
 using Serilog;
 using Spd.Presentation.Screening;
 using Spd.Presentation.Screening.Swagger;
-using Spd.Utilities.Address;
-using Spd.Utilities.BCeIDWS;
-using Spd.Utilities.Dynamics;
-using Spd.Utilities.FileStorage;
 using Spd.Utilities.Hosting;
 using Spd.Utilities.LogonUser;
-using Spd.Utilities.Payment;
-using Spd.Utilities.Recaptcha;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text.Json.Serialization;
@@ -45,12 +39,11 @@ try
     //    fv.ImplicitlyValidateChildProperties = true;
     //});
 
-    builder.Services.AddGoogleRecaptcha(builder.Configuration);
     builder.Services.AddValidatorsFromAssemblies(assemblies);
     builder.Services.ConfigureAuthentication(builder.Configuration);
     builder.Services.ConfigureAuthorization();
     builder.Services.AddHttpContextAccessor();
-    builder.Services.AddRequestDecompression().AddResponseCompression();
+    builder.Services.AddRequestDecompression().AddResponseCompression(opts => opts.EnableForHttps = true);
     builder.Services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User);
     builder.Services.AddAutoMapper(assemblies);
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
@@ -66,15 +59,9 @@ try
         builder.Services.AddDistributedMemoryCache();
     }
 
-    builder.Services
-        .AddFileStorageProxy(builder.Configuration)
-        .AddBCeIDService(builder.Configuration)
-        .AddPaymentService(builder.Configuration)
-        .AddDynamicsProxy(builder.Configuration)
-        .AddAddressAutoComplete(builder.Configuration);
-
-    builder.Services.ConfigureComponentServices(builder.Configuration, builder.Environment, assemblies);
     builder.Services.AddHealthChecks(builder.Configuration, assemblies);
+
+    builder.ConfigureComponents(assemblies, logger);
 
     var app = builder.Build();
 

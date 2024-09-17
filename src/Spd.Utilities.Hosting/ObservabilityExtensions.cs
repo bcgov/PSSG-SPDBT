@@ -52,7 +52,7 @@ public static class ObservabilityExtensions
             {
                 opts.Endpoint = otelEndpoint.ToString();
                 opts.Protocol = otelProtocol == OtlpExportProtocol.HttpProtobuf ? OtlpProtocol.HttpProtobuf : OtlpProtocol.Grpc;
-                opts.IncludedData = IncludedData.SourceContextAttribute | IncludedData.SpanIdField | IncludedData.TraceIdField;
+                opts.IncludedData = IncludedData.SourceContextAttribute | IncludedData.SpanIdField | IncludedData.TraceIdField | IncludedData.SpecRequiredResourceAttributes;
             });
             }
             else

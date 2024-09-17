@@ -1,6 +1,6 @@
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.Address;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
@@ -16,7 +16,7 @@ using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.PortalUser;
 using Spd.Resource.Repository.Tasks;
-using Spd.Utilities.Dynamics;
+using Spd.Utilities.Hosting;
 
 namespace Spd.Resource.Repository.IntegrationTest;
 
@@ -27,15 +27,7 @@ public class IntegrationTestSetup
     public IntegrationTestSetup()
     {
         string assembliesPrefix = "Spd";
-        Assembly[] assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "*.dll", SearchOption.TopDirectoryOnly)
-         .Where(assembly =>
-         {
-             var assemblyName = Path.GetFileName(assembly);
-             return !assemblyName.StartsWith("System.") && !assemblyName.StartsWith("Microsoft.") && (string.IsNullOrEmpty(assembliesPrefix) || assemblyName.StartsWith(assembliesPrefix));
-         })
-         .Select(assembly => Assembly.LoadFrom(assembly))
-         .ToArray();
-
+        var assemblies = ReflectionExtensions.DiscoverLocalAessemblies(prefix: "Spd.");
         var serviceCollection = new ServiceCollection();
 
         var configuration = new ConfigurationBuilder()
@@ -48,8 +40,9 @@ public class IntegrationTestSetup
             .AddEnvironmentVariables()
             .Build();
 
+        var loggerFactory = LoggerFactory.Create(builder => { });
+
         serviceCollection.AddSingleton<IConfiguration>(configuration);
-        serviceCollection.AddDynamicsProxy(configuration);
         serviceCollection.AddAutoMapper(assemblies);
         serviceCollection.AddDistributedMemoryCache();
         serviceCollection.AddDataProtection();
@@ -68,6 +61,7 @@ public class IntegrationTestSetup
         serviceCollection.AddTransient<IApplicationRepository, ApplicationRepository>();
         serviceCollection.AddTransient<ITaskRepository, TaskRepository>();
         serviceCollection.AddTransient<IControllingMemberCrcRepository, ControllingMemberCrcRepository>();
+        serviceCollection.ConfigureComponents(configuration, null, assemblies, loggerFactory);
         ServiceProvider = serviceCollection.BuildServiceProvider().CreateScope().ServiceProvider;
     }
 
