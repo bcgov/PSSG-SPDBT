@@ -111,8 +111,7 @@ internal class ControllingMemberCrcAppManager :
             null,
             null,
             ct);
-        await _licAppRepository.CommitLicenceApplicationAsync((Guid)originalApp.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
-        return _mapper.Map<ControllingMemberCrcAppCommandResponse>(originalApp);
+        return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
     }
     #region anonymous new
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
@@ -127,7 +126,7 @@ internal class ControllingMemberCrcAppManager :
         //create contact for applicant
         CreateContactCmd contactCmd = _mapper.Map<CreateContactCmd>(request);
         ContactResp contact = await _contactRepository.ManageAsync(contactCmd, ct);
-       
+
         //save the application
         SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
         createApp.ContactId = contact.Id;
@@ -138,7 +137,7 @@ internal class ControllingMemberCrcAppManager :
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
-        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, null, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
 
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
@@ -168,7 +167,7 @@ internal class ControllingMemberCrcAppManager :
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync(response.ControllingMemberAppId, ct);
-        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, ct);
+        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, null, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
@@ -404,5 +403,5 @@ internal class ControllingMemberCrcAppManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Missing ProofOfFingerprint file.");
         }
     }
-    
+
 }

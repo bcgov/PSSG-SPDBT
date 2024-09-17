@@ -10,7 +10,11 @@ import { ControllingMemberCrcAppCommandResponse } from '../../models/controlling
 import { ControllingMemberCrcAppSubmitRequest } from '../../models/controlling-member-crc-app-submit-request';
 
 export interface ApiControllingMemberCrcApplicationsAnonymousSubmitPost$Params {
-      body: ControllingMemberCrcAppSubmitRequest
+  
+    /**
+     * ControllingMemberCrcAppSubmitRequest Json data
+     */
+    body: ControllingMemberCrcAppSubmitRequest
 }
 
 export function apiControllingMemberCrcApplicationsAnonymousSubmitPost(http: HttpClient, rootUrl: string, params: ApiControllingMemberCrcApplicationsAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {

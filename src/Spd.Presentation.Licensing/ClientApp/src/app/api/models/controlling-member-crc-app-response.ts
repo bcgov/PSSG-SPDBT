@@ -13,7 +13,6 @@ export interface ControllingMemberCrcAppResponse {
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;
-  bizContactId?: string;
   caseNumber?: string | null;
   controllingMemberAppId?: string;
   criminalHistoryDetail?: string | null;
@@ -26,14 +25,12 @@ export interface ControllingMemberCrcAppResponse {
   hasBcDriversLicence?: boolean | null;
   hasCriminalHistory?: boolean | null;
   hasPreviousNames?: boolean | null;
-  inviteId?: string;
   isCanadianCitizen?: boolean | null;
   isPoliceOrPeaceOfficer?: boolean | null;
   isTreatedForMHC?: boolean | null;
   middleName1?: string | null;
   middleName2?: string | null;
   otherOfficerRole?: string | null;
-  parentBizLicApplicationId?: string | null;
   phoneNumber?: string | null;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddress?: Address;

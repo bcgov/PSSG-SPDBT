@@ -15,7 +15,7 @@ import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.mod
 			<h2 class="mt-4">
 				{{ message }}
 			</h2>
-			<p class="mt-4">Please contact your primary authorized user for assistance.</p>
+			<p class="mt-4">Please contact your business manager for assistance.</p>
 		</div>
 	`,
 	styles: [

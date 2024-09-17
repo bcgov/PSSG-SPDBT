@@ -9,14 +9,16 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-				<app-common-personal-information-new-anonymous [form]="form"></app-common-personal-information-new-anonymous>
+				<app-form-personal-information-new-anonymous [form]="form"></app-form-personal-information-new-anonymous>
 			</ng-container>
 
 			<ng-container *ngIf="isRenewalOrUpdate">
-				<app-common-personal-information-renew-anonymous
-					[applicationTypeCode]="applicationTypeCode"
+				<app-form-personal-information-renew-update-anonymous
 					[form]="form"
-				></app-common-personal-information-renew-anonymous>
+					[applicationTypeCode]="applicationTypeCode"
+					(fileUploaded)="onFileUploaded()"
+					(fileRemoved)="onFileRemoved()"
+				></app-form-personal-information-renew-update-anonymous>
 			</ng-container>
 		</app-step-section>
 	`,
@@ -45,6 +47,14 @@ export class StepWorkerLicencePersonalInformationAnonymousComponent
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();
 		return this.form.valid;
+	}
+
+	onFileUploaded(): void {
+		this.licenceApplicationService.hasValueChanged = true;
+	}
+
+	onFileRemoved(): void {
+		this.licenceApplicationService.hasValueChanged = true;
 	}
 
 	get isRenewalOrUpdate(): boolean {

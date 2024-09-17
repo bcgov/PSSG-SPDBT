@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
@@ -89,7 +88,7 @@ internal class BizMemberManager :
         //get existing controlling member crc app
         BizContactResp? contactResp = await _bizContactRepository.GetBizContactAsync(response.BizContactId, cancellationToken);
         if (contactResp == null || contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.InternalServerError, "Invalid business contact");
+            throw new ApiException(HttpStatusCode.Accepted, "The invitation link is no longer valid.");
         _mapper.Map<BizContactResp, ControllingMemberAppInviteVerifyResponse>(contactResp, response);
 
         return response;
@@ -105,16 +104,20 @@ internal class BizMemberManager :
 
         //get info from bizContactId
         BizContactResp contactResp = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, cancellationToken);
+        if (contactResp == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot find the non-swl controlling member.");
         if (contactResp.BizContactRoleCode != BizContactRoleEnum.ControllingMember)
-            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-controlling member.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-swl controlling member.");
         if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
-        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null)
+        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null &&
+            contactResp.LatestControllingMemberCrcAppPortalStatusEnum != ApplicationPortalStatusEnum.CompletedCleared)
             throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
 
         var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
         createCmd.CreatedByUserId = cmd.UserId;
         createCmd.HostUrl = cmd.HostUrl;
+        createCmd.InviteTypeCode = Enum.Parse<ControllingMemberAppInviteTypeEnum>(cmd.InviteTypeCode.ToString());
         await _cmInviteRepository.ManageAsync(createCmd, cancellationToken);
 
         return new ControllingMemberInvitesCreateResponse(cmd.BizContactId) { CreateSuccess = true };
@@ -200,7 +203,7 @@ internal class BizMemberManager :
         return default;
     }
 
-    public async Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct) 
+    public async Task<NonSwlContactInfo> Handle(GetNonSwlBizMemberCommand cmd, CancellationToken ct)
     {
         var result = await _bizContactRepository.GetBizContactAsync(cmd.BizContactId, ct);
         if (result == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizContact with id {cmd.BizContactId} not found");

@@ -8,6 +8,7 @@ import {
 	ControllingMemberCrcAppCommandResponse,
 	ControllingMemberCrcAppResponse,
 	ControllingMemberCrcAppSubmitRequest,
+	ControllingMemberCrcAppUpdateRequest,
 	ControllingMemberCrcAppUpsertRequest,
 	Document,
 	GoogleRecaptcha,
@@ -58,7 +59,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 
-		personalInformationData: this.personalNameAndContactInformationFormGroup,
+		personalInformationData: this.personalInformationFormGroup,
+		contactInformationData: this.contactInformationFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
 
@@ -114,13 +116,15 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	isStepPersonalInformationComplete(): boolean {
 		// console.debug(
 		// 	'isStepPersonalInformationComplete',
-		// 	this.personalNameAndContactInformationFormGroup.valid,
+		// 	this.personalInformationFormGroup.valid,
+		// 	this.contactInformationFormGroup.valid,
 		// 	this.aliasesFormGroup.valid,
 		// 	this.residentialAddressFormGroup.valid
 		// );
 
 		return (
-			this.personalNameAndContactInformationFormGroup.valid &&
+			this.personalInformationFormGroup.valid &&
+			this.contactInformationFormGroup.valid &&
 			this.aliasesFormGroup.valid &&
 			this.residentialAddressFormGroup.valid
 		);
@@ -167,7 +171,10 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			return false;
 		}
 
-		return this.hasValueChanged;
+		// file upload will fail in later steps if the 'controllingMemberAppId' isn't populated.
+		const controllingMemberAppId = this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value;
+
+		return this.hasValueChanged || !controllingMemberAppId;
 	}
 
 	/**
@@ -212,8 +219,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsCrcAppIdFilesPost$Response({
-			CrcAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsOriginalAppIdFilesPost$Response({
+			originalAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
 			body: doc,
 		});
 	}
@@ -245,8 +252,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((applicantProfile: ApplicantProfileResponse) => {
-					if (crcInviteData.controllingMemberCrcAppId) {
-						return this.loadCrcToResume(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+					if (applicationTypeCode === ApplicationTypeCode.New && crcInviteData.controllingMemberCrcAppId) {
+						return this.loadDraftCrcIntoModel(crcInviteData, applicationTypeCode).pipe(
 							tap((_resp: any) => {
 								this.initialized = true;
 
@@ -292,18 +299,17 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 	}
 
-	private loadCrcToResume(
+	private loadDraftCrcIntoModel(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode,
-		applicantProfile: ApplicantProfileResponse
+		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		this.reset();
 
 		return this.controllingMemberCrcAppService
-			.apiControllingMemberCrcApplicationsCmCrcAppIdGet({ cmCrcAppId: crcInviteData.controllingMemberCrcAppId! })
+			.apiControllingMemberCrcApplicationsOriginalAppIdGet({ originalAppId: crcInviteData.controllingMemberCrcAppId! })
 			.pipe(
 				switchMap((crcApp: ControllingMemberCrcAppResponse) => {
-					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode, applicantProfile);
+					return this.applyCrcAppIntoModel(crcApp, crcInviteData, applicationTypeCode);
 				})
 			);
 	}
@@ -311,39 +317,23 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	private applyCrcAppIntoModel(
 		crcAppl: ControllingMemberCrcAppResponse,
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode,
-		applicantProfile: ApplicantProfileResponse
+		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode };
 
-		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
-
-		let personalInformationData = {};
-
-		if (applicantLoginProfile) {
-			personalInformationData = {
-				givenName: applicantLoginProfile.firstName,
-				middleName1: applicantLoginProfile.middleName1,
-				middleName2: applicantLoginProfile.middleName2,
-				surname: applicantLoginProfile.lastName,
-				genderCode: crcAppl.genderCode,
-				dateOfBirth: crcAppl.dateOfBirth,
-				emailAddress: applicantLoginProfile.emailAddress,
-				phoneNumber: crcAppl.phoneNumber,
-			};
-		} else {
-			personalInformationData = {
-				givenName: crcAppl.givenName,
-				middleName1: crcAppl.middleName1,
-				middleName2: crcAppl.middleName2,
-				surname: crcAppl.surname,
-				genderCode: crcAppl.genderCode,
-				dateOfBirth: crcAppl.dateOfBirth,
-				emailAddress: crcAppl.emailAddress,
-				phoneNumber: crcAppl.phoneNumber,
-			};
-		}
+		const personalInformationData = {
+			givenName: crcAppl.givenName,
+			middleName1: crcAppl.middleName1,
+			middleName2: crcAppl.middleName2,
+			surname: crcAppl.surname,
+			genderCode: crcAppl.genderCode,
+			dateOfBirth: crcAppl.dateOfBirth,
+		};
+		const contactInformationData = {
+			emailAddress: crcAppl.emailAddress,
+			phoneNumber: crcAppl.phoneNumber,
+		};
 
 		const bcDriversLicenceData = {
 			hasBcDriversLicence: this.utilService.booleanToBooleanType(crcAppl.hasBcDriversLicence),
@@ -444,15 +434,18 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			}
 		});
 
-		const residentialAddressData = {
-			addressSelected: !!crcAppl.residentialAddress?.addressLine1,
-			addressLine1: crcAppl.residentialAddress?.addressLine1,
-			addressLine2: crcAppl.residentialAddress?.addressLine2,
-			city: crcAppl.residentialAddress?.city,
-			country: crcAppl.residentialAddress?.country,
-			postalCode: crcAppl.residentialAddress?.postalCode,
-			province: crcAppl.residentialAddress?.province,
-		};
+		let residentialAddressData = {};
+		if (crcAppl.residentialAddress?.addressLine1) {
+			residentialAddressData = {
+				addressSelected: !!crcAppl.residentialAddress?.addressLine1,
+				addressLine1: crcAppl.residentialAddress?.addressLine1,
+				addressLine2: crcAppl.residentialAddress?.addressLine2,
+				city: crcAppl.residentialAddress?.city,
+				country: crcAppl.residentialAddress?.country,
+				postalCode: crcAppl.residentialAddress?.postalCode,
+				province: crcAppl.residentialAddress?.province,
+			};
+		}
 
 		const fingerprintProofData = {
 			attachments: fingerprintProofDataAttachments,
@@ -487,10 +480,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				controllingMemberAppId: crcAppl.controllingMemberAppId,
 
 				personalInformationData,
+				contactInformationData,
 				aliasesData: {
-					previousNameFlag: this.utilService.booleanToBooleanType(
-						applicantProfile.aliases && applicantProfile.aliases.length > 0
-					),
+					previousNameFlag: this.utilService.booleanToBooleanType(crcAppl.aliases && crcAppl.aliases.length > 0),
 					aliases: [],
 				},
 				residentialAddressData,
@@ -507,7 +499,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		);
 
 		const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
-		applicantProfile.aliases?.forEach((alias: Alias) => {
+		crcAppl.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -533,17 +525,33 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	): Observable<any> {
 		this.reset();
 
-		const applicantLoginProfile = this.authUserBcscService.applicantLoginProfile;
-
 		const personalInformationData = {
-			givenName: applicantLoginProfile?.firstName,
-			middleName1: applicantLoginProfile?.middleName1,
-			middleName2: applicantLoginProfile?.middleName2,
-			surname: applicantLoginProfile?.lastName,
-			genderCode: null,
-			dateOfBirth: null,
-			emailAddress: applicantLoginProfile?.emailAddress,
-			phoneNumber: null,
+			givenName: applicantProfile.givenName,
+			middleName1: applicantProfile.middleName1,
+			middleName2: applicantProfile.middleName2,
+			surname: applicantProfile.surname,
+			genderCode: applicantProfile.genderCode,
+			dateOfBirth: applicantProfile?.dateOfBirth,
+		};
+		const contactInformationData = {
+			emailAddress: applicantProfile.emailAddress,
+			phoneNumber: applicantProfile.phoneNumber,
+		};
+
+		const residentialAddressData = {
+			addressSelected: !!applicantProfile.residentialAddress?.addressLine1,
+			addressLine1: applicantProfile.residentialAddress?.addressLine1,
+			addressLine2: applicantProfile.residentialAddress?.addressLine2,
+			city: applicantProfile.residentialAddress?.city,
+			country: applicantProfile.residentialAddress?.country,
+			postalCode: applicantProfile.residentialAddress?.postalCode,
+			province: applicantProfile.residentialAddress?.province,
+		};
+
+		const mentalHealthConditionsData = {
+			isTreatedForMHC: null,
+			attachments: [],
+			hasPreviousMhcFormUpload: !!applicantProfile.isTreatedForMHC,
 		};
 
 		this.controllingMembersModelFormGroup.patchValue(
@@ -556,6 +564,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
 				personalInformationData,
+				contactInformationData,
+				residentialAddressData,
+				mentalHealthConditionsData,
 				aliasesData: {
 					previousNameFlag: this.utilService.booleanToBooleanType(
 						applicantProfile.aliases && applicantProfile.aliases.length > 0
@@ -597,6 +608,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			surname: crcInviteData?.surname,
 			genderCode: null,
 			dateOfBirth: null,
+		};
+		const contactInformationData = {
 			emailAddress: crcInviteData?.emailAddress,
 			phoneNumber: null,
 		};
@@ -611,6 +624,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
 				personalInformationData,
+				contactInformationData,
 			},
 			{
 				emitEvent: false,
@@ -654,7 +668,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Submit the licence data
+	 * Submit the crc data authenticated NEW
 	 * @returns
 	 */
 	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
@@ -672,10 +686,68 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	}
 
 	/**
-	 * Submit the crc data anonymous
+	 * Submit the crc data anonymous NEW
 	 * @returns
 	 */
 	submitControllingMemberCrcNewAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+
+		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		return this.postCrcAnonymousDocuments(googleRecaptcha, documentsToSaveApis, body);
+	}
+
+	/**
+	 * Submit the crc data authenticated UPDATE
+	 * @returns
+	 */
+	submitControllingMemberCrcUpdateAuthenticated(): Observable<
+		StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
+	> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpdateRequest;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsUpdatePost$Response({ body });
+	}
+
+	/**
+	 * Submit the crc data anonymous UPDATE
+	 * @returns
+	 */
+	submitControllingMemberCrcUpdatedAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
 		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
 
 		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);

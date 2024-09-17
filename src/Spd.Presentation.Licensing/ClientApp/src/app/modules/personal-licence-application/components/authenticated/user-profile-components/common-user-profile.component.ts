@@ -3,9 +3,9 @@ import { FormGroup } from '@angular/forms';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonAliasListComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-alias-list.component';
-import { CommonContactInformationComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-contact-information.component';
 import { AddressComponent } from '@app/shared/components/address.component';
-import { CommonUserProfilePersonalInformationComponent } from './common-user-profile-personal-information.component';
+import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
+import { FormPersonalInformationComponent } from '@app/shared/components/form-personal-information.component';
 
 @Component({
 	selector: 'app-common-user-profile',
@@ -19,11 +19,12 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 						</mat-expansion-panel-header>
 
 						<div class="my-3">
-							<app-common-user-profile-personal-information
+							<app-form-personal-information
 								[personalInformationFormGroup]="personalInformationFormGroup"
-								[contactFormGroup]="contactFormGroup"
+								[contactInformationFormGroup]="contactInformationFormGroup"
 								[isReadonly]="isReadonlyPersonalInfo"
-							></app-common-user-profile-personal-information>
+								[isWizardStep]="false"
+							></app-form-personal-information>
 						</div>
 					</mat-expansion-panel>
 				</mat-accordion>
@@ -103,16 +104,15 @@ import { CommonUserProfilePersonalInformationComponent } from './common-user-pro
 export class CommonUserProfileComponent implements LicenceChildStepperStepComponent {
 	addressChangeUrl = SPD_CONSTANTS.urls.addressChangeUrl;
 
-	@ViewChild(CommonUserProfilePersonalInformationComponent)
-	personalComponent!: CommonUserProfilePersonalInformationComponent;
+	@ViewChild(FormPersonalInformationComponent) personalComponent!: FormPersonalInformationComponent;
 	@ViewChild(CommonAliasListComponent) aliasesComponent!: CommonAliasListComponent;
-	@ViewChild(CommonContactInformationComponent) contactInformationComponent!: CommonContactInformationComponent;
+	@ViewChild(FormContactInformationComponent) contactInformationComponent!: FormContactInformationComponent;
 	@ViewChild(AddressComponent) mailingAddressComponent!: AddressComponent;
 
 	@Input() isReadonlyPersonalInfo!: boolean;
 	@Input() isReadonlyMailingAddress!: boolean;
 	@Input() personalInformationFormGroup!: FormGroup;
-	@Input() contactFormGroup!: FormGroup;
+	@Input() contactInformationFormGroup!: FormGroup;
 	@Input() aliasesFormGroup!: FormGroup;
 	@Input() residentialAddressFormGroup!: FormGroup;
 	@Input() mailingAddressFormGroup!: FormGroup;
