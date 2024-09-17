@@ -232,5 +232,78 @@ public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<C
         RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
         RuleFor(r => r.ApplicationTypeCode).NotNull();
     }
+}
+public class ControllingMemberCrcAppUpdateRequestValidator : AbstractValidator<ControllingMemberCrcAppUpdateRequest>
+{
+    public ControllingMemberCrcAppUpdateRequestValidator()
+    {
+        RuleFor(r => r.ParentBizLicApplicationId).NotEqual(Guid.Empty);
+        RuleFor(r => r.GivenName)
+           .MaximumLength(40);
+        RuleFor(r => r.Surname)
+            .MaximumLength(40)
+            .NotNull()
+            .NotEmpty();
+        RuleFor(r => r.MiddleName1)
+            .MaximumLength(40);
+        RuleFor(r => r.MiddleName2)
+            .MaximumLength(40);
+        RuleFor(r => r.GenderCode)
+            .NotNull()
+            .NotEmpty();
+        RuleFor(r => r.PhoneNumber)
+            .MaximumLength(15);
+        RuleFor(r => r.EmailAddress)
+            .MaximumLength(75)
+            .EmailAddress();
+        RuleFor(r => r.ResidentialAddress).NotEmpty();
+        RuleFor(r => r.ResidentialAddress.AddressLine1).NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.AddressLine2)
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.City)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Province)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.Country)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(100)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.ResidentialAddress.PostalCode)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(20)
+            .When(r => r.ResidentialAddress != null);
+        RuleFor(r => r.HasCriminalHistory).NotNull();
+        RuleFor(r => r.CriminalHistoryDetail)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(250)
+            .When(r => r.HasCriminalHistory == true);
+
+        RuleFor(r => r.IsPoliceOrPeaceOfficer).NotNull();
+        RuleFor(r => r.PoliceOfficerRoleCode)
+            .NotNull()
+            .NotEmpty()
+            .When(r => r.IsPoliceOrPeaceOfficer == true);
+        RuleFor(r => r.OtherOfficerRole)
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(50)
+            .When(r => r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
+        RuleFor(r => r.IsTreatedForMHC).NotNull();
+        RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
+        RuleFor(r => r.ApplicationTypeCode).NotNull();
+    }
 
 }

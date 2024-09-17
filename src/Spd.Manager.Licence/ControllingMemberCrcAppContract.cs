@@ -77,12 +77,35 @@ public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
     
 };
 
-public record ControllingMemberCrcAppUpdateRequest : ControllingMemberCrcAppSubmitRequest
+public record ControllingMemberCrcAppUpdateRequest
 {
-    public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
+    public Guid? ControllingMemberAppId { get; set; }
+    public Guid? ApplicantId { get; set; }
+    public Guid InviteId { get; set; }
+    public Guid? ParentBizLicApplicationId { get; set; }
+    public string? GivenName { get; set; }
+    public string? MiddleName1 { get; set; }
+    public string? MiddleName2 { get; set; }
+    public string? Surname { get; set; }
+    public GenderCode? GenderCode { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? EmailAddress { get; set; }
+    public Address? ResidentialAddress { get; set; }
+    public bool? IsPoliceOrPeaceOfficer { get; set; }
+    public PoliceOfficerRoleCode? PoliceOfficerRoleCode { get; set; }
+    public string? OtherOfficerRole { get; set; }
+    public bool? IsTreatedForMHC { get; set; }
+    public bool? HasCriminalHistory { get; set; }
+    public string? CriminalHistoryDetail { get; set; }
     public bool? HasLegalNameChanged { get; set; }
     public bool? HasNewCriminalRecordCharge { get; set; }
     public bool? HasNewMentalHealthCondition { get; set; }
+    public bool? AgreeToCompleteAndAccurate { get; set; }
+    public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
+    public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
+    public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
+    public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
+
 }
 
 

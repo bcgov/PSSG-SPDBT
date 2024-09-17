@@ -27,9 +27,11 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     private readonly IConfiguration _configuration;
     private readonly IValidator<ControllingMemberCrcAppSubmitRequest> _controllingMemberCrcAppSubmitValidator;
     private readonly IValidator<ControllingMemberCrcAppUpsertRequest> _controllingMemberCrcAppUpsertValidator;
+    private readonly IValidator<ControllingMemberCrcAppUpdateRequest> _controllingMemberCrcAppUpdateValidator;
     public ControllingMemberCrcAppController(IPrincipal currentUser, IMediator mediator,
         IValidator<ControllingMemberCrcAppSubmitRequest> controllingMemberCrcAppSubmitValidator,
         IValidator<ControllingMemberCrcAppUpsertRequest> controllingMemberCrcAppUpsertValidator,
+        IValidator<ControllingMemberCrcAppUpdateRequest> controllingMemberCrcAppUpdateValidator,
         ILogger<ControllingMemberCrcAppController> logger,
         IDistributedCache cache,
         IDataProtectionProvider dpProvider,
@@ -42,6 +44,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         _configuration = configuration;
         _controllingMemberCrcAppSubmitValidator = controllingMemberCrcAppSubmitValidator;
         _controllingMemberCrcAppUpsertValidator = controllingMemberCrcAppUpsertValidator;
+        _controllingMemberCrcAppUpdateValidator = controllingMemberCrcAppUpdateValidator;
     }
     #region authenticated
     /// <summary>
@@ -140,7 +143,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         ControllingMemberCrcAppCommandResponse? response = null;
         IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
         //check validator
-        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(request, ct);
+        var validateResult = await _controllingMemberCrcAppUpdateValidator.ValidateAsync(request, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
@@ -234,7 +237,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         await VerifyKeyCode();
 
         IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
-        var validateResult = await _controllingMemberCrcAppSubmitValidator.ValidateAsync(request, ct);
+        var validateResult = await _controllingMemberCrcAppUpdateValidator.ValidateAsync(request, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 

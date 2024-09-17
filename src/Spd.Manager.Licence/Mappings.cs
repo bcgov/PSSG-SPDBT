@@ -144,6 +144,18 @@ internal class Mappings : Profile
         CreateMap<ControllingMemberCrcAppUpsertRequest, UpdateContactCmd>()
             .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
 
+
+        CreateMap<ControllingMemberCrcAppUpdateRequest, UpdateContactCmd>()
+            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
+            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
+            .ForMember(d => d.Gender, opt => opt.MapFrom(s => s.GenderCode))
+            .ForPath(d => d.ResidentialAddress.AddressLine1, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine1))
+            .ForPath(d => d.ResidentialAddress.AddressLine2, opt => opt.MapFrom(s => s.ResidentialAddress.AddressLine2))
+            .ForPath(d => d.ResidentialAddress.Province, opt => opt.MapFrom(s => s.ResidentialAddress.Province))
+            .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
+            .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
+            .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
+
         CreateMap<BizLicenceApp, BizLicApplication>()
             .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategories(s.CategoryCodes)))
