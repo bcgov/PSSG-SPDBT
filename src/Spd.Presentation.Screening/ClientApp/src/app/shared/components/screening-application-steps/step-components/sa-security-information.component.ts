@@ -56,7 +56,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<ng-container *ngIf="notPssoOnly">
+								<ng-container *ngIf="notPssoOrPecrc">
 									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Vulnerable Sector Category</mat-label>
@@ -86,7 +86,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	styles: [],
 })
 export class SaSecurityInformationComponent implements CrcFormStepComponent {
-	notPssoOnly = true;
+	notPssoOrPecrc = true;
 	facilityNameShow = false;
 	facilityNameRequired = false;
 	companyFacilityLabel = '';
@@ -102,7 +102,7 @@ export class SaSecurityInformationComponent implements CrcFormStepComponent {
 		let companyFacilityLabel = '';
 		let companyFacilityHint = '';
 
-		this.notPssoOnly = data.serviceType != ServiceTypeCode.Psso;
+		this.notPssoOrPecrc = data.serviceType != ServiceTypeCode.Psso && data.serviceType != ServiceTypeCode.PeCrc;
 
 		if (data.screeningType) {
 			if (data.isCrrpa) {
