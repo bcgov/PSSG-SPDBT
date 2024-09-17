@@ -81,7 +81,13 @@ internal class ControllingMemberCrcAppManager :
     }
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand cmd, CancellationToken ct)
     {
+        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppRequest.InviteId,
+            cmd.ControllingMemberCrcAppRequest.BizContactId,
+            ct);
         ControllingMemberCrcAppUpdateRequest request = cmd.ControllingMemberCrcAppRequest;
+        if (cmd.ControllingMemberCrcAppRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
+            throw new ApiException(HttpStatusCode.BadRequest, "should be a update request");
+
         var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
         //check validation
         ValidateFilesForUpdateAppAsync(cmd.ControllingMemberCrcAppRequest,
