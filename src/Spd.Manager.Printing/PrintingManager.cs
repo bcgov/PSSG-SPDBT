@@ -137,12 +137,16 @@ internal class PrintingManager
         if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBodyArmourPermitPrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBodyArmourPermitPrinting");
 
+        if (eventResp.EventTypeEnum == EventTypeEnum.BCMPBusinessLicencePrinting && (eventResp.RegardingObjectId == null || eventResp.RegardingObjectName != "spd_licence"))
+            throw new ApiException(System.Net.HttpStatusCode.BadRequest, "LicenceId cannot be null if it is BCMPBusinessLicencePrinting");
+
         return eventResp.EventTypeEnum switch
         {
-            EventTypeEnum.BCMPScreeningFingerprintPrinting => new FingerprintLetterTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPScreeningFingerprintPrinting => new FingerprintLetterTransformRequest(eventResp.RegardingObjectId.Value),
             EventTypeEnum.BCMPSecurityWorkerLicencePrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             EventTypeEnum.BCMPBodyArmourPermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             EventTypeEnum.BCMPArmouredVehiclePermitPrinting => new PersonalLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
+            EventTypeEnum.BCMPBusinessLicencePrinting => new BizLicencePrintingTransformRequest((Guid)eventResp.RegardingObjectId),
             _ => throw new NotImplementedException()
         };
     }
