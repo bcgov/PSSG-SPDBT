@@ -303,7 +303,6 @@ public class ControllingMemberCrcAppUpdateRequestValidator : AbstractValidator<C
             .When(r => r.IsPoliceOrPeaceOfficer == true && r.PoliceOfficerRoleCode == PoliceOfficerRoleCode.Other);
         RuleFor(r => r.IsTreatedForMHC).NotNull();
         RuleFor(r => r.AgreeToCompleteAndAccurate).Equal(true);
-        RuleFor(r => r.ApplicationTypeCode).NotNull();
     }
 
 }

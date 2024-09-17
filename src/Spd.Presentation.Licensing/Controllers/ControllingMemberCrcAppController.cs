@@ -146,10 +146,6 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
-        if (request.ApplicationTypeCode != ApplicationTypeCode.Update)
-        {
-            throw new ApiException(HttpStatusCode.BadRequest, "application type is not Update");
-        }
         ControllingMemberCrcAppUpdateCommand command = new(request, newDocInfos);
         response = await _mediator.Send(command, ct);
         return response;
@@ -243,8 +239,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
         ControllingMemberCrcAppCommandResponse? response = null;
-        if (request.ApplicationTypeCode == ApplicationTypeCode.Update)
-            response = await _mediator.Send(new ControllingMemberCrcAppUpdateCommand(request, newDocInfos), ct);
+        response = await _mediator.Send(new ControllingMemberCrcAppUpdateCommand(request, newDocInfos), ct);
 
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, String.Empty);
         SetValueToResponseCookie(SessionConstants.AnonymousApplicationContext, String.Empty);

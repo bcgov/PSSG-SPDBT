@@ -102,7 +102,6 @@ public record ControllingMemberCrcAppUpdateRequest
     public bool? HasNewCriminalRecordCharge { get; set; }
     public bool? HasNewMentalHealthCondition { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-    public ApplicationTypeCode? ApplicationTypeCode { get; set; } //used when user is in update, renew or replace flow.
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<Guid>? PreviousDocumentIds { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();

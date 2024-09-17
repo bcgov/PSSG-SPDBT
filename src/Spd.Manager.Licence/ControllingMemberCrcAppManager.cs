@@ -27,6 +27,8 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Spd.Resource.Repository.BizContact;
+using Microsoft.Dynamics.CRM;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -40,7 +42,7 @@ internal class ControllingMemberCrcAppManager :
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
-    private readonly IBizLicApplicationRepository _bizLicRepository;
+    private readonly IBizContactRepository _bizContactRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -51,7 +53,7 @@ internal class ControllingMemberCrcAppManager :
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
-        IBizLicApplicationRepository bizLicRepository,
+        IBizContactRepository bizContactRepository,
         IControllingMemberInviteRepository cmInviteRepository,
         IContactRepository contactRepository,
         ITaskRepository taskRepository,
@@ -68,7 +70,7 @@ internal class ControllingMemberCrcAppManager :
         _cmInviteRepository = cmInviteRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
-        _bizLicRepository = bizLicRepository;
+        _bizContactRepository = bizContactRepository;
     }
     public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
     {
@@ -85,8 +87,6 @@ internal class ControllingMemberCrcAppManager :
             cmd.ControllingMemberCrcAppRequest.BizContactId,
             ct);
         ControllingMemberCrcAppUpdateRequest request = cmd.ControllingMemberCrcAppRequest;
-        if (cmd.ControllingMemberCrcAppRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
-            throw new ApiException(HttpStatusCode.BadRequest, "should be a update request");
 
         var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
         //check validation
@@ -98,20 +98,27 @@ internal class ControllingMemberCrcAppManager :
         if (contact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Applicant info not found");
 
-        ControllingMemberCrcApplicationResp originalApp =
-            await _controllingMemberCrcRepository.GetCrcApplicationAsync((Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, ct);
+        BizContactResp? bizContact = await _bizContactRepository.GetBizContactAsync((Guid)request.BizContactId, ct);
+        if (bizContact == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Business Contact not found");
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry()
+        {
+            AccountId = bizContact.BizId,
+            Type = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+        }, ct);
 
-        ChangeSpec changes = await AddDynamicTasks(contact, request, originalApp.OrganizationId, cmd.LicAppFileInfos, ct);
+        LicenceResp? bizLicence = licences?.Items?.SingleOrDefault();
+        if (bizLicence == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Business Licence not found");
 
-        //update contact directly
-        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-        updateCmd.Id = (Guid) request.ApplicantId;
-        await _contactRepository.ManageAsync(updateCmd, ct);
+        ChangeSpec changes = await AddDynamicTasks(contact, request, bizContact, bizLicence, cmd.LicAppFileInfos, ct);
 
-        //TODO: check the required parameters to give in function upload
+        //update applicant
+        await UpdateApplicantProfile(request, contact, ct);
+
         await UploadNewDocsAsync(request.DocumentExpiredInfos,
             cmd.LicAppFileInfos,
-            //set link to applicant only, applicant Id should be null
+            //set link to applicant only, application Id should be null
             null,
             request.ApplicantId,
             changes.PeaceOfficerStatusChangeTaskId,
@@ -120,11 +127,15 @@ internal class ControllingMemberCrcAppManager :
             null,
             null,
             ct);
+
+        //deactivate invite
+        await DeactiveInviteAsync(cmd.ControllingMemberCrcAppRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse()
         {
             ControllingMemberAppId = (Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId
         };
     }
+
     #region anonymous new
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
@@ -184,6 +195,23 @@ internal class ControllingMemberCrcAppManager :
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
     #endregion
+    private async Task UpdateApplicantProfile(ControllingMemberCrcAppUpdateRequest request, ContactResp contact, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+        updateCmd.Id = (Guid)request.ApplicantId;
+
+        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false
+        if (contact.HasCriminalHistory == true)
+            updateCmd.HasCriminalHistory = true;
+        if (contact.IsTreatedForMHC == true)
+            updateCmd.IsTreatedForMHC = true;
+
+        //concat new crminal history detail with old ones.
+        if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+            updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+
+        await _contactRepository.ManageAsync(updateCmd, ct);
+    }
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -286,7 +314,8 @@ internal class ControllingMemberCrcAppManager :
     }
     private async Task<ChangeSpec> AddDynamicTasks(ContactResp originalApplicant,
     ControllingMemberCrcAppUpdateRequest newRequest,
-    Guid? organizationId,
+    BizContactResp bizContact,
+    LicenceResp bizLicence,
     IEnumerable<LicAppFileInfo> newFileInfos,
     CancellationToken ct)
     {
@@ -294,8 +323,6 @@ internal class ControllingMemberCrcAppManager :
         StringBuilder descriptionBuilder = new();
         List<string> fileNames = new List<string>();
 
-        BizLicApplicationResp? bizLicApp = await _bizLicRepository.GetBizLicApplicationAsync((Guid)newRequest.ParentBizLicApplicationId, ct);
-        if (bizLicApp != null) throw new ApiException(HttpStatusCode.BadRequest, "Business Licence App not found");
 
         // Collect file names for attachments
         fileNames.AddRange(newFileInfos
@@ -345,11 +372,11 @@ internal class ControllingMemberCrcAppManager :
                               $"\nUpdated:\n{descriptionBuilder.ToString().Trim()}" +
                               $"{(fileNames.Any() ? $"\n\nFile Names:\n* {string.Join("\n* ", fileNames)}" : string.Empty)}",
                 DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Updating controlling member background information for {bizLicApp.CaseNumber}",
+                Subject = $"Updating controlling member background information for {bizLicence.LicenceNumber}",
                 TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingAccountId = organizationId,
+                RegardingAccountId = bizContact.BizId,
                 AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                LicenceId = bizLicApp.LicenceAppId
+                LicenceId = bizLicence.LicenceId
             }, ct)).TaskId;
 
             // Assign the generated task ID to the appropriate properties
