@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +8,10 @@ using Spd.Manager.Licence;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -123,6 +123,19 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             await _mediator.Send(new ApplicantMergeCommand(oldApplicantId, newApplicantId));
             return Ok();
+        }
+
+        /// <summary>
+        /// Get applicant profile anonymously, the applicantId is retrieved from cookies.
+        /// For controlling member, The cookie is set when the user click the update cm email link, verify the invitation.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/applicant")]
+        [HttpGet]
+        public async Task<ApplicantProfileResponse?> GetApplicantInfoAnonymous(Guid id)
+        {
+            string applicantIdStr = GetInfoFromRequestCookie(SessionConstants.AnonymousApplicantContext);
+            return await _mediator.Send(new GetApplicantProfileQuery(Guid.Parse(applicantIdStr)));
         }
     }
 }
