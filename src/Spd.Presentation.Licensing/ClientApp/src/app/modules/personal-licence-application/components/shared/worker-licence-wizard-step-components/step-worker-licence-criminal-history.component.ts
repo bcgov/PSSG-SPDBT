@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-criminal-history',
@@ -21,12 +21,12 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 export class StepWorkerLicenceCriminalHistoryComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
 
-	form: FormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
+	form: FormGroup = this.workerApplicationService.criminalHistoryFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
 

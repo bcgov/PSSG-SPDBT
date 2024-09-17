@@ -6,9 +6,9 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { ApplicationService } from '@app/core/services/application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence-wizard-step-components/steps-worker-licence-review-authenticated.component';
@@ -102,7 +102,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 		private router: Router,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -113,21 +113,21 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 			.pipe(distinctUntilChanged())
 			.subscribe(() => this.breakpointChanged());
 
-		this.licenceModelChangedSubscription = this.licenceApplicationService.licenceModelValueChanges$.subscribe(
+		this.licenceModelChangedSubscription = this.workerApplicationService.workerModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				this.applicationTypeCode = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				this.showStepDogsAndRestraints = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.showStepDogsAndRestraints = this.workerApplicationService.workerModelFormGroup.get(
 					'categorySecurityGuardFormGroup.isInclude'
 				)?.value;
 
-				this.hasBcscNameChanged = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.hasBcscNameChanged = this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasBcscNameChanged'
 				)?.value;
 
-				this.hasGenderChanged = this.licenceApplicationService.licenceModelFormGroup.get(
+				this.hasGenderChanged = this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
 			}
@@ -191,7 +191,7 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				);
 			}
 		} else {
-			this.licenceApplicationService
+			this.workerApplicationService
 				.submitLicenceRenewalOrUpdateOrReplaceAuthenticated(this.isUpdateFlowWithHideReprintStep)
 				.subscribe({
 					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {

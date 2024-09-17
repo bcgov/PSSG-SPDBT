@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { ApplicationService } from '@app/core/services/application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 
 @Component({
 	selector: 'app-step-worker-licence-application-type-anonymous',
@@ -85,11 +85,11 @@ import { ApplicationService } from '@app/core/services/application.service';
 export class StepWorkerLicenceApplicationTypeAnonymousComponent implements OnInit {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.applicationTypeFormGroup;
+	form: FormGroup = this.workerApplicationService.applicationTypeFormGroup;
 
 	constructor(
 		private router: Router,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
 

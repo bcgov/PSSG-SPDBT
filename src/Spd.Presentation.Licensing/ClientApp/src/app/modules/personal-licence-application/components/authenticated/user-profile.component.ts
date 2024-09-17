@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { UtilService } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { HotToastService } from '@ngneat/hot-toast';
 import { CommonUserProfileComponent } from './user-profile-components/common-user-profile.component';
@@ -69,17 +69,17 @@ export class UserProfileComponent {
 
 	isReadonly = true;
 
-	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
-	contactInformationFormGroup = this.licenceApplicationService.contactInformationFormGroup;
-	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
-	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
-	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
+	personalInformationFormGroup = this.workerApplicationService.personalInformationFormGroup;
+	contactInformationFormGroup = this.workerApplicationService.contactInformationFormGroup;
+	aliasesFormGroup = this.workerApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup = this.workerApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup = this.workerApplicationService.mailingAddressFormGroup;
 
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		// check if isReadonly was passed from 'LicenceUserApplicationsComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
@@ -98,7 +98,7 @@ export class UserProfileComponent {
 			return;
 		}
 
-		this.licenceApplicationService.saveLoginUserProfile().subscribe({
+		this.workerApplicationService.saveLoginUserProfile().subscribe({
 			next: (_resp: any) => {
 				this.hotToastService.success('Your profile has been successfully updated');
 				this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());

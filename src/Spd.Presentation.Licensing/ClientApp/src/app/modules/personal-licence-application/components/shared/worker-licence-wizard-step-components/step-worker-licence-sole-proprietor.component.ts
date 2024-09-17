@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, BizTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-sole-proprietor',
@@ -92,9 +92,9 @@ export class StepWorkerLicenceSoleProprietorComponent implements OnInit, Licence
 	readonly subtitle_renew =
 		'If you renew both your security worker licence and security business licence together, the fee for the worker licence will be waived.';
 
-	form: FormGroup = this.licenceApplicationService.soleProprietorFormGroup;
+	form: FormGroup = this.workerApplicationService.soleProprietorFormGroup;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		switch (this.applicationTypeCode) {
@@ -123,7 +123,7 @@ export class StepWorkerLicenceSoleProprietorComponent implements OnInit, Licence
 		// 	BusinessTypeCode: null,
 		// };
 
-		// this.licenceApplicationService.licenceModelFormGroup.patchValue({
+		// this.workerApplicationService.licenceModelFormGroup.patchValue({
 		// 	bizTypeCode:
 		// 		this.form.value.isSoleProprietor === BooleanTypeCode.No
 		// 			? BusinessTypeCode.None

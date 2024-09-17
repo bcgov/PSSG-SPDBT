@@ -2,8 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileLicenceMentalHealthConditionsComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-mental-health-conditions.component';
 import { CommonUserProfileLicencePoliceBackgroundComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-police-background.component';
@@ -97,7 +97,7 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 	alertText = '';
 	saveAndContinueLabel = 'Save & Continue to Application';
 
-	form: FormGroup = this.licenceApplicationService.profileConfirmationFormGroup;
+	form: FormGroup = this.workerApplicationService.profileConfirmationFormGroup;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	showConfirmation = false;
 
@@ -109,21 +109,21 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 	@ViewChild(CommonUserProfileLicenceMentalHealthConditionsComponent)
 	mentalHealthComponent!: CommonUserProfileLicenceMentalHealthConditionsComponent;
 
-	personalInformationFormGroup = this.licenceApplicationService.personalInformationFormGroup;
-	contactInformationFormGroup = this.licenceApplicationService.contactInformationFormGroup;
-	aliasesFormGroup = this.licenceApplicationService.aliasesFormGroup;
-	residentialAddressFormGroup = this.licenceApplicationService.residentialAddressFormGroup;
-	mailingAddressFormGroup = this.licenceApplicationService.mailingAddressFormGroup;
-	criminalHistoryFormGroup = this.licenceApplicationService.criminalHistoryFormGroup;
-	mentalHealthConditionsFormGroup = this.licenceApplicationService.mentalHealthConditionsFormGroup;
-	policeBackgroundFormGroup = this.licenceApplicationService.policeBackgroundFormGroup;
+	personalInformationFormGroup = this.workerApplicationService.personalInformationFormGroup;
+	contactInformationFormGroup = this.workerApplicationService.contactInformationFormGroup;
+	aliasesFormGroup = this.workerApplicationService.aliasesFormGroup;
+	residentialAddressFormGroup = this.workerApplicationService.residentialAddressFormGroup;
+	mailingAddressFormGroup = this.workerApplicationService.mailingAddressFormGroup;
+	criminalHistoryFormGroup = this.workerApplicationService.criminalHistoryFormGroup;
+	mentalHealthConditionsFormGroup = this.workerApplicationService.mentalHealthConditionsFormGroup;
+	policeBackgroundFormGroup = this.workerApplicationService.policeBackgroundFormGroup;
 
 	isReadonlyPersonalInfo = false;
 
 	constructor(
 		private router: Router,
 		private utilService: UtilService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
@@ -189,7 +189,7 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 		}
 
 		if (this.applicationTypeCode) {
-			this.licenceApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
+			this.workerApplicationService.saveUserProfileAndContinue(this.applicationTypeCode).subscribe();
 			return;
 		}
 	}

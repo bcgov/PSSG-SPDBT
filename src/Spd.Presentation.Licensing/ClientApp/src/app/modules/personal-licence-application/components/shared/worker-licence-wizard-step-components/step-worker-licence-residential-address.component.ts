@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
 	selector: 'app-step-worker-licence-residential-address',
@@ -17,14 +17,14 @@ export class StepWorkerLicenceResidentialAddressComponent implements OnInit, Lic
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.licenceApplicationService.residentialAddressFormGroup;
+	form: FormGroup = this.workerApplicationService.residentialAddressFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
-		[this.title, this.subtitle] = this.licenceApplicationService.getResidentialAddressTitle(this.applicationTypeCode);
+		[this.title, this.subtitle] = this.workerApplicationService.getResidentialAddressTitle(this.applicationTypeCode);
 	}
 
 	isFormValid(): boolean {

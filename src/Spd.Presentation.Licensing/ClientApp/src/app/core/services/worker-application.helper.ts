@@ -20,7 +20,7 @@ import { FormGroupValidators } from 'src/app/core/validators/form-group.validato
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
 import { ApplicationHelper } from './application.helper';
 
-export abstract class LicenceApplicationHelper extends ApplicationHelper {
+export abstract class WorkerApplicationHelper extends ApplicationHelper {
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),
@@ -291,15 +291,15 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 	 * Get the form group data into the correct structure
 	 * @returns
 	 */
-	getProfileSaveBody(licenceModelFormValue: any): ApplicantUpdateRequest {
-		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
-		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
-		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
-		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
-		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
-		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
-		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
+	getProfileSaveBody(workerModelFormValue: any): ApplicantUpdateRequest {
+		const applicationTypeData = workerModelFormValue.applicationTypeData;
+		const contactInformationData = workerModelFormValue.contactInformationData;
+		const residentialAddressData = workerModelFormValue.residentialAddressData;
+		const mailingAddressData = workerModelFormValue.mailingAddressData;
+		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
+		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
+		const personalInformationData = workerModelFormValue.personalInformationData;
+		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
 
 		const applicationTypeCode = applicationTypeData.applicationTypeCode;
 
@@ -334,8 +334,8 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			aliases:
-				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? licenceModelFormValue.aliasesData.aliases
+				workerModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? workerModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
 			documentKeyCodes,
@@ -356,26 +356,26 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			residentialAddress: residentialAddressData,
 		};
 
-		console.debug('[getProfileSaveBody] licenceModelFormValue', licenceModelFormValue);
+		console.debug('[getProfileSaveBody] workerModelFormValue', workerModelFormValue);
 		console.debug('[getProfileSaveBody] requestbody', requestbody);
 
 		return requestbody;
 	}
 
-	getDocsToSaveBlobs(licenceModelFormValue: any, includeProfileDocs = true): Array<LicenceDocumentsToSave> {
+	getDocsToSaveBlobs(workerModelFormValue: any, includeProfileDocs = true): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
-		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
-		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
-		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
-		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
-		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
-		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
-		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
+		const applicationTypeData = workerModelFormValue.applicationTypeData;
+		const citizenshipData = workerModelFormValue.citizenshipData;
+		const fingerprintProofData = workerModelFormValue.fingerprintProofData;
+		const photographOfYourselfData = workerModelFormValue.photographOfYourselfData;
+		const personalInformationData = workerModelFormValue.personalInformationData;
+		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
+		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
 
-		if (licenceModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
+		if (workerModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			const docs: Array<Blob> = [];
-			licenceModelFormValue.categoryArmouredCarGuardFormGroup.attachments.forEach((doc: SpdFile) => {
+			workerModelFormValue.categoryArmouredCarGuardFormGroup.attachments.forEach((doc: SpdFile) => {
 				docs.push(doc);
 			});
 			documents.push({
@@ -384,10 +384,10 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			});
 		}
 
-		if (licenceModelFormValue.categoryFireInvestigatorFormGroup.isInclude) {
-			if (licenceModelFormValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments) {
+		if (workerModelFormValue.categoryFireInvestigatorFormGroup.isInclude) {
+			if (workerModelFormValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments.forEach(
+				workerModelFormValue.categoryFireInvestigatorFormGroup.fireCourseCertificateAttachments.forEach(
 					(doc: SpdFile) => {
 						docs.push(doc);
 					}
@@ -398,9 +398,9 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 				});
 			}
 
-			if (licenceModelFormValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments) {
+			if (workerModelFormValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments.forEach(
+				workerModelFormValue.categoryFireInvestigatorFormGroup.fireVerificationLetterAttachments.forEach(
 					(doc: SpdFile) => {
 						docs.push(doc);
 					}
@@ -412,71 +412,71 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			}
 		}
 
-		if (licenceModelFormValue.categoryLocksmithFormGroup.isInclude) {
-			if (licenceModelFormValue.categoryLocksmithFormGroup.attachments) {
+		if (workerModelFormValue.categoryLocksmithFormGroup.isInclude) {
+			if (workerModelFormValue.categoryLocksmithFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categoryLocksmithFormGroup.attachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categoryLocksmithFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categoryLocksmithFormGroup.requirementCode,
+					licenceDocumentTypeCode: workerModelFormValue.categoryLocksmithFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
 		}
 
-		if (licenceModelFormValue.categoryPrivateInvestigatorFormGroup.isInclude) {
-			if (licenceModelFormValue.categoryPrivateInvestigatorFormGroup.attachments) {
+		if (workerModelFormValue.categoryPrivateInvestigatorFormGroup.isInclude) {
+			if (workerModelFormValue.categoryPrivateInvestigatorFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categoryPrivateInvestigatorFormGroup.attachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categoryPrivateInvestigatorFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categoryPrivateInvestigatorFormGroup.requirementCode,
+					licenceDocumentTypeCode: workerModelFormValue.categoryPrivateInvestigatorFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
-			if (licenceModelFormValue.categoryPrivateInvestigatorFormGroup.trainingAttachments) {
+			if (workerModelFormValue.categoryPrivateInvestigatorFormGroup.trainingAttachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categoryPrivateInvestigatorFormGroup.trainingAttachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categoryPrivateInvestigatorFormGroup.trainingAttachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categoryPrivateInvestigatorFormGroup.trainingCode,
-					documents: docs,
-				});
-			}
-		}
-
-		if (licenceModelFormValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
-			if (licenceModelFormValue.categoryPrivateInvestigatorSupFormGroup.attachments) {
-				const docs: Array<Blob> = [];
-				licenceModelFormValue.categoryPrivateInvestigatorSupFormGroup.attachments.forEach((doc: SpdFile) => {
-					docs.push(doc);
-				});
-				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
+					licenceDocumentTypeCode: workerModelFormValue.categoryPrivateInvestigatorFormGroup.trainingCode,
 					documents: docs,
 				});
 			}
 		}
 
-		if (licenceModelFormValue.categorySecurityGuardFormGroup.isInclude) {
-			if (licenceModelFormValue.categorySecurityGuardFormGroup.attachments) {
+		if (workerModelFormValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
+			if (workerModelFormValue.categoryPrivateInvestigatorSupFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categorySecurityGuardFormGroup.attachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categoryPrivateInvestigatorSupFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityGuardFormGroup.requirementCode,
+					licenceDocumentTypeCode: workerModelFormValue.categoryPrivateInvestigatorSupFormGroup.requirementCode,
+					documents: docs,
+				});
+			}
+		}
+
+		if (workerModelFormValue.categorySecurityGuardFormGroup.isInclude) {
+			if (workerModelFormValue.categorySecurityGuardFormGroup.attachments) {
+				const docs: Array<Blob> = [];
+				workerModelFormValue.categorySecurityGuardFormGroup.attachments.forEach((doc: SpdFile) => {
+					docs.push(doc);
+				});
+				documents.push({
+					licenceDocumentTypeCode: workerModelFormValue.categorySecurityGuardFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
 
-			if (this.utilService.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs)) {
-				if (licenceModelFormValue.dogsAuthorizationData.attachments) {
+			if (this.utilService.booleanTypeToBoolean(workerModelFormValue.dogsAuthorizationData.useDogs)) {
+				if (workerModelFormValue.dogsAuthorizationData.attachments) {
 					const docs: Array<Blob> = [];
-					licenceModelFormValue.dogsAuthorizationData.attachments.forEach((doc: SpdFile) => {
+					workerModelFormValue.dogsAuthorizationData.attachments.forEach((doc: SpdFile) => {
 						docs.push(doc);
 					});
 					documents.push({
@@ -487,48 +487,48 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			}
 
 			if (
-				this.utilService.booleanTypeToBoolean(licenceModelFormValue.restraintsAuthorizationData.carryAndUseRestraints)
+				this.utilService.booleanTypeToBoolean(workerModelFormValue.restraintsAuthorizationData.carryAndUseRestraints)
 			) {
-				if (licenceModelFormValue.restraintsAuthorizationData.attachments) {
+				if (workerModelFormValue.restraintsAuthorizationData.attachments) {
 					const docs: Array<Blob> = [];
-					licenceModelFormValue.restraintsAuthorizationData.attachments.forEach((doc: SpdFile) => {
+					workerModelFormValue.restraintsAuthorizationData.attachments.forEach((doc: SpdFile) => {
 						docs.push(doc);
 					});
 					documents.push({
-						licenceDocumentTypeCode: licenceModelFormValue.restraintsAuthorizationData.carryAndUseRestraintsDocument,
+						licenceDocumentTypeCode: workerModelFormValue.restraintsAuthorizationData.carryAndUseRestraintsDocument,
 						documents: docs,
 					});
 				}
 			}
 		}
 
-		if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
-			if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments) {
+		if (workerModelFormValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
+			if (workerModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categorySecurityAlarmInstallerFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
+					licenceDocumentTypeCode: workerModelFormValue.categorySecurityAlarmInstallerFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
 		}
 
-		if (licenceModelFormValue.categorySecurityConsultantFormGroup.isInclude) {
-			if (licenceModelFormValue.categorySecurityConsultantFormGroup.attachments) {
+		if (workerModelFormValue.categorySecurityConsultantFormGroup.isInclude) {
+			if (workerModelFormValue.categorySecurityConsultantFormGroup.attachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categorySecurityConsultantFormGroup.attachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categorySecurityConsultantFormGroup.attachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
-					licenceDocumentTypeCode: licenceModelFormValue.categorySecurityConsultantFormGroup.requirementCode,
+					licenceDocumentTypeCode: workerModelFormValue.categorySecurityConsultantFormGroup.requirementCode,
 					documents: docs,
 				});
 			}
-			if (licenceModelFormValue.categorySecurityConsultantFormGroup.resumeAttachments) {
+			if (workerModelFormValue.categorySecurityConsultantFormGroup.resumeAttachments) {
 				const docs: Array<Blob> = [];
-				licenceModelFormValue.categorySecurityConsultantFormGroup.resumeAttachments.forEach((doc: SpdFile) => {
+				workerModelFormValue.categorySecurityConsultantFormGroup.resumeAttachments.forEach((doc: SpdFile) => {
 					docs.push(doc);
 				});
 				documents.push({
@@ -626,11 +626,11 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 		return documents;
 	}
 
-	getProfileDocsToSaveBlobs(licenceModelFormValue: any): Array<LicenceDocumentsToSave> {
+	getProfileDocsToSaveBlobs(workerModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const documents: Array<LicenceDocumentsToSave> = [];
 
-		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
-		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
+		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
+		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
 
 		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
@@ -681,38 +681,38 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 	 * @returns
 	 */
 
-	getSaveBodyBaseAuthenticated(licenceModelFormValue: any): any {
-		const baseData = this.getSaveBodyBase(licenceModelFormValue, true);
+	getSaveBodyBaseAuthenticated(workerModelFormValue: any): any {
+		const baseData = this.getSaveBodyBase(workerModelFormValue, true);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(licenceModelFormValue: any): any {
-		const baseData = this.getSaveBodyBase(licenceModelFormValue, false);
+	getSaveBodyBaseAnonymous(workerModelFormValue: any): any {
+		const baseData = this.getSaveBodyBase(workerModelFormValue, false);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		return baseData;
 	}
 
-	private getSaveBodyBase(licenceModelFormValue: any, isAuthenticated: boolean): any {
-		const licenceAppId = licenceModelFormValue.licenceAppId;
-		const originalLicenceData = { ...licenceModelFormValue.originalLicenceData };
-		const workerLicenceTypeData = { ...licenceModelFormValue.workerLicenceTypeData };
-		const applicationTypeData = { ...licenceModelFormValue.applicationTypeData };
-		const soleProprietorData = { ...licenceModelFormValue.soleProprietorData };
-		const bcDriversLicenceData = { ...licenceModelFormValue.bcDriversLicenceData };
-		const contactInformationData = { ...licenceModelFormValue.contactInformationData };
-		const expiredLicenceData = { ...licenceModelFormValue.expiredLicenceData };
-		const characteristicsData = { ...licenceModelFormValue.characteristicsData };
-		const residentialAddressData = { ...licenceModelFormValue.residentialAddressData };
-		const mailingAddressData = { ...licenceModelFormValue.mailingAddressData };
-		const citizenshipData = { ...licenceModelFormValue.citizenshipData };
-		const policeBackgroundData = { ...licenceModelFormValue.policeBackgroundData };
-		const fingerprintProofData = { ...licenceModelFormValue.fingerprintProofData };
-		const mentalHealthConditionsData = { ...licenceModelFormValue.mentalHealthConditionsData };
-		const photographOfYourselfData = { ...licenceModelFormValue.photographOfYourselfData };
-		const personalInformationData = { ...licenceModelFormValue.personalInformationData };
+	private getSaveBodyBase(workerModelFormValue: any, isAuthenticated: boolean): any {
+		const licenceAppId = workerModelFormValue.licenceAppId;
+		const originalLicenceData = workerModelFormValue.originalLicenceData;
+		const workerLicenceTypeData = workerModelFormValue.workerLicenceTypeData;
+		const applicationTypeData = workerModelFormValue.applicationTypeData;
+		const soleProprietorData = workerModelFormValue.soleProprietorData;
+		const bcDriversLicenceData = workerModelFormValue.bcDriversLicenceData;
+		const contactInformationData = workerModelFormValue.contactInformationData;
+		const expiredLicenceData = workerModelFormValue.expiredLicenceData;
+		const characteristicsData = workerModelFormValue.characteristicsData;
+		const residentialAddressData = workerModelFormValue.residentialAddressData;
+		const mailingAddressData = workerModelFormValue.mailingAddressData;
+		const citizenshipData = workerModelFormValue.citizenshipData;
+		const policeBackgroundData = workerModelFormValue.policeBackgroundData;
+		const fingerprintProofData = workerModelFormValue.fingerprintProofData;
+		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
+		const photographOfYourselfData = workerModelFormValue.photographOfYourselfData;
+		const personalInformationData = workerModelFormValue.personalInformationData;
 
 		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
 		const documentInfos: Array<Document> = [];
@@ -729,59 +729,59 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			SPD_CONSTANTS.date.backendDateFormat
 		);
 
-		if (licenceModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
+		if (workerModelFormValue.categoryArmouredCarGuardFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.ArmouredCarGuard);
-			documentInfos.push(...this.getCategoryArmouredCarGuard(licenceModelFormValue.categoryArmouredCarGuardFormGroup));
+			documentInfos.push(...this.getCategoryArmouredCarGuard(workerModelFormValue.categoryArmouredCarGuardFormGroup));
 		}
 
-		if (licenceModelFormValue.categoryBodyArmourSalesFormGroup.isInclude) {
+		if (workerModelFormValue.categoryBodyArmourSalesFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.BodyArmourSales);
 		}
 
-		if (licenceModelFormValue.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
+		if (workerModelFormValue.categoryClosedCircuitTelevisionInstallerFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
 		}
 
-		if (licenceModelFormValue.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
+		if (workerModelFormValue.categoryElectronicLockingDeviceInstallerFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
 		}
 
-		if (licenceModelFormValue.categoryFireInvestigatorFormGroup.isInclude) {
+		if (workerModelFormValue.categoryFireInvestigatorFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.FireInvestigator);
-			documentInfos.push(...this.getCategoryFireInvestigator(licenceModelFormValue.categoryFireInvestigatorFormGroup));
+			documentInfos.push(...this.getCategoryFireInvestigator(workerModelFormValue.categoryFireInvestigatorFormGroup));
 		}
 
-		if (licenceModelFormValue.categoryLocksmithFormGroup.isInclude) {
+		if (workerModelFormValue.categoryLocksmithFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.Locksmith);
-			documentInfos.push(...this.getCategoryLocksmith(licenceModelFormValue.categoryLocksmithFormGroup));
+			documentInfos.push(...this.getCategoryLocksmith(workerModelFormValue.categoryLocksmithFormGroup));
 		}
 
-		if (licenceModelFormValue.categoryLocksmithSupFormGroup.isInclude) {
+		if (workerModelFormValue.categoryLocksmithSupFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.LocksmithUnderSupervision);
 		}
 
-		if (licenceModelFormValue.categoryPrivateInvestigatorFormGroup.isInclude) {
+		if (workerModelFormValue.categoryPrivateInvestigatorFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.PrivateInvestigator);
 			documentInfos.push(
-				...this.getCategoryPrivateInvestigator(licenceModelFormValue.categoryPrivateInvestigatorFormGroup)
+				...this.getCategoryPrivateInvestigator(workerModelFormValue.categoryPrivateInvestigatorFormGroup)
 			);
 		}
 
-		if (licenceModelFormValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
+		if (workerModelFormValue.categoryPrivateInvestigatorSupFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision);
 			documentInfos.push(
-				...this.getCategoryPrivateInvestigatorSup(licenceModelFormValue.categoryPrivateInvestigatorSupFormGroup)
+				...this.getCategoryPrivateInvestigatorSup(workerModelFormValue.categoryPrivateInvestigatorSupFormGroup)
 			);
 		}
 
-		if (licenceModelFormValue.categorySecurityGuardFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityGuardFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityGuard);
 
-			const dogsPurposeFormGroup = licenceModelFormValue.dogsAuthorizationData.dogsPurposeFormGroup;
+			const dogsPurposeFormGroup = workerModelFormValue.dogsAuthorizationData.dogsPurposeFormGroup;
 			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
 			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
 			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
-			const useDogs = this.utilService.booleanTypeToBoolean(licenceModelFormValue.dogsAuthorizationData.useDogs);
+			const useDogs = this.utilService.booleanTypeToBoolean(workerModelFormValue.dogsAuthorizationData.useDogs);
 
 			dogsAuthorizationData = {
 				useDogs,
@@ -792,49 +792,49 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 
 			restraintsAuthorizationData = {
 				carryAndUseRestraints: this.utilService.booleanTypeToBoolean(
-					licenceModelFormValue.restraintsAuthorizationData.carryAndUseRestraints
+					workerModelFormValue.restraintsAuthorizationData.carryAndUseRestraints
 				),
 			};
 
 			documentInfos.push(
 				...this.getCategorySecurityGuard(
-					licenceModelFormValue.categorySecurityGuardFormGroup,
-					licenceModelFormValue.dogsAuthorizationData,
-					licenceModelFormValue.restraintsAuthorizationData
+					workerModelFormValue.categorySecurityGuardFormGroup,
+					workerModelFormValue.dogsAuthorizationData,
+					workerModelFormValue.restraintsAuthorizationData
 				)
 			);
 		}
-		if (licenceModelFormValue.categorySecurityGuardSupFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityGuardSupFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityGuardUnderSupervision);
 		}
 
-		if (licenceModelFormValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityAlarmInstallerFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmInstaller);
 			documentInfos.push(
-				...this.getCategorySecurityAlarmInstaller(licenceModelFormValue.categorySecurityAlarmInstallerFormGroup)
+				...this.getCategorySecurityAlarmInstaller(workerModelFormValue.categorySecurityAlarmInstallerFormGroup)
 			);
 		}
 
-		if (licenceModelFormValue.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityAlarmInstallerSupFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmInstallerUnderSupervision);
 		}
 
-		if (licenceModelFormValue.categorySecurityAlarmMonitorFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityAlarmMonitorFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmMonitor);
 		}
 
-		if (licenceModelFormValue.categorySecurityAlarmResponseFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityAlarmResponseFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmResponse);
 		}
 
-		if (licenceModelFormValue.categorySecurityAlarmSalesFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityAlarmSalesFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityAlarmSales);
 		}
 
-		if (licenceModelFormValue.categorySecurityConsultantFormGroup.isInclude) {
+		if (workerModelFormValue.categorySecurityConsultantFormGroup.isInclude) {
 			categoryCodes.push(WorkerCategoryTypeCode.SecurityConsultant);
 			documentInfos.push(
-				...this.getCategorySecurityConsultantInstaller(licenceModelFormValue.categorySecurityConsultantFormGroup)
+				...this.getCategorySecurityConsultantInstaller(workerModelFormValue.categorySecurityConsultantFormGroup)
 			);
 		}
 
@@ -938,7 +938,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
-		const criminalHistoryData = licenceModelFormValue.criminalHistoryData;
+		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
 		const criminalChargeDescription =
 			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
 			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
@@ -953,7 +953,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 
 		const body = {
 			licenceAppId,
-			latestApplicationId: licenceModelFormValue.latestApplicationId,
+			latestApplicationId: workerModelFormValue.latestApplicationId,
 			originalApplicationId: originalLicenceData.originalApplicationId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
@@ -962,10 +962,10 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			bizTypeCode:
 				soleProprietorData.isSoleProprietor === BooleanTypeCode.No ? BizTypeCode.None : soleProprietorData.bizTypeCode,
 			//-----------------------------------
-			hasPreviousName: this.utilService.booleanTypeToBoolean(licenceModelFormValue.aliasesData.previousNameFlag),
+			hasPreviousName: this.utilService.booleanTypeToBoolean(workerModelFormValue.aliasesData.previousNameFlag),
 			aliases:
-				licenceModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
-					? licenceModelFormValue.aliasesData.aliases
+				workerModelFormValue.aliasesData.previousNameFlag == BooleanTypeCode.Yes
+					? workerModelFormValue.aliasesData.aliases
 					: [],
 			//-----------------------------------
 			hasBcDriversLicence: this.utilService.booleanTypeToBoolean(bcDriversLicenceData.hasBcDriversLicence),
@@ -987,7 +987,7 @@ export abstract class LicenceApplicationHelper extends ApplicationHelper {
 			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
-			licenceTermCode: licenceModelFormValue.licenceTermData.licenceTermCode,
+			licenceTermCode: workerModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
 			isMailingTheSameAsResidential: mailingAddressData.isAddressTheSame,
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,

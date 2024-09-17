@@ -9,7 +9,7 @@ import {
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -108,7 +108,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private hotToastService: HotToastService,
-		private licenceApplicationService: LicenceApplicationService,
+		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
 
@@ -139,7 +139,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 
 		switch (this.workerLicenceTypeCode) {
 			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
-				this.licenceApplicationService
+				this.workerApplicationService
 					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
 						tap((resp: LicenceResponse) => {

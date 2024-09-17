@@ -6,8 +6,8 @@ import {
 	PrivateInvestigatorRequirementCode,
 	PrivateInvestigatorTrainingCode,
 } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
@@ -217,7 +217,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, LicenceChildStepperStepComponent {
-	form: FormGroup = this.licenceApplicationService.categoryPrivateInvestigatorFormGroup;
+	form: FormGroup = this.workerApplicationService.categoryPrivateInvestigatorFormGroup;
 	title = '';
 
 	privateInvestigatorRequirementCodes = PrivateInvestigatorRequirementCode;
@@ -226,20 +226,20 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 	@ViewChild('trainingattachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
+		this.workerApplicationService.addUploadDocument(this.requirementCode.value, file).subscribe({
 			next: (resp: any) => {
 				const matchingFile = this.attachments.value.find((item: File) => item.name == file.name);
 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -253,13 +253,13 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	}
 
 	onFileTrainingAdded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService.addUploadDocument(this.trainingCode.value, file).subscribe({
+		this.workerApplicationService.addUploadDocument(this.trainingCode.value, file).subscribe({
 			next: (resp: any) => {
 				const matchingFile = this.trainingAttachments.value.find((item: File) => item.name == file.name);
 				matchingFile.documentUrlId = resp.body[0].documentUrlId;
@@ -273,7 +273,7 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

@@ -3,8 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 
 @Component({
@@ -98,30 +98,30 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	originalDogAuthorizationExists = false;
 	booleanTypeCodes = BooleanTypeCode;
 
-	form: FormGroup = this.licenceApplicationService.dogsAuthorizationFormGroup;
+	form: FormGroup = this.workerApplicationService.dogsAuthorizationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		this.subtitle = this.isRenewalOrUpdate ? 'Update any information that has changed since your last application' : '';
 
-		this.originalDogAuthorizationExists = this.licenceApplicationService.licenceModelFormGroup.get(
+		this.originalDogAuthorizationExists = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalDogAuthorizationExists'
 		)?.value;
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 
-		if (!this.licenceApplicationService.isAutoSave()) {
+		if (!this.workerApplicationService.isAutoSave()) {
 			return;
 		}
 
-		this.licenceApplicationService
+		this.workerApplicationService
 			.addUploadDocument(LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate, file)
 			.subscribe({
 				next: (resp: any) => {
@@ -137,7 +137,7 @@ export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, Lice
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.hasValueChanged = true;
+		this.workerApplicationService.hasValueChanged = true;
 	}
 
 	isFormValid(): boolean {

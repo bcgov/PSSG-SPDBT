@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormContactInformationComponent } from '@app/shared/components/form-contact-information.component';
 
 @Component({
@@ -22,13 +22,13 @@ export class StepWorkerLicenceContactInformationComponent implements OnInit, Lic
 	title = '';
 	subtitle = '';
 
-	form: FormGroup = this.licenceApplicationService.contactInformationFormGroup;
+	form: FormGroup = this.workerApplicationService.contactInformationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FormContactInformationComponent) contactInformationComponent!: FormContactInformationComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		if (this.isRenewalOrUpdate) {
