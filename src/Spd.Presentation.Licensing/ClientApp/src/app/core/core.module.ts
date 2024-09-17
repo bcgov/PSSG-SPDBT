@@ -15,7 +15,7 @@ import { BusinessApplicationService } from './services/business-application.serv
 import { ConfigService } from './services/config.service';
 import { ControllingMemberCrcService } from './services/controlling-member-crc.service';
 import { FileUtilService } from './services/file-util.service';
-import { LicenceApplicationService } from './services/licence-application.service';
+import { WorkerApplicationService } from './services/worker-application.service';
 import { PermitApplicationService } from './services/permit-application.service';
 import { UtilService } from './services/util.service';
 
@@ -34,7 +34,7 @@ const CORE_COMPONENTS: any[] = [];
 		ControllingMemberCrcService,
 		ConfigService,
 		FileUtilService,
-		LicenceApplicationService,
+		WorkerApplicationService,
 		PermitApplicationService,
 		UtilService,
 		{

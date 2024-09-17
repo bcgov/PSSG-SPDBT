@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { ApplicationService } from '@app/core/services/application.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
@@ -45,7 +45,7 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
-		private licenceApplicationService: LicenceApplicationService
+		private workerApplicationService: WorkerApplicationService
 	) {
 		super(breakpointObserver);
 	}
@@ -62,7 +62,7 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 	}
 
 	onPayNow(): void {
-		this.licenceApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence replacement has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);

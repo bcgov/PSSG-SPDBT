@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-citizenship.component';
 
 @Component({
@@ -24,13 +24,13 @@ import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-cit
 export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = 'Are you a Canadian citizen?';
 
-	form: FormGroup = this.licenceApplicationService.citizenshipFormGroup;
+	form: FormGroup = this.workerApplicationService.citizenshipFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	@ViewChild(FormSwlCitizenshipComponent) formSwlCitizenshipComponent!: FormSwlCitizenshipComponent;
 
-	constructor(private licenceApplicationService: LicenceApplicationService, private utilService: UtilService) {}
+	constructor(private workerApplicationService: WorkerApplicationService, private utilService: UtilService) {}
 
 	ngOnInit(): void {
 		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
@@ -39,7 +39,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onFileUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.workerApplicationService.fileUploaded(
 			this.formSwlCitizenshipComponent.getProofTypeCode(),
 			file,
 			this.formSwlCitizenshipComponent.attachments,
@@ -48,11 +48,11 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onFileRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.workerApplicationService.fileRemoved();
 	}
 
 	onFileGovernmentIssuedUploaded(file: File): void {
-		this.licenceApplicationService.fileUploaded(
+		this.workerApplicationService.fileUploaded(
 			this.formSwlCitizenshipComponent.getGovernmentIssuedProofTypeCode(),
 			file,
 			this.formSwlCitizenshipComponent.governmentIssuedAttachments,
@@ -61,7 +61,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 	}
 
 	onFileGovernmentIssuedRemoved(): void {
-		this.licenceApplicationService.fileRemoved();
+		this.workerApplicationService.fileRemoved();
 	}
 
 	isFormValid(): boolean {

@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceApplicationService } from '@app/core/services/licence-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-swl-permit-terms.component';
 
 @Component({
@@ -17,13 +17,13 @@ import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-app
 	styles: [],
 })
 export class StepWorkerLicenceTermsOfUseComponent implements LicenceChildStepperStepComponent {
-	form = this.licenceApplicationService.termsAndConditionsFormGroup;
+	form = this.workerApplicationService.termsAndConditionsFormGroup;
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private licenceApplicationService: LicenceApplicationService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	isFormValid(): boolean {
 		return this.commonTermsComponent.isFormValid();

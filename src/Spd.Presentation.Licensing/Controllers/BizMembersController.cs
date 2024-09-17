@@ -176,7 +176,12 @@ namespace Spd.Presentation.Licensing.Controllers
         [AllowAnonymous]
         public async Task<ControllingMemberAppInviteVerifyResponse> VerifyCmAppInvitation([FromBody][Required] ControllingMemberAppInviteVerifyRequest inviteVerifyRequest)
         {
-            return await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
+            ControllingMemberAppInviteVerifyResponse response = await _mediator.Send(new VerifyBizControllingMemberInviteCommand(inviteVerifyRequest.InviteEncryptedCode));
+            if (response.ContactId != null)
+            {
+                SetValueToResponseCookie(SessionConstants.AnonymousApplicantContext, response.ContactId.Value.ToString());
+            }
+            return response;
         }
 
         /// <summary>
