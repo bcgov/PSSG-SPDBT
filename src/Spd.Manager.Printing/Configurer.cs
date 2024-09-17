@@ -14,6 +14,7 @@ namespace Spd.Manager.Printing
             configurationServices.Services.AddScoped<IDocumentTransformStrategy, FingerprintLetterTransformStrategy>();
             configurationServices.Services.AddScoped<IDocumentTransformStrategy, PersonalLicencePreviewTransformStrategy>();
             configurationServices.Services.AddScoped<IDocumentTransformStrategy, PersonalLicencePrintingTransformStrategy>();
+            configurationServices.Services.AddScoped<IDocumentTransformStrategy, BizLicencePrintingTransformStrategy>();
         }
     }
 }
