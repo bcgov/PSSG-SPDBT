@@ -11,6 +11,7 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
+	ServiceTypeCode,
 } from 'src/app/api/models';
 import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
@@ -177,6 +178,10 @@ export class PssoaComponent implements OnInit {
 			});
 
 			orgData.isCrrpa = false;
+			orgData.notPssoOrPecrc =
+				orgData.serviceType != ServiceTypeCode.Psso && orgData.serviceType != ServiceTypeCode.PeCrc;
+			orgData.bcGovEmployeeIdShow =
+				orgData.serviceType != ServiceTypeCode.PeCrc && orgData.serviceType != ServiceTypeCode.PeCrcVs;
 			orgData.performPaymentProcess = false; // does not apply to psso
 			orgData.readonlyTombstone = false; // default
 			orgData.shareableCrcExists = false; // does not apply to psso
