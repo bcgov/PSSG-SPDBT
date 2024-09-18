@@ -1,12 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spd.Utilities.Hosting;
 using System.Configuration;
 
 namespace Spd.Utilities.Recaptcha;
-public static class ServiceExtensions
+
+public class Configurer : IConfigureComponents
 {
-    public static IServiceCollection AddGoogleRecaptcha(this IServiceCollection services, IConfiguration configuration)
+    public void Configure(ConfigurationContext configurationServices)
     {
+        var configuration = configurationServices.Configuration;
+        var services = configurationServices.Services;
+
         var config = configuration.GetSection("GoogleReCaptcha").Get<GoogleReCaptchaConfiguration>();
 
         if (config == null)
@@ -19,6 +24,5 @@ public static class ServiceExtensions
 
         services.AddHttpClient("recaptcha");
         services.AddTransient<IRecaptchaVerificationService, RecaptchaVerificationService>();
-        return services;
     }
 }

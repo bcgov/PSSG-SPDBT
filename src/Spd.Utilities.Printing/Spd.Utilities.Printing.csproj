@@ -1,11 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-		<PackageReference Include="Microsoft.Extensions.Options" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-		<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
-	</ItemGroup>
+		<PropertyGroup>
+				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Microsoft.Extensions.Configuration" />
+				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+				<PackageReference Include="Microsoft.Extensions.Options" />
+				<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+				<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
+		</ItemGroup>
 
 </Project>

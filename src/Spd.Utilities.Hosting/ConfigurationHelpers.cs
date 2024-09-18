@@ -1,43 +1,34 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System.Reflection;
 
-namespace Spd.Utilities.Hosting
+namespace Spd.Utilities.Hosting;
+
+public static class ConfigurationHelpers
 {
-    public static class ConfigurationHelpers
+    public static void ConfigureComponents(this WebApplicationBuilder webApplicationBuilder, IEnumerable<Assembly> discoveryAssemblies, Serilog.ILogger logger)
     {
-        public static void ConfigureComponentServices(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment, params Assembly[] assemblies)
-        {
-            var configServices = new ConfigurationServices(services, configuration, environment);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+        using var loggerFactory = new LoggerFactory().AddSerilog(logger);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+        ConfigureComponents(webApplicationBuilder, discoveryAssemblies, loggerFactory);
+    }
 
-            foreach (var assembly in assemblies)
-            {
-                var configurations = assembly.CreateInstancesOf<IConfigureComponentServices>();
-                foreach (var config in configurations)
-                {
-                    config.ConfigureServices(configServices);
-                }
-            }
-        }
+    public static void ConfigureComponents(this WebApplicationBuilder webApplicationBuilder, IEnumerable<Assembly> discoveryAssemblies, ILoggerFactory loggerFactory)
+    {
+        ConfigureComponents(webApplicationBuilder.Services, webApplicationBuilder.Configuration, webApplicationBuilder.Environment, discoveryAssemblies, loggerFactory);
+    }
 
-        public static void ConfigureComponentPipeline(this IApplicationBuilder app, IConfiguration configuration, IHostEnvironment environment, params Assembly[] assemblies)
+    public static void ConfigureComponents(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, IEnumerable<Assembly> discoveryAssemblies, ILoggerFactory loggerFactory)
+    {
+        foreach (var config in discoveryAssemblies.SelectMany(a => a.CreateInstancesOf<IConfigureComponents>()))
         {
-            var pipelineServices = new PipelineServices
-            {
-                Application = app,
-                Configuration = configuration,
-                Environment = environment,
-            };
-            foreach (var assembly in assemblies)
-            {
-                var configurations = assembly.CreateInstancesOf<IConfigureComponentPipeline>();
-                foreach (var config in configurations)
-                {
-                    config.ConfigurePipeline(pipelineServices);
-                }
-            }
+            var configurationContext = new ConfigurationContext(services, configuration, environment, loggerFactory.CreateLogger(config.GetType()));
+            config.Configure(configurationContext);
         }
     }
 }

@@ -1,11 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="IdentityModel" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" />
-  </ItemGroup>
+		<PropertyGroup>
+				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="IdentityModel" />
+				<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+				<PackageReference Include="Microsoft.Extensions.Configuration" />
+				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+				<PackageReference Include="System.Configuration.ConfigurationManager" />
+		</ItemGroup>
 
 </Project>
