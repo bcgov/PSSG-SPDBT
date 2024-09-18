@@ -1,18 +1,20 @@
-﻿using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 using Spd.Utilities.FileStorage;
+using System.Text;
+using Xunit.Abstractions;
 
 namespace Spd.Tests.Integration.Utilities.FileStorage;
 
-public class MainFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
+public class MainFileStorageServiceTest : IntegrationTestBase
 {
     private readonly IMainFileStorageService _mainFileService;
     private readonly ITransientFileStorageService _transientFileService;
 
-    public MainFileStorageServiceTest(IntegrationTestSetup testSetup)
+    public MainFileStorageServiceTest(ITestOutputHelper output, IntegrationTestFixture fixture) : base(output, fixture)
     {
-        _mainFileService = testSetup.ServiceProvider.GetService<IMainFileStorageService>();
-        _transientFileService = testSetup.ServiceProvider.GetService<ITransientFileStorageService>();
+        _mainFileService = Fixture.ServiceProvider.GetService<IMainFileStorageService>()!;
+        _transientFileService = Fixture.ServiceProvider.GetService<ITransientFileStorageService>()!;
     }
 
     [Fact]
@@ -20,7 +22,7 @@ public class MainFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
     {
         //Arrange
         //create a file in transient bucket
-        var sourceFileName = IntegrationTestSetup.DataPrefix + Guid.NewGuid();
+        var sourceFileName = IntegrationTestFixture.DataPrefix + Guid.NewGuid();
         var testFile = new Spd.Utilities.FileStorage.File
         {
             Content = Encoding.ASCII.GetBytes("samplefile"),
@@ -28,7 +30,7 @@ public class MainFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
             FileName = sourceFileName,
             Metadata = new List<FileMetadata>() { new FileMetadata("test", "value") }
         };
-        await _transientFileService.HandleCommand(new UploadFileCommand(sourceFileName, IntegrationTestSetup.Folder, testFile, new FileTag { }),
+        await _transientFileService.HandleCommand(new UploadFileCommand(sourceFileName, IntegrationTestFixture.Folder, testFile, new FileTag { }),
             CancellationToken.None);
 
         //Act
@@ -36,22 +38,20 @@ public class MainFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
         await _mainFileService.HandleCopyStorageFromTransientToMainCommand(
             new CopyStorageFromTransientToMainCommand(
                 sourceFileName,
-                IntegrationTestSetup.Folder,
+                IntegrationTestFixture.Folder,
                 targetFileName,
-                IntegrationTestSetup.Folder),
+                IntegrationTestFixture.Folder),
             CancellationToken.None);
 
         //Assert
-        var queryResult = (FileMetadataQueryResult)await _mainFileService.HandleQuery(
-            new FileMetadataQuery { Key = targetFileName, Folder = IntegrationTestSetup.Folder },
-            CancellationToken.None);
-        var fileExists = queryResult != null;
-        Assert.True(fileExists);
+        (await _mainFileService.HandleQuery(new FileMetadataQuery { Key = targetFileName, Folder = IntegrationTestFixture.Folder }, CancellationToken.None))
+            .ShouldNotBeNull()
+            .ShouldBeOfType<FileMetadataQueryResult>();
 
         //Annihilate
         //cleanup transient bucket; files in main bucket are not allowed to be removed.
         await _transientFileService.HandleDeleteCommand(
-            new StorageDeleteCommand(sourceFileName, IntegrationTestSetup.Folder),
+            new StorageDeleteCommand(sourceFileName, IntegrationTestFixture.Folder),
             CancellationToken.None);
     }
 }

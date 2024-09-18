@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+		<PropertyGroup>
+				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		</PropertyGroup>
+
 		<ItemGroup>
 				<PackageReference Include="AspNetCore.HealthChecks.Aws.S3" />
 				<PackageReference Include="AspNetCore.HealthChecks.Redis" />

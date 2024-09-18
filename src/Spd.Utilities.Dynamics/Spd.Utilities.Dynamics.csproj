@@ -1,35 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-      <NoWarn>CA1008;CA1707,CS8981;</NoWarn>
-  </PropertyGroup>	
-    
-  <ItemGroup>
-    <None Remove="Connected Services\OData Service\OData ServiceCsdl.xml" />
-  </ItemGroup>
+		<PropertyGroup>
+				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+				<NoWarn>CA1008;CA1707,CS8981;</NoWarn>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Connected Services\OData Service\OData ServiceCsdl.xml" />
-  </ItemGroup>
+		<ItemGroup>
+				<None Remove="Connected Services\OData Service\OData ServiceCsdl.xml" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="IdentityModel" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Options" />
-    <PackageReference Include="Microsoft.OData.Client" />
-    <PackageReference Include="Microsoft.OData.Core" />
-    <PackageReference Include="Microsoft.OData.Edm" />
-    <PackageReference Include="Microsoft.OData.Extensions.Client" />
-    <PackageReference Include="Microsoft.Spatial" />
-    <PackageReference Include="Polly" />
-    <PackageReference Include="System.ComponentModel.Annotations" />
-    <PackageReference Include="System.Text.Json" />
-  </ItemGroup>
+		<ItemGroup>
+				<EmbeddedResource Include="Connected Services\OData Service\OData ServiceCsdl.xml" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="IdentityModel" />
+				<PackageReference Include="Microsoft.Extensions.Configuration" />
+				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+				<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+				<PackageReference Include="Microsoft.Extensions.Options" />
+				<PackageReference Include="Microsoft.OData.Client" />
+				<PackageReference Include="Microsoft.OData.Core" />
+				<PackageReference Include="Microsoft.OData.Edm" />
+				<PackageReference Include="Microsoft.OData.Extensions.Client" />
+				<PackageReference Include="Microsoft.Spatial" />
+				<PackageReference Include="Polly" />
+				<PackageReference Include="System.ComponentModel.Annotations" />
+				<PackageReference Include="System.Text.Json" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
+		</ItemGroup>
 
 </Project>
