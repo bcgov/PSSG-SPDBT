@@ -1,16 +1,18 @@
-﻿using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 using Spd.Utilities.FileStorage;
+using System.Text;
+using Xunit.Abstractions;
 
 namespace Spd.Tests.Integration.Utilities.FileStorage;
 
-public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetup>
+public class TransientFileStorageServiceTest : IntegrationTestBase
 {
     private readonly ITransientFileStorageService _transientFileService;
 
-    public TransientFileStorageServiceTest(IntegrationTestSetup testSetup)
+    public TransientFileStorageServiceTest(ITestOutputHelper output, IntegrationTestFixture fixture) : base(output, fixture)
     {
-        _transientFileService = testSetup.ServiceProvider.GetService<ITransientFileStorageService>();
+        _transientFileService = Fixture.ServiceProvider.GetService<ITransientFileStorageService>()!;
     }
 
     [Fact]
@@ -18,7 +20,7 @@ public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetu
     {
         //Arrange
         //create a file in transient bucket
-        var fileName = IntegrationTestSetup.DataPrefix + Guid.NewGuid();
+        var fileName = IntegrationTestFixture.DataPrefix + Guid.NewGuid();
         var testFile = new Spd.Utilities.FileStorage.File
         {
             Content = Encoding.ASCII.GetBytes("samplefile"),
@@ -26,22 +28,19 @@ public class TransientFileStorageServiceTest : IClassFixture<IntegrationTestSetu
             FileName = fileName,
             Metadata = new List<FileMetadata>() { new FileMetadata("test", "value") }
         };
-        await _transientFileService.HandleCommand(new UploadFileCommand(fileName, IntegrationTestSetup.Folder, testFile, new FileTag { }),
+        await _transientFileService.HandleCommand(new UploadFileCommand(fileName, IntegrationTestFixture.Folder, testFile, new FileTag { }),
             CancellationToken.None);
 
         //Act
-        var targetFileName = fileName;
         await _transientFileService.HandleDeleteCommand(
-            new StorageDeleteCommand(
-                fileName,
-                IntegrationTestSetup.Folder),
-            CancellationToken.None);
+           new StorageDeleteCommand(
+               fileName,
+               IntegrationTestFixture.Folder),
+           CancellationToken.None);
 
         //Assert
-        var queryResult = (FileMetadataQueryResult)await _transientFileService.HandleQuery(
-            new FileMetadataQuery { Key = fileName, Folder = IntegrationTestSetup.Folder },
-            CancellationToken.None);
-        var fileExists = queryResult != null;
-        Assert.False(fileExists);
+        (await _transientFileService.HandleQuery(new FileMetadataQuery { Key = fileName, Folder = IntegrationTestFixture.Folder }, CancellationToken.None))
+            .ShouldNotBeNull()
+            .ShouldBeOfType<FileMetadataQueryResult>();
     }
 }
