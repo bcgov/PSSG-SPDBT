@@ -56,5 +56,6 @@ public record ControllingMemberCrcApplicationResp() : ControllingMemberCrcApplic
     public string? CaseNumber { get; set; }
     public Guid? ControllingMemberAppId { get; set; }
     public Guid? ContactId { get; set; }
+    public Guid? OrganizationId { get; set; }
 }
 public record ControllingMemberCrcApplicationCmdResp(Guid ControllingMemberAppId, Guid? ContactId = null);
