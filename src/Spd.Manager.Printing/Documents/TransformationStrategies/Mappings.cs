@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository.Application;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.Org;
@@ -67,6 +68,40 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
                  .ForMember(d => d.Height, opt => opt.MapFrom(s => GetHeightStr(s)))
                  .ForMember(d => d.Weight, opt => opt.MapFrom(s => GetWeightStr(s)))
                  .ForMember(d => d.CardType, opt => opt.MapFrom(s => "SECURITY-WORKER-AND-ARMOUR"));
+
+            CreateMap<LicenceResp, BizLicencePrintingJson>()
+                .ForMember(d => d.ApplicantName, opt => opt.Ignore())
+                .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
+                .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
+                .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => DateTime.Now.ToString("yyyy-MM-dd")))
+                .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate.ToString("yyyy-MM-dd")))
+                .ForMember(d => d.LicenceCategories, opt => opt.MapFrom(s => s.CategoryCodes));
+
+            CreateMap<BizResult, BizLicencePrintingJson>()
+                .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => s.BizLegalName))
+                .ForMember(d => d.LicenceNumber, opt => opt.Ignore())
+                .ForMember(d => d.LicenceType, opt => opt.Ignore())
+                .ForMember(d => d.IssuedDate, opt => opt.Ignore())
+                .ForMember(d => d.ExpiryDate, opt => opt.Ignore())
+                .ForMember(d => d.Photo, opt => opt.Ignore())
+                .ForMember(d => d.Conditions, opt => opt.Ignore())
+                .ForMember(d => d.LicenceCategories, opt => opt.Ignore())
+                .ForMember(d => d.DoingBusinessAsName, opt => opt.MapFrom(s => s.BizName))
+                .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine1))
+                .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.AddressLine2))
+                .ForMember(d => d.City, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.City))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Province))
+                .ForMember(d => d.Country, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.Country))
+                .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.MailingAddress == null ? null : s.MailingAddress.PostalCode))
+                .ForMember(d => d.BranchOffices, opt => opt.MapFrom(s => s.BranchAddresses));
+
+            CreateMap<BranchAddr, BranchAddress>()
+                .ForMember(d => d.MailingAddress1, opt => opt.MapFrom(s => s.AddressLine1))
+                .ForMember(d => d.MailingAddress2, opt => opt.MapFrom(s => s.AddressLine2))
+                .ForMember(d => d.City, opt => opt.MapFrom(s => s.City))
+                .ForMember(d => d.ProvinceState, opt => opt.MapFrom(s => s.Province))
+                .ForMember(d => d.Country, opt => opt.MapFrom(s => s.Country))
+                .ForMember(d => d.PostalCode, opt => opt.MapFrom(s => s.PostalCode));
         }
 
         private string GetHeightStr(LicenceApplicationResp resp)
