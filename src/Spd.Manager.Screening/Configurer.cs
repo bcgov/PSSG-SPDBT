@@ -3,9 +3,9 @@ using Spd.Utilities.Hosting;
 
 namespace Spd.Manager.Screening;
 
-public class ServiceExtension : IConfigureComponentServices
+public class Configurer : IConfigureComponents
 {
-    public void ConfigureServices(ConfigurationServices configurationServices)
+    public void Configure(ConfigurationContext configurationServices)
     {
         configurationServices.Services.AddTransient<IApplicationManager, ApplicationManager>();
         configurationServices.Services.AddTransient<IOrgRegistrationManager, OrgRegistrationManager>();

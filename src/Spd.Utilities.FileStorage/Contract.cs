@@ -40,7 +40,10 @@ public record FileTag
 {
     public IEnumerable<Tag> Tags { get; set; } = Array.Empty<Tag>();
 }
+
+#pragma warning disable CA1724 //Type names should not match
 public record File
+#pragma warning restore CA1724 //Type names should not match
 {
 #pragma warning disable CA1819 // Properties should not return arrays
     public byte[] Content { get; set; } = [];

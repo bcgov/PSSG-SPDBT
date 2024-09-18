@@ -1,104 +1,104 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
-		<NoWarn>1701;1702;1591;CA1707</NoWarn>
-		<UserSecretsId>c435ba0d-1b68-40b7-af2c-b83b73fcb25b</UserSecretsId>
-	</PropertyGroup>
+		<PropertyGroup>
+				<IsPackable>false</IsPackable>
+				<IsTestProject>true</IsTestProject>
+				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+				<UserSecretsId>c435ba0d-1b68-40b7-af2c-b83b73fcb25b</UserSecretsId>
+		</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="AutoFixture" />
-		<PackageReference Include="MartinCostello.Logging.XUnit" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
-		<PackageReference Include="Microsoft.Extensions.Options" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" />
-		<PackageReference Include="Shouldly" />
-		<PackageReference Include="xunit" />
-		<PackageReference Include="xunit.runner.visualstudio">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="coverlet.collector">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="AutoFixture" />
+				<PackageReference Include="MartinCostello.Logging.XUnit" />
+				<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+				<PackageReference Include="Microsoft.Extensions.Options" />
+				<PackageReference Include="Microsoft.NET.Test.Sdk" />
+				<PackageReference Include="Shouldly" />
+				<PackageReference Include="xunit" />
+				<PackageReference Include="xunit.runner.visualstudio">
+						<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+						<PrivateAssets>all</PrivateAssets>
+				</PackageReference>
+				<PackageReference Include="coverlet.collector">
+						<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+						<PrivateAssets>all</PrivateAssets>
+				</PackageReference>
+		</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Spd.Presentation.Dynamics\Spd.Presentation.Dynamics.csproj" />
-		<ProjectReference Include="..\Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj" />
-		<ProjectReference Include="..\Spd.Presentation.Screening\Spd.Presentation.Screening.csproj" />
-		<ProjectReference Include="..\Spd.Utilities.Printing\Spd.Utilities.Printing.csproj" />
-	</ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\Spd.Presentation.Dynamics\Spd.Presentation.Dynamics.csproj" />
+				<ProjectReference Include="..\Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj" />
+				<ProjectReference Include="..\Spd.Presentation.Screening\Spd.Presentation.Screening.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Printing\Spd.Utilities.Printing.csproj" />
+		</ItemGroup>
 
-	<ItemGroup>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit %28Photo 1 good TIFF%29.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 1 good).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 2 good).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 3 bad).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 4 bad).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit %28Photo 3 bad TIFF%29.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 1 good).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 2 good).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 3 bad).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 4 bad).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Business Licence - Sole Proprietor.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Business Licence.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Fingerprint Request Letter.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Metal Dealers and Recyclers Permit.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 270%29.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 360%29.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated right%29.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 4 bad TIFF%29.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 1 good).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 2 good).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 3 bad).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 4 bad).json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
+		<ItemGroup>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit %28Photo 1 good TIFF%29.json">
+						<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 1 good).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 2 good).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 3 bad).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Armoured Vehicle Permit (Photo 4 bad).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit %28Photo 3 bad TIFF%29.json">
+						<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 1 good).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 2 good).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 3 bad).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Body Armour Permit (Photo 4 bad).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Business Licence - Sole Proprietor.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Business Licence.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Fingerprint Request Letter.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Metal Dealers and Recyclers Permit.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 270%29.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated 360%29.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 3 rotated right%29.json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence %28Photo 4 bad TIFF%29.json">
+						<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 1 good).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 2 good).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 3 bad).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+				<None Update="Integration\Utilities\BcMailPlus\TestFiles\Security Worker Licence (Photo 4 bad).json">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</None>
+		</ItemGroup>
 
 </Project>
