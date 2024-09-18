@@ -206,7 +206,7 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 			return;
 		}
 
-		this.controllingMembersService.submitControllingMemberCrcUpdatedAnonymous().subscribe({
+		this.controllingMembersService.submitControllingMemberCrcUpdateAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
 				this.hotToastService.success('Your Criminal Record Check update has been successfully submitted');
 

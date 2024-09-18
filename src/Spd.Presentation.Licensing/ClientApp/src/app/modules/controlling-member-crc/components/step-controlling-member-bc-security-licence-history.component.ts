@@ -41,9 +41,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 
 				<div class="row">
 					<div class="col-xxl-7 col-xl-8 col-lg-12 mx-auto">
-						<div class="mt-2" *ngIf="isYesAndNew" @showHideTriggerSlideAnimation>
-							<mat-form-field>
-								<mat-label>Provide Details</mat-label>
+						<div class="mt-2" *ngIf="hasCriminalHistory.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+							<mat-form-field
+								><mat-label>
+									<ng-container *ngIf="isYesAndNew; else yesAndUpdateLabel">Provide Details</ng-container>
+									<ng-template #yesAndUpdateLabel>Brief Description of New Charges or Convictions</ng-template>
+								</mat-label>
 								<textarea
 									matInput
 									formControlName="criminalHistoryDetail"
@@ -53,23 +56,6 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								></textarea>
 								<mat-hint>Maximum 250 characters</mat-hint>
 								<mat-error *ngIf="form.get('criminalHistoryDetail')?.hasError('required')">
-									This is required
-								</mat-error>
-							</mat-form-field>
-						</div>
-
-						<div class="mt-2" *ngIf="isYesAndUpdate" @showHideTriggerSlideAnimation>
-							<mat-form-field>
-								<mat-label>Brief Description of New Charges or Convictions</mat-label>
-								<textarea
-									matInput
-									formControlName="criminalChargeDescription"
-									style="min-height: 200px"
-									maxlength="1000"
-									[errorStateMatcher]="matcher"
-								></textarea>
-								<mat-hint>Maximum 1000 characters</mat-hint>
-								<mat-error *ngIf="form.get('criminalChargeDescription')?.hasError('required')">
 									This is required
 								</mat-error>
 							</mat-form-field>
@@ -180,11 +166,6 @@ export class StepControllingMemberBcSecurityLicenceHistoryComponent
 	get isYesAndNew(): boolean {
 		return (
 			this.applicationTypeCode === ApplicationTypeCode.New && this.hasCriminalHistory.value === BooleanTypeCode.Yes
-		);
-	}
-	get isYesAndUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Update && this.hasCriminalHistory.value === BooleanTypeCode.Yes
 		);
 	}
 

@@ -6,6 +6,7 @@ import {
 	Document,
 	DocumentExpiredInfo,
 	LicenceDocumentTypeCode,
+	PoliceOfficerRoleCode,
 } from '@app/api/models';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
@@ -24,21 +25,12 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			criminalHistoryDetail: new FormControl(''),
 			hasBankruptcyHistory: new FormControl(''),
 			bankruptcyHistoryDetail: new FormControl(''),
-			criminalChargeDescription: new FormControl(''),
 		},
 		{
 			validators: [
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'criminalHistoryDetail',
-					(form) =>
-						form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
-						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.New
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'criminalChargeDescription',
-					(form) =>
-						form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
-						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
+					(form) => form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes
 				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'hasBankruptcyHistory',
@@ -47,12 +39,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'bankruptcyHistoryDetail',
 					(form) => form.get('hasBankruptcyHistory')?.value == BooleanTypeCode.Yes
-				),
-				FormGroupValidators.conditionalRequiredValidator(
-					'criminalChargeDescription',
-					(_form) =>
-						_form.get('hasCriminalHistory')?.value == BooleanTypeCode.Yes &&
-						this.applicationTypeFormGroup.get('applicationTypeCode')?.value == ApplicationTypeCode.Update
 				),
 			],
 		}
@@ -93,23 +79,20 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 	}
 
 	getSaveBodyBaseAuthenticated(controllingMemberCrcFormValue: any): any {
-		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, true);
+		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue);
 		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
 
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): ControllingMemberCrcAppSubmitRequest {
-		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue, false);
+	getSaveBodyBaseAnonymous(controllingMemberCrcFormValue: any): any {
+		const baseData = this.getSaveBodyBase(controllingMemberCrcFormValue);
 		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
 
 		return baseData;
 	}
 
-	private getSaveBodyBase(
-		controllingMemberCrcFormValue: any,
-		_isAuthenticated: boolean
-	): ControllingMemberCrcAppSubmitRequest {
+	private getSaveBodyBase(controllingMemberCrcFormValue: any): any {
 		const workerLicenceTypeData = { ...controllingMemberCrcFormValue.workerLicenceTypeData };
 		const applicationTypeData = { ...controllingMemberCrcFormValue.applicationTypeData };
 		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
@@ -117,7 +100,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		const citizenshipData = { ...controllingMemberCrcFormValue.citizenshipData };
 		const policeBackgroundData = { ...controllingMemberCrcFormValue.policeBackgroundData };
 		const fingerprintProofData = { ...controllingMemberCrcFormValue.fingerprintProofData };
-		const criminalHistoryData = { ...controllingMemberCrcFormValue.criminalHistoryData };
 		const mentalHealthConditionsData = { ...controllingMemberCrcFormValue.mentalHealthConditionsData };
 		const personalInformationData = {
 			...controllingMemberCrcFormValue.personalInformationData,
@@ -126,6 +108,15 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			...controllingMemberCrcFormValue.contactInformationData,
 		};
 		const bcSecurityLicenceHistoryData = controllingMemberCrcFormValue.bcSecurityLicenceHistoryData;
+
+		const applicationTypeCode = applicationTypeData.applicationTypeCode;
+
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const otherOfficerRole =
+			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
 
 		const documentInfos: Array<Document> = [];
 
@@ -136,19 +127,30 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			});
 		});
 
-		policeBackgroundData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
+			policeBackgroundData.attachments.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
+				});
 			});
-		});
+		}
 
-		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-			documentInfos.push({
-				documentUrlId: doc.documentUrlId,
-				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
+			mentalHealthConditionsData.attachments.forEach((doc: any) => {
+				documentInfos.push({
+					documentUrlId: doc.documentUrlId,
+					licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
+				});
 			});
-		});
+		}
+
+		let hasNewMentalHealthCondition: boolean | null = null;
+		let hasNewCriminalRecordCharge: boolean | null = null;
+		if (applicationTypeCode === ApplicationTypeCode.Update) {
+			hasNewMentalHealthCondition = isTreatedForMHC;
+			hasNewCriminalRecordCharge = hasCriminalHistory;
+		}
 
 		citizenshipData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -192,7 +194,6 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 		const hasBankruptcyHistory = this.utilService.booleanTypeToBoolean(
 			bcSecurityLicenceHistoryData.hasBankruptcyHistory
 		);
-		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(bcSecurityLicenceHistoryData.hasCriminalHistory);
 
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
 			documentInfos
@@ -211,6 +212,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			controllingMemberAppId: controllingMemberCrcFormValue.controllingMemberAppId,
 			parentBizLicApplicationId: controllingMemberCrcFormValue.parentBizLicApplicationId,
 			inviteId: controllingMemberCrcFormValue.inviteId,
+			applicantId: controllingMemberCrcFormValue.applicantId,
 			//-----------------------------------
 			givenName: personalInformationData.givenName,
 			surname: personalInformationData.surname,
@@ -240,15 +242,15 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 			bankruptcyHistoryDetail: hasBankruptcyHistory ? bcSecurityLicenceHistoryData.bankruptcyHistoryDetail : null,
 			//-----------------------------------
 			hasCriminalHistory,
-			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update
+			hasNewCriminalRecordCharge,
 			criminalHistoryDetail: hasCriminalHistory ? bcSecurityLicenceHistoryData.criminalHistoryDetail : null,
 			//-----------------------------------
-			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update
+			isTreatedForMHC,
+			hasNewMentalHealthCondition,
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
-			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
-			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			isPoliceOrPeaceOfficer,
+			policeOfficerRoleCode,
+			otherOfficerRole,
 			//-----------------------------------
 			documentExpiredInfos: [...documentExpiredInfos],
 			documentInfos: [...documentInfos],

@@ -39,20 +39,20 @@ import { UtilService } from '@app/core/services/util.service';
 									<div class="panel-body">
 										<div class="text-minor-heading mt-4">Personal Information</div>
 										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12">
+											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Name</div>
 												<div class="summary-text-data">
 													{{ givenName }} {{ middleName1 }} {{ middleName2 }}
 													{{ surname }}
 												</div>
 											</div>
-											<div class="col-lg-3 col-md-12">
+											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Date of Birth</div>
 												<div class="summary-text-data">
 													{{ dateOfBirth | formatDate | default }}
 												</div>
 											</div>
-											<div class="col-lg-3 col-md-12">
+											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Sex</div>
 												<div class="summary-text-data">
 													{{ genderCode | options : 'GenderTypes' | default }}
@@ -247,18 +247,18 @@ import { UtilService } from '@app/core/services/util.service';
 										</mat-panel-title>
 									</mat-expansion-panel-header>
 									<div class="panel-body">
-										<ng-container *ngIf="isNew">
-											<div class="text-minor-heading mt-4">Business Involvement</div>
-											<div class="row mt-0">
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
-													<div class="summary-text-data">{{ hasCriminalHistory }}</div>
-												</div>
-												<div class="col-lg-8 col-md-12" *ngIf="criminalHistoryDetail">
-													<div class="text-label d-block text-muted">Criminal History Details</div>
-													<div class="summary-text-data">{{ criminalHistoryDetail }}</div>
-												</div>
+										<div class="text-minor-heading mt-4">Business Involvement</div>
+										<div class="row mt-0">
+											<div class="col-lg-4 col-md-12">
+												<div class="text-label d-block text-muted">Criminal Charges, Convictions, or Lawsuits</div>
+												<div class="summary-text-data">{{ hasCriminalHistory }}</div>
 											</div>
+											<div class="col-lg-8 col-md-12" *ngIf="criminalHistoryDetail">
+												<div class="text-label d-block text-muted">Criminal History Details</div>
+												<div class="summary-text-data">{{ criminalHistoryDetail }}</div>
+											</div>
+										</div>
+										<ng-container *ngIf="isNew">
 											<div class="row mt-0">
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Bankruptcy History</div>
@@ -269,8 +269,8 @@ import { UtilService } from '@app/core/services/util.service';
 													<div class="summary-text-data">{{ bankruptcyHistoryDetail }}</div>
 												</div>
 											</div>
-											<mat-divider class="mt-3 mb-2"></mat-divider>
 										</ng-container>
+										<mat-divider class="mt-3 mb-2"></mat-divider>
 
 										<div class="text-minor-heading">Police Background</div>
 										<div class="row mt-0">
@@ -308,11 +308,11 @@ import { UtilService } from '@app/core/services/util.service';
 
 										<div class="text-minor-heading">Mental Health Conditions</div>
 										<div class="row mt-0">
-											<div class="col-lg-6 col-md-12">
+											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Mental Health Conditions</div>
 												<div class="summary-text-data">{{ isTreatedForMHC }}</div>
 											</div>
-											<div class="col-lg-6 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
+											<div class="col-lg-8 col-md-12" *ngIf="mentalHealthConditionAttachments.length > 0">
 												<div class="text-label d-block text-muted">Mental Health Condition Form</div>
 												<div class="summary-text-data">
 													<ul class="m-0">
@@ -476,7 +476,11 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 		return this.controllingMemberModelData.mentalHealthConditionsData.isTreatedForMHC ?? '';
 	}
 	get mentalHealthConditionAttachments(): File[] {
-		return this.controllingMemberModelData.mentalHealthConditionsData.attachments ?? [];
+		if (this.controllingMemberModelData.mentalHealthConditionsData.isTreatedForMHC === BooleanTypeCode.Yes) {
+			return this.controllingMemberModelData.mentalHealthConditionsData.attachments ?? [];
+		}
+
+		return [];
 	}
 
 	get proofOfFingerprintAttachments(): File[] {
