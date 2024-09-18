@@ -126,6 +126,7 @@ internal class Mappings : Profile
           .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.spd_ApplicantId_contact.contactid))
           .ForMember(d => d.ControllingMemberAppId, opt => opt.MapFrom(s => s.spd_applicationid))
           .ForMember(d => d.CaseNumber, opt => opt.MapFrom(s => s.spd_name))
+          .ForMember(d => d.OrganizationId, opt => opt.MapFrom(s => s._spd_organizationid_value))
           .IncludeBase<spd_application, ControllingMemberCrcApplication>();
 
         _ = CreateMap<SaveControllingMemberCrcAppCmd, spd_application>()
