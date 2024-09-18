@@ -68,7 +68,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 							</mat-form-field>
 						</div>
 					</div>
-					<div class="row" *ngIf="!orgData.isCrrpa">
+					<div class="row" *ngIf="orgData.bcGovEmployeeIdShow">
 						<div class="offset-lg-2 col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
 								<mat-label>BC Government Employee ID <span class="optional-label">(optional)</span></mat-label>
