@@ -1,16 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using Spd.Utilities.Printing;
 using Spd.Utilities.Printing.BCMailPlus;
 using System.Text.Json;
+using Xunit.Abstractions;
 
 namespace Spd.Tests.Integration.Utilities.BcMailPlus;
 
-public class BcMailPlusTests : IAsyncLifetime
+public class BcMailPlusTests(ITestOutputHelper output, IntegrationTestFixture fixture) : IntegrationTestBase(output, fixture)
 {
-    private IServiceScope serviceScope = null!;
-    private IServiceProvider services => serviceScope.ServiceProvider;
+    private IServiceProvider services => Fixture.ServiceProvider;
 
     [Theory]
     [InlineData("Integration/Utilities/BcMailPlus/TestFiles/Security Worker Licence (Photo 1 good).json")]
@@ -96,22 +94,5 @@ public class BcMailPlusTests : IAsyncLifetime
         var extension = status.JobProperties!.Asset == "CARD_PREVIEW_IMAGE" ? ".png" : ".pdf";
         await File.WriteAllBytesAsync(payloadFileName + extension, asset);
         return true;
-    }
-
-    public async Task DisposeAsync()
-    {
-        await Task.CompletedTask;
-        serviceScope.Dispose();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await Task.CompletedTask;
-        var servicesCollection = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
-        servicesCollection.AddSingleton<IConfiguration>(configuration);
-        servicesCollection.AddPrinting(configuration);
-
-        serviceScope = servicesCollection.BuildServiceProvider().CreateScope();
     }
 }

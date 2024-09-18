@@ -3,9 +3,9 @@ using Spd.Utilities.Hosting;
 
 namespace Spd.Manager.Payment
 {
-    public class ServiceExtension : IConfigureComponentServices
+    public class Configurer : IConfigureComponents
     {
-        public void ConfigureServices(ConfigurationServices configurationServices)
+        public void Configure(ConfigurationContext configurationServices)
         {
             configurationServices.Services.AddTransient<IPaymentManager, PaymentManager>();
         }

@@ -1,21 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" />
-    <PackageReference Include="IdentityModel" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Microsoft.Extensions.Options" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="Polly" />
-    <PackageReference Include="System.ComponentModel.Annotations" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" />
-    <PackageReference Include="System.Text.Json" />
-  </ItemGroup>
+		<PropertyGroup>
+				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="AutoMapper" />
+				<PackageReference Include="IdentityModel" />
+				<PackageReference Include="Microsoft.Extensions.Configuration" />
+				<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+				<PackageReference Include="Microsoft.Extensions.Http" />
+				<PackageReference Include="Microsoft.Extensions.Options" />
+				<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+				<PackageReference Include="Polly" />
+				<PackageReference Include="System.ComponentModel.Annotations" />
+				<PackageReference Include="System.Configuration.ConfigurationManager" />
+				<PackageReference Include="System.Text.Json" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\Spd.Utilities.Hosting\Spd.Utilities.Hosting.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Shared\Spd.Utilities.Shared.csproj" />
+		</ItemGroup>
 
 </Project>
