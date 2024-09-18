@@ -26,6 +26,9 @@ using Spd.Resource.Repository.Alias;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Spd.Resource.Repository.BizContact;
+using Microsoft.Dynamics.CRM;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -39,6 +42,7 @@ internal class ControllingMemberCrcAppManager :
 {
     private readonly IControllingMemberCrcRepository _controllingMemberCrcRepository;
     private readonly IControllingMemberInviteRepository _cmInviteRepository;
+    private readonly IBizContactRepository _bizContactRepository;
     private readonly IContactRepository _contactRepository;
     private readonly ITaskRepository _taskRepository;
 
@@ -49,6 +53,7 @@ internal class ControllingMemberCrcAppManager :
         IMainFileStorageService mainFileService,
         ITransientFileStorageService transientFileService,
         IControllingMemberCrcRepository controllingMemberCrcRepository,
+        IBizContactRepository bizContactRepository,
         IControllingMemberInviteRepository cmInviteRepository,
         IContactRepository contactRepository,
         ITaskRepository taskRepository,
@@ -65,6 +70,7 @@ internal class ControllingMemberCrcAppManager :
         _cmInviteRepository = cmInviteRepository;
         _contactRepository = contactRepository;
         _taskRepository = taskRepository;
+        _bizContactRepository = bizContactRepository;
     }
     public async Task<ControllingMemberCrcAppResponse> Handle(GetControllingMemberCrcApplicationQuery query, CancellationToken ct)
     {
@@ -77,9 +83,10 @@ internal class ControllingMemberCrcAppManager :
     }
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppUpdateCommand cmd, CancellationToken ct)
     {
+        await ValidateInviteIdAsync(cmd.ControllingMemberCrcAppRequest.InviteId,
+            cmd.ControllingMemberCrcAppRequest.BizContactId,
+            ct);
         ControllingMemberCrcAppUpdateRequest request = cmd.ControllingMemberCrcAppRequest;
-        if (cmd.ControllingMemberCrcAppRequest.ApplicationTypeCode != ApplicationTypeCode.Update)
-            throw new ArgumentException("should be a update request");
 
         var existingFiles = await GetExistingFileInfo(cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, cmd.ControllingMemberCrcAppRequest.PreviousDocumentIds, ct);
         //check validation
@@ -87,34 +94,48 @@ internal class ControllingMemberCrcAppManager :
             cmd.LicAppFileInfos.ToList(),
             existingFiles,
             ct);
-        SaveControllingMemberCrcAppCmd saveCmd = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
-        saveCmd.IsPartialSaving = false;
-        ControllingMemberCrcApplicationResp originalApp =
-            await _controllingMemberCrcRepository.GetCrcApplicationAsync((Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId, ct);
+        ContactResp? contact = await _contactRepository.GetAsync((Guid)request.ApplicantId, ct);
+        if (contact == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Applicant info not found");
 
-        ChangeSpec changes = await AddDynamicTasks(originalApp, request, cmd.LicAppFileInfos, ct);
+        BizContactResp? bizContact = await _bizContactRepository.GetBizContactAsync((Guid)request.BizContactId, ct);
+        if (bizContact == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Business Contact not found");
+        LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry()
+        {
+            AccountId = bizContact.BizId,
+            Type = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+        }, ct);
 
-        //update application
-        var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(saveCmd, ct);
+        LicenceResp? bizLicence = licences?.Items?.SingleOrDefault();
+        if (bizLicence == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Business Licence not found");
 
-        //update contact directly
-        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
-        updateCmd.Id = originalApp.ContactId ?? Guid.Empty;
-        await _contactRepository.ManageAsync(updateCmd, ct);
+        ChangeSpec changes = await AddDynamicTasks(contact, request, bizContact, bizLicence, cmd.LicAppFileInfos, ct);
+
+        //update applicant
+        await UpdateApplicantProfile(request, contact, ct);
 
         await UploadNewDocsAsync(request.DocumentExpiredInfos,
             cmd.LicAppFileInfos,
-            response.ControllingMemberAppId,
-            response.ContactId,
+            //set link to applicant only, application Id should be null
+            null,
+            request.ApplicantId,
             changes.PeaceOfficerStatusChangeTaskId,
             changes.MentalHealthStatusChangeTaskId,
-            null,
+            changes.CriminalHistoryStatusChangeTaskId,
             null,
             null,
             ct);
-        await _licAppRepository.CommitLicenceApplicationAsync(response.ControllingMemberAppId, ApplicationStatusEnum.Submitted, null, ct);
-        return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
+
+        //deactivate invite
+        await DeactiveInviteAsync(cmd.ControllingMemberCrcAppRequest.InviteId, ct);
+        return new ControllingMemberCrcAppCommandResponse()
+        {
+            ControllingMemberAppId = (Guid)cmd.ControllingMemberCrcAppRequest.ControllingMemberAppId
+        };
     }
+
     #region anonymous new
     public async Task<ControllingMemberCrcAppCommandResponse> Handle(ControllingMemberCrcAppNewCommand cmd, CancellationToken ct)
     {
@@ -174,6 +195,23 @@ internal class ControllingMemberCrcAppManager :
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
     #endregion
+    private async Task UpdateApplicantProfile(ControllingMemberCrcAppUpdateRequest request, ContactResp contact, CancellationToken ct)
+    {
+        UpdateContactCmd updateCmd = _mapper.Map<UpdateContactCmd>(request);
+        updateCmd.Id = (Guid)request.ApplicantId;
+
+        //once they have submitted they have Criminal histroy or mental health condition, we won't change the flags back to false
+        if (contact.HasCriminalHistory == true)
+            updateCmd.HasCriminalHistory = true;
+        if (contact.IsTreatedForMHC == true)
+            updateCmd.IsTreatedForMHC = true;
+
+        //concat new crminal history detail with old ones.
+        if (request.HasNewCriminalRecordCharge == true && !string.IsNullOrEmpty(contact.CriminalChargeDescription) && !string.IsNullOrEmpty(request.CriminalHistoryDetail))
+            updateCmd.CriminalChargeDescription = $"{contact.CriminalChargeDescription}\n\n*Updated at: {DateTime.Now}\n{request.CriminalHistoryDetail}";
+
+        await _contactRepository.ManageAsync(updateCmd, ct);
+    }
     private static void ValidateFilesForNewApp(ControllingMemberCrcAppNewCommand cmd)
     {
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
@@ -274,44 +312,88 @@ internal class ControllingMemberCrcAppManager :
                 }, ct);
         }
     }
-    private async Task<ChangeSpec> AddDynamicTasks(ControllingMemberCrcApplicationResp originalApp,
-        ControllingMemberCrcAppUpdateRequest newRequest,
-        IEnumerable<LicAppFileInfo> newFileInfos,
-        CancellationToken ct)
+    private async Task<ChangeSpec> AddDynamicTasks(ContactResp originalApplicant,
+    ControllingMemberCrcAppUpdateRequest newRequest,
+    BizContactResp bizContact,
+    LicenceResp bizLicence,
+    IEnumerable<LicAppFileInfo> newFileInfos,
+    CancellationToken ct)
     {
         ChangeSpec changes = new();
+        StringBuilder descriptionBuilder = new();
+        List<string> fileNames = new List<string>();
 
-        //MentalHealthStatusChanged: Treated for Mental Health Condition, create task, assign to Licensing RA Coordinator team
+
+        // Collect file names for attachments
+        fileNames.AddRange(newFileInfos
+            .Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict ||
+                        d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition)
+            .Select(d => d.FileName));
+
+        bool hasChanges = false;
+
+        // Check PeaceOfficerStatusChanged
+        PoliceOfficerRoleCode? originalRoleCode = originalApplicant.PoliceOfficerRoleCode == null ? null
+            : Enum.Parse<PoliceOfficerRoleCode>(originalApplicant.PoliceOfficerRoleCode.ToString());
+
+        if (newRequest.IsPoliceOrPeaceOfficer != originalApplicant.IsPoliceOrPeaceOfficer ||
+            newRequest.PoliceOfficerRoleCode != originalRoleCode ||
+            newRequest.OtherOfficerRole != originalApplicant.OtherOfficerRole ||
+            newFileInfos.Any(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict))
+        {
+            descriptionBuilder.AppendLine("* Peace Officer Status");
+            changes.PeaceOfficerStatusChanged = true;
+            hasChanges = true;
+        }
+
+        // Check MentalHealthStatusChanged
         if (newRequest.HasNewMentalHealthCondition == true)
         {
+            descriptionBuilder.AppendLine("* Mental Health");
             changes.MentalHealthStatusChanged = true;
-            IEnumerable<string> fileNames = newFileInfos.Where(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition).Select(d => d.FileName);
-            changes.MentalHealthStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = $"Please see the attached mental health condition form submitted by the controlling member : {string.Join(";", fileNames)}  ",
-                DueDateTime = DateTimeOffset.Now.AddDays(3),
-                Subject = $"Mental Health Condition Update on {originalApp.CaseNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.Normal,
-                RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-            }, ct)).TaskId;
+            hasChanges = true;
         }
 
-        //CriminalHistoryChanged: check if criminal charges changes or New Offence Conviction, create task, assign to Licensing RA Coordinator team
+        // Check CriminalHistoryChanged
         if (newRequest.HasNewCriminalRecordCharge == true)
         {
+            descriptionBuilder.AppendLine("* Criminal History");
             changes.CriminalHistoryChanged = true;
-            changes.CriminalHistoryStatusChangeTaskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
-            {
-                Description = $"Please see the criminal charges submitted by the licensee with details as following : {newRequest.CriminalHistoryDetail}",
-                DueDateTime = DateTimeOffset.Now.AddDays(3), //will change when dynamics agree to calculate biz days on their side.
-                Subject = $"Criminal Charges or New Conviction Update on {originalApp.CaseNumber}",
-                TaskPriorityEnum = TaskPriorityEnum.High,
-                RegardingContactId = originalApp.ContactId,
-                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
-                LicenceId = originalApp.ControllingMemberAppId
-            }, ct)).TaskId;
+            hasChanges = true;
         }
+
+        // Create a single task if there are changes
+        if (hasChanges)
+        {
+            var taskId = (await _taskRepository.ManageAsync(new CreateTaskCmd()
+            {
+                Description = $"Business have to requested to update below submitted information for its controlling member:" +
+                              $"\nControlling Member - {originalApplicant.LastName}, {originalApplicant.FirstName}" +
+                              $"\nUpdated:\n{descriptionBuilder.ToString().Trim()}" +
+                              $"{(fileNames.Any() ? $"\n\nFile Names:\n* {string.Join("\n* ", fileNames)}" : string.Empty)}",
+                DueDateTime = DateTimeOffset.Now.AddDays(3),
+                Subject = $"Updating controlling member background information for {bizLicence.LicenceNumber}",
+                TaskPriorityEnum = TaskPriorityEnum.Normal,
+                RegardingAccountId = bizContact.BizId,
+                AssignedTeamId = Guid.Parse(DynamicsConstants.Licensing_Risk_Assessment_Coordinator_Team_Guid),
+                LicenceId = bizLicence.LicenceId
+            }, ct)).TaskId;
+
+            // Assign the generated task ID to the appropriate properties
+            if (changes.PeaceOfficerStatusChanged)
+            {
+                changes.PeaceOfficerStatusChangeTaskId = taskId;
+            }
+            if (changes.MentalHealthStatusChanged)
+            {
+                changes.MentalHealthStatusChangeTaskId = taskId;
+            }
+            if (changes.CriminalHistoryChanged)
+            {
+                changes.CriminalHistoryStatusChangeTaskId = taskId;
+            }
+        }
+
         return changes;
     }
     private static void ValidateFilesForUpdateAppAsync(ControllingMemberCrcAppUpdateRequest request,
@@ -337,23 +419,6 @@ internal class ControllingMemberCrcAppManager :
             !newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.MentalHealthCondition))
         {
             throw new ApiException(HttpStatusCode.BadRequest, "Missing MentalHealthCondition file");
-        }
-
-        if (request.IsCanadianCitizen == false)
-        {
-            if (!newFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
-                !existingFileInfos.Any(f => LicenceAppDocumentManager.WorkProofCodes.Contains(f.LicenceDocumentTypeCode)))
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are not canadian.");
-            }
-        }
-        else
-        {
-            if (!newFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)) &&
-                !existingFileInfos.Any(f => LicenceAppDocumentManager.CitizenshipProofCodes.Contains(f.LicenceDocumentTypeCode)))
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Missing proven file because you are canadian.");
-            }
         }
 
         if (!newFileInfos.Any(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.ProofOfFingerprint) &&

@@ -93,6 +93,7 @@ namespace Spd.Manager.Licence
                     else
                     {
                         //contact exists
+                        //updating FirstName, LastName, MiddleName1, MiddleName2 and BirthDate from BcSc info
                         UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
                         updateContactCmd.Id = (Guid)id.ContactId;
                         updateContactCmd.IdentityId = id.Id;
