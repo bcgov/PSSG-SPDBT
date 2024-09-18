@@ -25,7 +25,7 @@ namespace Spd.Resource.Repository.ControllingMemberInvite
         {
             var invites = _dynaContext.spd_portalinvitations
                  .Where(i => i.statecode == DynamicsConstants.StateCode_Active)
-                 .Where(i => i.spd_invitationtype != null && i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC);
+                 .Where(i => i.spd_invitationtype != null && (i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRC || i.spd_invitationtype == (int)InvitationTypeOptionSet.ControllingMemberCRCUpdate));
 
             invites = invites.Where(i => i._spd_businesscontact_value == query.BizContactId);
             if (!query.IncludeInactive)
