@@ -12,4 +12,7 @@ spec:
   {{- if .Values.egress }}
   egress: {{ tpl (.Values.egress | toYaml) $ | nindent 4 }}
   {{- end }}
+  {{- if .Values.ingress }}
+  ingress: {{ tpl (.Values.ingress | toYaml) $ | nindent 4 }}
+  {{- end }}
 {{- end -}}
