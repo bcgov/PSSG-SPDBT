@@ -5,7 +5,7 @@ using Spd.Utilities.Hosting;
 
 namespace Spd.Utilities.Dynamics;
 
-public class Configurer : IConfigureComponents
+public class Configurer : IConfigureComponents, IProvideInstrumentationSources
 {
     public void Configure(ConfigurationContext configurationServices)
     {
@@ -34,4 +34,6 @@ public class Configurer : IConfigureComponents
         services.AddSingleton<IDynamicsContextFactory, DynamicsContextFactory>();
         services.AddTransient<DynamicsHealthCheck>();
     }
+
+    public InstrumentationSources GetInstrumentationSources() => new InstrumentationSources { TraceSources = [DynamicsContext.ActivitySourceName] };
 }
