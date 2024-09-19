@@ -61,6 +61,7 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 
 			<mat-step>
 				<app-step-controlling-member-residential-address
+					[isLoggedIn]="isLoggedIn"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-controlling-member-residential-address>
 
