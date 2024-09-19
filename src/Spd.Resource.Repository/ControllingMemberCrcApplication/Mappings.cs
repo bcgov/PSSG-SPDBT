@@ -88,7 +88,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_bankruptcyhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasBankruptcyHistory)))
          .ForMember(d => d.spd_bankruptcyhistorydetails, opt => opt.MapFrom(s => s.BankruptcyHistoryDetail))
          .ForMember(d => d.spd_canadiancitizen, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsCanadianCitizen)))
-         .ForMember(d => d.spd_haspreviousnames, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasPreviousNames)))
+         .ForMember(d => d.spd_haspreviousnames, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasPreviousName)))
          .ForMember(d => d.spd_hasdriverslicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasBcDriversLicence)))
          .ForMember(d => d.statecode, opt => opt.MapFrom(s => DynamicsConstants.StateCode_Active))
          .ForMember(d => d.spd_submittedon, opt => opt.Ignore())
@@ -113,7 +113,7 @@ internal class Mappings : Profile
          .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
          .ForMember(d => d.IsCanadianCitizen, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_canadiancitizen)))
          .ForMember(d => d.HasBcDriversLicence, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_hasdriverslicence)))
-         .ForMember(d => d.HasPreviousNames, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_haspreviousnames)))
+         .ForMember(d => d.HasPreviousName, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_haspreviousnames)))
          .ForMember(d => d.PoliceOfficerRoleCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetPoliceRoleEnum(s.spd_policebackgroundrole)))
          .ForMember(d => d.HasBankruptcyHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_bankruptcyhistory)))
          .ForMember(d => d.UploadedDocumentEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetUploadedDocumentEnums(s.spd_uploadeddocuments)));

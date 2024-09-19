@@ -24,7 +24,7 @@ export interface ControllingMemberCrcAppResponse {
   hasBankruptcyHistory?: boolean | null;
   hasBcDriversLicence?: boolean | null;
   hasCriminalHistory?: boolean | null;
-  hasPreviousNames?: boolean | null;
+  hasPreviousName?: boolean | null;
   isCanadianCitizen?: boolean | null;
   isPoliceOrPeaceOfficer?: boolean | null;
   isTreatedForMHC?: boolean | null;
