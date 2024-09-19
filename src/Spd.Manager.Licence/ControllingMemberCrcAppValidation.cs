@@ -89,7 +89,7 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
             .NotNull()
             .NotEmpty()
             .Must(r => r.Count() <= 3)
-            .When(r => r.HasPreviousNames == true)
+            .When(r => r.HasPreviousName == true)
             .WithMessage("No more than 3 user entered aliases are allowed");
 
         RuleForEach(r => r.Aliases)
@@ -107,7 +107,7 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
                 aliases.RuleFor(r => r.MiddleName2)
                     .MaximumLength(40);
             })
-            .When(r => r.Aliases != null && r.HasPreviousNames == true);
+            .When(r => r.Aliases != null && r.HasPreviousName == true);
 
         RuleFor(r => r.IsTreatedForMHC).NotNull();
         RuleFor(r => r.IsCanadianCitizen).NotNull();
@@ -202,7 +202,7 @@ public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<C
             .NotNull()
             .NotEmpty()
             .Must(r => r.Count() <= 3)
-            .When(r => r.HasPreviousNames == true)
+            .When(r => r.HasPreviousName == true)
             .WithMessage("No more than 3 user entered aliases are allowed");
 
         RuleForEach(r => r.Aliases)
@@ -220,7 +220,7 @@ public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<C
                 aliases.RuleFor(r => r.MiddleName2)
                     .MaximumLength(40);
             })
-            .When(r => r.Aliases != null && r.HasPreviousNames == true);
+            .When(r => r.Aliases != null && r.HasPreviousName == true);
 
         RuleFor(r => r.IsTreatedForMHC).NotNull();
         RuleFor(r => r.IsCanadianCitizen).NotNull();

@@ -25,7 +25,7 @@ export interface ControllingMemberCrcAppSubmitRequest {
   hasBankruptcyHistory?: boolean | null;
   hasBcDriversLicence?: boolean | null;
   hasCriminalHistory?: boolean | null;
-  hasPreviousNames?: boolean | null;
+  hasPreviousName?: boolean | null;
   inviteId?: string;
   isCanadianCitizen?: boolean | null;
   isPoliceOrPeaceOfficer?: boolean | null;

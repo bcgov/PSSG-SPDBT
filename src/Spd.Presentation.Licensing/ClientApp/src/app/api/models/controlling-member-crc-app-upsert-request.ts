@@ -4,6 +4,7 @@ import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { Document } from '../models/document';
+import { DocumentExpiredInfo } from '../models/document-expired-info';
 import { GenderCode } from '../models/gender-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
@@ -18,6 +19,7 @@ export interface ControllingMemberCrcAppUpsertRequest {
   controllingMemberAppId?: string | null;
   criminalHistoryDetail?: string | null;
   dateOfBirth?: string;
+  documentExpiredInfos?: Array<DocumentExpiredInfo> | null;
   documentInfos?: Array<Document> | null;
   emailAddress?: string | null;
   genderCode?: GenderCode;
@@ -25,7 +27,7 @@ export interface ControllingMemberCrcAppUpsertRequest {
   hasBankruptcyHistory?: boolean | null;
   hasBcDriversLicence?: boolean | null;
   hasCriminalHistory?: boolean | null;
-  hasPreviousNames?: boolean | null;
+  hasPreviousName?: boolean | null;
   inviteId?: string;
   isCanadianCitizen?: boolean | null;
   isPoliceOrPeaceOfficer?: boolean | null;

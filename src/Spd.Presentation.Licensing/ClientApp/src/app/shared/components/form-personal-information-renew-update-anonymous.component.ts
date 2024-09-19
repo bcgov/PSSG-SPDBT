@@ -84,10 +84,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</ng-container>
 				</div>
 			</div>
-			<div class="row mt-2" *ngIf="hasLegalNameChanged.value" @showHideTriggerSlideAnimation>
+			<div class="row mt-3" *ngIf="hasLegalNameChanged.value" @showHideTriggerSlideAnimation>
 				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
-
 					<div class="text-minor-heading mb-2">Upload your proof of legal name change</div>
 					<app-file-upload
 						(fileUploaded)="onFileUploaded($event)"

@@ -29,7 +29,7 @@ public record ControllingMemberCrcAppBase
     public GenderCode? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
-    public bool? HasPreviousNames { get; set; }
+    public bool? HasPreviousName { get; set; }
     public IEnumerable<Alias> Aliases { get; set; } = Array.Empty<Alias>();
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }

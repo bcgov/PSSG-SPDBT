@@ -184,7 +184,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 		this.authProcessService.logoutBcsc();
 
 		this.controllingMembersService
-			.createNewCrcAnonymous(this.crcInviteData!, this.applicationTypeCode)
+			.createNewOrUpdateCrcAnonymous(this.crcInviteData!, this.applicationTypeCode)
 			.pipe(
 				tap((_resp: any) => {
 					if (this.applicationTypeCode === ApplicationTypeCode.New) {

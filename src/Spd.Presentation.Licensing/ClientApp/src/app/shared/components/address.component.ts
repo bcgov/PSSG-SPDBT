@@ -34,7 +34,7 @@ import { Address } from './address-autocomplete.component';
 					<section *ngIf="form.get('addressSelected')?.value">
 						<div class="row">
 							<div class="col-12">
-								<mat-divider class="mat-divider-primary mb-3" *ngIf="!isReadonly"></mat-divider>
+								<mat-divider class="mat-divider-primary my-3" *ngIf="!isReadonly"></mat-divider>
 								<div class="text-minor-heading mb-2" *ngIf="isWizardStep">Address information</div>
 								<mat-form-field>
 									<mat-label>Street Address 1</mat-label>

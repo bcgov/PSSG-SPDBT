@@ -167,13 +167,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
 
-						const membersWithoutSwlAndWithEmail = membersWithoutSwl.filter((item: any) => !!item.emailAddress);
-
 						isControllingMembersWithoutSwlComplete =
-							membersWithoutSwlAndWithEmail?.length > 0
-								? membersWithoutSwlAndWithEmail.findIndex(
+							membersWithoutSwl?.length > 0
+								? membersWithoutSwl.findIndex(
 										(item: NonSwlContactInfo) =>
-											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.CompletedCleared
+											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.AwaitingPayment
 								  ) < 0
 								: true;
 					}
@@ -514,6 +512,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			statusCode === ApplicationPortalStatusCode.CompletedCleared
 				? ControllingMemberAppInviteTypeCode.Update
 				: ControllingMemberAppInviteTypeCode.New;
+
+		// TODO which statuses should be looked at?
 
 		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
 			bizContactId,

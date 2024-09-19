@@ -23,7 +23,7 @@ public record ControllingMemberCrcApplication
     public GenderEnum? GenderCode { get; set; }
     public string? PhoneNumber { get; set; }
     public string? EmailAddress { get; set; }
-    public bool? HasPreviousNames { get; set; }
+    public bool? HasPreviousName { get; set; }
     public IEnumerable<AliasResp> Aliases { get; set; }
     public bool? HasBcDriversLicence { get; set; }
     public string? BcDriversLicenceNumber { get; set; }
