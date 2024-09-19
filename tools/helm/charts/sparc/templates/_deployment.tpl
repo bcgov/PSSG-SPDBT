@@ -33,17 +33,17 @@ spec:
         {{- if gt (len .Values.env) 0 }}
         checksum/configmap: {{ .Values.env | toYaml | sha256sum }}
         {{- end }}
-        {{- if (.Values.files).files }}
-        {{- range $file :=.Values.files.files }}
-        checksum/{{ base $file | replace "." "-" }}: {{ $.Files.Get $file | toYaml | sha256sum }}
+        {{- if gt (len .Values.files) 0 }}
+        {{- range $src, $dst :=.Values.files }}
+        checksum/{{ base $dst | replace "." "-" }}: {{ $.Files.Get $src | toYaml | sha256sum }}
         {{- end -}}
         {{- end }}
         {{- if gt (len .Values.secrets) 0 }}
         checksum/secret: {{ .Values.secrets | toYaml | sha256sum }}
         {{- end }}
-        {{- if (.Values.secretFiles).files }}
-        {{- range $file :=.Values.secretFiles.files }}
-        checksum/{{ base $file | replace "." "-" }}: {{ $.Files.Get $file | toYaml | sha256sum }}
+        {{- if gt (len .Values.secretFiles) 0 }}
+        {{- range $src, $dst :=.Values.secretFiles }}
+        checksum/{{ base $dst | replace "." "-" }}: {{ $.Files.Get $src | toYaml | sha256sum }}
         {{- end -}}
         {{- end }}
       {{- end }}
@@ -75,20 +75,22 @@ spec:
             {{- end }}
           {{- end }}
 
-          {{- if (or $.Values.volumes (or ($.Values.files).files ($.Values.secretFiles).files)) }}
+          {{- if or $.Values.volumeMounts (or $.Values.files $.Values.secretFiles) }}
           volumeMounts:
             {{- if .Values.volumeMounts }}
             {{ .Values.volumeMounts | toYaml | nindent 12 }}
             {{- end -}}
-            {{- if (.Values.files).files }}
-            - name: {{ $.name}}-files
-              mountPath: {{ .Values.files.mountPath }}
-            {{- end -}}
-            {{- if (.Values.secretFiles).files }}
-            - name: {{ $.name}}-files-secret
-              mountPath: {{ .Values.secretFiles.mountPath }}
-            {{- end -}}
+            {{- range $src, $dst :=.Values.secretFiles }}
+            - name: {{ $.name}}-secret-files
+              mountPath: {{ $dst }}
+              subPath: {{ base $dst }}
             {{- end }}
+            {{- range $src, $dst :=.Values.files }}
+            - name: {{ $.name}}-files
+              mountPath: {{ $dst }}
+              subPath: {{ base $dst }}
+            {{- end -}}
+          {{- end }}
 
           {{- if .Values.port }}
           ports:
@@ -112,23 +114,18 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
 
-      {{- if (or $.Values.volumes (or ($.Values.files).files ($.Values.secretFiles).files)) }}
+      {{- if (or $.Values.volumes (or $.Values.files $.Values.secretFiles)) }}
       volumes:
         {{- if .Values.volumes -}}
         {{ tpl (.Values.volumes | toYaml) $ | nindent 8 }}
         {{- end -}}
-        {{- if (.Values.files).files }}
+        {{- if .Values.files }}
         - name: {{ $.name}}-files
           configMap:
-            name: {{ $.name}}-files-configmap
-            items:
-            {{- range $key, $value :=.Values.files.files }}
-            - key: {{ $key }}
-              path: {{ $key }}
-            {{- end }}
+            name: {{ $.name}}-files-configmap              
         {{- end -}}
-        {{- if (.Values.secretFiles).files }}
-        - name: {{ $.name}}-files-secret
+        {{- if .Values.secretFiles }}
+        - name: {{ $.name}}-secret-files
           secret:
             secretName: {{ $.name}}-files-secret
         {{- end -}}

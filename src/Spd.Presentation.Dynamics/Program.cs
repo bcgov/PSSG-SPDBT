@@ -6,18 +6,17 @@ using System.Security.Principal;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+var assemblies = ReflectionExtensions.DiscoverLocalAessemblies(prefix: "Spd.");
 
 var secretsFilePath = builder.Configuration.GetValue<string>("SECRETS_FILE");
 if (!string.IsNullOrEmpty(secretsFilePath)) builder.Configuration.AddJsonFile(secretsFilePath, true, true);
 
-var logger = builder.ConfigureWebApplicationObservability();
+var logger = builder.ConfigureWebApplicationObservability(assemblies);
 
 logger.Information("Starting up");
 
 try
 {
-    var assemblies = ReflectionExtensions.DiscoverLocalAessemblies(prefix: "Spd.");
-
     builder.Services.ConfigureCors(builder.Configuration);
     var assemblyName = $"{typeof(Program).Assembly.GetName().Name}";
 

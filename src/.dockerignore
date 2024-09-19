@@ -1,9 +1,10 @@
 # directories
-**/bin/
-**/obj/
-**/out/
-**/node_modules/
-**/.angular/
+**/bin
+**/obj
+**/out
+**/node_modules
+**/.angular
+**/.vs
 
 # files
 *[Dd]ockerfile*
