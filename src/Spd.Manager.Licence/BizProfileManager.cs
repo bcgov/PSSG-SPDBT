@@ -59,7 +59,7 @@ public class BizProfileManager :
             _logger.LogError("Cannot get the business information from BCeID web service.");
 
         IdentityQueryResult idResult = await _idRepository.Query(
-            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, IdentityProviderTypeEnum.BusinessBceId),
+            new IdentityQry(cmd.BceidIdentityInfo.UserGuid.ToString(), cmd.BceidIdentityInfo.BizGuid, null),
             ct);
         if (idResult != null && idResult.Items.Any())
             currentUserIdentity = idResult.Items.FirstOrDefault();
