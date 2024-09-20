@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BooleanTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -126,7 +126,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 		`,
 	],
 })
-export class SaConsentToCrcComponent implements CrcFormStepComponent {
+export class SaConsentToCrcComponent implements OnInit, CrcFormStepComponent {
 	matcher = new FormErrorStateMatcher();
 
 	private _orgData!: AppInviteOrgData | null;
