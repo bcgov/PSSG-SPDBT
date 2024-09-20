@@ -131,7 +131,9 @@ export class SaStepTermsAndCondComponent {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
 
-		if (this.orgData?.isCrrpa) {
+		if (!this.orgData) return;
+
+		if (this.orgData.isCrrpa) {
 			const declarationData = this.declarationComponent.getDataToSave();
 			if (declarationData.agreeToShareCrc) {
 				this.orgData.performPaymentProcess = false;
@@ -139,10 +141,13 @@ export class SaStepTermsAndCondComponent {
 			} else {
 				// SPDBT-2938 - Volunteer Service Requiring Payment - Add check for service type
 				this.orgData.performPaymentProcess =
-					this.orgData?.payeeType == PayerPreferenceTypeCode.Applicant &&
-					this.orgData?.serviceType != ServiceTypeCode.CrrpVolunteer;
+					this.orgData.payeeType == PayerPreferenceTypeCode.Applicant &&
+					this.orgData.serviceType != ServiceTypeCode.CrrpVolunteer;
 				this.agreeToShareCrc = false;
 			}
+		} else {
+			// SPDBT-2949 - Allow PSSO to pay when payeeType is Applicant
+			this.orgData.performPaymentProcess = this.orgData.payeeType == PayerPreferenceTypeCode.Applicant;
 		}
 
 		this.childstepper.next();

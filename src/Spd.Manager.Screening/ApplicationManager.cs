@@ -155,9 +155,8 @@ namespace Spd.Manager.Screening
                     }, ct);
             }
 
-            //update status : if psso or volunteer, go directly to submitted
-            if ((request.ParentOrgId == SpdConstants.BcGovOrgId || request.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
-                && request.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+            //update status 
+            if (IfSubmittedDirectly(request.ApplicationCreateRequest.ServiceType, request.ApplicationCreateRequest.PayeeType, request.ApplicationCreateRequest.HaveVerifiedIdentity ?? false))
             {
                 await _applicationRepository.UpdateAsync(
                     new UpdateCmd()
@@ -228,7 +227,7 @@ namespace Spd.Manager.Screening
 
         public async Task<Unit> Handle(VerifyIdentityCommand request, CancellationToken ct)
         {
-            OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(request.OrgId), ct);
+            ApplicationResult app = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
             UpdateCmd updateCmd = new()
             {
                 OrgId = request.OrgId,
@@ -242,18 +241,14 @@ namespace Spd.Manager.Screening
             }
             else
             {
-                //if org is psso or if org is volunteer crrp, set application status to submitted.
-                if (org.OrgResult.ParentOrgId == SpdConstants.BcGovOrgId ||
-                    org.OrgResult.Id == SpdConstants.BcGovOrgId ||
-                    org.OrgResult.ServiceTypes.Any(t => t == ServiceTypeEnum.CRRP_VOLUNTEER || t == ServiceTypeEnum.PSSO || t == ServiceTypeEnum.PSSO_VS || t == ServiceTypeEnum.MCFD || t == ServiceTypeEnum.PE_CRC || t == ServiceTypeEnum.PE_CRC_VS)) //is PSSO
+                Shared.PayerPreferenceTypeCode? payerPreference = app.PayeeType == null ? null : Enum.Parse<Shared.PayerPreferenceTypeCode>(app.PayeeType.Value.ToString());
+                if (IfSubmittedDirectly(Enum.Parse<ServiceTypeCode>(app.ServiceType.Value.ToString()), payerPreference, true))
                 {
                     updateCmd.Status = ApplicationStatusEnum.Submitted;
                 }
                 else
                 {
-                    //if org is non-volunteer crrp
-                    ApplicationResult result = await _applicationRepository.QueryApplicationAsync(new ApplicationQry(request.ApplicationId), ct);
-                    if (result.PaidOn != null) //already paid
+                    if (app.PaidOn != null) //already paid
                         updateCmd.Status = ApplicationStatusEnum.Submitted;
                     else //not paid
                         updateCmd.Status = ApplicationStatusEnum.PaymentPending;
@@ -447,9 +442,8 @@ namespace Spd.Manager.Screening
                     result.CreateSuccess = true;
                 }
 
-                //update status : if psso or volunteer, go directly to submitted
-                if ((cmd.ParentOrgId == SpdConstants.BcGovOrgId || command.ApplicationCreateRequest.ServiceType == ServiceTypeCode.CRRP_VOLUNTEER)
-                    && command.ApplicationCreateRequest.HaveVerifiedIdentity == true)
+                //update status 
+                if (IfSubmittedDirectly(command.ApplicationCreateRequest.ServiceType, command.ApplicationCreateRequest.PayeeType, command.ApplicationCreateRequest.HaveVerifiedIdentity ?? false))
                 {
                     await _applicationRepository.UpdateAsync(
                         new UpdateCmd()
@@ -619,5 +613,26 @@ namespace Spd.Manager.Screening
             return new FileResponse();
         }
         #endregion
+
+        private static bool IfSubmittedDirectly(ServiceTypeCode serviceType, Shared.PayerPreferenceTypeCode? payerPreference, bool IdentityVerified)
+        {
+            bool noNeedToPay = false;
+            if (serviceType == ServiceTypeCode.CRRP_VOLUNTEER) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.PSSO) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.MCFD) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.PSSO_VS) noNeedToPay = true;
+            if (serviceType == ServiceTypeCode.PE_CRC || serviceType == ServiceTypeCode.PE_CRC_VS)
+            {
+                if (payerPreference == Shared.PayerPreferenceTypeCode.Organization || payerPreference == null) noNeedToPay = true;
+                else noNeedToPay = false;
+            }
+            if (serviceType == ServiceTypeCode.CRRP_EMPLOYEE) noNeedToPay = false;
+            if (noNeedToPay)
+            {
+                if (IdentityVerified) return true;
+            }
+
+            return false;
+        }
     }
 }

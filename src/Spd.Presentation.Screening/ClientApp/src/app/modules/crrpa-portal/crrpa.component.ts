@@ -179,6 +179,8 @@ export class CrrpaComponent implements OnInit {
 			});
 
 			orgData.isCrrpa = true;
+			orgData.notPssoOrPecrc = true;
+			orgData.bcGovEmployeeIdShow = false;
 			orgData.performPaymentProcess = false; //default
 			orgData.readonlyTombstone = false; // default
 		}
