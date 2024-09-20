@@ -23,7 +23,7 @@ import { PayerPreferenceTypeCode } from 'src/app/api/models';
 								<a href="https://id.gov.bc.ca/account/setup-instruction" target="_blank">set it up now</a> and return to
 								this application when you have completed that process.
 							</li>
-							<ng-container *ngIf="isCrrpa && payeeType === payerPreferenceTypeCodes.Applicant">
+							<ng-container *ngIf="payeeType === payerPreferenceTypeCodes.Applicant">
 								<li>
 									A method of payment (Visa, Mastercard, American Express, Visa Debit, Mastercard Debit). The criminal
 									record fee is non-refundable.
@@ -47,5 +47,4 @@ export class SaChecklistComponent {
 	payerPreferenceTypeCodes = PayerPreferenceTypeCode;
 
 	@Input() payeeType: PayerPreferenceTypeCode | undefined = undefined;
-	@Input() isCrrpa = false;
 }
