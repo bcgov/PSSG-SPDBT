@@ -45,6 +45,7 @@ import { SaConsentToCrcComponent } from './components/screening-application-step
 import { SaConsentToReleaseCrrpaComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-crrpa.component';
 import { SaConsentToReleaseMcfdComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-mcfd.component';
 import { SaConsentToReleaseOfInfoComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-of-info.component';
+import { SaConsentToReleasePecrcComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-pecrc.component';
 import { SaConsentToReleasePssoaComponent } from './components/screening-application-steps/step-components/sa-consent-to-release-pssoa.component';
 import { SaContactInformationComponent } from './components/screening-application-steps/step-components/sa-contact-information.component';
 import { SaDeclarationComponent } from './components/screening-application-steps/step-components/sa-declaration.component';
@@ -90,6 +91,7 @@ const SHARED_COMPONENTS = [
 	LoginFailureComponent,
 	AlertComponent,
 	SaConsentToReleasePssoaComponent,
+	SaConsentToReleasePecrcComponent,
 	SaConsentToReleaseCrrpaComponent,
 	SaConsentToReleaseMcfdComponent,
 	StatusStatisticsCommonComponent,

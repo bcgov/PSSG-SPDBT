@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { BooleanTypeCode, ScreeningTypeCode, ServiceTypeCode } from 'src/app/api/models';
+import { BooleanTypeCode, ScreeningTypeCode } from 'src/app/api/models';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -56,7 +56,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										<mat-error *ngIf="form.get('jobTitle')?.hasError('required')">This is required</mat-error>
 									</mat-form-field>
 								</div>
-								<ng-container *ngIf="notPssoOnly">
+								<ng-container *ngIf="orgData.notPssoOrPecrc">
 									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>Vulnerable Sector Category</mat-label>
@@ -86,7 +86,6 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 	styles: [],
 })
 export class SaSecurityInformationComponent implements CrcFormStepComponent {
-	notPssoOnly = true;
 	facilityNameShow = false;
 	facilityNameRequired = false;
 	companyFacilityLabel = '';
@@ -101,8 +100,6 @@ export class SaSecurityInformationComponent implements CrcFormStepComponent {
 
 		let companyFacilityLabel = '';
 		let companyFacilityHint = '';
-
-		this.notPssoOnly = data.serviceType != ServiceTypeCode.Psso;
 
 		if (data.screeningType) {
 			if (data.isCrrpa) {

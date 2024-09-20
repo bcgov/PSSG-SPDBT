@@ -15,5 +15,6 @@ export enum ApplicationPortalStatusCode {
   ClosedNoConsent = 'ClosedNoConsent',
   CancelledByApplicant = 'CancelledByApplicant',
   CancelledByOrganization = 'CancelledByOrganization',
-  RefundRequested = 'RefundRequested'
+  RefundRequested = 'RefundRequested',
+  Completed = 'Completed'
 }

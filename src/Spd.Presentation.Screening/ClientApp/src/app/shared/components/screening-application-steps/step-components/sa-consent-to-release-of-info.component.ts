@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ServiceTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
@@ -38,6 +38,13 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 										(checkboxChanged)="onCheckboxChange()"
 									></app-sa-consent-to-release-pssoa>
 								</ng-container>
+
+								<ng-container *ngIf="isPeCrc">
+									<app-sa-consent-to-release-pecrc
+										[form]="form"
+										(checkboxChanged)="onCheckboxChange()"
+									></app-sa-consent-to-release-pecrc>
+								</ng-container>
 							</div>
 						</div>
 					</div>
@@ -73,7 +80,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 		`,
 	],
 })
-export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
+export class SaConsentToReleaseOfInfoComponent implements OnInit, CrcFormStepComponent {
 	matcher = new FormErrorStateMatcher();
 	// crrpa flow uses agreeToCriminalCheck, agreeToVulnerableSectorSearch, check1, check2, check3, check4, check5, check6
 	// pssoa flow uses agreeToCriminalCheck, check1, check2, check3
@@ -91,7 +98,7 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 			check1: new FormControl(null, [Validators.requiredTrue]),
 			check2: new FormControl(null, [Validators.requiredTrue]),
 			check3: new FormControl(null, [Validators.requiredTrue]),
-			check4: new FormControl(null, isMcfd || value?.isCrrpa ? [Validators.requiredTrue] : []),
+			check4: new FormControl(null, isMcfd || this.isPeCrc || value?.isCrrpa ? [Validators.requiredTrue] : []),
 			check5: new FormControl(null, isMcfd || value?.isCrrpa ? [Validators.requiredTrue] : []),
 			check6: new FormControl(null, value?.isCrrpa ? [Validators.requiredTrue] : []),
 			dateSigned: new FormControl(null, [Validators.required]),
@@ -138,14 +145,12 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 
 	onCheckboxChange(): void {
 		const data = this.form.value;
+		let isValid = false;
+
 		if (this.isMcfd) {
-			if (data.agreeToCriminalCheck && data.check1 && data.check2 && data.check3 && data.check4 && data.check5) {
-				this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
-			} else {
-				this.form.controls['dateSigned'].setValue('');
-			}
+			isValid = data.agreeToCriminalCheck && data.check1 && data.check2 && data.check3 && data.check4 && data.check5;
 		} else if (this.isCrrpa) {
-			if (
+			isValid =
 				data.agreeToCriminalCheck &&
 				data.agreeToVulnerableSectorSearch &&
 				data.check1 &&
@@ -153,18 +158,17 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 				data.check3 &&
 				data.check4 &&
 				data.check5 &&
-				data.check6
-			) {
-				this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
-			} else {
-				this.form.controls['dateSigned'].setValue('');
-			}
+				data.check6;
+		} else if (this.isPeCrc) {
+			isValid = data.agreeToCriminalCheck && data.check1 && data.check2 && data.check3 && data.check4;
 		} else {
-			if (data.agreeToCriminalCheck && data.check1 && data.check2 && data.check3) {
-				this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
-			} else {
-				this.form.controls['dateSigned'].setValue('');
-			}
+			isValid = data.agreeToCriminalCheck && data.check1 && data.check2 && data.check3;
+		}
+
+		if (isValid) {
+			this.form.controls['dateSigned'].setValue(this.utilService.getDateString(new Date()));
+		} else {
+			this.form.controls['dateSigned'].setValue('');
 		}
 	}
 
@@ -177,9 +181,12 @@ export class SaConsentToReleaseOfInfoComponent implements CrcFormStepComponent {
 		return this.orgData?.serviceType === ServiceTypeCode.Mcfd;
 	}
 	get isCrrpa(): boolean {
-		return !this.isMcfd && this.orgData!.isCrrpa;
+		return !this.isMcfd && !this.isPeCrc && this.orgData!.isCrrpa;
 	}
 	get isPssoa(): boolean {
-		return !this.isMcfd && !this.orgData!.isCrrpa;
+		return !this.isMcfd && !this.isPeCrc && !this.orgData!.isCrrpa;
+	}
+	get isPeCrc(): boolean {
+		return this.orgData?.serviceType === ServiceTypeCode.PeCrc || this.orgData?.serviceType === ServiceTypeCode.PeCrcVs;
 	}
 }
