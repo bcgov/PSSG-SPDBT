@@ -10,6 +10,10 @@ import { PaymentLinkCreateRequest } from '../../models/payment-link-create-reque
 import { PaymentLinkResponse } from '../../models/payment-link-response';
 
 export interface ApiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost$Params {
+
+/**
+ * organization id
+ */
   orgId: string;
   applicationId: string;
   

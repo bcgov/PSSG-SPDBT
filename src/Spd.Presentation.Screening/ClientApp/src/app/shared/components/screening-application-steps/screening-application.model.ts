@@ -14,6 +14,8 @@ export interface AppInviteOrgData extends ApplicantAppCreateRequest {
 	orgAddress?: string | null; // for display
 	readonlyTombstone?: boolean | null; // logic for screens - SPDBT-1272
 	isCrrpa: boolean;
+	notPssoOrPecrc: boolean;
+	bcGovEmployeeIdShow: boolean;
 	performPaymentProcess?: boolean | null;
 	previousNameFlag?: boolean | null;
 	shareableCrcExists?: boolean | null;
