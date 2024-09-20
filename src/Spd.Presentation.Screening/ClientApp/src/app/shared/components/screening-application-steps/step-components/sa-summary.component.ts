@@ -115,7 +115,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 								</div>
 							</div>
 
-							<div class="row mb-2" *ngIf="!orgData.isCrrpa">
+							<div class="row mb-2" *ngIf="orgData.bcGovEmployeeIdShow">
 								<div class="offset-xl-3 col-xl-4 offset-lg-4 col-lg-4 col-md-12">
 									<div class="text-label d-block">BC Government Employee ID</div>
 									<div class="text-data">{{ orgData.employeeId | default }}</div>
