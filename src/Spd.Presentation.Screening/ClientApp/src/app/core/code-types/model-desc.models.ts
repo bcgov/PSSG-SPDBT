@@ -144,6 +144,7 @@ export const ApplicationPortalStatusTypes: SelectOptions[] = [
 		extra: 'The application is in risk assessment',
 	},
 	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete, extra: 'Incomplete application received' },
+	{ desc: 'Completed', code: ApplicationPortalStatusCode.Completed },
 	{
 		desc: 'Completed - Cleared',
 		code: ApplicationPortalStatusCode.CompletedCleared,

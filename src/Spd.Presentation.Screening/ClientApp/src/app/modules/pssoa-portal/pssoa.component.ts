@@ -5,8 +5,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs';
-import { ApplicantAppCreateRequest, ApplicationCreateResponse } from 'src/app/api/models';
-import { ApplicantService } from 'src/app/api/services';
+import {
+	ApplicantAppCreateRequest,
+	ApplicationCreateResponse,
+	PaymentLinkCreateRequest,
+	PaymentLinkResponse,
+	PaymentMethodCode,
+	ServiceTypeCode,
+} from 'src/app/api/models';
+import { ApplicantService, PaymentService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
@@ -144,6 +151,7 @@ export class PssoaComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private authUserService: AuthUserBcscService,
 		private applicantService: ApplicantService,
+		private paymentService: PaymentService,
 		private location: Location
 	) {}
 
@@ -170,6 +178,10 @@ export class PssoaComponent implements OnInit {
 			});
 
 			orgData.isCrrpa = false;
+			orgData.notPssoOrPecrc =
+				orgData.serviceType != ServiceTypeCode.Psso && orgData.serviceType != ServiceTypeCode.PeCrc;
+			orgData.bcGovEmployeeIdShow =
+				orgData.serviceType != ServiceTypeCode.PeCrc && orgData.serviceType != ServiceTypeCode.PeCrcVs;
 			orgData.performPaymentProcess = false; // does not apply to psso
 			orgData.readonlyTombstone = false; // default
 			orgData.shareableCrcExists = false; // does not apply to psso
@@ -338,18 +350,48 @@ export class PssoaComponent implements OnInit {
 			this.applicantService
 				.apiApplicantsScreeningsPost({ body })
 				.pipe()
-				.subscribe((_res: ApplicationCreateResponse) => {
-					this.stepper.next();
+				.subscribe((res: ApplicationCreateResponse) => {
+					if (this.orgData!.performPaymentProcess) {
+						this.payNow(res.applicationId!);
+					} else {
+						this.stepper.next();
+					}
 				});
 		} else {
 			body.haveVerifiedIdentity = false;
 			this.applicantService
 				.apiApplicantsScreeningsAnonymousPost({ body })
 				.pipe()
-				.subscribe((_res: ApplicationCreateResponse) => {
-					this.stepper.next();
+				.subscribe((res: ApplicationCreateResponse) => {
+					if (this.orgData!.performPaymentProcess) {
+						this.payNow(res.applicationId!);
+					} else {
+						this.stepper.next();
+					}
 				});
 		}
+	}
+
+	private payNow(applicationId: string): void {
+		if (this.authenticationService.isLoggedIn()) {
+			this.authProcessService.refreshToken();
+		}
+
+		const body: PaymentLinkCreateRequest = {
+			applicationId: applicationId,
+			paymentMethod: PaymentMethodCode.CreditCard,
+			description: 'Payment for Invitation',
+		};
+		this.paymentService
+			.apiCrrpaPaymentLinkPost({
+				body,
+			})
+			.pipe()
+			.subscribe((res: PaymentLinkResponse) => {
+				if (res.paymentLinkUrl) {
+					window.location.assign(res.paymentLinkUrl);
+				}
+			});
 	}
 
 	private assignApplicantUserInfoData(orgData: AppInviteOrgData | null): void {

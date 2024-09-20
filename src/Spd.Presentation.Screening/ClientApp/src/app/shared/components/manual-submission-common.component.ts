@@ -16,7 +16,13 @@ import {
 import { ApplicationService } from 'src/app/api/services';
 import { AppRoutes } from 'src/app/app-routing.module';
 import { ApplicationOriginTypeCode } from 'src/app/core/code-types/application-origin-type.model';
-import { GenderTypes, ScreeningTypes, SelectOptions, ServiceTypes } from 'src/app/core/code-types/model-desc.models';
+import {
+	GenderTypes,
+	PayerPreferenceTypes,
+	ScreeningTypes,
+	SelectOptions,
+	ServiceTypes,
+} from 'src/app/core/code-types/model-desc.models';
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
@@ -232,12 +238,28 @@ export interface ManualSubmissionBody {
 						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showServiceType">
 							<mat-form-field>
 								<mat-label>Service Type</mat-label>
-								<mat-select formControlName="serviceType" [errorStateMatcher]="matcher">
+								<mat-select
+									formControlName="serviceType"
+									(selectionChange)="onChangeServiceType($event)"
+									[errorStateMatcher]="matcher"
+								>
 									<mat-option *ngFor="let srv of serviceTypes" [value]="srv.code">
 										{{ srv.desc }}
 									</mat-option>
 								</mat-select>
 								<mat-error *ngIf="form.get('serviceType')?.hasError('required')">This is required</mat-error>
+							</mat-form-field>
+						</div>
+
+						<div class="col-xl-3 col-lg-6 col-md-12" *ngIf="showPaidBy">
+							<mat-form-field>
+								<mat-label>Paid by</mat-label>
+								<mat-select formControlName="payeeType" [errorStateMatcher]="matcher">
+									<mat-option *ngFor="let payer of payerPreferenceTypes" [value]="payer.code">
+										{{ payer.desc }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="form.get('payeeType')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -497,8 +519,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 	showScreeningType = false;
 	screeningTypes = ScreeningTypes;
 	screeningTypeCodes = ScreeningTypeCode;
+	payerPreferenceTypes = PayerPreferenceTypes;
 
 	showServiceType = false;
+	showPaidBy = false;
 	serviceTypeDefault: ServiceTypeCode | null = null;
 	serviceTypes: null | SelectOptions[] = [];
 
@@ -523,6 +547,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			jobTitle: new FormControl('', [FormControlValidators.required]),
 			screeningType: new FormControl(''),
 			serviceType: new FormControl(this.serviceTypeDefault),
+			payeeType: new FormControl(''),
 			contractedCompanyName: new FormControl(''),
 			employeeId: new FormControl(''),
 			orgId: new FormControl(null),
@@ -543,6 +568,9 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			validators: [
 				FormGroupValidators.conditionalRequiredValidator('screeningType', (_form) => this.showScreeningType ?? false),
 				FormGroupValidators.conditionalRequiredValidator('serviceType', (_form) => this.showServiceType ?? false),
+				FormGroupValidators.conditionalRequiredValidator('payeeType', (_form) =>
+					this.isPeCrc(_form.get('serviceType')?.value ?? false)
+				),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'emailAddress',
 					(_form) => this.portal == PortalTypeCode.Crrp
@@ -634,6 +662,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	onChangeMinistry(event: MatSelectChange): void {
 		this.populateServiceTypes(event.value);
+	}
+
+	onChangeServiceType(event: MatSelectChange): void {
+		this.showPaidBy = this.isPeCrc(event.value);
 	}
 
 	onCancel(): void {
@@ -803,6 +835,10 @@ export class ManualSubmissionCommonComponent implements OnInit {
 
 	get isDisplayFacilityName(): boolean {
 		return [ScreeningTypeCode.Contractor, ScreeningTypeCode.Licensee].includes(this.screeningType.value);
+	}
+
+	private isPeCrc(serviceTypeCode: ServiceTypeCode): boolean {
+		return serviceTypeCode === ServiceTypeCode.PeCrc || serviceTypeCode === ServiceTypeCode.PeCrcVs;
 	}
 
 	private populateServiceTypes(orgId: string | null | undefined) {

@@ -17,7 +17,6 @@ import { ApplicationPortalStatisticsTypeCode } from 'src/app/core/code-types/app
 import { PortalTypeCode } from 'src/app/core/code-types/portal-type.model';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
-import { OptionsService } from 'src/app/core/services/options.service';
 import { UtilService } from 'src/app/core/services/util.service';
 import {
 	ScreeningStatusFilter,
@@ -337,8 +336,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 		private utilService: UtilService,
 		private formBuilder: FormBuilder,
 		private applicationService: ApplicationService,
-		private authUserService: AuthUserBceidService,
-		private optionsService: OptionsService
+		private authUserService: AuthUserBceidService
 	) {}
 
 	ngOnInit() {
@@ -375,6 +373,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			this.idForStatistics = this.userId;
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
+				ApplicationPortalStatusCode.AwaitingPayment,
 				ApplicationPortalStatusCode.AwaitingThirdParty,
 				ApplicationPortalStatusCode.InProgress,
 				ApplicationPortalStatusCode.UnderAssessment,
