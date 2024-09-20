@@ -19,8 +19,8 @@ metadata:
   name: {{ .name }}-files-configmap
   labels: {{ .labels | nindent 4 }}
 data:
-  {{- range $key, $value := .Values.files.files }}
-  {{ $key }}: |- {{ $.Files.Get $value | nindent 4 }}
+  {{- range $src, $dst := .Values.files }}
+  {{ base $dst }}: |- {{ $.Files.Get $src | nindent 4 }}
   {{- end -}}
 {{- end -}}
 {{- end -}}
