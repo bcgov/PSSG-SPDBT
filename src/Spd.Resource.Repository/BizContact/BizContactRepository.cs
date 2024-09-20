@@ -129,7 +129,12 @@ namespace Spd.Resource.Repository.BizContact
             spd_application? app = _context.spd_applications
                 .Expand(a => a.spd_businesscontact_spd_application)
                 .Where(x => x.spd_businesscontact_spd_application.Any(y=>y.spd_businesscontactid == cmd.BizContactId)).FirstOrDefault();
-            if (app != null)
+
+            if (app != null &&
+                (app.statuscode == (int)ApplicationStatusOptionSet.Incomplete ||
+                app.statuscode == (int)ApplicationStatusOptionSet.Draft ||
+                app.statuscode == (int)ApplicationStatusOptionSet.PaymentPending ||
+                app.statuscode == (int)ApplicationStatusOptionSet.ApplicantVerification))
             {
                 app.statecode = DynamicsConstants.StateCode_Inactive;
                 app.statuscode = (int) ApplicationStatusOptionSet.Cancelled;
