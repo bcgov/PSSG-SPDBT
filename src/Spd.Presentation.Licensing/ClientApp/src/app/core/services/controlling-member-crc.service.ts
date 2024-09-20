@@ -52,6 +52,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	controllingMembersModelFormGroup: FormGroup = this.formBuilder.group({
 		inviteId: new FormControl(),
+		applicantId: new FormControl(),
 		controllingMemberAppId: new FormControl(),
 		bizContactId: new FormControl(),
 		parentBizLicApplicationId: new FormControl(),
@@ -283,20 +284,260 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 * Create an empty anonymous crc
 	 * @returns
 	 */
-	createNewCrcAnonymous(
+	createNewOrUpdateCrcAnonymous(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
-			tap((_resp: any) => {
-				this.initialized = true;
+		if (applicationTypeCode === ApplicationTypeCode.New) {
+			return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode).pipe(
+				tap((_resp: any) => {
+					this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(
-					WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-					applicationTypeCode
+					this.commonApplicationService.setApplicationTitle(
+						WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+						applicationTypeCode
+					);
+				})
+			);
+		}
+
+		return this.applicantProfileService.apiApplicantGet().pipe(
+			switchMap((applicantProfile: ApplicantProfileResponse) => {
+				return this.getCrcEmptyAnonymous(crcInviteData, applicationTypeCode, applicantProfile).pipe(
+					tap((_resp: any) => {
+						this.initialized = true;
+
+						this.commonApplicationService.setApplicationTitle(
+							WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+							applicationTypeCode
+						);
+					})
 				);
 			})
 		);
+	}
+
+	/**
+	 * Partial Save - Save the application data as is.
+	 * @returns StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
+	 */
+	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsPost({ body }).pipe(
+			tap((resp: ControllingMemberCrcAppCommandResponse) => {
+				this.resetModelChangeFlags();
+
+				let msg = 'Your application has been saved';
+				if (isSaveAndExit) {
+					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
+				}
+				this.hotToastService.success(msg);
+
+				if (!controllingMembersModelFormValue.controllingMemberAppId) {
+					this.controllingMembersModelFormGroup.patchValue(
+						{ controllingMemberAppId: resp.controllingMemberAppId! },
+						{ emitEvent: false }
+					);
+				}
+				return resp;
+			})
+		);
+	}
+
+	/**
+	 * Submit the crc data authenticated NEW
+	 * @returns
+	 */
+	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(
+			controllingMembersModelFormValue
+		) as ControllingMemberCrcAppUpsertRequest;
+
+		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsSubmitPost$Response({ body });
+	}
+
+	/**
+	 * Submit the crc data anonymous NEW
+	 * @returns
+	 */
+	submitControllingMemberCrcNewAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+
+		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+
+		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		return this.postCrcAnonymousDocuments(googleRecaptcha, ApplicationTypeCode.New, documentsToSaveApis, body);
+	}
+
+	/**
+	 * Submit the crc data authenticated UPDATE
+	 * @returns
+	 */
+	submitControllingMemberCrcUpdateAuthenticated(): Observable<
+		StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
+	> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBaseAuthenticated(controllingMembersModelFormValue);
+
+		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		// Get the keyCode for the existing documents to save.
+		// const existingDocumentIds: Array<string> = [];
+
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAuthenticatedFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		delete body.workerLicenceTypeCode;
+		delete body.applicationTypeCode;
+		delete body.hasPreviousName;
+		delete body.aliases;
+		delete body.hasBcDriversLicence;
+		delete body.bcDriversLicenceNumber;
+		delete body.isCanadianCitizen;
+		delete body.hasBankruptcyHistory;
+		delete body.bankruptcyHistoryDetail;
+		delete body.documentInfos;
+
+		//*********************** */
+
+		if (documentsToSaveApis.length > 0) {
+			return forkJoin(documentsToSaveApis).pipe(
+				switchMap((resps: string[]) => {
+					// pass in the list of document key codes
+					body.documentKeyCodes = [...resps];
+					// pass in the list of document ids that were in the original
+					// application and are still being used
+					body.previousDocumentIds = []; // [...existingDocumentIds];
+
+					return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsUpdatePost$Response({
+						body,
+					});
+				})
+			);
+		} else {
+			// pass in the list of document ids that were in the original
+			// application and are still being used
+			body.previousDocumentIds = []; //[...existingDocumentIds];
+
+			return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsUpdatePost$Response({
+				body,
+			});
+		}
+	}
+
+	/**
+	 * Submit the crc data anonymous UPDATE
+	 * @returns
+	 */
+	submitControllingMemberCrcUpdateAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
+		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
+
+		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
+
+		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
+
+		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
+		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
+
+		const documentsToSaveApis: Observable<string>[] = [];
+		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
+			// Only pass new documents and get a keyCode for each of those.
+			const newDocumentsOnly: Array<Blob> = [];
+			docBody.documents.forEach((doc: any) => {
+				if (!doc.documentUrlId) {
+					newDocumentsOnly.push(doc);
+				}
+			});
+
+			// should always be at least one new document
+			if (newDocumentsOnly.length > 0) {
+				documentsToSaveApis.push(
+					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+						body: {
+							Documents: newDocumentsOnly,
+							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
+						},
+					})
+				);
+			}
+		});
+
+		delete body.workerLicenceTypeCode;
+		delete body.applicationTypeCode;
+		delete body.hasPreviousName;
+		delete body.aliases;
+		delete body.hasBcDriversLicence;
+		delete body.bcDriversLicenceNumber;
+		delete body.isCanadianCitizen;
+		delete body.hasBankruptcyHistory;
+		delete body.bankruptcyHistoryDetail;
+		delete body.documentInfos;
+
+		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		return this.postCrcAnonymousDocuments(googleRecaptcha, ApplicationTypeCode.Update, documentsToSaveApis, body);
 	}
 
 	private loadDraftCrcIntoModel(
@@ -477,6 +718,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
+				applicantId: crcInviteData.contactId,
 				controllingMemberAppId: crcAppl.controllingMemberAppId,
 
 				personalInformationData,
@@ -525,28 +767,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	): Observable<any> {
 		this.reset();
 
-		const personalInformationData = {
-			givenName: applicantProfile.givenName,
-			middleName1: applicantProfile.middleName1,
-			middleName2: applicantProfile.middleName2,
-			surname: applicantProfile.surname,
-			genderCode: applicantProfile.genderCode,
-			dateOfBirth: applicantProfile?.dateOfBirth,
-		};
-		const contactInformationData = {
-			emailAddress: applicantProfile.emailAddress,
-			phoneNumber: applicantProfile.phoneNumber,
-		};
-
-		const residentialAddressData = {
-			addressSelected: !!applicantProfile.residentialAddress?.addressLine1,
-			addressLine1: applicantProfile.residentialAddress?.addressLine1,
-			addressLine2: applicantProfile.residentialAddress?.addressLine2,
-			city: applicantProfile.residentialAddress?.city,
-			country: applicantProfile.residentialAddress?.country,
-			postalCode: applicantProfile.residentialAddress?.postalCode,
-			province: applicantProfile.residentialAddress?.province,
-		};
+		const personalInformationData = this.getApplicantPersonalInformationData(applicantProfile);
+		const contactInformationData = this.getApplicanContactInformationData(applicantProfile);
+		const residentialAddressData = this.getApplicantResidentialAddressData(applicantProfile);
 
 		const mentalHealthConditionsData = {
 			isTreatedForMHC: null,
@@ -563,6 +786,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
+				applicantId: crcInviteData.contactId,
 				personalInformationData,
 				contactInformationData,
 				residentialAddressData,
@@ -597,22 +821,42 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 	private getCrcEmptyAnonymous(
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
-		applicationTypeCode: ApplicationTypeCode
+		applicationTypeCode: ApplicationTypeCode,
+		applicantProfile?: ApplicantProfileResponse
 	): Observable<any> {
 		this.reset();
 
-		const personalInformationData = {
-			givenName: crcInviteData?.givenName,
-			middleName1: crcInviteData?.middleName1,
-			middleName2: crcInviteData?.middleName2,
-			surname: crcInviteData?.surname,
-			genderCode: null,
-			dateOfBirth: null,
-		};
-		const contactInformationData = {
-			emailAddress: crcInviteData?.emailAddress,
-			phoneNumber: null,
-		};
+		let personalInformationData = {};
+		let contactInformationData = {};
+		let residentialAddressData = {};
+
+		let aliasesData = {};
+
+		if (applicantProfile) {
+			personalInformationData = this.getApplicantPersonalInformationData(applicantProfile);
+			contactInformationData = this.getApplicanContactInformationData(applicantProfile);
+			residentialAddressData = this.getApplicantResidentialAddressData(applicantProfile);
+
+			aliasesData = {
+				previousNameFlag: this.utilService.booleanToBooleanType(
+					applicantProfile.aliases && applicantProfile.aliases.length > 0
+				),
+				aliases: [],
+			};
+		} else {
+			personalInformationData = {
+				givenName: crcInviteData?.givenName,
+				middleName1: crcInviteData?.middleName1,
+				middleName2: crcInviteData?.middleName2,
+				surname: crcInviteData?.surname,
+				genderCode: null,
+				dateOfBirth: null,
+			};
+			contactInformationData = {
+				emailAddress: crcInviteData?.emailAddress,
+				phoneNumber: null,
+			};
+		}
 
 		this.controllingMembersModelFormGroup.patchValue(
 			{
@@ -623,164 +867,33 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
 				inviteId: crcInviteData.inviteId,
+				applicantId: crcInviteData.contactId,
 				personalInformationData,
 				contactInformationData,
+				residentialAddressData,
+				aliasesData,
 			},
 			{
 				emitEvent: false,
 			}
 		);
 
+		if (applicantProfile) {
+			const aliasesArray = this.controllingMembersModelFormGroup.get('aliasesData.aliases') as FormArray;
+			applicantProfile.aliases?.forEach((alias: Alias) => {
+				aliasesArray.push(
+					new FormGroup({
+						id: new FormControl(alias.id),
+						givenName: new FormControl(alias.givenName),
+						middleName1: new FormControl(alias.middleName1),
+						middleName2: new FormControl(alias.middleName2),
+						surname: new FormControl(alias.surname, [FormControlValidators.required]),
+					})
+				);
+			});
+		}
+
 		return of(this.controllingMembersModelFormGroup.value);
-	}
-
-	/**
-	 * Partial Save - Save the application data as is.
-	 * @returns StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
-	 */
-	partialSaveStep(isSaveAndExit?: boolean): Observable<any> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpsertRequest;
-
-		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsPost({ body }).pipe(
-			tap((resp: ControllingMemberCrcAppCommandResponse) => {
-				this.resetModelChangeFlags();
-
-				let msg = 'Your application has been saved';
-				if (isSaveAndExit) {
-					msg = 'Your application has been saved. Please note that inactive applications will expire in 30 days';
-				}
-				this.hotToastService.success(msg);
-
-				if (!controllingMembersModelFormValue.controllingMemberAppId) {
-					this.controllingMembersModelFormGroup.patchValue(
-						{ controllingMemberAppId: resp.controllingMemberAppId! },
-						{ emitEvent: false }
-					);
-				}
-				return resp;
-			})
-		);
-	}
-
-	/**
-	 * Submit the crc data authenticated NEW
-	 * @returns
-	 */
-	submitControllingMemberCrcNewAuthenticated(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpsertRequest;
-
-		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsSubmitPost$Response({ body });
-	}
-
-	/**
-	 * Submit the crc data anonymous NEW
-	 * @returns
-	 */
-	submitControllingMemberCrcNewAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-
-		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
-		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		const documentsToSaveApis: Observable<string>[] = [];
-		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-			// Only pass new documents and get a keyCode for each of those.
-			const newDocumentsOnly: Array<Blob> = [];
-			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
-					newDocumentsOnly.push(doc);
-				}
-			});
-
-			// should always be at least one new document
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
-						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
-		});
-
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.postCrcAnonymousDocuments(googleRecaptcha, documentsToSaveApis, body);
-	}
-
-	/**
-	 * Submit the crc data authenticated UPDATE
-	 * @returns
-	 */
-	submitControllingMemberCrcUpdateAuthenticated(): Observable<
-		StrictHttpResponse<ControllingMemberCrcAppCommandResponse>
-	> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(
-			controllingMembersModelFormValue
-		) as ControllingMemberCrcAppUpdateRequest;
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsUpdatePost$Response({ body });
-	}
-
-	/**
-	 * Submit the crc data anonymous UPDATE
-	 * @returns
-	 */
-	submitControllingMemberCrcUpdatedAnonymous(): Observable<StrictHttpResponse<ControllingMemberCrcAppCommandResponse>> {
-		const controllingMembersModelFormValue = this.controllingMembersModelFormGroup.getRawValue();
-
-		const body = this.getSaveBodyBaseAnonymous(controllingMembersModelFormValue);
-		const documentsToSave = this.getDocsToSaveBlobs(body, controllingMembersModelFormValue);
-
-		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
-		body.agreeToCompleteAndAccurate = consentData.agreeToCompleteAndAccurate;
-
-		const documentsToSaveApis: Observable<string>[] = [];
-		documentsToSave.forEach((docBody: LicenceDocumentsToSave) => {
-			// Only pass new documents and get a keyCode for each of those.
-			const newDocumentsOnly: Array<Blob> = [];
-			docBody.documents.forEach((doc: any) => {
-				if (!doc.documentUrlId) {
-					newDocumentsOnly.push(doc);
-				}
-			});
-
-			// should always be at least one new document
-			if (newDocumentsOnly.length > 0) {
-				documentsToSaveApis.push(
-					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
-						body: {
-							Documents: newDocumentsOnly,
-							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
-						},
-					})
-				);
-			}
-		});
-
-		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
-		return this.postCrcAnonymousDocuments(googleRecaptcha, documentsToSaveApis, body);
 	}
 
 	/**
@@ -789,8 +902,9 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 	 */
 	private postCrcAnonymousDocuments(
 		googleRecaptcha: GoogleRecaptcha,
+		applicationTypeCode: ApplicationTypeCode,
 		documentsToSaveApis: Observable<string>[],
-		body: ControllingMemberCrcAppSubmitRequest
+		body: ControllingMemberCrcAppSubmitRequest | ControllingMemberCrcAppUpdateRequest
 	) {
 		return this.controllingMemberCrcAppService
 			.apiControllingMemberCrcApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
@@ -802,7 +916,13 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 					// pass in the list of document key codes
 					body.documentKeyCodes = [...resps];
 
-					return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousSubmitPost$Response({
+					if (applicationTypeCode === ApplicationTypeCode.New) {
+						return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousSubmitPost$Response({
+							body,
+						});
+					}
+
+					return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousUpdatePost$Response({
 						body,
 					});
 				})

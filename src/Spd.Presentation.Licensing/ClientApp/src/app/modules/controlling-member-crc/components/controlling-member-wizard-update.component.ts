@@ -46,7 +46,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 				</mat-step>
 
 				<mat-step [completed]="step2Complete">
-					<ng-template matStepLabel>Citizenship & Residency</ng-template>
+					<ng-template matStepLabel>Identification</ng-template>
 					<app-steps-controlling-member-citizenship-residency
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeUpdate"
@@ -206,7 +206,7 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 			return;
 		}
 
-		this.controllingMembersService.submitControllingMemberCrcUpdatedAnonymous().subscribe({
+		this.controllingMembersService.submitControllingMemberCrcUpdateAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
 				this.hotToastService.success('Your Criminal Record Check update has been successfully submitted');
 
