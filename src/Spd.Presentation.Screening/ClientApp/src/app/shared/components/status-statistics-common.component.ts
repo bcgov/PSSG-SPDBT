@@ -31,10 +31,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
-					<div
-						class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2"
-						*ngIf="portal === portalTypeCodes.Crrp"
-					>
+					<div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingPayment] ?? 0 }}
 						</div>
@@ -76,7 +73,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 			<div class="row fw-semibold mb-4">
 				<div class="col-10">Completed applications <span class="fw-normal">(for the last 365 days)</span></div>
 				<div class="d-flex flex-wrap justify-content-start">
-					<div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
+						*ngIf="isCrrp"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.RiskFound] ?? 0 }}
 						</div>
@@ -139,7 +139,7 @@ export class StatusStatisticsCommonComponent implements OnInit {
 	applicationStatistics!: { [key: string]: number | null };
 
 	statisticsCodes = ApplicationPortalStatisticsTypeCode;
-	portalTypeCodes = PortalTypeCode;
+	isCrrp!: boolean;
 
 	@Input() id: string | null = null; // If CRRP, id is the OrgId, else for PSSO, id is the UserId
 	@Input() portal: PortalTypeCode | null = null;
@@ -151,7 +151,9 @@ export class StatusStatisticsCommonComponent implements OnInit {
 			return;
 		}
 
-		if (this.portal == PortalTypeCode.Crrp) {
+		this.isCrrp = this.portal == PortalTypeCode.Crrp;
+
+		if (this.isCrrp) {
 			this.applicationStatistics$ = this.applicationService
 				.apiOrgsOrgIdApplicationStatisticsGet({
 					orgId: this.id,
@@ -161,7 +163,7 @@ export class StatusStatisticsCommonComponent implements OnInit {
 						this.applicationStatistics = res.statistics ?? {};
 					})
 				);
-		} else if (this.portal == PortalTypeCode.Psso) {
+		} else {
 			this.applicationStatistics$ = this.applicationService
 				.apiUsersDelegateUserIdPssoApplicationStatisticsGet({
 					delegateUserId: this.id,
