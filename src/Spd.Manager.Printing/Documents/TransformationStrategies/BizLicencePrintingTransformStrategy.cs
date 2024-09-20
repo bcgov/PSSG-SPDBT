@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Biz;
+using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
@@ -17,6 +18,7 @@ internal class BizLicencePrintingTransformStrategy(
     IServiceTypeRepository serviceTypeRepository,
     IWorkerLicenceCategoryRepository workerLicenceCategoryRepository,
     IBizRepository bizRepository,
+    IIncidentRepository incidentRepository,
     IMapper mapper)
     : BcMailPlusTransformStrategyBase<BizLicencePrintingTransformRequest, BizLicencePrintingJson>(Jobs.BusinessLicense)
 {
@@ -38,6 +40,12 @@ internal class BizLicencePrintingTransformStrategy(
 
         BizResult? biz = await bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken);
         mapper.Map(biz, bizLicJson);
+
+        //conditions
+        IncidentListResp resp = await incidentRepository.QueryAsync(
+            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
+            cancellationToken);
+        bizLicJson.Conditions = resp.Items.First().Conditions;
 
         return bizLicJson;
     }
