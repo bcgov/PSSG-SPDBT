@@ -19,8 +19,8 @@ metadata:
   name: {{ .name }}-files-secret
   labels: {{ .labels | nindent 4 }}
 data:
-  {{- range $file := .Values.secretFiles.files }}
-  {{ base $file }}: {{ ($.Files.Get $file) | b64enc | quote }}
+  {{- range $src, $dst := .Values.secretFiles }}
+  {{ base $dst }}: {{ ($.Files.Get $src) | b64enc | quote }}
   {{- end -}}
 {{- end -}}
 {{- end -}}
