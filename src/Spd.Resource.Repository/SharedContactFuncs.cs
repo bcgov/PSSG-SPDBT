@@ -172,7 +172,7 @@ internal static class SharedContactFuncs
 
     private static contact UpdateExistingContact(contact existingContact, contact newContact)
     {
-        if (newContact.address1_country != null && newContact.address1_line1 != null && newContact.address1_city != null)
+        if (!string.IsNullOrEmpty(newContact.address1_country) && !string.IsNullOrEmpty(newContact.address1_line1) && !string.IsNullOrEmpty(newContact.address1_city))
         {
             existingContact.address1_city = newContact.address1_city;
             existingContact.address1_country = newContact.address1_country;
@@ -181,8 +181,7 @@ internal static class SharedContactFuncs
             existingContact.address1_postalcode = newContact.address1_postalcode;
             existingContact.address1_stateorprovince = newContact.address1_stateorprovince;
         }
-
-        if (newContact.address2_country != null && newContact.address2_line1 != null && newContact.address2_city != null)
+        if (!string.IsNullOrEmpty(newContact.address2_country) && !string.IsNullOrEmpty(newContact.address2_line1) && !string.IsNullOrEmpty(newContact.address2_city))
         {
             existingContact.address2_city = newContact.address2_city;
             existingContact.address2_country = newContact.address2_country;
