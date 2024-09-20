@@ -82,6 +82,7 @@ internal class PortalUserRepository : IPortalUserRepository
                 spd_identityid = Guid.NewGuid(),
                 spd_orgguid = verify.OrgGuid.ToString(),
                 spd_userguid = verify.UserGuid.ToString(),
+                spd_type = (int)IdentityTypeOptionSet.BusinessBceId
             };
             _context.AddTospd_identities(identity);
         }
