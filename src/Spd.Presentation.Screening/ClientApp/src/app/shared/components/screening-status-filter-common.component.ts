@@ -107,12 +107,17 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 	}
 
 	ngOnInit(): void {
-		if (this.portal == PortalTypeCode.Psso) {
-			this.applicationPortalStatusCodes = this.utilService
-				.getCodeDescSorted('ApplicationPortalStatusTypes')
-				.filter((item) => item.code != ApplicationPortalStatusCode.AwaitingPayment);
+		const statuses = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+		if (this.portal === PortalTypeCode.Crrp) {
+			this.applicationPortalStatusCodes = statuses.filter(
+				(item: SelectOptions) => item.code != ApplicationPortalStatusCode.Completed
+			);
 		} else {
-			this.applicationPortalStatusCodes = this.utilService.getCodeDescSorted('ApplicationPortalStatusTypes');
+			this.applicationPortalStatusCodes = statuses.filter(
+				(item: SelectOptions) =>
+					item.code != ApplicationPortalStatusCode.CompletedCleared &&
+					item.code != ApplicationPortalStatusCode.RiskFound
+			);
 		}
 	}
 
