@@ -77,6 +77,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             if (bizUpsertRequest.BizId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have business");
+            bizUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             return await _mediator.Send(new BizLicAppUpsertCommand(bizUpsertRequest), ct);
         }
 
@@ -111,6 +112,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<BizLicAppCommandResponse?> ChangeOnBizLicApp(BizLicAppSubmitRequest request, CancellationToken ct)
         {
             BizLicAppCommandResponse? response = null;
+            request.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(request.DocumentKeyCodes, ct);
 
@@ -179,7 +181,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var validateResult = await _bizLicAppUpsertValidator.ValidateAsync(bizUpsertRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-
+            bizUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             var response = await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
 
             //clear the cookie for the sole proprietor swl
