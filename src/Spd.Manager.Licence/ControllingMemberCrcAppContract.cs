@@ -1,10 +1,5 @@
 ﻿using MediatR;
 using Spd.Manager.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence;
 public interface IControllingMemberCrcAppManager
@@ -20,6 +15,7 @@ public record ControllingMemberCrcAppBase
 {
     public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
+    public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.Portal;
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -44,7 +40,6 @@ public record ControllingMemberCrcAppBase
     public bool? IsTreatedForMHC { get; set; }
     public Address? ResidentialAddress { get; set; }
 }
-
 
 #region authenticated
 public record ControllingMemberCrcUpsertCommand(ControllingMemberCrcAppUpsertRequest ControllingMemberCrcAppUpsertRequest) : IRequest<ControllingMemberCrcAppCommandResponse>;
@@ -74,7 +69,7 @@ public record ControllingMemberCrcAppSubmitRequest : ControllingMemberCrcAppBase
     public Guid? ParentBizLicApplicationId { get; set; }
     public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
     public IEnumerable<DocumentExpiredInfo> DocumentExpiredInfos { get; set; } = Enumerable.Empty<DocumentExpiredInfo>();
-    
+
 };
 
 public record ControllingMemberCrcAppUpdateRequest
@@ -108,8 +103,7 @@ public record ControllingMemberCrcAppUpdateRequest
 
 }
 
-
-public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest, 
+public record ControllingMemberCrcAppNewCommand(ControllingMemberCrcAppSubmitRequest ControllingMemberCrcAppSubmitRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos) : IRequest<ControllingMemberCrcAppCommandResponse>;
 public record GetControllingMemberCrcApplicationQuery(Guid ControllingMemberApplicationId) : IRequest<ControllingMemberCrcAppResponse>;
 

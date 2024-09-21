@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Spd.Manager.Screening;
+using Spd.Manager.Shared;
 using Spd.Utilities.Dynamics;
 using Xunit.Abstractions;
 
