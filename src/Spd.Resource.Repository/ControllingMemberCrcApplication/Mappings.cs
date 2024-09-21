@@ -92,6 +92,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .ReverseMap()
          .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
+         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeCode>(s.spd_origin)))
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
          .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
          .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
