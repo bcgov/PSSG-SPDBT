@@ -145,6 +145,7 @@ internal class Mappings : Profile
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeEnum(s.spd_businesstype)))
          .ForMember(d => d.LicenceTermCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceTermEnum(s.spd_licenceterm)))
+         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeCode>(s.spd_origin)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
          .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => GetHairColorEnum(s.spd_applicanthaircolour)))
          .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => GetEyeColorEnum(s.spd_applicanteyecolour)))
