@@ -11,6 +11,8 @@ import {
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	PermitAppSubmitRequest,
+	PermitAppUpsertRequest,
+	PoliceOfficerRoleCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -243,23 +245,27 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 
 		const applicationTypeCode = applicationTypeData.applicationTypeCode;
 
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
 		const criminalChargeDescription =
-			applicationTypeCode === ApplicationTypeCode.Update &&
-			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+			applicationTypeCode === ApplicationTypeCode.Update && hasCriminalHistory
 				? criminalHistoryData.criminalChargeDescription
 				: null;
 
 		const documentKeyCodes: null | Array<string> = [];
 		const previousDocumentIds: null | Array<string> = [];
 
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const otherOfficerRole =
+			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+
 		let hasNewMentalHealthCondition: boolean | null = null;
 		let hasNewCriminalRecordCharge: boolean | null = null;
 		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-			hasNewCriminalRecordCharge = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
+			hasNewMentalHealthCondition = isTreatedForMHC;
+			hasNewCriminalRecordCharge = hasCriminalHistory;
 		}
-
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
@@ -281,15 +287,15 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 			documentKeyCodes,
 			previousDocumentIds,
 			//-----------------------------------
-			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
+			isTreatedForMHC,
+			hasNewMentalHealthCondition,
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: isPoliceOrPeaceOfficer,
-			policeOfficerRoleCode: isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null,
-			otherOfficerRole: isPoliceOrPeaceOfficer ? policeBackgroundData.otherOfficerRole : null,
+			isPoliceOrPeaceOfficer,
+			policeOfficerRoleCode,
+			otherOfficerRole,
 			//-----------------------------------
-			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
+			hasCriminalHistory,
+			hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
@@ -394,32 +400,49 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		// so just return the existing documents on the profile
 		const documents: Array<string> = [];
 
-		const policeBackgroundData = permitModelFormValue.policeBackgroundData;
 		const mentalHealthConditionsData = permitModelFormValue.mentalHealthConditionsData;
+		const policeBackgroundData = permitModelFormValue.policeBackgroundData;
 
-		policeBackgroundData.attachments.forEach((doc: SpdFile) => {
-			documents.push(doc.documentUrlId!);
-		});
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 
-		mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
-			documents.push(doc.documentUrlId!);
-		});
+		if (isPoliceOrPeaceOfficer && policeBackgroundData.attachments) {
+			policeBackgroundData.attachments.forEach((doc: SpdFile) => {
+				documents.push(doc.documentUrlId!);
+			});
+		}
+
+		if (isTreatedForMHC && mentalHealthConditionsData.attachments) {
+			mentalHealthConditionsData.attachments.forEach((doc: SpdFile) => {
+				documents.push(doc.documentUrlId!);
+			});
+		}
 
 		return documents;
 	}
 
-	getSaveBodyBaseAuthenticated(permitModelFormValue: any): PermitAppSubmitRequest {
+	getSaveBodyBaseSubmitAuthenticated(permitModelFormValue: any): PermitAppSubmitRequest {
 		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
-		console.debug('[getSaveBodyBaseAuthenticated] baseData', baseData);
+		console.debug('[getSaveBodyBaseSubmitAuthenticated] baseData', baseData);
 
+		const returnBody: PermitAppSubmitRequest = baseData;
 		return baseData;
 	}
 
-	getSaveBodyBaseAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
-		const baseData = this.getSaveBodyBase(permitModelFormValue, false);
-		console.debug('[getSaveBodyBaseAnonymous] baseData', baseData);
+	getSaveBodyBaseUpsertAuthenticated(permitModelFormValue: any): PermitAppUpsertRequest {
+		const baseData = this.getSaveBodyBase(permitModelFormValue, true);
+		console.debug('[getSaveBodyBaseUpsertAuthenticated] baseData', baseData);
 
-		return baseData;
+		const returnBody: PermitAppUpsertRequest = baseData;
+		return returnBody;
+	}
+
+	getSaveBodyBaseSubmitAnonymous(permitModelFormValue: any): PermitAppSubmitRequest {
+		const baseData = this.getSaveBodyBase(permitModelFormValue, false);
+		console.debug('[getSaveBodyBaseSubmitAnonymous] baseData', baseData);
+
+		const returnBody: PermitAppSubmitRequest = baseData;
+		return returnBody;
 	}
 
 	/**
@@ -657,14 +680,25 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 					? bcDriversLicenceData.bcDriversLicenceNumber
 					: null,
 			//-----------------------------------
-			...contactInformationData,
-			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
 			//-----------------------------------
-			...characteristicsData,
+			hairColourCode: characteristicsData.hairColourCode,
+			eyeColourCode: characteristicsData.eyeColourCode,
+			height: characteristicsData.height,
+			heightUnitCode: characteristicsData.heightUnitCode,
+			heightInches: characteristicsData.heightInches,
+			weight: characteristicsData.weight,
+			weightUnitCode: characteristicsData.weightUnitCode,
 			//-----------------------------------
-			...personalInformationData,
+			givenName: personalInformationData.givenName,
+			surname: personalInformationData.surname,
+			middleName1: personalInformationData.middleName1,
+			middleName2: personalInformationData.middleName2,
+			dateOfBirth: personalInformationData.dateOfBirth,
+			emailAddress: contactInformationData.emailAddress,
+			phoneNumber: contactInformationData.phoneNumber,
+			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
 			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
 			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
@@ -693,7 +727,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 			permitOtherRequiredReason,
 			//-----------------------------------
 			documentExpiredInfos: [...documentExpiredInfos],
-			documentInfos: [...documentInfos],
+			documentInfos: isAuthenticated ? [...documentInfos] : undefined,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);

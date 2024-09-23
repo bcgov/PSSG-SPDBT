@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
 import { ContactInfo } from '../models/contact-info';
@@ -12,6 +13,7 @@ export interface BizLicAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
   applicantIsBizManager?: boolean | null;
+  applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: string;
   bizTypeCode?: BizTypeCode;

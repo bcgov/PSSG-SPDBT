@@ -12,7 +12,7 @@ import {
 } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { ConfigService } from '@app/core/services/config.service';
-import { Observable, forkJoin, take, tap } from 'rxjs';
+import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
 
 @Component({
@@ -151,51 +151,53 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 		this.commonApplicationService.setApplicationTitle();
 
-		this.results$ = forkJoin([
-			this.commonApplicationService.userBusinessLicencesList(),
-			this.commonApplicationService.userBusinessApplicationsList(),
-			this.businessApplicationService.getBusinessProfile(),
-		]).pipe(
-			tap((resps: Array<any>) => {
-				const businessLicencesList: Array<MainLicenceResponse> = resps[0];
-				const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
-				const businessProfile: BizProfileResponse = resps[2];
+		this.results$ = this.businessApplicationService.getBusinessProfile().pipe(
+			switchMap((businessProfile: BizProfileResponse) => {
+				return forkJoin([
+					this.commonApplicationService.userBusinessLicencesList(businessProfile),
+					this.commonApplicationService.userBusinessApplicationsList(),
+				]).pipe(
+					tap((resps: Array<any>) => {
+						const businessLicencesList: Array<MainLicenceResponse> = resps[0];
+						const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
 
-				// console.debug('businessLicencesList', businessLicencesList);
-				// console.debug('businessApplicationsList', businessApplicationsList);
-				// console.debug('businessProfile', businessProfile);
+						// console.debug('businessLicencesList', businessLicencesList);
+						// console.debug('businessApplicationsList', businessApplicationsList);
+						// console.debug('businessProfile', businessProfile);
 
-				this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+						this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
 
-				// User Licences/Permits
-				const activeLicences = businessLicencesList.filter(
-					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+						// User Licences/Permits
+						const activeLicences = businessLicencesList.filter(
+							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+						);
+
+						this.expiredLicences = businessLicencesList.filter(
+							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+						);
+
+						// User Licence/Permit Applications
+						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
+						this.applicationIsInProgress =
+							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
+
+						// Set flags that determine if NEW licences/permits can be created
+						let activeLicenceExist = activeLicences.length > 0;
+						if (!activeLicenceExist) {
+							activeLicenceExist = businessApplicationsList.length > 0;
+						}
+						this.activeLicenceExist = activeLicenceExist;
+
+						[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndError(
+							businessApplicationsList,
+							activeLicences
+						);
+
+						this.activeLicences = activeLicences;
+
+						this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
+					})
 				);
-
-				this.expiredLicences = businessLicencesList.filter(
-					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
-				);
-
-				// User Licence/Permit Applications
-				this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
-				this.applicationIsInProgress =
-					this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
-
-				// Set flags that determine if NEW licences/permits can be created
-				let activeLicenceExist = activeLicences.length > 0;
-				if (!activeLicenceExist) {
-					activeLicenceExist = businessApplicationsList.length > 0;
-				}
-				this.activeLicenceExist = activeLicenceExist;
-
-				[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndError(
-					businessApplicationsList,
-					activeLicences
-				);
-
-				this.activeLicences = activeLicences;
-
-				this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 			})
 		);
 

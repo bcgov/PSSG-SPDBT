@@ -7,16 +7,18 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 @Component({
 	selector: 'app-step-worker-licence-review-name-change',
 	template: `
-		<app-step-section title="Review your updated name" subtitle="Your licence will be updated with your new name">
+		<app-step-section title="Review your updated name">
 			<div class="row">
-				<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
+				<div class="col-xl-6 col-lg-8 col-md-12 col-sm-12 mx-auto">
+					<app-alert type="info" icon="info"> Your licence will be updated with your new name </app-alert>
+
 					<div [formGroup]="form">
 						<div class="row mt-0 mb-3">
-							<div class="offset-lg-3 col-lg-9 col-md-12">
+							<div class="offset-lg-1 col-lg-10 col-md-12">
 								<div class="text-label d-block text-muted">New Name</div>
 								<div class="summary-text-data">{{ fullname }}</div>
 							</div>
-							<div class="offset-lg-3 col-lg-9 col-md-12">
+							<div class="offset-lg-1 col-lg-10 col-md-12">
 								<div class="text-label d-block text-muted">Previous Name</div>
 								<div class="summary-text-data">{{ cardHolderName.value }}</div>
 							</div>

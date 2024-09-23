@@ -118,8 +118,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		branchesInBcData: this.branchesInBcFormGroup,
 		controllingMembersData: this.controllingMembersFormGroup,
 		employeesData: this.employeesFormGroup,
-
-		reprintLicenceData: this.reprintLicenceFormGroup,
 	});
 
 	businessModelChangedSubscription!: Subscription;
@@ -325,9 +323,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
-	submitBusinessLicenceRenewalOrUpdateOrReplace(
-		isUpdateFlowWithHideReprintStep?: boolean
-	): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBase(businessModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -335,11 +331,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const body = bodyUpsert as BizLicAppSubmitRequest;
 
 		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
-			// if not showing the reprint step, then set to True, otherwise
-			// use the value selected
-			body.reprint = isUpdateFlowWithHideReprintStep
-				? true
-				: this.utilService.booleanTypeToBoolean(businessModelFormValue.reprintLicenceData.reprintLicence);
+			body.reprint = true;
 		}
 
 		const documentsToSave = this.getDocsToSaveBlobs(businessModelFormValue);

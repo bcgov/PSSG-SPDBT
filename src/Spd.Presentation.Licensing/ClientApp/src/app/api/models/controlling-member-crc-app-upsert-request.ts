@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
+import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { Document } from '../models/document';
 import { DocumentExpiredInfo } from '../models/document-expired-info';
@@ -12,6 +13,7 @@ export interface ControllingMemberCrcAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
   applicantId?: string | null;
+  applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;

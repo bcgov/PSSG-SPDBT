@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationPortalStatusCode } from '../models/application-portal-status-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { BizTypeCode } from '../models/biz-type-code';
@@ -13,6 +14,7 @@ export interface BizLicAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
   applicantIsBizManager?: boolean | null;
+  applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   bizId?: string | null;

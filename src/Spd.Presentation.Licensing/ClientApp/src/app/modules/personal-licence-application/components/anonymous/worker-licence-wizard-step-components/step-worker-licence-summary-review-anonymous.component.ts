@@ -540,6 +540,18 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										<div class="text-minor-heading">Characteristics</div>
 										<div class="row mt-0">
 											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Hair Colour</div>
+												<div class="summary-text-data">
+													{{ hairColourCode | options : 'HairColourTypes' }}
+												</div>
+											</div>
+											<div class="col-lg-3 col-md-12">
+												<div class="text-label d-block text-muted">Eye Colour</div>
+												<div class="summary-text-data">
+													{{ eyeColourCode | options : 'EyeColourTypes' }}
+												</div>
+											</div>
+											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Height</div>
 												<div class="summary-text-data">
 													{{ height }}
@@ -552,18 +564,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="summary-text-data">
 													{{ weight }}
 													{{ weightUnitCode | options : 'WeightUnitTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Hair Colour</div>
-												<div class="summary-text-data">
-													{{ hairColourCode | options : 'HairColourTypes' }}
-												</div>
-											</div>
-											<div class="col-lg-3 col-md-12">
-												<div class="text-label d-block text-muted">Eye Colour</div>
-												<div class="summary-text-data">
-													{{ eyeColourCode | options : 'EyeColourTypes' }}
 												</div>
 											</div>
 										</div>
