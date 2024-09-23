@@ -33,8 +33,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import * as moment from 'moment';
-import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
+import moment from 'moment';
+import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
