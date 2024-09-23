@@ -1,13 +1,12 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepWorkerLicenceCategoryComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
-import { StepWorkerLicenceReprintComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-reprint.component';
 import { StepWorkerLicenceRestraintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-restraints.component';
 import { StepWorkerLicenceReviewNameChangeComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-review-name-change.component';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-worker-licence-updates-authenticated',
@@ -62,16 +61,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidDogsNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showReprint">
-				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_REPRINT)"
+					(nextStepperStep)="onStepNext(STEP_DOGS)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -87,12 +77,10 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	readonly STEP_LICENCE_CATEGORY = 2;
 	readonly STEP_DOGS = 3;
 	readonly STEP_RESTRAINTS = 4;
-	readonly STEP_REPRINT = 5;
 
 	@Input() showStepDogsAndRestraints = false;
 	@Input() hasBcscNameChanged = false;
 	@Input() hasGenderChanged = false;
-	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@ViewChild(StepWorkerLicenceReviewNameChangeComponent)
 	stepNameChangeComponent!: StepWorkerLicenceReviewNameChangeComponent;
@@ -104,8 +92,6 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	stepRestraintsComponent!: StepWorkerLicenceRestraintsComponent;
 	@ViewChild(StepWorkerLicenceDogsAuthorizationComponent)
 	stepDogsComponent!: StepWorkerLicenceDogsAuthorizationComponent;
-	@ViewChild(StepWorkerLicenceReprintComponent)
-	stepReprintComponent!: StepWorkerLicenceReprintComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
@@ -133,18 +119,10 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	}
 
 	onFormValidCategoryNextStep(): void {
-		if (this.showStepDogsAndRestraints || this.showReprint) {
+		if (this.showStepDogsAndRestraints) {
 			this.onFormValidNextStep(this.STEP_LICENCE_CATEGORY);
 		} else {
 			this.onStepNext(this.STEP_LICENCE_CATEGORY);
-		}
-	}
-
-	onFormValidDogsNextStep(): void {
-		if (this.showReprint) {
-			this.onFormValidNextStep(this.STEP_DOGS);
-		} else {
-			this.onStepNext(this.STEP_DOGS);
 		}
 	}
 
@@ -152,8 +130,6 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 		switch (step) {
 			case this.STEP_NAME_CHANGE:
 				return this.stepNameChangeComponent.isFormValid();
-			case this.STEP_REPRINT:
-				return this.stepReprintComponent.isFormValid();
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
 				return this.stepPhotographOfYourselfComponent.isFormValid();
 			case this.STEP_LICENCE_CATEGORY:
@@ -166,11 +142,5 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	// for Update flow: only show if they changed their sex selection earlier in the application
-	// and name change
-	get showReprint(): boolean {
-		return this.hasGenderChanged || this.hasBcscNameChanged || !this.isUpdateFlowWithHideReprintStep;
 	}
 }

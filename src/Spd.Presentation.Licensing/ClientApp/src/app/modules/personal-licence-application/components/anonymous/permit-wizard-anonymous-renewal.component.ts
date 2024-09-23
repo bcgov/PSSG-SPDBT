@@ -271,7 +271,7 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 		} else {
 			this.permitApplicationService.submitPermitAnonymous().subscribe({
 				next: (resp: StrictHttpResponse<PermitAppCommandResponse>) => {
-					console.debug('[onPay] submitPermitAnonymous', resp.body);
+					console.debug('[onNextPayStep] submitPermitAnonymous', resp.body);
 
 					// save this locally just in application payment fails
 					this.newLicenceAppId = resp.body.licenceAppId!;
