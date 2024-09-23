@@ -9,7 +9,6 @@ import { StepWorkerLicenceContactInformationComponent } from '@app/modules/perso
 import { StepWorkerLicenceMailingAddressAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-mailing-address-anonymous.component';
 import { StepWorkerLicencePhotographOfYourselfAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself-anonymous.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-physical-characteristics.component';
-import { StepWorkerLicenceReprintComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-reprint.component';
 import { StepWorkerLicenceResidentialAddressComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-residential-address.component';
 import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-worker-licence-personal-information-anonymous.component';
 
@@ -127,17 +126,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onContactInformationNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="showReprint">
-				<app-step-worker-licence-reprint></app-step-worker-licence-reprint>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_REPRINT)"
+					(nextStepperStep)="onStepNext(STEP_CONTACT_INFORMATION)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -155,13 +144,11 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 	readonly STEP_RESIDENTIAL_ADDRESS = 6;
 	readonly STEP_MAILING_ADDRESS = 7;
 	readonly STEP_CONTACT_INFORMATION = 8;
-	readonly STEP_REPRINT = 9;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isFormValid = false;
 	@Input() showCitizenshipStep!: boolean;
 	@Input() showPhotographOfYourself = true;
-	@Input() showReprint = false;
 
 	applicationTypeCodes = ApplicationTypeCode;
 
@@ -181,8 +168,6 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 	mailingAddressComponent!: StepWorkerLicenceMailingAddressAnonymousComponent;
 	@ViewChild(StepWorkerLicenceContactInformationComponent)
 	stepContactInformationComponent!: StepWorkerLicenceContactInformationComponent;
-	@ViewChild(StepWorkerLicenceReprintComponent)
-	stepLicenceReprintComponent!: StepWorkerLicenceReprintComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
@@ -212,19 +197,9 @@ export class StepsWorkerLicenceIdentificationAnonymousComponent extends BaseWiza
 				return this.mailingAddressComponent.isFormValid();
 			case this.STEP_CONTACT_INFORMATION:
 				return this.stepContactInformationComponent.isFormValid();
-			case this.STEP_REPRINT:
-				return this.stepLicenceReprintComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
 		return false;
-	}
-
-	onContactInformationNextStep(): void {
-		if (!this.showReprint) {
-			this.onStepNext(this.STEP_CONTACT_INFORMATION);
-		} else {
-			this.onFormValidNextStep(this.STEP_CONTACT_INFORMATION);
-		}
 	}
 }

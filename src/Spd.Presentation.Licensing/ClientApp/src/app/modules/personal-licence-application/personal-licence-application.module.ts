@@ -139,7 +139,6 @@ import { StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent } from './
 import { StepWorkerLicencePhotographOfYourselfComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
 import { StepWorkerLicencePhysicalCharacteristicsComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-physical-characteristics.component';
 import { StepWorkerLicencePoliceBackgroundComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-police-background.component';
-import { StepWorkerLicenceReprintComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-reprint.component';
 import { StepWorkerLicenceResidentialAddressComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-residential-address.component';
 import { StepWorkerLicenceRestraintsComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-restraints.component';
 import { StepWorkerLicenceReviewNameChangeComponent } from './components/shared/worker-licence-wizard-step-components/step-worker-licence-review-name-change.component';
@@ -262,7 +261,6 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		StepWorkerLicencePhotographOfYourselfRenewAndUpdateComponent,
 		StepWorkerLicencePhysicalCharacteristicsComponent,
 		StepWorkerLicencePoliceBackgroundComponent,
-		StepWorkerLicenceReprintComponent,
 		StepWorkerLicenceResidentialAddressComponent,
 		StepWorkerLicenceRestraintsComponent,
 		StepWorkerLicenceReviewNameChangeComponent,

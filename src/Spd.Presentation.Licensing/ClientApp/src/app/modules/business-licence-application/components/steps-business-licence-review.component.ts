@@ -10,10 +10,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step *ngIf="!isRenewalShortForm">
-				<app-step-business-licence-summary
-					(editStep)="onGoToStep($event)"
-					[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
-				></app-step-business-licence-summary>
+				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
 
 				<app-wizard-footer
 					[isFormValid]="true"
@@ -81,7 +78,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() isRenewalShortForm!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() licenceCost = 0;
-	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() isSoleProprietorReturnToSwl = false;
 

@@ -5,6 +5,7 @@ import {
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	BizLicAppResponse,
+	BizProfileResponse,
 	BizTypeCode,
 	Document,
 	IdentityProviderTypeCode,
@@ -23,15 +24,7 @@ import {
 	WorkerLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import {
-	BizLicensingService,
-	BizProfileService,
-	LicenceAppService,
-	LicenceService,
-	PaymentService,
-	PermitService,
-	SecurityWorkerLicensingService,
-} from '@app/api/services';
+import { LicenceAppService, LicenceService, PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -41,7 +34,7 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
 import { AuthProcessService } from './auth-process.service';
 import { AuthUserBceidService } from './auth-user-bceid.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
@@ -107,11 +100,7 @@ export class ApplicationService {
 		private authUserBcscService: AuthUserBcscService,
 		private authUserBceidService: AuthUserBceidService,
 		private licenceAppService: LicenceAppService,
-		private securityWorkerLicensingService: SecurityWorkerLicensingService,
-		private bizLicensingService: BizLicensingService,
-		private bizProfileService: BizProfileService,
-		private licenceService: LicenceService,
-		private permitService: PermitService
+		private licenceService: LicenceService
 	) {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
 			this.isLoggedIn = isLoggedIn;
@@ -258,43 +247,25 @@ export class ApplicationService {
 			})
 			.pipe(
 				switchMap((licenceResps: LicenceBasicResponse[]) => {
-					const apis: Observable<any>[] = [];
-
 					if (licenceResps.length === 0) {
 						return of([]);
 					}
 
-					licenceResps.forEach((appl: LicenceBasicResponse) => {
-						if (appl.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
-							apis.push(
-								this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({
-									licenceAppId: appl.licenceAppId!,
-								})
-							);
-						} else {
-							apis.push(this.permitService.apiPermitApplicationsLicenceAppIdGet({ licenceAppId: appl.licenceAppId! }));
-						}
+					const response: Array<MainLicenceResponse> = [];
+					licenceResps.forEach((resp: LicenceBasicResponse) => {
+						const matchingLicence = licenceResps.find(
+							(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
+						);
+
+						const licence = this.getLicence(resp, BizTypeCode.None, matchingLicence!);
+						response.push(licence);
 					});
 
-					return forkJoin(apis).pipe(
-						map((resps: Array<WorkerLicenceAppResponse | PermitLicenceAppResponse>) => {
-							const response: Array<MainLicenceResponse> = [];
-							resps.forEach((resp: WorkerLicenceAppResponse | PermitLicenceAppResponse) => {
-								const matchingLicence = licenceResps.find(
-									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
-								);
+					response.sort((a, b) => {
+						return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+					});
 
-								const licence = this.getLicence(resp, resp.bizTypeCode!, matchingLicence!);
-								response.push(licence);
-							});
-
-							response.sort((a, b) => {
-								return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
-							});
-
-							return response;
-						})
-					);
+					return of(response);
 				})
 			);
 	}
@@ -320,55 +291,34 @@ export class ApplicationService {
 			);
 	}
 
-	userBusinessLicencesList(): Observable<Array<MainLicenceResponse>> {
+	userBusinessLicencesList(businessProfile: BizProfileResponse): Observable<Array<MainLicenceResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
 		return this.licenceService
 			.apiBizsBizIdLicencesGet({
 				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
 			})
 			.pipe(
 				switchMap((licenceResps: Array<LicenceBasicResponse>) => {
-					const apis: Observable<any>[] = [];
-
 					if (licenceResps.length === 0) {
 						return of([]);
 					}
 
-					apis.push(this.bizProfileService.apiBizIdGet({ id: bizId }));
-
-					licenceResps.forEach((appl: LicenceBasicResponse) => {
-						apis.push(
-							this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({
-								licenceAppId: appl.licenceAppId!,
-							})
+					const response: Array<MainLicenceResponse> = [];
+					licenceResps.forEach((resp: LicenceBasicResponse) => {
+						const matchingLicence = licenceResps.find(
+							(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
 						);
+						const licence = this.getLicence(resp, businessProfile.bizTypeCode!, matchingLicence!);
+
+						response.push(licence);
 					});
 
-					return forkJoin(apis).pipe(
-						map((resps: Array<any>) => {
-							// first item in the array is the profile
-							const profile = resps.splice(0, 1).at(0);
+					response.sort((a, b) => {
+						return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+					});
 
-							// the rest of the items in the array are the licences
-							const applResps: Array<BizLicAppResponse> = resps;
-
-							const response: Array<MainLicenceResponse> = [];
-							applResps.forEach((resp: BizLicAppResponse) => {
-								const matchingLicence = licenceResps.find(
-									(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
-								);
-								const licence = this.getLicence(resp, profile.bizTypeCode, matchingLicence!);
-
-								response.push(licence);
-							});
-
-							response.sort((a, b) => {
-								return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
-							});
-
-							return response;
-						})
-					);
+					return of(response);
 				})
 			);
 	}
@@ -428,6 +378,8 @@ export class ApplicationService {
 	}
 
 	payNowAnonymous(licenceAppId: string, description: string): void {
+		console.debug('[payNowAnonymous] licenceAppId', licenceAppId, description);
+
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
@@ -785,11 +737,12 @@ export class ApplicationService {
 					(item: Document) =>
 						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
 				);
-				licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode
+				licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode // TODO fix display of dog auth
 					? hasDogAuthorization.licenceDocumentTypeCode
 					: null;
 
 				const hasRestraintAuthorization = resp.documentInfos?.find(
+					// TODO fix display of restraint
 					(item: Document) =>
 						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate ||
 						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter ||
