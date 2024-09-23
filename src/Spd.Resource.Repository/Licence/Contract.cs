@@ -66,6 +66,10 @@ namespace Spd.Resource.Repository.Licence
         public string? Rationale { get; set; }
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
         //permit
+
+        //biz info
+        public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
+        //todo: document expired date
     }
     public enum LicenceStatusEnum
     {

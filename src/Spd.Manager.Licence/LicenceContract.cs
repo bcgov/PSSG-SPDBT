@@ -41,6 +41,11 @@ public record LicenceResponse : LicenceBasicResponse
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
     public IEnumerable<Document> RationalDocumentInfos { get; set; } = [];
+
+    //biz info
+    public BizTypeCode BizTypeCode { get; set; } = BizTypeCode.None;
+    public IEnumerable<string> Conditions { get; set; } = Enumerable.Empty<string>();
+    //todo: document expired date
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;

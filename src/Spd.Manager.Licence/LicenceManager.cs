@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
@@ -19,6 +20,7 @@ internal class LicenceManager :
         ILicenceManager
 {
     private readonly ILicenceRepository _licenceRepository;
+    private readonly IIncidentRepository _incidentRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
     private readonly IMainFileStorageService _fileStorageService;
@@ -29,6 +31,7 @@ internal class LicenceManager :
         IDocumentRepository documentRepository,
         ILogger<ILicenceManager> logger,
         IMainFileStorageService fileStorageService,
+        IIncidentRepository incidentRepository,
         IMapper mapper)
     {
         _licenceRepository = licenceRepository;
@@ -36,13 +39,20 @@ internal class LicenceManager :
         _mapper = mapper;
         _logger = logger;
         _fileStorageService = fileStorageService;
+        _incidentRepository = incidentRepository;
     }
 
     public async Task<LicenceResponse> Handle(LicenceByIdQuery query, CancellationToken cancellationToken)
     {
         var response = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
+        LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
 
-        return _mapper.Map<LicenceResponse>(response);
+        //conditions
+        IncidentListResp resp = await _incidentRepository.QueryAsync(
+            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
+            cancellationToken);
+        lic.Conditions = resp.Items.First().Conditions;
+        return lic;
     }
 
     public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken cancellationToken)
@@ -72,6 +82,12 @@ internal class LicenceManager :
                 cancellationToken);
         LicenceResponse result = _mapper.Map<LicenceResponse>(lic);
         result.RationalDocumentInfos = _mapper.Map<IEnumerable<Document>>(docResp?.Items);
+
+        //conditions
+        IncidentListResp resp = await _incidentRepository.QueryAsync(
+            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
+            cancellationToken);
+        result.Conditions = resp.Items.First().Conditions;
         return result;
     }
 

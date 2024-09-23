@@ -34,7 +34,8 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.PrintingPreviewJobId, opt => opt.MapFrom(s => s.spd_bcmpjobid))
              .ForMember(d => d.IsTemporary, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_temporarylicence)))
              .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
-             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s.spd_spd_licence_spd_caselicencecategory_licenceid.ToList())));
+             .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s.spd_spd_licence_spd_caselicencecategory_licenceid.ToList())))
+             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => GetBizType(s)));
 
             _ = CreateMap<spd_licence, Addr>()
              .ForMember(d => d.AddressLine1, opt => opt.MapFrom(s => s.spd_employeraddress1))
@@ -74,6 +75,15 @@ namespace Spd.Resource.Repository.Licence
             return categories
                 .Where(c => c.spd_accepted == (int)YesNoOptionSet.Yes)
                 .Select(c => Enum.Parse<WorkerCategoryTypeEnum>(DynamicsContextLookupHelpers.LookupLicenceCategoryKey(c._spd_licencecategoryid_value)));
+        }
+
+        internal static BizTypeEnum GetBizType(spd_licence s)
+        {
+            int? bizTypeInt = SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ?
+                s.spd_LicenceHolder_account.businesstypecode : null;
+            if (bizTypeInt == null) return BizTypeEnum.None;
+            else
+                return SharedMappingFuncs.GetBizTypeEnum(bizTypeInt).Value;
         }
     }
 }
