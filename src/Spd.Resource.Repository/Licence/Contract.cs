@@ -35,6 +35,7 @@ namespace Spd.Resource.Repository.Licence
         public bool? IsTemporary { get; set; }
         public Guid? PhotoDocumentUrlId { get; set; }
         public string? PrintingPreviewJobId { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
     }
 
     public record Licence
