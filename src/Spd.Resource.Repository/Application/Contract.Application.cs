@@ -173,17 +173,6 @@ public record ApplicantApplicationListQry
 
 public record ApplicationQry(Guid ApplicationId);
 
-public enum ApplicationOriginTypeCode
-{
-    Portal,
-    Email,
-    WebForm,
-    Mail,
-    Fax,
-    GenericUpload,
-    OrganizationSubmitted
-}
-
 public enum IdentityStatusCode
 {
     Verified,

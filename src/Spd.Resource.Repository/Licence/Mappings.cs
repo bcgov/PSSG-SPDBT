@@ -23,6 +23,7 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.LicenceHolderLastName, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.lastname))
              .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ? null : s.spd_LicenceHolder_contact.spd_middlename1))
              .ForMember(d => d.NameOnCard, opt => opt.MapFrom(s => s.spd_nameonlicence))
+             .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
              .ForMember(d => d.PermitOtherRequiredReason, opt => opt.MapFrom(s => s.spd_permitpurposeother))
              .ForMember(d => d.EmployerName, opt => opt.MapFrom(s => s.spd_employername))
              .ForMember(d => d.SupervisorName, opt => opt.MapFrom(s => s.spd_employercontactname))

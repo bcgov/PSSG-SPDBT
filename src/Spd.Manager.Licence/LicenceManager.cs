@@ -70,7 +70,7 @@ internal class LicenceManager :
             _logger.LogDebug("No licence found.");
             return null;
         }
-        LicenceResp lic = response.Items.OrderByDescending(i => i.ExpiryDate).First();
+        LicenceResp lic = response.Items.OrderByDescending(i => i.CreatedOn).First();
         DocumentListResp? docResp = null;
         if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.ArmouredVehiclePermit)
             docResp = await _documentRepository.QueryAsync(
