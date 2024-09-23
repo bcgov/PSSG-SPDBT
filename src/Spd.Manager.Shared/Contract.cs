@@ -199,4 +199,31 @@ namespace Spd.Manager.Shared
         [Description("Authorized Business Manager Contact")]
         BusinessManager
     }
+
+    public enum ApplicationOriginTypeCode
+    {
+        //applicant authenticated with bcsc submit app
+        [Description("Portal")]
+        Portal,
+
+        [Description("Email")]
+        Email,
+
+        //applicant anonymous submit app
+        [Description("Web Form")]
+        WebForm,
+
+        [Description("Mail")]
+        Mail,
+
+        [Description("Fax")]
+        Fax,
+
+        [Description("Generic Upload")]
+        GenericUpload,
+
+        //organization submit app manually
+        [Description("Organization Submitted")]
+        OrganizationSubmitted
+    }
 }

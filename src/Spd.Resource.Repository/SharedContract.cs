@@ -163,3 +163,14 @@ public enum ApplicationInviteStatusEnum
     Cancelled,
     Expired
 }
+
+public enum ApplicationOriginTypeCode
+{
+    Portal,
+    Email,
+    WebForm,
+    Mail,
+    Fax,
+    GenericUpload,
+    OrganizationSubmitted
+}
