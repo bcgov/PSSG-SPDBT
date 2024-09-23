@@ -245,7 +245,11 @@ export class LandingComponent implements OnInit {
 				this.dialog
 					.open(DialogComponent, { data })
 					.afterClosed()
-					.subscribe((_response: boolean) => {
+					.subscribe((response: boolean) => {
+						if (!response) {
+							return;
+						}
+
 						this.permitApplicationService
 							.createNewPermitAnonymous(workerLicenceTypeCode)
 							.pipe(

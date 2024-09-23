@@ -63,7 +63,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<ng-container *ngIf="isUpdate">
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Print Licence</div>
-												<div class="summary-text-data">{{ isReprint }}</div>
+												<div class="summary-text-data">Yes</div>
 											</div>
 											<div class="col-lg-4 col-md-12" *ngIf="licenceFee">
 												<div class="text-label d-block text-muted">Reprint Fee</div>
@@ -421,7 +421,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	categoryTypeCodes = WorkerCategoryTypeCode;
 
 	@Input() isStaticDataView: boolean = false;
-	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -521,7 +520,7 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		const categoryData = { ...this.businessModelData.categoryData };
 
 		for (const [key, value] of Object.entries(categoryData)) {
-			if (value) {
+			if (value && key in WorkerCategoryTypeCode) {
 				list.push(key as WorkerCategoryTypeCode);
 			}
 		}
@@ -596,12 +595,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 
 	get employeesList(): Array<any> {
 		return this.businessModelData.employeesData.employees ?? [];
-	}
-
-	get isReprint(): string {
-		return this.isUpdateFlowWithHideReprintStep
-			? BooleanTypeCode.Yes
-			: this.businessModelData.reprintLicenceData.reprintLicence ?? BooleanTypeCode.No;
 	}
 
 	get isUpdate(): boolean {
