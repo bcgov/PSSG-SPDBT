@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Alias;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 internal class Mappings : Profile
@@ -66,9 +60,8 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
          .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
-         //TODO: ask the origin? as payer is not applicant, should it be null or set to org
-         //.ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)ApplicationOriginOptionSet.Portal))
-         //.ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)PayerPreferenceOptionSet.Applicant))
+         .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)SharedMappingFuncs.GetOptionset<ApplicationOriginTypeCode, ApplicationOriginOptionSet>(s.ApplicationOriginTypeCode)))
+         .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)PayerPreferenceOptionSet.Organization))
          .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
          .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
          .ForMember(d => d.spd_criminalhistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
@@ -99,6 +92,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_portalmodifiedon, opt => opt.MapFrom(s => DateTimeOffset.UtcNow))
          .ReverseMap()
          .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
+         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeCode>(s.spd_origin)))
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
          .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
          .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
