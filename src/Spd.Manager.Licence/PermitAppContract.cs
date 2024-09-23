@@ -44,7 +44,6 @@ public record PermitAppUpsertRequest : PermitLicenceAppBase
 #region anonymous user
 public record PermitAppNewCommand(
     PermitAppSubmitRequest LicenceAnonymousRequest,
-    
     IEnumerable<LicAppFileInfo> LicAppFileInfos, 
     bool IsAuthenticatied = false)
     : IRequest<PermitAppCommandResponse>;

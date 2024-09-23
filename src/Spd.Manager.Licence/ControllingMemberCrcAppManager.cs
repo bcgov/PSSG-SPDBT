@@ -29,7 +29,6 @@ using Spd.Utilities.Dynamics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Spd.Resource.Repository.BizContact;
 using Microsoft.Dynamics.CRM;
-using Amazon.Runtime.Internal;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -193,7 +192,6 @@ internal class ControllingMemberCrcAppManager :
         //move files from transient bucket to main bucket when app status changed to PaymentPending.
         await MoveFilesAsync(response.ControllingMemberAppId, ct);
         await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode }, response.ControllingMemberAppId, ct, IsAuthenticated: true);
-
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }

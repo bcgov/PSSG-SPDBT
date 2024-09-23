@@ -63,18 +63,14 @@ internal abstract class LicenceAppManagerBase
         {
             status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.PaymentPending;
         }
-
         // Commit the companion application if it exists
         //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
         if (companionAppId != null)
         {
             await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, status, null, ct);
         }
-
         // Commit the main licence application
         await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount, ct);
-
-
 
         return licenceFee?.Amount ?? 0;
     }
