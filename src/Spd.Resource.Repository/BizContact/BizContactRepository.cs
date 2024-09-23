@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -126,9 +127,12 @@ namespace Spd.Resource.Repository.BizContact
             if (bizContact == null)
                 throw new ApiException(HttpStatusCode.BadRequest, $"business contact with id {cmd.BizContactId} not found.");
 
+            Guid? cmServiceType = DynamicsContextLookupHelpers.GetServiceTypeGuid(WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
             spd_application? app = _context.spd_applications
                 .Expand(a => a.spd_businesscontact_spd_application)
-                .Where(x => x.spd_businesscontact_spd_application.Any(y=>y.spd_businesscontactid == cmd.BizContactId)).FirstOrDefault();
+                .Where(x => x.spd_businesscontact_spd_application.Any(y => y.spd_businesscontactid == cmd.BizContactId))
+                .Where(x => x._spd_servicetypeid_value == cmServiceType)
+                .FirstOrDefault();
 
             if (app != null &&
                 (app.statuscode == (int)ApplicationStatusOptionSet.Incomplete ||
@@ -137,7 +141,7 @@ namespace Spd.Resource.Repository.BizContact
                 app.statuscode == (int)ApplicationStatusOptionSet.ApplicantVerification))
             {
                 app.statecode = DynamicsConstants.StateCode_Inactive;
-                app.statuscode = (int) ApplicationStatusOptionSet.Cancelled;
+                app.statuscode = (int)ApplicationStatusOptionSet.Cancelled;
                 _context.UpdateObject(app);
             }
             bizContact.statecode = DynamicsConstants.StateCode_Inactive;
