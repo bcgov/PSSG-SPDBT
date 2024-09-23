@@ -52,7 +52,7 @@ internal class LicenceManager :
                 {
                     LicenceNumber = query.LicenceNumber,
                     AccessCode = query.AccessCode,
-                    IncludeInactive = true,
+                    IncludeInactive = false,
                 }, cancellationToken);
 
         if (!response.Items.Any())
