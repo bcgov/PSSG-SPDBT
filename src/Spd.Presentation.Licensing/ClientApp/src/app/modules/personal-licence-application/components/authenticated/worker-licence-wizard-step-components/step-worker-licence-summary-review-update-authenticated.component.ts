@@ -108,16 +108,18 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<div class="text-label d-block text-muted">Licence Term</div>
 							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
 						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="isReprint">
-							<div class="text-label d-block text-muted">Reprint Licence</div>
-							<div class="summary-text-data">{{ isReprint }}</div>
-						</div>
-						<div class="col-xl-4 col-lg-6 col-md-12" *ngIf="licenceFee">
-							<div class="text-label d-block text-muted">Reprint Fee</div>
-							<div class="summary-text-data">
-								{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+						<ng-container *ngIf="isUpdate">
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Reprint Licence</div>
+								<div class="summary-text-data">Yes</div>
 							</div>
-						</div>
+							<div class="col-xl-4 col-lg-6 col-md-12">
+								<div class="text-label d-block text-muted">Reprint Fee</div>
+								<div class="summary-text-data">
+									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								</div>
+							</div>
+						</ng-container>
 					</div>
 				</div>
 			</div>
@@ -203,11 +205,11 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return this.workerApplicationService.getSummaryoriginalLicenceTermCode(this.licenceModelData);
 	}
 
-	get isReprint(): string {
-		return this.workerApplicationService.getSummaryisReprint(this.licenceModelData);
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 	get licenceFee(): number | null {
-		if (!this.licenceTermCode || !this.isReprint) {
+		if (!this.originalLicenceTermCode && !this.isUpdate) {
 			return null;
 		}
 
@@ -220,7 +222,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 				originalLicenceData.originalBizTypeCode,
 				originalLicenceData.originalLicenceTermCode
 			)
-			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
+			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.originalLicenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}
 

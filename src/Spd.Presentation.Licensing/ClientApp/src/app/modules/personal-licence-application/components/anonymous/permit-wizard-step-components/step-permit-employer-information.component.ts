@@ -14,7 +14,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 				<div class="row">
 					<div class="col-xxl-10 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
 						<div class="row">
-							<div class="col-xl-6 col-lg-6 col-md-12">
+							<div class="col-xxl-8 col-xl-6 col-lg-12 col-md-12">
 								<mat-form-field>
 									<mat-label>Business Name </mat-label>
 									<input matInput formControlName="employerName" [errorStateMatcher]="matcher" maxlength="160" />

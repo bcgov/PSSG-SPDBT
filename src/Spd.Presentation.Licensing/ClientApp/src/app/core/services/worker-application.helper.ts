@@ -7,6 +7,7 @@ import {
 	DocumentExpiredInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
+	PoliceOfficerRoleCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
@@ -235,24 +236,6 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		}
 	);
 
-	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
-		{
-			reprintLicence: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'reprintLicence',
-					(_form) =>
-						!!(
-							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
-							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
-						)
-				),
-			],
-		}
-	);
-
 	consentAndDeclarationFormGroup: FormGroup = this.formBuilder.group({
 		check1: new FormControl(null, [Validators.requiredTrue]),
 		check2: new FormControl(null, [Validators.requiredTrue]),
@@ -312,14 +295,19 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		const documentKeyCodes: null | Array<string> = [];
 		const previousDocumentIds: null | Array<string> = [];
 
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const otherOfficerRole =
+			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+
 		let hasNewMentalHealthCondition: boolean | null = null;
 		let hasNewCriminalRecordCharge: boolean | null = null;
 		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
-			hasNewMentalHealthCondition = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
-			hasNewCriminalRecordCharge = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
+			hasNewMentalHealthCondition = isTreatedForMHC;
+			hasNewCriminalRecordCharge = hasCriminalHistory;
 		}
-
-		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
 
 		const requestbody: ApplicantUpdateRequest = {
 			licenceId: undefined,
@@ -341,15 +329,15 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 			documentKeyCodes,
 			previousDocumentIds,
 			//-----------------------------------
-			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
+			isTreatedForMHC,
 			hasNewMentalHealthCondition: hasNewMentalHealthCondition,
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: isPoliceOrPeaceOfficer,
-			policeOfficerRoleCode: isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null,
-			otherOfficerRole: isPoliceOrPeaceOfficer ? policeBackgroundData.otherOfficerRole : null,
+			isPoliceOrPeaceOfficer,
+			policeOfficerRoleCode,
+			otherOfficerRole,
 			//-----------------------------------
-			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: hasNewCriminalRecordCharge,
+			hasCriminalHistory,
+			hasNewCriminalRecordCharge,
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
@@ -713,6 +701,9 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
 		const photographOfYourselfData = workerModelFormValue.photographOfYourselfData;
 		const personalInformationData = workerModelFormValue.personalInformationData;
+		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
+
+		const applicationTypeCode = applicationTypeData.applicationTypeCode;
 
 		const categoryCodes: Array<WorkerCategoryTypeCode> = [];
 		const documentInfos: Array<Document> = [];
@@ -938,12 +929,24 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 			characteristicsData.height = String(ft * 12 + inch);
 		}
 
-		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
+		const hasCriminalHistory = this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory);
 		const criminalChargeDescription =
-			applicationTypeData.applicationTypeCode === ApplicationTypeCode.Update &&
-			criminalHistoryData.hasCriminalHistory === BooleanTypeCode.Yes
+			applicationTypeCode === ApplicationTypeCode.Update && hasCriminalHistory
 				? criminalHistoryData.criminalChargeDescription
-				: '';
+				: null;
+
+		const isTreatedForMHC = this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC);
+		const isPoliceOrPeaceOfficer = this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer);
+		const policeOfficerRoleCode = isPoliceOrPeaceOfficer ? policeBackgroundData.policeOfficerRoleCode : null;
+		const otherOfficerRole =
+			policeOfficerRoleCode === PoliceOfficerRoleCode.Other ? policeBackgroundData.otherOfficerRole : null;
+
+		let hasNewMentalHealthCondition: boolean | null = null;
+		let hasNewCriminalRecordCharge: boolean | null = null;
+		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
+			hasNewMentalHealthCondition = isTreatedForMHC;
+			hasNewCriminalRecordCharge = hasCriminalHistory;
+		}
 
 		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
@@ -974,17 +977,29 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 					? bcDriversLicenceData.bcDriversLicenceNumber
 					: null,
 			//-----------------------------------
-			...contactInformationData,
+			emailAddress: contactInformationData.emailAddress,
+			phoneNumber: contactInformationData.phoneNumber,
 			//-----------------------------------
 			hasExpiredLicence,
 			expiredLicenceId,
 			//-----------------------------------
-			...characteristicsData,
+			hairColourCode: characteristicsData.hairColourCode,
+			eyeColourCode: characteristicsData.eyeColourCode,
+			height: characteristicsData.height,
+			heightUnitCode: characteristicsData.heightUnitCode,
+			heightInches: characteristicsData.heightInches,
+			weight: characteristicsData.weight,
+			weightUnitCode: characteristicsData.weightUnitCode,
 			//-----------------------------------
-			...personalInformationData,
+			givenName: personalInformationData.givenName,
+			surname: personalInformationData.surname,
+			middleName1: personalInformationData.middleName1,
+			middleName2: personalInformationData.middleName2,
+			dateOfBirth: personalInformationData.dateOfBirth,
+			genderCode: personalInformationData.genderCode,
 			//-----------------------------------
-			hasCriminalHistory: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory),
-			hasNewCriminalRecordCharge: this.utilService.booleanTypeToBoolean(criminalHistoryData.hasCriminalHistory), // used by the backend for an Update or Renewal
+			hasCriminalHistory,
+			hasNewCriminalRecordCharge, // used by the backend for an Update or Renewal
 			criminalChargeDescription, // populated only for Update and new charges is Yes
 			//-----------------------------------
 			licenceTermCode: workerModelFormValue.licenceTermData.licenceTermCode,
@@ -995,12 +1010,12 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 			//-----------------------------------
 			isCanadianCitizen: this.utilService.booleanTypeToBoolean(citizenshipData.isCanadianCitizen),
 			//-----------------------------------
-			isTreatedForMHC: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC),
-			hasNewMentalHealthCondition: this.utilService.booleanTypeToBoolean(mentalHealthConditionsData.isTreatedForMHC), // used by the backend for an Update or Renewal
+			isTreatedForMHC,
+			hasNewMentalHealthCondition, // used by the backend for an Update or Renewal
 			//-----------------------------------
-			isPoliceOrPeaceOfficer: this.utilService.booleanTypeToBoolean(policeBackgroundData.isPoliceOrPeaceOfficer),
-			policeOfficerRoleCode: policeBackgroundData.policeOfficerRoleCode,
-			otherOfficerRole: policeBackgroundData.otherOfficerRole,
+			isPoliceOrPeaceOfficer,
+			policeOfficerRoleCode,
+			otherOfficerRole,
 			//-----------------------------------
 			categoryCodes: [...categoryCodes],
 			documentExpiredInfos: [...documentExpiredInfos],
@@ -1232,10 +1247,6 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 	}
 	getSummarycaseNumber(workerLicenceModelData: any): string {
 		return workerLicenceModelData.caseNumber ?? '';
-	}
-
-	getSummaryisReprint(workerLicenceModelData: any): string {
-		return workerLicenceModelData.reprintLicenceData.reprintLicence ?? '';
 	}
 
 	getSummaryworkerLicenceTypeCode(workerLicenceModelData: any): WorkerLicenceTypeCode | null {
@@ -1485,7 +1496,7 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		} else {
 			const updatePhoto = workerLicenceModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
 			const updateAttachments = workerLicenceModelData.photographOfYourselfData.updateAttachments ?? [];
-			return updatePhoto ? updateAttachments : null;
+			return updatePhoto ? updateAttachments : [];
 		}
 	}
 

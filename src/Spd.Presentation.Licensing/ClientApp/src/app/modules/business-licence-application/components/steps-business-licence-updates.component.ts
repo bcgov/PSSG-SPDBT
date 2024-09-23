@@ -4,7 +4,6 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
-import { StepBusinessLicenceReprintComponent } from './step-business-licence-reprint.component';
 
 @Component({
 	selector: 'app-steps-business-licence-updates',
@@ -29,16 +28,7 @@ import { StepBusinessLicenceReprintComponent } from './step-business-licence-rep
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onBusinessManagerNextStep()"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="!isUpdateFlowWithHideReprintStep">
-				<app-step-business-licence-reprint></app-step-business-licence-reprint>
-
-				<app-wizard-footer
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_REPRINT)"
+					(nextStepperStep)="onStepNext(STEP_MANAGER)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -49,17 +39,14 @@ import { StepBusinessLicenceReprintComponent } from './step-business-licence-rep
 export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponent {
 	readonly STEP_LICENCE_CATEGORY = 0;
 	readonly STEP_MANAGER = 1;
-	readonly STEP_REPRINT = 2;
 
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
-	@Input() isUpdateFlowWithHideReprintStep!: boolean;
 
 	@ViewChild(StepBusinessLicenceCategoryComponent) stepLicenceCategoryComponent!: StepBusinessLicenceCategoryComponent;
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerComponent!: StepBusinessLicenceManagerInformationComponent;
-	@ViewChild(StepBusinessLicenceReprintComponent) stepReprintComponent!: StepBusinessLicenceReprintComponent;
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
@@ -71,8 +58,6 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 				return this.stepLicenceCategoryComponent.isFormValid();
 			case this.STEP_MANAGER:
 				return this.stepManagerComponent.isFormValid();
-			case this.STEP_REPRINT:
-				return this.stepReprintComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}
@@ -84,14 +69,6 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 			this.onStepNext(this.STEP_LICENCE_CATEGORY);
 		} else {
 			this.onFormValidNextStep(this.STEP_LICENCE_CATEGORY);
-		}
-	}
-
-	onBusinessManagerNextStep(): void {
-		if (this.isUpdateFlowWithHideReprintStep) {
-			this.onStepNext(this.STEP_MANAGER);
-		} else {
-			this.onFormValidNextStep(this.STEP_MANAGER);
 		}
 	}
 }
