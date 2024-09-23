@@ -290,32 +290,6 @@ namespace Spd.Manager.Screening
         NotClearedLastSevenDays
     }
 
-    public enum ApplicationOriginTypeCode
-    {
-        //applicant authenticated with bcsc submit app
-        [Description("Portal")]
-        Portal,
-
-        [Description("Email")]
-        Email,
-
-        //applicant anonymous submit app
-        [Description("Web Form")]
-        WebForm,
-
-        [Description("Mail")]
-        Mail,
-
-        [Description("Fax")]
-        Fax,
-
-        [Description("Generic Upload")]
-        GenericUpload,
-
-        //organization submit app manually
-        [Description("Organization Submitted")]
-        OrganizationSubmitted
-    }
     public enum ApplicationStatusCode
     {
         Draft,
@@ -325,7 +299,6 @@ namespace Spd.Manager.Screening
         Submitted,
         Cancelled,
     }
-
 
     public enum ScreeningTypeCode
     {
@@ -831,7 +804,6 @@ namespace Spd.Manager.Screening
         SelfDisclosurePkg
     }
     #endregion
-
 
     #region application-delegates
 

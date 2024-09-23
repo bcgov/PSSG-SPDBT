@@ -70,6 +70,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     {
         if (controllingMemberCrcAppUpsertRequest.ApplicantId == null || controllingMemberCrcAppUpsertRequest.ApplicantId == Guid.Empty)
             throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+        controllingMemberCrcAppUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
         return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
     }
     /// <summary>
@@ -104,7 +105,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         var validateResult = await _controllingMemberCrcAppUpsertValidator.ValidateAsync(controllingMemberCrcSubmitRequest, ct);
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
-
+        controllingMemberCrcSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
         return await _mediator.Send(new ControllingMemberCrcSubmitCommand(controllingMemberCrcSubmitRequest));
     }
     /// <summary>
@@ -210,6 +211,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         if (!validateResult.IsValid)
             throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
 
+        request.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
         ControllingMemberCrcAppCommandResponse? response = null;
         if (request.ApplicationTypeCode == ApplicationTypeCode.New)
             response = await _mediator.Send(new ControllingMemberCrcAppNewCommand(request, newDocInfos), ct);

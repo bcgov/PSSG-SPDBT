@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +9,10 @@ using Spd.Manager.Shared;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
 
 namespace Spd.Presentation.Licensing.Controllers
 {
@@ -55,6 +55,7 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             if (licenceCreateRequest.ApplicantId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+            licenceCreateRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             return await _mediator.Send(new PermitUpsertCommand(licenceCreateRequest));
         }
 
@@ -139,6 +140,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var validateResult = await _permitAppUpsertValidator.ValidateAsync(permitSubmitRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            permitSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             return await _mediator.Send(new PermitSubmitCommand(permitSubmitRequest));
         }
@@ -162,6 +164,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)
             {
@@ -272,6 +275,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var validateResult = await _permitAppAnonymousSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
 
             PermitAppCommandResponse? response = null;
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.New)

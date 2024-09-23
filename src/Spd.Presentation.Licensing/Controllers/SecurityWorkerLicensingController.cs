@@ -60,6 +60,7 @@ namespace Spd.Presentation.Licensing.Controllers
             _logger.LogInformation("Get WorkerLicenceAppUpsertRequest");
             if (licenceCreateRequest.ApplicantId == null)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have applicant");
+            licenceCreateRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             return await _mediator.Send(new WorkerLicenceUpsertCommand(licenceCreateRequest));
         }
 
@@ -122,6 +123,7 @@ namespace Spd.Presentation.Licensing.Controllers
             var validateResult = await _wslUpsertValidator.ValidateAsync(licenceSubmitRequest, ct);
             if (!validateResult.IsValid)
                 throw new ApiException(System.Net.HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
+            licenceSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest));
         }
@@ -160,7 +162,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAuthenticated(WorkerLicenceAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             WorkerLicenceCommandResponse? response = null;
-
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
@@ -282,7 +284,7 @@ namespace Spd.Presentation.Licensing.Controllers
         public async Task<WorkerLicenceCommandResponse?> SubmitSecurityWorkerLicenceApplicationJsonAnonymous(WorkerLicenceAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             await VerifyKeyCode();
-
+            jsonRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.WebForm;
             IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(jsonRequest.DocumentKeyCodes, ct);
             var validateResult = await _anonymousLicenceAppSubmitRequestValidator.ValidateAsync(jsonRequest, ct);
             if (!validateResult.IsValid)
