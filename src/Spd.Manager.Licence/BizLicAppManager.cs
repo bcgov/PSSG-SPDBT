@@ -124,7 +124,10 @@ internal class BizLicAppManager :
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.BizLicAppUpsertRequest.LicenceAppId, cancellationToken);
 
-        decimal cost = await CommitApplicationAsync(cmd.BizLicAppUpsertRequest, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, false, cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId);
+        decimal cost = await CommitApplicationAsync(cmd.BizLicAppUpsertRequest, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, 
+            HasSwl90DayLicence: false,
+            IsAuthenticated: true, 
+            cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId);
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -154,7 +157,7 @@ internal class BizLicAppManager :
         await _bizContactRepository.ManageBizContactsAsync(
             new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
             cancellationToken);
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: true);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -224,7 +227,7 @@ internal class BizLicAppManager :
             new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
             cancellationToken);
 
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: true);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -292,7 +295,7 @@ internal class BizLicAppManager :
             await _bizContactRepository.ManageBizContactsAsync(
                 new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
                 cancellationToken);
-            cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+            cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: true);
         }
 
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };

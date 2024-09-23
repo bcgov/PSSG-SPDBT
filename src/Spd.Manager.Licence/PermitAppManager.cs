@@ -86,7 +86,7 @@ internal class PermitAppManager :
         var response = await this.Handle((PermitUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.PermitUpsertRequest.LicenceAppId, cancellationToken);
-        decimal cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(cmd.PermitUpsertRequest, cmd.PermitUpsertRequest.LicenceAppId.Value, cancellationToken, false,IsAuthenticated: true);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -122,7 +122,7 @@ internal class PermitAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
         var response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.LicenceAppId, response.ContactId, null, null, null, null, null, cancellationToken);
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: cmd.IsAuthenticatied);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
     #endregion
@@ -161,7 +161,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false, IsAuthenticated: cmd.IsAuthenticatied);
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -218,7 +218,7 @@ internal class PermitAppManager :
                     cancellationToken);
             }
         }
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: cmd.IsAuthenticatied);
 
         return new PermitAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -246,7 +246,7 @@ internal class PermitAppManager :
             CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
             createLicResponse = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
-            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken);
+            await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, IsAuthenticated: cmd.IsAuthenticatied);
         }
         else
         {

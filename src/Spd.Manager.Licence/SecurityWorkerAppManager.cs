@@ -89,7 +89,7 @@ internal class SecurityWorkerAppManager :
         var response = await this.Handle((WorkerLicenceUpsertCommand)cmd, cancellationToken);
         //move files from transient bucket to main bucket when app status changed to Submitted.
         await MoveFilesAsync((Guid)cmd.LicenceUpsertRequest.LicenceAppId, cancellationToken);
-        decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false);
+        decimal? cost = await CommitApplicationAsync(cmd.LicenceUpsertRequest, cmd.LicenceUpsertRequest.LicenceAppId.Value, cancellationToken, false,IsAuthenticated: true);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -158,7 +158,7 @@ internal class SecurityWorkerAppManager :
         }
         else
         {
-            decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
+            decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false, IsAuthenticated:false);
             return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
         }
     }
@@ -198,7 +198,7 @@ internal class SecurityWorkerAppManager :
             }
         }
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false);
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, false, IsAuthenticated: cmd.IsAuthenticated);
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 
@@ -271,7 +271,7 @@ internal class SecurityWorkerAppManager :
         bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
             originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence;
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence);
+        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence, IsAuthenticated: cmd.IsAuthenticated);
 
         return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -333,7 +333,7 @@ internal class SecurityWorkerAppManager :
                         cancellationToken);
                 }
             }
-            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false);
+            cost = await CommitApplicationAsync(request, createLicResponse.LicenceAppId, cancellationToken, false, IsAuthenticated: cmd.IsAuthenticated);
         }
         else
         {
