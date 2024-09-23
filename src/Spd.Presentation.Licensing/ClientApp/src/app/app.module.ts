@@ -1,5 +1,5 @@
 import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,37 +15,30 @@ import { LandingComponent } from './landing.component';
 import { MaterialModule } from './material.module';
 import { SharedModule } from './shared/shared.module';
 
-@NgModule({
-	declarations: [AppComponent, LandingComponent],
-	imports: [
-		OAuthModule.forRoot({
-			resourceServer: {
-				customUrlValidation: (url) =>
-					url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
-				sendAccessToken: true,
-			},
-		}),
-		AppRoutingModule,
-		CoreModule,
-		BrowserModule,
-		BrowserAnimationsModule,
-		HttpClientModule,
-		CommonModule,
-		MaterialModule,
-		FormsModule,
-		ReactiveFormsModule,
-		NgxSpinnerModule,
-		ApiModule,
-		SharedModule,
-	],
-	providers: [
-		provideHotToastConfig(),
-		{
-			provide: APP_BASE_HREF,
-			useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
-			deps: [PlatformLocation],
-		},
-	],
-	bootstrap: [AppComponent],
-})
+@NgModule({ declarations: [AppComponent, LandingComponent],
+    bootstrap: [AppComponent], imports: [OAuthModule.forRoot({
+            resourceServer: {
+                customUrlValidation: (url) => url.toLowerCase().includes('/api') && !url.toLowerCase().endsWith('/configuration'),
+                sendAccessToken: true,
+            },
+        }),
+        AppRoutingModule,
+        CoreModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        CommonModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgxSpinnerModule,
+        ApiModule,
+        SharedModule], providers: [
+        provideHotToastConfig(),
+        {
+            provide: APP_BASE_HREF,
+            useFactory: (location: PlatformLocation) => location.getBaseHrefFromDOM(),
+            deps: [PlatformLocation],
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {}
