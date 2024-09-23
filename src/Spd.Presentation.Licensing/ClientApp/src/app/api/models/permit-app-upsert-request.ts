@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
+import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { ArmouredVehiclePermitReasonCode } from '../models/armoured-vehicle-permit-reason-code';
 import { BizTypeCode } from '../models/biz-type-code';
@@ -21,6 +22,7 @@ export interface PermitAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
   applicantId?: string;
+  applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   armouredVehiclePermitReasonCodes?: Array<ArmouredVehiclePermitReasonCode> | null;
   bcDriversLicenceNumber?: string | null;

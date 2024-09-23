@@ -331,7 +331,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		isSaveAndExit?: boolean
 	): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -530,7 +530,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitNewAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
+		const body = this.getSaveBodyBaseUpsertAuthenticated(permitModelFormValue) as PermitAppUpsertRequest;
 
 		body.applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId;
 
@@ -541,8 +541,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	submitPermitRenewalOrUpdateAuthenticated(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+		console.debug('[submitPermitRenewalOrUpdateAuthenticated]');
+
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
+		const body = this.getSaveBodyBaseSubmitAuthenticated(permitModelFormValue) as PermitAppSubmitRequest;
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -857,7 +859,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	submitPermitAnonymous(): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
 		const permitModelFormValue = this.permitModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBaseAnonymous(permitModelFormValue);
+		const body = this.getSaveBodyBaseSubmitAnonymous(permitModelFormValue);
 		const documentsToSave = this.getDocsToSaveBlobs(permitModelFormValue);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -877,6 +879,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		});
 
 		const googleRecaptcha = { recaptchaCode: consentData.captchaFormGroup.token };
+		console.debug('[submitPermitAnonymous] newDocumentsExist', newDocumentsExist);
+
 		if (newDocumentsExist) {
 			return this.postPermitAnonymousNewDocuments(googleRecaptcha, existingDocumentIds, documentsToSave, body);
 		} else {
@@ -893,6 +897,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		existingDocumentIds: Array<string>,
 		body: PermitAppSubmitRequest
 	) {
+		console.debug('[postPermitAnonymousNoNewDocuments]');
+
 		return this.permitService
 			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
@@ -919,6 +925,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		documentsToSave: Array<PermitDocumentsToSave>,
 		body: PermitAppSubmitRequest
 	) {
+		console.debug('[postPermitAnonymousNewDocuments]');
+
 		return this.permitService
 			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(

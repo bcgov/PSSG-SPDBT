@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
+import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { Document } from '../models/document';
 import { GenderCode } from '../models/gender-code';
@@ -10,6 +11,7 @@ import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface ControllingMemberCrcAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
+  applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationTypeCode?: ApplicationTypeCode;
   bankruptcyHistoryDetail?: string | null;
   bcDriversLicenceNumber?: string | null;

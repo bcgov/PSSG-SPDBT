@@ -64,7 +64,6 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[applicationTypeCode]="applicationTypeCode"
 					[showCitizenshipStep]="showCitizenshipStep"
 					[showPhotographOfYourself]="showPhotographOfYourself"
-					[showReprint]="showReprint"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"

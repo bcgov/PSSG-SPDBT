@@ -69,7 +69,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		originalLicenceData: this.originalLicenceFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
-		reprintLicenceData: this.reprintLicenceFormGroup,
 		aliasesData: this.aliasesFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		residentialAddressData: this.residentialAddressFormGroup,
@@ -352,7 +351,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// 	this.residentialAddressFormGroup.valid,
 			// 	this.mailingAddressFormGroup.valid,
 			// 	this.contactInformationFormGroup.valid,
-			// 	updateNameOrGenderChange ? this.reprintLicenceFormGroup.valid : true
 			// );
 
 			return (
@@ -364,8 +362,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.photographOfYourselfFormGroup.valid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
-				this.contactInformationFormGroup.valid &&
-				(updateNameOrGenderChange ? this.reprintLicenceFormGroup.valid : true)
+				this.contactInformationFormGroup.valid
 			);
 		}
 	}
@@ -702,9 +699,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsSubmitPost$Response({ body });
 	}
 
-	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(
-		isUpdateFlowWithHideReprintStep?: boolean
-	): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitLicenceRenewalOrUpdateOrReplaceAuthenticated(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const bodyUpsert = this.getSaveBodyBaseAuthenticated(licenceModelFormValue);
 		delete bodyUpsert.documentInfos;
@@ -712,11 +707,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
 
 		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
-			// if not showing the reprint step, then set to True, otherwise
-			// use the value selected
-			body.reprint = isUpdateFlowWithHideReprintStep
-				? true
-				: this.utilService.booleanTypeToBoolean(licenceModelFormValue.reprintLicenceData.reprintLicence);
+			body.reprint = true;
 		}
 
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
@@ -967,6 +958,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					originalExpiryDate: accessCodeData.linkedExpiryDate,
 					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
 					originalCategoryCodes: accessCodeData.linkedLicenceCategoryCodes,
+					originalBizTypeCode: BizTypeCode.None,
+					originalPhotoOfYourselfExpired: null,
+					originalDogAuthorizationExists: null,
 				};
 
 				const [
@@ -1294,7 +1288,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
 			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBizTypeCode: 'bizTypeCode' in profile ? profile.bizTypeCode : userLicenceInformation?.bizTypeCode,
+			originalBizTypeCode: BizTypeCode.None, // userLicenceInformation?.bizTypeCode, // TODO get biz type code
+			originalCategoryCodes: userLicenceInformation?.categoryCodes,
+			originalPhotoOfYourselfExpired: null,
+			originalDogAuthorizationExists: null,
 		};
 
 		const contactInformationData = {
