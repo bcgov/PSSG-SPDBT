@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 export const MONTH_PICKER_FORMATS = {
 	parse: {
