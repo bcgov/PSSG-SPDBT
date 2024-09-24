@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './step-business-licence-controlling-member-invites-component';
 import { StepBusinessLicenceControllingMembersComponent } from './step-business-licence-controlling-members.component';
 import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-employees.component';

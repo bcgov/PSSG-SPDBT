@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { SPD_CONSTANTS } from 'src/app/core/constants/constants';
 
 export enum DocumentTypeCode {

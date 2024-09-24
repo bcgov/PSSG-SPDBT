@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { DelegateResponse } from 'src/app/api/models';
 import { DelegateService } from 'src/app/api/services';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';

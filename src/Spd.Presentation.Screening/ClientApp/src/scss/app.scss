@@ -72,7 +72,7 @@ $spd-yellow: (
 
 $font-family-sans-serif: "BC Sans", "Noto Sans", "Verdana", "Arial", "sans serif"; 
 
-$spd-body-1: mat.define-typography-level(
+$spd-body-1: mat.m2-define-typography-level(
   $font-family: $font-family-sans-serif,
 	$font-weight: 400,
 	$font-size: 16px,
@@ -80,10 +80,10 @@ $spd-body-1: mat.define-typography-level(
 	$letter-spacing: normal,
 );
 
-$spd-typography: mat.define-typography-config(
+$spd-typography: mat.m2-define-typography-config(
 	$font-family: $font-family-sans-serif,
-	$body-1: mat.define-typography-level(16px, 24px, 400),
-	$body-2: mat.define-typography-level(16px, 24px, 400),
+	$body-1: mat.m2-define-typography-level(16px, 24px, 400),
+	$body-2: mat.m2-define-typography-level(16px, 24px, 400),
 );
 
 @include mat.core();
@@ -92,15 +92,15 @@ $spd-typography: mat.define-typography-config(
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$spd-primary: mat.define-palette($spd-blue, 500);
-$spd-accent: mat.define-palette($spd-yellow, 500);
+$spd-primary: mat.m2-define-palette($spd-blue, 500);
+$spd-accent: mat.m2-define-palette($spd-yellow, 500);
 
 // The warn palette is optional (defaults to red).
-$spd-warn: mat.define-palette(mat.$red-palette);
+$spd-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$spd-theme: mat.define-light-theme((
+$spd-theme: mat.m2-define-light-theme((
   color: (
     primary: $spd-primary,
     accent: $spd-accent,
