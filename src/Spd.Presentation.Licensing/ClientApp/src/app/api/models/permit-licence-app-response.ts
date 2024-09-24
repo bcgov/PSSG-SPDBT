@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
+import { ApplicationOriginTypeCode } from '../models/application-origin-type-code';
 import { ApplicationPortalStatusCode } from '../models/application-portal-status-code';
 import { ApplicationTypeCode } from '../models/application-type-code';
 import { ArmouredVehiclePermitReasonCode } from '../models/armoured-vehicle-permit-reason-code';
@@ -21,6 +22,7 @@ import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface PermitLicenceAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
+  applicationOriginTypeCode?: ApplicationOriginTypeCode;
   applicationPortalStatus?: ApplicationPortalStatusCode;
   applicationTypeCode?: ApplicationTypeCode;
   armouredVehiclePermitReasonCodes?: Array<ArmouredVehiclePermitReasonCode> | null;

@@ -10,6 +10,7 @@ export { ApplicantLoginResponse } from './models/applicant-login-response';
 export { ApplicantProfileResponse } from './models/applicant-profile-response';
 export { ApplicantUpdateRequest } from './models/applicant-update-request';
 export { ApplicationInviteStatusCode } from './models/application-invite-status-code';
+export { ApplicationOriginTypeCode } from './models/application-origin-type-code';
 export { ApplicationPortalStatusCode } from './models/application-portal-status-code';
 export { ApplicationTypeCode } from './models/application-type-code';
 export { ArmouredVehiclePermitReasonCode } from './models/armoured-vehicle-permit-reason-code';

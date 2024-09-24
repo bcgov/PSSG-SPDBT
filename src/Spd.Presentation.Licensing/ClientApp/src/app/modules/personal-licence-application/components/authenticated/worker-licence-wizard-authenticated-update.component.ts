@@ -43,7 +43,6 @@ import { StepsWorkerLicenceUpdatesAuthenticatedComponent } from './worker-licenc
 							[showStepDogsAndRestraints]="showStepDogsAndRestraints"
 							[hasBcscNameChanged]="hasBcscNameChanged"
 							[hasGenderChanged]="hasGenderChanged"
-							[isUpdateFlowWithHideReprintStep]="isUpdateFlowWithHideReprintStep"
 							(childNextStep)="onChildNextStep()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextStepperStep)="onNextStepperStep(stepper)"
@@ -90,10 +89,6 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 	showStepDogsAndRestraints = false;
 	hasBcscNameChanged = false;
 	hasGenderChanged = false;
-
-	// placeholder for flag - Update flow and data requiring reprint been changed (like categories),
-	// if so, do not show the reprint step
-	isUpdateFlowWithHideReprintStep = false;
 
 	private licenceModelChangedSubscription!: Subscription;
 
@@ -191,29 +186,27 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 				);
 			}
 		} else {
-			this.workerApplicationService
-				.submitLicenceRenewalOrUpdateOrReplaceAuthenticated(this.isUpdateFlowWithHideReprintStep)
-				.subscribe({
-					next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-						const workerLicenceCommandResponse = resp.body;
+			this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
+				next: (resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+					const workerLicenceCommandResponse = resp.body;
 
-						// save this locally just in application payment fails
-						this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
-						this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
+					// save this locally just in application payment fails
+					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
+					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
-						if (this.newLicenceCost > 0) {
-							this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
-						} else {
-							this.hotToastService.success('Your licence update has been successfully submitted');
-							this.router.navigateByUrl(
-								PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)
-							);
-						}
-					},
-					error: (error: any) => {
-						console.log('An error occurred during save', error);
-					},
-				});
+					if (this.newLicenceCost > 0) {
+						this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
+					} else {
+						this.hotToastService.success('Your licence update has been successfully submitted');
+						this.router.navigateByUrl(
+							PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)
+						);
+					}
+				},
+				error: (error: any) => {
+					console.log('An error occurred during save', error);
+				},
+			});
 		}
 	}
 
