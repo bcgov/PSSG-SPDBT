@@ -3,6 +3,7 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
+using System.Collections.Immutable;
 
 namespace Spd.Resource.Repository.Document;
 
@@ -63,6 +64,12 @@ internal class DocumentRepository : IDocumentRepository
         }
 
         var result = await documents.GetAllPagesAsync(ct);
+
+        if (qry.MultiFileTypes != null)
+        {
+            List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(qry.FileType.ToString())).ToList();
+            result = result.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value));
+        }
         result = result.OrderByDescending(a => a.createdon);
 
         return new DocumentListResp

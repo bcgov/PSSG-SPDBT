@@ -44,8 +44,15 @@ public record LicenceResponse : LicenceBasicResponse
 
     //biz info
     public BizTypeCode BizTypeCode { get; set; } = BizTypeCode.None;
-    public IEnumerable<string> Conditions { get; set; } = Enumerable.Empty<string>();
-    //todo: document expired date
+
+    //swl info
+    public bool CarryAndUseRestraints { get; set; }
+    public DateOnly? RestraintsDocumentExpiredDate { get; set; }
+    public bool UseDogs { get; set; }
+    public bool IsDogsPurposeProtection { get; set; }
+    public bool IsDogsPurposeDetectionDrugs { get; set; }
+    public bool IsDogsPurposeDetectionExplosives { get; set; }
+    public DateOnly? DogsDocumentExpiredDate { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;

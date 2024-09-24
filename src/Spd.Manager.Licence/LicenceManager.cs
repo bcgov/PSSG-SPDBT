@@ -5,7 +5,7 @@ using Spd.Manager.Shared;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
+using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
 using Spd.Utilities.Shared.Exceptions;
 using System.Net;
@@ -47,17 +47,15 @@ internal class LicenceManager :
         var response = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
 
-        //conditions
-        IncidentListResp resp = await _incidentRepository.QueryAsync(
-            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
-            cancellationToken);
-        lic.Conditions = resp.Items.First().Conditions;
+        await GetRationalDocumentsInfoAsync(lic, cancellationToken);
+        await GetDogRestraintsInfoAsync(lic, cancellationToken);
+
         return lic;
     }
 
     public async Task<LicenceResponse?> Handle(LicenceQuery query, CancellationToken cancellationToken)
     {
-        LicenceListResp response = await _licenceRepository.QueryAsync(
+        LicenceListResp qryResponse = await _licenceRepository.QueryAsync(
                 new LicenceQry
                 {
                     LicenceNumber = query.LicenceNumber,
@@ -65,30 +63,17 @@ internal class LicenceManager :
                     IncludeInactive = true,
                 }, cancellationToken);
 
-        if (!response.Items.Any())
+        if (!qryResponse.Items.Any())
         {
             _logger.LogDebug("No licence found.");
             return null;
         }
-        LicenceResp lic = response.Items.OrderByDescending(i => i.CreatedOn).First();
-        DocumentListResp? docResp = null;
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.ArmouredVehiclePermit)
-            docResp = await _documentRepository.QueryAsync(
-                    new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
-                    cancellationToken);
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit)
-            docResp = await _documentRepository.QueryAsync(
-                new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.BodyArmourRationale },
-                cancellationToken);
-        LicenceResponse result = _mapper.Map<LicenceResponse>(lic);
-        result.RationalDocumentInfos = _mapper.Map<IEnumerable<Document>>(docResp?.Items);
+        LicenceResp response = qryResponse.Items.OrderByDescending(i => i.CreatedOn).First();
+        LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
+        await GetRationalDocumentsInfoAsync(lic, cancellationToken);
+        await GetDogRestraintsInfoAsync(lic, cancellationToken);
 
-        //conditions
-        IncidentListResp resp = await _incidentRepository.QueryAsync(
-            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
-            cancellationToken);
-        result.Conditions = resp.Items.First().Conditions;
-        return result;
+        return lic;
     }
 
     public async Task<IEnumerable<LicenceBasicResponse>> Handle(LicenceListQuery query, CancellationToken cancellationToken)
@@ -157,5 +142,62 @@ internal class LicenceManager :
             }
         }
         return new FileResponse();
+    }
+
+    private async Task GetRationalDocumentsInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
+    {
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit || lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        {
+            DocumentListResp? docResp = null;
+            if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+                docResp = await _documentRepository.QueryAsync(
+                        new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
+                        cancellationToken);
+            if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+                docResp = await _documentRepository.QueryAsync(
+                    new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.BodyArmourRationale },
+                    cancellationToken);
+            lic.RationalDocumentInfos = _mapper.Map<IEnumerable<Document>>(docResp?.Items);
+        }
+    }
+
+    private async Task GetDogRestraintsInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
+    {
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence || lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
+        {
+            //conditions
+            IncidentListResp resp = await _incidentRepository.QueryAsync(
+            new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
+            cancellationToken);
+            IncidentResp incidentResp = resp.Items.First();
+            if (incidentResp.Conditions.Any(i => i.Id == DynamicsConstants.AUTHORIZED_FOR_USE_OF_DOGS))
+                lic.UseDogs = true;
+            if (incidentResp.Conditions.Any(i => i.Id == DynamicsConstants.AUTHORIZED_FOR_USE_OF_DOGS_PROTECTION))
+                lic.IsDogsPurposeProtection = true;
+            if (incidentResp.Conditions.Any(i => i.Id == DynamicsConstants.AUTHORIZED_FOR_USE_OF_DOGS_DRUG_DETECTION))
+                lic.IsDogsPurposeDetectionDrugs = true;
+            if (incidentResp.Conditions.Any(i => i.Id == DynamicsConstants.AUTHORIZED_FOR_USE_OF_DOGS_EXPLOSIVE_DETECTION))
+                lic.IsDogsPurposeDetectionExplosives = true;
+            if (incidentResp.Conditions.Any(i => i.Id == DynamicsConstants.AUTHORIZED_FOR_USE_OF_RESTRAINTS))
+                lic.CarryAndUseRestraints = true;
+
+            if (lic.UseDogs || lic.IsDogsPurposeDetectionDrugs || lic.IsDogsPurposeDetectionExplosives || lic.IsDogsPurposeProtection)
+            {
+                //get dog document expired date
+                DocumentListResp docList = await _documentRepository.QueryAsync(
+                        new DocumentQry() { ApplicantId = lic.LicenceHolderId, FileType = DocumentTypeEnum.DogCertificate },
+                        cancellationToken);
+                lic.DogsDocumentExpiredDate = docList.Items.First().ExpiryDate;
+            }
+
+            if (lic.CarryAndUseRestraints)
+            {
+                //get restraints document expired date
+                DocumentListResp docList = await _documentRepository.QueryAsync(
+                    new DocumentQry() { ApplicantId = lic.LicenceHolderId, MultiFileTypes = new[] { DocumentTypeEnum.ASTCertificate, DocumentTypeEnum.UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent } },
+                    cancellationToken);
+                lic.DogsDocumentExpiredDate = docList.Items.First().ExpiryDate;
+            }
+        }
     }
 }
