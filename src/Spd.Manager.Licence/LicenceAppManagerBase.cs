@@ -39,7 +39,7 @@ internal abstract class LicenceAppManagerBase
         _licAppRepository = licAppRepository;
     }
 
-    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false, bool IsAuthenticated = false, Guid? companionAppId = null)
+    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false, Guid? companionAppId = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -52,17 +52,16 @@ internal abstract class LicenceAppManagerBase
         }, ct);
         LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
 
+        //applications with portal origin type are considered authenticated, otherwise not.
+        bool IsAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
         bool isNewOrRenewal = licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.New || licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal;
         ApplicationStatusEnum status;
 
         if (licenceFee == null || licenceFee.Amount == 0)
-        {
             status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
-        }
         else
-        {
-            status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.PaymentPending;
-        }
+            status = ApplicationStatusEnum.PaymentPending;
+
         // Commit the companion application if it exists
         //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
         if (companionAppId != null)

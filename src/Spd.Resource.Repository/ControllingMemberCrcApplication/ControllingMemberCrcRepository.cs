@@ -82,6 +82,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveControllingMemberCrcAppCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.ControllingMemberAppId);
+            app.SetIdentityConfirmed();
             _context.UpdateObject(app);
 
 
@@ -89,6 +90,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         else
         {
             app = _mapper.Map<spd_application>(cmd);
+            app.SetIdentityConfirmed();
             _context.AddTospd_applications(app);
 
             //set applicant lookup

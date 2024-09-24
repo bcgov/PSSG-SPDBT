@@ -26,8 +26,7 @@ public record WorkerLicenceAppNewCommand(
 
 public record WorkerLicenceAppReplaceCommand(
     WorkerLicenceAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos, 
-    bool IsAuthenticated = false)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<WorkerLicenceCommandResponse>;
 
 public record WorkerLicenceAppRenewCommand(

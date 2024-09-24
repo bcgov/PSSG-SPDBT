@@ -173,19 +173,19 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                PermitAppReplaceCommand command = new(jsonRequest, newDocInfos, true);
+                PermitAppReplaceCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Renewal)
             {
-                PermitAppRenewCommand command = new(jsonRequest, newDocInfos, true);
+                PermitAppRenewCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Update)
             {
-                PermitAppUpdateCommand command = new(jsonRequest, newDocInfos, true);
+                PermitAppUpdateCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 

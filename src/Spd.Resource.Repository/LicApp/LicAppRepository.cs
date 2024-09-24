@@ -26,19 +26,9 @@ internal class LicAppRepository : ILicAppRepository
 
         app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
 
-        switch (status)
-        {
-            case ApplicationStatusEnum.Submitted:
-                app.statecode = DynamicsConstants.StateCode_Inactive;
-                break;
-            case ApplicationStatusEnum.ApplicantVerification:
-                app.spd_identityconfirmed = false;
-                break;
-            case ApplicationStatusEnum.PaymentPending:
-                app.spd_identityconfirmed = true;
-                break;
-        }
-
+        if (status == ApplicationStatusEnum.Submitted)
+            app.statecode = DynamicsConstants.StateCode_Inactive;
+               
         app.spd_submittedon = DateTimeOffset.Now;
         app.spd_portalmodifiedon = DateTimeOffset.Now;
         if (price is > 0)

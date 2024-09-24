@@ -175,7 +175,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             if (jsonRequest.ApplicationTypeCode == ApplicationTypeCode.Replacement)
             {
-                WorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos, true);
+                WorkerLicenceAppReplaceCommand command = new(jsonRequest, newDocInfos);
                 response = await _mediator.Send(command, ct);
             }
 

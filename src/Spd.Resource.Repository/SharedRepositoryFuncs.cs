@@ -63,4 +63,13 @@ internal static class SharedRepositoryFuncs
         return matchingAliases;
     }
 
+    public static void SetIdentityConfirmed(this spd_application app)
+    {
+        bool isNotPortal = app.spd_origin != (int)ApplicationOriginOptionSet.Portal;
+        bool isNewOrRenewal = app.spd_licenceapplicationtype == (int)LicenceApplicationTypeOptionSet.New ||
+                              app.spd_licenceapplicationtype == (int)LicenceApplicationTypeOptionSet.Renewal;
+
+        app.spd_identityconfirmed = !(isNotPortal && isNewOrRenewal);
+    }
+
 }

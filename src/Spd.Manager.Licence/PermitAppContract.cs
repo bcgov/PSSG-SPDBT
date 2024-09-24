@@ -44,26 +44,22 @@ public record PermitAppUpsertRequest : PermitLicenceAppBase
 #region anonymous user
 public record PermitAppNewCommand(
     PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos, 
-    bool IsAuthenticatied = false)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record PermitAppReplaceCommand(
     PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos, 
-    bool IsAuthenticatied = false)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record PermitAppRenewCommand(
     PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos,
-    bool IsAuthenticatied = false)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record PermitAppUpdateCommand(
     PermitAppSubmitRequest LicenceAnonymousRequest,
-    IEnumerable<LicAppFileInfo> LicAppFileInfos,
-    bool IsAuthenticatied = false)
+    IEnumerable<LicAppFileInfo> LicAppFileInfos)
     : IRequest<PermitAppCommandResponse>;
 
 public record GetPermitApplicationQuery(Guid LicenceApplicationId) : IRequest<PermitLicenceAppResponse>;

@@ -24,6 +24,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         Guid applicantId;
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        app.SetIdentityConfirmed();
 
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
             throw new ArgumentException("New application type is not supported for business licence.");
@@ -96,11 +97,13 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
                 throw new ArgumentException("Application Id was not found.");
             _mapper.Map<SaveBizLicApplicationCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.LicenceAppId);
+            app.SetIdentityConfirmed();
             _context.UpdateObject(app);
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
+            app.SetIdentityConfirmed();
             _context.AddTospd_applications(app);
         }
         // Save changes done to the application, given that these are lost further down the logic (method "DeletePrivateInvestigatorLink")

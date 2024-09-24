@@ -126,7 +126,6 @@ internal class BizLicAppManager :
 
         decimal cost = await CommitApplicationAsync(cmd.BizLicAppUpsertRequest, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken, 
             HasSwl90DayLicence: false,
-            IsAuthenticated: true, 
             cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId);
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -157,7 +156,7 @@ internal class BizLicAppManager :
         await _bizContactRepository.ManageBizContactsAsync(
             new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
             cancellationToken);
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: true);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -227,7 +226,7 @@ internal class BizLicAppManager :
             new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
             cancellationToken);
 
-        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: true);
+        decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
@@ -295,7 +294,7 @@ internal class BizLicAppManager :
             await _bizContactRepository.ManageBizContactsAsync(
                 new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
                 cancellationToken);
-            cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, IsAuthenticated: true);
+            cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
 
         return new BizLicAppCommandResponse { LicenceAppId = response?.LicenceAppId ?? originalLicApp.LicenceAppId, Cost = cost };

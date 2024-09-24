@@ -160,7 +160,7 @@ internal class ControllingMemberCrcAppManager :
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
-        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode}, response.ControllingMemberAppId, ct, IsAuthenticated: false);
+        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode}, response.ControllingMemberAppId, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
 
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
@@ -191,7 +191,7 @@ internal class ControllingMemberCrcAppManager :
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to PaymentPending.
         await MoveFilesAsync(response.ControllingMemberAppId, ct);
-        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode }, response.ControllingMemberAppId, ct, IsAuthenticated: true);
+        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode }, response.ControllingMemberAppId, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
