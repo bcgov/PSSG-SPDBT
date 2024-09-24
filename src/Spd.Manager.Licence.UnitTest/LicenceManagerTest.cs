@@ -3,6 +3,7 @@ using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.FileStorage;
@@ -12,11 +13,12 @@ namespace Spd.Manager.Licence.UnitTest;
 public class LicenceManagerTest
 {
     private readonly IFixture fixture;
-    private Mock<ILicenceRepository> mockLicRepo = new();
-    private Mock<IDocumentRepository> mockDocRepo = new();
-    private Mock<IMainFileStorageService> mockFileService = new();
+    private readonly Mock<ILicenceRepository> mockLicRepo = new();
+    private readonly Mock<IDocumentRepository> mockDocRepo = new();
+    private readonly Mock<IMainFileStorageService> mockFileService = new();
+    private readonly Mock<IIncidentRepository> mockIncidentRepo = new();
 
-    private LicenceManager sut;
+    private readonly LicenceManager sut;
 
     public LicenceManagerTest()
     {
@@ -35,6 +37,7 @@ public class LicenceManagerTest
             mockDocRepo.Object,
             null,
             mockFileService.Object,
+            mockIncidentRepo.Object,
             mapper);
     }
 

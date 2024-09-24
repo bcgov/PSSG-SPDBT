@@ -61,11 +61,9 @@ internal class IncidentRepository : IIncidentRepository
         incident.statuscode = (int)Enum.Parse<CaseStatusOptionSet>(cmd.CaseStatus.ToString());
         incident.spd_substatusreasondetail = (int)Enum.Parse<CaseSubStatusOptionSet>(cmd.CaseSubStatus.ToString());
         _context.UpdateObject(incident);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync(ct);
         return _mapper.Map<IncidentResp>(incident);
     }
 
-
 }
-
 
