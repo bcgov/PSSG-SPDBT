@@ -63,19 +63,25 @@ internal class DocumentRepository : IDocumentRepository
             documents = documents.Where(d => d._bcgov_tag1id_value == tagId || d._bcgov_tag2id_value == tagId || d._bcgov_tag3id_value == tagId);
         }
 
-        var result = await documents.GetAllPagesAsync(ct);
+        var results = await documents.GetAllPagesAsync(ct);
 
         if (qry.MultiFileTypes != null)
         {
-            List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(qry.FileType.ToString())).ToList();
-            result = result.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value));
+            List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(f.ToString())).ToList();
+            List<bcgov_documenturl> result = results.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value)).ToList();
+            return new DocumentListResp
+            {
+                Items = _mapper.Map<IEnumerable<DocumentResp>>(result.OrderByDescending(a => a.createdon))
+            };
         }
-        result = result.OrderByDescending(a => a.createdon);
-
-        return new DocumentListResp
+        else
         {
-            Items = _mapper.Map<IEnumerable<DocumentResp>>(result)
-        };
+            results = results.OrderByDescending(a => a.createdon);
+            return new DocumentListResp
+            {
+                Items = _mapper.Map<IEnumerable<DocumentResp>>(results)
+            };
+        }
     }
 
     public async Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken ct)

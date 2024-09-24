@@ -196,7 +196,7 @@ internal class LicenceManager :
                 DocumentListResp docList = await _documentRepository.QueryAsync(
                     new DocumentQry() { ApplicantId = lic.LicenceHolderId, MultiFileTypes = new[] { DocumentTypeEnum.ASTCertificate, DocumentTypeEnum.UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent } },
                     cancellationToken);
-                lic.DogsDocumentExpiredDate = docList.Items.First().ExpiryDate;
+                lic.RestraintsDocumentExpiredDate = docList.Items.First().ExpiryDate;
             }
         }
     }

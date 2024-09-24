@@ -13,12 +13,12 @@ namespace Spd.Manager.Licence.UnitTest;
 public class LicenceManagerTest
 {
     private readonly IFixture fixture;
-    private Mock<ILicenceRepository> mockLicRepo = new();
-    private Mock<IDocumentRepository> mockDocRepo = new();
-    private Mock<IMainFileStorageService> mockFileService = new();
-    private Mock<IIncidentRepository> mockIncidentRepo = new();
+    private readonly Mock<ILicenceRepository> mockLicRepo = new();
+    private readonly Mock<IDocumentRepository> mockDocRepo = new();
+    private readonly Mock<IMainFileStorageService> mockFileService = new();
+    private readonly Mock<IIncidentRepository> mockIncidentRepo = new();
 
-    private LicenceManager sut;
+    private readonly LicenceManager sut;
 
     public LicenceManagerTest()
     {
