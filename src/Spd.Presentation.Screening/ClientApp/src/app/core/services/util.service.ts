@@ -1,9 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import jwt_decode from 'jwt-decode';
-import * as moment from 'moment';
+import moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';

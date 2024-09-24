@@ -19,11 +19,13 @@
 			"prefix": "app",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:browser",
+					"builder": "@angular-devkit/build-angular:application",
 					"options": {
-						"outputPath": "dist",
-						"index": "src/index.html",
-						"main": "src/main.ts",
+						"outputPath": {
+              "base": "dist",
+              "browser": ""
+            },
+            "index": "src/index.html",
 						"polyfills": ["zone.js"],
 						"tsConfig": "tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
@@ -31,11 +33,14 @@
 						"styles": [
 							"node_modules/bootstrap/dist/css/bootstrap.min.css",
 							"node_modules/ngx-spinner/animations/square-jelly-box.css",
-							"node_modules/@ngneat/hot-toast/src/styles/styles.css",
+							"node_modules/@ngxpert/hot-toast/src/styles/styles.css",
 							"src/scss/app.scss"
 						],
 						"scripts": ["node_modules/jquery/dist/jquery.min.js", "node_modules/bootstrap/dist/js/bootstrap.min.js"],
-						"allowedCommonJsDependencies": ["moment"]
+            "allowedCommonJsDependencies": [
+              "moment"
+            ],
+            "browser": "src/main.ts"
 					},
 					"configurations": {
 						"production": {
@@ -54,10 +59,8 @@
 							"outputHashing": "all",
 							"baseHref": "/licensing/"
 						},
-						"development": {
-							"buildOptimizer": false,
-							"optimization": false,
-							"vendorChunk": true,
+            "development": {
+              "optimization": false,
 							"extractLicenses": false,
 							"sourceMap": true,
 							"namedChunks": true
@@ -69,10 +72,10 @@
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
 						"production": {
-							"browserTarget": "frontend:build:production"
+							"buildTarget": "frontend:build:production"
 						},
 						"development": {
-							"browserTarget": "frontend:build:development"
+							"buildTarget": "frontend:build:development"
 						}
 					},
 					"defaultConfiguration": "development"
@@ -80,7 +83,7 @@
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "frontend:build"
+						"buildTarget": "frontend:build"
 					}
 				},
 				"test": {
@@ -93,7 +96,7 @@
 						"styles": [
 							"node_modules/bootstrap/dist/css/bootstrap.min.css",
 							"node_modules/ngx-spinner/animations/square-jelly-box.css",
-							"node_modules/@ngneat/hot-toast/src/styles/styles.css",
+							"node_modules/@ngxpert/hot-toast/src/styles/styles.css",
 							"src/scss/app.scss"
 						],
 						"scripts": ["node_modules/jquery/dist/jquery.min.js", "node_modules/bootstrap/dist/js/bootstrap.min.js"]

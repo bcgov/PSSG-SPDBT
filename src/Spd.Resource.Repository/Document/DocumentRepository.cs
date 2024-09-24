@@ -3,6 +3,7 @@ using Microsoft.Dynamics.CRM;
 using Spd.Resource.Repository.Application;
 using Spd.Utilities.Dynamics;
 using Spd.Utilities.FileStorage;
+using System.Collections.Immutable;
 
 namespace Spd.Resource.Repository.Document;
 
@@ -62,13 +63,25 @@ internal class DocumentRepository : IDocumentRepository
             documents = documents.Where(d => d._bcgov_tag1id_value == tagId || d._bcgov_tag2id_value == tagId || d._bcgov_tag3id_value == tagId);
         }
 
-        var result = await documents.GetAllPagesAsync(ct);
-        result = result.OrderByDescending(a => a.createdon);
+        var results = await documents.GetAllPagesAsync(ct);
 
-        return new DocumentListResp
+        if (qry.MultiFileTypes != null)
         {
-            Items = _mapper.Map<IEnumerable<DocumentResp>>(result)
-        };
+            List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(f.ToString())).ToList();
+            List<bcgov_documenturl> result = results.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value)).ToList();
+            return new DocumentListResp
+            {
+                Items = _mapper.Map<IEnumerable<DocumentResp>>(result.OrderByDescending(a => a.createdon))
+            };
+        }
+        else
+        {
+            results = results.OrderByDescending(a => a.createdon);
+            return new DocumentListResp
+            {
+                Items = _mapper.Map<IEnumerable<DocumentResp>>(results)
+            };
+        }
     }
 
     public async Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken ct)

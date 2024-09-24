@@ -2,7 +2,8 @@ import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 import { CommonBusinessTermsComponent } from './common-business-terms.component';
 
 @Component({
