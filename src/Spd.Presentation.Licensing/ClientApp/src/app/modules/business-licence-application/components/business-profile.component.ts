@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { HotToastService } from '@ngneat/hot-toast';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
 @Component({

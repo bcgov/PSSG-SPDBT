@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonUserProfileComponent } from './user-profile-components/common-user-profile.component';
 
 @Component({

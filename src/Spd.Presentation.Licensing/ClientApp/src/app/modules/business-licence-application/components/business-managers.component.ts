@@ -6,8 +6,9 @@ import { BizPortalUserListResponse, BizPortalUserResponse, ContactAuthorizationT
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 import { BizPortalUserDialogData, ModalBusinessManagerEditComponent } from './modal-business-manager-edit.component';
 
 @Component({

@@ -23,7 +23,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { take, tap } from 'rxjs';
 import {
 	LookupByLicenceNumberDialogData,
