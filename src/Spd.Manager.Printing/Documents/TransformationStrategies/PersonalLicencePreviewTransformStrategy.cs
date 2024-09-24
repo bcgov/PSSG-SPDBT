@@ -54,7 +54,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         IncidentListResp resp = await incidentRepository.QueryAsync(
             new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
             cancellationToken);
-        preview.Conditions = resp.Items.First().Conditions;
+        preview.Conditions = resp.Items.First().Conditions.Select(c => c.Name);
 
         return preview;
     }
@@ -234,5 +234,4 @@ public record BranchAddress
     [JsonPropertyName("provinceState")]
     public string? ProvinceState { get; set; }
 }
-
 

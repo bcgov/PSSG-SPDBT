@@ -16,7 +16,8 @@ namespace Spd.Resource.Repository.Document
         Guid? ReportId = null,
         Guid? CaseId = null,
         Guid? LicenceId = null,
-        DocumentTypeEnum? FileType = null);
+        DocumentTypeEnum? FileType = null,
+        IEnumerable<DocumentTypeEnum>? MultiFileTypes = null);
     public record DocumentListResp
     {
         public IEnumerable<DocumentResp> Items { get; set; } = Array.Empty<DocumentResp>();
