@@ -429,16 +429,16 @@ namespace Spd.Utilities.Dynamics
                     throw;
             }
         }
-        public static async Task<contact?> GetContactByInfo(this DynamicsContext context, contact contact, CancellationToken ct)
+        public static async Task<contact?> GetDuplicateContact(this DynamicsContext context, contact contact, CancellationToken ct)
         {
+            if (string.IsNullOrEmpty(contact.spd_bcdriverslicense))
+                return null;
 
-            var query = context.contacts.Where(a => a.firstname == contact.firstname &&
-            a.lastname == contact.lastname &&
-            a.birthdate == contact.birthdate);
-
-            if (!string.IsNullOrEmpty(contact.spd_bcdriverslicense))
-                query.Where(a => a.spd_bcdriverslicense == contact.spd_bcdriverslicense);
-            return await query.SingleOrDefaultAsync(ct);
+            return await context.contacts
+                .Where(a => a.firstname == contact.firstname &&
+                       a.lastname == contact.lastname &&
+                       a.birthdate == contact.birthdate &&
+                       a.spd_bcdriverslicense == contact.spd_bcdriverslicense).SingleOrDefaultAsync(ct);
         }
     }
 }
