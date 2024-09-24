@@ -11,7 +11,8 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { UtilService } from '@app/core/services/util.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-updates.component';
