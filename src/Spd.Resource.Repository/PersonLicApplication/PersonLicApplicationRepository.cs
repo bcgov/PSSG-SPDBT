@@ -31,8 +31,12 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         {
             if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
                 SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
-            //for new, always create a new contact
-            contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            //for new, create a new contact if it doesn't exist with same info.
+            contact? existingContact = await _context.GetContactByInfo(contact, ct);
+            if (existingContact != null)
+                contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            else
+                contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
         }
         else
         {
