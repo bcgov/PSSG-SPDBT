@@ -51,17 +51,25 @@ internal abstract class LicenceAppManagerBase
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
+
+        //applications with portal origin type are considered authenticated, otherwise not.
+        bool IsAuthenticated = licAppBase.ApplicationOriginTypeCode == Shared.ApplicationOriginTypeCode.Portal ? true : false;
+        bool isNewOrRenewal = licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.New || licAppBase.ApplicationTypeCode == Shared.ApplicationTypeCode.Renewal;
+        ApplicationStatusEnum status;
+
         if (licenceFee == null || licenceFee.Amount == 0)
-        {
-            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.Submitted, null, ct);
-            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.Submitted, null, ct);
-        }
+            status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
         else
+            status = ApplicationStatusEnum.PaymentPending;
+
+        // Commit the companion application if it exists
+        //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
+        if (companionAppId != null)
         {
-            //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
-            if (companionAppId != null) await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, null, ct);
-            await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, ApplicationStatusEnum.PaymentPending, licenceFee.Amount, ct);
+            await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, null, ct);
         }
+        // Commit the main licence application
+        await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount, ct);
 
         return licenceFee?.Amount ?? 0;
     }

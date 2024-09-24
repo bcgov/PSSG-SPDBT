@@ -62,5 +62,4 @@ internal static class SharedRepositoryFuncs
        ).ToList();
         return matchingAliases;
     }
-
 }
