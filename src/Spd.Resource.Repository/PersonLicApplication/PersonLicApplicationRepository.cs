@@ -24,7 +24,6 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
     {
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
-        app.SetIdentityConfirmed();
         _context.AddTospd_applications(app);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
         contact? contact = _mapper.Map<contact>(cmd);
@@ -84,13 +83,11 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 throw new ArgumentException("invalid app id");
             _mapper.Map<SaveLicenceApplicationCmd, spd_application>(cmd, app);
             app.spd_applicationid = (Guid)(cmd.LicenceAppId);
-            app.SetIdentityConfirmed();
             _context.UpdateObject(app);
         }
         else
         {
             app = _mapper.Map<spd_application>(cmd);
-            app.SetIdentityConfirmed();
             _context.AddTospd_applications(app);
             var contact = _context.contacts.Where(l => l.contactid == cmd.ApplicantId).FirstOrDefault();
             if (contact != null)

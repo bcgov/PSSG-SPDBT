@@ -66,7 +66,7 @@ internal abstract class LicenceAppManagerBase
         //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
         if (companionAppId != null)
         {
-            await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, status, null, ct);
+            await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, null, ct);
         }
         // Commit the main licence application
         await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount, ct);
