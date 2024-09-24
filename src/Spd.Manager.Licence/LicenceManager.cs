@@ -183,6 +183,7 @@ internal class LicenceManager :
 
             if (lic.UseDogs || lic.IsDogsPurposeDetectionDrugs || lic.IsDogsPurposeDetectionExplosives || lic.IsDogsPurposeProtection)
             {
+                lic.UseDogs = true; //todo: need to confirm with dynamics
                 //get dog document expired date
                 DocumentListResp docList = await _documentRepository.QueryAsync(
                         new DocumentQry() { ApplicantId = lic.LicenceHolderId, FileType = DocumentTypeEnum.DogCertificate },
