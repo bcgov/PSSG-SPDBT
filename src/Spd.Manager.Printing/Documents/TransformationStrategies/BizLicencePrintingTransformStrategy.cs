@@ -45,7 +45,7 @@ internal class BizLicencePrintingTransformStrategy(
         IncidentListResp resp = await incidentRepository.QueryAsync(
             new IncidentQry() { ApplicationId = lic.LicenceAppId, IncludeInactive = true },
             cancellationToken);
-        bizLicJson.Conditions = resp.Items.First().Conditions;
+        bizLicJson.Conditions = resp.Items.First().Conditions.Select(c => c.Name);
 
         return bizLicJson;
     }
