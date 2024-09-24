@@ -14,8 +14,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { PermitApplicationService } from '@core/services/permit-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
-import * as moment from 'moment';
+import { HotToastService } from '@ngxpert/hot-toast';
+import moment from 'moment';
 import { Subject, take, tap } from 'rxjs';
 
 @Component({

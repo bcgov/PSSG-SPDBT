@@ -8,7 +8,7 @@ import { SPD_CONSTANTS } from './core/constants/constants';
 import { ApplicationService } from './core/services/application.service';
 import { AuthProcessService } from './core/services/auth-process.service';
 import { WorkerApplicationService } from './core/services/worker-application.service';
-import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routing.module';
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
 

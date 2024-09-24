@@ -13,7 +13,8 @@ import {
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 
 @Component({
 	selector: 'app-business-user-applications',
