@@ -4,7 +4,8 @@ import { InvitationRequest } from '@app/api/models';
 import { BizPortalUserService } from '@app/api/services';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { takeWhile } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 
 @Component({
 	selector: 'app-business-manager-invitation',

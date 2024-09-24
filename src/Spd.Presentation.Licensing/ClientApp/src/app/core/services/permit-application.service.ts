@@ -28,8 +28,8 @@ import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { HotToastService } from '@ngneat/hot-toast';
-import * as moment from 'moment';
+import { HotToastService } from '@ngxpert/hot-toast';
+import moment from 'moment';
 import {
 	BehaviorSubject,
 	Observable,

@@ -10,7 +10,7 @@ import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,

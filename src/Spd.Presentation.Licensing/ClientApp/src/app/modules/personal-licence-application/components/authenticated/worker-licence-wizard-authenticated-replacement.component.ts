@@ -5,7 +5,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({

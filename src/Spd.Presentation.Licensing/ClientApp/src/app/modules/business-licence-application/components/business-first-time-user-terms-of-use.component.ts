@@ -5,7 +5,8 @@ import { LoginService } from '@app/api/services';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { BusinessLicenceApplicationRoutes } from '../business-licence-application-routing.module';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+
 import { CommonBusinessTermsComponent } from './common-business-terms.component';
 
 @Component({

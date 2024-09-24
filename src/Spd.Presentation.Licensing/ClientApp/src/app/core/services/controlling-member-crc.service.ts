@@ -21,7 +21,7 @@ import { ApplicantProfileService, ControllingMemberCrcAppService } from '@app/ap
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
-import { HotToastService } from '@ngneat/hot-toast';
+import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	BehaviorSubject,
 	Observable,

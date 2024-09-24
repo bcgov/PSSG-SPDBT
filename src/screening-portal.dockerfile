@@ -24,10 +24,10 @@ RUN dotnet restore "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj
 COPY . .
 RUN dotnet publish "Spd.Presentation.Screening/Spd.Presentation.Screening.csproj" -c Release -o /app/publish --no-restore --self-contained -r linux-x64 -p:PublishReadyToRun=true
 
-FROM docker.io/trion/ng-cli-karma:17.0.10 AS ng-builder
+FROM docker.io/trion/ng-cli-karma:18.2.5 AS ng-builder
 WORKDIR /src
 COPY ./Spd.Presentation.Screening/ClientApp/package*.json ./
-RUN npm install --ignore-scripts
+RUN npm install --ignore-scripts 
 COPY ./Spd.Presentation.Screening/ClientApp/ .
 
 RUN npm run lint
