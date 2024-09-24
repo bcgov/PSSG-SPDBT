@@ -70,8 +70,8 @@ namespace Spd.Resource.Repository.Licence
 
         //biz info
         public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
-        //todo: document expired date
     }
+
     public enum LicenceStatusEnum
     {
         Active,

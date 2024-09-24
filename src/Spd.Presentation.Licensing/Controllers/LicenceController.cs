@@ -65,7 +65,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
-        [Authorize(Policy = "BcscBCeID")]
+        //[Authorize(Policy = "BcscBCeID")]
         public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string? accessCode = null)
         {
             return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
@@ -89,12 +89,12 @@ namespace Spd.Presentation.Licensing.Controllers
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
-            //if (response?.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
-            //    latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            //else if (response?.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence)
-            //    throw new ApiException(HttpStatusCode.BadRequest, "Biz licensing does not support anonymous.");
-            //else if (response != null)
-            //    latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (WorkerLicenceTypeCode)response.WorkerLicenceTypeCode));
+            if (response?.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
+                latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
+            else if (response?.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence)
+                throw new ApiException(HttpStatusCode.BadRequest, "Biz licensing does not support anonymous.");
+            else if (response != null)
+                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (WorkerLicenceTypeCode)response.WorkerLicenceTypeCode));
 
             if (response != null)
             {
