@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
+	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
 	BizLicAppResponse,
@@ -16,6 +17,8 @@ import {
 	LicenceResponse,
 	LicenceStatusCode,
 	LicenceTermCode,
+	Members,
+	NonSwlContactInfo,
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
@@ -24,7 +27,7 @@ import {
 	WorkerLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
-import { LicenceAppService, LicenceService, PaymentService } from '@app/api/services';
+import { BizMembersService, LicenceAppService, LicenceService, PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -54,6 +57,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 	applicationExpiryDate?: string;
 	isExpiryWarning: boolean;
 	isExpiryError: boolean;
+	isControllingMemberWarning?: boolean;
 }
 
 export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse, BizLicAppResponse {
@@ -96,6 +100,7 @@ export class ApplicationService {
 		private fileUtilService: FileUtilService,
 		private configService: ConfigService,
 		private paymentService: PaymentService,
+		private bizMembersService: BizMembersService,
 		private authProcessService: AuthProcessService,
 		private authUserBcscService: AuthUserBcscService,
 		private authUserBceidService: AuthUserBceidService,
@@ -271,22 +276,42 @@ export class ApplicationService {
 	}
 
 	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
-		return this.licenceAppService
-			.apiBizsBizIdLicenceApplicationsGet({
-				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizMembersService
+			.apiBusinessBizIdMembersGet({
+				bizId,
 			})
 			.pipe(
-				map((_resp: Array<LicenceAppListResponse>) => {
-					const response = _resp as Array<MainApplicationResponse>;
-					response.forEach((item: MainApplicationResponse) => {
-						this.setApplicationFlags(item);
-					});
+				switchMap((controllingMembersAndEmployees: Members) => {
+					const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
 
-					response.sort((a, b) => {
-						return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
-					});
+					const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
+						(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
+					);
 
-					return response;
+					const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
+
+					return this.licenceAppService
+						.apiBizsBizIdLicenceApplicationsGet({
+							bizId,
+						})
+						.pipe(
+							map((_resp: Array<LicenceAppListResponse>) => {
+								const response = _resp as Array<MainApplicationResponse>;
+								response.forEach((item: MainApplicationResponse) => {
+									this.setApplicationFlags(item);
+
+									item.isControllingMemberWarning = isControllingMemberWarning;
+								});
+
+								response.sort((a, b) => {
+									return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+								});
+
+								return response;
+							})
+						);
 				})
 			);
 	}
@@ -614,31 +639,62 @@ export class ApplicationService {
 			});
 	}
 
-	getMainWarningsAndError(
+	getMainWarningsAndErrorPersonalLicence(
 		userApplicationsList: Array<MainApplicationResponse>,
-		activeLicences: Array<MainLicenceResponse>
+		activeLicencesList: Array<MainLicenceResponse>
 	): [Array<string>, Array<string>] {
+		const [warningMessages, errorMessages, _isControllingMemberWarning] = this.getMainWarningsAndError(
+			userApplicationsList,
+			activeLicencesList,
+			false
+		);
+		return [warningMessages, errorMessages];
+	}
+
+	getMainWarningsAndErrorBusinessLicence(
+		userApplicationsList: Array<MainApplicationResponse>,
+		activeLicencesList: Array<MainLicenceResponse>,
+		checkControllingMemberWarning: boolean
+	): [Array<string>, Array<string>, boolean] {
+		return this.getMainWarningsAndError(userApplicationsList, activeLicencesList, checkControllingMemberWarning);
+	}
+
+	private getMainWarningsAndError(
+		userApplicationsList: Array<MainApplicationResponse>,
+		activeLicencesList: Array<MainLicenceResponse>,
+		checkControllingMemberWarning: boolean
+	): [Array<string>, Array<string>, boolean] {
 		const warningMessages: Array<string> = [];
 		const errorMessages: Array<string> = [];
+		let isControllingMemberWarning = false;
 
-		const draftNotifications = userApplicationsList.filter(
-			(item: MainApplicationResponse) => item.isExpiryWarning || item.isExpiryError
+		const applicationNotifications = userApplicationsList.filter(
+			(item: MainApplicationResponse) => item.isExpiryWarning || item.isExpiryError || item.isControllingMemberWarning
 		);
-		draftNotifications.forEach((item: MainApplicationResponse) => {
+		applicationNotifications.forEach((item: MainApplicationResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'WorkerLicenceTypes');
 			const itemExpiry = this.formatDatePipe.transform(item.applicationExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
 			if (item.isExpiryWarning) {
 				warningMessages.push(
 					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
 				);
-			} else {
+			} else if (checkControllingMemberWarning && item.isControllingMemberWarning) {
+				// Must have application in Payment Pending status to show this message.
+				const awaitingPaymentIndex = userApplicationsList.findIndex(
+					(item: MainApplicationResponse) =>
+						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
+				);
+				if (awaitingPaymentIndex >= 0) {
+					isControllingMemberWarning = true;
+				}
+			} else if (item.isExpiryError) {
 				errorMessages.push(
 					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
 				);
 			}
 		});
 
-		const renewals = activeLicences.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
+		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
 		renewals.forEach((item: MainLicenceResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
 			const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
@@ -661,7 +717,7 @@ export class ApplicationService {
 			}
 		});
 
-		return [warningMessages, errorMessages];
+		return [warningMessages, errorMessages, isControllingMemberWarning];
 	}
 
 	/**

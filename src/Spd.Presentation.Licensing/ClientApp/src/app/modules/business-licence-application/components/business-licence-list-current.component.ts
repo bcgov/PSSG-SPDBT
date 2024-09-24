@@ -61,28 +61,6 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
 							</div>
 
-							<div class="col-lg-5">
-								<div class="d-block text-muted mt-2 mt-md-0"></div>
-								<div *ngIf="!isSoleProprietor">
-									<ng-container *ngIf="applicationIsInProgress">
-										<div class="mb-2">
-											<a class="large disable">Manage Controlling Members and Employees</a>
-										</div>
-										<app-alert type="info" icon="">
-											You can update your controlling members and employees when you renew your business licence
-										</app-alert>
-									</ng-container>
-									<a
-										class="large"
-										tabindex="0"
-										(click)="onManageMembersAndEmployees()"
-										(keydown)="onKeydownManageMembersAndEmployees($event)"
-										*ngIf="!applicationIsInProgress"
-									>
-										Manage Controlling Members and Employees
-									</a>
-								</div>
-							</div>
 							<mat-divider class="my-2"></mat-divider>
 						</div>
 
@@ -175,20 +153,9 @@ export class BusinessLicenceListCurrentComponent {
 	@Input() lostLicenceDaysText!: string;
 	@Input() isSoleProprietor!: boolean;
 
-	@Output() manageControllingMembers: EventEmitter<any> = new EventEmitter();
 	@Output() replaceLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() updateLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
-
-	onManageMembersAndEmployees(): void {
-		this.manageControllingMembers.emit();
-	}
-
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
-
-		this.onManageMembersAndEmployees();
-	}
 
 	onRequestReplacement(licence: MainLicenceResponse): void {
 		this.replaceLicence.emit(licence);

@@ -83,7 +83,6 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
-					[isControllingMembersWithoutSwlComplete]="isControllingMembersWithoutSwlComplete"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -98,9 +97,13 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-review
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[showSaveAndExit]="showSaveAndExit"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
+					(nextPayStep)="onNextSubmitAndPayStep(true)"
+					(nextSubmitStep)="onNextSubmitAndPayStep(false)"
+					(nextInviteAndSubmitStep)="onNextInviteAndSubmitStep()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-business-licence-review>
@@ -134,7 +137,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
-	isControllingMembersWithoutSwlComplete!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -183,9 +185,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
 					'isControllingMembersWithoutSwlExist'
-				)?.value;
-				this.isControllingMembersWithoutSwlComplete = this.businessApplicationService.businessModelFormGroup.get(
-					'isControllingMembersWithoutSwlComplete'
 				)?.value;
 
 				this.isFormValid = _resp;
@@ -259,11 +258,28 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		}
 	}
 
-	onNextPayStep(): void {
-		this.businessApplicationService.submitBusinessLicenceNew().subscribe({
+	onNextSubmitAndPayStep(isPay: boolean): void {
+		this.businessApplicationService.submitBusinessLicenceNew(false).subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hotToastService.success('Your business licence has been successfully submitted');
-				this.payNow(resp.body.licenceAppId!);
+				if (isPay) {
+					this.payNow(resp.body.licenceAppId!);
+				} else {
+					this.commonApplicationService.onGoToHome();
+				}
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	onNextInviteAndSubmitStep(): void {
+		this.businessApplicationService.submitBusinessLicenceNew(true).subscribe({
+			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.hotToastService.success('Your business licence has been successfully submitted');
+
+				this.commonApplicationService.onGoToHome();
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

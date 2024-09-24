@@ -11,6 +11,20 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
+						<div class="mb-4" *ngIf="isControllingMembersWithoutSwlExist">
+							<app-alert type="warning" icon="warning">
+								<p>
+									After you submit your application, the application will remain on hold until we receive consent forms
+									from all controlling members.
+								</p>
+								<p>
+									You will receive an email with further instructions once all controlling members have submitted their
+									criminal record check consent forms. You will be able to return to this application to pay the
+									security business licence fee.
+								</p>
+							</app-alert>
+						</div>
+
 						<div class="row">
 							<div class="conditions px-3 mb-3">
 								<div class="text-minor-heading my-2">
@@ -207,6 +221,7 @@ export class StepBusinessLicenceConsentAndDeclarationComponent implements OnInit
 	form: FormGroup = this.businessApplicationService.consentAndDeclarationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input() isControllingMembersWithoutSwlExist!: boolean;
 
 	constructor(private utilService: UtilService, private businessApplicationService: BusinessApplicationService) {}
 

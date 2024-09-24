@@ -25,25 +25,39 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 			<mat-step>
 				<app-step-business-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 				></app-step-business-licence-consent-and-declaration>
+
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
+					<ng-container *ngIf="isControllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
+						<app-wizard-footer
+							[isFormValid]="true"
+							[showSaveAndExit]="true"
+							[isSoleProprietorReturnToSwl]="false"
+							(saveAndExit)="onNoSaveAndExit()"
+							nextButtonLabel="Submit"
+							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(nextStepperStep)="onInviteAndSubmitStep()"
+						></app-wizard-footer>
+					</ng-container>
+					<ng-template #noControllingMembersWithoutSwlExist>
+						<app-wizard-footer
+							[isFormValid]="true"
+							[showSaveAndExit]="true"
+							[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
+							(saveAndExit)="onNoSaveAndExit()"
+							nextButtonLabel="Pay Now"
+							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(nextStepperStep)="onPayNow()"
+						></app-wizard-footer>
+					</ng-template>
+				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-wizard-footer
 						nextButtonLabel="Submit"
 						(previousStepperStep)="onConsentGoToPreviousStep()"
 						(nextStepperStep)="onSubmitNow()"
-					></app-wizard-footer>
-				</ng-container>
-
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-					<app-wizard-footer
-						[isFormValid]="true"
-						[showSaveAndExit]="true"
-						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
-						(saveAndExit)="onNoSaveAndExit()"
-						nextButtonLabel="Pay Now"
-						(previousStepperStep)="onConsentGoToPreviousStep()"
-						(nextStepperStep)="onPayNow()"
 					></app-wizard-footer>
 				</ng-container>
 
@@ -80,8 +94,10 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() licenceCost = 0;
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() isSoleProprietorReturnToSwl = false;
+	@Input() isControllingMembersWithoutSwlExist!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
+	@Output() nextInviteAndSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(StepBusinessLicenceSummaryComponent) summaryReviewComponent!: StepBusinessLicenceSummaryComponent;
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
@@ -106,6 +122,14 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		}
 
 		this.nextSubmitStep.emit();
+	}
+
+	onInviteAndSubmitStep(): void {
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
+
+		this.nextInviteAndSubmitStep.emit();
 	}
 
 	onPayNow(): void {

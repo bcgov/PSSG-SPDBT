@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ActionResult,
 	Address,
-	ApplicationPortalStatusCode,
+	ApplicationInviteStatusCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
@@ -83,7 +83,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		latestApplicationId: new FormControl(), // placeholder for id
 
 		isControllingMembersWithoutSwlExist: new FormControl(),
-		isControllingMembersWithoutSwlComplete: new FormControl(),
 
 		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
@@ -157,21 +156,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
 					let isControllingMembersWithoutSwlExist = false;
-					let isControllingMembersWithoutSwlComplete = true;
 
 					if (!isBusinessLicenceSoleProprietor) {
 						const membersWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
 
 						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
-
-						isControllingMembersWithoutSwlComplete =
-							membersWithoutSwl?.length > 0
-								? membersWithoutSwl.findIndex(
-										(item: NonSwlContactInfo) =>
-											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.AwaitingPayment
-								  ) < 0
-								: true;
 					}
 
 					this.businessModelFormGroup.patchValue(
@@ -179,7 +169,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							isBcBusinessAddress,
 							isBusinessLicenceSoleProprietor,
 							isControllingMembersWithoutSwlExist,
-							isControllingMembersWithoutSwlComplete,
 						},
 						{ emitEvent: false }
 					);
@@ -314,11 +303,37 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
+	submitBusinessLicenceNew(
+		isControllingMembersWithoutSwlExist: boolean
+	): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
 
 		body.agreeToCompleteAndAccurate = true;
+
+		if (isControllingMembersWithoutSwlExist) {
+			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+
+			// Send the controlling member invitations
+
+			const apis: Observable<any>[] = [];
+			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.New,
+					})
+				);
+			});
+
+			if (apis.length > 0) {
+				return forkJoin(apis).pipe(
+					switchMap((_resps: any[]) => {
+						return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+					})
+				);
+			}
+		}
 
 		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
@@ -488,24 +503,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (isBusinessLicenceSoleProprietor) return true;
 
-		const isControllingMembersWithoutSwlComplete = this.businessModelFormGroup.get(
-			'isControllingMembersWithoutSwlComplete'
-		)?.value;
-		if (!isControllingMembersWithoutSwlComplete) return false;
-
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
 	sendControllingMembersWithoutSwlInvitation(
 		bizContactId: string,
-		statusCode?: ApplicationPortalStatusCode
+		statusCode?: ApplicationInviteStatusCode
 	): Observable<ControllingMemberInvitesCreateResponse> {
 		const inviteType =
-			statusCode === ApplicationPortalStatusCode.CompletedCleared
+			statusCode === ApplicationInviteStatusCode.Completed
 				? ControllingMemberAppInviteTypeCode.Update
 				: ControllingMemberAppInviteTypeCode.New;
-
-		// TODO which statuses should be looked at?
 
 		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
 			bizContactId,
@@ -1527,7 +1535,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			});
 		} else {
 			// mark the appropriate category types as true
-			businessLicenceAppl.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
+			originalLicence?.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
 				categoryData[item as string] = true;
 			});
 		}

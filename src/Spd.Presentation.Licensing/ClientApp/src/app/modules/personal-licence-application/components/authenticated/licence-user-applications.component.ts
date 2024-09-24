@@ -228,7 +228,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.applicationIsInProgress = this.commonApplicationService.getApplicationIsInProgress(userApplicationsList);
 
 				// Swl Licences/ Permits
-				const activeLicences = userLicencesList.filter(
+				const activeLicencesList = userLicencesList.filter(
 					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
 				);
 
@@ -238,7 +238,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
-					activeLicences.findIndex(
+					activeLicencesList.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 					) >= 0;
 				if (!activeSwlExist) {
@@ -250,7 +250,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.activeSwlExist = activeSwlExist;
 
 				let activeBaPermitExist =
-					activeLicences.findIndex(
+					activeLicencesList.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 					) >= 0;
 				if (!activeBaPermitExist) {
@@ -262,7 +262,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				this.activeBaPermitExist = activeBaPermitExist;
 
 				let activeAvPermitExist =
-					activeLicences.findIndex(
+					activeLicencesList.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 					) >= 0;
 				if (!activeAvPermitExist) {
@@ -273,12 +273,13 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				}
 				this.activeAvPermitExist = activeAvPermitExist;
 
-				[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndError(
-					userApplicationsList,
-					activeLicences
-				);
+				[this.warningMessages, this.errorMessages] =
+					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(
+						userApplicationsList,
+						activeLicencesList
+					);
 
-				this.activeLicences = activeLicences;
+				this.activeLicences = activeLicencesList;
 				this.expiredLicences = expiredLicences;
 
 				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';

@@ -85,7 +85,7 @@ export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceCh
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
-	@Input() inWizard = false;
+	@Input() isWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(

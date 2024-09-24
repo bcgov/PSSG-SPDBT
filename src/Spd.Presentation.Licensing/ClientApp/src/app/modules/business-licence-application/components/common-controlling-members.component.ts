@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {
 	ApplicationInviteStatusCode,
-	ApplicationPortalStatusCode,
 	BizMemberResponse,
 	ControllingMemberInvitesCreateResponse,
 	LicenceDocumentTypeCode,
@@ -84,7 +83,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 
 								<ng-container matColumnDef="action1">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-									<mat-cell *matCellDef="let member; let i = index">
+									<mat-cell class="mat-column-action1" *matCellDef="let member; let i = index">
 										<button
 											mat-flat-button
 											class="table-button w-auto"
@@ -146,16 +145,16 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								</ng-container>
 
 								<ng-container matColumnDef="inviteStatusCode">
-									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Status </mat-header-cell>
-									<mat-cell *matCellDef="let member">
-										<span class="mobile-label">Status:</span>
-										{{ getMemberWithoutSwlStatus(member) | default }}
+									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef> Invitation Status </mat-header-cell>
+									<mat-cell class="mat-column-inviteStatusCode" *matCellDef="let member">
+										<span class="mobile-label">Invitation Status:</span>
+										{{ member.inviteStatusCode | default }}
 									</mat-cell>
 								</ng-container>
 
 								<ng-container matColumnDef="action1">
 									<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef></mat-header-cell>
-									<mat-cell *matCellDef="let member">
+									<mat-cell class="mat-column-action1" *matCellDef="let member">
 										<button
 											mat-flat-button
 											class="table-button"
@@ -192,21 +191,20 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 												class="w-100 invitation-button"
 												aria-label="Send invitation"
 												(click)="onSendInvitation(member)"
-												*ngIf="getInvitationButtonShow(member.controllingMemberAppStatusCode)"
 											>
-												<mat-icon>email</mat-icon>{{ getInvitationButtonLabel(member.controllingMemberAppStatusCode) }}
+												{{ getInvitationButtonLabel(member.inviteStatusCode) }}
 											</button>
 										</ng-container>
 										<ng-template #noEmailAddress>
 											<a
 												mat-stroked-button
-												class="w-100"
+												class="w-100 invitation-button"
 												aria-label="Download Business Member Auth Consent"
 												download="Business Member Auth Consent"
 												matTooltip="Download Business Member Auth Consent"
 												[href]="downloadFilePath"
 											>
-												<mat-icon>download</mat-icon>Manual Form
+												Download Manual Form
 											</a>
 										</ng-template>
 									</mat-cell>
@@ -216,16 +214,16 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 								<mat-row class="mat-data-row invitation-row" *matRowDef="let row; columns: columnsWithoutSWL"></mat-row>
 							</mat-table>
 						</div>
-						<app-alert type="info" icon="">
-							<p>
-								By clicking <strong>Send</strong> or <strong>Update Invitation</strong>, a link to an online application
-								form will be sent to the controlling member via email. They must provide personal information and
-								consent to a criminal record check.
-							</p>
-							<p>
-								We must receive criminal record check consent forms from each individual listed here before the business
-								licence application will be reviewed.
-							</p>
+						<ng-container *ngIf="!isWizard">
+							<app-alert type="info" icon="info">
+								By clicking a 'send invitation' button, a link to an online application form will be sent to the
+								controlling member via email. They must provide personal information and consent to a criminal record
+								check.
+							</app-alert>
+						</ng-container>
+						<app-alert type="warning" icon="warning">
+							We must receive criminal record check consent forms from each individual listed here before the business
+							licence application will be reviewed.
 						</app-alert>
 					</div>
 
@@ -250,40 +248,37 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 							</div>
 						</ng-template>
 					</div>
-
-					<div class="mt-2" *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
-						<mat-divider class="mat-divider-main my-3"></mat-divider>
-						<div class="text-minor-heading lh-base mb-2">
-							Upload a copy of the corporate registry documents for your business in the province in which you are
-							originally registered
-							<span *ngIf="!attachmentIsRequired.value" class="optional-label">(optional)</span>
-						</div>
-						<app-file-upload
-							(fileUploaded)="onFileUploaded($event)"
-							(fileRemoved)="onFileRemoved()"
-							[control]="attachments"
-							[maxNumberOfFiles]="10"
-							[files]="attachments.value"
-						></app-file-upload>
-						<mat-error
-							class="mat-option-error d-block"
-							*ngIf="
-								(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-								form.get('attachments')?.invalid &&
-								form.get('attachments')?.hasError('required')
-							"
-							>This is required</mat-error
-						>
-					</div>
-
-					<div
-						class="mt-3"
-						*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('controllingmembersmin')"
-					>
-						<mat-error class="mat-option-error">At least one controlling member is required</mat-error>
-					</div>
 				</mat-expansion-panel>
 			</mat-accordion>
+
+			<div class="mt-2" *ngIf="allowDocumentUpload" @showHideTriggerSlideAnimation>
+				<mat-divider class="mat-divider-main my-3"></mat-divider>
+				<div class="text-minor-heading lh-base mb-2">
+					Upload a copy of the corporate registry documents for your business in the province in which you are
+					originally registered
+					<span *ngIf="!attachmentIsRequired.value" class="optional-label">(optional)</span>
+				</div>
+				<app-file-upload
+					(fileUploaded)="onFileUploaded($event)"
+					(fileRemoved)="onFileRemoved()"
+					[control]="attachments"
+					[maxNumberOfFiles]="10"
+					[files]="attachments.value"
+				></app-file-upload>
+				<mat-error
+					class="mat-option-error d-block"
+					*ngIf="
+						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+						form.get('attachments')?.invalid &&
+						form.get('attachments')?.hasError('required')
+					"
+					>This is required</mat-error
+				>
+			</div>
+
+			<div class="mt-3" *ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('controllingmembersmin')">
+				<mat-error class="mat-option-error">At least one controlling member is required</mat-error>
+			</div>
 		</form>
 	`,
 	styles: [
@@ -293,9 +288,17 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 			}
 
 			.invitation-button {
+				text-align: center !important;
 				height: fit-content;
 			}
 
+			.mat-column-inviteStatusCode {
+				min-width: 150px;
+				max-width: 150px;
+				.table-button {
+					min-width: 130px;
+				}
+			}
 			.mat-column-action1 {
 				min-width: 150px;
 				max-width: 150px;
@@ -311,8 +314,8 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 				}
 			}
 			.mat-column-action3 {
-				min-width: 200px;
-				max-width: 200px;
+				min-width: 180px;
+				max-width: 180px;
 				.table-button {
 					min-width: 130px;
 				}
@@ -338,7 +341,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	columnsWithSWL: string[] = ['licenceHolderName', 'licenceNumber', 'licenceStatusCode', 'expiryDate', 'action1'];
 
 	dataSourceWithoutSWL!: MatTableDataSource<NonSwlContactInfo>;
-	columnsWithoutSWL: string[] = ['licenceHolderName', 'email', 'inviteStatusCode', 'action1', 'action2', 'action3'];
+	columnsWithoutSWL!: string[];
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
@@ -355,6 +358,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	ngOnInit(): void {
 		this.bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 		this.isBcBusinessAddress = this.businessApplicationService.isBcBusinessAddress();
+
+		if (this.isWizard) {
+			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'action1', 'action2'];
+		} else {
+			this.columnsWithoutSWL = ['licenceHolderName', 'email', 'inviteStatusCode', 'action1', 'action2', 'action3'];
+		}
 
 		this.dataSourceWithSWL = new MatTableDataSource(this.membersWithSwlList.value);
 		this.dataSourceWithoutSWL = new MatTableDataSource(this.membersWithoutSwlList.value);
@@ -378,16 +387,11 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		return null;
 	}
 
-	getInvitationButtonLabel(controllingMemberAppStatusCode?: ApplicationPortalStatusCode): string {
-		if (controllingMemberAppStatusCode === ApplicationPortalStatusCode.CompletedCleared) {
+	getInvitationButtonLabel(inviteStatusCode?: ApplicationInviteStatusCode): string {
+		if (inviteStatusCode === ApplicationInviteStatusCode.Completed) {
 			return 'Send Update Invitation';
 		}
-		return 'Send Invitation';
-	}
-
-	getInvitationButtonShow(controllingMemberAppStatusCode?: ApplicationPortalStatusCode): boolean {
-		return controllingMemberAppStatusCode != ApplicationPortalStatusCode.AwaitingPayment;
-		// TODO which statuses should be looked at?
+		return inviteStatusCode ? 'Re-Send Invitation' : 'Send Invitation';
 	}
 
 	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {
@@ -492,7 +496,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.businessApplicationService
-						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, member.controllingMemberAppStatusCode)
+						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, member.inviteStatusCode!)
 						.pipe(
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
