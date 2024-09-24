@@ -35,6 +35,7 @@ namespace Spd.Resource.Repository.Licence
         public bool? IsTemporary { get; set; }
         public Guid? PhotoDocumentUrlId { get; set; }
         public string? PrintingPreviewJobId { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
     }
 
     public record Licence
@@ -66,7 +67,11 @@ namespace Spd.Resource.Repository.Licence
         public string? Rationale { get; set; }
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
         //permit
+
+        //biz info
+        public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
     }
+
     public enum LicenceStatusEnum
     {
         Active,

@@ -41,6 +41,18 @@ public record LicenceResponse : LicenceBasicResponse
     public IEnumerable<BodyArmourPermitReasonCode> BodyArmourPermitReasonCodes { get; set; } = []; //for body armour
     public IEnumerable<ArmouredVehiclePermitReasonCode> ArmouredVehiclePermitReasonCodes { get; set; } = []; // for armour vehicle
     public IEnumerable<Document> RationalDocumentInfos { get; set; } = [];
+
+    //biz info
+    public BizTypeCode BizTypeCode { get; set; } = BizTypeCode.None;
+
+    //swl info
+    public bool CarryAndUseRestraints { get; set; }
+    public DateOnly? RestraintsDocumentExpiredDate { get; set; }
+    public bool UseDogs { get; set; }
+    public bool IsDogsPurposeProtection { get; set; }
+    public bool IsDogsPurposeDetectionDrugs { get; set; }
+    public bool IsDogsPurposeDetectionExplosives { get; set; }
+    public DateOnly? DogsDocumentExpiredDate { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
