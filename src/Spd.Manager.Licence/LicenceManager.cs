@@ -188,7 +188,7 @@ internal class LicenceManager :
                 DocumentListResp docList = await _documentRepository.QueryAsync(
                         new DocumentQry() { ApplicantId = lic.LicenceHolderId, FileType = DocumentTypeEnum.DogCertificate },
                         cancellationToken);
-                lic.DogsDocumentExpiredDate = docList.Items.First().ExpiryDate;
+                lic.DogsDocumentExpiredDate = docList.Items.Any() ? docList.Items.First()?.ExpiryDate : null;
             }
 
             if (lic.CarryAndUseRestraints)
@@ -197,7 +197,7 @@ internal class LicenceManager :
                 DocumentListResp docList = await _documentRepository.QueryAsync(
                     new DocumentQry() { ApplicantId = lic.LicenceHolderId, MultiFileTypes = new[] { DocumentTypeEnum.ASTCertificate, DocumentTypeEnum.UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent } },
                     cancellationToken);
-                lic.RestraintsDocumentExpiredDate = docList.Items.First().ExpiryDate;
+                lic.RestraintsDocumentExpiredDate = docList.Items.Any() ? docList.Items.First().ExpiryDate : null;
             }
         }
     }
