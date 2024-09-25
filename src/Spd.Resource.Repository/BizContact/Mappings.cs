@@ -40,6 +40,11 @@ namespace Spd.Resource.Repository.BizContact
                 .OrderByDescending(app => app.createdon)
                 .FirstOrDefault();
             if (app == null) return (null, null);
+            if (app.spd_portalstatus != (int)ApplicationPortalStatus.Draft &&
+                app.spd_portalstatus != (int)ApplicationPortalStatus.VerifyIdentity &&
+                app.spd_portalstatus != (int)ApplicationPortalStatus.Incomplete &&
+                app.spd_portalstatus != (int)ApplicationPortalStatus.AwaitingPayment)
+                return (null, null);
             else
             {
                 if (app.spd_portalstatus == null) return (app.spd_applicationid, null);
