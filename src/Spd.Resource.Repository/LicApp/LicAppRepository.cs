@@ -24,16 +24,11 @@ internal class LicAppRepository : ILicAppRepository
         if (app == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Invalid ApplicationId");
 
-        if (status == ApplicationStatusEnum.Submitted)
-        {
-            app.statuscode = (int)ApplicationStatusOptionSet.Submitted;
-            app.statecode = DynamicsConstants.StateCode_Inactive;
-        }
-        else
-        {
-            app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
-        }
+        app.statuscode = (int)Enum.Parse<ApplicationStatusOptionSet>(status.ToString());
 
+        if (status == ApplicationStatusEnum.Submitted)
+            app.statecode = DynamicsConstants.StateCode_Inactive;
+               
         app.spd_submittedon = DateTimeOffset.Now;
         app.spd_portalmodifiedon = DateTimeOffset.Now;
         if (price is > 0)
