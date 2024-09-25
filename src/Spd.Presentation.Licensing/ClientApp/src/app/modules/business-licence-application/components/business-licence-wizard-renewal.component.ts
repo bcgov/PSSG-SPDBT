@@ -91,9 +91,11 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isRenewalShortForm]="isRenewalShortForm"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
+					(nextPayStep)="onNextSubmit()"
+					(nextSubmitStep)="onNextSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-business-licence-review>
@@ -237,8 +239,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 		}
 	}
 
-	onNextPayStep(): void {
-		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+	onNextSubmit(): void {
+		this.businessApplicationService.payBusinessLicenceRenewal({
 			paymentSuccess: 'Your business licence renewal has been successfully submitted',
 			paymentReason: 'Payment for renewal of Business Licence application',
 		});

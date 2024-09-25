@@ -7,7 +7,6 @@ import { CommonBusinessProfileComponent } from '../business-licence-application/
 import { CommonControllingMembersComponent } from '../business-licence-application/components/common-controlling-members.component';
 import { CommonEmployeesComponent } from '../business-licence-application/components/common-employees.component';
 import { StepBusinessLicenceSwlSoleProprietorComponent } from '../business-licence-application/components/step-business-licence-swl-sole-proprietor.component';
-import { StepBusinessLicenceUpdateFeeComponent } from '../business-licence-application/components/step-business-licence-update-fee.component';
 import { StepsBusinessLicenceContactInformationComponent } from '../business-licence-application/components/steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from '../business-licence-application/components/steps-business-licence-controlling-members.component';
 import { StepsBusinessLicenceInformationComponent } from '../business-licence-application/components/steps-business-licence-information.component';
@@ -76,7 +75,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessLicenceWizardUpdateComponent,
 		BusinessLicenceWizardReplacementComponent,
 		BusinessLicenceUpdateReceivedSuccessComponent,
-		StepBusinessLicenceUpdateFeeComponent,
 		StepsBusinessLicenceUpdatesComponent,
 		BusinessBcBranchesComponent,
 		CommonBusinessManagerComponent,

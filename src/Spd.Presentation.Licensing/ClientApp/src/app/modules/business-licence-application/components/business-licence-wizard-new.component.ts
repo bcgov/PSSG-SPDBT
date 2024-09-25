@@ -4,14 +4,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
-import { Subscription, distinctUntilChanged } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 
 import { StepsBusinessLicenceContactInformationComponent } from './steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './steps-business-licence-controlling-members.component';
@@ -102,9 +100,8 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onNextSubmitAndPayStep(true)"
-					(nextSubmitStep)="onNextSubmitAndPayStep(false)"
-					(nextInviteAndSubmitStep)="onNextInviteAndSubmitStep()"
+					(nextPayStep)="onNextSubmit()"
+					(nextSubmitStep)="onNextSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-business-licence-review>
@@ -155,7 +152,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -259,32 +255,10 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		}
 	}
 
-	onNextSubmitAndPayStep(isPay: boolean): void {
-		this.businessApplicationService.submitBusinessLicenceNew(false).subscribe({
-			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence has been successfully submitted');
-				if (isPay) {
-					this.payNow(resp.body.licenceAppId!);
-				} else {
-					this.commonApplicationService.onGoToHome();
-				}
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
-		});
-	}
-
-	onNextInviteAndSubmitStep(): void {
-		this.businessApplicationService.submitBusinessLicenceNew(true).subscribe({
-			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence has been successfully submitted');
-
-				this.commonApplicationService.onGoToHome();
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
+	onNextSubmit(): void {
+		this.businessApplicationService.payBusinessLicenceNew({
+			paymentSuccess: 'Your business licence has been successfully submitted',
+			paymentReason: 'Payment for new Business Licence application',
 		});
 	}
 

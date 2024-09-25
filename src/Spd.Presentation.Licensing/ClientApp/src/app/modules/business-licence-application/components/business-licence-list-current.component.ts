@@ -46,7 +46,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 								</div>
 							</div>
-							<div class="col-lg-4">
+							<div class="col-lg-5">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 								<div class="text-data">
 									<ul class="m-0">
@@ -56,10 +56,17 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									</ul>
 								</div>
 							</div>
-							<div class="col-lg-5" *ngIf="licence.dogAuthorization">
-								<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
-								<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
-							</div>
+							<ng-container *ngIf="licence.hasSecurityGuardCategory">
+								<div class="col-lg-4">
+									<div class="d-block text-muted mt-2">Dog Authorization</div>
+									<div class="text-data">
+										<ng-container *ngIf="licence.dogAuthorization; noDogAuthorization">
+											Authorized to use dogs
+										</ng-container>
+										<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
+									</div>
+								</div>
+							</ng-container>
 
 							<mat-divider class="my-2"></mat-divider>
 						</div>

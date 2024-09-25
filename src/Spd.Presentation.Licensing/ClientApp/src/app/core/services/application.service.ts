@@ -8,11 +8,9 @@ import {
 	BizLicAppResponse,
 	BizProfileResponse,
 	BizTypeCode,
-	Document,
 	IdentityProviderTypeCode,
 	LicenceAppListResponse,
 	LicenceBasicResponse,
-	LicenceDocumentTypeCode,
 	LicenceFeeResponse,
 	LicenceResponse,
 	LicenceStatusCode,
@@ -74,8 +72,11 @@ export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLic
 	isRenewalPeriod: boolean;
 	isUpdatePeriod: boolean;
 	isReplacementPeriod: boolean;
-	dogAuthorization: null | LicenceDocumentTypeCode;
-	restraintAuthorization: null | LicenceDocumentTypeCode;
+	hasSecurityGuardCategory: boolean;
+	dogAuthorization: boolean;
+	dogAuthorizationExpiryDate: string | null;
+	restraintAuthorization: boolean;
+	restraintAuthorizationExpiryDate: string | null;
 }
 
 @Injectable({
@@ -224,7 +225,7 @@ export class ApplicationService {
 			);
 	}
 
-	userApplicationsList(): Observable<Array<MainApplicationResponse>> {
+	userPersonApplicationsList(): Observable<Array<MainApplicationResponse>> {
 		return this.licenceAppService
 			.apiApplicantsApplicantIdLicenceApplicationsGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
@@ -245,73 +246,103 @@ export class ApplicationService {
 			);
 	}
 
-	userLicencesList(): Observable<Array<MainLicenceResponse>> {
+	userPersonLicencesList(): Observable<Array<MainLicenceResponse>> {
 		return this.licenceService
 			.apiApplicantsApplicantIdLicencesGet({
 				applicantId: this.authUserBcscService.applicantLoginProfile?.applicantId!,
 			})
 			.pipe(
-				switchMap((licenceResps: LicenceBasicResponse[]) => {
-					if (licenceResps.length === 0) {
+				switchMap((basicLicenceResps: LicenceBasicResponse[]) => {
+					if (basicLicenceResps.length === 0) {
 						return of([]);
 					}
 
-					const response: Array<MainLicenceResponse> = [];
-					licenceResps.forEach((resp: LicenceBasicResponse) => {
-						const matchingLicence = licenceResps.find(
-							(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
+					const apis: Observable<any>[] = [];
+					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+						if (
+							resp.licenceStatusCode === LicenceStatusCode.Active &&
+							resp.categoryCodes &&
+							resp.categoryCodes.findIndex(
+								(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
+							) >= 0
+						) {
+							apis.push(
+								this.licenceService.apiLicencesLicenceIdGet({
+									licenceId: resp.licenceId!,
+								})
+							);
+						}
+					});
+
+					if (apis.length > 0) {
+						return forkJoin(apis).pipe(
+							switchMap((licenceResps: LicenceResponse[]) => {
+								return this.processPersonLicenceData(basicLicenceResps, licenceResps);
+							})
 						);
-
-						const licence = this.getLicence(resp, BizTypeCode.None, matchingLicence!);
-						response.push(licence);
-					});
-
-					response.sort((a, b) => {
-						return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
-					});
-
-					return of(response);
+					} else {
+						return this.processPersonLicenceData(basicLicenceResps, null);
+					}
 				})
 			);
+	}
+
+	private processPersonLicenceData(
+		basicLicenceResps: Array<LicenceBasicResponse>,
+		licenceResps: Array<LicenceResponse> | null
+	): Observable<Array<MainLicenceResponse>> {
+		const response: Array<MainLicenceResponse> = [];
+		basicLicenceResps.forEach((basicLicenceResp: LicenceBasicResponse) => {
+			const matchingLicence = licenceResps?.find(
+				(item: LicenceBasicResponse) => item.licenceAppId === basicLicenceResp.licenceAppId
+			);
+
+			const licence = this.getLicence(basicLicenceResp, BizTypeCode.None, matchingLicence);
+			response.push(licence);
+		});
+
+		response.sort((a, b) => {
+			return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+		});
+
+		return of(response);
 	}
 
 	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return this.bizMembersService
-			.apiBusinessBizIdMembersGet({
+		return this.licenceAppService
+			.apiBizsBizIdLicenceApplicationsGet({
 				bizId,
 			})
 			.pipe(
-				switchMap((controllingMembersAndEmployees: Members) => {
-					const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
+				switchMap((applicationResps: Array<LicenceAppListResponse>) => {
+					if (applicationResps.length === 0) {
+						return of([]);
+					}
 
-					const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
-						(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
-					);
+					return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
+						switchMap((controllingMembersAndEmployees: Members) => {
+							const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
+							const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
+								(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
+							);
+							const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
 
-					const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
+							const response = applicationResps as Array<MainApplicationResponse>;
+							response.forEach((item: MainApplicationResponse) => {
+								this.setApplicationFlags(item);
 
-					return this.licenceAppService
-						.apiBizsBizIdLicenceApplicationsGet({
-							bizId,
+								item.isControllingMemberWarning = isControllingMemberWarning;
+							});
+
+							response.sort((a, b) => {
+								return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+							});
+
+							return of(response);
 						})
-						.pipe(
-							map((_resp: Array<LicenceAppListResponse>) => {
-								const response = _resp as Array<MainApplicationResponse>;
-								response.forEach((item: MainApplicationResponse) => {
-									this.setApplicationFlags(item);
-
-									item.isControllingMemberWarning = isControllingMemberWarning;
-								});
-
-								response.sort((a, b) => {
-									return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
-								});
-
-								return response;
-							})
-						);
+					);
 				})
 			);
 	}
@@ -324,28 +355,62 @@ export class ApplicationService {
 				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
 			})
 			.pipe(
-				switchMap((licenceResps: Array<LicenceBasicResponse>) => {
-					if (licenceResps.length === 0) {
+				switchMap((basicLicenceResps: Array<LicenceBasicResponse>) => {
+					if (basicLicenceResps.length === 0) {
 						return of([]);
 					}
 
-					const response: Array<MainLicenceResponse> = [];
-					licenceResps.forEach((resp: LicenceBasicResponse) => {
-						const matchingLicence = licenceResps.find(
-							(item: LicenceBasicResponse) => item.licenceAppId === resp.licenceAppId
+					const apis: Observable<any>[] = [];
+					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
+						if (
+							resp.licenceStatusCode === LicenceStatusCode.Active &&
+							resp.categoryCodes &&
+							resp.categoryCodes.findIndex(
+								(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
+							) >= 0
+						) {
+							apis.push(
+								this.licenceService.apiLicencesLicenceIdGet({
+									licenceId: resp.licenceId!,
+								})
+							);
+						}
+					});
+
+					if (apis.length > 0) {
+						return forkJoin(apis).pipe(
+							switchMap((licenceResps: LicenceResponse[]) => {
+								return this.processBusinessLicenceData(businessProfile, basicLicenceResps, licenceResps);
+							})
 						);
-						const licence = this.getLicence(resp, businessProfile.bizTypeCode!, matchingLicence!);
-
-						response.push(licence);
-					});
-
-					response.sort((a, b) => {
-						return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
-					});
-
-					return of(response);
+					} else {
+						return this.processBusinessLicenceData(businessProfile, basicLicenceResps, null);
+					}
 				})
 			);
+	}
+
+	private processBusinessLicenceData(
+		businessProfile: BizProfileResponse,
+		basicLicenceResps: Array<LicenceBasicResponse>,
+		licenceResps: Array<LicenceResponse> | null
+	): Observable<Array<MainLicenceResponse>> {
+		const response: Array<MainLicenceResponse> = [];
+
+		basicLicenceResps.forEach((basicLicence: LicenceBasicResponse) => {
+			const matchingLicenceResp = licenceResps?.find(
+				(item: LicenceBasicResponse) => item.licenceId === basicLicence.licenceId
+			);
+			const licence = this.getLicence(basicLicence, businessProfile.bizTypeCode!, matchingLicenceResp);
+
+			response.push(licence);
+		});
+
+		response.sort((a, b) => {
+			return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate, 'desc');
+		});
+
+		return of(response);
 	}
 
 	setApplicationTitleText(title: string, mobileTitle?: string | null | undefined) {
@@ -640,11 +705,11 @@ export class ApplicationService {
 	}
 
 	getMainWarningsAndErrorPersonalLicence(
-		userApplicationsList: Array<MainApplicationResponse>,
+		applicationsList: Array<MainApplicationResponse>,
 		activeLicencesList: Array<MainLicenceResponse>
 	): [Array<string>, Array<string>] {
 		const [warningMessages, errorMessages, _isControllingMemberWarning] = this.getMainWarningsAndError(
-			userApplicationsList,
+			applicationsList,
 			activeLicencesList,
 			false
 		);
@@ -652,15 +717,15 @@ export class ApplicationService {
 	}
 
 	getMainWarningsAndErrorBusinessLicence(
-		userApplicationsList: Array<MainApplicationResponse>,
+		applicationsList: Array<MainApplicationResponse>,
 		activeLicencesList: Array<MainLicenceResponse>,
 		checkControllingMemberWarning: boolean
 	): [Array<string>, Array<string>, boolean] {
-		return this.getMainWarningsAndError(userApplicationsList, activeLicencesList, checkControllingMemberWarning);
+		return this.getMainWarningsAndError(applicationsList, activeLicencesList, checkControllingMemberWarning);
 	}
 
 	private getMainWarningsAndError(
-		userApplicationsList: Array<MainApplicationResponse>,
+		applicationsList: Array<MainApplicationResponse>,
 		activeLicencesList: Array<MainLicenceResponse>,
 		checkControllingMemberWarning: boolean
 	): [Array<string>, Array<string>, boolean] {
@@ -668,7 +733,7 @@ export class ApplicationService {
 		const errorMessages: Array<string> = [];
 		let isControllingMemberWarning = false;
 
-		const applicationNotifications = userApplicationsList.filter(
+		const applicationNotifications = applicationsList.filter(
 			(item: MainApplicationResponse) => item.isExpiryWarning || item.isExpiryError || item.isControllingMemberWarning
 		);
 		applicationNotifications.forEach((item: MainApplicationResponse) => {
@@ -680,7 +745,7 @@ export class ApplicationService {
 				);
 			} else if (checkControllingMemberWarning && item.isControllingMemberWarning) {
 				// Must have application in Payment Pending status to show this message.
-				const awaitingPaymentIndex = userApplicationsList.findIndex(
+				const awaitingPaymentIndex = applicationsList.findIndex(
 					(item: MainApplicationResponse) =>
 						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
 				);
@@ -758,8 +823,12 @@ export class ApplicationService {
 		}
 	}
 
-	private getLicence(resp: any, bizTypeCode: BizTypeCode, matchingLicence: LicenceBasicResponse): MainLicenceResponse {
-		const licence = resp as MainLicenceResponse;
+	private getLicence(
+		basicLicence: LicenceBasicResponse,
+		bizTypeCode: BizTypeCode,
+		matchingLicence?: LicenceResponse | undefined
+	): MainLicenceResponse {
+		const licence = { ...basicLicence } as MainLicenceResponse;
 
 		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
 		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
@@ -770,91 +839,72 @@ export class ApplicationService {
 		licence.isUpdatePeriod = false;
 		licence.isReplacementPeriod = false;
 
-		if (matchingLicence) {
-			const today = moment().startOf('day');
+		const today = moment().startOf('day');
 
-			licence.cardHolderName = matchingLicence.nameOnCard;
-			licence.licenceHolderName = matchingLicence.licenceHolderName;
-			licence.licenceStatusCode = matchingLicence.licenceStatusCode;
-			licence.licenceExpiryDate = matchingLicence.expiryDate;
-			licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
-			licence.licenceId = matchingLicence.licenceId;
-			licence.licenceNumber = matchingLicence.licenceNumber;
-			licence.hasLoginNameChanged = matchingLicence.nameOnCard != licence.licenceHolderName;
-			licence.licenceCategoryCodes = matchingLicence.categoryCodes ?? [];
+		licence.cardHolderName = basicLicence.nameOnCard;
+		// licence.licenceHolderName = basicLicence.licenceHolderName;
+		// licence.licenceStatusCode = basicLicence.licenceStatusCode;
+		licence.licenceExpiryDate = basicLicence.expiryDate;
+		licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
+		// licence.licenceId = basicLicence.licenceId;
+		// licence.licenceNumber = basicLicence.licenceNumber;
+		licence.hasLoginNameChanged = basicLicence.nameOnCard != licence.licenceHolderName;
+		licence.licenceCategoryCodes = basicLicence.categoryCodes ?? [];
 
-			const hasSecurityGuardCategory =
-				licence.licenceCategoryCodes.findIndex(
-					(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
-				) >= 0;
+		licence.hasSecurityGuardCategory =
+			licence.licenceCategoryCodes.findIndex(
+				(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
+			) >= 0;
 
-			if (hasSecurityGuardCategory) {
-				const hasDogAuthorization = resp.documentInfos?.find(
-					(item: Document) =>
-						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardDogCertificate
-				);
-				licence.dogAuthorization = hasDogAuthorization?.licenceDocumentTypeCode // TODO fix display of dog auth
-					? hasDogAuthorization.licenceDocumentTypeCode
-					: null;
+		if (licence.hasSecurityGuardCategory && matchingLicence) {
+			licence.dogAuthorization = matchingLicence.useDogs ?? false;
+			licence.dogAuthorizationExpiryDate = matchingLicence.dogsDocumentExpiredDate ?? null;
+			licence.restraintAuthorization = matchingLicence.carryAndUseRestraints ?? false;
+			licence.restraintAuthorizationExpiryDate = matchingLicence.restraintsDocumentExpiredDate ?? null;
+		}
 
-				const hasRestraintAuthorization = resp.documentInfos?.find(
-					// TODO fix display of restraint
-					(item: Document) =>
-						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardAstCertificate ||
-						item.licenceDocumentTypeCode === LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetter ||
-						item.licenceDocumentTypeCode ===
-							LicenceDocumentTypeCode.CategorySecurityGuardUseForceEmployerLetterAstEquivalent
-				);
-				licence.restraintAuthorization = hasRestraintAuthorization?.licenceDocumentTypeCode
-					? hasRestraintAuthorization.licenceDocumentTypeCode
-					: null;
+		if (licence.licenceExpiryNumberOfDays >= 0) {
+			if (
+				licence.licenceStatusCode === LicenceStatusCode.Active &&
+				today.isBefore(
+					moment(licence.licenceExpiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days')
+				)
+			) {
+				licence.isUpdatePeriod = true;
 			}
 
-			if (licence.licenceExpiryNumberOfDays >= 0) {
+			if (basicLicence.licenceTermCode === LicenceTermCode.NinetyDays) {
 				if (
-					licence.licenceStatusCode === LicenceStatusCode.Active &&
-					today.isBefore(
-						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days')
+					today.isSameOrAfter(
+						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
 					)
 				) {
-					licence.isUpdatePeriod = true;
+					licence.isRenewalPeriod = true;
 				}
-
-				if (resp.licenceTermCode === LicenceTermCode.NinetyDays) {
-					if (
-						today.isSameOrAfter(
-							moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
-						)
-					) {
-						licence.isRenewalPeriod = true;
-					}
-				} else {
-					if (
-						today.isSameOrAfter(
-							moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days')
-						)
-					) {
-						licence.isRenewalPeriod = true;
-					}
-				}
-
+			} else {
 				if (
-					today.isBefore(
-						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
-					)
+					today.isSameOrAfter(moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days'))
 				) {
-					licence.isReplacementPeriod = true;
+					licence.isRenewalPeriod = true;
 				}
+			}
+
+			if (
+				today.isBefore(
+					moment(licence.licenceExpiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
+				)
+			) {
+				licence.isReplacementPeriod = true;
 			}
 		}
 
 		// get Licence Reprint Fee
 		const fee = this.getLicenceTermsAndFees(
-			resp.workerLicenceTypeCode,
+			basicLicence.workerLicenceTypeCode!,
 			ApplicationTypeCode.Replacement,
 			bizTypeCode,
-			resp.licenceTermCode
-		).find((item: LicenceFeeResponse) => item.licenceTermCode === resp.licenceTermCode);
+			basicLicence.licenceTermCode
+		).find((item: LicenceFeeResponse) => item.licenceTermCode === basicLicence.licenceTermCode);
 		licence.licenceReprintFee = fee?.amount ? fee.amount : null;
 
 		return licence;

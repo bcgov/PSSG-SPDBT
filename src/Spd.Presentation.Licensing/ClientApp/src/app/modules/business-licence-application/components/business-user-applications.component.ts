@@ -12,9 +12,8 @@ import {
 } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { ConfigService } from '@app/core/services/config.service';
-import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-
+import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-business-user-applications',
@@ -64,8 +63,11 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 
 					<ng-container *ngIf="isControllingMemberWarning">
 						<app-alert type="warning" icon="warning">
-							<p>Your Business Licence application has outstanding controlling member invitations.</p>
-							<p>Click on 'Manage Controlling Members and Employees' to see the status of each of the members.</p>
+							<div>Your Business Licence application has outstanding controlling member invitations.</div>
+							<div class="mt-2">
+								Click on <strong>'Manage Controlling Members and Employees'</strong> to see the invitation status of
+								each of the members.
+							</div>
 						</app-alert>
 					</ng-container>
 
@@ -91,8 +93,6 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 						(renewLicence)="onRenewal($event)"
 					></app-business-licence-list-current>
 
-					<app-licence-list-expired [expiredLicences]="expiredLicencesList"></app-licence-list-expired>
-
 					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
 						<div class="row">
 							<div class="col-xl-7 col-lg-6">
@@ -105,6 +105,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 							</div>
 						</div>
 					</div>
+
+					<app-licence-list-expired [expiredLicences]="expiredLicencesList"></app-licence-list-expired>
 				</div>
 			</div>
 		</section>
@@ -244,7 +246,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onResume(appl: MainApplicationResponse): void {
 		this.businessApplicationService
-			.getBusinessLicenceToResume(appl.licenceAppId!)
+			.getBusinessLicenceApplToResume(appl.licenceAppId!)
 			.pipe(
 				tap((resp: any) => {
 					// return to the swl sole proprietor / business licence combo flow

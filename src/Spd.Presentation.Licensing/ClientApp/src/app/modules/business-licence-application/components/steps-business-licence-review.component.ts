@@ -55,29 +55,28 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-wizard-footer
-						nextButtonLabel="Submit"
-						(previousStepperStep)="onConsentGoToPreviousStep()"
-						(nextStepperStep)="onSubmitNow()"
-					></app-wizard-footer>
-				</ng-container>
-
-				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
-					<app-wizard-footer
 						nextButtonLabel="Pay Now"
 						(previousStepperStep)="onConsentGoToPreviousStep()"
 						(nextStepperStep)="onPayNow()"
 					></app-wizard-footer>
 				</ng-container>
-			</mat-step>
 
-			<mat-step *ngIf="applicationTypeCode === applicationTypeCodes.Update">
-				<app-step-business-licence-update-fee [licenceCost]="licenceCost"></app-step-business-licence-update-fee>
-
-				<app-wizard-footer
-					[showExit]="false"
-					nextButtonLabel="Pay Now"
-					(nextStepperStep)="onPayNow()"
-				></app-wizard-footer>
+				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
+					<ng-container *ngIf="isControllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
+						<app-wizard-footer
+							nextButtonLabel="Submit"
+							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(nextStepperStep)="onInviteAndSubmitStep()"
+						></app-wizard-footer>
+					</ng-container>
+					<ng-template #noControllingMembersWithoutSwlExist>
+						<app-wizard-footer
+							nextButtonLabel="Pay Now"
+							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(nextStepperStep)="onPayNow()"
+						></app-wizard-footer>
+					</ng-template>
+				</ng-container>
 			</mat-step>
 		</mat-stepper>
 	`,
@@ -97,7 +96,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@Input() isControllingMembersWithoutSwlExist!: boolean;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
-	@Output() nextInviteAndSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 	@ViewChild(StepBusinessLicenceSummaryComponent) summaryReviewComponent!: StepBusinessLicenceSummaryComponent;
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
@@ -116,20 +114,12 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 		this.onGoToPreviousStep();
 	}
 
-	onSubmitNow(): void {
-		if (!this.consentAndDeclarationComponent.isFormValid()) {
-			return;
-		}
-
-		this.nextSubmitStep.emit();
-	}
-
 	onInviteAndSubmitStep(): void {
 		if (!this.consentAndDeclarationComponent.isFormValid()) {
 			return;
 		}
 
-		this.nextInviteAndSubmitStep.emit();
+		this.nextSubmitStep.emit();
 	}
 
 	onPayNow(): void {
