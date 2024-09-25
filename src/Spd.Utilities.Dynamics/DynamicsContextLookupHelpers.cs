@@ -438,7 +438,7 @@ namespace Spd.Utilities.Dynamics
                 .Where(a => a.firstname == contact.firstname &&
                        a.lastname == contact.lastname &&
                        a.birthdate == contact.birthdate &&
-                       a.spd_bcdriverslicense == contact.spd_bcdriverslicense).SingleOrDefaultAsync(ct);
+                       a.spd_bcdriverslicense == contact.spd_bcdriverslicense).FirstOrDefaultAsync(ct);
         }
     }
 }

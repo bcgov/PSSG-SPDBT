@@ -145,10 +145,26 @@ internal class ControllingMemberCrcAppManager :
         ValidateFilesForNewApp(cmd);
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
-
-        //create contact for applicant
-        CreateContactCmd contactCmd = _mapper.Map<CreateContactCmd>(request);
-        ContactResp contact = await _contactRepository.ManageAsync(contactCmd, ct);
+        ContactResp? contact = null;
+        //create a new contact if it doesn't exist with same info.
+        ContactListResp? existingContacts = await _contactRepository.QueryAsync(new ContactQry
+        {
+            FirstName = request.GivenName,
+            LastName = request.Surname,
+            BirthDate = request.DateOfBirth,
+            BcDriversLicenceNumber = request.BcDriversLicenceNumber
+        }, ct);
+        ContactResp? existingContact = !string.IsNullOrEmpty(request.BcDriversLicenceNumber) ? existingContacts.Items.FirstOrDefault() : null;
+        if (existingContact != null)
+        {
+            UpdateContactCmd contactCmd = _mapper.Map<UpdateContactCmd>(request);
+            contact = await _contactRepository.ManageAsync(contactCmd, ct);
+        }
+        else
+        {
+            CreateContactCmd contactCmd = _mapper.Map<CreateContactCmd>(request);
+            contact = await _contactRepository.ManageAsync(contactCmd, ct);
+        }
 
         //save the application
         SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
@@ -160,7 +176,7 @@ internal class ControllingMemberCrcAppManager :
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
-        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode, ApplicationOriginTypeCode = request.ApplicationOriginTypeCode}, response.ControllingMemberAppId, ct);
+        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode, ApplicationOriginTypeCode = request.ApplicationOriginTypeCode }, response.ControllingMemberAppId, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
 
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
