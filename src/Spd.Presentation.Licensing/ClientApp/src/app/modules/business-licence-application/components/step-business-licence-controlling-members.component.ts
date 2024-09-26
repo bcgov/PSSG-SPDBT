@@ -19,7 +19,10 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 						security business application.
 					</app-alert>
 
-					<app-common-controlling-members [defaultExpanded]="true" [isWizard]="true"></app-common-controlling-members>
+					<app-common-controlling-members
+						[defaultExpanded]="true"
+						[isWizard]="isWizard"
+					></app-common-controlling-members>
 				</div>
 			</div>
 		</app-step-section>
@@ -33,6 +36,7 @@ export class StepBusinessLicenceControllingMembersComponent implements OnInit, L
 	readonly title_renew_update = 'Confirm controlling members of this business';
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
+	@Input() isWizard = false;
 
 	@ViewChild(CommonControllingMembersComponent) controllingMembersComponent!: CommonControllingMembersComponent;
 

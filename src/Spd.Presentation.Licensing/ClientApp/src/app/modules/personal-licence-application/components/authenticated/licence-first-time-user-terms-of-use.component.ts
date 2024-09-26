@@ -38,7 +38,7 @@ export class LicenceFirstTimeUserTermsOfUseComponent implements OnInit, LicenceC
 
 	@ViewChild(CommonSwlPermitTermsComponent) commonTermsComponent!: CommonSwlPermitTermsComponent;
 
-	@Input() inWizard = false;
+	@Input() isWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 

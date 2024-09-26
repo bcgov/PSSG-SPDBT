@@ -110,9 +110,9 @@ internal class BizMemberManager :
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation for non-swl controlling member.");
         if (string.IsNullOrWhiteSpace(contactResp.EmailAddress))
             throw new ApiException(HttpStatusCode.BadRequest, "Cannot send out invitation when there is no email address provided.");
-        if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null &&
-            contactResp.LatestControllingMemberCrcAppPortalStatusEnum != ApplicationPortalStatusEnum.CompletedCleared)
-            throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
+        //if (contactResp.LatestControllingMemberCrcAppPortalStatusEnum != null &&
+        //    contactResp.LatestControllingMemberCrcAppPortalStatusEnum != ApplicationPortalStatusEnum.CompletedCleared)
+        //    throw new ApiException(HttpStatusCode.BadRequest, "This business contact already has a CRC application");
 
         var createCmd = _mapper.Map<ControllingMemberInviteCreateCmd>(contactResp);
         createCmd.CreatedByUserId = cmd.UserId;
