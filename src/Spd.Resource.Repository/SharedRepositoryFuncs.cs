@@ -71,4 +71,11 @@ internal static class SharedRepositoryFuncs
         return query.ToList().Where(a => string.Equals(a.firstname, contact.firstname, StringComparison.OrdinalIgnoreCase) &&
                         string.Equals(a.lastname, contact.lastname, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
     }
+    public static contact? GetLicenceHolderContact(DynamicsContext context, Guid expiredLicenceId)
+    {
+        return context.spd_licences
+            .Expand(l => l.spd_LicenceHolder_contact)
+            .Where(l => l.spd_licenceid == expiredLicenceId)
+            .FirstOrDefault()?.spd_LicenceHolder_contact;
+    }
 }
