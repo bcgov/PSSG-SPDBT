@@ -437,6 +437,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,
+			selectButtonLabel: 'Save',
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {
@@ -448,6 +449,14 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.subscribe((resp: any) => {
 				const memberData: LicenceResponse = resp?.data;
 				if (memberData) {
+					// Manager can't add employee if they are already listed as a employee
+					const membersWithSwlArray = this.membersWithSwlList.value ?? [];
+					const found = membersWithSwlArray.find((item: any) => item.licenceNumber === memberData.licenceNumber);
+					if (found) {
+						this.memberAlreadyListed();
+						return;
+					}
+
 					this.controllingMemberChanged();
 
 					const body = {
@@ -556,6 +565,17 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	onFileRemoved(): void {
 		this.businessApplicationService.hasValueChanged = true;
+	}
+
+	private memberAlreadyListed(): void {
+		const data: DialogOptions = {
+			icon: 'error',
+			title: 'Error',
+			message: `This licence holder is already listed as a controlling member.`,
+			cancelText: 'Close',
+		};
+
+		this.dialog.open(DialogComponent, { data });
 	}
 
 	private controllingMemberChanged(): void {

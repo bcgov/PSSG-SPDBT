@@ -904,17 +904,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return forkJoin([
-			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizMembersService.apiBusinessBizIdMembersGet({
-				bizId,
-			}),
-		]).pipe(
-			switchMap((resps: any[]) => {
-				const businessProfile = resps[0];
-				const members = resps[1];
+		return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
+			switchMap((members: Members) => {
+				return this.applyLicenceProfileMembersIntoModel(members).pipe(
+					tap((_resp: any) => {
+						this.setAsInitialized();
 
-				return this.applyLicenceProfileMembersIntoModel(businessProfile, members);
+						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+					})
+				);
 			})
 		);
 	}
@@ -1094,10 +1092,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.reset();
 
 		if (controllingMembersAndEmployees) {
-			return this.applyLicenceProfileMembersIntoModel(
-				businessProfile,
-				controllingMembersAndEmployees,
-				ApplicationTypeCode.New
+			return this.applyLicenceProfileMembersIntoModel(controllingMembersAndEmployees).pipe(
+				switchMap((_resp: any) => {
+					return this.applyLicenceProfileIntoModel({
+						businessProfile,
+						applicationTypeCode: ApplicationTypeCode.New,
+						soleProprietorSwlLicence,
+					}).pipe(
+						tap((_resp: any) => {
+							this.setAsInitialized();
+
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ApplicationTypeCode.New
+							);
+						})
+					);
+				})
 			);
 		}
 
@@ -1105,14 +1116,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSwlLicence,
-		});
+		}).pipe(
+			tap((_resp: any) => {
+				this.setAsInitialized();
+
+				this.commonApplicationService.setApplicationTitle(
+					WorkerLicenceTypeCode.SecurityBusinessLicence,
+					ApplicationTypeCode.New
+				);
+			})
+		);
 	}
 
-	private applyLicenceProfileMembersIntoModel(
-		businessProfile: BizProfileResponse,
-		members: Members,
-		applicationTypeCode?: ApplicationTypeCode | null | undefined
-	) {
+	private applyLicenceProfileMembersIntoModel(members: Members) {
 		const apis: Observable<any>[] = [];
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
@@ -1136,25 +1152,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
 					this.applyEmployees(members.employees ?? [], licenceResponses);
 
-					return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
-						tap((_resp: any) => {
-							this.setAsInitialized();
-
-							this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
-						})
-					);
+					return of(this.businessModelFormGroup.value);
 				})
 			);
 		} else {
 			this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
 
-			return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
-				tap((_resp: any) => {
-					this.setAsInitialized();
-
-					this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
-				})
-			);
+			return of(this.businessModelFormGroup.value);
 		}
 	}
 
