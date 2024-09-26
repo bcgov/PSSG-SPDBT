@@ -24,7 +24,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						<div class="row">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="text-data">{{ licence.licenceNumber }}</div>
+								<div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
@@ -125,12 +125,6 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						</ng-container>
 						<ng-template #IsPermitContent>
 							<div class="row mb-2">
-								<!-- <div class="col-lg-9">
-									<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-									<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-										{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-									</div>
-								</div> -->
 								<div class="offset-lg-9 col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 									<button
 										mat-flat-button

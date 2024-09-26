@@ -158,22 +158,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.appl-chip-option {
-				height: 35px;
-			}
-
-			.appl-chip-option-item {
-				vertical-align: text-bottom;
-			}
-
-			.error-color {
-				font-weight: 600;
-				color: var(--color-red-dark);
-			}
-		`,
-	],
+	styles: [],
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;

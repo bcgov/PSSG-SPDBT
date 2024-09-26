@@ -534,9 +534,7 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 	get showSecurityGuard(): boolean {
 		const isInclude = this.businessModelData.categorySecurityGuardData?.isInclude ?? false;
-		return (
-			isInclude && this.businessModelData.categorySecurityGuardData?.isRequestDogAuthorization === BooleanTypeCode.Yes
-		);
+		return isInclude && this.businessModelData.categorySecurityGuardData?.useDogs === BooleanTypeCode.Yes;
 	}
 	get categoryArmouredCarGuardAttachments(): File[] {
 		return this.businessModelData.categoryArmouredCarGuardData.attachments ?? [];
