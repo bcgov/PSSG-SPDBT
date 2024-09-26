@@ -5,7 +5,7 @@ import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({

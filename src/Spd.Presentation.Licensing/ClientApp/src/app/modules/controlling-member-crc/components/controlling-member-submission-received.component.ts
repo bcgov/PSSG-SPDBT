@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
-import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routing.module';
+import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routes';
 
 @Component({
 	selector: 'app-controlling-member-submission-received',

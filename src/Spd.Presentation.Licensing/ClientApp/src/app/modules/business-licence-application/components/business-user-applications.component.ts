@@ -111,18 +111,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.appl-chip-option {
-				height: 35px;
-				width: 125px;
-			}
-
-			.appl-chip-option-item {
-				vertical-align: text-bottom;
-			}
-		`,
-	],
+	styles: [],
 })
 export class BusinessUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;

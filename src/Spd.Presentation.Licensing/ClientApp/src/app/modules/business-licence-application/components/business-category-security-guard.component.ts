@@ -16,7 +16,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					Do you want to request authorization to use dogs for the purpose of security work?
 				</div>
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12">
-					<mat-radio-group aria-label="Select an option" formControlName="isRequestDogAuthorization">
+					<mat-radio-group aria-label="Select an option" formControlName="useDogs">
 						<div class="d-flex justify-content-start">
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -25,35 +25,61 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					<mat-error
 						class="mat-option-error"
 						*ngIf="
-							(form.get('isRequestDogAuthorization')?.dirty || form.get('isRequestDogAuthorization')?.touched) &&
-							form.get('isRequestDogAuthorization')?.invalid &&
-							form.get('isRequestDogAuthorization')?.hasError('required')
+							(form.get('useDogs')?.dirty || form.get('useDogs')?.touched) &&
+							form.get('useDogs')?.invalid &&
+							form.get('useDogs')?.hasError('required')
 						"
 						>This is required</mat-error
 					>
 				</div>
 			</div>
 
-			<div class="my-4" *ngIf="isRequestDogAuthorization.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
+			<div class="row" *ngIf="useDogs.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
+				<mat-divider class="mb-3 mt-4 mat-divider-primary"></mat-divider>
 
-				<div class="text-minor-heading mb-2">Upload your Security Dog Validation Certificate</div>
-				<app-file-upload
-					(fileUploaded)="onFileUploaded($event)"
-					(fileRemoved)="onFileRemoved()"
-					[control]="attachments"
-					[maxNumberOfFiles]="1"
-					[files]="attachments.value"
-				></app-file-upload>
-				<mat-error
-					class="mat-option-error"
-					*ngIf="
-						(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
-						form.get('attachments')?.invalid &&
-						form.get('attachments')?.hasError('required')
-					"
-					>This is required</mat-error
-				>
+				<div class="row mt-2 mb-4">
+					<div class="col-12">
+						<div class="form-group" formGroupName="dogsPurposeFormGroup">
+							<div class="text-minor-heading mb-2">Purpose of using dogs</div>
+							<mat-checkbox formControlName="isDogsPurposeProtection"> Protection </mat-checkbox>
+							<mat-checkbox formControlName="isDogsPurposeDetectionDrugs"> Detection - Drugs </mat-checkbox>
+							<mat-checkbox formControlName="isDogsPurposeDetectionExplosives"> Detection - Explosives </mat-checkbox>
+						</div>
+						<mat-error
+							class="mat-option-error"
+							*ngIf="
+								(form.get('dogsPurposeFormGroup')?.dirty || form.get('dogsPurposeFormGroup')?.touched) &&
+								form.hasError('atLeastOneCheckboxWhenReqd')
+							"
+							>At least one option must be selected</mat-error
+						>
+					</div>
+				</div>
+
+				<div class="text-minor-heading my-2">Upload your Security Dog Validation Certificate</div>
+				<div class="mb-2">
+					<mat-icon style="vertical-align: bottom;">emergency</mat-icon> If you have more than one dog, you must submit
+					a certificate for each dog
+				</div>
+
+				<div class="my-2">
+					<app-file-upload
+						(fileUploaded)="onFileUploaded($event)"
+						(fileRemoved)="onFileRemoved()"
+						[control]="attachments"
+						[maxNumberOfFiles]="10"
+						[files]="attachments.value"
+					></app-file-upload>
+					<mat-error
+						class="mat-option-error"
+						*ngIf="
+							(form.get('attachments')?.dirty || form.get('attachments')?.touched) &&
+							form.get('attachments')?.invalid &&
+							form.get('attachments')?.hasError('required')
+						"
+						>This is required</mat-error
+					>
+				</div>
 			</div>
 		</form>
 	`,
@@ -100,8 +126,8 @@ export class BusinessCategorySecurityGuardComponent implements LicenceChildStepp
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
-	get isRequestDogAuthorization(): FormControl {
-		return this.form.get('isRequestDogAuthorization') as FormControl;
+	get useDogs(): FormControl {
+		return this.form.get('useDogs') as FormControl;
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
