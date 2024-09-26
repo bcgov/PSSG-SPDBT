@@ -60,7 +60,6 @@ namespace Spd.Resource.Repository.Contact
         public string? MiddleName1 { get; set; }
         public string? MiddleName2 { get; set; }
         public DateOnly? BirthDate { get; set; }
-        public string? BcDriversLicenceNumber { get; set; }
         public bool IncludeInactive { get; set; }
         public bool ReturnLicenceInfo { get; set; }
     };

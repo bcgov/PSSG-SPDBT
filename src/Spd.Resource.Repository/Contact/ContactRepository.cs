@@ -74,10 +74,6 @@ internal class ContactRepository : IContactRepository
             var birthdate = new Microsoft.OData.Edm.Date(qry.BirthDate.Value.Year, qry.BirthDate.Value.Month, qry.BirthDate.Value.Day);
             contacts = contacts.Where(d => d.birthdate == birthdate);
         }
-        if (qry.BcDriversLicenceNumber != null)
-        {
-            contacts = contacts.Where(d => d.spd_bcdriverslicense == qry.BcDriversLicenceNumber);
-        }
         if (qry.IdentityId != null)
         {
             if (qry.IdentityId == Guid.Empty)
