@@ -5,7 +5,6 @@ import {
 	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
-	BizLicAppResponse,
 	BizProfileResponse,
 	BizTypeCode,
 	IdentityProviderTypeCode,
@@ -20,9 +19,7 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
-	PermitLicenceAppResponse,
 	WorkerCategoryTypeCode,
-	WorkerLicenceAppResponse,
 	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BizMembersService, LicenceAppService, LicenceService, PaymentService } from '@app/api/services';
@@ -58,16 +55,12 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 	isControllingMemberWarning?: boolean;
 }
 
-export interface MainLicenceResponse extends WorkerLicenceAppResponse, PermitLicenceAppResponse, BizLicAppResponse {
+export interface MainLicenceResponse extends LicenceResponse {
 	hasLoginNameChanged: boolean;
 	cardHolderName?: null | string;
 	licenceCategoryCodes?: Array<WorkerCategoryTypeCode> | null;
-	licenceHolderName?: null | string;
 	licenceExpiryDate?: string;
 	licenceExpiryNumberOfDays?: null | number;
-	licenceStatusCode?: LicenceStatusCode;
-	licenceId?: null | string;
-	licenceNumber?: null | string;
 	licenceReprintFee: null | number;
 	isRenewalPeriod: boolean;
 	isUpdatePeriod: boolean;
@@ -398,10 +391,10 @@ export class ApplicationService {
 		const response: Array<MainLicenceResponse> = [];
 
 		basicLicenceResps.forEach((basicLicence: LicenceBasicResponse) => {
-			const matchingLicenceResp = licenceResps?.find(
+			const matchingLicence = licenceResps?.find(
 				(item: LicenceBasicResponse) => item.licenceId === basicLicence.licenceId
 			);
-			const licence = this.getLicence(basicLicence, businessProfile.bizTypeCode!, matchingLicenceResp);
+			const licence = this.getLicence(basicLicence, businessProfile.bizTypeCode!, matchingLicence);
 
 			response.push(licence);
 		});
@@ -828,7 +821,7 @@ export class ApplicationService {
 		bizTypeCode: BizTypeCode,
 		matchingLicence?: LicenceResponse | undefined
 	): MainLicenceResponse {
-		const licence = { ...basicLicence } as MainLicenceResponse;
+		const licence = { ...basicLicence, ...matchingLicence } as MainLicenceResponse;
 
 		const licenceReplacementPeriodPreventionDays = SPD_CONSTANTS.periods.licenceReplacementPeriodPreventionDays;
 		const licenceUpdatePeriodPreventionDays = SPD_CONSTANTS.periods.licenceUpdatePeriodPreventionDays;
@@ -842,12 +835,8 @@ export class ApplicationService {
 		const today = moment().startOf('day');
 
 		licence.cardHolderName = basicLicence.nameOnCard;
-		// licence.licenceHolderName = basicLicence.licenceHolderName;
-		// licence.licenceStatusCode = basicLicence.licenceStatusCode;
 		licence.licenceExpiryDate = basicLicence.expiryDate;
 		licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
-		// licence.licenceId = basicLicence.licenceId;
-		// licence.licenceNumber = basicLicence.licenceNumber;
 		licence.hasLoginNameChanged = basicLicence.nameOnCard != licence.licenceHolderName;
 		licence.licenceCategoryCodes = basicLicence.categoryCodes ?? [];
 

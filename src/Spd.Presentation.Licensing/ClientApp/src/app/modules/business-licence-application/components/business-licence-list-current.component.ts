@@ -22,7 +22,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 					</div>
 					<div class="col-lg-10">
 						<div class="row">
-							<div class="col-lg-5">
+							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
 								<div class="text-data">{{ licence.licenceNumber }}</div>
 							</div>
@@ -30,7 +30,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
 								<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
-							<div class="col-lg-3 text-end">
+							<div class="col-lg-5 text-end">
 								<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
 									<mat-icon class="appl-chip-option-item">check_circle</mat-icon>
 									<span class="appl-chip-option-item ms-2 fs-5">Active</span>
@@ -60,7 +60,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="col-lg-4">
 									<div class="d-block text-muted mt-2">Dog Authorization</div>
 									<div class="text-data">
-										<ng-container *ngIf="licence.dogAuthorization; noDogAuthorization">
+										<ng-container *ngIf="licence.dogAuthorization; else noDogAuthorization">
 											Authorized to use dogs
 										</ng-container>
 										<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
