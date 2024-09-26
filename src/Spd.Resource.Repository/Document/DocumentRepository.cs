@@ -40,7 +40,10 @@ internal class DocumentRepository : IDocumentRepository
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         if (qry.ApplicantId != null)
-            documents = documents.Where(d => d._spd_submittedbyid_value == qry.ApplicantId);
+            documents = documents.Where(d => d._bcgov_customer_value == qry.ApplicantId);
+
+        if (qry.AccountId != null)
+            documents = documents.Where(d => d._bcgov_customer_value == qry.AccountId);
 
         if (qry.ApplicationId != null)
             documents = documents.Where(d => d._spd_applicationid_value == qry.ApplicationId);

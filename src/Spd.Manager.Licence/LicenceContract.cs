@@ -45,14 +45,16 @@ public record LicenceResponse : LicenceBasicResponse
     //biz info
     public BizTypeCode BizTypeCode { get; set; } = BizTypeCode.None;
 
-    //swl info
-    public bool CarryAndUseRestraints { get; set; }
-    public DateOnly? RestraintsDocumentExpiredDate { get; set; }
+    //swl & biz info
     public bool UseDogs { get; set; }
     public bool IsDogsPurposeProtection { get; set; }
     public bool IsDogsPurposeDetectionDrugs { get; set; }
     public bool IsDogsPurposeDetectionExplosives { get; set; }
-    public DateOnly? DogsDocumentExpiredDate { get; set; }
+    public IEnumerable<Document> DogDocumentInfos { get; set; } = [];
+
+    //swl
+    public bool CarryAndUseRestraints { get; set; }
+    public IEnumerable<Document> RestraintsDocumentInfos { get; set; } = [];
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
