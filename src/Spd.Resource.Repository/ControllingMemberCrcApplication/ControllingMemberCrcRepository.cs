@@ -1,10 +1,13 @@
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
+using Polly;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Dynamics;
+using System.Collections.Generic;
 
 namespace Spd.Resource.Repository.ControllingMemberCrcApplication;
 public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
@@ -19,6 +22,63 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         _mapper = mapper;
     }
 
+    #region anonymous new
+    public async Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd cmd, CancellationToken ct)
+    {
+        // get parent business license application
+        spd_application? bizLicApplication = await _context.spd_applications
+                .Expand(a => a.spd_businessapplication_spd_workerapplication)
+                .Expand(a => a.spd_ApplicantId_contact)
+                .Expand(a => a.spd_ApplicantId_account)
+                .Where(a => a.spd_applicationid == cmd.ParentBizLicApplicationId)
+                .SingleOrDefaultAsync(ct);
+
+
+        if (bizLicApplication == null)
+            throw new ArgumentException("Parent business licence application was not found.");
+
+        var bizContact = _context.spd_businesscontacts.Where(x => x.spd_businesscontactid == cmd.BizContactId).FirstOrDefault();
+        //check contact duplicate
+        contact? contact = SharedRepositoryFuncs.GetDuplicateContact(_context, _mapper.Map<contact>(cmd), ct);
+        //create or update contact
+        contact = contact == null ? 
+            await _context.CreateContact(_mapper.Map<contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) : 
+            await UpdatePersonalInformationAsync(cmd, contact, ct);
+
+
+        spd_application? app = _mapper.Map<spd_application>(cmd);
+        _context.AddTospd_applications(app);
+
+        //set applicant lookup
+        _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
+        _context.AddLink(contact, nameof(contact.spd_contact_spd_application_ApplicantId), app);
+
+        //link bizContact with contact
+        _context.SetLink(bizContact, nameof(bizContact.spd_ContactId), contact);
+
+        //link to biz
+        var account = _context.accounts
+            .Where(a => a.accountid == bizLicApplication._spd_applicantid_value)
+            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
+            .FirstOrDefault();
+        if (account != null)
+        {
+            //set organization lookup
+            _context.SetLink(app, nameof(spd_application.spd_OrganizationId), account);
+            _context.AddLink(account, nameof(account.spd_account_spd_application_OrganizationId), app);
+        }
+        // add link to parent business application
+        _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
+
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+
+        //link to bizContact
+        _context.AddLink(bizContact, nameof(bizContact.spd_businesscontact_spd_application), app);
+        await _context.SaveChangesAsync();
+        return new ControllingMemberCrcApplicationCmdResp((Guid)app.spd_applicationid, contact.contactid);
+    }
+    #endregion
     public async Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct)
     {
         spd_application? app;
@@ -126,7 +186,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
     //update contact, aliases and addreses, support partial save (to not add spd_address and spd_alias histroy record)
     private async Task<contact?> UpdatePersonalInformationAsync(SaveControllingMemberCrcAppCmd cmd, contact? contact, CancellationToken ct)
     {
-        List<AliasResp> aliases = _mapper.Map<List<AliasResp>>(contact?.spd_Contact_Alias.Where(a=>a.statecode == DynamicsConstants.StateCode_Active &&
+        List<AliasResp> aliases = _mapper.Map<List<AliasResp>>(contact?.spd_Contact_Alias.Where(a => a.statecode == DynamicsConstants.StateCode_Active &&
                 a.spd_source == (int)AliasSourceTypeOptionSet.UserEntered));
         contact newContact = _mapper.Map<contact>(cmd);
         List<spd_alias> aliasesToAdd = (List<spd_alias>)_mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases.Where(a => a.Id == null || a.Id == Guid.Empty)); // Only aliases with Id null or empty are considered as new
