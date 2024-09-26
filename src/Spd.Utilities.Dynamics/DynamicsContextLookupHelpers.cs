@@ -429,16 +429,5 @@ namespace Spd.Utilities.Dynamics
                     throw;
             }
         }
-        public static async Task<contact?> GetDuplicateContact(this DynamicsContext context, contact contact, CancellationToken ct)
-        {
-            if (string.IsNullOrEmpty(contact.spd_bcdriverslicense))
-                return null;
-
-            return await context.contacts
-                .Where(a => a.firstname == contact.firstname &&
-                       a.lastname == contact.lastname &&
-                       a.birthdate == contact.birthdate &&
-                       a.spd_bcdriverslicense == contact.spd_bcdriverslicense).FirstOrDefaultAsync(ct);
-        }
     }
 }

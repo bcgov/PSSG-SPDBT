@@ -145,33 +145,12 @@ internal class ControllingMemberCrcAppManager :
         ValidateFilesForNewApp(cmd);
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
-        ContactResp? contact = null;
-        //create a new contact if it doesn't exist with same info.
-        ContactListResp? existingContacts = await _contactRepository.QueryAsync(new ContactQry
-        {
-            FirstName = request.GivenName,
-            LastName = request.Surname,
-            BirthDate = request.DateOfBirth,
-            BcDriversLicenceNumber = request.BcDriversLicenceNumber
-        }, ct);
-        ContactResp? existingContact = !string.IsNullOrEmpty(request.BcDriversLicenceNumber) ? existingContacts.Items.FirstOrDefault() : null;
-        if (existingContact != null)
-        {
-            UpdateContactCmd contactCmd = _mapper.Map<UpdateContactCmd>(request);
-            contact = await _contactRepository.ManageAsync(contactCmd, ct);
-        }
-        else
-        {
-            CreateContactCmd contactCmd = _mapper.Map<CreateContactCmd>(request);
-            contact = await _contactRepository.ManageAsync(contactCmd, ct);
-        }
+        
 
-        //save the application
         SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
-        createApp.ContactId = contact.Id;
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
-
-        var response = await _controllingMemberCrcRepository.SaveControllingMemberCrcApplicationAsync(createApp, ct);
+        //create the application and create or update contact
+        var response = await _controllingMemberCrcRepository.CreateControllingMemberCrcApplicationAsync(createApp, ct);
 
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 

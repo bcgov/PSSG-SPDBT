@@ -32,7 +32,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
                 SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
             //for new, create a new contact if it doesn't exist with same info.
-            contact? existingContact = await _context.GetDuplicateContact(contact, ct);
+            contact? existingContact = SharedRepositoryFuncs.GetDuplicateContact(_context, contact, ct);
             if (existingContact != null)
                 contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             else
@@ -105,7 +105,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
-        SharedRepositoryFuncs.LinkTeam(_context,DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
+        SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
         await _context.SaveChangesAsync();
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.

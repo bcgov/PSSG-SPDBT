@@ -49,7 +49,7 @@ internal static class SharedRepositoryFuncs
     public static void LinkTeam(DynamicsContext _context, string teamGuidStr, spd_application app)
     {
         Guid teamGuid = Guid.Parse(teamGuidStr);
-        team? serviceTeam =  _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
+        team? serviceTeam = _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefault();
         _context.SetLink(app, nameof(spd_application.ownerid), serviceTeam);
     }
 
@@ -61,5 +61,14 @@ internal static class SharedRepositoryFuncs
            o.spd_source == (int)AliasSourceTypeOptionSet.UserEntered
        ).ToList();
         return matchingAliases;
+    }
+    public static contact? GetDuplicateContact(DynamicsContext context, contact contact, CancellationToken ct)
+    {
+        var query = context.contacts.Where(x => x.birthdate == contact.birthdate);
+        if (!string.IsNullOrEmpty(contact.spd_bcdriverslicense))
+            query = query.Where(a => a.spd_bcdriverslicense == contact.spd_bcdriverslicense);
+
+        return query.ToList().Where(a => string.Equals(a.firstname, contact.firstname, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(a.lastname, contact.lastname, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
     }
 }

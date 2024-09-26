@@ -7,6 +7,7 @@ public partial interface IControllingMemberCrcRepository
 {
     public Task<ControllingMemberCrcApplicationResp> GetCrcApplicationAsync(Guid controllingMemberApplicationId, CancellationToken ct);
     public Task<ControllingMemberCrcApplicationCmdResp> SaveControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd saveCmd, CancellationToken ct);
+    public Task<ControllingMemberCrcApplicationCmdResp> CreateControllingMemberCrcApplicationAsync(SaveControllingMemberCrcAppCmd createApp, CancellationToken ct);
 }
 
 public record ControllingMemberCrcApplication
