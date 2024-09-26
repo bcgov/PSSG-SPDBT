@@ -36,7 +36,6 @@ public record BizLicenceRequest
 public record BizLicenceUpdateRequest : BizLicenceRequest
 {
     public Guid BizId { get; set; }
-    public LicenceTermCode? LicenceTermCode { get; set; } //for biz licence term, only 1,2,3 year
     public bool? UseDogs { get; set; }
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }

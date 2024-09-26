@@ -307,4 +307,23 @@ internal abstract class LicenceAppManagerBase
         }
         return existingFileInfos;
     }
+
+    protected async Task<IList<LicAppFileInfo>> GetExistingFileInfo(IEnumerable<Guid>? previousDocumentIds, CancellationToken ct)
+    {
+        IList<LicAppFileInfo> existingFileInfos = Array.Empty<LicAppFileInfo>();
+
+        if (previousDocumentIds?.Any() == true)
+        {
+            foreach (Guid docUrlId in previousDocumentIds)
+            {
+                DocumentResp resp = await _documentRepository.GetAsync(docUrlId, ct);
+                existingFileInfos.Add(new LicAppFileInfo()
+                {
+                    FileName = resp.FileName ?? String.Empty,
+                    LicenceDocumentTypeCode = (LicenceDocumentTypeCode)Mappings.GetLicenceDocumentTypeCode(resp.DocumentType, resp.DocumentType2),
+                });
+            }
+        }
+        return existingFileInfos;
+    }
 }
