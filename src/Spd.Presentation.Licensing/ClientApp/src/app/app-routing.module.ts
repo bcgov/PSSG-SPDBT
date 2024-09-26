@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
-import { ControllingMemberCrcRoutes } from './modules/controlling-member-crc/controlling-member-crc-routing.module';
-import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routing.module';
-import { AccessDeniedComponent } from './shared/components/access-denied.component';
 import { BusinessLicenceApplicationRoutes } from './modules/business-licence-application/business-license-application-routes';
+import { ControllingMemberCrcRoutes } from './modules/controlling-member-crc/controlling-member-crc-routes';
+import { PersonalLicenceApplicationRoutes } from './modules/personal-licence-application/personal-licence-application-routes';
+import { AccessDeniedComponent } from './shared/components/access-denied.component';
 
 export class AppRoutes {
 	public static readonly PERSONAL_LICENCE_APPLICATION = PersonalLicenceApplicationRoutes.MODULE_PATH;

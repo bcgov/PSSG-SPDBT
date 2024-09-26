@@ -38,14 +38,14 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						</div>
 
 						<div class="mt-2" *ngIf="showLocksmithMessage">
-							<app-alert type="info" icon="">
+							<app-alert type="success" icon="">
 								The <strong>Locksmith</strong> business licence automatically includes Electronic Locking Device
 								Installer.
 							</app-alert>
 						</div>
 
 						<div class="mt-2" *ngIf="showSecurityAlarmInstallerMessage">
-							<app-alert type="info" icon="">
+							<app-alert type="success" icon="">
 								The <strong>Security Alarm Installer</strong> business licence automatically includes Security Alarm
 								Sales, Security Alarm Monitor, Security Alarm Response, Closed Circuit Television Installer, and
 								Electronic Locking Device Installer.
@@ -53,14 +53,14 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 						</div>
 
 						<div class="mt-2" *ngIf="showSecurityAlarmResponseMessage">
-							<app-alert type="info" icon="">
+							<app-alert type="success" icon="">
 								The <strong>Security Alarm Response</strong> business licence automatically includes Security Alarm
 								Monitor.
 							</app-alert>
 						</div>
 
 						<div class="mt-2" *ngIf="showSecurityGuardMessage">
-							<app-alert type="info" icon="">
+							<app-alert type="success" icon="">
 								The <strong>Security Guard</strong> business licence automatically includes Security Alarm Monitor and
 								Security Alarm Response.
 							</app-alert>

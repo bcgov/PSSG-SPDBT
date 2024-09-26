@@ -12,7 +12,7 @@ import {
 } from '@app/core/services/application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';
@@ -158,22 +158,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.appl-chip-option {
-				height: 35px;
-			}
-
-			.appl-chip-option-item {
-				vertical-align: text-bottom;
-			}
-
-			.error-color {
-				font-weight: 600;
-				color: var(--color-red-dark);
-			}
-		`,
-	],
+	styles: [],
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;

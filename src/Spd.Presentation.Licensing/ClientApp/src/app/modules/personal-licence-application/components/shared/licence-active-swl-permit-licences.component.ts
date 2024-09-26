@@ -24,11 +24,17 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						<div class="row">
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
-								<div class="text-data">{{ licence.licenceNumber }}</div>
+								<div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
 							</div>
-							<div class="col-lg-6">
+							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 								<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
+								<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
+									{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+								</div>
 							</div>
 							<div class="col-lg-3 text-end">
 								<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -46,13 +52,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							"
 						>
 							<div class="row mb-2">
-								<div class="col-lg-3">
-									<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-									<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-										{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-									</div>
-								</div>
-								<div class="col-lg-9">
+								<div class="col-lg-6">
 									<div class="d-block text-muted mt-2 mt-lg-0">Licence Categories</div>
 									<div class="text-data">
 										<ul class="m-0">
@@ -66,16 +66,16 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									<div class="col-lg-3">
 										<div class="d-block text-muted mt-2">Dog Authorization</div>
 										<div class="text-data">
-											<ng-container *ngIf="licence.dogAuthorization; noDogAuthorization">
+											<ng-container *ngIf="licence.dogAuthorization; else noDogAuthorization">
 												Authorized to use dogs
 											</ng-container>
 											<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
 										</div>
 									</div>
-									<div class="col-lg-9">
+									<div class="col-lg-3">
 										<div class="d-block text-muted mt-2">Restraint Authorization</div>
 										<div class="text-data">
-											<ng-container *ngIf="licence.restraintAuthorization; noRestraintAuthorization">
+											<ng-container *ngIf="licence.restraintAuthorization; else noRestraintAuthorization">
 												Authorized to use restraints
 											</ng-container>
 											<ng-template #noRestraintAuthorization> Not authorized to use restraints </ng-template>
@@ -125,13 +125,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						</ng-container>
 						<ng-template #IsPermitContent>
 							<div class="row mb-2">
-								<div class="col-lg-9">
-									<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
-									<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-										{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-									</div>
-								</div>
-								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
+								<div class="offset-lg-9 col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 									<button
 										mat-flat-button
 										color="primary"

@@ -45,6 +45,19 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								{{ originalExpiryDate | formatDate : formalDateFormat }}
 							</div>
 						</div>
+
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<div class="text-label d-block text-muted">Licence Term</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+						</div>
+						<div class="col-xl-4 col-lg-6 col-md-12">
+							<ng-container *ngIf="isUpdate">
+								<div class="text-label d-block text-muted">Reprint Fee</div>
+								<div class="summary-text-data">
+									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								</div>
+							</ng-container>
+						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12">
 							<div class="text-label d-block text-muted">Licence Categories</div>
 							<div class="summary-text-data">
@@ -60,14 +73,18 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<div class="col-xl-4 col-lg-6 col-md-12">
 								<div class="text-label d-block text-muted">Request to Use Restraints?</div>
 								<div class="summary-text-data">
-									{{ carryAndUseRestraints | options : 'BooleanTypes' }}
+									{{ carryAndUseRestraints }}
 								</div>
 							</div>
 							<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodeYes">
 								<div class="col-xl-4 col-lg-6 col-md-12">
-									<div class="text-label d-block text-muted">
+									<div class="text-label d-block text-muted">Proof of Qualification</div>
+									<div class="summary-text-data">
 										{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 									</div>
+								</div>
+								<div class="col-xl-4 col-lg-6 col-md-12">
+									<div class="text-label d-block text-muted">Proof of Qualification Documents</div>
 									<div class="summary-text-data">
 										<ul class="m-0">
 											<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
@@ -102,23 +119,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 									</div>
 								</div>
 							</ng-container>
-						</ng-container>
-
-						<div class="col-xl-4 col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
-						</div>
-						<ng-container *ngIf="isUpdate">
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Reprint Licence</div>
-								<div class="summary-text-data">Yes</div>
-							</div>
-							<div class="col-xl-4 col-lg-6 col-md-12">
-								<div class="text-label d-block text-muted">Reprint Fee</div>
-								<div class="summary-text-data">
-									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
-								</div>
-							</div>
 						</ng-container>
 					</div>
 				</div>
@@ -271,7 +271,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData) ?? [];
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {
