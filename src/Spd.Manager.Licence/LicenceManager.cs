@@ -186,18 +186,35 @@ internal class LicenceManager :
                 lic.UseDogs = true; //todo: need to confirm with dynamics
                 //get dog document expired date
                 DocumentListResp docList = await _documentRepository.QueryAsync(
-                        new DocumentQry() { ApplicantId = lic.LicenceHolderId, FileType = DocumentTypeEnum.DogCertificate },
+                        new DocumentQry()
+                        {
+                            ApplicantId = lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence ? lic.LicenceHolderId : null,
+                            AccountId = lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence ? lic.LicenceHolderId : null,
+                            FileType = DocumentTypeEnum.DogCertificate
+                        },
                         cancellationToken);
-                lic.DogsDocumentExpiredDate = docList.Items.Any() ? docList.Items.First()?.ExpiryDate : null;
+                if (docList.Items.Any())
+                {
+                    Guid appId = docList.Items.OrderByDescending(i => i.UploadedDateTime).FirstOrDefault().ApplicationId.Value;
+                    lic.DogDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items.Where(i => i.ApplicationId == appId).ToList());
+                }
             }
+        }
 
-            if (lic.CarryAndUseRestraints)
+        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence && lic.CarryAndUseRestraints)
+        {
+            //get restraints document expired date
+            DocumentListResp docList = await _documentRepository.QueryAsync(
+                new DocumentQry()
+                {
+                    ApplicantId = lic.LicenceHolderId,
+                    MultiFileTypes = new[] { DocumentTypeEnum.ASTCertificate, DocumentTypeEnum.UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent }
+                },
+                cancellationToken);
+            if (docList.Items.Any())
             {
-                //get restraints document expired date
-                DocumentListResp docList = await _documentRepository.QueryAsync(
-                    new DocumentQry() { ApplicantId = lic.LicenceHolderId, MultiFileTypes = new[] { DocumentTypeEnum.ASTCertificate, DocumentTypeEnum.UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent } },
-                    cancellationToken);
-                lic.RestraintsDocumentExpiredDate = docList.Items.Any() ? docList.Items.First().ExpiryDate : null;
+                Guid appId = docList.Items.OrderByDescending(i => i.UploadedDateTime).FirstOrDefault().ApplicationId.Value;
+                lic.RestraintsDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items.Where(i => i.ApplicationId == appId).ToList());
             }
         }
     }
