@@ -77,7 +77,6 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="false"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
-					[isControllingMembersWithoutSwlComplete]="isControllingMembersWithoutSwlComplete"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -92,9 +91,11 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isRenewalShortForm]="isRenewalShortForm"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					[showSaveAndExit]="false"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
+					(nextPayStep)="onNextSubmit()"
+					(nextSubmitStep)="onNextSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-business-licence-review>
@@ -128,7 +129,6 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
-	isControllingMembersWithoutSwlComplete!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -174,9 +174,6 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 
 				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
 					'isControllingMembersWithoutSwlExist'
-				)?.value;
-				this.isControllingMembersWithoutSwlComplete = this.businessApplicationService.businessModelFormGroup.get(
-					'isControllingMembersWithoutSwlComplete'
 				)?.value;
 
 				this.isFormValid = _resp;
@@ -242,8 +239,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 		}
 	}
 
-	onNextPayStep(): void {
-		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+	onNextSubmit(): void {
+		this.businessApplicationService.payBusinessLicenceRenewal({
 			paymentSuccess: 'Your business licence renewal has been successfully submitted',
 			paymentReason: 'Payment for renewal of Business Licence application',
 		});
