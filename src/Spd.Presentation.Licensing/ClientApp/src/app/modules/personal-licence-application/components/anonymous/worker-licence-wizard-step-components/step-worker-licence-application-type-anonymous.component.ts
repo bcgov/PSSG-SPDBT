@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 @Component({
 	selector: 'app-step-worker-licence-application-type-anonymous',

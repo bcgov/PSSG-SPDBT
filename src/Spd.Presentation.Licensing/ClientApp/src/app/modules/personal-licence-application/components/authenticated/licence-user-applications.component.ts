@@ -12,7 +12,7 @@ import {
 } from '@app/core/services/application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';

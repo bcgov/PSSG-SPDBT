@@ -63,11 +63,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
 								</div>
 
-								<app-address
-									[form]="businessMailingAddressFormGroup"
-									[isWizardStep]="false"
-									[isReadonly]="true"
-								></app-address>
+								<app-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-address>
 							</div>
 						</mat-expansion-panel>
 					</mat-accordion>
@@ -89,7 +85,6 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 								<app-address-and-is-same-flag
 									[form]="businessAddressFormGroup"
-									[isWizardStep]="false"
 									[isReadonly]="isReadonly"
 									[isCheckboxReadOnly]="isReadonly"
 									isAddressTheSameLabel="The business address and mailing address are the same"
@@ -100,7 +95,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				</section>
 			</div>
 
-			<div class="col-lg-6 col-md-12" *ngIf="!showBcBusinessAddress">
+			<div class="col-12" *ngIf="!showBcBusinessAddress">
 				<section>
 					<mat-accordion>
 						<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
@@ -115,7 +110,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 								<app-address
 									[form]="bcBusinessAddressFormGroup"
-									[isWizardStep]="false"
+									[isWideView]="true"
 									[isReadonly]="isReadonly"
 								></app-address>
 							</div>

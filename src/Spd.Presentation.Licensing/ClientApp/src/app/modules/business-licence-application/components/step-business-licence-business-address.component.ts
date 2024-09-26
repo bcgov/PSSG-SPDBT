@@ -21,11 +21,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
 									</div>
 
-									<app-address
-										[form]="businessMailingAddressFormGroup"
-										[isWizardStep]="false"
-										[isReadonly]="true"
-									></app-address>
+									<app-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-address>
 								</div>
 							</mat-expansion-panel>
 						</mat-accordion>
@@ -47,7 +43,6 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 									<app-address-and-is-same-flag
 										[form]="businessAddressFormGroup"
-										[isWizardStep]="false"
 										isAddressTheSameLabel="The business address and mailing address are the same"
 									></app-address-and-is-same-flag>
 								</div>
@@ -56,7 +51,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 					</section>
 				</div>
 
-				<div class="col-lg-6 col-md-12" *ngIf="!showBcBusinessAddress">
+				<div class="col-12" *ngIf="!showBcBusinessAddress">
 					<section>
 						<mat-accordion>
 							<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
@@ -69,7 +64,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 										Provide an address in British Columbia for document service
 									</app-alert>
 
-									<app-address [form]="bcBusinessAddressFormGroup" [isWizardStep]="false"></app-address>
+									<app-address [form]="bcBusinessAddressFormGroup" [isWideView]="true"></app-address>
 								</div>
 							</mat-expansion-panel>
 						</mat-accordion>

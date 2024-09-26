@@ -56,7 +56,7 @@ export interface UserDialogData {
 			</form>
 
 			<div class="text-minor-heading my-2">Branch Address</div>
-			<app-address [form]="form" [isWizardStep]="false"></app-address>
+			<app-address [form]="form" [isWideView]="true"></app-address>
 		</mat-dialog-content>
 		<mat-dialog-actions>
 			<div class="row m-0 w-100">

@@ -8,7 +8,11 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	selector: 'app-step-permit-residential-address',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
-			<app-address [form]="form"></app-address>
+			<div class="row">
+				<div class="col-md-8 col-sm-12 mx-auto">
+					<app-address [form]="form" [isWideView]="true"></app-address>
+				</div>
+			</div>
 		</app-step-section>
 	`,
 	styles: [],

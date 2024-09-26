@@ -152,14 +152,13 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 								<div class="panel-body">
 									<div class="text-minor-heading mt-4">Licence Information</div>
-
 									<div class="row mt-0">
 										<ng-container *ngIf="!isStaticDataView && !isUpdate">
-											<div class="col-lg-4 col-md-12">
+											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
 												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
 											</div>
-											<div class="col-lg-4 col-md-12">
+											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Fee</div>
 												<div class="summary-text-data">
 													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
@@ -167,18 +166,16 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</ng-container>
 
-										<ng-container
-											*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
-										>
-											<div class="col-lg-4 col-md-12">
-												<div class="text-label d-block text-muted">
-													Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
-												</div>
-												<div class="summary-text-data">
-													{{ category | options : 'WorkerCategoryTypes' }}
-												</div>
+										<div class="col-lg-6 col-md-12">
+											<div class="text-label d-block text-muted">Licence Categories</div>
+											<div class="summary-text-data">
+												<ul class="m-0">
+													<ng-container *ngFor="let category of categoryList; let i = index">
+														<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+													</ng-container>
+												</ul>
 											</div>
-										</ng-container>
+										</div>
 
 										<ng-container *ngIf="isAnyDocuments">
 											<mat-divider class="mt-3 mb-2"></mat-divider>
@@ -312,7 +309,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
 										<div class="row mt-0">
 											<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
-												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
+												<!-- <ng-container *ngFor="let member of membersWithSwlList; let i = index">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted">
 															Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
@@ -320,8 +317,20 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														<div class="summary-text-data">
 															{{ member.licenceHolderName }} - {{ member.licenceNumber }}
 														</div>
+													</div> -->
+
+												<div class="col-xl-4 col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Members</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let member of membersWithSwlList; let i = index">
+																<li>{{ member.licenceHolderName }} - {{ member.licenceNumber }}</li>
+															</ng-container>
+														</ul>
 													</div>
-												</ng-container>
+												</div>
+
+												<!-- </ng-container> -->
 											</ng-container>
 											<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
 										</div>
@@ -330,7 +339,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<div class="text-minor-heading">Members who require Criminal Record Checks</div>
 										<div class="row mt-0">
 											<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
-												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
+												<!-- <ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
 													<div class="col-lg-4 col-md-12">
 														<div class="text-label d-block text-muted">
 															Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
@@ -339,7 +348,18 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 															{{ member.licenceHolderName }}
 														</div>
 													</div>
-												</ng-container>
+												</ng-container> -->
+
+												<div class="col-xl-4 col-lg-6 col-md-12">
+													<div class="text-label d-block text-muted">Members</div>
+													<div class="summary-text-data">
+														<ul class="m-0">
+															<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
+																<li>{{ member.licenceHolderName }}</li>
+															</ng-container>
+														</ul>
+													</div>
+												</div>
 											</ng-container>
 											<ng-template #NoMembersWithoutSwlList> <div class="col-12">None</div></ng-template>
 										</div>
