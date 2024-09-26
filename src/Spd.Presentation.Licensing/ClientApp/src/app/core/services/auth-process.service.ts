@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { IdentityProviderTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject } from 'rxjs';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';

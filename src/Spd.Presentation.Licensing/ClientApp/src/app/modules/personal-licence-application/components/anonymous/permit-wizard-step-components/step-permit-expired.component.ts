@@ -7,10 +7,15 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 @Component({
 	selector: 'app-step-permit-expired',
 	template: `
-		<app-step-section
-			title="Do you have an expired permit in BC?"
-			subtitle="Processing time will be reduced if you provide info from your past permit"
-		>
+		<app-step-section title="Do you have an expired permit in BC?">
+			<div class="row">
+				<div class="offset-md-2 col-md-8 col-sm-12">
+					<app-alert type="info" icon="info">
+						Processing time will be reduced if you provide info from your past permit
+					</app-alert>
+				</div>
+			</div>
+
 			<app-expired-licence
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"

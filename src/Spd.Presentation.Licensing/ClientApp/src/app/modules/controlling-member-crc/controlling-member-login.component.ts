@@ -13,7 +13,7 @@ import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { UtilService } from '@app/core/services/util.service';
 import { take, takeWhile, tap } from 'rxjs';
-import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
+import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 @Component({
 	selector: 'app-controlling-member-login',

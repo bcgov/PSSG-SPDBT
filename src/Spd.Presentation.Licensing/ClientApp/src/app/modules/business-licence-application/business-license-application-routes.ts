@@ -1,4 +1,3 @@
-
 export class BusinessLicenceApplicationRoutes {
 	public static readonly BUSINESS_LICENCE_APPLICATION = 'business-licence';
 

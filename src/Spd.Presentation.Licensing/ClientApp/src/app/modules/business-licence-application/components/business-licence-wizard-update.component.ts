@@ -29,7 +29,9 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 				>
 					<mat-step completed="true">
 						<ng-template matStepLabel>Licence Confirmation</ng-template>
-						<app-step-business-licence-confirmation></app-step-business-licence-confirmation>
+						<app-step-business-licence-confirmation
+							[applicationTypeCode]="applicationTypeUpdate"
+						></app-step-business-licence-confirmation>
 
 						<app-wizard-footer
 							(previousStepperStep)="onGotoBusinessProfile()"
@@ -73,6 +75,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 	styles: [],
 })
 export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
+	applicationTypeUpdate = ApplicationTypeCode.Update;
 	newLicenceCost = 0;
 
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based

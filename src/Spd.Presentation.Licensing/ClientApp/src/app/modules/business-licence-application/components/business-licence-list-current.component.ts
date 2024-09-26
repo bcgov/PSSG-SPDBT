@@ -22,13 +22,21 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 					</div>
 					<div class="col-lg-10">
 						<div class="row">
-							<div class="col-lg-5">
+							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Number</div>
-								<div class="text-data">{{ licence.licenceNumber }}</div>
+								<div class="text-data fw-bold">{{ licence.licenceNumber }}</div>
 							</div>
-							<div class="col-lg-4">
+							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
 								<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
+								<div class="text-data">
+									<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
+										{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+									</div>
+								</div>
 							</div>
 							<div class="col-lg-3 text-end">
 								<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -40,13 +48,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						</div>
 
 						<div class="row mb-2">
-							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
-								<div class="text-data">
-									{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
-								</div>
-							</div>
-							<div class="col-lg-5">
+							<div class="col-lg-6">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 								<div class="text-data">
 									<ul class="m-0">
@@ -57,10 +59,10 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								</div>
 							</div>
 							<ng-container *ngIf="licence.hasSecurityGuardCategory">
-								<div class="col-lg-4">
+								<div class="col-lg-6">
 									<div class="d-block text-muted mt-2">Dog Authorization</div>
 									<div class="text-data">
-										<ng-container *ngIf="licence.dogAuthorization; noDogAuthorization">
+										<ng-container *ngIf="licence.dogAuthorization; else noDogAuthorization">
 											Authorized to use dogs
 										</ng-container>
 										<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
@@ -146,6 +148,11 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 
 			.appl-chip-option-item {
 				vertical-align: text-bottom;
+			}
+
+			.error-color {
+				font-weight: 600;
+				color: var(--color-red-dark);
 			}
 		`,
 	],
