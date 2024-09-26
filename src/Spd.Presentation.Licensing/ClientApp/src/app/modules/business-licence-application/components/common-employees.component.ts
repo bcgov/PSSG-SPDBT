@@ -185,6 +185,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,
+			selectButtonLabel: 'Save',
 		};
 		this.dialog
 			.open(ModalLookupByLicenceNumberComponent, {
@@ -196,11 +197,19 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 			.subscribe((resp: any) => {
 				const memberData: LicenceResponse = resp?.data;
 				if (memberData) {
+					// Manager can't add employee if they are already listed as a employee
+					const employeesArray = this.employeesList.value ?? [];
+					const foundEmp = employeesArray.find((item: any) => item.licenceNumber === memberData.licenceNumber);
+					if (foundEmp) {
+						this.employeeAlreadyListed();
+						return;
+					}
+
 					// Manager can't add employee if they are already listed as a member
 					const membersWithSwlArray = this.membersWithSwlList.value ?? [];
-					const found = membersWithSwlArray.find((item: any) => item.licenceNumber === memberData.licenceNumber);
-					if (found) {
-						this.employeeAlreadyListed();
+					const foundSwl = membersWithSwlArray.find((item: any) => item.licenceNumber === memberData.licenceNumber);
+					if (foundSwl) {
+						this.employeeSwlAlreadyListed();
 						return;
 					}
 
@@ -245,10 +254,21 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 
 	private employeeAlreadyListed(): void {
 		const data: DialogOptions = {
-			icon: 'warning',
-			title: 'Warning',
+			icon: 'error',
+			title: 'Error',
+			message: `This licence holder is already listed as an employee.`,
+			cancelText: 'Close',
+		};
+
+		this.dialog.open(DialogComponent, { data });
+	}
+
+	private employeeSwlAlreadyListed(): void {
+		const data: DialogOptions = {
+			icon: 'error',
+			title: 'Error',
 			message: `If your controlling member is also your licence holder, you should not enter them as an employee.`,
-			cancelText: 'Ok',
+			cancelText: 'Close',
 		};
 
 		this.dialog.open(DialogComponent, { data });

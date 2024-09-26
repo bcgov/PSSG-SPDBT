@@ -12,9 +12,8 @@ import {
 } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { ConfigService } from '@app/core/services/config.service';
-import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-
+import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-business-user-applications',
@@ -43,14 +42,13 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<div class="row mb-4">
+					<div class="row mb-4" *ngIf="showManageMembersAndEmployees">
 						<div class="col-12 text-end">
 							<a
 								class="large"
 								tabindex="0"
 								(click)="onManageMembersAndEmployees()"
 								(keydown)="onKeydownManageMembersAndEmployees($event)"
-								*ngIf="!applicationIsInProgress"
 							>
 								Manage Controlling Members and Employees
 							</a>
@@ -63,6 +61,16 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 						</app-alert>
 					</ng-container>
 
+					<ng-container *ngIf="isControllingMemberWarning">
+						<app-alert type="warning" icon="warning">
+							<div>Your Business Licence application has outstanding controlling member invitations.</div>
+							<div class="mt-2">
+								Click on <strong>'Manage Controlling Members and Employees'</strong> to see the invitation status of
+								each of the members.
+							</div>
+						</app-alert>
+					</ng-container>
+
 					<ng-container *ngFor="let msg of warningMessages; let i = index">
 						<app-alert type="warning" icon="warning">
 							<div [innerHTML]="msg"></div>
@@ -71,21 +79,19 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 
 					<app-applications-list-current
 						[applicationsDataSource]="applicationsDataSource"
+						[isControllingMemberWarning]="isControllingMemberWarning"
 						(resumeApplication)="onResume($event)"
 					></app-applications-list-current>
 
 					<app-business-licence-list-current
-						[activeLicences]="activeLicences"
+						[activeLicences]="activeLicencesList"
 						[applicationIsInProgress]="applicationIsInProgress"
 						[isSoleProprietor]="isSoleProprietor"
 						[lostLicenceDaysText]="lostLicenceDaysText"
-						(manageControllingMembers)="onManageMembersAndEmployees()"
 						(replaceLicence)="onReplace($event)"
 						(updateLicence)="onUpdate($event)"
 						(renewLicence)="onRenewal($event)"
 					></app-business-licence-list-current>
-
-					<app-licence-list-expired [expiredLicences]="expiredLicences"></app-licence-list-expired>
 
 					<div class="summary-card-section mb-3 px-4 py-3" *ngIf="!activeLicenceExist">
 						<div class="row">
@@ -99,6 +105,8 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 							</div>
 						</div>
 					</div>
+
+					<app-licence-list-expired [expiredLicences]="expiredLicencesList"></app-licence-list-expired>
 				</div>
 			</div>
 		</section>
@@ -123,6 +131,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
+	showManageMembersAndEmployees = false;
+	isControllingMemberWarning = false;
 	applicationIsInProgress = true;
 	businessProfileLabel = '';
 	lostLicenceDaysText = 'TBD';
@@ -133,8 +143,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	workerLicenceTypeCodes = WorkerLicenceTypeCode;
 
-	activeLicences: Array<MainLicenceResponse> = [];
-	expiredLicences: Array<MainLicenceResponse> = [];
+	activeLicencesList: Array<MainLicenceResponse> = [];
+	expiredLicencesList: Array<MainLicenceResponse> = [];
 
 	applicationsDataSource: MatTableDataSource<MainApplicationResponse> = new MatTableDataSource<MainApplicationResponse>(
 		[]
@@ -168,12 +178,17 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 						this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
 
+						// Only show the manage members and employees when an application or licence exist.
+						this.showManageMembersAndEmployees = this.isSoleProprietor
+							? false
+							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
+
 						// User Licences/Permits
-						const activeLicences = businessLicencesList.filter(
+						const activeBusinessLicencesList = businessLicencesList.filter(
 							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
 						);
 
-						this.expiredLicences = businessLicencesList.filter(
+						this.expiredLicencesList = businessLicencesList.filter(
 							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
 						);
 
@@ -183,18 +198,20 @@ export class BusinessUserApplicationsComponent implements OnInit {
 							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
 
 						// Set flags that determine if NEW licences/permits can be created
-						let activeLicenceExist = activeLicences.length > 0;
+						let activeLicenceExist = activeBusinessLicencesList.length > 0;
 						if (!activeLicenceExist) {
 							activeLicenceExist = businessApplicationsList.length > 0;
 						}
 						this.activeLicenceExist = activeLicenceExist;
 
-						[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndError(
-							businessApplicationsList,
-							activeLicences
-						);
+						[this.warningMessages, this.errorMessages, this.isControllingMemberWarning] =
+							this.commonApplicationService.getMainWarningsAndErrorBusinessLicence(
+								businessApplicationsList,
+								activeBusinessLicencesList,
+								!this.isSoleProprietor
+							);
 
-						this.activeLicences = activeLicences;
+						this.activeLicencesList = activeBusinessLicencesList;
 
 						this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
 					})
@@ -229,7 +246,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onResume(appl: MainApplicationResponse): void {
 		this.businessApplicationService
-			.getBusinessLicenceToResume(appl.licenceAppId!)
+			.getBusinessLicenceApplToResume(appl.licenceAppId!)
 			.pipe(
 				tap((resp: any) => {
 					// return to the swl sole proprietor / business licence combo flow
