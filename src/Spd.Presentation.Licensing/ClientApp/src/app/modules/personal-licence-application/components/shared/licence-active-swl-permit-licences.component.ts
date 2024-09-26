@@ -26,13 +26,9 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Number</div>
 								<div class="text-data">{{ licence.licenceNumber }}</div>
 							</div>
-							<div class="col-lg-3">
+							<div class="col-lg-6">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
 								<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
-							</div>
-							<div class="col-lg-3">
-								<div class="d-block text-muted mt-2 mt-lg-0">Case Number</div>
-								<div class="text-data">{{ licence.caseNumber }}</div>
 							</div>
 							<div class="col-lg-3 text-end">
 								<mat-chip-option [selectable]="false" class="appl-chip-option mat-chip-green">
@@ -66,16 +62,26 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 										</ul>
 									</div>
 								</div>
-								<div class="col-lg-6" *ngIf="licence.dogAuthorization">
-									<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
-									<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
-								</div>
-								<div class="col-lg-6" *ngIf="licence.restraintAuthorization">
-									<div class="d-block text-muted mt-2">Restraint Authorization Documents</div>
-									<div class="text-data">
-										{{ licence.restraintAuthorization | options : 'RestraintDocumentTypes' }}
+								<ng-container *ngIf="licence.hasSecurityGuardCategory">
+									<div class="col-lg-3">
+										<div class="d-block text-muted mt-2">Dog Authorization</div>
+										<div class="text-data">
+											<ng-container *ngIf="licence.dogAuthorization; noDogAuthorization">
+												Authorized to use dogs
+											</ng-container>
+											<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
+										</div>
 									</div>
-								</div>
+									<div class="col-lg-9">
+										<div class="d-block text-muted mt-2">Restraint Authorization</div>
+										<div class="text-data">
+											<ng-container *ngIf="licence.restraintAuthorization; noRestraintAuthorization">
+												Authorized to use restraints
+											</ng-container>
+											<ng-template #noRestraintAuthorization> Not authorized to use restraints </ng-template>
+										</div>
+									</div>
+								</ng-container>
 							</div>
 							<mat-divider class="my-2"></mat-divider>
 							<div class="row mb-2">
