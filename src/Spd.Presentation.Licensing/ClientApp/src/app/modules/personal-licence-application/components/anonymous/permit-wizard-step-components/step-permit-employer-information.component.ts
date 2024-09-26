@@ -72,6 +72,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						<app-address-form-autocomplete
 							(autocompleteAddress)="onAddressAutocomplete($event)"
 							(enterAddressManually)="onEnterAddressManually()"
+							[isWideView]="true"
 						>
 						</app-address-form-autocomplete>
 						<mat-error

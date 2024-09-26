@@ -1633,7 +1633,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		if (categoryData.SecurityGuard) {
 			categorySecurityGuardFormGroup = {
 				isInclude: true,
-				isRequestDogAuthorization: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+				useDogs: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+				dogsPurposeFormGroup: {
+					isDogsPurposeDetectionDrugs: null, //businessLicenceAppl.isDogsPurposeDetectionDrugs,
+					isDogsPurposeDetectionExplosives: null, //businessLicenceAppl.isDogsPurposeDetectionExplosives,
+					isDogsPurposeProtection: null, //businessLicenceAppl.isDogsPurposeProtection,
+					// TODO populate dog info
+				},
 				attachments: dogAuthorizationAttachments,
 			};
 		}
@@ -1850,7 +1856,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (categoryData.SecurityGuard) {
 					categorySecurityGuardFormGroup = {
 						isInclude: true,
-						isRequestDogAuthorization: null,
+						useDogs: null,
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: null,
+							isDogsPurposeDetectionExplosives: null,
+							isDogsPurposeProtection: null,
+						},
 						attachments: [],
 					};
 				}
@@ -1904,7 +1915,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (categoryData.SecurityGuard) {
 					categorySecurityGuardFormGroup = {
 						isInclude: true,
-						isRequestDogAuthorization: null,
+						useDogs: null,
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: null,
+							isDogsPurposeDetectionExplosives: null,
+							isDogsPurposeProtection: null,
+						},
 						attachments: [],
 					};
 				}

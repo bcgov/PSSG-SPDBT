@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
 	selector: 'app-collection-notice',
 	template: `
-		<app-alert type="info" icon="" [showBorder]="false">
+		<app-alert type="success" icon="" [showBorder]="false">
 			<div class="mb-2">COLLECTION NOTICE</div>
 			All information regarding this application is collected under the <i>{{ collectionNoticeActName }}</i> and its
 			Regulation and will be used for that purpose. The use of this information will comply with the

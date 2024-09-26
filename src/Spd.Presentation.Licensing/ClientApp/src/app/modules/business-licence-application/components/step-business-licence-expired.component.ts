@@ -7,10 +7,15 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 @Component({
 	selector: 'app-step-business-licence-expired',
 	template: `
-		<app-step-section
-			title="Does your business have an expired licence in BC?"
-			subtitle="Processing time will be reduced if you provide info from your past licence"
-		>
+		<app-step-section title="Does your business have an expired licence in BC?">
+			<div class="row">
+				<div class="offset-md-2 col-md-8 col-sm-12">
+					<app-alert type="info" icon="info">
+						Processing time will be reduced if you provide info from your past licence
+					</app-alert>
+				</div>
+			</div>
+
 			<app-expired-licence
 				[form]="form"
 				[isLoggedIn]="true"

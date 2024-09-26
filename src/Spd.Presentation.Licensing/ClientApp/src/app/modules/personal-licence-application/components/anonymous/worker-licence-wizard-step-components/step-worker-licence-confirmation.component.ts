@@ -20,15 +20,31 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<div class="row">
 				<div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 mx-auto">
 					<div class="row mt-0 mb-3">
-						<div class="col-lg-6 col-md-12">
+						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Licence Holder Name</div>
 							<div class="summary-text-data">{{ cardHolderName }}</div>
 						</div>
-						<div class="col-lg-6 col-md-12">
+						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Licence Number</div>
 							<div class="summary-text-data">{{ originalLicenceNumber }}</div>
 						</div>
-						<div class="col-lg-6 col-md-12">
+						<div class="col-lg-4 col-md-12">
+							<div class="text-label d-block text-muted">Licence Term</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+						</div>
+						<div class="col-lg-4 col-md-12">
+							<div class="text-label d-block text-muted">Expiry Date</div>
+							<div class="summary-text-data">
+								{{ originalExpiryDate | formatDate : formalDateFormat }}
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-12" *ngIf="feeAmount">
+							<div class="text-label d-block text-muted">{{ applicationTypeCode }} Fee</div>
+							<div class="summary-text-data">
+								{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+							</div>
+						</div>
+						<div class="col-md-12" [ngClass]="feeAmount ? 'col-lg-4' : 'col-lg-8'">
 							<div class="text-label d-block text-muted">Licence Categories</div>
 							<div class="summary-text-data">
 								<ul class="m-0">
@@ -36,22 +52,6 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 										<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
 									</ng-container>
 								</ul>
-							</div>
-						</div>
-						<div class="col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Expiry Date</div>
-							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
-							</div>
-						</div>
-						<div class="col-lg-6 col-md-12">
-							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
-						</div>
-						<div class="col-lg-6 col-md-12" *ngIf="feeAmount">
-							<div class="text-label d-block text-muted">{{ applicationTypeCode }} Fee</div>
-							<div class="summary-text-data">
-								{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
 					</div>

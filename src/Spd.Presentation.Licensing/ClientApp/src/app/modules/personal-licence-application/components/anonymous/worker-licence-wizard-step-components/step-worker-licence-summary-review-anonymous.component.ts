@@ -54,27 +54,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 													{{ applicationTypeCode | options : 'ApplicationTypes' }}
 												</div>
 											</div>
-											<ng-container *ngIf="applicationTypeCode !== applicationTypeCodes.Update">
-												<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
-													<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
-													<div class="summary-text-data">
-														{{ soleProprietorBizTypeCode | options : 'BizTypes' }}
-													</div>
+											<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
+												<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
+												<div class="summary-text-data">
+													{{ soleProprietorBizTypeCode | options : 'BizTypes' }}
 												</div>
-											</ng-container>
-
-											<ng-container
-												*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
-											>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">
-														Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
-													</div>
-													<div class="summary-text-data">
-														{{ category | options : 'WorkerCategoryTypes' }}
-													</div>
-												</div>
-											</ng-container>
+											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
 												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
@@ -83,6 +68,16 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="text-label d-block text-muted">Fee</div>
 												<div class="summary-text-data">
 													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+												</div>
+											</div>
+											<div class="col-xl-4 col-lg-6 col-md-12">
+												<div class="text-label d-block text-muted">Licence Categories</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let category of categoryList; let i = index">
+															<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+														</ng-container>
+													</ul>
 												</div>
 											</div>
 										</div>
@@ -1028,7 +1023,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 	}
 
 	get photoOfYourselfAttachments(): File[] {
-		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData) ?? [];
 	}
 
 	get emailAddress(): string {

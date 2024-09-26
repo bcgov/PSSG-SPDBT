@@ -4,7 +4,7 @@ import { BizMembersService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
-import { ControllingMemberCrcRoutes } from './controlling-member-crc-routing.module';
+import { ControllingMemberCrcRoutes } from './controlling-member-crc-routes';
 
 @Component({
 	selector: 'app-controlling-member-invitation',
