@@ -32,21 +32,22 @@ public record WorkerLicenceResponse
 
 public record WorkerLicenceRequest
 {
-    public IEnumerable<Guid>? DocumentKeyCodes { get; set; }
-    public IEnumerable<Guid>? PreviousDocumentIds { get; set; } //documentUrlId, used for renew
+    public IEnumerable<Guid>? NewDocumentCacheKeyCodes { get; set; } //for new documents uploaded in update/renew/unauth, saved in cache
+    public IEnumerable<Guid>? ValidPreviousDocumentIds { get; set; } //documentUrlId, used for update/renew/
     public Guid OriginalLicenceId { get; set; } //for renew, replace, update licence it should be original licence id. 
     public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.Portal;
 }
 
 public record WorkerLicenceUpdateRequest : WorkerLicenceRequest
 {
+    public LicenceTermCode? LicenceTermCode { get; set; } //for biz licence term, only 1,2,3 year
     public bool? CarryAndUseRestraints { get; set; }
     public bool? UseDogs { get; set; }
     public bool? IsDogsPurposeProtection { get; set; }
     public bool? IsDogsPurposeDetectionDrugs { get; set; }
     public bool? IsDogsPurposeDetectionExplosives { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>();
-    public string? CriminalChargeDescription { get; set; }
+    public string? CriminalChargeDescription { get; set; } // should be in ApplicantProfile?
 }
 
 public record WorkerLicenceRenewRequest : WorkerLicenceRequest;

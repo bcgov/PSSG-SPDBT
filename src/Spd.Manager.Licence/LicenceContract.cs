@@ -53,6 +53,7 @@ public record LicenceResponse : LicenceBasicResponse
     public bool IsDogsPurposeDetectionDrugs { get; set; }
     public bool IsDogsPurposeDetectionExplosives { get; set; }
     public DateOnly? DogsDocumentExpiredDate { get; set; }
+    public IEnumerable<Document> SwlDocumentInfos { get; set; } = [];
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
