@@ -2,8 +2,9 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/models';
-import { MainApplicationResponse } from '@app/core/services/application.service';
+import { ApplicationPortalStatusCode, ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationService, MainApplicationResponse } from '@app/core/services/application.service';
+import { OptionsPipe } from '../pipes/options.pipe';
 
 @Component({
 	selector: 'app-applications-list-current',
@@ -73,11 +74,23 @@ import { MainApplicationResponse } from '@app/core/services/application.service'
 									mat-flat-button
 									color="primary"
 									class="large my-2"
+									aria-label="Resume"
 									(click)="onResume(application)"
 									[disabled]="isDraftAndNotResumable(application)"
 									*ngIf="isDraft(application)"
 								>
 									<mat-icon>play_arrow</mat-icon>Resume
+								</button>
+
+								<button
+									mat-flat-button
+									color="primary"
+									class="large my-2"
+									aria-label="Pay now"
+									(click)="onPayNow(application)"
+									*ngIf="isPaymentPending(application)"
+								>
+									<mat-icon>payment</mat-icon>Pay Now
 								</button>
 							</mat-cell>
 						</ng-container>
@@ -94,10 +107,7 @@ import { MainApplicationResponse } from '@app/core/services/application.service'
 			.mat-column-action1 {
 				text-align: right;
 				justify-content: flex-end;
-				min-width: 160px;
-				.table-button {
-					min-width: 140px;
-				}
+				min-width: 170px;
 			}
 
 			.status-green {
@@ -127,8 +137,11 @@ export class ApplicationsListCurrentComponent {
 
 	@Input() applicationsDataSource!: MatTableDataSource<MainApplicationResponse>;
 	@Input() applicationIsInProgress!: boolean;
+	@Input() isControllingMemberWarning!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
+
+	constructor(private optionsPipe: OptionsPipe, private commonApplicationService: ApplicationService) {}
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
@@ -148,6 +161,17 @@ export class ApplicationsListCurrentComponent {
 		this.resumeApplication.emit(appl);
 	}
 
+	onPayNow(application: MainApplicationResponse): void {
+		const workerLicenceTypeDesc = this.optionsPipe.transform(application.serviceTypeCode, 'WorkerLicenceTypes');
+		const paymentDesc = `Payment for ${workerLicenceTypeDesc} application`;
+
+		if (application.serviceTypeCode === WorkerLicenceTypeCode.SecurityBusinessLicence) {
+			this.commonApplicationService.payNowBusinessLicence(application.licenceAppId!, paymentDesc);
+		} else {
+			this.commonApplicationService.payNowPersonalLicenceAuthenticated(application.licenceAppId!, paymentDesc);
+		}
+	}
+
 	isDraft(appl: MainApplicationResponse): boolean {
 		return (
 			appl.applicationTypeCode === ApplicationTypeCode.New &&
@@ -160,6 +184,13 @@ export class ApplicationsListCurrentComponent {
 			this.applicationIsInProgress &&
 			appl.applicationTypeCode === ApplicationTypeCode.New &&
 			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+		);
+	}
+
+	isPaymentPending(appl: MainApplicationResponse): boolean {
+		return (
+			!this.isControllingMemberWarning &&
+			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
 		);
 	}
 }

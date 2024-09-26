@@ -238,7 +238,11 @@ export class UtilService {
 		return a > b ? 1 : a < b ? -1 : 0;
 	}
 
-	public sortDate(a: string | null | undefined, b: string | null | undefined): SortWeight {
+	public sortDate(
+		a: string | null | undefined,
+		b: string | null | undefined,
+		direction: SortDirection = 'asc'
+	): SortWeight {
 		if (!a) {
 			return -1;
 		}
@@ -249,7 +253,11 @@ export class UtilService {
 		const aDate = moment(a).startOf('day');
 		const bDate = moment(b).startOf('day');
 
-		return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
+		if (direction === 'asc') {
+			return aDate.isAfter(bDate) ? 1 : aDate.isBefore(bDate) ? -1 : 0;
+		} else {
+			return aDate.isAfter(bDate) ? -1 : aDate.isBefore(bDate) ? 1 : 0;
+		}
 	}
 
 	//------------------------------------

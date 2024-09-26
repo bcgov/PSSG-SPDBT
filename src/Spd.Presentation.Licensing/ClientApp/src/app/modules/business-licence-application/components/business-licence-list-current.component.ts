@@ -46,7 +46,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 								</div>
 							</div>
-							<div class="col-lg-4">
+							<div class="col-lg-5">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 								<div class="text-data">
 									<ul class="m-0">
@@ -56,33 +56,18 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									</ul>
 								</div>
 							</div>
-							<div class="col-lg-5" *ngIf="licence.dogAuthorization">
-								<div class="d-block text-muted mt-2">Dog Authorization Documents</div>
-								<div class="text-data">{{ licence.dogAuthorization | options : 'DogDocumentTypes' }}</div>
-							</div>
-
-							<div class="col-lg-5">
-								<div class="d-block text-muted mt-2 mt-md-0"></div>
-								<div *ngIf="!isSoleProprietor">
-									<ng-container *ngIf="applicationIsInProgress">
-										<div class="mb-2">
-											<a class="large disable">Manage Controlling Members and Employees</a>
-										</div>
-										<app-alert type="info" icon="">
-											You can update your controlling members and employees when you renew your business licence
-										</app-alert>
-									</ng-container>
-									<a
-										class="large"
-										tabindex="0"
-										(click)="onManageMembersAndEmployees()"
-										(keydown)="onKeydownManageMembersAndEmployees($event)"
-										*ngIf="!applicationIsInProgress"
-									>
-										Manage Controlling Members and Employees
-									</a>
+							<ng-container *ngIf="licence.hasSecurityGuardCategory">
+								<div class="col-lg-4">
+									<div class="d-block text-muted mt-2">Dog Authorization</div>
+									<div class="text-data">
+										<ng-container *ngIf="licence.dogAuthorization; noDogAuthorization">
+											Authorized to use dogs
+										</ng-container>
+										<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
+									</div>
 								</div>
-							</div>
+							</ng-container>
+
 							<mat-divider class="my-2"></mat-divider>
 						</div>
 
@@ -175,20 +160,9 @@ export class BusinessLicenceListCurrentComponent {
 	@Input() lostLicenceDaysText!: string;
 	@Input() isSoleProprietor!: boolean;
 
-	@Output() manageControllingMembers: EventEmitter<any> = new EventEmitter();
 	@Output() replaceLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() updateLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
 	@Output() renewLicence: EventEmitter<MainLicenceResponse> = new EventEmitter();
-
-	onManageMembersAndEmployees(): void {
-		this.manageControllingMembers.emit();
-	}
-
-	onKeydownManageMembersAndEmployees(event: KeyboardEvent) {
-		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
-
-		this.onManageMembersAndEmployees();
-	}
 
 	onRequestReplacement(licence: MainLicenceResponse): void {
 		this.replaceLicence.emit(licence);
