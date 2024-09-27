@@ -68,7 +68,11 @@ internal class BizLicenceManager : LicenceAppManagerBase,
         decimal? cost = 0;
         BizLicApplicationCmdResp? response = null;
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-        response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
+        createApp.BizTypeCode = originalLic.BizTypeCode;
+        createApp.LicenceTermCode = originalLic.LicenceTermCode;
+        createApp.BizId = originalLic.LicenceHolderId;
+        createApp.ApplicationStatusEnum = Resource.Repository.Application.ApplicationStatusEnum.Incomplete;
+        response = await _bizLicApplicationRepository.CreateBizLicAppForUpdateAsync(createApp, cancellationToken);
         if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
 
         // Upload new files
@@ -123,9 +127,9 @@ internal class BizLicenceManager : LicenceAppManagerBase,
             if (!newList.SequenceEqual(originalList)) changes.CategoriesChanged = true;
         }
 
-        //UseDogs changed
-        if (updateRequest.UseDogs != originalLic.UseDogs)
-            changes.UseDogsChanged = true;
+        //UseDogs changed: temp: todo: waiting for dynamics' design
+        //if (updateRequest.UseDogs != originalLic.UseDogs)
+        //    changes.UseDogsChanged = true;
 
         if (changes.CategoriesChanged)
         {

@@ -65,7 +65,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licence-lookup/{licenceNumber}")]
         [HttpGet]
-        [Authorize(Policy = "BcscBCeID")]
+        //[Authorize(Policy = "BcscBCeID")]
         public async Task<LicenceResponse?> GetLicenceLookup([FromRoute][Required] string licenceNumber, [FromQuery] string? accessCode = null)
         {
             return await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));

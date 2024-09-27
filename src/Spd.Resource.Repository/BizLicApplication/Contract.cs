@@ -8,6 +8,7 @@ public partial interface IBizLicApplicationRepository
     public Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
+    public Task<BizLicApplicationCmdResp> CreateBizLicAppForUpdateAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct);
 }
 
 public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);
@@ -55,6 +56,7 @@ public record CreateBizLicApplicationCmd() : BizLicApplication
     public ApplicationStatusEnum ApplicationStatusEnum { get; set; } = ApplicationStatusEnum.Incomplete;
     public Guid? OriginalApplicationId { get; set; }
     public Guid? OriginalLicenceId { get; set; }
+    public Guid? BizId { get; set; }
 };
 
 public record BizLicApplicationResp() : BizLicApplication

@@ -66,6 +66,23 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
+        /// Update biz licence
+        /// </summary>
+        /// <param name="bizUpsertRequest"></param>
+        /// <returns></returns>
+        [Route("api/business-licence/update")]
+        //[Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+        [HttpPost]
+        public async Task<BizLicenceCommandResponse> UpdateBusinessLicence([FromBody][Required] BizLicenceUpdateRequest bizUpdateRequest, CancellationToken ct)
+        {
+            if (bizUpdateRequest.BizId == Guid.Empty)
+                throw new ApiException(HttpStatusCode.BadRequest, "must have business");
+            bizUpdateRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+            IEnumerable<LicAppFileInfo> newDocInfos = await GetAllNewDocsInfoAsync(bizUpdateRequest.NewDocumentCacheKeyCodes, ct);
+            return await _mediator.Send(new BizLicenceUpdateCommand(bizUpdateRequest, newDocInfos), ct);
+        }
+
+        /// <summary>
         /// Save Business Licence Application
         /// </summary>
         /// <param name="bizUpsertRequest"></param>

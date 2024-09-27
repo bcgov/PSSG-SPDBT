@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.PersonLicApplication;
@@ -18,6 +18,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _mapper = mapper;
     }
 
+    //for auth create replace, renew, update application : no partial save
     public async Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? originalApp;
@@ -82,6 +83,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, applicantId);
     }
 
+    //for partial save and auth create new application
     public async Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct)
     {
         spd_application? app;
@@ -140,6 +142,39 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         await _context.SaveChangesAsync(ct);
         return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.ApplicantId);
+    }
+
+    //for auth create replace, renew, update application : no partial save
+    public async Task<BizLicApplicationCmdResp> CreateBizLicAppForUpdateAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct)
+    {
+        spd_application app = _mapper.Map<spd_application>(cmd);
+        app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
+        _context.AddTospd_applications(app);
+
+        SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
+
+        await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        LinkOrganization(cmd.BizId, app);
+
+        if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
+        {
+            contact? contact = await _context.GetContactById((Guid)cmd.PrivateInvestigatorSwlInfo.ContactId, ct);
+            if (contact == null)
+                throw new ArgumentException($"cannot find the contact with contactId : {cmd.PrivateInvestigatorSwlInfo.ContactId}");
+
+            spd_businesscontact businessContact = UpsertPrivateInvestigator(cmd.PrivateInvestigatorSwlInfo, app);
+            _context.SetLink(businessContact, nameof(spd_businesscontact.spd_ContactId), contact);
+
+            spd_licence licence = GetLicence((Guid)cmd.PrivateInvestigatorSwlInfo.LicenceId);
+            _context.AddLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), businessContact);
+        }
+
+        //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
+        //then update category.
+        SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
+        await _context.SaveChangesAsync(ct);
+        return new BizLicApplicationCmdResp((Guid)app.spd_applicationid, cmd.BizId.Value);
     }
 
     public async Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct)
