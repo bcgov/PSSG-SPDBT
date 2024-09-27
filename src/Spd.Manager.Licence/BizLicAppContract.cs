@@ -83,7 +83,9 @@ public abstract record BizLicenceApp : LicenceAppBase
     //branding
     public bool? NoBranding { get; set; } //wait
     public bool? UseDogs { get; set; } //has value if SecurityGuard is selected
-
+    public bool? IsDogsPurposeProtection { get; set; }
+    public bool? IsDogsPurposeDetectionDrugs { get; set; }
+    public bool? IsDogsPurposeDetectionExplosives { get; set; }
     //non sole proprietor properties
     public ContactInfo? ApplicantContactInfo { get; set; }
     public IEnumerable<WorkerCategoryTypeCode> CategoryCodes { get; set; } = Array.Empty<WorkerCategoryTypeCode>(); //todo: Matrix
