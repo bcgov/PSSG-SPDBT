@@ -1,4 +1,5 @@
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
@@ -193,11 +194,7 @@ internal class LicenceManager :
                             FileType = DocumentTypeEnum.DogCertificate
                         },
                         cancellationToken);
-                if (docList.Items.Any())
-                {
-                    Guid appId = docList.Items.OrderByDescending(i => i.UploadedDateTime).FirstOrDefault().ApplicationId.Value;
-                    lic.DogDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items.Where(i => i.ApplicationId == appId).ToList());
-                }
+                lic.DogDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items);
             }
         }
 
@@ -211,11 +208,7 @@ internal class LicenceManager :
                     MultiFileTypes = new[] { DocumentTypeEnum.ASTCertificate, DocumentTypeEnum.UseForceEmployerLetter, DocumentTypeEnum.UseForceEmployerLetterASTEquivalent }
                 },
                 cancellationToken);
-            if (docList.Items.Any())
-            {
-                Guid appId = docList.Items.OrderByDescending(i => i.UploadedDateTime).FirstOrDefault().ApplicationId.Value;
-                lic.RestraintsDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items.Where(i => i.ApplicationId == appId).ToList());
-            }
+            lic.RestraintsDocumentInfos = _mapper.Map<IEnumerable<Document>>(docList.Items);
         }
     }
 }
