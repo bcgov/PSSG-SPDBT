@@ -1,5 +1,4 @@
 using AutoMapper;
-using Google.Protobuf.WellKnownTypes;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
