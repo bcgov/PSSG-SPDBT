@@ -10,7 +10,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
-    <PackageVersion Include="AWSSDK.S3" Version="3.7.403.1" />
+    <PackageVersion Include="AWSSDK.S3" Version="3.7.403.5" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="FluentValidation" Version="11.10.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
@@ -53,7 +53,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.9.0-beta.1" />
-    <PackageVersion Include="Polly" Version="8.4.1" />
+    <PackageVersion Include="Polly" Version="8.4.2" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.2" />
     <PackageVersion Include="Serilog.Enrichers.ClientInfo" Version="2.1.1" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
@@ -61,7 +61,7 @@
     <PackageVersion Include="Serilog.Enrichers.Span" Version="3.1.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.0" />
+    <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
     <PackageVersion Include="Serilog.Sinks.Splunk" Version="5.0.1" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="SkiaSharp" Version="2.88.8" />

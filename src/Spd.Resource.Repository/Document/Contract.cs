@@ -18,7 +18,8 @@ namespace Spd.Resource.Repository.Document
         Guid? LicenceId = null,
         Guid? AccountId = null,
         DocumentTypeEnum? FileType = null,
-        IEnumerable<DocumentTypeEnum>? MultiFileTypes = null);
+        IEnumerable<DocumentTypeEnum>? MultiFileTypes = null,
+        bool OnlyReturnLatestSet = true);
     public record DocumentListResp
     {
         public IEnumerable<DocumentResp> Items { get; set; } = Array.Empty<DocumentResp>();
