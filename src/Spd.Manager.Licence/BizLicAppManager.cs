@@ -244,10 +244,6 @@ internal class BizLicAppManager :
         if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be updated.");
 
-        //BizLicApplicationResp originalLicApp = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        //if (originalLicApp.BizId == null)
-        //    throw new ArgumentException("there is no business related to the application.");
-
         ChangeSpec changes = await MakeChanges(request, originalLic, cancellationToken);
         BizLicApplicationCmdResp? response = null;
         decimal? cost = 0;
@@ -264,7 +260,7 @@ internal class BizLicAppManager :
             createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
             response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
-            if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
+            if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "Create biz application failed.");
 
             // Upload new files
             await UploadNewDocsAsync(null,
@@ -289,10 +285,6 @@ internal class BizLicAppManager :
                 }
             }
 
-            //link biz members to this application
-            await _bizContactRepository.ManageBizContactsAsync(
-                new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
-                cancellationToken);
             cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
         }
 
@@ -457,8 +449,13 @@ internal class BizLicAppManager :
         }
 
         //UseDogs changed
-        if (newRequest.UseDogs != originalLic.UseDogs)
+        if (newRequest.UseDogs != originalLic.UseDogs ||
+            newRequest.IsDogsPurposeProtection != originalLic.IsDogsPurposeProtection ||
+            newRequest.IsDogsPurposeDetectionDrugs != originalLic.IsDogsPurposeDetectionDrugs ||
+            newRequest.IsDogsPurposeDetectionExplosives != originalLic.IsDogsPurposeDetectionExplosives)
+        {
             changes.UseDogsChanged = true;
+        }
 
         if (changes.CategoriesChanged)
         {
