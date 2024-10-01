@@ -176,7 +176,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licences/{licenceId}")]
         [HttpGet]
-        //[Authorize(Policy = "BcscBCeID")]
+        [Authorize(Policy = "BcscBCeID")]
         public async Task<LicenceResponse> GetLicence([FromRoute] Guid licenceId, CancellationToken ct)
         {
             return await _mediator.Send(new LicenceByIdQuery(licenceId), ct);

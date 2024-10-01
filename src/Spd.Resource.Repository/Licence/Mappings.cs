@@ -36,7 +36,13 @@ namespace Spd.Resource.Repository.Licence
              .ForMember(d => d.IsTemporary, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_temporarylicence)))
              .ForMember(d => d.PermitPurposeEnums, opt => opt.MapFrom(s => SharedMappingFuncs.GetPermitPurposeEnums(s.spd_permitpurpose)))
              .ForMember(d => d.CategoryCodes, opt => opt.MapFrom(s => GetCategoryCodes(s.spd_spd_licence_spd_caselicencecategory_licenceid.ToList())))
-             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => GetBizType(s)));
+             .ForMember(d => d.BizTypeCode, opt => opt.MapFrom(s => GetBizType(s)))
+             .ForMember(d => d.IsDogsPurposeProtection, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.Protection)))
+             .ForMember(d => d.IsDogsPurposeDetectionDrugs, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionDrugs)))
+             .ForMember(d => d.IsDogsPurposeDetectionExplosives, opt => opt.MapFrom(s => SharedMappingFuncs.GetDogReasonFlag(s.spd_requestdogsreasons, RequestDogPurposeOptionSet.DetectionExplosives)))
+             .ForMember(d => d.CarryAndUseRestraints, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestrestraints)))
+             .ForMember(d => d.UseDogs, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_requestdogs)))
+             ;
 
             _ = CreateMap<spd_licence, Addr>()
              .ForMember(d => d.AddressLine1, opt => opt.MapFrom(s => s.spd_employeraddress1))
