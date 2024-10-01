@@ -1522,7 +1522,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			originalExpiryDate: originalLicence?.licenceExpiryDate ?? null,
 			originalLicenceTermCode: originalLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: originalLicence?.bizTypeCode ?? null,
-			originalCategoryCodes: businessLicenceAppl.categoryCodes ?? null,
+			originalCategoryCodes: originalLicence?.categoryCodes ?? null,
+			originalIsDogsPurposeDetectionDrugs: originalLicence?.isDogsPurposeDetectionDrugs ?? null,
+			originalIsDogsPurposeDetectionExplosives: originalLicence?.isDogsPurposeDetectionExplosives ?? null,
+			originalIsDogsPurposeProtection: originalLicence?.isDogsPurposeProtection ?? null,
 		};
 
 		const companyBrandingAttachments: Array<File> = [];
@@ -1635,10 +1638,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				isInclude: true,
 				useDogs: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
 				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: null, //businessLicenceAppl.isDogsPurposeDetectionDrugs,
-					isDogsPurposeDetectionExplosives: null, //businessLicenceAppl.isDogsPurposeDetectionExplosives,
-					isDogsPurposeProtection: null, //businessLicenceAppl.isDogsPurposeProtection,
-					// TODO populate dog info
+					isDogsPurposeDetectionDrugs: originalLicence?.isDogsPurposeDetectionDrugs ?? null,
+					isDogsPurposeDetectionExplosives: originalLicence?.isDogsPurposeDetectionExplosives ?? null,
+					isDogsPurposeProtection: originalLicence?.isDogsPurposeProtection ?? null,
 				},
 				attachments: dogAuthorizationAttachments,
 			};

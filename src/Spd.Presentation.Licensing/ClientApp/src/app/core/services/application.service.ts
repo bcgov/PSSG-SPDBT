@@ -847,9 +847,22 @@ export class ApplicationService {
 
 		if (licence.hasSecurityGuardCategory && matchingLicence) {
 			licence.dogAuthorization = matchingLicence.useDogs ?? false;
-			licence.dogAuthorizationExpiryDate = matchingLicence.dogsDocumentExpiredDate ?? null;
+			if (licence.dogAuthorization) {
+				const dogDocumentInfos = licence.dogDocumentInfos ?? [];
+				if (dogDocumentInfos.length > 0) {
+					const doc = dogDocumentInfos.at(0);
+					licence.dogAuthorizationExpiryDate = doc?.expiryDate ?? null;
+				}
+			}
+
 			licence.restraintAuthorization = matchingLicence.carryAndUseRestraints ?? false;
-			licence.restraintAuthorizationExpiryDate = matchingLicence.restraintsDocumentExpiredDate ?? null;
+			if (licence.restraintAuthorization) {
+				const restraintsDocumentInfos = licence.restraintsDocumentInfos ?? [];
+				if (restraintsDocumentInfos.length > 0) {
+					const doc = restraintsDocumentInfos.at(0);
+					licence.restraintAuthorizationExpiryDate = doc?.expiryDate ?? null;
+				}
+			}
 		}
 
 		if (licence.licenceExpiryNumberOfDays >= 0) {

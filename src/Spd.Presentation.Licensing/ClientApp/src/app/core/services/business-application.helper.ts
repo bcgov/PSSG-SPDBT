@@ -27,6 +27,9 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
 		originalCategoryCodes: new FormControl(null),
+		originalIsDogsPurposeDetectionDrugs: new FormControl(null),
+		originalIsDogsPurposeDetectionExplosives: new FormControl(null),
+		originalIsDogsPurposeProtection: new FormControl(null),
 	});
 
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
@@ -469,7 +472,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		let dogsAuthorizationData = {};
+		let securityGuardData = {};
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
@@ -495,13 +498,15 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const categoryData = { ...businessModelFormValue.categoryData };
 
 		if (categoryData.SecurityGuard) {
-			const categorySecurityGuardFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
-			const isDetectionDrugs = categorySecurityGuardFormGroup.isDogsPurposeDetectionDrugs ?? false;
-			const isDetectionExplosives = categorySecurityGuardFormGroup.isDogsPurposeDetectionExplosives ?? false;
-			const isProtection = categorySecurityGuardFormGroup.isDogsPurposeProtection ?? false;
-			const useDogs = this.utilService.booleanTypeToBoolean(categorySecurityGuardFormGroup.useDogs);
+			const dogsPurposeFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
+			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
+			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
+			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+			const useDogs = this.utilService.booleanTypeToBoolean(
+				businessModelFormValue.categorySecurityGuardFormGroup.useDogs
+			);
 
-			dogsAuthorizationData = {
+			securityGuardData = {
 				useDogs,
 				isDogsPurposeDetectionDrugs: useDogs ? isDetectionDrugs : null,
 				isDogsPurposeDetectionExplosives: useDogs ? isDetectionExplosives : null,
@@ -548,7 +553,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			categoryCodes,
 			documentInfos,
 			privateInvestigatorSwlInfo,
-			dogsAuthorizationData,
+			...securityGuardData,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
