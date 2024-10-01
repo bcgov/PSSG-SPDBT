@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
 using Spd.Resource.Repository.Application;
@@ -486,7 +486,7 @@ internal class BizLicAppManager :
         {
             await _taskRepository.ManageAsync(new CreateTaskCmd()
             {
-                Description = $"Below Dog's Handers information needs to be updated in the business licence {originalLic.LicenceNumber} \n " +
+                Description = $"Below Dog's Handlers information needs to be updated in the business licence {originalLic.LicenceNumber} \n " +
                     $"Use of dog : Explosives detection / Drug detection / Protection (As described in the DSV certificate) \n " +
                     $"DSV Certificate Number \n " +
                     $"Expiry Date \n" +
