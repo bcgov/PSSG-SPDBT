@@ -36,6 +36,18 @@ namespace Spd.Resource.Repository.Licence
         public Guid? PhotoDocumentUrlId { get; set; }
         public string? PrintingPreviewJobId { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
+
+        //biz info
+        public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
+
+        //swl & biz info
+        public bool UseDogs { get; set; }
+        public bool IsDogsPurposeProtection { get; set; }
+        public bool IsDogsPurposeDetectionDrugs { get; set; }
+        public bool IsDogsPurposeDetectionExplosives { get; set; }
+
+        //swl
+        public bool CarryAndUseRestraints { get; set; }
     }
 
     public record Licence
@@ -66,10 +78,6 @@ namespace Spd.Resource.Repository.Licence
         public Addr? EmployerPrimaryAddress { get; set; }
         public string? Rationale { get; set; }
         public IEnumerable<PermitPurposeEnum>? PermitPurposeEnums { get; set; }
-        //permit
-
-        //biz info
-        public BizTypeEnum BizTypeCode { get; set; } = BizTypeEnum.None;
     }
 
     public enum LicenceStatusEnum
