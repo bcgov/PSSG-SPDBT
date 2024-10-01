@@ -7,6 +7,7 @@ import {
 	ApplicationTypeCode,
 	BizProfileResponse,
 	BizTypeCode,
+	Document,
 	IdentityProviderTypeCode,
 	LicenceAppListResponse,
 	LicenceBasicResponse,
@@ -838,7 +839,7 @@ export class ApplicationService {
 		licence.licenceExpiryDate = basicLicence.expiryDate;
 		licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
 		licence.hasLoginNameChanged = basicLicence.nameOnCard != licence.licenceHolderName;
-		licence.licenceCategoryCodes = basicLicence.categoryCodes ?? [];
+		licence.licenceCategoryCodes = basicLicence.categoryCodes?.sort() ?? [];
 
 		licence.hasSecurityGuardCategory =
 			licence.licenceCategoryCodes.findIndex(
@@ -850,7 +851,8 @@ export class ApplicationService {
 			if (licence.dogAuthorization) {
 				const dogDocumentInfos = licence.dogDocumentInfos ?? [];
 				if (dogDocumentInfos.length > 0) {
-					const doc = dogDocumentInfos.at(0);
+					// get first document with an expiry date
+					const doc = dogDocumentInfos.find((item: Document) => item.expiryDate);
 					licence.dogAuthorizationExpiryDate = doc?.expiryDate ?? null;
 				}
 			}
@@ -859,7 +861,8 @@ export class ApplicationService {
 			if (licence.restraintAuthorization) {
 				const restraintsDocumentInfos = licence.restraintsDocumentInfos ?? [];
 				if (restraintsDocumentInfos.length > 0) {
-					const doc = restraintsDocumentInfos.at(0);
+					// get first document with an expiry date
+					const doc = restraintsDocumentInfos.find((item: Document) => item.expiryDate);
 					licence.restraintAuthorizationExpiryDate = doc?.expiryDate ?? null;
 				}
 			}

@@ -669,15 +669,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber: userLicenceInformation?.licenceNumber! }),
 		]).pipe(
 			switchMap((resps: any[]) => {
-				const permitLicenceAppData = resps[0];
+				const permitLicenceAppl = resps[0];
 				const profileData = resps[1];
 				const permitLicenceData = resps[2];
 
 				return this.applyPermitAndProfileIntoModel({
-					permitLicenceAppData,
+					permitLicenceAppl,
 					permitLicenceData,
 					profileData,
-					userLicenceInformation,
+					associatedLicence: userLicenceInformation,
 				});
 			})
 		);
@@ -699,22 +699,22 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return forkJoin(apis).pipe(
 			switchMap((resps: any[]) => {
-				const permitLicenceAppData = resps[0];
+				const permitLicenceAppl = resps[0];
 				const profileData = resps[1];
 
-				if (permitLicenceAppData.expiredLicenceId) {
-					return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppData.expiredLicenceId }).pipe(
+				if (permitLicenceAppl.expiredLicenceId) {
+					return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
 						switchMap((licenceResponse: LicenceResponse) => {
 							return this.applyPermitAndProfileIntoModel({
-								permitLicenceAppData,
+								permitLicenceAppl: permitLicenceAppl,
 								profileData,
-								expiredLicenceData: licenceResponse,
+								associatedExpiredLicenceData: licenceResponse,
 							});
 						})
 					);
 				} else {
 					return this.applyPermitAndProfileIntoModel({
-						permitLicenceAppData,
+						permitLicenceAppl,
 						profileData,
 					});
 				}
@@ -765,7 +765,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					originalLicenceId: accessCodeData.linkedLicenceId,
 					originalLicenceNumber: accessCodeData.licenceNumber,
 					originalExpiryDate: accessCodeData.linkedExpiryDate,
-					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
+					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode, // TODO do we need other licence data to link?
 				};
 
 				this.permitModelFormGroup.patchValue(
@@ -980,7 +980,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		return this.permitService.apiPermitApplicationGet().pipe(
 			switchMap((resp: PermitLicenceAppResponse) => {
-				return this.applyPermitAndProfileIntoModel({ permitLicenceAppData: resp, permitLicenceData });
+				return this.applyPermitAndProfileIntoModel({ permitLicenceAppl: resp, permitLicenceData });
 			})
 		);
 	}
@@ -990,27 +990,27 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	/*************************************************************/
 
 	private applyPermitAndProfileIntoModel({
-		permitLicenceAppData,
+		permitLicenceAppl,
 		permitLicenceData,
 		profileData,
-		userLicenceInformation,
-		expiredLicenceData,
+		associatedLicence,
+		associatedExpiredLicenceData,
 	}: {
-		permitLicenceAppData: PermitLicenceAppResponse;
+		permitLicenceAppl: PermitLicenceAppResponse;
 		permitLicenceData?: LicenceResponse;
 		profileData?: ApplicantProfileResponse;
-		userLicenceInformation?: MainLicenceResponse;
-		expiredLicenceData?: LicenceResponse;
+		associatedLicence?: MainLicenceResponse;
+		associatedExpiredLicenceData?: LicenceResponse;
 	}): Observable<any> {
 		return this.applyPermitProfileIntoModel(
-			profileData ?? permitLicenceAppData,
-			permitLicenceAppData.workerLicenceTypeCode,
-			permitLicenceAppData.applicationTypeCode,
-			userLicenceInformation,
+			profileData ?? permitLicenceAppl,
+			permitLicenceAppl.workerLicenceTypeCode,
+			permitLicenceAppl.applicationTypeCode,
+			associatedLicence,
 			permitLicenceData
 		).pipe(
 			switchMap((_resp: any) => {
-				return this.applyPermitIntoModel(permitLicenceAppData, permitLicenceData, expiredLicenceData);
+				return this.applyPermitIntoModel(permitLicenceAppl, permitLicenceData, associatedExpiredLicenceData);
 			})
 		);
 	}
@@ -1019,7 +1019,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		profileData: ApplicantProfileResponse | PermitLicenceAppResponse,
 		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		userLicenceInformation?: MainLicenceResponse | null,
+		associatedLicence?: MainLicenceResponse | null,
 		updateLicenceData?: LicenceResponse | null
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
@@ -1033,24 +1033,24 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			dateOfBirth: profileData.dateOfBirth,
 			genderCode: profileData.genderCode,
 			hasGenderChanged: false,
-			hasBcscNameChanged: userLicenceInformation?.hasLoginNameChanged ?? false,
+			hasBcscNameChanged: associatedLicence?.hasLoginNameChanged ?? false,
 			origGivenName: profileData.givenName,
 			origMiddleName1: profileData.middleName1,
 			origMiddleName2: profileData.middleName2,
 			origSurname: profileData.surname,
 			origDateOfBirth: profileData.dateOfBirth,
 			origGenderCode: profileData.genderCode,
-			cardHolderName: updateLicenceData?.nameOnCard ?? userLicenceInformation?.cardHolderName ?? null,
-			licenceHolderName: updateLicenceData?.licenceHolderName ?? userLicenceInformation?.licenceHolderName ?? null,
+			cardHolderName: updateLicenceData?.nameOnCard ?? associatedLicence?.cardHolderName ?? null,
+			licenceHolderName: updateLicenceData?.licenceHolderName ?? associatedLicence?.licenceHolderName ?? null,
 		};
 
 		const originalLicenceData = {
-			originalApplicationId: userLicenceInformation?.licenceAppId ?? null,
-			originalLicenceId: userLicenceInformation?.licenceId ?? null,
-			originalLicenceNumber: userLicenceInformation?.licenceNumber ?? null,
-			originalExpiryDate: userLicenceInformation?.licenceExpiryDate ?? null,
-			originalLicenceTermCode: userLicenceInformation?.licenceTermCode ?? null,
-			originalBizTypeCode: 'bizTypeCode' in profileData ? profileData.bizTypeCode : userLicenceInformation?.bizTypeCode,
+			originalApplicationId: associatedLicence?.licenceAppId ?? null,
+			originalLicenceId: associatedLicence?.licenceId ?? null,
+			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
+			originalExpiryDate: associatedLicence?.licenceExpiryDate ?? null,
+			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
+			originalBizTypeCode: 'bizTypeCode' in profileData ? profileData.bizTypeCode : associatedLicence?.bizTypeCode,
 		};
 
 		const contactInformationData = {
@@ -1172,19 +1172,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	private applyPermitIntoModel(
 		permitLicenceAppl: PermitLicenceAppResponse,
 		updateLicenceInfo?: LicenceResponse,
-		expiredLicenceInfo?: LicenceResponse
+		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: permitLicenceAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: permitLicenceAppl.applicationTypeCode };
 
-		const expiredLicenceData = {
-			hasExpiredLicence: this.utilService.booleanToBooleanType(permitLicenceAppl.hasExpiredLicence),
-			expiredLicenceId: expiredLicenceInfo?.licenceId,
-			expiredLicenceHolderName: expiredLicenceInfo?.licenceHolderName,
-			expiredLicenceNumber: expiredLicenceInfo?.licenceNumber,
-			expiredLicenceExpiryDate: expiredLicenceInfo?.expiryDate,
-			expiredLicenceStatusCode: expiredLicenceInfo?.licenceStatusCode,
-		};
+		const hasExpiredLicence = permitLicenceAppl.hasExpiredLicence ?? false;
+		const expiredLicenceData = this.getExpiredLicenceData(hasExpiredLicence, associatedExpiredLicence);
 
 		const licenceTermData = {
 			licenceTermCode: permitLicenceAppl.licenceTermCode,

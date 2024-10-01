@@ -93,7 +93,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		isRenewalShortForm: new FormControl(), // placeholder for flag
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
 
-		originalLicenceData: this.originalBusinessLicenceFormGroup,
+		originalLicenceData: this.originalLicenceFormGroup,
 
 		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
@@ -860,7 +860,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	getBusinessLicenceApplToResume(licenceAppId: string): Observable<BizLicAppResponse> {
-		return this.loadExistingBusinessLicenceApplToResume({
+		return this.loadPartialBusinessLicenceApplToResume({
 			licenceAppId,
 			applicationTypeCode: ApplicationTypeCode.New,
 		}).pipe(
@@ -1201,7 +1201,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode;
 		isSoleProprietorSWLAnonymous: boolean;
 	}): Observable<any> {
-		return this.loadExistingBusinessLicenceApplToResume({
+		return this.loadPartialBusinessLicenceApplToResume({
 			licenceAppId,
 			applicationTypeCode,
 		}).pipe(
@@ -1220,7 +1220,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Loads the current profile and a licence
 	 * @returns
 	 */
-	private loadExistingBusinessLicenceApplToResume({
+	private loadPartialBusinessLicenceApplToResume({
 		licenceAppId,
 		applicationTypeCode,
 	}: {
@@ -1479,7 +1479,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					businessLicenceAppl,
 					associatedExpiredLicence,
 					privateInvestigatorSwlLicence,
-					originalLicence,
+					associatedLicence: originalLicence,
 					brandingDocumentInfos,
 				});
 			})
@@ -1494,38 +1494,34 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessLicenceAppl,
 		associatedExpiredLicence,
 		privateInvestigatorSwlLicence,
-		originalLicence,
+		associatedLicence,
 		brandingDocumentInfos,
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
 		associatedExpiredLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
-		originalLicence?: MainLicenceResponse;
+		associatedLicence?: MainLicenceResponse;
 		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: businessLicenceAppl.workerLicenceTypeCode };
 		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
 
-		const expiredLicenceData = {
-			hasExpiredLicence: this.utilService.booleanToBooleanType(businessLicenceAppl.hasExpiredLicence),
-			expiredLicenceId: associatedExpiredLicence?.licenceId,
-			expiredLicenceHolderName: associatedExpiredLicence?.licenceHolderName,
-			expiredLicenceNumber: associatedExpiredLicence?.licenceNumber,
-			expiredLicenceExpiryDate: associatedExpiredLicence?.expiryDate,
-			expiredLicenceStatusCode: associatedExpiredLicence?.licenceStatusCode,
-		};
+		const hasExpiredLicence = businessLicenceAppl.hasExpiredLicence ?? false;
+		const expiredLicenceData = this.getExpiredLicenceData(hasExpiredLicence, associatedExpiredLicence);
 
 		const originalLicenceData = {
-			originalApplicationId: originalLicence?.licenceAppId ?? null,
-			originalLicenceId: originalLicence?.licenceId ?? null,
-			originalLicenceNumber: originalLicence?.licenceNumber ?? null,
-			originalExpiryDate: originalLicence?.licenceExpiryDate ?? null,
-			originalLicenceTermCode: originalLicence?.licenceTermCode ?? null,
-			originalBizTypeCode: originalLicence?.bizTypeCode ?? null,
-			originalCategoryCodes: originalLicence?.categoryCodes ?? null,
-			originalIsDogsPurposeDetectionDrugs: originalLicence?.isDogsPurposeDetectionDrugs ?? null,
-			originalIsDogsPurposeDetectionExplosives: originalLicence?.isDogsPurposeDetectionExplosives ?? null,
-			originalIsDogsPurposeProtection: originalLicence?.isDogsPurposeProtection ?? null,
+			originalApplicationId: associatedLicence?.licenceAppId ?? null,
+			originalLicenceId: associatedLicence?.licenceId ?? null,
+			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
+			originalExpiryDate: associatedLicence?.licenceExpiryDate ?? null,
+			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
+			originalBizTypeCode: associatedLicence?.bizTypeCode ?? null,
+			originalCategoryCodes: associatedLicence?.categoryCodes ?? null,
+			originalCarryAndUseRestraints: associatedLicence?.carryAndUseRestraints ?? null,
+			originalUseDogs: associatedLicence?.useDogs ?? null,
+			originalIsDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
+			originalIsDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
+			originalIsDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
 		};
 
 		const companyBrandingAttachments: Array<File> = [];
@@ -1540,6 +1536,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessLicenceAppl.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.BizSecurityDogCertificate: {
+					if (associatedLicence) {
+						// use the data from the licence when it exists. See below
+						break;
+					}
+
 					const aFile = this.fileUtilService.dummyFile(doc);
 					dogAuthorizationAttachments.push(aFile);
 					break;
@@ -1603,9 +1604,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
 				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
 			});
-		} else if (originalLicence) {
+		} else if (associatedLicence) {
 			// mark the appropriate category types as true
-			originalLicence?.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
+			associatedLicence?.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
 				categoryData[item as string] = true;
 			});
 		} else {
@@ -1634,16 +1635,35 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		if (categoryData.SecurityGuard) {
-			categorySecurityGuardFormGroup = {
-				isInclude: true,
-				useDogs: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
-				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: originalLicence?.isDogsPurposeDetectionDrugs ?? null,
-					isDogsPurposeDetectionExplosives: originalLicence?.isDogsPurposeDetectionExplosives ?? null,
-					isDogsPurposeProtection: originalLicence?.isDogsPurposeProtection ?? null,
-				},
-				attachments: dogAuthorizationAttachments,
-			};
+			// If an associatedLicence exists, use the dog data from here
+			if (associatedLicence?.useDogs) {
+				associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
+					const aFile = this.fileUtilService.dummyFile(doc);
+					dogAuthorizationAttachments.push(aFile);
+				});
+
+				categorySecurityGuardFormGroup = {
+					isInclude: true,
+					useDogs: BooleanTypeCode.Yes,
+					dogsPurposeFormGroup: {
+						isDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
+						isDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
+						isDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
+					},
+					attachments: dogAuthorizationAttachments,
+				};
+			} else {
+				categorySecurityGuardFormGroup = {
+					isInclude: true,
+					useDogs: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+					dogsPurposeFormGroup: {
+						isDogsPurposeDetectionDrugs: businessLicenceAppl?.isDogsPurposeDetectionDrugs ?? null,
+						isDogsPurposeDetectionExplosives: businessLicenceAppl?.isDogsPurposeDetectionExplosives ?? null,
+						isDogsPurposeProtection: businessLicenceAppl?.isDogsPurposeProtection ?? null,
+					},
+					attachments: dogAuthorizationAttachments,
+				};
+			}
 		}
 
 		this.businessModelFormGroup.patchValue(

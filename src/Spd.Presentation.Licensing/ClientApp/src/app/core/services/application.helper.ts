@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode, LicenceResponse, PoliceOfficerRoleCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
@@ -49,8 +49,13 @@ export abstract class ApplicationHelper {
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
 		originalCategoryCodes: new FormControl(null),
-		originalPhotoOfYourselfExpired: new FormControl(false),
-		originalDogAuthorizationExists: new FormControl(false),
+		originalCarryAndUseRestraints: new FormControl(null),
+		originalUseDogs: new FormControl(null),
+		originalIsDogsPurposeDetectionDrugs: new FormControl(null),
+		originalIsDogsPurposeDetectionExplosives: new FormControl(null),
+		originalIsDogsPurposeProtection: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false), // not used for Business Licence
+		originalDogAuthorizationExists: new FormControl(false), // not used for Business Licence
 	});
 
 	linkAccountCodeFormGroup: FormGroup = this.formBuilder.group({
@@ -404,6 +409,17 @@ export abstract class ApplicationHelper {
 		this.initialized = true;
 
 		this._waitUntilInitialized$.next(true);
+	}
+
+	getExpiredLicenceData(hasExpiredLicence: boolean, expiredLicenceInfo?: LicenceResponse): any {
+		return {
+			hasExpiredLicence,
+			expiredLicenceId: hasExpiredLicence ? expiredLicenceInfo?.licenceId : null,
+			expiredLicenceHolderName: hasExpiredLicence ? expiredLicenceInfo?.licenceHolderName : null,
+			expiredLicenceNumber: hasExpiredLicence ? expiredLicenceInfo?.licenceNumber : null,
+			expiredLicenceExpiryDate: hasExpiredLicence ? expiredLicenceInfo?.expiryDate : null,
+			expiredLicenceStatusCode: hasExpiredLicence ? expiredLicenceInfo?.licenceStatusCode : null,
+		};
 	}
 
 	/**

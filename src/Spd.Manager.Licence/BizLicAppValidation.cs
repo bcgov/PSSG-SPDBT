@@ -47,11 +47,11 @@ public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppU
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard) && r.UseDogs == true)
             .WithMessage("Missing security dog certificate document.");
         RuleFor(r => r.DocumentInfos)
-            .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) < 2)
+            .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) <= 10)
             .When(r => r.CategoryCodes.Contains(WorkerCategoryTypeCode.SecurityGuard)
                 && r.UseDogs == true
                 && r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 0)
-            .WithMessage("No more than 1 dog certificate is allowed.");
+            .WithMessage("No more than 10 dog certificate document is allowed.");
     }
 }
 

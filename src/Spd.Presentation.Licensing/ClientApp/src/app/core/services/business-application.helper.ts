@@ -19,19 +19,6 @@ import { FormGroupValidators } from '@app/core/validators/form-group.validators'
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 
 export abstract class BusinessApplicationHelper extends ApplicationHelper {
-	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
-		originalApplicationId: new FormControl(null),
-		originalLicenceId: new FormControl(null),
-		originalLicenceNumber: new FormControl(null),
-		originalExpiryDate: new FormControl(null),
-		originalLicenceTermCode: new FormControl(null),
-		originalBizTypeCode: new FormControl(null),
-		originalCategoryCodes: new FormControl(null),
-		originalIsDogsPurposeDetectionDrugs: new FormControl(null),
-		originalIsDogsPurposeDetectionExplosives: new FormControl(null),
-		originalIsDogsPurposeProtection: new FormControl(null),
-	});
-
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
 		{
 			noLogoOrBranding: new FormControl(''),
