@@ -135,27 +135,23 @@ internal class BizLicAppManager :
         BizLicAppSubmitRequest request = cmd.LicenceRequest;
         if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Replacement)
             throw new ArgumentException("should be a replacement request");
+        if (cmd.LicenceRequest.OriginalLicenceId == null)
+            throw new ArgumentException("Original Licence Id cannot be empty");
 
         // Validation: check if original licence meet update condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be replaced.");
-
-        BizLicApplicationResp originalLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        if (originalLic.BizId == null)
-            throw new ArgumentException("there is no business related to the application.");
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-        createApp = await SetBizManagerInfo((Guid)originalLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
+        createApp = await SetBizManagerInfo((Guid)originalLic.LicenceHolderId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
 
         //link biz members to this application
-        await _bizContactRepository.ManageBizContactsAsync(
-            new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
-            cancellationToken);
+        //await _bizContactRepository.ManageBizContactsAsync(
+        //    new BizContactsLinkBizAppCmd(response.AccountId, response.LicenceAppId),
+        //    cancellationToken);
         decimal cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken);
 
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
@@ -166,23 +162,17 @@ internal class BizLicAppManager :
         BizLicAppSubmitRequest request = cmd.LicenceRequest;
         if (cmd.LicenceRequest.ApplicationTypeCode != ApplicationTypeCode.Renewal)
             throw new ArgumentException("should be a renewal request");
+        if (cmd.LicenceRequest.OriginalLicenceId == null)
+            throw new ArgumentException("Original Licence Id cannot be empty");
 
         // Validation: check if original licence meet renew condition.
-        LicenceListResp originalLicences = await _licenceRepository.QueryAsync(
-            new LicenceQry() { LicenceId = request.OriginalLicenceId },
-            cancellationToken);
-        if (originalLicences == null || !originalLicences.Items.Any())
+        LicenceResp? originalLic = await _licenceRepository.GetAsync((Guid)request.OriginalLicenceId, cancellationToken);
+        if (originalLic == null)
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
-        LicenceResp originalLic = originalLicences.Items.First();
-
-        // Check Renew your existing application before it expires, within 90 days of the expiry date.
+        // Check Renew your licence before it expires, within 90 days of the expiry date.
         if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
             || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
-
-        BizLicApplicationResp originalBizLic = await _bizLicApplicationRepository.GetBizLicApplicationAsync((Guid)cmd.LicenceRequest.LatestApplicationId, cancellationToken);
-        if (originalBizLic.BizId == null)
-            throw new ArgumentException("there is no business related to the application.");
 
         var existingFiles = await GetExistingFileInfo(
             cmd.LicenceRequest.LatestApplicationId,
@@ -194,7 +184,7 @@ internal class BizLicAppManager :
 
         // Create new app
         CreateBizLicApplicationCmd createApp = _mapper.Map<CreateBizLicApplicationCmd>(request);
-        createApp = await SetBizManagerInfo((Guid)originalBizLic.BizId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
+        createApp = await SetBizManagerInfo((Guid)originalLic.LicenceHolderId, createApp, (bool)request.ApplicantIsBizManager, request.ApplicantContactInfo, cancellationToken);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
         if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
