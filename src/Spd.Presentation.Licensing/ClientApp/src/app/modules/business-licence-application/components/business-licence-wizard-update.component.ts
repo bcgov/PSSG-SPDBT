@@ -3,15 +3,12 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizLicAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { UtilService } from '@app/core/services/util.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
@@ -32,7 +29,9 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 				>
 					<mat-step completed="true">
 						<ng-template matStepLabel>Licence Confirmation</ng-template>
-						<app-step-business-licence-confirmation></app-step-business-licence-confirmation>
+						<app-step-business-licence-confirmation
+							[applicationTypeCode]="applicationTypeUpdate"
+						></app-step-business-licence-confirmation>
 
 						<app-wizard-footer
 							(previousStepperStep)="onGotoBusinessProfile()"
@@ -60,7 +59,6 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextSubmitStep)="onSubmitStep()"
 							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
@@ -77,7 +75,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 	styles: [],
 })
 export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent implements OnInit, OnDestroy {
-	newLicenceAppId: string | null = null;
+	applicationTypeUpdate = ApplicationTypeCode.Update;
 	newLicenceCost = 0;
 
 	readonly STEP_LICENCE_CONFIRMATION = 0; // needs to be zero based because 'selectedIndex' is zero based
@@ -100,7 +98,6 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -170,13 +167,6 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		}
 	}
 
-	onNextPayStep(): void {
-		this.commonApplicationService.payNowBusinessLicence(
-			this.newLicenceAppId!,
-			'Payment for update of Business Licence application'
-		);
-	}
-
 	onNextStepperStep(stepper: MatStepper): void {
 		if (stepper?.selected) stepper.selected.completed = true;
 		stepper.next();
@@ -192,36 +182,10 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 		this.stepsLicenceUpdatesComponent?.onGoToNextStep();
 	}
 
-	onSubmitStep(): void {
-		if (this.newLicenceAppId) {
-			if (this.newLicenceCost > 0) {
-				this.stepsReviewAndConfirm?.onGoToLastStep();
-			} else {
-				this.router.navigateByUrl(
-					BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_UPDATE_SUCCESS)
-				);
-			}
-		} else {
-			this.businessApplicationService.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
-				next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-					const bizLicenceCommandResponse = resp.body;
-
-					// save this locally just in case application payment fails
-					this.newLicenceAppId = bizLicenceCommandResponse.licenceAppId!;
-					this.newLicenceCost = bizLicenceCommandResponse.cost ?? 0;
-					if (this.newLicenceCost > 0) {
-						this.stepsReviewAndConfirm?.onGoToLastStep();
-					} else {
-						this.hotToastService.success('Your business licence update has been successfully submitted');
-						this.router.navigateByUrl(
-							BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_UPDATE_SUCCESS)
-						);
-					}
-				},
-				error: (error: any) => {
-					console.log('An error occurred during save', error);
-				},
-			});
-		}
+	onNextPayStep(): void {
+		this.businessApplicationService.payBusinessLicenceUpdateOrReplace({
+			paymentSuccess: 'Your business licence update has been successfully submitted',
+			paymentReason: 'Payment for update of Business Licence application',
+		});
 	}
 }

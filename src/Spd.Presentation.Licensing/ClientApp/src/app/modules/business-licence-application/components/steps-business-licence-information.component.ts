@@ -32,7 +32,9 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 			</mat-step>
 
 			<mat-step *ngIf="isRenewalOrUpdate">
-				<app-step-business-licence-confirmation></app-step-business-licence-confirmation>
+				<app-step-business-licence-confirmation
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-business-licence-confirmation>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"

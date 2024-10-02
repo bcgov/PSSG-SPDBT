@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { AppRoutes } from '@app/app-routing.module';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { take, tap } from 'rxjs';
-import { PersonalLicenceApplicationRoutes } from '../../personal-licence-application-routing.module';
 
 @Component({
 	selector: 'app-worker-licence-application-base-anonymous',

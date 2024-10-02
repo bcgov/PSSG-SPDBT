@@ -20,7 +20,9 @@ import { distinctUntilChanged } from 'rxjs';
 				>
 					<mat-step completed="true">
 						<ng-template matStepLabel>Licence Confirmation</ng-template>
-						<app-step-business-licence-confirmation></app-step-business-licence-confirmation>
+						<app-step-business-licence-confirmation
+							[applicationTypeCode]="applicationTypeReplace"
+						></app-step-business-licence-confirmation>
 
 						<app-wizard-footer
 							nextButtonLabel="Pay Now"
@@ -39,6 +41,8 @@ import { distinctUntilChanged } from 'rxjs';
 	styles: [],
 })
 export class BusinessLicenceWizardReplacementComponent extends BaseWizardComponent implements OnInit {
+	applicationTypeReplace = ApplicationTypeCode.Replacement;
+
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private commonApplicationService: ApplicationService,
@@ -59,7 +63,7 @@ export class BusinessLicenceWizardReplacementComponent extends BaseWizardCompone
 	}
 
 	onPayNow(): void {
-		this.businessApplicationService.payBusinessLicenceRenewalOrUpdateOrReplace({
+		this.businessApplicationService.payBusinessLicenceUpdateOrReplace({
 			paymentSuccess: 'Your business licence replacement has been successfully submitted',
 			paymentReason: 'Payment for replacement of Business Licence application',
 		});

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {
 	ActionResult,
 	Address,
-	ApplicationPortalStatusCode,
+	ApplicationInviteStatusCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
@@ -83,7 +83,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		latestApplicationId: new FormControl(), // placeholder for id
 
 		isControllingMembersWithoutSwlExist: new FormControl(),
-		isControllingMembersWithoutSwlComplete: new FormControl(),
 
 		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
@@ -157,21 +156,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
 					let isControllingMembersWithoutSwlExist = false;
-					let isControllingMembersWithoutSwlComplete = true;
 
 					if (!isBusinessLicenceSoleProprietor) {
 						const membersWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
 
 						isControllingMembersWithoutSwlExist = membersWithoutSwl?.length > 0;
-
-						isControllingMembersWithoutSwlComplete =
-							membersWithoutSwl?.length > 0
-								? membersWithoutSwl.findIndex(
-										(item: NonSwlContactInfo) =>
-											item.controllingMemberAppStatusCode != ApplicationPortalStatusCode.AwaitingPayment
-								  ) < 0
-								: true;
 					}
 
 					this.businessModelFormGroup.patchValue(
@@ -179,7 +169,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							isBcBusinessAddress,
 							isBusinessLicenceSoleProprietor,
 							isControllingMembersWithoutSwlExist,
-							isControllingMembersWithoutSwlComplete,
 						},
 						{ emitEvent: false }
 					);
@@ -282,7 +271,108 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	payBusinessLicenceRenewalOrUpdateOrReplace(params: { paymentSuccess: string; paymentReason: string }): void {
+	payBusinessLicenceNew(params: { paymentSuccess: string; paymentReason: string }): void {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+		const body = this.getSaveBodyBase(businessModelFormValue);
+
+		body.agreeToCompleteAndAccurate = true;
+
+		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
+			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+
+			// Send the controlling member invitations
+			const apis: Observable<any>[] = [];
+			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.New,
+					})
+				);
+			});
+
+			if (apis.length > 0) {
+				forkJoin(apis)
+					.pipe(
+						switchMap((_resps: any[]) => {
+							return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
+						})
+					)
+					.subscribe({
+						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+							this.hotToastService.success(params.paymentSuccess);
+							this.commonApplicationService.onGoToHome();
+						},
+						error: (error: any) => {
+							console.log('An error occurred during save', error);
+						},
+					});
+				return;
+			}
+		}
+
+		this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
+			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.hotToastService.success(params.paymentSuccess);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	payBusinessLicenceRenewal(params: { paymentSuccess: string; paymentReason: string }): void {
+		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+
+		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
+			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
+
+			// Send the controlling member invitations
+
+			const apis: Observable<any>[] = [];
+			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
+				apis.push(
+					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+						bizContactId: item.bizContactId!,
+						inviteType: ControllingMemberAppInviteTypeCode.New,
+					})
+				);
+			});
+
+			if (apis.length > 0) {
+				forkJoin(apis)
+					.pipe(
+						switchMap((_resps: any[]) => {
+							return this.submitBusinessLicenceRenewalOrUpdateOrReplace();
+						})
+					)
+					.subscribe({
+						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+							this.hotToastService.success(params.paymentSuccess);
+							this.commonApplicationService.onGoToHome();
+						},
+						error: (error: any) => {
+							console.log('An error occurred during save', error);
+						},
+					});
+
+				return;
+			}
+		}
+
+		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
+			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+				this.hotToastService.success(params.paymentSuccess);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	payBusinessLicenceUpdateOrReplace(params: { paymentSuccess: string; paymentReason: string }): void {
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
 				this.hotToastService.success(params.paymentSuccess);
@@ -312,15 +402,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 			})
 		);
-	}
-
-	submitBusinessLicenceNew(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
-		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
-		const body = this.getSaveBodyBase(businessModelFormValue);
-
-		body.agreeToCompleteAndAccurate = true;
-
-		return this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body });
 	}
 
 	submitBusinessLicenceRenewalOrUpdateOrReplace(): Observable<StrictHttpResponse<BizLicAppCommandResponse>> {
@@ -488,24 +569,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (isBusinessLicenceSoleProprietor) return true;
 
-		const isControllingMembersWithoutSwlComplete = this.businessModelFormGroup.get(
-			'isControllingMembersWithoutSwlComplete'
-		)?.value;
-		if (!isControllingMembersWithoutSwlComplete) return false;
-
 		return this.controllingMembersFormGroup.valid && this.employeesFormGroup.valid;
 	}
 
 	sendControllingMembersWithoutSwlInvitation(
 		bizContactId: string,
-		statusCode?: ApplicationPortalStatusCode
+		statusCode?: ApplicationInviteStatusCode
 	): Observable<ControllingMemberInvitesCreateResponse> {
 		const inviteType =
-			statusCode === ApplicationPortalStatusCode.CompletedCleared
+			statusCode === ApplicationInviteStatusCode.Completed
 				? ControllingMemberAppInviteTypeCode.Update
 				: ControllingMemberAppInviteTypeCode.New;
-
-		// TODO which statuses should be looked at?
 
 		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
 			bizContactId,
@@ -785,8 +859,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getBusinessLicenceToResume(licenceAppId: string): Observable<BizLicAppResponse> {
-		return this.loadExistingBusinessLicenceToResume({
+	getBusinessLicenceApplToResume(licenceAppId: string): Observable<BizLicAppResponse> {
+		return this.loadExistingBusinessLicenceApplToResume({
 			licenceAppId,
 			applicationTypeCode: ApplicationTypeCode.New,
 		}).pipe(
@@ -830,17 +904,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return forkJoin([
-			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizMembersService.apiBusinessBizIdMembersGet({
-				bizId,
-			}),
-		]).pipe(
-			switchMap((resps: any[]) => {
-				const businessProfile = resps[0];
-				const members = resps[1];
+		return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
+			switchMap((members: Members) => {
+				return this.applyLicenceProfileMembersIntoModel(members).pipe(
+					tap((_resp: any) => {
+						this.setAsInitialized();
 
-				return this.applyLicenceProfileMembersIntoModel(businessProfile, members);
+						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+					})
+				);
 			})
 		);
 	}
@@ -1020,10 +1092,23 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.reset();
 
 		if (controllingMembersAndEmployees) {
-			return this.applyLicenceProfileMembersIntoModel(
-				businessProfile,
-				controllingMembersAndEmployees,
-				ApplicationTypeCode.New
+			return this.applyLicenceProfileMembersIntoModel(controllingMembersAndEmployees).pipe(
+				switchMap((_resp: any) => {
+					return this.applyLicenceProfileIntoModel({
+						businessProfile,
+						applicationTypeCode: ApplicationTypeCode.New,
+						soleProprietorSwlLicence,
+					}).pipe(
+						tap((_resp: any) => {
+							this.setAsInitialized();
+
+							this.commonApplicationService.setApplicationTitle(
+								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ApplicationTypeCode.New
+							);
+						})
+					);
+				})
 			);
 		}
 
@@ -1031,14 +1116,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSwlLicence,
-		});
+		}).pipe(
+			tap((_resp: any) => {
+				this.setAsInitialized();
+
+				this.commonApplicationService.setApplicationTitle(
+					WorkerLicenceTypeCode.SecurityBusinessLicence,
+					ApplicationTypeCode.New
+				);
+			})
+		);
 	}
 
-	private applyLicenceProfileMembersIntoModel(
-		businessProfile: BizProfileResponse,
-		members: Members,
-		applicationTypeCode?: ApplicationTypeCode | null | undefined
-	) {
+	private applyLicenceProfileMembersIntoModel(members: Members) {
 		const apis: Observable<any>[] = [];
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
@@ -1062,25 +1152,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
 					this.applyEmployees(members.employees ?? [], licenceResponses);
 
-					return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
-						tap((_resp: any) => {
-							this.setAsInitialized();
-
-							this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
-						})
-					);
+					return of(this.businessModelFormGroup.value);
 				})
 			);
 		} else {
 			this.applyControllingMembersWithoutSwl(members.nonSwlControllingMembers ?? []);
 
-			return this.applyLicenceProfileIntoModel({ businessProfile, applicationTypeCode }).pipe(
-				tap((_resp: any) => {
-					this.setAsInitialized();
-
-					this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
-				})
-			);
+			return of(this.businessModelFormGroup.value);
 		}
 	}
 
@@ -1123,9 +1201,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode;
 		isSoleProprietorSWLAnonymous: boolean;
 	}): Observable<any> {
-		return this.loadExistingBusinessLicenceToResume({
+		return this.loadExistingBusinessLicenceApplToResume({
 			licenceAppId,
-			originalLicence: undefined,
 			applicationTypeCode,
 		}).pipe(
 			tap((_resp: any) => {
@@ -1143,13 +1220,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Loads the current profile and a licence
 	 * @returns
 	 */
-	private loadExistingBusinessLicenceToResume({
+	private loadExistingBusinessLicenceApplToResume({
 		licenceAppId,
-		originalLicence,
 		applicationTypeCode,
 	}: {
 		licenceAppId: string;
-		originalLicence?: MainLicenceResponse;
 		applicationTypeCode: ApplicationTypeCode;
 	}): Observable<any> {
 		this.reset();
@@ -1166,12 +1241,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessProfile = resps[1];
 				const businessMembers = resps[2];
 
-				return this.loadBusinessAppAndProfile(
+				return this.loadBusinessApplAndProfile(
 					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
-					businessMembers,
-					originalLicence
+					businessMembers
 				);
 			})
 		);
@@ -1202,7 +1276,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				const businessProfile = resps[1];
 				const businessMembers = resps[2];
 
-				return this.loadBusinessAppAndProfile(
+				return this.loadBusinessApplAndProfile(
 					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
@@ -1217,7 +1291,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Loads the a business application and profile into the business model
 	 * @returns
 	 */
-	private loadBusinessAppAndProfile(
+	private loadBusinessApplAndProfile(
 		applicationTypeCode: ApplicationTypeCode,
 		businessLicenceAppl: BizLicAppResponse,
 		businessProfile: BizProfileResponse,
@@ -1519,16 +1593,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			categoryData[item] = false;
 		});
 
+		const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
 		if (this.isSoleProprietor(businessLicenceAppl.bizTypeCode)) {
 			const businessInformation = this.businessInformationFormGroup.value;
 			const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
 			businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
 				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
 			});
-		} else {
+		} else if (originalLicence) {
 			// mark the appropriate category types as true
-			businessLicenceAppl.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
+			originalLicence?.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
 				categoryData[item as string] = true;
+			});
+		} else {
+			categoryCodes.forEach((item: string) => {
+				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
 			});
 		}
 
@@ -1554,7 +1633,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		if (categoryData.SecurityGuard) {
 			categorySecurityGuardFormGroup = {
 				isInclude: true,
-				isRequestDogAuthorization: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+				useDogs: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+				dogsPurposeFormGroup: {
+					isDogsPurposeDetectionDrugs: null, //businessLicenceAppl.isDogsPurposeDetectionDrugs,
+					isDogsPurposeDetectionExplosives: null, //businessLicenceAppl.isDogsPurposeDetectionExplosives,
+					isDogsPurposeProtection: null, //businessLicenceAppl.isDogsPurposeProtection,
+					// TODO populate dog info
+				},
 				attachments: dogAuthorizationAttachments,
 			};
 		}
@@ -1771,7 +1856,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (categoryData.SecurityGuard) {
 					categorySecurityGuardFormGroup = {
 						isInclude: true,
-						isRequestDogAuthorization: null,
+						useDogs: null,
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: null,
+							isDogsPurposeDetectionExplosives: null,
+							isDogsPurposeProtection: null,
+						},
 						attachments: [],
 					};
 				}
@@ -1825,7 +1915,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				if (categoryData.SecurityGuard) {
 					categorySecurityGuardFormGroup = {
 						isInclude: true,
-						isRequestDogAuthorization: null,
+						useDogs: null,
+						dogsPurposeFormGroup: {
+							isDogsPurposeDetectionDrugs: null,
+							isDogsPurposeDetectionExplosives: null,
+							isDogsPurposeProtection: null,
+						},
 						attachments: [],
 					};
 				}
