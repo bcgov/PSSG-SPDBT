@@ -465,6 +465,182 @@ public class DocumentRepositoryTest : IClassFixture<IntegrationTestSetup>
             await CleanUpObject(appId, applicantId, submittedByApplicantId, accountId);
         }
     }
+    [Fact]
+    public async Task DocumentQueryAsync_With_ApplicantId_Execute_Correctly()
+    {
+        Guid appId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+
+        Guid submittedByApplicantId = Guid.NewGuid();
+
+        Guid accountId = Guid.NewGuid();
+
+        //save file to cach, get key
+        var saveCommand = new SaveTempFileCommand(new byte[1]);
+        string fileKey = await _tempFileService.HandleCommand(saveCommand, CancellationToken.None);
+
+        contact contact = new() { contactid = applicantId };
+        _context.AddTocontacts(contact);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+
+        // Arrange
+        var cmd =
+            fixture.Build<CreateDocumentCmd>()
+            .With(a => a.TempFile, fixture.Build<SpdTempFile>()
+                .With(a => a.TempFileKey, fileKey)
+                .With(a => a.ContentType, "text/plain")
+                .With(a => a.FileName, IntegrationTestSetup.DataPrefix + "TestFile")
+                .With(a => a.FileSize, 512).Create())
+            .With(a => a.ApplicantId, applicantId)
+            .Without(a => a.ApplicationId)
+            .Without(a => a.TaskId)
+            .Without(a => a.LicenceId)
+            .Without(a => a.DocumentType2)
+            .Without(a => a.SubmittedByApplicantId)
+            .Without(a => a.AccountId)
+            .With(a => a.DocumentType, DocumentTypeEnum.DriverLicense)
+            .With(a => a.ExpiryDate, DateOnly.FromDateTime(DateTime.Now.AddDays(10)))
+            .With(a => a.ToTransientBucket, false).Create();
+
+        try
+        {
+            // Action
+            var createdDoc = await _documentRepository.ManageAsync(cmd, CancellationToken.None);
+            var response = await _documentRepository.QueryAsync(new DocumentQry(ApplicantId: applicantId), CancellationToken.None);
+            var documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == createdDoc.DocumentUrlId).FirstOrDefault();
+            Assert.NotNull(response.Items);
+            Assert.Equal(response.Items?.Count(), 1);
+            Assert.Equal(response.Items?.FirstOrDefault().ExpiryDate, cmd.ExpiryDate);
+            Assert.Equal(documenturl?._bcgov_customer_value, cmd.ApplicantId);
+            
+        }
+        catch (Exception e)
+        {
+            throw e.GetBaseException();
+        }
+        finally
+        {
+            await CleanUpObject(appId, applicantId, submittedByApplicantId, accountId);
+        }
+    }
+    [Fact]
+    public async Task DocumentQueryAsync_With_AccountId_Execute_Correctly()
+    {
+        Guid appId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+
+        Guid submittedByApplicantId = Guid.NewGuid();
+
+        Guid accountId = Guid.NewGuid();
+
+        //save file to cach, get key
+        var saveCommand = new SaveTempFileCommand(new byte[1]);
+        string fileKey = await _tempFileService.HandleCommand(saveCommand, CancellationToken.None);
+
+        account account = new() { accountid = accountId };
+        _context.AddToaccounts(account);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+
+        // Arrange
+        var cmd =
+            fixture.Build<CreateDocumentCmd>()
+            .With(a => a.TempFile, fixture.Build<SpdTempFile>()
+                .With(a => a.TempFileKey, fileKey)
+                .With(a => a.ContentType, "text/plain")
+                .With(a => a.FileName, IntegrationTestSetup.DataPrefix + "TestFile")
+                .With(a => a.FileSize, 512).Create())
+            .Without(a => a.ApplicantId)
+            .Without(a => a.ApplicationId)
+            .Without(a => a.TaskId)
+            .Without(a => a.LicenceId)
+            .Without(a => a.DocumentType2)
+            .Without(a => a.SubmittedByApplicantId)
+            .With(a => a.AccountId, accountId)
+            .With(a => a.DocumentType, DocumentTypeEnum.DriverLicense)
+            .With(a => a.ExpiryDate, DateOnly.FromDateTime(DateTime.Now.AddDays(10)))
+            .With(a => a.ToTransientBucket, false).Create();
+
+        try
+        {
+            // Action
+            var createdDoc = await _documentRepository.ManageAsync(cmd, CancellationToken.None);
+            var response = await _documentRepository.QueryAsync(new DocumentQry(AccountId: accountId), CancellationToken.None);
+            var documenturl = _context.bcgov_documenturls.Where(d => d.bcgov_documenturlid == createdDoc.DocumentUrlId).FirstOrDefault();
+            Assert.NotNull(response.Items);
+            Assert.Equal(response.Items?.Count(), 1);
+            Assert.Equal(response.Items?.FirstOrDefault().ExpiryDate, cmd.ExpiryDate);
+            Assert.Equal(documenturl?._bcgov_customer_value, cmd.AccountId);
+
+        }
+        catch (Exception e)
+        {
+            throw e.GetBaseException();
+        }
+        finally
+        {
+            await CleanUpObject(appId, applicantId, submittedByApplicantId, accountId);
+        }
+    }
+    [Fact]
+    public async Task DocumentQueryAsync_With_ApplicationId_Execute_Correctly()
+    {
+        Guid appId = Guid.NewGuid();
+        Guid applicantId = Guid.NewGuid();
+
+        Guid submittedByApplicantId = Guid.NewGuid();
+
+        Guid accountId = Guid.NewGuid();
+
+        //save file to cach, get key
+        var saveCommand = new SaveTempFileCommand(new byte[1]);
+        string fileKey = await _tempFileService.HandleCommand(saveCommand, CancellationToken.None);
+
+        spd_application app = new() { spd_applicationid = appId };
+        _context.AddTospd_applications(app);
+        await _context.SaveChangesAsync(CancellationToken.None);
+
+
+        // Arrange
+        var cmd =
+            fixture.Build<CreateDocumentCmd>()
+            .With(a => a.TempFile, fixture.Build<SpdTempFile>()
+                .With(a => a.TempFileKey, fileKey)
+                .With(a => a.ContentType, "text/plain")
+                .With(a => a.FileName, IntegrationTestSetup.DataPrefix + "TestFile")
+                .With(a => a.FileSize, 512).Create())
+            .Without(a => a.ApplicantId)
+            .With(a => a.ApplicationId, appId)
+            .Without(a => a.TaskId)
+            .Without(a => a.LicenceId)
+            .Without(a => a.DocumentType2)
+            .Without(a => a.SubmittedByApplicantId)
+            .Without(a => a.AccountId)
+            .With(a => a.DocumentType, DocumentTypeEnum.DriverLicense)
+            .With(a => a.ExpiryDate, DateOnly.FromDateTime(DateTime.Now.AddDays(10)))
+            .With(a => a.ToTransientBucket, false).Create();
+
+        try
+        {
+            // Action
+            var createdDoc = await _documentRepository.ManageAsync(cmd, CancellationToken.None);
+            var response = await _documentRepository.QueryAsync(new DocumentQry(ApplicationId: appId), CancellationToken.None);
+            Assert.NotNull(response.Items);
+            Assert.Equal(response.Items?.Count(), 1);
+            Assert.Equal(response.Items?.FirstOrDefault().ExpiryDate, cmd.ExpiryDate);
+            Assert.Equal(response.Items?.FirstOrDefault().ApplicationId, cmd.ApplicationId);
+
+        }
+        catch (Exception e)
+        {
+            throw e.GetBaseException();
+        }
+        finally
+        {
+            await CleanUpObject(appId, applicantId, submittedByApplicantId, accountId);
+        }
+    }
     private async Task CleanUpObject(Guid appId, Guid applicantId, Guid submittedByApplicantId, Guid accountId)
     {
         spd_application? appToRemove = _context.spd_applications.Where(a => a.spd_applicationid == appId).FirstOrDefault();
