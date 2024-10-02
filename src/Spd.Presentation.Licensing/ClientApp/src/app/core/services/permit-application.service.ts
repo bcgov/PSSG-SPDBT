@@ -1178,7 +1178,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: permitLicenceAppl.applicationTypeCode };
 
 		const hasExpiredLicence = permitLicenceAppl.hasExpiredLicence ?? false;
-		const expiredLicenceData = this.getExpiredLicenceData(hasExpiredLicence, associatedExpiredLicence);
+		const expiredLicenceData = this.getExpiredLicenceData(
+			this.utilService.booleanToBooleanType(hasExpiredLicence),
+			associatedExpiredLicence
+		);
 
 		const licenceTermData = {
 			licenceTermCode: permitLicenceAppl.licenceTermCode,

@@ -1169,10 +1169,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	private getBusinessLicenceOfType(
 		applicationTypeCode: ApplicationTypeCode,
-		originalLicence: MainLicenceResponse
+		associatedLicence: MainLicenceResponse
 	): Observable<any> {
 		return this.loadExistingBusinessLicenceWithLatestApp({
-			originalLicence,
+			associatedLicence,
 			applicationTypeCode,
 		}).pipe(
 			switchMap((resp: any) => {
@@ -1256,10 +1256,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @returns
 	 */
 	private loadExistingBusinessLicenceWithLatestApp({
-		originalLicence,
+		associatedLicence,
 		applicationTypeCode,
 	}: {
-		originalLicence?: MainLicenceResponse;
+		associatedLicence?: MainLicenceResponse;
 		applicationTypeCode: ApplicationTypeCode;
 	}): Observable<any> {
 		this.reset();
@@ -1281,7 +1281,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					businessLicenceAppl,
 					businessProfile,
 					businessMembers,
-					originalLicence
+					associatedLicence
 				);
 			})
 		);
@@ -1296,7 +1296,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessLicenceAppl: BizLicAppResponse,
 		businessProfile: BizProfileResponse,
 		businessMembers: Members,
-		originalLicence?: MainLicenceResponse
+		associatedLicence?: MainLicenceResponse
 	) {
 		const apis: Observable<any>[] = [];
 		if (businessLicenceAppl.expiredLicenceId) {
@@ -1377,7 +1377,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					return this.applyLicenceAndProfileIntoModel({
 						businessLicenceAppl,
 						businessProfile,
-						originalLicence,
+						associatedLicence,
 						associatedExpiredLicence,
 						soleProprietorSwlLicence,
 						privateInvestigatorSwlLicence,
@@ -1390,7 +1390,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.applyLicenceAndProfileIntoModel({
 			businessLicenceAppl,
 			businessProfile,
-			originalLicence,
+			associatedLicence,
 			brandingDocumentInfos,
 		});
 	}
@@ -1455,7 +1455,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private applyLicenceAndProfileIntoModel({
 		businessLicenceAppl,
 		businessProfile,
-		originalLicence,
+		associatedLicence,
 		associatedExpiredLicence,
 		soleProprietorSwlLicence,
 		privateInvestigatorSwlLicence,
@@ -1463,7 +1463,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
 		businessProfile: BizProfileResponse;
-		originalLicence?: MainLicenceResponse;
+		associatedLicence?: MainLicenceResponse;
 		associatedExpiredLicence?: LicenceResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
@@ -1479,7 +1479,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					businessLicenceAppl,
 					associatedExpiredLicence,
 					privateInvestigatorSwlLicence,
-					associatedLicence: originalLicence,
+					associatedLicence,
 					brandingDocumentInfos,
 				});
 			})
@@ -1507,7 +1507,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
 
 		const hasExpiredLicence = businessLicenceAppl.hasExpiredLicence ?? false;
-		const expiredLicenceData = this.getExpiredLicenceData(hasExpiredLicence, associatedExpiredLicence);
+		const expiredLicenceData = this.getExpiredLicenceData(
+			this.utilService.booleanToBooleanType(hasExpiredLicence),
+			associatedExpiredLicence
+		);
 
 		const originalLicenceData = {
 			originalApplicationId: associatedLicence?.licenceAppId ?? null,
@@ -1599,17 +1602,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
 		if (this.isSoleProprietor(businessLicenceAppl.bizTypeCode)) {
+			// if sole proprietor business application, use the 'businessInformation.soleProprietorCategoryCodes'
+			// as the list of available category options
 			const businessInformation = this.businessInformationFormGroup.value;
-			const categoryCodes = businessLicenceAppl.categoryCodes ?? [];
 			businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
 				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
 			});
 		} else if (associatedLicence) {
+			// if there is an associated licence, use the categories in there as selected
 			// mark the appropriate category types as true
 			associatedLicence?.categoryCodes?.forEach((item: WorkerCategoryTypeCode) => {
 				categoryData[item as string] = true;
 			});
 		} else {
+			// otherwise, resuming a new licence. Mark the appropriate categories as selected
 			categoryCodes.forEach((item: string) => {
 				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
 			});
@@ -1838,7 +1844,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 			if (soleProprietorSwlLicence?.licenceAppId) {
 				// business licence is sole proprietor
-				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence?.licenceAppId);
+				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
 			}
 		}
 
@@ -1908,62 +1914,54 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	applyBusinessLicenceSoleProprietorSelection(licenceAppId: string): Observable<any> {
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
-			tap((resp: WorkerLicenceAppResponse) => {
-				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
-				businessInformationData.soleProprietorCategoryCodes = resp.categoryCodes;
+	applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence: LicenceResponse): Observable<any> {
+		const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
+		businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
 
-				const categoryData: any = {};
-				const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
-				workerCategoryTypeCodes.forEach((item: string) => {
-					categoryData[item] = false;
-				});
+		const categoryData: any = {};
+		soleProprietorSwlLicence.categoryCodes?.forEach((item: string) => {
+			categoryData[item] = false;
+		});
 
-				businessInformationData.soleProprietorCategoryCodes?.forEach((item: string) => {
-					categoryData[item] = true;
-				});
+		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
+		let categorySecurityGuardFormGroup: any = { isInclude: false };
+		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
 
-				let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
-				let categorySecurityGuardFormGroup: any = { isInclude: false };
+		if (categoryData.ArmouredCarGuard) {
+			categoryArmouredCarGuardFormGroup = {
+				isInclude: true,
+				attachments: [],
+			};
+		}
 
-				if (categoryData.ArmouredCarGuard) {
-					categoryArmouredCarGuardFormGroup = {
-						isInclude: true,
-						attachments: [],
-					};
-				}
+		if (categoryData.SecurityGuard) {
+			categorySecurityGuardFormGroup = {
+				isInclude: true,
+				useDogs: null,
+				dogsPurposeFormGroup: {
+					isDogsPurposeDetectionDrugs: null,
+					isDogsPurposeDetectionExplosives: null,
+					isDogsPurposeProtection: null,
+				},
+				attachments: [],
+			};
+		}
 
-				if (categoryData.SecurityGuard) {
-					categorySecurityGuardFormGroup = {
-						isInclude: true,
-						useDogs: null,
-						dogsPurposeFormGroup: {
-							isDogsPurposeDetectionDrugs: null,
-							isDogsPurposeDetectionExplosives: null,
-							isDogsPurposeProtection: null,
-						},
-						attachments: [],
-					};
-				}
-
-				this.businessModelFormGroup.patchValue(
-					{
-						soleProprietorSWLAppId: null,
-						businessInformationData,
-						categoryData,
-						categoryArmouredCarGuardFormGroup,
-						categorySecurityGuardFormGroup,
-					},
-					{
-						emitEvent: false,
-					}
-				);
-			}),
-			switchMap((_resp: any) => {
-				return of(this.businessModelFormGroup.value);
-			})
+		this.businessModelFormGroup.patchValue(
+			{
+				soleProprietorSWLAppId: null,
+				businessInformationData,
+				categoryData,
+				categoryArmouredCarGuardFormGroup,
+				categorySecurityGuardFormGroup,
+				categoryPrivateInvestigatorFormGroup,
+			},
+			{
+				emitEvent: false,
+			}
 		);
+
+		return of(this.businessModelFormGroup.value);
 	}
 
 	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {

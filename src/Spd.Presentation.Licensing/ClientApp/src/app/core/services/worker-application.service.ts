@@ -1412,7 +1412,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		};
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
-		const expiredLicenceData = this.getExpiredLicenceData(hasExpiredLicence, associatedExpiredLicence);
+		const expiredLicenceData = this.getExpiredLicenceData(
+			this.utilService.booleanToBooleanType(hasExpiredLicence),
+			associatedExpiredLicence
+		);
 
 		const licenceTermData = {
 			licenceTermCode: workerLicenceAppl.licenceTermCode,

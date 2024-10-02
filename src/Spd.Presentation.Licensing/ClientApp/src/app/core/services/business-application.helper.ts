@@ -8,7 +8,7 @@ import {
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
@@ -90,6 +90,8 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 	categoryFormGroup: FormGroup = this.formBuilder.group(
 		{
+			categoryCode: new FormControl(null),
+
 			ArmouredCarGuard: new FormControl(false),
 			BodyArmourSales: new FormControl(false),
 			ClosedCircuitTelevisionInstaller: new FormControl(false),
@@ -102,6 +104,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			SecurityAlarmResponse: new FormControl(false),
 			SecurityAlarmSales: new FormControl(false),
 			SecurityConsultant: new FormControl(false),
+
 			attachments: new FormControl([]),
 		},
 		{ validators: [FormGroupValidators.atLeastOneTrueValidator()] }
@@ -369,6 +372,20 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		protected fileUtilService: FileUtilService
 	) {
 		super(formBuilder);
+	}
+
+	/**
+	 * Get the valid list of categories based upon the current selections
+	 * @param categoryList
+	 * @returns
+	 */
+	getValidBlCategoryList(categoryList: string[], superset: WorkerCategoryTypeCode[]): SelectOptions<string>[] {
+		return this.getValidCategoryList(
+			this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration,
+			categoryList,
+			true,
+			superset
+		);
 	}
 
 	getDocsToSaveBlobs(businessModelFormValue: any): Array<LicenceDocumentsToSave> {
