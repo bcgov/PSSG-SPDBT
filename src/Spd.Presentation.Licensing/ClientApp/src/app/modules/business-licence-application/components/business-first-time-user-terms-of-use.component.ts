@@ -41,7 +41,7 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 
 	@ViewChild(CommonBusinessTermsComponent) commonTermsComponent!: CommonBusinessTermsComponent;
 
-	@Input() inWizard = false;
+	@Input() isWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	applicationTypeCodes = ApplicationTypeCode;
 

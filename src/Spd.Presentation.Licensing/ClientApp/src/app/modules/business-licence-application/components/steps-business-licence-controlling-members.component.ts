@@ -4,8 +4,6 @@ import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-
-import { StepBusinessLicenceApplicationOnHoldComponent } from './step-business-licence-application-on-hold.component';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './step-business-licence-controlling-member-invites-component';
 import { StepBusinessLicenceControllingMembersComponent } from './step-business-licence-controlling-members.component';
 import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-employees.component';
@@ -17,6 +15,7 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 			<mat-step>
 				<app-step-business-licence-controlling-members
 					[applicationTypeCode]="applicationTypeCode"
+					[isWizard]="true"
 				></app-step-business-licence-controlling-members>
 
 				<app-wizard-footer
@@ -52,21 +51,8 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_EMPLOYEES)"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidEmployeesNextStep(STEP_EMPLOYEES)"
+					(nextStepperStep)="onStepNext(STEP_EMPLOYEES)"
 					(nextReviewStepperStep)="onNextReview(STEP_EMPLOYEES)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step *ngIf="!isControllingMembersWithoutSwlComplete">
-				<app-step-business-licence-application-on-hold></app-step-business-licence-application-on-hold>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_APPLICATION_ON_HOLD)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					nextButtonLabel="Close"
-					(nextStepperStep)="onStepClose()"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -78,12 +64,10 @@ export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardS
 	readonly STEP_CONTROLLING_MEMBERS = 0;
 	readonly STEP_CONTROLLING_MEMBERS_INVITES = 1;
 	readonly STEP_EMPLOYEES = 2;
-	readonly STEP_APPLICATION_ON_HOLD = 3;
 
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() isControllingMembersWithoutSwlExist!: boolean;
-	@Input() isControllingMembersWithoutSwlComplete!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepBusinessLicenceControllingMembersComponent)
@@ -91,8 +75,6 @@ export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardS
 	@ViewChild(StepBusinessLicenceEmployeesComponent) stepEmployeesComponent!: StepBusinessLicenceEmployeesComponent;
 	@ViewChild(StepBusinessLicenceControllingMemberInvitesComponent)
 	stepMembersInvitesComponent!: StepBusinessLicenceControllingMemberInvitesComponent;
-	@ViewChild(StepBusinessLicenceApplicationOnHoldComponent)
-	stepOnHoldComponent!: StepBusinessLicenceApplicationOnHoldComponent;
 
 	constructor(override commonApplicationService: ApplicationService, private router: Router) {
 		super(commonApplicationService);
@@ -100,15 +82,6 @@ export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardS
 
 	onStepClose(): void {
 		this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessApplications());
-	}
-
-	onFormValidEmployeesNextStep(formNumber: number): void {
-		if (!this.isControllingMembersWithoutSwlComplete) {
-			this.onFormValidNextStep(formNumber);
-			return;
-		}
-
-		this.onStepNext(formNumber);
 	}
 
 	override dirtyForm(step: number): boolean {
@@ -119,8 +92,6 @@ export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardS
 				return this.stepMembersInvitesComponent.isFormValid();
 			case this.STEP_EMPLOYEES:
 				return this.stepEmployeesComponent.isFormValid();
-			case this.STEP_APPLICATION_ON_HOLD:
-				return this.stepOnHoldComponent.isFormValid();
 			default:
 				console.error('Unknown Form', step);
 		}

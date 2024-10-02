@@ -10,7 +10,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 	template: `
 		<div class="row">
 			<div class="offset-md-2 col-md-8 col-sm-12">
-				<app-alert type="info" icon="">
+				<app-alert type="info" icon="info">
 					<div class="d-flex">
 						<div>
 							Scan or take a photo of the tear-off section on page 2 of the

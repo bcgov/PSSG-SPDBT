@@ -26,7 +26,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
 import moment from 'moment';

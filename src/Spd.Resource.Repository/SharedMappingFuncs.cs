@@ -213,4 +213,27 @@ internal static class SharedMappingFuncs
 
         return !(isNotPortal && isNewOrRenewal);
     }
+    internal static string? GetDogReasonOptionSets(bool? IsDogsPurposeDetectionDrugs, bool? IsDogsPurposeProtection, bool? IsDogsPurposeDetectionExplosives)
+    {
+        List<string> reasons = new();
+
+        if (IsDogsPurposeDetectionDrugs != null && IsDogsPurposeDetectionDrugs == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionDrugs).ToString());
+        if (IsDogsPurposeDetectionExplosives != null && IsDogsPurposeDetectionExplosives == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.DetectionExplosives).ToString());
+        if (IsDogsPurposeProtection != null && IsDogsPurposeProtection == true)
+            reasons.Add(((int)RequestDogPurposeOptionSet.Protection).ToString());
+        var result = String.Join(',', reasons.ToArray());
+
+        return string.IsNullOrWhiteSpace(result) ? null : result;
+    }
+    internal static bool? GetDogReasonFlag(string dogreasonsStr, RequestDogPurposeOptionSet type)
+    {
+        if (dogreasonsStr == null) return null;
+        string[] reasons = dogreasonsStr.Split(',');
+        string str = ((int)type).ToString();
+        if (reasons.Any(s => s == str)) return true;
+
+        return false;
+    }
 }

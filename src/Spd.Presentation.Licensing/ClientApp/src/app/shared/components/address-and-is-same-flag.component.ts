@@ -5,27 +5,23 @@ import { FormControl, FormGroup } from '@angular/forms';
 	selector: 'app-address-and-is-same-flag',
 	template: `
 		<form [formGroup]="form" novalidate>
-			<div class="row">
-				<div class="col-md-12 col-sm-12 mb-3" [ngClass]="isWizardStep ? 'offset-lg-2 col-lg-8' : ''">
-					<mat-checkbox formControlName="isAddressTheSame">
-						{{ isAddressTheSameLabel }}
-					</mat-checkbox>
-					<ng-container *ngIf="!isAddressTheSame.value">
-						<mat-divider class="my-2 mat-divider-primary"></mat-divider>
-					</ng-container>
-				</div>
-			</div>
+			<mat-checkbox formControlName="isAddressTheSame">
+				{{ isAddressTheSameLabel }}
+			</mat-checkbox>
+			<ng-container *ngIf="!isAddressTheSame.value">
+				<mat-divider class="mt-2 mb-3 mat-divider-primary"></mat-divider>
+			</ng-container>
 		</form>
 
 		<ng-container *ngIf="!isAddressTheSame.value">
-			<app-address [form]="form" [isWizardStep]="isWizardStep" [isReadonly]="isReadonly"></app-address>
+			<app-address [form]="form" [isReadonly]="isReadonly" [isWideView]="isWideView"></app-address>
 		</ng-container>
 	`,
 	styles: [],
 })
 export class AddressAndIsSameFlagComponent implements OnInit {
 	@Input() form!: FormGroup;
-	@Input() isWizardStep = true;
+	@Input() isWideView = false;
 	@Input() isReadonly = false;
 	@Input() isCheckboxReadOnly = false;
 	@Input() isAddressTheSameLabel = 'The address is the same';

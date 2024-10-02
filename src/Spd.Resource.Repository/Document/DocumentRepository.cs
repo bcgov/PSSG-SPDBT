@@ -40,7 +40,10 @@ internal class DocumentRepository : IDocumentRepository
     {
         var documents = _context.bcgov_documenturls.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
         if (qry.ApplicantId != null)
-            documents = documents.Where(d => d._spd_submittedbyid_value == qry.ApplicantId);
+            documents = documents.Where(d => d._bcgov_customer_value == qry.ApplicantId);
+
+        if (qry.AccountId != null)
+            documents = documents.Where(d => d._bcgov_customer_value == qry.AccountId);
 
         if (qry.ApplicationId != null)
             documents = documents.Where(d => d._spd_applicationid_value == qry.ApplicationId);
@@ -64,24 +67,19 @@ internal class DocumentRepository : IDocumentRepository
         }
 
         var results = await documents.GetAllPagesAsync(ct);
-
+        IEnumerable<DocumentResp> resp = null;
         if (qry.MultiFileTypes != null)
         {
             List<Guid> tagIds = qry.MultiFileTypes.Select(f => DynamicsContextLookupHelpers.BcGovTagDictionary.GetValueOrDefault(f.ToString())).ToList();
             List<bcgov_documenturl> result = results.Where(d => tagIds.Contains(d._bcgov_tag1id_value.Value)).ToList();
-            return new DocumentListResp
-            {
-                Items = _mapper.Map<IEnumerable<DocumentResp>>(result.OrderByDescending(a => a.createdon))
-            };
+            resp = _mapper.Map<IEnumerable<DocumentResp>>(result.OrderByDescending(a => a.createdon));
         }
         else
         {
             results = results.OrderByDescending(a => a.createdon);
-            return new DocumentListResp
-            {
-                Items = _mapper.Map<IEnumerable<DocumentResp>>(results)
-            };
+            resp = _mapper.Map<IEnumerable<DocumentResp>>(results);
         }
+        return qry.OnlyReturnLatestSet ? new DocumentListResp { Items = GetLatestSet(resp) } : new DocumentListResp { Items = resp };
     }
 
     public async Task<DocumentResp> ManageAsync(DocumentCmd cmd, CancellationToken ct)
@@ -107,6 +105,20 @@ internal class DocumentRepository : IDocumentRepository
         _context.UpdateObject(documenturl);
         await _context.SaveChangesAsync(ct);
         return _mapper.Map<DocumentResp>(documenturl);
+    }
+
+    //if the documents are in the same application, then we use applicationId to indicate its set. Or we use uploadedDatetime
+    private IEnumerable<DocumentResp> GetLatestSet(IEnumerable<DocumentResp> resp)
+    {
+        if (resp.Any())
+        {
+            DocumentResp? doc = resp.FirstOrDefault();
+            if (doc?.ApplicationId == null)
+                return resp.Where(i => i.UploadedDateTime == doc.UploadedDateTime).ToList();
+            else
+                return resp.Where(i => i.ApplicationId == doc.ApplicationId).ToList();
+        }
+        return resp;
     }
 
     private async Task<DocumentResp> DocumentCreateAsync(CreateDocumentCmd cmd, CancellationToken ct)

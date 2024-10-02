@@ -12,7 +12,7 @@ import {
 } from '@app/core/services/application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routing.module';
+import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';
@@ -158,22 +158,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 			</div>
 		</section>
 	`,
-	styles: [
-		`
-			.appl-chip-option {
-				height: 35px;
-			}
-
-			.appl-chip-option-item {
-				vertical-align: text-bottom;
-			}
-
-			.error-color {
-				font-weight: 600;
-				color: var(--color-red-dark);
-			}
-		`,
-	],
+	styles: [],
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
@@ -216,69 +201,71 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		this.commonApplicationService.setApplicationTitle();
 
 		this.results$ = forkJoin([
-			this.commonApplicationService.userLicencesList(),
-			this.commonApplicationService.userApplicationsList(),
+			this.commonApplicationService.userPersonLicencesList(),
+			this.commonApplicationService.userPersonApplicationsList(),
 		]).pipe(
 			tap((resps: Array<any>) => {
-				const userLicencesList: Array<MainLicenceResponse> = resps[0];
-				const userApplicationsList: Array<MainApplicationResponse> = resps[1];
+				const userPersonLicencesList: Array<MainLicenceResponse> = resps[0];
+				const userPersonApplicationsList: Array<MainApplicationResponse> = resps[1];
 
 				// Swl Licences/ Permits Applications
-				this.applicationsDataSource = new MatTableDataSource(userApplicationsList ?? []);
-				this.applicationIsInProgress = this.commonApplicationService.getApplicationIsInProgress(userApplicationsList);
+				this.applicationsDataSource = new MatTableDataSource(userPersonApplicationsList ?? []);
+				this.applicationIsInProgress =
+					this.commonApplicationService.getApplicationIsInProgress(userPersonApplicationsList);
 
 				// Swl Licences/ Permits
-				const activeLicences = userLicencesList.filter(
+				const activeLicencesList = userPersonLicencesList.filter(
 					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
 				);
 
-				const expiredLicences = userLicencesList.filter(
+				const expiredLicences = userPersonLicencesList.filter(
 					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
 				);
 
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
-					activeLicences.findIndex(
+					activeLicencesList.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 					) >= 0;
 				if (!activeSwlExist) {
 					activeSwlExist =
-						userApplicationsList.findIndex(
+						userPersonApplicationsList.findIndex(
 							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
 						) >= 0;
 				}
 				this.activeSwlExist = activeSwlExist;
 
 				let activeBaPermitExist =
-					activeLicences.findIndex(
+					activeLicencesList.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 					) >= 0;
 				if (!activeBaPermitExist) {
 					activeBaPermitExist =
-						userApplicationsList.findIndex(
+						userPersonApplicationsList.findIndex(
 							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
 						) >= 0;
 				}
 				this.activeBaPermitExist = activeBaPermitExist;
 
 				let activeAvPermitExist =
-					activeLicences.findIndex(
+					activeLicencesList.findIndex(
 						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 					) >= 0;
 				if (!activeAvPermitExist) {
 					activeAvPermitExist =
-						userApplicationsList.findIndex(
+						userPersonApplicationsList.findIndex(
 							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
 						) >= 0;
 				}
 				this.activeAvPermitExist = activeAvPermitExist;
 
-				[this.warningMessages, this.errorMessages] = this.commonApplicationService.getMainWarningsAndError(
-					userApplicationsList,
-					activeLicences
-				);
+				[this.warningMessages, this.errorMessages] =
+					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(
+						userPersonApplicationsList,
+						activeLicencesList
+					);
 
-				this.activeLicences = activeLicences;
+				this.activeLicences = activeLicencesList;
 				this.expiredLicences = expiredLicences;
 
 				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';

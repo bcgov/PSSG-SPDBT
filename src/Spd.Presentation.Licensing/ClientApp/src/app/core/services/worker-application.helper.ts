@@ -1221,10 +1221,8 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 	}
 
 	getSummaryshowPhotographOfYourself(workerLicenceModelData: any): boolean {
-		return (
-			this.getSummaryhasGenderChanged(workerLicenceModelData) &&
-			this.getSummaryphotoOfYourselfAttachments(workerLicenceModelData).length > 0
-		);
+		const att = this.getSummaryphotoOfYourselfAttachments(workerLicenceModelData);
+		return this.getSummaryhasGenderChanged(workerLicenceModelData) && !!att && att.length > 0;
 	}
 
 	getSummaryhasBcscNameChanged(workerLicenceModelData: any): boolean {
@@ -1489,14 +1487,14 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		return workerLicenceModelData.characteristicsData.weightUnitCode ?? '';
 	}
 
-	getSummaryphotoOfYourselfAttachments(workerLicenceModelData: any): File[] {
+	getSummaryphotoOfYourselfAttachments(workerLicenceModelData: any): File[] | null {
 		const applicationTypeCode = this.getSummaryapplicationTypeCode(workerLicenceModelData);
 		if (applicationTypeCode === ApplicationTypeCode.New) {
-			return workerLicenceModelData.photographOfYourselfData.attachments ?? [];
+			return workerLicenceModelData.photographOfYourselfData.attachments ?? null;
 		} else {
 			const updatePhoto = workerLicenceModelData.photographOfYourselfData.updatePhoto === BooleanTypeCode.Yes;
-			const updateAttachments = workerLicenceModelData.photographOfYourselfData.updateAttachments ?? [];
-			return updatePhoto ? updateAttachments : [];
+			const updateAttachments = workerLicenceModelData.photographOfYourselfData.updateAttachments ?? null;
+			return updatePhoto ? updateAttachments : null;
 		}
 	}
 

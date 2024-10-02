@@ -152,19 +152,22 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 	categorySecurityGuardFormGroup: FormGroup = this.formBuilder.group(
 		{
 			isInclude: new FormControl(false),
-			isRequestDogAuthorization: new FormControl(''),
+			useDogs: new FormControl(''),
+			dogsPurposeFormGroup: new FormGroup({
+				isDogsPurposeProtection: new FormControl(false),
+				isDogsPurposeDetectionDrugs: new FormControl(false),
+				isDogsPurposeDetectionExplosives: new FormControl(false),
+			}),
 			attachments: new FormControl([]),
 		},
 		{
 			validators: [
-				FormGroupValidators.conditionalDefaultRequiredValidator(
-					'isRequestDogAuthorization',
-					(form) => form.get('isInclude')?.value
-				),
+				FormGroupValidators.conditionalRequiredValidator('useDogs', (form) => form.get('isInclude')?.value ?? false),
 				FormGroupValidators.conditionalDefaultRequiredValidator(
 					'attachments',
-					(form) => form.get('isInclude')?.value && form.get('isRequestDogAuthorization')?.value === BooleanTypeCode.Yes
+					(form) => form.get('useDogs')?.value == this.booleanTypeCodes.Yes
 				),
+				FormGroupValidators.atLeastOneCheckboxWhenReqdValidator('dogsPurposeFormGroup', 'useDogs', BooleanTypeCode.Yes),
 			],
 		}
 	);
@@ -422,7 +425,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 		if (categoryData.SecurityGuard) {
 			const useDogs = this.utilService.booleanTypeToBoolean(
-				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization
+				businessModelFormValue.categorySecurityGuardFormGroup.useDogs
 			);
 			if (useDogs) {
 				if (businessModelFormValue.categorySecurityGuardFormGroup.attachments) {
@@ -466,7 +469,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		let useDogs: boolean | null = null;
+		let dogsAuthorizationData = {};
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
@@ -492,9 +495,18 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const categoryData = { ...businessModelFormValue.categoryData };
 
 		if (categoryData.SecurityGuard) {
-			useDogs = this.utilService.booleanTypeToBoolean(
-				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization
-			);
+			const categorySecurityGuardFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
+			const isDetectionDrugs = categorySecurityGuardFormGroup.isDogsPurposeDetectionDrugs ?? false;
+			const isDetectionExplosives = categorySecurityGuardFormGroup.isDogsPurposeDetectionExplosives ?? false;
+			const isProtection = categorySecurityGuardFormGroup.isDogsPurposeProtection ?? false;
+			const useDogs = this.utilService.booleanTypeToBoolean(categorySecurityGuardFormGroup.useDogs);
+
+			dogsAuthorizationData = {
+				useDogs,
+				isDogsPurposeDetectionDrugs: useDogs ? isDetectionDrugs : null,
+				isDogsPurposeDetectionExplosives: useDogs ? isDetectionExplosives : null,
+				isDogsPurposeProtection: useDogs ? isProtection : null,
+			};
 		}
 
 		if (categoryData.PrivateInvestigator) {
@@ -533,10 +545,10 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			originalApplicationId: originalLicenceData ? originalLicenceData.originalApplicationId : null,
 			originalLicenceId: originalLicenceData ? originalLicenceData.originalLicenceId : null,
 			//-----------------------------------
-			categoryCodes: [...categoryCodes],
-			documentInfos: [...documentInfos],
+			categoryCodes,
+			documentInfos,
 			privateInvestigatorSwlInfo,
-			useDogs,
+			dogsAuthorizationData,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
@@ -635,7 +647,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 		if (categoryData.SecurityGuard) {
 			const useDogs = this.utilService.booleanTypeToBoolean(
-				businessModelFormValue.categorySecurityGuardFormGroup.isRequestDogAuthorization
+				businessModelFormValue.categorySecurityGuardFormGroup.useDogs
 			);
 			if (useDogs) {
 				if (businessModelFormValue.categorySecurityGuardFormGroup.attachments) {
@@ -681,7 +693,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		return applicationTypeCode === ApplicationTypeCode.Update;
 	}
 
-	clearPrivateInvestigatorModelData(): void {
+	private clearPrivateInvestigatorModelData(): void {
 		// clear out any old data
 		this.categoryPrivateInvestigatorFormGroup.patchValue(
 			{

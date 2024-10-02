@@ -53,24 +53,12 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 													{{ applicationTypeCode | options : 'ApplicationTypes' }}
 												</div>
 											</div>
-											<div class="col-lg-4 col-md-12">
+											<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
 												<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
-												<div class="summary-text-data">{{ isSoleProprietor }}</div>
-											</div>
-										</div>
-										<div class="row mt-0">
-											<ng-container
-												*ngFor="let category of categoryList; let i = index; let first = first; let last = last"
-											>
-												<div class="col-lg-4 col-md-12">
-													<div class="text-label d-block text-muted">
-														Licence Category <span *ngIf="categoryList.length > 1"> #{{ i + 1 }}</span>
-													</div>
-													<div class="summary-text-data">
-														{{ category | options : 'WorkerCategoryTypes' }}
-													</div>
+												<div class="summary-text-data">
+													{{ soleProprietorBizTypeCode | options : 'BizTypes' }}
 												</div>
-											</ng-container>
+											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
 												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
@@ -79,6 +67,16 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="text-label d-block text-muted">Fee</div>
 												<div class="summary-text-data">
 													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+												</div>
+											</div>
+											<div class="col-xl-4 col-lg-6 col-md-12">
+												<div class="text-label d-block text-muted">Licence Categories</div>
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let category of categoryList; let i = index">
+															<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+														</ng-container>
+													</ul>
 												</div>
 											</div>
 										</div>
@@ -256,10 +254,14 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 													</div>
 												</div>
 												<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
-													<div class="col-lg-8 col-md-12">
-														<div class="text-label d-block text-muted">
+													<div class="col-xl-4 col-lg-6 col-md-12">
+														<div class="text-label d-block text-muted">Proof of Qualification</div>
+														<div class="summary-text-data">
 															{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
 														</div>
+													</div>
+													<div class="col-xl-4 col-lg-6 col-md-12">
+														<div class="text-label d-block text-muted">Proof of Qualification Documents</div>
 														<div class="summary-text-data">
 															<ul class="m-0">
 																<ng-container *ngFor="let doc of carryAndUseRestraintsAttachments; let i = index">
@@ -716,7 +718,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		return this.workerApplicationService.getSummaryweightUnitCode(this.licenceModelData);
 	}
 
-	get photoOfYourselfAttachments(): File[] {
+	get photoOfYourselfAttachments(): File[] | null {
 		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData);
 	}
 

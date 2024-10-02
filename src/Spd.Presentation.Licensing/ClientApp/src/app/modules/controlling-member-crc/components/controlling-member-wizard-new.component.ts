@@ -14,7 +14,7 @@ import { StepsControllingMemberBackgroundComponent } from '@app/modules/controll
 import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-personal-information.component';
 import { StepsControllingMemberReviewComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-review.component';
-import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routing.module';
+import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/controlling-member-crc-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';

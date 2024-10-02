@@ -4,14 +4,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
-import { Subscription, distinctUntilChanged } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { Subscription, distinctUntilChanged } from 'rxjs';
 
 import { StepsBusinessLicenceContactInformationComponent } from './steps-business-licence-contact-information.component';
 import { StepsBusinessLicenceControllingMembersComponent } from './steps-business-licence-controlling-members.component';
@@ -84,7 +82,6 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 					[isFormValid]="isFormValid"
 					[showSaveAndExit]="showSaveAndExit"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
-					[isControllingMembersWithoutSwlComplete]="isControllingMembersWithoutSwlComplete"
 					(childNextStep)="onChildNextStep()"
 					(saveAndExit)="onSaveAndExit()"
 					(nextReview)="onGoToReview()"
@@ -99,9 +96,12 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 				<app-steps-business-licence-review
 					[workerLicenceTypeCode]="workerLicenceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
+					[showSaveAndExit]="showSaveAndExit"
+					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
 					(saveAndExit)="onSaveAndExit()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
-					(nextPayStep)="onNextPayStep()"
+					(nextPayStep)="onNextSubmit()"
+					(nextSubmitStep)="onNextSubmit()"
 					(scrollIntoView)="onScrollIntoView()"
 					(goToStep)="onGoToStep($event)"
 				></app-steps-business-licence-review>
@@ -135,7 +135,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
 	isControllingMembersWithoutSwlExist!: boolean;
-	isControllingMembersWithoutSwlComplete!: boolean;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -153,7 +152,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
-		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -184,9 +182,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 				this.isControllingMembersWithoutSwlExist = this.businessApplicationService.businessModelFormGroup.get(
 					'isControllingMembersWithoutSwlExist'
-				)?.value;
-				this.isControllingMembersWithoutSwlComplete = this.businessApplicationService.businessModelFormGroup.get(
-					'isControllingMembersWithoutSwlComplete'
 				)?.value;
 
 				this.isFormValid = _resp;
@@ -260,15 +255,10 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		}
 	}
 
-	onNextPayStep(): void {
-		this.businessApplicationService.submitBusinessLicenceNew().subscribe({
-			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence has been successfully submitted');
-				this.payNow(resp.body.licenceAppId!);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-			},
+	onNextSubmit(): void {
+		this.businessApplicationService.payBusinessLicenceNew({
+			paymentSuccess: 'Your business licence has been successfully submitted',
+			paymentReason: 'Payment for new Business Licence application',
 		});
 	}
 

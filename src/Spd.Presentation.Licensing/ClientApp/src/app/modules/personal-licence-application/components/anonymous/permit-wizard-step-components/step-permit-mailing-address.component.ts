@@ -8,10 +8,15 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	selector: 'app-step-permit-mailing-address',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
-			<app-address-and-is-same-flag
-				[form]="form"
-				isAddressTheSameLabel="My residential address and mailing address are the same"
-			></app-address-and-is-same-flag>
+			<div class="row">
+				<div class="col-md-8 col-sm-12 mx-auto">
+					<app-address-and-is-same-flag
+						[form]="form"
+						isAddressTheSameLabel="My residential address and mailing address are the same"
+						[isWideView]="true"
+					></app-address-and-is-same-flag>
+				</div>
+			</div>
 		</app-step-section>
 	`,
 	styles: [],

@@ -65,7 +65,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 					</ng-container>
 
 					<div class="mt-3">
-						<app-alert type="info" [showBorder]="false" icon="">
+						<app-alert type="info" [showBorder]="false" icon="info">
 							<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Update">
 								<div class="mb-3">
 									We will contact you if we need more information, and we will send you a temporary copy of your updated

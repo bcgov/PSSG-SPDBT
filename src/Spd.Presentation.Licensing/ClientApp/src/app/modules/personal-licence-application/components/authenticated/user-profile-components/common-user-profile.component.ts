@@ -62,11 +62,7 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 							</app-alert>
 
 							<section>
-								<app-address
-									[form]="residentialAddressFormGroup"
-									[isWizardStep]="false"
-									[isReadonly]="true"
-								></app-address>
+								<app-address [form]="residentialAddressFormGroup" [isReadonly]="true"></app-address>
 							</section>
 						</div>
 					</mat-expansion-panel>
@@ -88,7 +84,6 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 
 							<app-address-and-is-same-flag
 								[form]="mailingAddressFormGroup"
-								[isWizardStep]="false"
 								[isReadonly]="isReadonlyMailingAddress"
 								[isCheckboxReadOnly]="isReadonlyMailingAddress"
 								isAddressTheSameLabel="The residential address and mailing address are the same"
