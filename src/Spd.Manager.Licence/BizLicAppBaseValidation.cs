@@ -30,25 +30,6 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
             .Must(r => r == Shared.LicenceTermCode.OneYear || r == Shared.LicenceTermCode.TwoYears || r == Shared.LicenceTermCode.ThreeYears);
         RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true);
 
-        // Parent/child categories
-        RuleFor(r => r.CategoryCodes)
-            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmSales) &&
-                r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
-                r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse) &&
-                r.Contains(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller) &&
-                r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
-            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmInstaller));
-        RuleFor(r => r.CategoryCodes)
-            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor))
-            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityAlarmResponse));
-        RuleFor(r => r.CategoryCodes)
-            .Must(r => r.Contains(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller))
-            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.Locksmith));
-        RuleFor(r => r.CategoryCodes)
-            .Must(r => r.Contains(WorkerCategoryTypeCode.SecurityAlarmMonitor) &&
-                r.Contains(WorkerCategoryTypeCode.SecurityAlarmResponse))
-            .When(r => r.CategoryCodes.Any(c => c == WorkerCategoryTypeCode.SecurityGuard));
-
         // Private investigator
         RuleFor(r => r.PrivateInvestigatorSwlInfo)
             .Must(r => r.ContactId != null && r.ContactId != Guid.Empty &&
