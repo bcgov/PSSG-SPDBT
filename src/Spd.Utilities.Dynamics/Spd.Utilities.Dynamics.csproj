@@ -2,7 +2,7 @@
 
 		<PropertyGroup>
 				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-				<NoWarn>CA1008;CA1707,CS8981;</NoWarn>
+				<NoWarn>CA1008;CA1707;CS8981</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>
