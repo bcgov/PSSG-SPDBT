@@ -25,6 +25,9 @@ export interface BizLicAppResponse {
   expiredLicenceId?: string | null;
   expiryDate?: string | null;
   hasExpiredLicence?: boolean | null;
+  isDogsPurposeDetectionDrugs?: boolean | null;
+  isDogsPurposeDetectionExplosives?: boolean | null;
+  isDogsPurposeProtection?: boolean | null;
   licenceAppId?: string;
   licenceTermCode?: LicenceTermCode;
   noBranding?: boolean | null;

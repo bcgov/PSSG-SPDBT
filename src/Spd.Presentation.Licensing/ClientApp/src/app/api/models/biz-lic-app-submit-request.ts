@@ -17,6 +17,9 @@ export interface BizLicAppSubmitRequest {
   bizTypeCode?: BizTypeCode;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   documentKeyCodes?: Array<string> | null;
+  isDogsPurposeDetectionDrugs?: boolean | null;
+  isDogsPurposeDetectionExplosives?: boolean | null;
+  isDogsPurposeProtection?: boolean | null;
   latestApplicationId?: string | null;
   licenceTermCode?: LicenceTermCode;
   noBranding?: boolean | null;

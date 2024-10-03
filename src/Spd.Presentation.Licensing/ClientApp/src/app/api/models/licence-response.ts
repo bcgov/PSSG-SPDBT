@@ -15,7 +15,7 @@ export interface LicenceResponse {
   bodyArmourPermitReasonCodes?: Array<BodyArmourPermitReasonCode> | null;
   carryAndUseRestraints?: boolean;
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
-  dogsDocumentExpiredDate?: string | null;
+  dogDocumentInfos?: Array<Document> | null;
   employerName?: string | null;
   employerPrimaryAddress?: Address;
   expiryDate?: string;
@@ -33,7 +33,7 @@ export interface LicenceResponse {
   permitOtherRequiredReason?: string | null;
   rationalDocumentInfos?: Array<Document> | null;
   rationale?: string | null;
-  restraintsDocumentExpiredDate?: string | null;
+  restraintsDocumentInfos?: Array<Document> | null;
   supervisorEmailAddress?: string | null;
   supervisorName?: string | null;
   supervisorPhoneNumber?: string | null;

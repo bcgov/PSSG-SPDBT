@@ -2,9 +2,8 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ApplicationPortalStatusCode, ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
-import { ApplicationService, MainApplicationResponse } from '@app/core/services/application.service';
-import { OptionsPipe } from '../pipes/options.pipe';
+import { ApplicationPortalStatusCode, ApplicationTypeCode } from '@app/api/models';
+import { MainApplicationResponse } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-applications-list-current',
@@ -140,8 +139,7 @@ export class ApplicationsListCurrentComponent {
 	@Input() isControllingMemberWarning!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
-
-	constructor(private optionsPipe: OptionsPipe, private commonApplicationService: ApplicationService) {}
+	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
 		switch (applicationPortalStatusCode) {
@@ -161,15 +159,8 @@ export class ApplicationsListCurrentComponent {
 		this.resumeApplication.emit(appl);
 	}
 
-	onPayNow(application: MainApplicationResponse): void {
-		const workerLicenceTypeDesc = this.optionsPipe.transform(application.serviceTypeCode, 'WorkerLicenceTypes');
-		const paymentDesc = `Payment for ${workerLicenceTypeDesc} application`;
-
-		if (application.serviceTypeCode === WorkerLicenceTypeCode.SecurityBusinessLicence) {
-			this.commonApplicationService.payNowBusinessLicence(application.licenceAppId!, paymentDesc);
-		} else {
-			this.commonApplicationService.payNowPersonalLicenceAuthenticated(application.licenceAppId!, paymentDesc);
-		}
+	onPayNow(appl: MainApplicationResponse): void {
+		this.payApplication.emit(appl);
 	}
 
 	isDraft(appl: MainApplicationResponse): boolean {

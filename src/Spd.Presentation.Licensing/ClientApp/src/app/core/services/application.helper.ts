@@ -1,6 +1,17 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, PoliceOfficerRoleCode } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import {
+	ApplicationTypeCode,
+	LicenceDocumentTypeCode,
+	LicenceResponse,
+	PoliceOfficerRoleCode,
+	WorkerCategoryTypeCode,
+} from '@app/api/models';
+import {
+	BooleanTypeCode,
+	BusinessLicenceCategoryTypes,
+	SelectOptions,
+	WorkerCategoryTypes,
+} from '@app/core/code-types/model-desc.models';
 import { FormControlValidators } from '@app/core/validators/form-control.validators';
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { BehaviorSubject, Observable, of, Subscriber } from 'rxjs';
@@ -16,6 +27,10 @@ export abstract class ApplicationHelper {
 	photographOfYourself: string | ArrayBuffer | null = null;
 
 	booleanTypeCodes = BooleanTypeCode;
+
+	categorySelectionFormGroup: FormGroup = this.formBuilder.group({
+		categoryCode: new FormControl(null),
+	});
 
 	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
 		workerLicenceTypeCode: new FormControl('', [Validators.required]),
@@ -49,8 +64,13 @@ export abstract class ApplicationHelper {
 		originalLicenceTermCode: new FormControl(null),
 		originalBizTypeCode: new FormControl(null),
 		originalCategoryCodes: new FormControl(null),
-		originalPhotoOfYourselfExpired: new FormControl(false),
-		originalDogAuthorizationExists: new FormControl(false),
+		originalCarryAndUseRestraints: new FormControl(null),
+		originalUseDogs: new FormControl(null),
+		originalIsDogsPurposeDetectionDrugs: new FormControl(null),
+		originalIsDogsPurposeDetectionExplosives: new FormControl(null),
+		originalIsDogsPurposeProtection: new FormControl(null),
+		originalPhotoOfYourselfExpired: new FormControl(false), // not used for Business Licence
+		originalDogAuthorizationExists: new FormControl(false), // not used for Business Licence
 	});
 
 	linkAccountCodeFormGroup: FormGroup = this.formBuilder.group({
@@ -406,6 +426,29 @@ export abstract class ApplicationHelper {
 		this._waitUntilInitialized$.next(true);
 	}
 
+	getExpiredLicenceData(hasExpiredLicenceYesNo: BooleanTypeCode | null, expiredLicenceInfo?: LicenceResponse): any {
+		if (!hasExpiredLicenceYesNo) {
+			return {
+				hasExpiredLicence: null,
+				expiredLicenceId: null,
+				expiredLicenceHolderName: null,
+				expiredLicenceNumber: null,
+				expiredLicenceExpiryDate: null,
+				expiredLicenceStatusCode: null,
+			};
+		}
+
+		const hasExpiredLicence = hasExpiredLicenceYesNo === BooleanTypeCode.Yes;
+		return {
+			hasExpiredLicence: hasExpiredLicenceYesNo,
+			expiredLicenceId: hasExpiredLicence ? expiredLicenceInfo?.licenceId : null,
+			expiredLicenceHolderName: hasExpiredLicence ? expiredLicenceInfo?.licenceHolderName : null,
+			expiredLicenceNumber: hasExpiredLicence ? expiredLicenceInfo?.licenceNumber : null,
+			expiredLicenceExpiryDate: hasExpiredLicence ? expiredLicenceInfo?.expiryDate : null,
+			expiredLicenceStatusCode: hasExpiredLicence ? expiredLicenceInfo?.licenceStatusCode : null,
+		};
+	}
+
 	/**
 	 * Set the current photo of yourself
 	 * @returns
@@ -430,6 +473,35 @@ export abstract class ApplicationHelper {
 			};
 			reader.readAsDataURL(image);
 		});
+	}
+
+	/**
+	 * Get the valid list of categories based upon the current selections
+	 * @param categoryList
+	 * @returns
+	 */
+	getValidCategoryList(
+		invalidCategories: any,
+		categoryList: string[],
+		isBusinessLicence: boolean = false,
+		superset: WorkerCategoryTypeCode[] = []
+	): SelectOptions<string>[] {
+		let updatedList: SelectOptions[] = [];
+		if (isBusinessLicence) {
+			updatedList = BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
+				return superset.includes(item.code as WorkerCategoryTypeCode);
+			});
+		} else {
+			updatedList = [...WorkerCategoryTypes];
+		}
+
+		categoryList.forEach((item) => {
+			updatedList = updatedList.filter(
+				(cat) => !invalidCategories[item as WorkerCategoryTypeCode]?.includes(cat.code as WorkerCategoryTypeCode)
+			);
+		});
+
+		return [...updatedList];
 	}
 
 	/**
