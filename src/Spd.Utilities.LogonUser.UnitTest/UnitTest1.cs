@@ -9,6 +9,7 @@ public class UnitTest1
     [InlineData(" givenname1 givenname2 ", "givenname1 ", "givenname2")]
     [InlineData("givenname1 givenname1", "givenname1 ", "givenname1")]
     [InlineData("givenname2 givenname1", "givenname1 ", "givenname2 givenname1")]
+    [InlineData("givenname1 given givenname2", "givenname1 given", "givenname2")]
     [InlineData("", "", null)]
     [InlineData(null, "", null)]
     [InlineData(null, null, null)]
