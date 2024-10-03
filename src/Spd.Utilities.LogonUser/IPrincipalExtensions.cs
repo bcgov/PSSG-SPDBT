@@ -123,14 +123,29 @@ namespace Spd.Utilities.LogonUser
             return claim?.Value;
         }
 
-        private static (string?, string?) GetMiddleNames(string? givenNames, string? firstName)
+        public static (string?, string?) GetMiddleNames(string? gns, string? fn)
         {
-            if (givenNames != null)
+            if (!string.IsNullOrEmpty(gns))
             {
-                if (firstName == null) firstName = string.Empty;
-                string str = givenNames.Replace(firstName, string.Empty).Trim();
-                var strs = str.Split(' ');
-                return (strs.Length > 0 ? strs[0] : null, strs.Length > 1 ? strs[1] : null);
+                string givenNames = gns.Trim();
+                string? firstName = string.IsNullOrEmpty(fn) ? null : fn.Trim();
+                if (string.IsNullOrEmpty(firstName))
+                {
+                    return (givenNames, null);
+                }
+                else if (givenNames.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return (null, null);
+                }
+                else
+                {
+                    string temp = firstName + " ";
+                    int pos = givenNames.IndexOf(temp, StringComparison.InvariantCultureIgnoreCase);
+                    if (pos == -1) return (givenNames, null);
+                    if (pos == 0) return (givenNames.Substring(temp.Length, givenNames.Length - temp.Length).Trim(), null);
+                    else return (givenNames, null);
+                }
+
             }
             return (null, null);
         }
