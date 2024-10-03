@@ -814,21 +814,25 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		const securityAlarmInstaller = formValue[WorkerCategoryTypeCode.SecurityAlarmInstaller as unknown as CategoryKey];
 
 		switch (categoryCode) {
-			case WorkerCategoryTypeCode.Locksmith:
+			case WorkerCategoryTypeCode.Locksmith: {
 				const locksmith = formValue[WorkerCategoryTypeCode.Locksmith as unknown as CategoryKey];
 				this.showLocksmithMessage = locksmith;
 				break;
-			case WorkerCategoryTypeCode.SecurityGuard:
+			}
+			case WorkerCategoryTypeCode.SecurityGuard: {
 				const securityGuard = formValue[WorkerCategoryTypeCode.SecurityGuard as unknown as CategoryKey];
 				this.showSecurityGuardMessage = securityGuard;
 				break;
-			case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+			}
+			case WorkerCategoryTypeCode.SecurityAlarmInstaller: {
 				this.showSecurityAlarmInstallerMessage = securityAlarmInstaller;
 				break;
-			case WorkerCategoryTypeCode.SecurityAlarmResponse:
+			}
+			case WorkerCategoryTypeCode.SecurityAlarmResponse: {
 				const securityAlarmResponse = formValue[WorkerCategoryTypeCode.SecurityAlarmResponse as unknown as CategoryKey];
 				this.showSecurityAlarmResponseMessage = securityAlarmResponse;
 				break;
+			}
 		}
 
 		if (securityGuard || securityAlarmInstaller) {

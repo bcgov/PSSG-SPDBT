@@ -346,7 +346,7 @@ export class ApplicationService {
 
 		return this.licenceService
 			.apiBizsBizIdLicencesGet({
-				bizId: this.authUserBceidService.bceidUserProfile?.bizId!,
+				bizId,
 			})
 			.pipe(
 				switchMap((basicLicenceResps: Array<LicenceBasicResponse>) => {

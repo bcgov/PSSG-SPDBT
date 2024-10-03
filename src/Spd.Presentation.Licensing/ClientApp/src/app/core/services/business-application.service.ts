@@ -1942,7 +1942,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
 		let categorySecurityGuardFormGroup: any = { isInclude: false };
-		let categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
+		const categoryPrivateInvestigatorFormGroup: any = { isInclude: false };
 
 		if (categoryData.ArmouredCarGuard) {
 			categoryArmouredCarGuardFormGroup = {

@@ -322,8 +322,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	isStepIdentificationComplete(): boolean {
-		const updateNameOrGenderChange = this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ?? false;
-
 		if (this.authenticationService.isLoggedIn()) {
 			// console.debug(
 			// 	'isStepIdentificationComplete',
