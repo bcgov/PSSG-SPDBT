@@ -143,7 +143,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 					<app-licence-list-expired [expiredLicences]="expiredLicences"></app-licence-list-expired>
 
 					<div class="mt-4">
-						<app-alert type="info" [showBorder]="false" icon="">
+						<app-alert type="info" icon="info">
 							Do you have a security licence, body armour permit, or armoured vehicle permit but it's not showing here?
 
 							<a
