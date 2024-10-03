@@ -13,6 +13,7 @@ import {
 import { ConfigService } from '@app/core/services/config.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';
@@ -55,6 +56,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						[applicationsDataSource]="applicationsDataSource"
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
+						(payApplication)="onPay($event)"
 					></app-applications-list-current>
 
 					<app-licence-active-swl-permit-licences
@@ -190,6 +192,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private configService: ConfigService,
+		private optionsPipe: OptionsPipe,
 		private commonApplicationService: ApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private workerApplicationService: WorkerApplicationService
@@ -427,6 +430,13 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				break;
 			}
 		}
+	}
+
+	onPay(appl: MainApplicationResponse): void {
+		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'WorkerLicenceTypes');
+		const paymentDesc = `Payment for ${serviceTypeCodeDesc} application`;
+
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(appl.licenceAppId!, paymentDesc);
 	}
 
 	onUpdate(licence: MainLicenceResponse): void {

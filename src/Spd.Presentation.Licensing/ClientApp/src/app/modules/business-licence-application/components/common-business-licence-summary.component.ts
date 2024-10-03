@@ -309,16 +309,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
 										<div class="row mt-0">
 											<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
-												<!-- <ng-container *ngFor="let member of membersWithSwlList; let i = index">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">
-															Member <span *ngIf="membersWithSwlList.length > 1"> #{{ i + 1 }}</span>
-														</div>
-														<div class="summary-text-data">
-															{{ member.licenceHolderName }} - {{ member.licenceNumber }}
-														</div>
-													</div> -->
-
 												<div class="col-xl-4 col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Members</div>
 													<div class="summary-text-data">
@@ -329,8 +319,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 														</ul>
 													</div>
 												</div>
-
-												<!-- </ng-container> -->
 											</ng-container>
 											<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
 										</div>
@@ -339,17 +327,6 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<div class="text-minor-heading">Members who require Criminal Record Checks</div>
 										<div class="row mt-0">
 											<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
-												<!-- <ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">
-															Member <span *ngIf="membersWithoutSwlList.length > 1"> #{{ i + 1 }}</span>
-														</div>
-														<div class="summary-text-data">
-															{{ member.licenceHolderName }}
-														</div>
-													</div>
-												</ng-container> -->
-
 												<div class="col-xl-4 col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">Members</div>
 													<div class="summary-text-data">
@@ -544,7 +521,7 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 				list.push(key as WorkerCategoryTypeCode);
 			}
 		}
-		return list;
+		return list.sort();
 	}
 	get isAnyDocuments(): boolean {
 		return this.showArmouredCarGuard || this.showSecurityGuard;

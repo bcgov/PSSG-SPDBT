@@ -13,6 +13,7 @@ import {
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
@@ -81,6 +82,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						[applicationsDataSource]="applicationsDataSource"
 						[isControllingMemberWarning]="isControllingMemberWarning"
 						(resumeApplication)="onResume($event)"
+						(payApplication)="onPay($event)"
 					></app-applications-list-current>
 
 					<app-business-licence-list-current
@@ -142,6 +144,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private configService: ConfigService,
+		private optionsPipe: OptionsPipe,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
@@ -257,6 +260,13 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				take(1)
 			)
 			.subscribe();
+	}
+
+	onPay(appl: MainApplicationResponse): void {
+		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'WorkerLicenceTypes');
+		const paymentDesc = `Payment for ${serviceTypeCodeDesc} application`;
+
+		this.commonApplicationService.payNowBusinessLicence(appl.licenceAppId!, paymentDesc);
 	}
 
 	onReplace(licence: MainLicenceResponse): void {
