@@ -1,12 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-      <NoWarn>CA1008;CA1707,CS8981;</NoWarn>
-  </PropertyGroup>	
-    
-  <ItemGroup>
-    <None Remove="Connected Services\OData Service\OData ServiceCsdl.xml" />
-  </ItemGroup>
+		<PropertyGroup>
+				<NoWarn>CA1008;CA1707;CS8981</NoWarn>
+		</PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Connected Services\OData Service\OData ServiceCsdl.xml" />

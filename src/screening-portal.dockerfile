@@ -5,6 +5,11 @@ RUN mkdir /tools
 RUN dotnet tool install --tool-path /tools dotnet-trace
 RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
+RUN mkdir /tools && \
+    dotnet tool install --tool-path /tools dotnet-trace && \
+    dotnet tool install --tool-path /tools dotnet-counters && \
+    dotnet tool install --tool-path /tools dotnet-dump && \
+    dotnet tool install --tool-path /tools dotnet-monitor
 
 WORKDIR /src
 
@@ -34,6 +39,8 @@ RUN npm run lint
 RUN npm run build -- --configuration production
 
 FROM registry.access.redhat.com/ubi8/dotnet-80-runtime:8.0 AS final
+ARG VERSION
+ENV VERSION=$VERSION
 
 # artifactory self cleanup
 LABEL com.jfrog.artifactory.retention.maxCount="5"
