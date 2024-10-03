@@ -1,10 +1,13 @@
 ﻿using AutoFixture;
 using FluentValidation.TestHelper;
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace Spd.Manager.Licence.UnitTest;
 public class BizLicAppValidationTest
 {
     private readonly IFixture fixture;
+    private readonly IConfiguration config;
 
     public BizLicAppValidationTest()
     {
@@ -13,14 +16,30 @@ public class BizLicAppValidationTest
         fixture.Customize<DateOnly>(composer => composer.FromFactory<DateTime>(DateOnly.FromDateTime));
         fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        config = CreateConfiguration();
     }
 
     [Fact]
     public void BizLicAppUpsertRequestValidator_ShouldPass()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+
+        var result = validator.TestValidate(model);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+    [Fact]
+    public void BizLicAppUpsertRequestValidator_With_Locksmith_SecurityAlarmInstaller_ShouldPass()
+    {
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
+
+        var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+        model.CategoryCodes = new List<WorkerCategoryTypeCode>()
+        {
+            WorkerCategoryTypeCode.Locksmith,
+            WorkerCategoryTypeCode.SecurityAlarmInstaller
+        };
 
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
@@ -29,7 +48,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequestValidator_WithEmptyFields_ShouldPass()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
@@ -44,7 +63,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppSubmitRequestValidator_ShouldPass()
     {
-        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppSubmitRequest>();
 
@@ -55,7 +74,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppSubmitRequestValidator_WithEmptyFields_ShouldPass()
     {
-        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator();
+        BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppSubmitRequest>();
 
@@ -72,7 +91,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void ApplicantContactInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.ApplicantContactInfo.GivenName = string.Empty;
@@ -90,10 +109,10 @@ public class BizLicAppValidationTest
     [Fact]
     public void CategoryCodes_WhenHasWrongSet_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
-        model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.SecurityAlarmInstaller };
+        model.CategoryCodes = new List<WorkerCategoryTypeCode>() { WorkerCategoryTypeCode.PrivateInvestigator, WorkerCategoryTypeCode.PrivateInvestigatorUnderSupervision };
 
         var result = validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(r => r.CategoryCodes);
@@ -102,7 +121,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequest_DocumentInfos_WithoutMandatoryDocuments_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
         model.DocumentInfos = null;
@@ -114,7 +133,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void BizLicAppUpsertRequest_DocumentInfos_WhenExceedsMaxAllowed_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
@@ -182,7 +201,7 @@ public class BizLicAppValidationTest
     [Fact]
     public void PrivateInvestigatorSwlInfo_WhenHasEmptyFields_ShouldThrowException()
     {
-        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator();
+        BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
 
@@ -256,5 +275,38 @@ public class BizLicAppValidationTest
         }
 
         return (T)Convert.ChangeType(model, typeof(T));
+    }
+    private static IConfiguration CreateConfiguration()
+    {
+        var json = @"
+        {
+            ""InvalidWorkerLicenceCategoryMatrix"": {
+                ""ArmouredCarGuard"": [""ArmouredCarGuard"", ""SecurityGuardUnderSupervision""],
+                ""BodyArmourSales"": [""SecurityGuardUnderSupervision"", ""BodyArmourSales""],
+                ""ClosedCircuitTelevisionInstaller"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""ClosedCircuitTelevisionInstaller"", ""SecurityGuardUnderSupervision""],
+                ""ElectronicLockingDeviceInstaller"": [""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""SecurityGuardUnderSupervision""],
+                ""FireInvestigator"": [""PrivateInvestigatorUnderSupervision"", ""PrivateInvestigator"", ""FireInvestigator"", ""SecurityGuardUnderSupervision""],
+                ""Locksmith"": [""ElectronicLockingDeviceInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""SecurityGuardUnderSupervision""],
+                ""LocksmithUnderSupervision"": [""ElectronicLockingDeviceInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""SecurityGuardUnderSupervision""],
+                ""PrivateInvestigator"": [""PrivateInvestigatorUnderSupervision"", ""PrivateInvestigator"", ""FireInvestigator"", ""SecurityGuardUnderSupervision""],
+                ""PrivateInvestigatorUnderSupervision"": [""PrivateInvestigatorUnderSupervision"", ""PrivateInvestigator"", ""FireInvestigator"", ""SecurityGuardUnderSupervision""],
+                ""SecurityAlarmInstaller"": [""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityAlarmSales"", ""ClosedCircuitTelevisionInstaller"", ""SecurityGuardUnderSupervision""],
+                ""SecurityAlarmInstallerUnderSupervision"": [""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityAlarmSales"", ""ClosedCircuitTelevisionInstaller"", ""SecurityGuardUnderSupervision""],
+                ""SecurityAlarmMonitor"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityGuardUnderSupervision"", ""SecurityAlarmSales"", ""SecurityGuard""],
+                ""SecurityAlarmResponse"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityGuardUnderSupervision"", ""SecurityGuard""],
+                ""SecurityAlarmSales"": [""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmSales"", ""SecurityGuardUnderSupervision"", ""SecurityGuard""],
+                ""SecurityConsultant"": [""SecurityConsultant"", ""SecurityGuardUnderSupervision""],
+                ""SecurityGuard"": [""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityGuardUnderSupervision"", ""SecurityGuard"", ""SecurityAlarmSales""],
+                ""SecurityGuardUnderSupervision"": [""ArmouredCarGuard"", ""ElectronicLockingDeviceInstaller"", ""SecurityAlarmInstallerUnderSupervision"", ""SecurityAlarmInstaller"", ""SecurityAlarmMonitor"", ""SecurityAlarmResponse"", ""SecurityAlarmSales"", ""ClosedCircuitTelevisionInstaller"", ""LocksmithUnderSupervision"", ""Locksmith"", ""PrivateInvestigator"", ""PrivateInvestigatorUnderSupervision"", ""FireInvestigator"", ""SecurityConsultant"", ""SecurityGuardUnderSupervision"", ""SecurityGuard"", ""BodyArmourSales""]
+            }
+        }";
+
+
+        var builder = new ConfigurationBuilder()
+            .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+            
+
+
+        return builder.Build();
     }
 }
