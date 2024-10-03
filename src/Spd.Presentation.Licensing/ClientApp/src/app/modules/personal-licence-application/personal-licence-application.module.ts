@@ -101,19 +101,11 @@ import { PermitUpdateReceivedSuccessComponent } from './components/shared/permit
 import { StepPermitPhysicalCharacteristicsComponent } from './components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitReprintComponent } from './components/shared/permit-wizard-step-components/step-permit-reprint.component';
 import { LicenceCategoryArmouredCarGuardComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-armoured-car-guard.component';
-import { LicenceCategoryBodyArmourSalesComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-body-armour-sales.component';
-import { LicenceCategoryClosedCircuitTelevisionInstallerComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-closed-circuit-television-installer.component';
-import { LicenceCategoryElectronicLockingDeviceInstallerComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-electronic-locking-device-installer.component';
 import { LicenceCategoryFireInvestigatorComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-fire-investigator.component';
-import { LicenceCategoryLocksmithSupComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-locksmith-sup.component';
 import { LicenceCategoryLocksmithComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-locksmith.component';
 import { LicenceCategoryPrivateInvestigatorSupComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-private-investigator-sup.component';
 import { LicenceCategoryPrivateInvestigatorComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-private-investigator.component';
-import { LicenceCategorySecurityAlarmInstallerSupComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-alarm-installer-sup.component';
 import { LicenceCategorySecurityAlarmInstallerComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-alarm-installer.component';
-import { LicenceCategorySecurityAlarmMonitorComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-alarm-monitor.component';
-import { LicenceCategorySecurityAlarmResponseComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-alarm-response.component';
-import { LicenceCategorySecurityAlarmSalesComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-alarm-sales.component';
 import { LicenceCategorySecurityConsultantComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-consultant.component';
 import { LicenceCategorySecurityGuardSupComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-guard-sup.component';
 import { LicenceCategorySecurityGuardComponent } from './components/shared/worker-licence-wizard-step-components/licence-category-security-guard.component';
@@ -167,19 +159,11 @@ import { LicenceApplicationRoutingModule } from './personal-licence-application-
 		CommonUserProfileLicencePoliceBackgroundComponent,
 		PersonalLicenceApplicationBaseComponent,
 		LicenceCategoryArmouredCarGuardComponent,
-		LicenceCategoryBodyArmourSalesComponent,
-		LicenceCategoryClosedCircuitTelevisionInstallerComponent,
-		LicenceCategoryElectronicLockingDeviceInstallerComponent,
 		LicenceCategoryFireInvestigatorComponent,
 		LicenceCategoryLocksmithComponent,
-		LicenceCategoryLocksmithSupComponent,
 		LicenceCategoryPrivateInvestigatorComponent,
 		LicenceCategoryPrivateInvestigatorSupComponent,
 		LicenceCategorySecurityAlarmInstallerComponent,
-		LicenceCategorySecurityAlarmInstallerSupComponent,
-		LicenceCategorySecurityAlarmMonitorComponent,
-		LicenceCategorySecurityAlarmResponseComponent,
-		LicenceCategorySecurityAlarmSalesComponent,
 		LicenceCategorySecurityConsultantComponent,
 		LicenceCategorySecurityGuardComponent,
 		LicenceCategorySecurityGuardSupComponent,

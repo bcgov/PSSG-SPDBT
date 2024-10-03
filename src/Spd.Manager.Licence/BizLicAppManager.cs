@@ -409,9 +409,9 @@ internal class BizLicAppManager :
 
         if (request.UseDogs == true &&
             (newFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) +
-            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 1))
+            existingFileInfos.Count(f => f.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizSecurityDogCertificate) > 10))
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "No more than 1 dog certificate is allowed.");
+            throw new ApiException(HttpStatusCode.BadRequest, "Maximum of 10 documents allowed for dog certificate was exceeded.");
         }
 
         if (request.CategoryCodes.Contains(WorkerCategoryTypeCode.ArmouredCarGuard) &&

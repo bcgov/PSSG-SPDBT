@@ -1,34 +1,51 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ApplicationTypeCode, LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BusinessCategoryTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
+import {
+	BusinessLicenceCategoryTypes,
+	SelectOptions,
+	WorkerCategoryTypes,
+} from '@app/core/code-types/model-desc.models';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
+import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 @Component({
 	selector: 'app-step-business-licence-category',
 	template: `
 		<app-step-section [title]="title" [subtitle]="infoTitle">
-			<div class="row">
-				<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
-					<form [formGroup]="form" novalidate>
-						<div class="row mb-4">
-							<ng-container *ngFor="let item of businessCategoryTypes; let i = index">
-								<div class="col-xxl-4 col-xl-4 col-lg-6 col-md-12 col-sm-12">
-									<mat-checkbox [formControlName]="item.code" (click)="onCategoryChange(item.code)">
-										{{ item.desc }}
-									</mat-checkbox>
-								</div>
-							</ng-container>
+			<form [formGroup]="form" novalidate>
+				<div class="row">
+					<div class="offset-xxl-2 col-xxl-8 offset-xl-2 col-xl-8 col-lg-12 mx-auto">
+						<div class="row">
+							<div class="col-md-8 col-sm-12">
+								<mat-form-field>
+									<mat-label>Category</mat-label>
+									<mat-select formControlName="categoryCode">
+										<mat-option *ngFor="let item of validCategoryList; let i = index" [value]="item.code">
+											{{ item.desc }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+								<mat-error class="mat-option-error" *ngIf="isDirtyAndInvalid">
+									At least one category must be added. Click 'Add Category' after selection.
+								</mat-error>
+							</div>
+							<div class="col-md-4 col-sm-12">
+								<button mat-stroked-button color="primary" class="large my-2" (click)="onAddCategory()">
+									Add Category
+								</button>
+							</div>
 						</div>
-						<mat-error
-							class="mat-option-error"
-							*ngIf="(form.dirty || form.touched) && form.invalid && form.hasError('atLeastOneTrue')"
-							>At least one option must be selected</mat-error
-						>
+					</div>
+				</div>
 
+				<div class="row">
+					<div class="col-xxl-10 col-xl-10 col-lg-12 mx-auto">
 						<div class="mt-2" *ngIf="showInsurance">
 							<app-alert type="warning" icon="warning">
 								Security businesses are required to carry and maintain general liability insurance in an amount not less
@@ -74,6 +91,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 											[hideToggle]="blockArmouredCarGuard"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
+											[disabled]="blockArmouredCarGuard"
 											[expanded]="expandArmouredCarGuard"
 										>
 											<mat-expansion-panel-header>
@@ -89,6 +107,18 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 													>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
+											<div class="row my-3">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.ArmouredCarGuard)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
 
 											<app-business-category-amoured-car-guard></app-business-category-amoured-car-guard>
 										</mat-expansion-panel>
@@ -96,45 +126,157 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 								</div>
 							</ng-container>
 
-							<ng-container *ngIf="this.PrivateInvestigator.value && !isBusinessLicenceSoleProprietor">
-								<div class="row">
-									<div class="col-12">
-										<mat-expansion-panel
-											[hideToggle]="blockPrivateInvestigator"
-											class="my-3 w-100"
-											[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
-											[expanded]="expandPrivateInvestigator"
-										>
-											<mat-expansion-panel-header>
-												<mat-panel-title>
-													<mat-icon
-														class="error-icon"
-														color="warn"
-														matTooltip="One or more errors exist in this category"
-														*ngIf="
-															categoryPrivateInvestigatorFormGroup?.touched &&
-															categoryPrivateInvestigatorFormGroup?.invalid
-														"
-														>error</mat-icon
-													>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
-												</mat-panel-title>
-											</mat-expansion-panel-header>
-
-											<app-business-category-private-investigator></app-business-category-private-investigator>
-										</mat-expansion-panel>
-									</div>
-								</div>
+							<ng-container *ngIf="showBodyArmourSales">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.BodyArmourSales"
+									[blockCategory]="blockBodyArmourSales"
+									[expandCategory]="expandBodyArmourSales"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
 							</ng-container>
 
-							<ng-container *ngIf="this.SecurityGuard.value">
+							<ng-container *ngIf="showClosedCircuitTelevisionInstaller">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.ClosedCircuitTelevisionInstaller"
+									[blockCategory]="blockClosedCircuitTelevisionInstaller"
+									[expandCategory]="expandClosedCircuitTelevisionInstaller"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showElectronicLockingDeviceInstaller">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.ElectronicLockingDeviceInstaller"
+									[blockCategory]="blockElectronicLockingDeviceInstaller"
+									[expandCategory]="expandElectronicLockingDeviceInstaller"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showLocksmith">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.Locksmith"
+									[blockCategory]="blockLocksmith"
+									[expandCategory]="expandLocksmith"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showPrivateInvestigator">
+								<ng-container *ngIf="isBusinessLicenceSoleProprietor; else notBusinessLicenceSoleProprietor">
+									<app-licence-category-panel-simple
+										[categoryTypeCode]="workerCategoryTypeCodes.PrivateInvestigator"
+										[blockCategory]="blockPrivateInvestigator"
+										[expandCategory]="expandPrivateInvestigator"
+										(removeCategory)="onRemove($event)"
+										(deselectCategory)="onDeselect($event)"
+									></app-licence-category-panel-simple>
+								</ng-container>
+								<ng-template #notBusinessLicenceSoleProprietor>
+									<div class="row">
+										<div class="col-12">
+											<mat-expansion-panel
+												[hideToggle]="blockPrivateInvestigator"
+												class="my-3 w-100"
+												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+												[disabled]="blockPrivateInvestigator"
+												[expanded]="expandPrivateInvestigator"
+											>
+												<mat-expansion-panel-header>
+													<mat-panel-title>
+														<mat-icon
+															class="error-icon"
+															color="warn"
+															matTooltip="One or more errors exist in this category"
+															*ngIf="
+																categoryPrivateInvestigatorFormGroup?.touched &&
+																categoryPrivateInvestigatorFormGroup?.invalid
+															"
+															>error</mat-icon
+														>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+													</mat-panel-title>
+												</mat-expansion-panel-header>
+												<div class="row my-3">
+													<div class="col-12 mx-auto">
+														<button
+															mat-stroked-button
+															class="xlarge w-auto float-end"
+															aria-label="Remove category"
+															(click)="onRemove(workerCategoryTypeCodes.PrivateInvestigator)"
+														>
+															<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+														</button>
+													</div>
+												</div>
+
+												<app-business-category-private-investigator></app-business-category-private-investigator>
+											</mat-expansion-panel>
+										</div>
+									</div>
+								</ng-template>
+							</ng-container>
+
+							<ng-container *ngIf="showSecurityAlarmInstaller">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmInstaller"
+									[blockCategory]="blockSecurityAlarmInstaller"
+									[expandCategory]="expandSecurityAlarmInstaller"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showSecurityAlarmMonitor">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmMonitor"
+									[blockCategory]="blockSecurityAlarmMonitor"
+									[expandCategory]="expandSecurityAlarmMonitor"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showSecurityAlarmResponse">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmResponse"
+									[blockCategory]="blockSecurityAlarmResponse"
+									[expandCategory]="expandSecurityAlarmResponse"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showSecurityAlarmSales">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityAlarmSales"
+									[blockCategory]="blockSecurityAlarmSales"
+									[expandCategory]="expandSecurityAlarmSales"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showSecurityConsultant">
+								<app-licence-category-panel-simple
+									[categoryTypeCode]="workerCategoryTypeCodes.SecurityConsultant"
+									[blockCategory]="blockSecurityConsultant"
+									[expandCategory]="expandSecurityConsultant"
+									(removeCategory)="onRemove($event)"
+									(deselectCategory)="onDeselect($event)"
+								></app-licence-category-panel-simple>
+							</ng-container>
+
+							<ng-container *ngIf="showSecurityGuard">
 								<div class="row">
-									<div class="col-12">
-										<mat-expansion-panel
-											[hideToggle]="blockSecurityGuard"
-											class="my-3 w-100"
-											[ngClass]="{ 'disabled-pointer': blockSecurityGuard }"
-											[expanded]="expandSecurityGuard"
-										>
+									<div
+										class="col-md-12 col-sm-12"
+										[ngClass]="blockSecurityGuard ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
+									>
+										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
 													<mat-icon
@@ -148,8 +290,32 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 
+											<div class="row my-3" *ngIf="!blockSecurityGuard">
+												<div class="col-12 mx-auto">
+													<button
+														mat-stroked-button
+														class="xlarge w-auto float-end"
+														aria-label="Remove category"
+														(click)="onRemove(workerCategoryTypeCodes.SecurityGuard)"
+													>
+														<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove this Category
+													</button>
+												</div>
+											</div>
+
 											<app-business-category-security-guard></app-business-category-security-guard>
 										</mat-expansion-panel>
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockSecurityGuard">
+										<button
+											mat-stroked-button
+											class="large delete-button my-lg-3"
+											aria-label="Remove category"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityGuard)"
+										>
+											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
+										</button>
 									</div>
 								</div>
 							</ng-container>
@@ -176,9 +342,9 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 							></app-file-upload>
 							<mat-error class="mat-option-error" *ngIf="showInsuranceError">This is required</mat-error>
 						</div>
-					</form>
+					</div>
 				</div>
-			</div>
+			</form>
 		</app-step-section>
 	`,
 	styles: [
@@ -200,9 +366,11 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	animations: [showHideTriggerSlideAnimation],
 })
 export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChildStepperStepComponent {
+	isDirtyAndInvalid = false;
+
 	form = this.businessApplicationService.categoryFormGroup;
 
-	isUpdate!: boolean;
+	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
 	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
@@ -219,14 +387,33 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	showSecurityGuardMessage = false;
 
 	expandArmouredCarGuard = false;
+	expandBodyArmourSales = false;
+	expandClosedCircuitTelevisionInstaller = false;
+	expandElectronicLockingDeviceInstaller = false;
+	expandLocksmith = false;
 	expandPrivateInvestigator = false;
 	expandSecurityGuard = false;
+	expandSecurityAlarmInstaller = false;
+	expandSecurityAlarmMonitor = false;
+	expandSecurityAlarmResponse = false;
+	expandSecurityAlarmSales = false;
+	expandSecurityConsultant = false;
 
 	blockArmouredCarGuard = false;
+	blockBodyArmourSales = false;
+	blockClosedCircuitTelevisionInstaller = false;
+	blockElectronicLockingDeviceInstaller = false;
+	blockLocksmith = false;
 	blockPrivateInvestigator = false;
+	blockSecurityAlarmInstaller = false;
+	blockSecurityAlarmMonitor = false;
+	blockSecurityAlarmResponse = false;
+	blockSecurityAlarmSales = false;
+	blockSecurityConsultant = false;
 	blockSecurityGuard = false;
 
-	originalCategoryCodes: Array<any> | null = [];
+	originalCategoryCodes: Array<WorkerCategoryTypeCode> | null = [];
+	availableCategoryCodes: Array<WorkerCategoryTypeCode> = [];
 
 	title = 'Which categories of business licence are you applying for?';
 	infoTitle = '';
@@ -244,10 +431,13 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private businessApplicationService: BusinessApplicationService) {}
+	constructor(
+		private dialog: MatDialog,
+		private optionsPipe: OptionsPipe,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	ngOnInit(): void {
-		this.isUpdate = this.businessApplicationService.isUpdate(this.applicationTypeCode);
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = this.title_new;
@@ -266,45 +456,285 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 		}
 
-		this.initialSetupCategories();
-
 		if (this.isBusinessLicenceSoleProprietor) {
 			const businessInformationData = this.businessApplicationService.businessInformationFormGroup.value;
 			this.originalCategoryCodes = businessInformationData.soleProprietorCategoryCodes;
-			this.soleProprietorCategoryChange();
+			this.availableCategoryCodes = businessInformationData.soleProprietorCategoryCodes ?? [];
 		} else {
-			const originalLicenceData = this.businessApplicationService.originalBusinessLicenceFormGroup.value;
+			const originalLicenceData = this.businessApplicationService.originalLicenceFormGroup.value;
 			this.originalCategoryCodes = originalLicenceData.originalCategoryCodes;
-			this.businessCategoryTypes = BusinessCategoryTypes;
+			this.businessCategoryTypes = BusinessLicenceCategoryTypes;
+			this.availableCategoryCodes = BusinessLicenceCategoryTypes.map(
+				(item: SelectOptions) => item.code as WorkerCategoryTypeCode
+			);
+		}
+
+		this.validCategoryList = this.businessApplicationService.getValidBlCategoryList(
+			this.categoryList,
+			this.availableCategoryCodes
+		);
+
+		this.setupCategoryMessages();
+
+		this.setupInitialExpansionPanel();
+	}
+
+	onAddCategory(): void {
+		const categoryCode = this.form.get('categoryCode')?.value;
+
+		if (categoryCode) {
+			switch (categoryCode) {
+				case WorkerCategoryTypeCode.ArmouredCarGuard:
+					// if (!this.blockArmouredCarGuard)
+					this.expandArmouredCarGuard = true;
+					this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: true });
+					break;
+				case WorkerCategoryTypeCode.PrivateInvestigator:
+					// if (!this.blockPrivateInvestigator)
+					this.expandPrivateInvestigator = true;
+					this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: true });
+					break;
+				case WorkerCategoryTypeCode.SecurityGuard:
+					this.expandSecurityGuard = true;
+					this.categorySecurityGuardFormGroup.patchValue({ isInclude: true });
+					break;
+				case WorkerCategoryTypeCode.BodyArmourSales:
+					this.expandBodyArmourSales = true;
+					break;
+				case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+					this.expandClosedCircuitTelevisionInstaller = true;
+					break;
+				case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+					this.expandElectronicLockingDeviceInstaller = true;
+					break;
+				case WorkerCategoryTypeCode.Locksmith:
+					this.expandLocksmith = true;
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+					this.expandSecurityAlarmInstaller = true;
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+					this.expandSecurityAlarmMonitor = true;
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmResponse:
+					this.expandSecurityAlarmResponse = true;
+					break;
+				case WorkerCategoryTypeCode.SecurityAlarmSales:
+					this.expandSecurityAlarmSales = true;
+					break;
+				case WorkerCategoryTypeCode.SecurityConsultant:
+					this.expandSecurityConsultant = true;
+					break;
+			}
+
+			this.form.patchValue({ [categoryCode]: true });
+
+			this.validCategoryList = this.businessApplicationService.getValidBlCategoryList(
+				this.categoryList,
+				this.availableCategoryCodes
+			);
+
+			this.setupCategoryMessage(categoryCode);
+
+			this.form.patchValue({ categoryCode: null });
+			this.isDirtyAndInvalid = false;
+
+			if (!this.isBusinessLicenceSoleProprietor) {
+				this.checkInsuranceRequirements();
+			}
 		}
 	}
 
-	onCategoryChange(changedItem: string, preventDisable: boolean = false): void {
-		const formValue = this.form.value;
+	onDeselect(code: WorkerCategoryTypeCode) {
+		this.onRemove(code, true);
+	}
+
+	onRemove(code: WorkerCategoryTypeCode, justDeselect = false) {
+		const codeDesc = this.optionsPipe.transform(code, 'WorkerCategoryTypes');
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: `Are you sure you want to remove the ${codeDesc} category?`,
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					switch (code) {
+						case WorkerCategoryTypeCode.ArmouredCarGuard:
+							if (!justDeselect) {
+								this.categoryArmouredCarGuardFormGroup.reset();
+								this.blockArmouredCarGuard = false;
+							}
+							this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
+							break;
+						case WorkerCategoryTypeCode.BodyArmourSales:
+							if (!justDeselect) {
+								this.blockBodyArmourSales = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
+							if (!justDeselect) {
+								this.blockClosedCircuitTelevisionInstaller = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
+							if (!justDeselect) {
+								this.blockElectronicLockingDeviceInstaller = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.Locksmith:
+							if (!justDeselect) {
+								this.blockLocksmith = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.PrivateInvestigator:
+							if (!justDeselect) {
+								this.categoryPrivateInvestigatorFormGroup.reset();
+								this.blockPrivateInvestigator = false;
+							}
+							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
+							break;
+						case WorkerCategoryTypeCode.SecurityGuard:
+							if (!justDeselect) {
+								this.categorySecurityGuardFormGroup.reset();
+								this.blockSecurityGuard = false;
+							}
+							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
+							break;
+						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+							if (!justDeselect) {
+								this.blockSecurityAlarmInstaller = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.SecurityAlarmMonitor:
+							if (!justDeselect) {
+								this.blockSecurityAlarmMonitor = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.SecurityAlarmResponse:
+							if (!justDeselect) {
+								this.blockSecurityAlarmResponse = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.SecurityAlarmSales:
+							if (!justDeselect) {
+								this.blockSecurityAlarmSales = false;
+							}
+							break;
+						case WorkerCategoryTypeCode.SecurityConsultant:
+							if (!justDeselect) {
+								this.blockSecurityConsultant = false;
+							}
+							break;
+					}
+
+					this.form.patchValue({ [code]: false });
+
+					this.validCategoryList = this.businessApplicationService.getValidBlCategoryList(
+						this.categoryList,
+						this.availableCategoryCodes
+					);
+					this.setupCategoryMessage(code);
+					this.isDirtyAndInvalid = false;
+				}
+			});
+	}
+
+	get categoryList(): Array<string> {
+		const formValue = this.form.getRawValue();
 
 		type CategoryKey = keyof typeof this.businessApplicationService.categoryFormGroup;
 
-		const armouredCarGuard = formValue[WorkerCategoryTypeCode.ArmouredCarGuard as unknown as CategoryKey];
-		const privateInvestigator = formValue[WorkerCategoryTypeCode.PrivateInvestigator as unknown as CategoryKey];
-		const securityGuard = formValue[WorkerCategoryTypeCode.SecurityGuard as unknown as CategoryKey];
+		const businessLicenceCategoryTypes = Object.values(BusinessLicenceCategoryTypes);
+		return businessLicenceCategoryTypes
+			.filter((item: SelectOptions) => {
+				const catItem = formValue[item.code as unknown as CategoryKey];
+				return !!catItem;
+			})
+			.map((option: SelectOptions) => option.code);
+	}
 
-		switch (changedItem) {
-			case WorkerCategoryTypeCode.ArmouredCarGuard:
-				this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: armouredCarGuard });
-				break;
-			case WorkerCategoryTypeCode.SecurityGuard:
-				this.categorySecurityGuardFormGroup.patchValue({ isInclude: securityGuard });
-				break;
-			case WorkerCategoryTypeCode.PrivateInvestigator:
-				this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: privateInvestigator });
-				break;
+	private setupInitialExpansionPanel(): void {
+		if (this.isUpdate) {
+			if (this.showArmouredCarGuard) {
+				this.blockArmouredCarGuard = true;
+			}
+			if (this.showBodyArmourSales) {
+				this.blockBodyArmourSales = true;
+			}
+			if (this.showClosedCircuitTelevisionInstaller) {
+				this.blockClosedCircuitTelevisionInstaller = true;
+			}
+			if (this.showElectronicLockingDeviceInstaller) {
+				this.blockElectronicLockingDeviceInstaller = true;
+			}
+			if (this.showLocksmith) {
+				this.blockLocksmith = true;
+			}
+			if (this.showPrivateInvestigator) {
+				this.blockPrivateInvestigator = true;
+			}
+			if (this.showSecurityAlarmInstaller) {
+				this.blockSecurityAlarmInstaller = true;
+			}
+			if (this.showSecurityConsultant) {
+				this.blockSecurityConsultant = true;
+			}
+			if (this.showSecurityAlarmMonitor) {
+				this.blockSecurityAlarmMonitor = true;
+			}
+			if (this.showSecurityAlarmResponse) {
+				this.blockSecurityAlarmResponse = true;
+			}
+			if (this.showSecurityAlarmSales) {
+				this.blockSecurityAlarmSales = true;
+			}
+			if (this.showSecurityGuard) {
+				this.blockSecurityGuard = true;
+			}
 		}
+	}
 
-		if (!this.isBusinessLicenceSoleProprietor) {
-			this.setupCategory(changedItem, preventDisable);
-
-			this.checkInsuranceRequirements();
-		}
+	get showArmouredCarGuard(): boolean {
+		return !!this.form.get('ArmouredCarGuard')?.value;
+	}
+	get showBodyArmourSales(): boolean {
+		return !!this.form.get('BodyArmourSales')?.value;
+	}
+	get showClosedCircuitTelevisionInstaller(): boolean {
+		return !!this.form.get('ClosedCircuitTelevisionInstaller')?.value;
+	}
+	get showElectronicLockingDeviceInstaller(): boolean {
+		return !!this.form.get('ElectronicLockingDeviceInstaller')?.value;
+	}
+	get showLocksmith(): boolean {
+		return !!this.form.get('Locksmith')?.value;
+	}
+	get showPrivateInvestigator(): boolean {
+		return !!this.form.get('PrivateInvestigator')?.value;
+	}
+	get showSecurityAlarmInstaller(): boolean {
+		return !!this.form.get('SecurityAlarmInstaller')?.value;
+	}
+	get showSecurityConsultant(): boolean {
+		return !!this.form.get('SecurityConsultant')?.value;
+	}
+	get showSecurityGuard(): boolean {
+		return !!this.form.get('SecurityGuard')?.value;
+	}
+	get showSecurityAlarmMonitor(): boolean {
+		return !!this.form.get('SecurityAlarmMonitor')?.value;
+	}
+	get showSecurityAlarmResponse(): boolean {
+		return !!this.form.get('SecurityAlarmResponse')?.value;
+	}
+	get showSecurityAlarmSales(): boolean {
+		return !!this.form.get('SecurityAlarmSales')?.value;
 	}
 
 	isFormValid(): boolean {
@@ -346,11 +776,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		return valid1 && valid2 && valid3 && valid4 && !this.showInsuranceError;
 	}
 
-	isSelected(option: string): boolean {
-		const item = this.form.get(option) as FormControl;
-		return item.value;
-	}
-
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;
 
@@ -374,110 +799,45 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
-	private initialSetupCategories(): void {
-		const formValue = this.form.value;
-
-		if (!this.isBusinessLicenceSoleProprietor) {
-			if (formValue.Locksmith) {
-				this.setupCategory(WorkerCategoryTypeCode.Locksmith);
-			}
-
-			if (formValue.SecurityGuard) {
-				this.setupCategory(WorkerCategoryTypeCode.SecurityGuard);
-			}
-
-			if (formValue.SecurityAlarmInstaller) {
-				this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmInstaller);
-			}
-
-			if (formValue.SecurityAlarmResponse) {
-				this.setupCategory(WorkerCategoryTypeCode.SecurityAlarmResponse);
-			}
-		}
-
-		if (this.isUpdate) {
-			if (this.ArmouredCarGuard.value) {
-				this.blockArmouredCarGuard = true;
-			}
-			if (this.PrivateInvestigator.value) {
-				this.blockPrivateInvestigator = true;
-			}
-			if (this.SecurityGuard.value) {
-				this.blockSecurityGuard = true;
-			}
-		}
+	private setupCategoryMessages(): void {
+		this.setupCategoryMessage(WorkerCategoryTypeCode.Locksmith);
+		this.setupCategoryMessage(WorkerCategoryTypeCode.SecurityGuard);
+		this.setupCategoryMessage(WorkerCategoryTypeCode.SecurityAlarmInstaller);
+		this.setupCategoryMessage(WorkerCategoryTypeCode.SecurityAlarmResponse);
 	}
 
-	private setupCategory(changedItem: string, preventDisable: boolean = false): void {
+	private setupCategoryMessage(categoryCode: WorkerCategoryTypeCode): void {
 		const formValue = this.form.value;
-
 		type CategoryKey = keyof typeof this.businessApplicationService.categoryFormGroup;
 
-		const locksmith = formValue[WorkerCategoryTypeCode.Locksmith as unknown as CategoryKey];
-		const securityAlarmInstaller = formValue[WorkerCategoryTypeCode.SecurityAlarmInstaller as unknown as CategoryKey];
-		const securityAlarmResponse = formValue[WorkerCategoryTypeCode.SecurityAlarmResponse as unknown as CategoryKey];
 		const securityGuard = formValue[WorkerCategoryTypeCode.SecurityGuard as unknown as CategoryKey];
+		const securityAlarmInstaller = formValue[WorkerCategoryTypeCode.SecurityAlarmInstaller as unknown as CategoryKey];
 
-		switch (changedItem) {
-			case WorkerCategoryTypeCode.Locksmith:
+		switch (categoryCode) {
+			case WorkerCategoryTypeCode.Locksmith: {
+				const locksmith = formValue[WorkerCategoryTypeCode.Locksmith as unknown as CategoryKey];
 				this.showLocksmithMessage = locksmith;
-				if (locksmith) {
-					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				}
 				break;
-			case WorkerCategoryTypeCode.SecurityGuard:
+			}
+			case WorkerCategoryTypeCode.SecurityGuard: {
+				const securityGuard = formValue[WorkerCategoryTypeCode.SecurityGuard as unknown as CategoryKey];
 				this.showSecurityGuardMessage = securityGuard;
-				if (securityGuard) {
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-				}
 				break;
-			case WorkerCategoryTypeCode.SecurityAlarmInstaller:
+			}
+			case WorkerCategoryTypeCode.SecurityAlarmInstaller: {
 				this.showSecurityAlarmInstallerMessage = securityAlarmInstaller;
-				if (securityAlarmInstaller) {
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmSales);
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-					this.setAndDisable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-					this.setAndDisable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmSales);
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmResponse);
-					this.unsetAndEnable(WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller);
-					this.unsetAndEnable(WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller);
-				}
 				break;
-			case WorkerCategoryTypeCode.SecurityAlarmResponse:
+			}
+			case WorkerCategoryTypeCode.SecurityAlarmResponse: {
+				const securityAlarmResponse = formValue[WorkerCategoryTypeCode.SecurityAlarmResponse as unknown as CategoryKey];
 				this.showSecurityAlarmResponseMessage = securityAlarmResponse;
-				if (securityAlarmResponse) {
-					this.setAndDisable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-				} else if (!preventDisable) {
-					this.unsetAndEnable(WorkerCategoryTypeCode.SecurityAlarmMonitor);
-				}
 				break;
+			}
 		}
 
 		if (securityGuard || securityAlarmInstaller) {
 			this.showSecurityAlarmResponseMessage = false;
 		}
-	}
-
-	private soleProprietorCategoryChange(): void {
-		if (!this.isBusinessLicenceSoleProprietor) {
-			return;
-		}
-
-		// Need to display all types that are selected and those in the original set of category codes.
-		this.businessCategoryTypes = BusinessCategoryTypes.filter((item: SelectOptions) => {
-			const itemControl = this.form.get(item.code) as FormControl;
-			return itemControl.value || this.originalCategoryCodes?.includes(item.code);
-		});
 	}
 
 	private checkInsuranceRequirements(): void {
@@ -486,24 +846,12 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			return;
 		}
 
-		const hasAdditions = BusinessCategoryTypes.filter((item: SelectOptions) => {
+		const hasAdditions = BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
 			const itemControl = this.form.get(item.code) as FormControl;
-			return itemControl.value && !this.originalCategoryCodes?.includes(item.code);
+			return itemControl.value && !this.originalCategoryCodes?.includes(item.code as WorkerCategoryTypeCode);
 		});
 
 		this.showInsurance = hasAdditions.length > 0;
-	}
-
-	private setAndDisable(itemType: WorkerCategoryTypeCode): void {
-		const item = this.form.get(itemType) as FormControl;
-		item.setValue(true, { emitEvent: false });
-		item.disable({ emitEvent: false });
-	}
-
-	private unsetAndEnable(itemType: WorkerCategoryTypeCode): void {
-		const item = this.form.get(itemType) as FormControl;
-		item.setValue(false, { emitEvent: false });
-		item.enable({ emitEvent: false });
 	}
 
 	get ArmouredCarGuard(): FormControl {
@@ -544,5 +892,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

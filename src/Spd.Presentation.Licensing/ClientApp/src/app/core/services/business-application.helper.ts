@@ -8,7 +8,7 @@ import {
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
-import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationHelper } from '@app/core/services/application.helper';
 import { ConfigService } from '@app/core/services/config.service';
@@ -19,16 +19,6 @@ import { FormGroupValidators } from '@app/core/validators/form-group.validators'
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 
 export abstract class BusinessApplicationHelper extends ApplicationHelper {
-	originalBusinessLicenceFormGroup: FormGroup = this.formBuilder.group({
-		originalApplicationId: new FormControl(null),
-		originalLicenceId: new FormControl(null),
-		originalLicenceNumber: new FormControl(null),
-		originalExpiryDate: new FormControl(null),
-		originalLicenceTermCode: new FormControl(null),
-		originalBizTypeCode: new FormControl(null),
-		originalCategoryCodes: new FormControl(null),
-	});
-
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
 		{
 			noLogoOrBranding: new FormControl(''),
@@ -100,6 +90,8 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 	categoryFormGroup: FormGroup = this.formBuilder.group(
 		{
+			categoryCode: new FormControl(null),
+
 			ArmouredCarGuard: new FormControl(false),
 			BodyArmourSales: new FormControl(false),
 			ClosedCircuitTelevisionInstaller: new FormControl(false),
@@ -112,6 +104,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			SecurityAlarmResponse: new FormControl(false),
 			SecurityAlarmSales: new FormControl(false),
 			SecurityConsultant: new FormControl(false),
+
 			attachments: new FormControl([]),
 		},
 		{ validators: [FormGroupValidators.atLeastOneTrueValidator()] }
@@ -381,6 +374,20 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		super(formBuilder);
 	}
 
+	/**
+	 * Get the valid list of categories based upon the current selections
+	 * @param categoryList
+	 * @returns
+	 */
+	getValidBlCategoryList(categoryList: string[], superset: WorkerCategoryTypeCode[]): SelectOptions<string>[] {
+		return this.getValidCategoryList(
+			this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration,
+			categoryList,
+			true,
+			superset
+		);
+	}
+
 	getDocsToSaveBlobs(businessModelFormValue: any): Array<LicenceDocumentsToSave> {
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
 		const liabilityData = { ...businessModelFormValue.liabilityData };
@@ -469,7 +476,12 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		let dogsAuthorizationData = {};
+		let securityGuardData: any = {
+			useDogs: null,
+			isDogsPurposeDetectionDrugs: null,
+			isDogsPurposeDetectionExplosives: null,
+			isDogsPurposeProtection: null,
+		};
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);
@@ -495,13 +507,15 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const categoryData = { ...businessModelFormValue.categoryData };
 
 		if (categoryData.SecurityGuard) {
-			const categorySecurityGuardFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
-			const isDetectionDrugs = categorySecurityGuardFormGroup.isDogsPurposeDetectionDrugs ?? false;
-			const isDetectionExplosives = categorySecurityGuardFormGroup.isDogsPurposeDetectionExplosives ?? false;
-			const isProtection = categorySecurityGuardFormGroup.isDogsPurposeProtection ?? false;
-			const useDogs = this.utilService.booleanTypeToBoolean(categorySecurityGuardFormGroup.useDogs);
+			const dogsPurposeFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
+			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
+			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
+			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+			const useDogs = this.utilService.booleanTypeToBoolean(
+				businessModelFormValue.categorySecurityGuardFormGroup.useDogs
+			);
 
-			dogsAuthorizationData = {
+			securityGuardData = {
 				useDogs,
 				isDogsPurposeDetectionDrugs: useDogs ? isDetectionDrugs : null,
 				isDogsPurposeDetectionExplosives: useDogs ? isDetectionExplosives : null,
@@ -548,7 +562,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			categoryCodes,
 			documentInfos,
 			privateInvestigatorSwlInfo,
-			dogsAuthorizationData,
+			...securityGuardData,
 		};
 
 		console.debug('[getSaveBodyBase] body returned', body);
