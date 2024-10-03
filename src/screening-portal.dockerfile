@@ -1,10 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-builder
 
 # install diagnostics tools
-RUN mkdir /tools
-RUN dotnet tool install --tool-path /tools dotnet-trace
-RUN dotnet tool install --tool-path /tools dotnet-counters
-RUN dotnet tool install --tool-path /tools dotnet-dump
 RUN mkdir /tools && \
     dotnet tool install --tool-path /tools dotnet-trace && \
     dotnet tool install --tool-path /tools dotnet-counters && \
