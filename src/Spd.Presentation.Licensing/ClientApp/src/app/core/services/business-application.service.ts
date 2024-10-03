@@ -1605,9 +1605,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// if sole proprietor business application, use the 'businessInformation.soleProprietorCategoryCodes'
 			// as the list of available category options
 			const businessInformation = this.businessInformationFormGroup.value;
-			businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
-				categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
-			});
+			if (categoryCodes.length > 0) {
+				// there are already code that are selected
+				businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
+					categoryData[item] = categoryCodes.findIndex((cat: WorkerCategoryTypeCode) => (cat as string) === item) >= 0;
+				});
+			} else {
+				businessInformation.soleProprietorCategoryCodes?.forEach((item: string) => {
+					categoryData[item] = true;
+				});
+			}
 		} else if (associatedLicence) {
 			// if there is an associated licence, use the categories in there as selected
 			// mark the appropriate category types as true
@@ -1642,32 +1649,41 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (categoryData.SecurityGuard) {
 			// If an associatedLicence exists, use the dog data from here
-			if (associatedLicence?.useDogs) {
-				associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
-					const aFile = this.fileUtilService.dummyFile(doc);
-					dogAuthorizationAttachments.push(aFile);
-				});
+			if (associatedLicence) {
+				const useDogs = associatedLicence.useDogs;
+				const useDogsYesNo = this.utilService.booleanToBooleanType(associatedLicence.useDogs);
+
+				if (useDogs) {
+					associatedLicence.dogDocumentInfos?.forEach((doc: Document) => {
+						const aFile = this.fileUtilService.dummyFile(doc);
+						dogAuthorizationAttachments.push(aFile);
+					});
+				}
 
 				categorySecurityGuardFormGroup = {
 					isInclude: true,
-					useDogs: BooleanTypeCode.Yes,
+					useDogs: useDogsYesNo,
 					dogsPurposeFormGroup: {
-						isDogsPurposeDetectionDrugs: associatedLicence?.isDogsPurposeDetectionDrugs ?? null,
-						isDogsPurposeDetectionExplosives: associatedLicence?.isDogsPurposeDetectionExplosives ?? null,
-						isDogsPurposeProtection: associatedLicence?.isDogsPurposeProtection ?? null,
+						isDogsPurposeDetectionDrugs: useDogs ? associatedLicence?.isDogsPurposeDetectionDrugs : null,
+						isDogsPurposeDetectionExplosives: useDogs ? associatedLicence?.isDogsPurposeDetectionExplosives : null,
+						isDogsPurposeProtection: useDogs ? associatedLicence?.isDogsPurposeProtection : null,
 					},
-					attachments: dogAuthorizationAttachments,
+					attachments: useDogs ? dogAuthorizationAttachments : null,
 				};
 			} else {
+				// otherwise, use the dog data from the application
+				const useDogs = businessLicenceAppl.useDogs;
+				const useDogsYesNo = this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs);
+
 				categorySecurityGuardFormGroup = {
 					isInclude: true,
-					useDogs: this.utilService.booleanToBooleanType(businessLicenceAppl.useDogs),
+					useDogs: useDogsYesNo,
 					dogsPurposeFormGroup: {
-						isDogsPurposeDetectionDrugs: businessLicenceAppl?.isDogsPurposeDetectionDrugs ?? null,
-						isDogsPurposeDetectionExplosives: businessLicenceAppl?.isDogsPurposeDetectionExplosives ?? null,
-						isDogsPurposeProtection: businessLicenceAppl?.isDogsPurposeProtection ?? null,
+						isDogsPurposeDetectionDrugs: useDogs ? businessLicenceAppl?.isDogsPurposeDetectionDrugs : null,
+						isDogsPurposeDetectionExplosives: useDogs ? businessLicenceAppl?.isDogsPurposeDetectionExplosives : null,
+						isDogsPurposeProtection: useDogs ? businessLicenceAppl?.isDogsPurposeProtection : null,
 					},
-					attachments: dogAuthorizationAttachments,
+					attachments: useDogs ? dogAuthorizationAttachments : null,
 				};
 			}
 		}
@@ -1732,7 +1748,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid
 			soleProprietorLicenceId: soleProprietorSwlLicence?.licenceId,
 			soleProprietorLicenceAppId: soleProprietorSwlLicence?.licenceAppId,
-			soleProprietorCategoryCodes: null,
+			soleProprietorCategoryCodes: soleProprietorSwlLicence?.categoryCodes,
 			soleProprietorLicenceHolderName: soleProprietorSwlLicence?.licenceHolderName,
 			soleProprietorLicenceNumber: soleProprietorSwlLicence?.licenceNumber,
 			soleProprietorLicenceExpiryDate: soleProprietorSwlLicence?.expiryDate,
@@ -1792,6 +1808,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.businessModelFormGroup.patchValue(
 			{
 				bizId: businessProfile.bizId,
+				soleProprietorSWLAppId,
 
 				workerLicenceTypeData,
 				applicationTypeData,
