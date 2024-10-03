@@ -476,7 +476,12 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizTypeCode = businessModelFormValue.businessInformationData.bizTypeCode;
 
 		let privateInvestigatorSwlInfo: SwlContactInfo = {};
-		let securityGuardData = {};
+		let securityGuardData: any = {
+			useDogs: null,
+			isDogsPurposeDetectionDrugs: null,
+			isDogsPurposeDetectionExplosives: null,
+			isDogsPurposeProtection: null,
+		};
 
 		const categoryCodes = this.getSaveBodyCategoryCodes(businessModelFormValue.categoryData);
 		const documentInfos = this.getSaveBodyDocumentInfos(businessModelFormValue);

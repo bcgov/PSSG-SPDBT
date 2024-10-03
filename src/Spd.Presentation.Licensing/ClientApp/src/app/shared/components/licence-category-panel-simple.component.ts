@@ -9,14 +9,15 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 		<div class="row">
 			<div class="col-md-12 col-sm-12" [ngClass]="blockCategory ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'">
 				<mat-expansion-panel
-					[hideToggle]="blockCategory"
 					class="my-3 w-100"
+					[hideToggle]="blockCategory"
 					[ngClass]="{ 'disabled-pointer': blockCategory }"
+					[disabled]="blockCategory"
 					[expanded]="expandCategory"
 				>
 					<mat-expansion-panel-header>
 						<mat-panel-title>
-							{{ categoryTypeCode | options : 'WorkerCategoryTypes' }}
+							{{ title }}
 						</mat-panel-title>
 					</mat-expansion-panel-header>
 					<div class="row my-3">

@@ -91,6 +91,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockArmouredCarGuard"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
+											[disabled]="blockArmouredCarGuard"
 											[expanded]="expandArmouredCarGuard"
 										>
 											<mat-expansion-panel-header>
@@ -182,6 +183,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 												[hideToggle]="blockPrivateInvestigator"
 												class="my-3 w-100"
 												[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+												[disabled]="blockPrivateInvestigator"
 												[expanded]="expandPrivateInvestigator"
 											>
 												<mat-expansion-panel-header>
@@ -268,9 +270,12 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 								></app-licence-category-panel-simple>
 							</ng-container>
 
-							<ng-container *ngIf="this.SecurityGuard.value">
+							<ng-container *ngIf="showSecurityGuard">
 								<div class="row">
-									<div class="col-12">
+									<div
+										class="col-md-12 col-sm-12"
+										[ngClass]="blockSecurityGuard ? 'col-xl-10 col-lg-9' : 'col-xl-12 col-lg-12'"
+									>
 										<mat-expansion-panel class="my-3 w-100" [expanded]="expandSecurityGuard">
 											<mat-expansion-panel-header>
 												<mat-panel-title>
@@ -284,7 +289,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 													{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
-											<div class="row my-3">
+
+											<div class="row my-3" *ngIf="!blockSecurityGuard">
 												<div class="col-12 mx-auto">
 													<button
 														mat-stroked-button
@@ -299,6 +305,17 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 											<app-business-category-security-guard></app-business-category-security-guard>
 										</mat-expansion-panel>
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-12 col-sm-12" *ngIf="blockSecurityGuard">
+										<button
+											mat-stroked-button
+											class="large delete-button my-lg-3"
+											aria-label="Remove category"
+											(click)="onDeselect(workerCategoryTypeCodes.SecurityGuard)"
+										>
+											<mat-icon class="d-none d-md-block">delete_outline</mat-icon>Remove
+										</button>
 									</div>
 								</div>
 							</ng-container>
@@ -355,8 +372,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 
 	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
-	isUpdate!: boolean;
-
 	businessCategoryTypes: SelectOptions[] = [];
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 
@@ -395,6 +410,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	blockSecurityAlarmResponse = false;
 	blockSecurityAlarmSales = false;
 	blockSecurityConsultant = false;
+	blockSecurityGuard = false;
 
 	originalCategoryCodes: Array<WorkerCategoryTypeCode> | null = [];
 	availableCategoryCodes: Array<WorkerCategoryTypeCode> = [];
@@ -466,7 +482,6 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	onAddCategory(): void {
 		const categoryCode = this.form.get('categoryCode')?.value;
 
-		console.log('onAddCategory categoryCode', categoryCode);
 		if (categoryCode) {
 			switch (categoryCode) {
 				case WorkerCategoryTypeCode.ArmouredCarGuard:
@@ -530,11 +545,11 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 		}
 	}
 
-	onDeselect(code: string) {
+	onDeselect(code: WorkerCategoryTypeCode) {
 		this.onRemove(code, true);
 	}
 
-	onRemove(code: string, justDeselect = false) {
+	onRemove(code: WorkerCategoryTypeCode, justDeselect = false) {
 		const codeDesc = this.optionsPipe.transform(code, 'WorkerCategoryTypes');
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -551,88 +566,70 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 				if (response) {
 					switch (code) {
 						case WorkerCategoryTypeCode.ArmouredCarGuard:
-							// if (!justDeselect) {
-							// 	this.categoryArmouredCarGuardFormGroup.reset();
-							// 	this.blockArmouredCarGuard = false;
-							// }
+							if (!justDeselect) {
+								this.categoryArmouredCarGuardFormGroup.reset();
+								this.blockArmouredCarGuard = false;
+							}
 							this.categoryArmouredCarGuardFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.BodyArmourSales:
-							// 	if (!justDeselect) {
-							// 		this.blockBodyArmourSales = false;
-							// 	}
-							// 	this.categoryBodyArmourSalesFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockBodyArmourSales = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller:
-							// 	if (!justDeselect) {
-							// 		this.blockClosedCircuitTelevisionInstaller = false;
-							// 	}
-							// 	// this.categoryClosedCircuitTelevisionInstallerFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockClosedCircuitTelevisionInstaller = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.ElectronicLockingDeviceInstaller:
-							// 	if (!justDeselect) {
-							// 		this.blockElectronicLockingDeviceInstaller = false;
-							// 	}
-							// 	this.categoryElectronicLockingDeviceInstallerFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockElectronicLockingDeviceInstaller = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.Locksmith:
-							// 	if (!justDeselect) {
-							// 		this.categoryLocksmithFormGroup.reset();
-							// 		this.blockLocksmith = false;
-							// 	}
-							// 	this.categoryLocksmithFormGroup.patchValue({ isInclude: false });
-							break;
-						case WorkerCategoryTypeCode.LocksmithUnderSupervision:
-							// 	if (!justDeselect) {
-							// 		this.blockLocksmithUnderSupervision = false;
-							// 	}
-							// 	this.categoryLocksmithSupFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockLocksmith = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.PrivateInvestigator:
-							// 	if (!justDeselect) {
-							// 		this.categoryPrivateInvestigatorFormGroup.reset();
-							// 		this.blockPrivateInvestigator = false;
-							// 	}
+							if (!justDeselect) {
+								this.categoryPrivateInvestigatorFormGroup.reset();
+								this.blockPrivateInvestigator = false;
+							}
 							this.categoryPrivateInvestigatorFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityGuard:
-							// 	if (!justDeselect) {
-							// 		this.categorySecurityGuardFormGroup.reset();
-							// 		this.blockSecurityGuard = false;
-							// 	}
+							if (!justDeselect) {
+								this.categorySecurityGuardFormGroup.reset();
+								this.blockSecurityGuard = false;
+							}
 							this.categorySecurityGuardFormGroup.patchValue({ isInclude: false });
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmInstaller:
-							// 	if (!justDeselect) {
-							// 		this.categorySecurityAlarmInstallerFormGroup.reset();
-							// 		this.blockSecurityAlarmInstaller = false;
-							// 	}
-							// 	this.categorySecurityAlarmInstallerFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockSecurityAlarmInstaller = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmMonitor:
-							// 	if (!justDeselect) {
-							// 		this.blockSecurityAlarmMonitor = false;
-							// 	}
-							// 	this.categorySecurityAlarmMonitorFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockSecurityAlarmMonitor = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmResponse:
-							// 	if (!justDeselect) {
-							// 		this.blockSecurityAlarmResponse = false;
-							// 	}
-							// 	this.categorySecurityAlarmResponseFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockSecurityAlarmResponse = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.SecurityAlarmSales:
-							// 	if (!justDeselect) {
-							// 		this.blockSecurityAlarmSales = false;
-							// 	}
-							// 	this.categorySecurityAlarmSalesFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockSecurityAlarmSales = false;
+							}
 							break;
 						case WorkerCategoryTypeCode.SecurityConsultant:
-							// 	if (!justDeselect) {
-							// 		this.categorySecurityConsultantFormGroup.reset();
-							// 		this.blockSecurityConsultant = false;
-							// 	}
-							// 	this.categorySecurityConsultantFormGroup.patchValue({ isInclude: false });
+							if (!justDeselect) {
+								this.blockSecurityConsultant = false;
+							}
 							break;
 					}
 
@@ -642,6 +639,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 						this.categoryList,
 						this.availableCategoryCodes
 					);
+					this.setupCategoryMessage(code);
 					this.isDirtyAndInvalid = false;
 				}
 			});
@@ -695,6 +693,9 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			}
 			if (this.showSecurityAlarmSales) {
 				this.blockSecurityAlarmSales = true;
+			}
+			if (this.showSecurityGuard) {
+				this.blockSecurityGuard = true;
 			}
 		}
 	}
@@ -887,5 +888,8 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 	}
 	get attachments(): FormControl {
 		return this.form.get('attachments') as FormControl;
+	}
+	get isUpdate(): boolean {
+		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 }

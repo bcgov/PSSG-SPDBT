@@ -57,6 +57,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockArmouredCarGuard"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockArmouredCarGuard }"
+											[disabled]="blockArmouredCarGuard"
 											[expanded]="expandArmouredCarGuard"
 										>
 											<mat-expansion-panel-header>
@@ -142,6 +143,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockFireInvestigator"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockFireInvestigator }"
+											[disabled]="blockFireInvestigator"
 											[expanded]="expandFireInvestigator"
 										>
 											<mat-expansion-panel-header>
@@ -198,6 +200,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockLocksmith"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockLocksmith }"
+											[disabled]="blockLocksmith"
 											[expanded]="expandLocksmith"
 										>
 											<mat-expansion-panel-header>
@@ -263,6 +266,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockPrivateInvestigator"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockPrivateInvestigator }"
+											[disabled]="blockPrivateInvestigator"
 											[expanded]="expandPrivateInvestigator"
 										>
 											<mat-expansion-panel-header>
@@ -319,6 +323,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockPrivateInvestigatorUnderSupervision"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockPrivateInvestigatorUnderSupervision }"
+											[disabled]="blockPrivateInvestigatorUnderSupervision"
 											[expanded]="expandPrivateInvestigatorUnderSupervision"
 										>
 											<mat-expansion-panel-header>
@@ -379,6 +384,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockSecurityAlarmInstaller"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockSecurityAlarmInstaller }"
+											[disabled]="blockSecurityAlarmInstaller"
 											[expanded]="expandSecurityAlarmInstaller"
 										>
 											<mat-expansion-panel-header>
@@ -477,6 +483,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockSecurityConsultant"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockSecurityConsultant }"
+											[disabled]="blockSecurityConsultant"
 											[expanded]="expandSecurityConsultant"
 										>
 											<mat-expansion-panel-header>
@@ -533,6 +540,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 											[hideToggle]="blockSecurityGuard"
 											class="my-3 w-100"
 											[ngClass]="{ 'disabled-pointer': blockSecurityGuard }"
+											[disabled]="blockSecurityGuard"
 											[expanded]="expandSecurityGuard"
 										>
 											<mat-expansion-panel-header>
