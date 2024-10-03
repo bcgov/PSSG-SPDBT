@@ -64,6 +64,7 @@ namespace Spd.Presentation.Licensing.Controllers
 
             var licenceFeesResponse = await _mediator.Send(new GetLicenceFeeListQuery(null));
             var replacementProcessingTime = await _mediator.Send(new GetReplacementProcessingTimeQuery());
+            var version = _configuration.GetValue<string>("VERSION");
 
             return await Task.FromResult(new ConfigurationResponse(
                 oidcResp,
@@ -71,7 +72,8 @@ namespace Spd.Presentation.Licensing.Controllers
                 bcscConfig,
                 invalidCategoryMatrix,
                 (List<LicenceFeeResponse>)licenceFeesResponse.LicenceFees,
-                replacementProcessingTime));
+                replacementProcessingTime,
+                version));
         }
     }
 
@@ -81,7 +83,8 @@ namespace Spd.Presentation.Licensing.Controllers
         OidcConfiguration BcscConfiguration,
         Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration,
         List<LicenceFeeResponse> LicenceFees,
-        string? ReplacementProcessingTime
+        string? ReplacementProcessingTime,
+        string? Version
     );
 
     public record OidcConfiguration
