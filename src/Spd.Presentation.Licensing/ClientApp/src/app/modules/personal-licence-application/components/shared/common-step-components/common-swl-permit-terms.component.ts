@@ -103,8 +103,8 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								You must be authenticated before you can submit an online application for a new or renewed security
 								licence or permit, including a request to submit to Prescribed Checks. Your identity will be verified
-								through your BC Services Card account login, approved government-issued ID, or other approved
-								authentication method as may be implemented from time to time.
+								through your BC Services Card, approved government-issued ID, or other approved authentication method as
+								may be implemented from time to time.
 							</li>
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
@@ -121,9 +121,9 @@ import { UtilService } from '@app/core/services/util.service';
 							<div class="fs-5 terms-subtitle">Additional Terms and Personal Information Collection:</div>
 							<li>
 								You may be required to accept additional terms and conditions in order to use or access an Associated
-								Service, including the BCeID site, BC Services Card Site, and/or the Payment Site, in which case your
-								access to, and use of the services offered by, those Associated Services or the Payment Site is governed
-								by such additional terms.
+								Service, including the BC Services Card Site, and/or the Payment Site, in which case your access to, and
+								use of the services offered by, those Associated Services or the Payment Site is governed by such
+								additional terms.
 							</li>
 							<li>
 								Additional personal information may be collected from you by the providers of the Associated Services in

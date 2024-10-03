@@ -21,6 +21,9 @@ export interface BizLicAppUpsertRequest {
   documentInfos?: Array<Document> | null;
   expiredLicenceId?: string | null;
   hasExpiredLicence?: boolean | null;
+  isDogsPurposeDetectionDrugs?: boolean | null;
+  isDogsPurposeDetectionExplosives?: boolean | null;
+  isDogsPurposeProtection?: boolean | null;
   licenceAppId?: string | null;
   licenceTermCode?: LicenceTermCode;
   noBranding?: boolean | null;

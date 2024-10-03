@@ -30,6 +30,7 @@ import { FormPersonalInformationRenewUpdateAnonymousComponent } from './componen
 import { FormPersonalInformationComponent } from './components/form-personal-information.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
+import { LicenceCategoryPanelSimpleComponent } from './components/licence-category-panel-simple.component';
 import { LicenceListExpiredComponent } from './components/licence-list-expired.component';
 import { LicenceReprintComponent } from './components/licence-reprint.component';
 import { ModalAddressComponent } from './components/modal-address.component';
@@ -107,6 +108,7 @@ const SHARED_COMPONENTS = [
 	FormPersonalInformationComponent,
 	FormPersonalInformationNewAnonymousComponent,
 	FormPersonalInformationRenewUpdateAnonymousComponent,
+	LicenceCategoryPanelSimpleComponent,
 ];
 
 @NgModule({

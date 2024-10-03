@@ -12,7 +12,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
-						<app-alert type="info" icon="info">
+						<app-alert type="warning" icon="warning">
 							Provide
 							<a
 								class="large"

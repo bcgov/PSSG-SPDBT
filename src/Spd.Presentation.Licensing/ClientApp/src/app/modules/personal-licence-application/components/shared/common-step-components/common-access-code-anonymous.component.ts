@@ -236,7 +236,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 				linkedCardHolderName: resp.nameOnCard,
 				linkedLicenceHolderId: resp.licenceHolderId,
 				linkedLicenceHolderName: resp.licenceHolderName,
-				linkedLicenceCategoryCodes: resp.categoryCodes,
+				linkedLicenceCategoryCodes: resp.categoryCodes, // TODO do we need other licence data to link?
 			});
 			this.linkSuccess.emit(resp);
 
