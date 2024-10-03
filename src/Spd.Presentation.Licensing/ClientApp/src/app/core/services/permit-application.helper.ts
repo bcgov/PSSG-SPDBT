@@ -426,7 +426,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		console.debug('[getSaveBodyBaseSubmitAuthenticated] baseData', baseData);
 
 		const returnBody: PermitAppSubmitRequest = baseData;
-		return baseData;
+		return returnBody;
 	}
 
 	getSaveBodyBaseUpsertAuthenticated(permitModelFormValue: any): PermitAppUpsertRequest {

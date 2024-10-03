@@ -390,7 +390,7 @@ export const WorkerCategoryTypes: SelectOptions[] = [
 	{ desc: 'Security Guard - Under Supervision', code: WorkerCategoryTypeCode.SecurityGuardUnderSupervision },
 ];
 
-export const BusinessCategoryTypes: SelectOptions[] = [
+export const BusinessLicenceCategoryTypes: SelectOptions[] = [
 	{ desc: 'Armoured Car Guard', code: WorkerCategoryTypeCode.ArmouredCarGuard },
 	{ desc: 'Body Armour Sales', code: WorkerCategoryTypeCode.BodyArmourSales },
 	{ desc: 'Closed Circuit Television Installer', code: WorkerCategoryTypeCode.ClosedCircuitTelevisionInstaller },

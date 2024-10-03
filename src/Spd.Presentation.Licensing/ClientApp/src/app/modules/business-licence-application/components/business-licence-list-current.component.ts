@@ -28,12 +28,12 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-								<div class="text-data">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+								<div class="text-data fw-bold">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
 								<div class="text-data">
-									<div class="text-data" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
+									<div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
 										{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
 									</div>
 								</div>
@@ -52,7 +52,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Categories</div>
 								<div class="text-data">
 									<ul class="m-0">
-										<ng-container *ngFor="let catCode of licence.categoryCodes; let i = index">
+										<ng-container *ngFor="let catCode of licence.licenceCategoryCodes; let i = index">
 											<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
 										</ng-container>
 									</ul>
@@ -67,6 +67,12 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 										</ng-container>
 										<ng-template #noDogAuthorization> Not authorized to use dogs </ng-template>
 									</div>
+									<ng-container *ngIf="licence.dogAuthorizationExpiryDate">
+										<div class="d-block text-muted mt-2">Expiry Date</div>
+										<div class="text-data">
+											{{ licence.dogAuthorizationExpiryDate | formatDate : constants.date.formalDateFormat }}
+										</div>
+									</ng-container>
 								</div>
 							</ng-container>
 

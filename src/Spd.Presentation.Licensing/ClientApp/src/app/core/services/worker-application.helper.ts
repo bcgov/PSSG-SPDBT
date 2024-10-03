@@ -14,7 +14,7 @@ import {
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, SpdFile, UtilService } from '@app/core/services/util.service';
-import { BooleanTypeCode, SelectOptions, WorkerCategoryTypes } from 'src/app/core/code-types/model-desc.models';
+import { BooleanTypeCode, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
@@ -651,17 +651,11 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 	 * @param categoryList
 	 * @returns
 	 */
-	getValidCategoryList(categoryList: string[]): SelectOptions<string>[] {
-		const invalidCategories = this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration ?? {};
-		let updatedList = [...WorkerCategoryTypes];
-
-		categoryList.forEach((item) => {
-			updatedList = updatedList.filter(
-				(cat) => !invalidCategories[item as WorkerCategoryTypeCode]?.includes(cat.code as WorkerCategoryTypeCode)
-			);
-		});
-
-		return [...updatedList];
+	getValidSwlCategoryList(categoryList: string[]): SelectOptions<string>[] {
+		return this.getValidCategoryList(
+			this.configService.configs?.invalidWorkerLicenceCategoryMatrixConfiguration,
+			categoryList
+		);
 	}
 
 	/**
