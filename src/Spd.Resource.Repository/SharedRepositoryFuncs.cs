@@ -11,7 +11,10 @@ internal static class SharedRepositoryFuncs
         foreach (var c in categories)
         {
             var cat = _context.LookupLicenceCategory(c.ToString());
-            if (cat != null && !app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
+            if (cat == null)
+                throw new ArgumentException($"licence category not found for {c.ToString()}");
+
+            if (!app.spd_application_spd_licencecategory.Any(c => c.spd_licencecategoryid == cat.spd_licencecategoryid))
             {
                 _context.AddLink(app, nameof(spd_application.spd_application_spd_licencecategory), cat);
             }
