@@ -37,7 +37,6 @@ namespace Spd.Resource.Repository.Registration
         public string? GenericEmail { get; set; }
         public string? GenericPhoneNumber { get; set; }
         public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
-        public BooleanTypeCode HasPhoneOrEmail { get; set; }
         public string? MailingAddressLine1 { get; set; }
         public string? MailingAddressLine2 { get; set; }
         public string? MailingCity { get; set; }
