@@ -28,6 +28,7 @@ namespace Spd.Resource.Repository.Registration
             .ForMember(d => d.spd_jobtitle, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.ContactJobTitle)))
             .ForMember(d => d.spd_authorizedcontactphonenumber, opt => opt.MapFrom(s => s.ContactPhoneNumber))
             .ForMember(d => d.spd_organizationname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.OrganizationName)))
+            .ForMember(d => d.spd_organizationlegalname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.OrganizationLegalName)))
             .ForMember(d => d.spd_email, opt => opt.MapFrom(s => s.GenericEmail))
             .ForMember(d => d.spd_phonenumber, opt => opt.MapFrom(s => s.GenericPhoneNumber))
             .ForMember(d => d.spd_identityguid, opt => opt.MapFrom(s => s.BizIdentityGuid))
