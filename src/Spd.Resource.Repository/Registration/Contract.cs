@@ -45,6 +45,7 @@ namespace Spd.Resource.Repository.Registration
         public string? MailingProvince { get; set; }
         public FundsFromBcGovtExceedsThresholdCode OperatingBudgetFlag { get; set; }
         public string? OrganizationName { get; set; }
+        public string? OrganizationLegalName { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
