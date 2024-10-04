@@ -205,9 +205,9 @@ internal static class SharedMappingFuncs
         return Enum.Parse<ContactRoleCode>(
            DynamicsContextLookupHelpers.RoleGuidDictionary.FirstOrDefault(x => x.Value == role.spd_roleid).Key);
     }
-    internal static bool GetIdentityConfirmed(ApplicationOriginTypeCode? origin, ApplicationTypeEnum type)
+    internal static bool GetIdentityConfirmed(ApplicationOriginTypeEnum? origin, ApplicationTypeEnum type)
     {
-        bool isNotPortal = origin != ApplicationOriginTypeCode.Portal;
+        bool isNotPortal = origin != ApplicationOriginTypeEnum.Portal;
         bool isNewOrRenewal = type == ApplicationTypeEnum.New ||
                               type == ApplicationTypeEnum.Renewal;
 
