@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IdentityProviderTypeCode } from 'src/app/api/models';
+import { ConfigurationResponse, IdentityProviderTypeCode } from 'src/app/api/models';
 import { AuthProcessService } from 'src/app/core/services/auth-process.service';
 import { AuthUserBceidService } from 'src/app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
@@ -96,7 +96,13 @@ export class HeaderComponent implements OnInit {
 			this.getUserInfo();
 		});
 
-		this.env = this.configService.isProduction() ? null : this.configService.configs?.environment;
+		this.configService.getConfigs().subscribe((config: ConfigurationResponse) => {
+			if (this.configService.isProduction()) {
+				this.env = config.version ?? '';
+			} else {
+				this.env = `${config.environment ?? ''} ${config.version ?? ''}`;
+			}
+		});
 	}
 
 	onLogout(): void {
