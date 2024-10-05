@@ -13,7 +13,7 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
     {
         RuleFor(r => r.ParentBizLicApplicationId).NotEqual(Guid.Empty);
         RuleFor(r => r.WorkerLicenceTypeCode)
-            .Equal(WorkerLicenceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC);
+            .Equal(ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC);
         RuleFor(r => r.Surname)
             .MaximumLength(40)
             .NotNull()
@@ -126,7 +126,7 @@ public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<C
     {
         RuleFor(r => r.ParentBizLicApplicationId).NotEqual(Guid.Empty);
         RuleFor(r => r.WorkerLicenceTypeCode)
-            .Equal(WorkerLicenceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC);
+            .Equal(ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC);
         RuleFor(r => r.Surname)
             .MaximumLength(40)
             .NotNull()

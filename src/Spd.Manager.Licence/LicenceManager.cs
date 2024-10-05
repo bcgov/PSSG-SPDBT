@@ -145,14 +145,14 @@ internal class LicenceManager :
 
     private async Task GetRationalDocumentsInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
     {
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit || lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        if (lic.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit || lic.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
         {
             DocumentListResp? docResp = null;
-            if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+            if (lic.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
                 docResp = await _documentRepository.QueryAsync(
                         new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.ArmouredVehicleRationale },
                         cancellationToken);
-            if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+            if (lic.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit)
                 docResp = await _documentRepository.QueryAsync(
                     new DocumentQry() { LicenceId = lic.LicenceId, FileType = DocumentTypeEnum.BodyArmourRationale },
                     cancellationToken);
@@ -162,7 +162,7 @@ internal class LicenceManager :
 
     private async Task GetDogRestraintsDocumentsInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)
     {
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence || lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence)
+        if (lic.WorkerLicenceTypeCode == ServiceTypeCode.SecurityBusinessLicence || lic.WorkerLicenceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
         {
             if (lic.UseDogs || lic.IsDogsPurposeDetectionDrugs || lic.IsDogsPurposeDetectionExplosives || lic.IsDogsPurposeProtection)
             {
@@ -170,8 +170,8 @@ internal class LicenceManager :
                 DocumentListResp docList = await _documentRepository.QueryAsync(
                         new DocumentQry()
                         {
-                            ApplicantId = lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence ? lic.LicenceHolderId : null,
-                            AccountId = lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityBusinessLicence ? lic.LicenceHolderId : null,
+                            ApplicantId = lic.WorkerLicenceTypeCode == ServiceTypeCode.SecurityWorkerLicence ? lic.LicenceHolderId : null,
+                            AccountId = lic.WorkerLicenceTypeCode == ServiceTypeCode.SecurityBusinessLicence ? lic.LicenceHolderId : null,
                             FileType = DocumentTypeEnum.DogCertificate
                         },
                         cancellationToken);
@@ -179,7 +179,7 @@ internal class LicenceManager :
             }
         }
 
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeCode.SecurityWorkerLicence && lic.CarryAndUseRestraints)
+        if (lic.WorkerLicenceTypeCode == ServiceTypeCode.SecurityWorkerLicence && lic.CarryAndUseRestraints)
         {
             //get restraints document expired date
             DocumentListResp docList = await _documentRepository.QueryAsync(

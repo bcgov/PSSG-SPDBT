@@ -13,7 +13,7 @@ public interface IControllingMemberCrcAppManager
 }
 public record ControllingMemberCrcAppBase
 {
-    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeCode? WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeCode ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeCode.Portal;
     public string? GivenName { get; set; }

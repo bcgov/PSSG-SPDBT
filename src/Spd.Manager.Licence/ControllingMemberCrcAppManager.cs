@@ -104,7 +104,7 @@ internal class ControllingMemberCrcAppManager :
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry()
         {
             AccountId = bizContact.BizId,
-            Type = WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+            Type = ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
         }, ct);
 
         LicenceResp? bizLicence = licences?.Items?.SingleOrDefault();

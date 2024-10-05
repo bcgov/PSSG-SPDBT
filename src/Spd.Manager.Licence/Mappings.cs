@@ -227,8 +227,8 @@ internal class Mappings : Profile
 
         CreateMap<LicenceResp, LicenceResponse>()
             .IncludeBase<LicenceResp, LicenceBasicResponse>()
-            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes((WorkerLicenceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
-            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes((WorkerLicenceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
+            .ForMember(d => d.BodyArmourPermitReasonCodes, opt => opt.MapFrom(s => GetBodyArmourPermitReasonCodes((ServiceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)))
+            .ForMember(d => d.ArmouredVehiclePermitReasonCodes, opt => opt.MapFrom(s => GetArmouredVehiclePermitReasonCodes((ServiceTypeEnum)s.WorkerLicenceTypeCode, (List<PermitPurposeEnum>?)s.PermitPurposeEnums)));
 
         CreateMap<LicenceFeeResp, LicenceFeeResponse>();
 
@@ -521,22 +521,22 @@ internal class Mappings : Profile
 
     private static IEnumerable<PermitPurposeEnum>? GetPermitPurposeEnums(PermitAppSubmitRequest request)
     {
-        if (request.BodyArmourPermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        if (request.BodyArmourPermitReasonCodes != null && request.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit)
         {
             return request.BodyArmourPermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
         }
-        if (request.ArmouredVehiclePermitReasonCodes != null && request.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        if (request.ArmouredVehiclePermitReasonCodes != null && request.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
         {
             return request.ArmouredVehiclePermitReasonCodes.Select(c => Enum.Parse<PermitPurposeEnum>(c.ToString())).ToArray();
         }
         return null;
     }
 
-    public static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    public static List<BodyArmourPermitReasonCode> GetBodyArmourPermitReasonCodes(ServiceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
     {
         List<BodyArmourPermitReasonCode> bodyArmourPermitReasonCodes = [];
 
-        if (workerLicenceType != WorkerLicenceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
+        if (workerLicenceType != ServiceTypeEnum.BodyArmourPermit || permitPurposes == null) return bodyArmourPermitReasonCodes;
 
         foreach (PermitPurposeEnum permitPurpose in permitPurposes)
         {
@@ -549,11 +549,11 @@ internal class Mappings : Profile
         return bodyArmourPermitReasonCodes;
     }
 
-    public static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(WorkerLicenceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
+    public static List<ArmouredVehiclePermitReasonCode> GetArmouredVehiclePermitReasonCodes(ServiceTypeEnum workerLicenceType, List<PermitPurposeEnum>? permitPurposes)
     {
         List<ArmouredVehiclePermitReasonCode> armouredVehiclePermitReasonCodes = [];
 
-        if (workerLicenceType != WorkerLicenceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
+        if (workerLicenceType != ServiceTypeEnum.ArmouredVehiclePermit || permitPurposes == null) return armouredVehiclePermitReasonCodes;
 
         foreach (PermitPurposeEnum permitPurpose in permitPurposes)
         {

@@ -9,12 +9,12 @@ public partial interface ILicAppRepository
     public Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, decimal? price, CancellationToken ct);
 }
 
-public record LicenceAppQuery(Guid? ApplicantId, Guid? BizId, List<WorkerLicenceTypeEnum>? ValidWorkerLicenceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
+public record LicenceAppQuery(Guid? ApplicantId, Guid? BizId, List<ServiceTypeEnum>? ValidWorkerLicenceTypeCodes, List<ApplicationPortalStatusEnum>? ValidPortalStatus);
 
 public record LicenceAppListResp
 {
     public Guid LicenceAppId { get; set; }
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum WorkerLicenceTypeCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? SubmittedOn { get; set; }
     public DateTimeOffset? UpdatedOn { get; set; }

@@ -16,7 +16,7 @@ namespace Spd.Resource.Repository.Licence
         public string? AccessCode { get; set; }
         public Guid? ContactId { get; set; }
         public Guid? AccountId { get; set; }
-        public WorkerLicenceTypeEnum? Type { get; set; }
+        public ServiceTypeEnum? Type { get; set; }
         public bool IncludeInactive { get; set; }
         public bool? IsExpired { get; set; }
     };
@@ -54,7 +54,7 @@ namespace Spd.Resource.Repository.Licence
     {
         public string? LicenceNumber { get; set; }
         public DateOnly ExpiryDate { get; set; }
-        public WorkerLicenceTypeEnum? WorkerLicenceTypeCode { get; set; }
+        public ServiceTypeEnum? WorkerLicenceTypeCode { get; set; }
         public LicenceTermEnum? LicenceTermCode { get; set; }
         public Guid? LicenceHolderId { get; set; }
         public string? LicenceHolderFirstName { get; set; }

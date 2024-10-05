@@ -196,7 +196,7 @@ namespace Spd.Manager.Payment
 
             //if application is sole-proprietor combo application, set combo swl applicatoin to be Paid too.
             BizLicApplicationResp bizApp = await _bizAppRepository.GetBizLicApplicationAsync(command.PaybcPaymentResult.ApplicationId, ct);
-            if (bizApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence) //first, the application must be bizLicApp
+            if (bizApp.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityBusinessLicence) //first, the application must be bizLicApp
             {
                 if (bizApp.SoleProprietorSWLAppId != null && (bizApp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || bizApp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor))
                 {
@@ -419,7 +419,7 @@ namespace Spd.Manager.Payment
                         LicenceTermEnum = licApp.LicenceTermCode,
                         BizTypeEnum = licApp.BizTypeCode ?? BizTypeEnum.None,
                         HasValidSwl90DayLicence = licApp.OriginalLicenceTermCode == LicenceTermEnum.NinetyDays &&
-                            licApp.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence &&
+                            licApp.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityWorkerLicence &&
                             licApp.ApplicationTypeCode == ApplicationTypeEnum.Renewal
                     },
                     ct);

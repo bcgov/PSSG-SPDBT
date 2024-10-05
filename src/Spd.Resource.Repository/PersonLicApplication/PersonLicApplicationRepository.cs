@@ -73,7 +73,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        if (cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
+        if (cmd.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
         {
             SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         }

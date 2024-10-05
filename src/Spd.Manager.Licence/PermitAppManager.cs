@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Contact;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.LicApp;
@@ -60,7 +61,7 @@ internal class PermitAppManager :
     public async Task<PermitAppCommandResponse> Handle(PermitUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.PermitUpsertRequest.ApplicantId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<ServiceTypeEnum>(cmd.PermitUpsertRequest.WorkerLicenceTypeCode.ToString()),
             cmd.PermitUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -92,11 +93,11 @@ internal class PermitAppManager :
 
     public async Task<Guid> Handle(GetLatestPermitApplicationIdQuery query, CancellationToken cancellationToken)
     {
-        if (query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.ArmouredVehiclePermit && query.WorkerLicenceTypeCode != WorkerLicenceTypeCode.BodyArmourPermit)
+        if (query.WorkerLicenceTypeCode != ServiceTypeCode.ArmouredVehiclePermit && query.WorkerLicenceTypeCode != ServiceTypeCode.BodyArmourPermit)
             throw new ApiException(HttpStatusCode.BadRequest, $"Invalid WorkerLicenceTypeCode");
         return await GetLatestApplicationId(query.ApplicantId,
             null,
-            Enum.Parse<WorkerLicenceTypeEnum>(query.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<ServiceTypeEnum>(query.WorkerLicenceTypeCode.ToString()),
             cancellationToken);
     }
     #endregion
@@ -261,7 +262,7 @@ internal class PermitAppManager :
             new DocumentQry()
             {
                 LicenceId = originalLic.LicenceId,
-                FileType = originalLic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.BodyArmourPermit ?
+                FileType = originalLic.WorkerLicenceTypeCode == ServiceTypeEnum.BodyArmourPermit ?
                     DocumentTypeEnum.BodyArmourRationale :
                     DocumentTypeEnum.ArmouredVehicleRationale
             },
@@ -464,7 +465,7 @@ internal class PermitAppManager :
     {
         List<string> purposes = [];
 
-        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.ArmouredVehiclePermit)
+        if (newRequest.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit)
         {
             foreach (var reasonCode in newRequest.ArmouredVehiclePermitReasonCodes)
                 purposes.Add(reasonCode.ToString());
@@ -482,7 +483,7 @@ internal class PermitAppManager :
     {
         List<PermitPurposeEnum> permitPurposeRequest = [];
 
-        if (newRequest.WorkerLicenceTypeCode == WorkerLicenceTypeCode.BodyArmourPermit)
+        if (newRequest.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit)
         {
             foreach (BodyArmourPermitReasonCode bodyArmourPermitReason in newRequest.BodyArmourPermitReasonCodes)
             {

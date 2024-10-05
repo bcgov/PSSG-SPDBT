@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Licence;
+using Spd.Manager.Shared;
 using Spd.Utilities.Shared;
 
 namespace Spd.Presentation.Licensing.Controllers
@@ -24,7 +25,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <returns></returns>
         [Route("api/licence-fee")]
         [HttpGet]
-        public async Task<LicenceFeeListResponse> GetLicenceFee([FromQuery] WorkerLicenceTypeCode? workerLicenceTypeCode = null)
+        public async Task<LicenceFeeListResponse> GetLicenceFee([FromQuery] ServiceTypeCode? workerLicenceTypeCode = null)
         {
             return await _mediator.Send(new GetLicenceFeeListQuery(workerLicenceTypeCode));
         }

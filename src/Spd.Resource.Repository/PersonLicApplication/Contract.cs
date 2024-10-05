@@ -13,7 +13,7 @@ public partial interface IPersonLicApplicationRepository
 
 public record LicenceApplication
 {
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeCode? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeCode.Portal;
     public BizTypeEnum? BizTypeCode { get; set; }
@@ -98,14 +98,14 @@ public record LicenceApplicationResp() : LicenceApplication
 
 public record GetLicenceApplicationQry(Guid LicenceApplicationId);
 
-public enum WorkerLicenceTypeEnum
-{
-    SecurityWorkerLicence,
-    ArmouredVehiclePermit,
-    BodyArmourPermit,
-    SecurityBusinessLicence,
-    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
-}
+//public enum WorkerLicenceTypeEnum
+//{
+//    SecurityWorkerLicence,
+//    ArmouredVehiclePermit,
+//    BodyArmourPermit,
+//    SecurityBusinessLicence,
+//    SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC
+//}
 
 public enum HairColourEnum
 {

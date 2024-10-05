@@ -10,7 +10,7 @@ public interface IFeeManager
 
 public record LicenceFeeResponse
 {
-    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeCode? WorkerLicenceTypeCode { get; set; }
     public BizTypeCode? BizTypeCode { get; set; }
     public ApplicationTypeCode? ApplicationTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
@@ -23,4 +23,4 @@ public record LicenceFeeListResponse
     public IEnumerable<LicenceFeeResponse> LicenceFees { get; set; } = Array.Empty<LicenceFeeResponse>();
 }
 
-public record GetLicenceFeeListQuery(WorkerLicenceTypeCode? WorkerLicenceTypeCode) : IRequest<LicenceFeeListResponse>;
+public record GetLicenceFeeListQuery(ServiceTypeCode? WorkerLicenceTypeCode) : IRequest<LicenceFeeListResponse>;
