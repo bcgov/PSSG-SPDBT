@@ -17,7 +17,7 @@ public record BizLicApplication
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public BizTypeEnum? BizTypeCode { get; set; }
-    public ApplicationOriginTypeCode? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeCode.Portal;
+    public ApplicationOriginTypeEnum? ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeEnum.Portal;
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
     public string? MiddleName2 { get; set; }
@@ -73,6 +73,7 @@ public record BizLicApplicationResp() : BizLicApplication
     public bool? HasExpiredLicence { get; set; }
     public Guid? SoleProprietorSWLAppId { get; set; } //sole proprietor swl appliation id, for sole proprietor combo flow
     public IEnumerable<Guid> NonSwlControllingMemberCrcAppIds { get; set; }
+    public ApplicationOriginTypeEnum SolProprietorSWLAppOriginTypeCode { get; set; }
 }
 
 public record PrivateInvestigatorSwlContactInfo : ContactInfo

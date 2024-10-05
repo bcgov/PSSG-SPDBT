@@ -164,7 +164,7 @@ public enum ApplicationInviteStatusEnum
     Expired
 }
 
-public enum ApplicationOriginTypeCode
+public enum ApplicationOriginTypeEnum
 {
     Portal,
     Email,
