@@ -15,7 +15,7 @@ public record LicenceApplication
 {
     public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public ApplicationOriginTypeCode? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeCode.Portal;
+    public ApplicationOriginTypeEnum? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeEnum.Portal;
     public BizTypeEnum? BizTypeCode { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }
