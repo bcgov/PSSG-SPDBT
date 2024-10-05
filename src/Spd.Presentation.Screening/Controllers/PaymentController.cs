@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -269,7 +269,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/crrpa/payment-link")]
         [HttpPost]
-        //[Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentLinkResponse> GetApplicantInvitePaymentLink([FromBody][Required] PaymentLinkCreateRequest paymentLinkCreateRequest)
         {
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
@@ -320,7 +319,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/crrpa/payments/{paymentId}")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBcsc")]
         public async Task<PaymentResponse> GetApplicantInvitePaymentResult([FromRoute] Guid paymentId)
         {
             return await _mediator.Send(new PaymentQuery(paymentId));
@@ -332,7 +330,6 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/crrpa/{applicationId}/payment-attempts")]
         [HttpGet]
-        //[Authorize(Policy = "OnlyBcsc")]
         public async Task<int> GetApplicantInvitePaymentAttempts([FromRoute] Guid applicationId)
         {
             return await _mediator.Send(new PaymentFailedAttemptCountQuery(applicationId));
