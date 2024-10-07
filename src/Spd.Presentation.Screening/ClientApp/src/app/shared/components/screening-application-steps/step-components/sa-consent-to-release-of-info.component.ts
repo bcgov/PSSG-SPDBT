@@ -18,7 +18,7 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 					<div class="row">
 						<div class="offset-lg-2 col-lg-8 col-md-12 col-sm-12">
 							<div class="conditions p-3 mb-3">
-								<ng-container *ngIf="isMcfd">
+								<ng-container *ngIf="isMcfdOrPssoVs">
 									<app-sa-consent-to-release-mcfd
 										[form]="form"
 										(checkboxChanged)="onCheckboxChange()"
@@ -147,7 +147,7 @@ export class SaConsentToReleaseOfInfoComponent implements OnInit, CrcFormStepCom
 		const data = this.form.value;
 		let isValid = false;
 
-		if (this.isMcfd) {
+		if (this.isMcfdOrPssoVs) {
 			isValid = data.agreeToCriminalCheck && data.check1 && data.check2 && data.check3 && data.check4 && data.check5;
 		} else if (this.isCrrpa) {
 			isValid =
@@ -177,14 +177,14 @@ export class SaConsentToReleaseOfInfoComponent implements OnInit, CrcFormStepCom
 		this.captchaPassed = this.utilService.captchaTokenResponse($event);
 	}
 
-	get isMcfd(): boolean {
-		return this.orgData?.serviceType === ServiceTypeCode.Mcfd;
+	get isMcfdOrPssoVs(): boolean {
+		return this.orgData?.serviceType === ServiceTypeCode.Mcfd || this.orgData?.serviceType === ServiceTypeCode.PssoVs;
 	}
 	get isCrrpa(): boolean {
-		return !this.isMcfd && !this.isPeCrc && this.orgData!.isCrrpa;
+		return !this.isMcfdOrPssoVs && !this.isPeCrc && this.orgData!.isCrrpa;
 	}
 	get isPssoa(): boolean {
-		return !this.isMcfd && !this.isPeCrc && !this.orgData!.isCrrpa;
+		return !this.isMcfdOrPssoVs && !this.isPeCrc && !this.orgData!.isCrrpa;
 	}
 	get isPeCrc(): boolean {
 		return this.orgData?.serviceType === ServiceTypeCode.PeCrc || this.orgData?.serviceType === ServiceTypeCode.PeCrcVs;
