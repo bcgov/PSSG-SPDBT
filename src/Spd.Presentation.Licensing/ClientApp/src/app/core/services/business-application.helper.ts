@@ -508,9 +508,9 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 		if (categoryData.SecurityGuard) {
 			const dogsPurposeFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
-			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
-			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
-			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs;
+			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives;
+			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection;
 			const useDogs = this.utilService.booleanTypeToBoolean(
 				businessModelFormValue.categorySecurityGuardFormGroup.useDogs
 			);
