@@ -8,7 +8,7 @@ import { Document } from '../models/document';
 import { DocumentExpiredInfo } from '../models/document-expired-info';
 import { GenderCode } from '../models/gender-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
-import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 export interface ControllingMemberCrcAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
@@ -41,6 +41,6 @@ export interface ControllingMemberCrcAppUpsertRequest {
   phoneNumber?: string | null;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddress?: Address;
+  serviceTypeCode?: ServiceTypeCode;
   surname?: string | null;
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

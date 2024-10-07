@@ -25,10 +25,10 @@ import {
 	LicenceResponse,
 	Members,
 	NonSwlContactInfo,
+	ServiceTypeCode,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import {
 	BizLicensingService,
@@ -96,7 +96,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		originalLicenceData: this.originalLicenceFormGroup,
 
-		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
+		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		expiredLicenceData: this.expiredLicenceFormGroup,
 		businessInformationData: this.businessInformationFormGroup,
@@ -718,7 +718,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							this.setAsInitialized();
 
 							this.commonApplicationService.setApplicationTitle(
-								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ServiceTypeCode.SecurityBusinessLicence,
 								ApplicationTypeCode.New
 							);
 						})
@@ -736,7 +736,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.setAsInitialized();
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
@@ -766,7 +766,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 											this.setAsInitialized();
 
 											this.commonApplicationService.setApplicationTitle(
-												WorkerLicenceTypeCode.SecurityBusinessLicence,
+												ServiceTypeCode.SecurityBusinessLicence,
 												applicationTypeCode
 											);
 										})
@@ -780,7 +780,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							this.setAsInitialized();
 
 							this.commonApplicationService.setApplicationTitle(
-								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ServiceTypeCode.SecurityBusinessLicence,
 								applicationTypeCode
 							);
 						})
@@ -798,7 +798,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 									this.setAsInitialized();
 
 									this.commonApplicationService.setApplicationTitle(
-										WorkerLicenceTypeCode.SecurityBusinessLicence,
+										ServiceTypeCode.SecurityBusinessLicence,
 										applicationTypeCode
 									);
 								})
@@ -835,7 +835,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 									tap((_resp: any) => {
 										this.setAsInitialized();
 
-										this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+										this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 									})
 								);
 							})
@@ -848,7 +848,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					tap((_resp: any) => {
 						this.setAsInitialized();
 
-						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+						this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 					})
 				);
 			})
@@ -869,7 +869,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.setAsInitialized();
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
@@ -890,7 +890,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.setAsInitialized();
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					_resp.originalLicenceData.originalLicenceNumber
 				);
@@ -911,7 +911,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					tap((_resp: any) => {
 						this.setAsInitialized();
 
-						this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+						this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 					})
 				);
 			})
@@ -1070,7 +1070,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					{ emitEvent: false }
 				);
 
-				this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
+				this.commonApplicationService.setApplicationTitle(_resp.serviceTypeData.serviceTypeCode);
 			})
 		);
 	}
@@ -1104,7 +1104,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							this.setAsInitialized();
 
 							this.commonApplicationService.setApplicationTitle(
-								WorkerLicenceTypeCode.SecurityBusinessLicence,
+								ServiceTypeCode.SecurityBusinessLicence,
 								ApplicationTypeCode.New
 							);
 						})
@@ -1122,7 +1122,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.setAsInitialized();
 
 				this.commonApplicationService.setApplicationTitle(
-					WorkerLicenceTypeCode.SecurityBusinessLicence,
+					ServiceTypeCode.SecurityBusinessLicence,
 					ApplicationTypeCode.New
 				);
 			})
@@ -1212,7 +1212,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					{ emitEvent: false }
 				);
 
-				this.commonApplicationService.setApplicationTitle(_resp.workerLicenceTypeData.workerLicenceTypeCode);
+				this.commonApplicationService.setApplicationTitle(_resp.serviceTypeData.serviceTypeCode);
 			})
 		);
 	}
@@ -1523,7 +1523,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedLicence?: MainLicenceResponse;
 		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: businessLicenceAppl.workerLicenceTypeCode };
+		const serviceTypeData = { serviceTypeCode: businessLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: businessLicenceAppl.applicationTypeCode };
 
 		const hasExpiredLicence = businessLicenceAppl.hasExpiredLicence ?? false;
@@ -1714,7 +1714,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				latestApplicationId: businessLicenceAppl.licenceAppId,
 				soleProprietorSWLAppId: businessLicenceAppl.soleProprietorSWLAppId,
 
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
 				caseNumber: businessLicenceAppl.caseNumber,
@@ -1762,7 +1762,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		soleProprietorSwlAppl?: WorkerLicenceAppResponse;
 		soleProprietorSWLAppOriginTypeCode?: ApplicationOriginTypeCode;
 	}): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
+		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const businessInformationData: any = {
@@ -1860,7 +1860,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				isSoleProprietorSWLAnonymous,
 				isSoleProprietorReturnToSwl,
 
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				businessInformationData,
 				businessManagerData,

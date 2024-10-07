@@ -14,12 +14,12 @@ import {
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
+	ServiceTypeCode,
 	WorkerCategoryTypeCode,
 	WorkerLicenceAppResponse,
 	WorkerLicenceAppSubmitRequest,
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceCommandResponse,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -76,7 +76,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		contactInformationData: this.contactInformationFormGroup,
 		profileConfirmationData: this.profileConfirmationFormGroup,
 
-		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
+		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		soleProprietorData: this.soleProprietorFormGroup,
 		licenceTermData: this.licenceTermFormGroup,
@@ -558,7 +558,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
@@ -579,7 +579,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					_resp.originalLicenceData.originalLicenceNumber
 				);
@@ -601,7 +601,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 							this.initialized = true;
 
 							this.commonApplicationService.setApplicationTitle(
-								WorkerLicenceTypeCode.SecurityWorkerLicence,
+								ServiceTypeCode.SecurityWorkerLicence,
 								ApplicationTypeCode.New
 							);
 						})
@@ -1007,7 +1007,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					accessCodeData.licenceNumber
 				);
@@ -1028,7 +1028,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
@@ -1049,22 +1049,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Create an empty anonymous licence
 	 * @returns
 	 */
-	createNewLicenceAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.getLicenceEmptyAnonymous(workerLicenceTypeCode).pipe(
+	createNewLicenceAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.getLicenceEmptyAnonymous(serviceTypeCode).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
+				this.commonApplicationService.setApplicationTitle(serviceTypeCode);
 			})
 		);
 	}
 
-	private getLicenceEmptyAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+	private getLicenceEmptyAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		this.workerModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData: { workerLicenceTypeCode: workerLicenceTypeCode },
+				serviceTypeData: { serviceTypeCode: serviceTypeCode },
 				profileConfirmationData: { isProfileUpToDate: true },
 				mentalHealthConditionsData: { hasNewMentalHealthCondition: BooleanTypeCode.Yes },
 			},
@@ -1255,7 +1255,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		applicationTypeCode: ApplicationTypeCode | undefined,
 		associatedLicence?: MainLicenceResponse
 	): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence };
+		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const personalInformationData = {
@@ -1358,7 +1358,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		this.workerModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profile ? profile.applicantId : null,
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
 				profileConfirmationData: { isProfileUpToDate: true },
@@ -1401,7 +1401,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		associatedLicence?: MainLicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceAppl.workerLicenceTypeCode };
+		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
 		const soleProprietorData = {
@@ -1803,7 +1803,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
 				soleProprietorBizAppId: workerLicenceAppl.soleProprietorBizAppId,
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				soleProprietorData,
 				expiredLicenceData,

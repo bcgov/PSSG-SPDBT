@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
@@ -25,7 +25,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						</div>
 						<div class="col-lg-6 col-md-12">
 							<div class="text-label d-block text-muted">Permit Type</div>
-							<div class="summary-text-data">{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}</div>
+							<div class="summary-text-data">{{ serviceTypeCode | options : 'ServiceTypes' }}</div>
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
@@ -48,7 +48,7 @@ export class StepPermitConfirmationComponent implements OnInit {
 	constants = SPD_CONSTANTS;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	private permitModelData: any = {};
 

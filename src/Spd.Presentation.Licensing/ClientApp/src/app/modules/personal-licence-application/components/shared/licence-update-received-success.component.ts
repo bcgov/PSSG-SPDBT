@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -32,7 +32,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 						<div class="mt-4 text-center fs-5">
-							Your update to your {{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} has been received.
+							Your update to your {{ serviceTypeCode | options : 'ServiceTypes' }} has been received.
 						</div>
 
 						<div class="my-4 text-center">We will contact you if we need more information.</div>
@@ -100,8 +100,8 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 		this.commonApplicationService.onGoToHome();
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.workerApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.workerApplicationService.getSummaryserviceTypeCode(this.licenceModelData);
 	}
 	get licenceTermCode(): string {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);

@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.BizContact;
@@ -77,14 +78,14 @@ internal class BizLicAppManager :
     public async Task<BizLicAppResponse> Handle(GetLatestBizLicenceAppQuery query, CancellationToken cancellationToken)
     {
         //get the latest app id
-        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, WorkerLicenceTypeEnum.SecurityBusinessLicence, cancellationToken);
+        Guid latestAppId = await GetLatestApplicationId(null, query.BizId, ServiceTypeEnum.SecurityBusinessLicence, cancellationToken);
         return await Handle(new GetBizLicAppQuery(latestAppId), cancellationToken);
     }
 
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.BizLicAppUpsertRequest.BizId,
-            Enum.Parse<WorkerLicenceTypeEnum>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.Value.ToString()),
+            Enum.Parse<ServiceTypeEnum>(cmd.BizLicAppUpsertRequest.ServiceTypeCode.Value.ToString()),
             cmd.BizLicAppUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -286,9 +287,9 @@ internal class BizLicAppManager :
         LicenceAppQuery q = new(
             null,
             query.BizId,
-            new List<WorkerLicenceTypeEnum>
+            new List<ServiceTypeEnum>
             {
-                WorkerLicenceTypeEnum.SecurityBusinessLicence,
+                ServiceTypeEnum.SecurityBusinessLicence,
             },
             new List<ApplicationPortalStatusEnum>
             {

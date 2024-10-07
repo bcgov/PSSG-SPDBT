@@ -7,8 +7,8 @@ import { BodyArmourPermitReasonCode } from '../models/body-armour-permit-reason-
 import { Document } from '../models/document';
 import { LicenceStatusCode } from '../models/licence-status-code';
 import { LicenceTermCode } from '../models/licence-term-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
-import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceResponse {
   armouredVehiclePermitReasonCodes?: Array<ArmouredVehiclePermitReasonCode> | null;
   bizTypeCode?: BizTypeCode;
@@ -34,9 +34,9 @@ export interface LicenceResponse {
   rationalDocumentInfos?: Array<Document> | null;
   rationale?: string | null;
   restraintsDocumentInfos?: Array<Document> | null;
+  serviceTypeCode?: ServiceTypeCode;
   supervisorEmailAddress?: string | null;
   supervisorName?: string | null;
   supervisorPhoneNumber?: string | null;
   useDogs?: boolean;
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

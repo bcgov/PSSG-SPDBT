@@ -3,7 +3,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceStatusCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
 	ApplicationService,
@@ -164,7 +164,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 })
 export class LicenceUserApplicationsComponent implements OnInit {
 	constants = SPD_CONSTANTS;
-	workerLicenceTypeCodes = WorkerLicenceTypeCode;
+	serviceTypeCodes = ServiceTypeCode;
 
 	results$!: Observable<any>;
 	applicationIsInProgress = false;
@@ -228,36 +228,36 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				// Set flags that determine if NEW licences/permits can be created
 				let activeSwlExist =
 					activeLicencesList.findIndex(
-						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
 					) >= 0;
 				if (!activeSwlExist) {
 					activeSwlExist =
 						userPersonApplicationsList.findIndex(
-							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
 						) >= 0;
 				}
 				this.activeSwlExist = activeSwlExist;
 
 				let activeBaPermitExist =
 					activeLicencesList.findIndex(
-						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
 					) >= 0;
 				if (!activeBaPermitExist) {
 					activeBaPermitExist =
 						userPersonApplicationsList.findIndex(
-							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
 						) >= 0;
 				}
 				this.activeBaPermitExist = activeBaPermitExist;
 
 				let activeAvPermitExist =
 					activeLicencesList.findIndex(
-						(item: MainLicenceResponse) => item.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
 					) >= 0;
 				if (!activeAvPermitExist) {
 					activeAvPermitExist =
 						userPersonApplicationsList.findIndex(
-							(item: MainApplicationResponse) => item.serviceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
 						) >= 0;
 				}
 				this.activeAvPermitExist = activeAvPermitExist;
@@ -315,7 +315,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 	onNewBodyArmourPermit(): void {
 		this.permitApplicationService
-			.createNewPermitAuthenticated(WorkerLicenceTypeCode.BodyArmourPermit)
+			.createNewPermitAuthenticated(ServiceTypeCode.BodyArmourPermit)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -324,7 +324,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.BodyArmourPermit,
+								serviceTypeCode: ServiceTypeCode.BodyArmourPermit,
 								applicationTypeCode: ApplicationTypeCode.New,
 							},
 						}
@@ -337,7 +337,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 	onNewArmouredVehiclePermit(): void {
 		this.permitApplicationService
-			.createNewPermitAuthenticated(WorkerLicenceTypeCode.ArmouredVehiclePermit)
+			.createNewPermitAuthenticated(ServiceTypeCode.ArmouredVehiclePermit)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -346,7 +346,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 						),
 						{
 							state: {
-								workerLicenceTypeCode: WorkerLicenceTypeCode.ArmouredVehiclePermit,
+								serviceTypeCode: ServiceTypeCode.ArmouredVehiclePermit,
 								applicationTypeCode: ApplicationTypeCode.New,
 							},
 						}
@@ -360,8 +360,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	onReplace(licence: MainLicenceResponse): void {
 		if (this.applicationIsInProgress) return;
 
-		switch (licence.workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+		switch (licence.serviceTypeCode) {
+			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Replacement, licence)
 					.pipe(
@@ -378,8 +378,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				// There is no Replacement flow for Permit. Send the user to Update flow.
 				this.onUpdate(licence);
 				break;
@@ -389,7 +389,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 	onResume(appl: MainApplicationResponse): void {
 		switch (appl.serviceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
 					.getWorkerLicenceToResume(appl.licenceAppId!)
 					.pipe(
@@ -406,8 +406,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
 					.getPermitToResume(appl.licenceAppId!)
 					.pipe(
@@ -418,7 +418,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								),
 								{
 									state: {
-										workerLicenceTypeCode: appl.serviceTypeCode,
+										serviceTypeCode: appl.serviceTypeCode,
 										applicationTypeCode: _resp.applicationTypeData.applicationTypeCode,
 									},
 								}
@@ -433,15 +433,15 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onPay(appl: MainApplicationResponse): void {
-		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'WorkerLicenceTypes');
+		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'ServiceTypes');
 		const paymentDesc = `Payment for ${serviceTypeCodeDesc} application`;
 
 		this.commonApplicationService.payNowPersonalLicenceAuthenticated(appl.licenceAppId!, paymentDesc);
 	}
 
 	onUpdate(licence: MainLicenceResponse): void {
-		switch (licence.workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+		switch (licence.serviceTypeCode) {
+			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Update, licence)
 					.pipe(
@@ -457,8 +457,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
 					.getPermitWithSelectionAuthenticated(licence.licenceAppId!, ApplicationTypeCode.Update, licence)
 					.pipe(
@@ -467,7 +467,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								PersonalLicenceApplicationRoutes.pathPermitAuthenticated(
 									PersonalLicenceApplicationRoutes.PERMIT_UPDATE_TERMS_AUTHENTICATED
 								),
-								{ state: { workerLicenceTypeCode: licence.workerLicenceTypeCode } }
+								{ state: { serviceTypeCode: licence.serviceTypeCode } }
 							);
 						}),
 						take(1)
@@ -478,8 +478,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onRenew(licence: MainLicenceResponse): void {
-		switch (licence.workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+		switch (licence.serviceTypeCode) {
+			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
 					.getLicenceWithSelectionAuthenticated(ApplicationTypeCode.Renewal, licence)
 					.pipe(
@@ -496,8 +496,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
 					.getPermitWithSelectionAuthenticated(licence.licenceAppId!, ApplicationTypeCode.Renewal, licence)
 					.pipe(
@@ -508,7 +508,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 								),
 								{
 									state: {
-										workerLicenceTypeCode: licence.workerLicenceTypeCode,
+										serviceTypeCode: licence.serviceTypeCode,
 										applicationTypeCode: ApplicationTypeCode.Renewal,
 									},
 								}

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -48,7 +48,7 @@ export class AlertUpdateOrRenewalComponent implements OnInit {
 	licenceModelData: any = {};
 	constants = SPD_CONSTANTS;
 
-	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
+	@Input() serviceTypeCode: ServiceTypeCode | null = null;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
@@ -58,9 +58,9 @@ export class AlertUpdateOrRenewalComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence) {
+		if (this.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence) {
 			this.licenceModelData = { ...this.workerApplicationService.workerModelFormGroup.getRawValue() };
-		} else if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityBusinessLicence) {
+		} else if (this.serviceTypeCode === ServiceTypeCode.SecurityBusinessLicence) {
 			this.licenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 		} else {
 			this.licenceModelData = { ...this.permitApplicationService.permitModelFormGroup.getRawValue() };
