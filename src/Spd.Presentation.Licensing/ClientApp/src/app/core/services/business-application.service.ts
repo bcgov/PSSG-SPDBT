@@ -5,6 +5,7 @@ import {
 	ActionResult,
 	Address,
 	ApplicationInviteStatusCode,
+	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
 	BizLicAppResponse,
@@ -1336,6 +1337,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			);
 		});
 
+		// using sole proprietor combined flow
+		if (businessLicenceAppl.soleProprietorSWLAppId) {
+			apis.push(
+				this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({
+					licenceAppId: businessLicenceAppl.soleProprietorSWLAppId,
+				})
+			);
+		}
+
 		const brandingDocumentInfos =
 			applicationTypeCode === ApplicationTypeCode.New || applicationTypeCode === ApplicationTypeCode.Renewal
 				? businessLicenceAppl.documentInfos?.filter(
@@ -1347,7 +1357,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		if (apis.length > 0) {
 			return forkJoin(apis).pipe(
-				switchMap((licenceResponses: Array<LicenceResponse>) => {
+				switchMap((licenceResponses: Array<any>) => {
 					if (businessMembers) {
 						this.applyControllingMembersWithSwl(businessMembers.swlControllingMembers ?? [], licenceResponses);
 						this.applyEmployees(businessMembers.employees ?? [], licenceResponses);
@@ -1367,6 +1377,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						);
 					}
 
+					let soleProprietorSwlAppl: WorkerLicenceAppResponse | undefined = undefined;
+					if (businessLicenceAppl.soleProprietorSWLAppId) {
+						soleProprietorSwlAppl = licenceResponses[licenceResponses.length - 1];
+					}
+
 					let privateInvestigatorSwlLicence: LicenceResponse | undefined = undefined;
 					if (businessLicenceAppl.privateInvestigatorSwlInfo?.licenceId) {
 						privateInvestigatorSwlLicence = licenceResponses.find(
@@ -1381,6 +1396,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						associatedExpiredLicence,
 						soleProprietorSwlLicence,
 						privateInvestigatorSwlLicence,
+						soleProprietorSwlAppl,
 						brandingDocumentInfos,
 					});
 				})
@@ -1459,6 +1475,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedExpiredLicence,
 		soleProprietorSwlLicence,
 		privateInvestigatorSwlLicence,
+		soleProprietorSwlAppl,
 		brandingDocumentInfos,
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
@@ -1467,12 +1484,15 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		associatedExpiredLicence?: LicenceResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
+		soleProprietorSwlAppl?: WorkerLicenceAppResponse;
 		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
 		return this.applyLicenceProfileIntoModel({
 			businessProfile,
 			applicationTypeCode: businessLicenceAppl.applicationTypeCode,
 			soleProprietorSwlLicence,
+			soleProprietorSwlAppl,
+			soleProprietorSWLAppOriginTypeCode: businessLicenceAppl.soleProprietorSWLAppOriginTypeCode,
 		}).pipe(
 			switchMap((_resp: any) => {
 				return this.applyLicenceIntoModel({
@@ -1693,7 +1713,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceAppId: businessLicenceAppl.licenceAppId,
 				latestApplicationId: businessLicenceAppl.licenceAppId,
 				soleProprietorSWLAppId: businessLicenceAppl.soleProprietorSWLAppId,
-				isSoleProprietorReturnToSwl: false,
 
 				workerLicenceTypeData,
 				applicationTypeData,
@@ -1733,29 +1752,49 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode,
 		soleProprietorSwlLicence,
 		soleProprietorSWLAppId,
+		soleProprietorSwlAppl,
+		soleProprietorSWLAppOriginTypeCode,
 	}: {
 		businessProfile: BizProfileResponse;
 		applicationTypeCode?: ApplicationTypeCode | null;
 		soleProprietorSwlLicence?: LicenceResponse;
 		soleProprietorSWLAppId?: string;
+		soleProprietorSwlAppl?: WorkerLicenceAppResponse;
+		soleProprietorSWLAppOriginTypeCode?: ApplicationOriginTypeCode;
 	}): Observable<any> {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+
 		const businessInformationData: any = {
 			bizTypeCode: businessProfile.bizTypeCode,
 			legalBusinessName: businessProfile.bizLegalName,
 			bizTradeName: businessProfile.bizTradeName,
 			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid
-			soleProprietorLicenceId: soleProprietorSwlLicence?.licenceId,
-			soleProprietorLicenceAppId: soleProprietorSwlLicence?.licenceAppId,
-			soleProprietorCategoryCodes: soleProprietorSwlLicence?.categoryCodes,
-			soleProprietorLicenceHolderName: soleProprietorSwlLicence?.licenceHolderName,
-			soleProprietorLicenceNumber: soleProprietorSwlLicence?.licenceNumber,
-			soleProprietorLicenceExpiryDate: soleProprietorSwlLicence?.expiryDate,
-			soleProprietorLicenceStatusCode: soleProprietorSwlLicence?.licenceStatusCode,
+			soleProprietorLicenceId: null,
+			soleProprietorLicenceAppId: null,
+			soleProprietorCategoryCodes: null,
+			soleProprietorLicenceHolderName: null,
+			soleProprietorLicenceNumber: null,
+			soleProprietorLicenceExpiryDate: null,
+			soleProprietorLicenceStatusCode: null,
 			soleProprietorSwlPhoneNumber: businessProfile.soleProprietorSwlPhoneNumber,
 			soleProprietorSwlEmailAddress: businessProfile.soleProprietorSwlEmailAddress,
 		};
+
+		if (soleProprietorSwlLicence) {
+			// if in the business profile, the user chose a swl licence (for sole proprietor)
+			businessInformationData.soleProprietorLicenceId = soleProprietorSwlLicence.licenceId;
+			businessInformationData.soleProprietorLicenceAppId = soleProprietorSwlLicence.licenceAppId;
+			businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
+			businessInformationData.soleProprietorLicenceHolderName = soleProprietorSwlLicence.licenceHolderName;
+			businessInformationData.soleProprietorLicenceNumber = soleProprietorSwlLicence.licenceNumber;
+			businessInformationData.soleProprietorLicenceExpiryDate = soleProprietorSwlLicence.expiryDate;
+			businessInformationData.soleProprietorLicenceStatusCode = soleProprietorSwlLicence.licenceStatusCode;
+		} else if (soleProprietorSwlAppl) {
+			// the associated sole proprietor application for the combo flow
+			businessInformationData.soleProprietorLicenceAppId = soleProprietorSwlAppl.licenceAppId;
+			businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlAppl.categoryCodes;
+		}
 
 		const businessManagerData = {
 			givenName: businessProfile.bizManagerContactInfo?.givenName,
@@ -1805,10 +1844,21 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
 		const isBusinessLicenceSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
 
+		let isSoleProprietorSWLAnonymous: boolean | null = null;
+		let isSoleProprietorReturnToSwl: boolean | null = null;
+
+		if (soleProprietorSwlAppl) {
+			isSoleProprietorSWLAnonymous = soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal;
+			isSoleProprietorReturnToSwl = soleProprietorSWLAppOriginTypeCode === ApplicationOriginTypeCode.Portal;
+		}
+
 		this.businessModelFormGroup.patchValue(
 			{
 				bizId: businessProfile.bizId,
-				soleProprietorSWLAppId,
+
+				soleProprietorSWLAppId: soleProprietorSWLAppId ?? soleProprietorSwlLicence?.licenceAppId,
+				isSoleProprietorSWLAnonymous,
+				isSoleProprietorReturnToSwl,
 
 				workerLicenceTypeData,
 				applicationTypeData,
@@ -1899,13 +1949,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				}
 
 				if (categoryData.SecurityGuard) {
+					const useDogs = resp.useDogs;
+					const useDogsYesNo = this.utilService.booleanToBooleanType(resp.useDogs);
+
 					categorySecurityGuardFormGroup = {
 						isInclude: true,
-						useDogs: null,
+						useDogs: useDogsYesNo,
 						dogsPurposeFormGroup: {
-							isDogsPurposeDetectionDrugs: null,
-							isDogsPurposeDetectionExplosives: null,
-							isDogsPurposeProtection: null,
+							isDogsPurposeDetectionDrugs: useDogs ? resp.isDogsPurposeDetectionDrugs : null,
+							isDogsPurposeDetectionExplosives: useDogs ? resp.isDogsPurposeDetectionExplosives : null,
+							isDogsPurposeProtection: useDogs ? resp.isDogsPurposeProtection : null,
 						},
 						attachments: [],
 					};
@@ -1937,7 +1990,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		const categoryData: any = {};
 		soleProprietorSwlLicence.categoryCodes?.forEach((item: string) => {
-			categoryData[item] = false;
+			categoryData[item] = true;
 		});
 
 		let categoryArmouredCarGuardFormGroup: any = { isInclude: false };
@@ -1952,13 +2005,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		if (categoryData.SecurityGuard) {
+			const useDogs = soleProprietorSwlLicence.useDogs;
+			const useDogsYesNo = this.utilService.booleanToBooleanType(soleProprietorSwlLicence.useDogs);
+
 			categorySecurityGuardFormGroup = {
 				isInclude: true,
-				useDogs: null,
+				useDogs: useDogsYesNo,
 				dogsPurposeFormGroup: {
-					isDogsPurposeDetectionDrugs: null,
-					isDogsPurposeDetectionExplosives: null,
-					isDogsPurposeProtection: null,
+					isDogsPurposeDetectionDrugs: useDogs ? soleProprietorSwlLicence.isDogsPurposeDetectionDrugs : null,
+					isDogsPurposeDetectionExplosives: useDogs ? soleProprietorSwlLicence.isDogsPurposeDetectionExplosives : null,
+					isDogsPurposeProtection: useDogs ? soleProprietorSwlLicence.isDogsPurposeProtection : null,
 				},
 				attachments: [],
 			};
@@ -1970,8 +2026,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				businessInformationData,
 				categoryData,
 				categoryArmouredCarGuardFormGroup,
-				categorySecurityGuardFormGroup,
 				categoryPrivateInvestigatorFormGroup,
+				categorySecurityGuardFormGroup,
 			},
 			{
 				emitEvent: false,

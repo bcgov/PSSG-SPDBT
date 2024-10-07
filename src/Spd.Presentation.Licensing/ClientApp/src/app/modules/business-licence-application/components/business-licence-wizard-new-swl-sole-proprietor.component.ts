@@ -66,6 +66,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
+						(cancelAndExit)="onReturnToSwl()"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
@@ -81,6 +82,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
+						(cancelAndExit)="onReturnToSwl()"
 						(scrollIntoView)="onScrollIntoView()"
 						(goToStep)="onGoToStep($event)"
 					></app-steps-business-licence-review>
