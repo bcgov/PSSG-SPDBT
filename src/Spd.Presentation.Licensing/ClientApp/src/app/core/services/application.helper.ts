@@ -484,12 +484,13 @@ export abstract class ApplicationHelper {
 		invalidCategories: any,
 		categoryList: string[],
 		isBusinessLicence: boolean = false,
-		superset: WorkerCategoryTypeCode[] = []
+		availableCategories: WorkerCategoryTypeCode[] = [] // Business Licence does not include all of the same categories as a swl. Here is the valid set
 	): SelectOptions<string>[] {
 		let updatedList: SelectOptions[] = [];
+
 		if (isBusinessLicence) {
 			updatedList = BusinessLicenceCategoryTypes.filter((item: SelectOptions) => {
-				return superset.includes(item.code as WorkerCategoryTypeCode);
+				return availableCategories.includes(item.code as WorkerCategoryTypeCode);
 			});
 		} else {
 			updatedList = [...WorkerCategoryTypes];

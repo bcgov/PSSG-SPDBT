@@ -33,6 +33,7 @@ export interface BizLicAppResponse {
   noBranding?: boolean | null;
   privateInvestigatorSwlInfo?: PrivateInvestigatorSwlContactInfo;
   soleProprietorSWLAppId?: string | null;
+  soleProprietorSWLAppOriginTypeCode?: ApplicationOriginTypeCode;
   useDogs?: boolean | null;
   workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

@@ -29,4 +29,5 @@ export interface ConfigurationResponse {
   oidcConfiguration?: OidcConfiguration;
   recaptchaConfiguration?: RecaptchaConfiguration;
   replacementProcessingTime?: string | null;
+  version?: string | null;
 }
