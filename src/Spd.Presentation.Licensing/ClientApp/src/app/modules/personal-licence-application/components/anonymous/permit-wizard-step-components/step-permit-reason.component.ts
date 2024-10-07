@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -11,7 +11,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
-				<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.BodyArmourPermit">
+				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.BodyArmourPermit">
 					<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
 						<div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
 							<mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
@@ -34,7 +34,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						</div>
 					</div>
 				</div>
-				<div class="row" *ngIf="workerLicenceTypeCode === workerLicenceTypeCodes.ArmouredVehiclePermit">
+				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.ArmouredVehiclePermit">
 					<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
 						<div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
 							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
@@ -88,17 +88,16 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 
 	form: FormGroup = this.permitApplicationService.permitRequirementFormGroup;
 
-	workerLicenceTypeCodes = WorkerLicenceTypeCode;
+	serviceTypeCodes = ServiceTypeCode;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
+	@Input() serviceTypeCode: ServiceTypeCode | null = null;
 
 	constructor(private optionsPipe: OptionsPipe, private permitApplicationService: PermitApplicationService) {}
 
 	ngOnInit(): void {
-		const name =
-			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
-		const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+		const name = this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
+		const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
@@ -108,7 +107,7 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 			}
 			default: {
 				this.title = `Confirm your reasons for requiring ${name}`;
-				this.subtitle = `If the reasons for requiring your ${workerLicenceTypeDesc} have changed from your previous application, update your reasons`;
+				this.subtitle = `If the reasons for requiring your ${serviceTypeCodeDesc} have changed from your previous application, update your reasons`;
 				break;
 			}
 		}
@@ -120,7 +119,7 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 	}
 
 	get isOther(): boolean {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+		if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
 			const bodyArmourRequirementFormGroup = this.form.get('bodyArmourRequirementFormGroup') as FormGroup;
 			return (bodyArmourRequirementFormGroup.get('isOther') as FormControl).value;
 		}

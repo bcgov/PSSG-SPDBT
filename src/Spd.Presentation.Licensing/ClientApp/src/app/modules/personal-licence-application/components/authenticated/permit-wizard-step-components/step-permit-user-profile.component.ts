@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { CommonUserProfileLicenceCriminalHistoryComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile-licence-criminal-history.component';
 import { CommonUserProfileComponent } from '@app/modules/personal-licence-application/components/authenticated/user-profile-components/common-user-profile.component';
@@ -98,7 +98,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	saveAndContinueLabel = 'Save & Continue to Application';
 
 	form: FormGroup = this.permitApplicationService.profileConfirmationFormGroup;
-	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
+	serviceTypeCode: ServiceTypeCode | null = null;
 	applicationTypeCode: ApplicationTypeCode | null = null;
 	showConfirmation = false;
 
@@ -120,7 +120,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	) {
 		// check if a licenceNumber was passed from 'WorkerLicenceFirstTimeUserSelectionComponent'
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.workerLicenceTypeCode = state ? state['workerLicenceTypeCode'] : null;
+		this.serviceTypeCode = state ? state['serviceTypeCode'] : null;
 		this.applicationTypeCode = state ? state['applicationTypeCode'] : null;
 
 		switch (this.applicationTypeCode) {
@@ -145,7 +145,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	}
 
 	ngOnInit(): void {
-		if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+		if (this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit) {
 			this.collectionNoticeActName = 'Armoured Vehicle and After-Market Compartment Control Act (AVAMCCA)';
 		} else {
 			this.collectionNoticeActName = 'Body Armour Control Act (BACA)';
@@ -177,7 +177,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 
 		if (this.applicationTypeCode) {
 			this.permitApplicationService
-				.saveUserProfileAndContinue(this.workerLicenceTypeCode!, this.applicationTypeCode)
+				.saveUserProfileAndContinue(this.serviceTypeCode!, this.applicationTypeCode)
 				.subscribe();
 			return;
 		}

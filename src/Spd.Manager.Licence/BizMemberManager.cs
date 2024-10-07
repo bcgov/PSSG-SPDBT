@@ -71,7 +71,7 @@ internal class BizMemberManager :
             new LicenceAppQuery(
                 null,
                 resp.BizId,
-                new List<WorkerLicenceTypeEnum> { WorkerLicenceTypeEnum.SecurityBusinessLicence },
+                new List<ServiceTypeEnum> { ServiceTypeEnum.SecurityBusinessLicence },
                 new List<ApplicationPortalStatusEnum>
                 {
                     ApplicationPortalStatusEnum.Draft,

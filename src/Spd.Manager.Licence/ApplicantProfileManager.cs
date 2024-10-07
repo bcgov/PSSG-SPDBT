@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Alias;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Contact;
@@ -139,11 +140,11 @@ namespace Spd.Manager.Licence
             LicenceAppQuery q = new(
                 cmd.ApplicantId,
                 null,
-                new List<WorkerLicenceTypeEnum>
+                new List<ServiceTypeEnum>
                 {
-                    WorkerLicenceTypeEnum.ArmouredVehiclePermit,
-                    WorkerLicenceTypeEnum.BodyArmourPermit,
-                    WorkerLicenceTypeEnum.SecurityWorkerLicence,
+                    ServiceTypeEnum.ArmouredVehiclePermit,
+                    ServiceTypeEnum.BodyArmourPermit,
+                    ServiceTypeEnum.SecurityWorkerLicence,
                 },
                 new List<ApplicationPortalStatusEnum>
                 {

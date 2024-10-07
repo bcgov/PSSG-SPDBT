@@ -26,7 +26,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         spd_application app = _mapper.Map<spd_application>(cmd);
         app.statuscode = (int)ApplicationStatusOptionSet.Incomplete;
         _context.AddTospd_applications(app);
-        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         contact? contact = _mapper.Map<contact>(cmd);
         if (cmd.ApplicationTypeCode == ApplicationTypeEnum.New)
         {
@@ -73,7 +73,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         await _context.SaveChangesAsync(ct);
         //Associate of 1:N navigation property with Create of Update is not supported in CRM, so have to save first.
         //then update category.
-        if (cmd.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityWorkerLicence)
+        if (cmd.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
         {
             SharedRepositoryFuncs.ProcessCategories(_context, cmd.CategoryCodes, app);
         }
@@ -106,7 +106,7 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 _context.SetLink(app, nameof(spd_application.spd_ApplicantId_contact), contact);
             }
         }
-        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
             SharedRepositoryFuncs.LinkLicence(_context, cmd.ExpiredLicenceId, app);
         else

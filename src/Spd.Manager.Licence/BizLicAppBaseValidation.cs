@@ -23,7 +23,7 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
             .NotEmpty()
             .EmailAddress()
             .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
-        RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
+        RuleFor(r => r.ServiceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode)
             .NotEmpty()

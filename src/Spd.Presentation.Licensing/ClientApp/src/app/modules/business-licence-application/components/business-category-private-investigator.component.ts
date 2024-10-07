@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -87,7 +87,7 @@ export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChil
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Manager with Security Worker Licence',
 			isExpiredLicenceSearch: false,
-			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			lookupServiceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
 			isLoggedIn: true,
 		};
 		this.dialog

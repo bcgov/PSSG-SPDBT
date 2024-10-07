@@ -20,7 +20,7 @@ import {
 	PermitAppSubmitRequest,
 	PermitAppUpsertRequest,
 	PermitLicenceAppResponse,
-	WorkerLicenceTypeCode,
+	ServiceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { AuthenticationService } from '@app/core/services/authentication.service';
@@ -70,7 +70,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 		originalLicenceData: this.originalLicenceFormGroup,
 
-		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
+		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 		licenceTermData: this.licenceTermFormGroup,
 
@@ -206,10 +206,10 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	isStepPurposeAndRationaleComplete(): boolean {
-		const workerLicenceTypeCode = this.permitModelFormGroup.get('workerLicenceTypeData.workerLicenceTypeCode')?.value;
+		const serviceTypeCode = this.permitModelFormGroup.get('serviceTypeData.serviceTypeCode')?.value;
 
 		let showEmployerInformation = false;
-		if (workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+		if (serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
 			const bodyArmourRequirement = this.permitModelFormGroup.get(
 				'permitRequirementData.bodyArmourRequirementFormGroup'
 			)?.value;
@@ -390,12 +390,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	saveUserProfileAndContinue(
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		serviceTypeCode: ServiceTypeCode,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<StrictHttpResponse<string>> {
 		return this.saveUserProfile().pipe(
 			tap((_resp: StrictHttpResponse<string>) => {
-				this.continueToNextStep(workerLicenceTypeCode, applicationTypeCode);
+				this.continueToNextStep(serviceTypeCode, applicationTypeCode);
 			})
 		);
 	}
@@ -404,10 +404,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Save the user profile in a flow
 	 * @returns
 	 */
-	private continueToNextStep(
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode
-	): void {
+	private continueToNextStep(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): void {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal: {
 				this.router.navigateByUrl(
@@ -422,7 +419,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					PersonalLicenceApplicationRoutes.pathPermitAuthenticated(
 						PersonalLicenceApplicationRoutes.PERMIT_UPDATE_AUTHENTICATED
 					),
-					{ state: { workerLicenceTypeCode: workerLicenceTypeCode } }
+					{ state: { serviceTypeCode: serviceTypeCode } }
 				);
 				break;
 			}
@@ -448,7 +445,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
@@ -459,16 +456,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty permit
 	 * @returns
 	 */
-	createNewPermitAuthenticated(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+	createNewPermitAuthenticated(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
 				switchMap((profile: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(profile, workerLicenceTypeCode, ApplicationTypeCode.New).pipe(
+					return this.createEmptyPermitAuthenticated(profile, serviceTypeCode, ApplicationTypeCode.New).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
-							this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode, ApplicationTypeCode.New);
+							this.commonApplicationService.setApplicationTitle(serviceTypeCode, ApplicationTypeCode.New);
 						})
 					);
 				})
@@ -490,7 +487,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
 				);
 			})
@@ -643,12 +640,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 */
 	private createEmptyPermitAuthenticated(
 		profile: ApplicantProfileResponse,
-		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
+		serviceTypeCode: ServiceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
 		this.reset();
 
-		return this.applyPermitProfileIntoModel(profile, workerLicenceTypeCode, applicationTypeCode);
+		return this.applyPermitProfileIntoModel(profile, serviceTypeCode, applicationTypeCode);
 	}
 
 	/**
@@ -779,7 +776,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.initialized = true;
 
 				this.commonApplicationService.setApplicationTitle(
-					_resp.workerLicenceTypeData.workerLicenceTypeCode,
+					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
 					accessCodeData.licenceNumber
 				);
@@ -793,12 +790,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * Create an empty permit
 	 * @returns
 	 */
-	createNewPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
-		return this.createEmptyPermitAnonymous(workerLicenceTypeCode).pipe(
+	createNewPermitAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
+		return this.createEmptyPermitAnonymous(serviceTypeCode).pipe(
 			tap((resp: any) => {
 				this.initialized = true;
 
-				this.commonApplicationService.setApplicationTitle(resp.workerLicenceTypeCode);
+				this.commonApplicationService.setApplicationTitle(resp.serviceTypeCode);
 			})
 		);
 	}
@@ -835,13 +832,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 
-	private createEmptyPermitAnonymous(workerLicenceTypeCode: WorkerLicenceTypeCode): Observable<any> {
+	private createEmptyPermitAnonymous(serviceTypeCode: ServiceTypeCode): Observable<any> {
 		this.reset();
 
 		this.permitModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData: { workerLicenceTypeCode: workerLicenceTypeCode },
-				permitRequirementData: { workerLicenceTypeCode: workerLicenceTypeCode },
+				serviceTypeData: { serviceTypeCode: serviceTypeCode },
+				permitRequirementData: { serviceTypeCode: serviceTypeCode },
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
 				profileConfirmationData: { isProfileUpToDate: true },
 			},
@@ -1004,7 +1001,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}): Observable<any> {
 		return this.applyPermitProfileIntoModel(
 			profileData ?? permitLicenceAppl,
-			permitLicenceAppl.workerLicenceTypeCode,
+			permitLicenceAppl.serviceTypeCode,
 			permitLicenceAppl.applicationTypeCode,
 			associatedLicence,
 			permitLicenceData
@@ -1017,12 +1014,12 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	private applyPermitProfileIntoModel(
 		profileData: ApplicantProfileResponse | PermitLicenceAppResponse,
-		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined,
+		serviceTypeCode: ServiceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
 		associatedLicence?: MainLicenceResponse | null,
 		updateLicenceData?: LicenceResponse | null
 	): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: workerLicenceTypeCode };
+		const serviceTypeData = { serviceTypeCode: serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
 		const personalInformationData = {
@@ -1128,7 +1125,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				applicantId: 'applicantId' in profileData ? profileData.applicantId : null,
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
 				licenceTermData: { licenceTermCode: LicenceTermCode.FiveYears },
@@ -1174,7 +1171,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		updateLicenceInfo?: LicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: permitLicenceAppl.workerLicenceTypeCode };
+		const serviceTypeData = { serviceTypeCode: permitLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: permitLicenceAppl.applicationTypeCode };
 
 		const hasExpiredLicence = permitLicenceAppl.hasExpiredLicence ?? false;
@@ -1230,7 +1227,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		};
 
 		const permitRequirementData = {
-			workerLicenceTypeCode: permitLicenceAppl.workerLicenceTypeCode,
+			serviceTypeCode: permitLicenceAppl.serviceTypeCode,
 			bodyArmourRequirementFormGroup: bodyArmourRequirementFormGroup,
 			armouredVehicleRequirementFormGroup: armouredVehicleRequirementFormGroup,
 			otherReason: permitLicenceData.permitOtherRequiredReason,
@@ -1386,7 +1383,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			{
 				licenceAppId: permitLicenceAppl.licenceAppId,
 				caseNumber: permitLicenceAppl.caseNumber,
-				workerLicenceTypeData,
+				serviceTypeData,
 				permitRequirementData,
 				permitRationaleData,
 				employerData,
@@ -1408,9 +1405,9 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private applyRenewalDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
+		const serviceTypeData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
-		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
+		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
@@ -1441,7 +1438,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		this.permitModelFormGroup.patchValue(
 			{
 				licenceAppId: null,
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
 
@@ -1466,7 +1463,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	private applyUpdateDataUpdatesToModel(resp: any, photoOfYourself: Blob): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
-		const permitRequirementData = { workerLicenceTypeCode: resp.workerLicenceTypeData.workerLicenceTypeCode };
+		const permitRequirementData = { serviceTypeCode: resp.serviceTypeData.serviceTypeCode };
 
 		const originalLicenceData = resp.originalLicenceData;
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;

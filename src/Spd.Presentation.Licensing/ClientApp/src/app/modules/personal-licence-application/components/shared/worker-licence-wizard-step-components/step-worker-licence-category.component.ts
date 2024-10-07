@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ApplicationTypeCode, WorkerCategoryTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SelectOptions, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -15,7 +15,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 			[title]="title"
 			[subtitle]="infoTitle"
 			[isRenewalOrUpdate]="isRenewalOrUpdate"
-			[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
+			[serviceTypeCode]="securityWorkerLicenceCode"
 			[applicationTypeCode]="applicationTypeCode"
 		>
 			<form [formGroup]="form" novalidate>
@@ -626,7 +626,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 
 	validCategoryList: SelectOptions[] = WorkerCategoryTypes;
 
-	workerLicenceTypes = WorkerLicenceTypeCode;
+	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
 	workerCategoryTypes = WorkerCategoryTypes;
 	workerCategoryTypeCodes = WorkerCategoryTypeCode;
 

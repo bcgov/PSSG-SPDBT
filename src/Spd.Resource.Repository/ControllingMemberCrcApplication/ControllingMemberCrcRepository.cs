@@ -70,7 +70,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         // add link to parent business application
         _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
 
-        SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+        SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
 
         //link to bizContact
@@ -172,7 +172,7 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
             // add link to parent business application
             _context.AddLink(bizLicApplication, nameof(bizLicApplication.spd_businessapplication_spd_workerapplication), app);
 
-            SharedRepositoryFuncs.LinkServiceType(_context, cmd.WorkerLicenceTypeCode, app);
+            SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
             SharedRepositoryFuncs.LinkTeam(_context, DynamicsConstants.Licensing_Client_Service_Team_Guid, app);
 
             //link to bizContact

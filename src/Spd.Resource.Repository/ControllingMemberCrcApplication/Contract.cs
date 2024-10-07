@@ -12,7 +12,7 @@ public partial interface IControllingMemberCrcRepository
 
 public record ControllingMemberCrcApplication
 {
-    public WorkerLicenceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum ServiceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public ApplicationOriginTypeEnum? ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeEnum.Portal;
     public Guid? ParentBizLicApplicationId { get; set; }
