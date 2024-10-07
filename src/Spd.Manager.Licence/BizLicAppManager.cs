@@ -85,7 +85,7 @@ internal class BizLicAppManager :
     public async Task<BizLicAppCommandResponse> Handle(BizLicAppUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.BizLicAppUpsertRequest.BizId,
-            Enum.Parse<ServiceTypeEnum>(cmd.BizLicAppUpsertRequest.WorkerLicenceTypeCode.Value.ToString()),
+            Enum.Parse<ServiceTypeEnum>(cmd.BizLicAppUpsertRequest.ServiceTypeCode.Value.ToString()),
             cmd.BizLicAppUpsertRequest.LicenceAppId,
             cancellationToken);
 

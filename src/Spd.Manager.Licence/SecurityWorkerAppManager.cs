@@ -62,7 +62,7 @@ internal class SecurityWorkerAppManager :
     public async Task<WorkerLicenceCommandResponse> Handle(WorkerLicenceUpsertCommand cmd, CancellationToken cancellationToken)
     {
         bool hasDuplicate = await HasDuplicates(cmd.LicenceUpsertRequest.ApplicantId,
-            Enum.Parse<ServiceTypeEnum>(cmd.LicenceUpsertRequest.WorkerLicenceTypeCode.ToString()),
+            Enum.Parse<ServiceTypeEnum>(cmd.LicenceUpsertRequest.ServiceTypeCode.ToString()),
             cmd.LicenceUpsertRequest.LicenceAppId,
             cancellationToken);
 
@@ -272,7 +272,7 @@ internal class SecurityWorkerAppManager :
 
         //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
         bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
-            originalLic.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityWorkerLicence;
+            originalLic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence;
 
         decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence);
 
@@ -578,7 +578,7 @@ internal class SecurityWorkerAppManager :
 
     private bool IsSoleProprietorComboApp(LicenceAppBase app)
     {
-        return app.WorkerLicenceTypeCode == ServiceTypeCode.SecurityWorkerLicence &&
+        return app.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence &&
             (app.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || app.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
 
     }

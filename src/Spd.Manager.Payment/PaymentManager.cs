@@ -196,7 +196,7 @@ namespace Spd.Manager.Payment
 
             //if application is sole-proprietor combo application, set combo swl applicatoin to be Paid too.
             BizLicApplicationResp bizApp = await _bizAppRepository.GetBizLicApplicationAsync(command.PaybcPaymentResult.ApplicationId, ct);
-            if (bizApp.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityBusinessLicence) //first, the application must be bizLicApp
+            if (bizApp.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence) //first, the application must be bizLicApp
             {
                 if (bizApp.SoleProprietorSWLAppId != null && (bizApp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || bizApp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor))
                 {
@@ -414,19 +414,19 @@ namespace Spd.Manager.Payment
                 LicenceFeeListResp feeList = await _licFeeRepository.QueryAsync(
                     new LicenceFeeQry
                     {
-                        WorkerLicenceTypeEnum = licApp.WorkerLicenceTypeCode,
+                        ServiceTypeEnum = licApp.ServiceTypeCode,
                         ApplicationTypeEnum = licApp.ApplicationTypeCode,
                         LicenceTermEnum = licApp.LicenceTermCode,
                         BizTypeEnum = licApp.BizTypeCode ?? BizTypeEnum.None,
                         HasValidSwl90DayLicence = licApp.OriginalLicenceTermCode == LicenceTermEnum.NinetyDays &&
-                            licApp.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityWorkerLicence &&
+                            licApp.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence &&
                             licApp.ApplicationTypeCode == ApplicationTypeEnum.Renewal
                     },
                     ct);
 
                 decimal? price = feeList.LicenceFees.First()?.Amount;
                 if (price == null)
-                    throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.WorkerLicenceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
+                    throw new ApiException(HttpStatusCode.InternalServerError, $"The price for {licApp.ServiceTypeCode} {licApp.ApplicationTypeCode} {licApp.LicenceTermCode} is not set correctly in dynamics.");
                 return new SpdPaymentConfig
                 {
                     PbcRefNumber = pbcRefnumberLicConfig.Value,

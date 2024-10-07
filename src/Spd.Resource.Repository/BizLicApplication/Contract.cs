@@ -14,7 +14,7 @@ public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);
 
 public record BizLicApplication
 {
-    public ServiceTypeEnum WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeEnum ServiceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
     public BizTypeEnum? BizTypeCode { get; set; }
     public ApplicationOriginTypeCode? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeCode.Portal;

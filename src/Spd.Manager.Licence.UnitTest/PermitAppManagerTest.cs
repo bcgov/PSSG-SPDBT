@@ -120,7 +120,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = null,
-            WorkerLicenceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
             DocumentInfos = new List<Document>() { workPermit }
         };
@@ -156,7 +156,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = licAppId,
-            WorkerLicenceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
         };
 
@@ -181,7 +181,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = licAppId,
-            WorkerLicenceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
         };
 
@@ -328,7 +328,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = null,
-            WorkerLicenceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
         };
 

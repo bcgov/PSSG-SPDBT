@@ -99,7 +99,7 @@ internal class Mappings : Profile
          .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
          .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
          .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
-         .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
+         .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))

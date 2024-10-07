@@ -37,7 +37,7 @@ internal class PersonalLicencePreviewTransformStrategy(IPersonLicApplicationRepo
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
                 new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(preview.LicenceType)), cancellationToken);
         preview.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
-        if (lic.WorkerLicenceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
+        if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence)
             preview.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, cancellationToken);
 
         LicenceApplicationResp app = await personLicAppRepository.GetLicenceApplicationAsync((Guid)lic.LicenceAppId, cancellationToken);

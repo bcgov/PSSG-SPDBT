@@ -89,12 +89,12 @@ namespace Spd.Presentation.Licensing.Controllers
 
             LicenceResponse? response = await _mediator.Send(new LicenceQuery(licenceNumber, accessCode));
             Guid latestAppId = Guid.Empty;
-            if (response?.WorkerLicenceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
+            if (response?.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence)
                 latestAppId = await _mediator.Send(new GetLatestWorkerLicenceApplicationIdQuery((Guid)response.LicenceHolderId));
-            else if (response?.WorkerLicenceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
+            else if (response?.ServiceTypeCode == ServiceTypeCode.SecurityBusinessLicence)
                 throw new ApiException(HttpStatusCode.BadRequest, "Biz licensing does not support anonymous.");
             else if (response != null)
-                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.WorkerLicenceTypeCode));
+                latestAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery((Guid)response.LicenceHolderId, (ServiceTypeCode)response.ServiceTypeCode));
 
             if (response != null)
             {

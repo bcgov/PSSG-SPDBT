@@ -22,7 +22,7 @@ public class FeeManagerTest
         var licenceFee = fixture.Create<LicenceFeeResp>();
         LicenceFeeResponse licenceFeeResponse = new()
         {
-            WorkerLicenceTypeCode = (ServiceTypeCode?)licenceFee.WorkerLicenceTypeCode,
+            ServiceTypeCode = (ServiceTypeCode?)licenceFee.ServiceTypeCode,
             BizTypeCode = (BizTypeCode?)licenceFee.BizTypeCode,
             ApplicationTypeCode = (Shared.ApplicationTypeCode?)licenceFee.ApplicationTypeCode,
             LicenceTermCode = (Shared.LicenceTermCode?)licenceFee.LicenceTermCode,

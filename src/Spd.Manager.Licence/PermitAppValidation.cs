@@ -8,36 +8,36 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
     public PermitAppSubmitRequestValidator()
     {
         RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
-        RuleFor(r => r.WorkerLicenceTypeCode).Must(t => t == ServiceTypeCode.ArmouredVehiclePermit || t == ServiceTypeCode.BodyArmourPermit);
+        RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.ArmouredVehiclePermit || t == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true);
         RuleFor(r => r.PermitOtherRequiredReason).NotEmpty()
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.EmployerName).NotEmpty()
             .MaximumLength(160)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorName).NotEmpty()
             .MaximumLength(100)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorPhoneNumber).NotEmpty()
             .MaximumLength(30)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorEmailAddress).NotEmpty()
             .MaximumLength(75)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.EmployerPrimaryAddress).NotNull()
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.EmployerPrimaryAddress.AddressLine1)
             .NotEmpty()
             .MaximumLength(100)
@@ -56,19 +56,19 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
             .When(r => r.EmployerPrimaryAddress != null);
         RuleFor(r => r.Rationale).NotEmpty()
             .MaximumLength(3000)
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.IsCanadianResident).NotEmpty()
-            .When(r => r.IsCanadianCitizen == false && (r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            .When(r => r.IsCanadianCitizen == false && (r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.BodyArmourPermitReasonCodes).NotNull()
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.BodyArmourPermitReasonCodes.Count()).GreaterThan(0)
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit && r.BodyArmourPermitReasonCodes != null);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit && r.BodyArmourPermitReasonCodes != null);
         RuleFor(r => r.ArmouredVehiclePermitReasonCodes).NotNull()
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit);
         RuleFor(r => r.ArmouredVehiclePermitReasonCodes.Count()).GreaterThan(0)
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit && r.ArmouredVehiclePermitReasonCodes != null);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit && r.ArmouredVehiclePermitReasonCodes != null);
         RuleFor(r => r.LicenceTermCode).Must(t => t == LicenceTermCode.FiveYears)
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit);
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.DocumentInfos)
             .Must(r => r.Any(f => LicenceAppDocumentManager.NonCanadianCitizenProofCodes.Contains((LicenceDocumentTypeCode)f.LicenceDocumentTypeCode)))
             .When(r => r.IsCanadianResident != null && !r.IsCanadianResident.Value && r.IsCanadianCitizen != null && !r.IsCanadianCitizen.Value)
@@ -88,38 +88,38 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
 {
     public PermitAppAnonymousSubmitRequestValidator()
     {
-        RuleFor(r => r.WorkerLicenceTypeCode).Must(t => t == ServiceTypeCode.ArmouredVehiclePermit || t == ServiceTypeCode.BodyArmourPermit);
+        RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.ArmouredVehiclePermit || t == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true).When(r => r.ApplicationTypeCode != ApplicationTypeCode.Replacement);
         RuleFor(r => r.PermitOtherRequiredReason).NotEmpty()
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.Other) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.Other) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.EmployerName).NotEmpty()
             .MaximumLength(160)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorName).NotEmpty()
             .MaximumLength(100)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorPhoneNumber).NotEmpty()
             .MaximumLength(30)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.SupervisorEmailAddress).NotEmpty()
             .MaximumLength(75)
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.EmployerPrimaryAddress).NotNull()
             .When(r =>
-            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
-            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
+            (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.EmployerPrimaryAddress.AddressLine1)
             .NotEmpty()
             .MaximumLength(100)
@@ -138,19 +138,19 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
             .When(r => r.EmployerPrimaryAddress != null);
         RuleFor(r => r.Rationale).NotEmpty()
             .MaximumLength(3000)
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.IsCanadianResident).NotEmpty()
-            .When(r => r.IsCanadianCitizen == false && (r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit));
+            .When(r => r.IsCanadianCitizen == false && (r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit || r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
         RuleFor(r => r.BodyArmourPermitReasonCodes).NotNull()
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.BodyArmourPermitReasonCodes.Count()).GreaterThan(0)
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit && r.BodyArmourPermitReasonCodes != null);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit && r.BodyArmourPermitReasonCodes != null);
         RuleFor(r => r.ArmouredVehiclePermitReasonCodes).NotNull()
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit);
         RuleFor(r => r.ArmouredVehiclePermitReasonCodes.Count()).GreaterThan(0)
-            .When(r => r.WorkerLicenceTypeCode == ServiceTypeCode.ArmouredVehiclePermit && r.ArmouredVehiclePermitReasonCodes != null);
+            .When(r => r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit && r.ArmouredVehiclePermitReasonCodes != null);
         RuleFor(r => r.LicenceTermCode).Must(t => t == LicenceTermCode.FiveYears)
-            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.WorkerLicenceTypeCode == ServiceTypeCode.BodyArmourPermit);
+            .When(r => r.ApplicationTypeCode == ApplicationTypeCode.New && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.CriminalChargeDescription)
             .NotEmpty()
             .MaximumLength(1000)

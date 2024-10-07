@@ -32,7 +32,7 @@ public record PermitLicenceAppBase : PersonalLicenceAppBase
 public record PermitUpsertCommand(PermitAppUpsertRequest PermitUpsertRequest) : IRequest<PermitAppCommandResponse>;
 public record PermitSubmitCommand(PermitAppUpsertRequest PermitUpsertRequest)
     : PermitUpsertCommand(PermitUpsertRequest), IRequest<PermitAppCommandResponse>;
-public record GetLatestPermitApplicationIdQuery(Guid ApplicantId, ServiceTypeCode WorkerLicenceTypeCode) : IRequest<Guid>;
+public record GetLatestPermitApplicationIdQuery(Guid ApplicantId, ServiceTypeCode ServiceTypeCode) : IRequest<Guid>;
 public record PermitAppUpsertRequest : PermitLicenceAppBase
 {
     public IEnumerable<Document>? DocumentInfos { get; set; }

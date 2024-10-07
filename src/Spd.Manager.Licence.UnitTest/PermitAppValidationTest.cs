@@ -46,7 +46,7 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
@@ -92,7 +92,7 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
@@ -138,7 +138,7 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
@@ -184,7 +184,7 @@ public class PermitAppValidationTest
             .Create();
 
         var model = fixture.Build<PermitAppUpsertRequest>()
-            .With(r => r.WorkerLicenceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
+            .With(r => r.ServiceTypeCode, ServiceTypeCode.ArmouredVehiclePermit)
             .With(r => r.AgreeToCompleteAndAccurate, true)
             .With(r => r.EmployerName, new string('a', 160))
             .With(r => r.SupervisorName, new string('a', 100))
