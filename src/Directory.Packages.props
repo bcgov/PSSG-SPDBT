@@ -67,7 +67,7 @@
     <PackageVersion Include="SkiaSharp" Version="2.88.8" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.8" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.7.3" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.8.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.8.1" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageVersion Include="System.Drawing.Common" Version="8.0.7" />
