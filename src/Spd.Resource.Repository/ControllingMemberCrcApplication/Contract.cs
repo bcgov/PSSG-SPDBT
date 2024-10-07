@@ -14,7 +14,7 @@ public record ControllingMemberCrcApplication
 {
     public ServiceTypeEnum ServiceTypeCode { get; set; }
     public ApplicationTypeEnum ApplicationTypeCode { get; set; }
-    public ApplicationOriginTypeCode? ApplicationOriginTypeCode { get; set; } = Repository.ApplicationOriginTypeCode.Portal;
+    public ApplicationOriginTypeEnum? ApplicationOriginTypeCode { get; set; } = ApplicationOriginTypeEnum.Portal;
     public Guid? ParentBizLicApplicationId { get; set; }
     public string? GivenName { get; set; }
     public string? MiddleName1 { get; set; }

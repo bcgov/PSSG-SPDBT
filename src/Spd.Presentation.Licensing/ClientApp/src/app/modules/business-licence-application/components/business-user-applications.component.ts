@@ -101,7 +101,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								<div class="text-data">You don't have an active business licence</div>
 							</div>
 							<div class="col-xl-5 col-lg-6 text-end">
-								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onCreateNew()">
+								<button mat-flat-button color="primary" class="large mt-2 mt-lg-0" (click)="onNewBusinessLicence()">
 									<mat-icon>add</mat-icon>Apply for a New Business Licence
 								</button>
 							</div>
@@ -325,7 +325,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onCreateNew(): void {
+	onNewBusinessLicence(): void {
 		this.businessApplicationService
 			.createNewBusinessLicenceWithProfile(ApplicationTypeCode.New)
 			.pipe(
