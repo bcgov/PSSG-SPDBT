@@ -1765,7 +1765,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const workerLicenceTypeData = { workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
-		let businessInformationData: any = {
+		const businessInformationData: any = {
 			bizTypeCode: businessProfile.bizTypeCode,
 			legalBusinessName: businessProfile.bizLegalName,
 			bizTradeName: businessProfile.bizTradeName,
