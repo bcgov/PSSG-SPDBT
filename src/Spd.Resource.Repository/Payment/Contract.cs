@@ -1,5 +1,3 @@
-using Spd.Resource.Repository.PersonLicApplication;
-
 namespace Spd.Resource.Repository.Payment
 {
     public interface IPaymentRepository
@@ -30,7 +28,9 @@ namespace Spd.Resource.Repository.Payment
         public PaymentTypeEnum? PaymentType { get; set; }
         public bool? Refunded { get; set; } = null;
         public ServiceTypeEnum? ServiceType { get; set; }
-        public string? Email { get; set; }
+        public string? ApplicationEmail { get; set; }
+        public Guid OrganizationId { get; set; }
+        public PayerPreferenceTypeCode PayeeType { get; set; }
     }
 
     public abstract record PaymentCmd;
