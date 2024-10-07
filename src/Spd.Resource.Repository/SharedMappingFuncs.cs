@@ -197,4 +197,23 @@ internal static class SharedMappingFuncs
         string[] strs = optionsetStr.Split(',');
         return strs.Select(s => Enum.Parse<UploadedDocumentEnum>(Enum.GetName(typeof(UploadedDocumentOptionSet), Int32.Parse(s)))).ToList();
     }
+
+    internal static string? GetPayeeType(int? code)
+    {
+        if (code == null) return null;
+        return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
+    }
+
+    internal static int? GetPayeeTypeCode(PayerPreferenceTypeCode? code)
+    {
+        if (code == null) return null;
+        try
+        {
+            return (int)Enum.Parse<PayerPreferenceOptionSet>(code.ToString());
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }
