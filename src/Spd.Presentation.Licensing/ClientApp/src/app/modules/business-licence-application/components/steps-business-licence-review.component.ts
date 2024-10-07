@@ -15,8 +15,9 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				<app-wizard-footer
 					[isFormValid]="true"
 					[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
-					[showSaveAndExit]="showSaveAndExit"
+					[showSaveAndExit]="true"
 					(saveAndExit)="onNoSaveAndExit()"
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
@@ -46,6 +47,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 							[showSaveAndExit]="true"
 							[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
 							(saveAndExit)="onNoSaveAndExit()"
+							(cancelAndExit)="onCancelAndExit()"
 							nextButtonLabel="Pay Now"
 							(previousStepperStep)="onConsentGoToPreviousStep()"
 							(nextStepperStep)="onPayNow()"
