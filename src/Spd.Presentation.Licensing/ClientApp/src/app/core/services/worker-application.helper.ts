@@ -8,8 +8,8 @@ import {
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
+	ServiceTypeCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
@@ -680,7 +680,7 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 	private getSaveBodyBase(workerModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = workerModelFormValue.licenceAppId;
 		const originalLicenceData = workerModelFormValue.originalLicenceData;
-		const workerLicenceTypeData = workerModelFormValue.workerLicenceTypeData;
+		const serviceTypeData = workerModelFormValue.serviceTypeData;
 		const applicationTypeData = workerModelFormValue.applicationTypeData;
 		const soleProprietorData = workerModelFormValue.soleProprietorData;
 		const bcDriversLicenceData = workerModelFormValue.bcDriversLicenceData;
@@ -954,7 +954,7 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 			originalApplicationId: originalLicenceData.originalApplicationId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
-			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			serviceTypeCode: serviceTypeData.serviceTypeCode,
 			//-----------------------------------
 			bizTypeCode:
 				soleProprietorData.isSoleProprietor === BooleanTypeCode.No ? BizTypeCode.None : soleProprietorData.bizTypeCode,
@@ -1241,8 +1241,8 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		return workerLicenceModelData.caseNumber ?? '';
 	}
 
-	getSummaryworkerLicenceTypeCode(workerLicenceModelData: any): WorkerLicenceTypeCode | null {
-		return workerLicenceModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	getSummaryserviceTypeCode(workerLicenceModelData: any): ServiceTypeCode | null {
+		return workerLicenceModelData.serviceTypeData?.serviceTypeCode ?? null;
 	}
 
 	getSummaryapplicationTypeCode(workerLicenceModelData: any): ApplicationTypeCode | null {

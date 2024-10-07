@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository;
 
 namespace Spd.Manager.Licence;
 internal class FeeManager :
@@ -25,7 +26,7 @@ internal class FeeManager :
 
     public async Task<LicenceFeeListResponse> Handle(GetLicenceFeeListQuery query, CancellationToken ct)
     {
-        LicenceFeeQry qry = new LicenceFeeQry() { WorkerLicenceTypeEnum = (WorkerLicenceTypeEnum?)query.WorkerLicenceTypeCode };
+        LicenceFeeQry qry = new LicenceFeeQry() { ServiceTypeEnum = (ServiceTypeEnum?)query.ServiceTypeCode };
         var fees = await _licenceFeeRepository.QueryAsync(qry, ct);
         var feeResps = _mapper.Map<IEnumerable<LicenceFeeResponse>>(fees.LicenceFees);
 

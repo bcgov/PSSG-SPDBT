@@ -20,8 +20,8 @@ import {
 	PaymentLinkCreateRequest,
 	PaymentLinkResponse,
 	PaymentMethodCode,
+	ServiceTypeCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BizMembersService, LicenceAppService, LicenceService, PaymentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -169,15 +169,12 @@ export class ApplicationService {
 		);
 	}
 
-	public onGotoPermitUserProfile(
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
-		applicationTypeCode: ApplicationTypeCode
-	): void {
+	public onGotoPermitUserProfile(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): void {
 		this.router.navigateByUrl(
 			PersonalLicenceApplicationRoutes.pathPermitAuthenticated(
 				PersonalLicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 			),
-			{ state: { workerLicenceTypeCode, applicationTypeCode } }
+			{ state: { serviceTypeCode, applicationTypeCode } }
 		);
 	}
 
@@ -186,20 +183,20 @@ export class ApplicationService {
 	 * @returns list of fees
 	 */
 	public getLicenceTermsAndFees(
-		workerLicenceTypeCode: WorkerLicenceTypeCode | null,
+		serviceTypeCode: ServiceTypeCode | null,
 		applicationTypeCode: ApplicationTypeCode | null,
 		bizTypeCode: BizTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
 		// console.debug(
 		// 	'getLicenceTermsAndFees',
-		// 	workerLicenceTypeCode,
+		// 	serviceTypeCode,
 		// 	applicationTypeCode,
 		// 	bizTypeCode,
 		// 	originalLicenceTermCode
 		// );
 
-		if (!workerLicenceTypeCode || !bizTypeCode) {
+		if (!serviceTypeCode || !bizTypeCode) {
 			return [];
 		}
 
@@ -212,7 +209,7 @@ export class ApplicationService {
 			.getLicenceFees()
 			.filter(
 				(item) =>
-					item.workerLicenceTypeCode == workerLicenceTypeCode &&
+					item.serviceTypeCode == serviceTypeCode &&
 					item.bizTypeCode == bizTypeCode &&
 					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
 					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
@@ -412,33 +409,33 @@ export class ApplicationService {
 	}
 
 	setApplicationTitle(
-		workerLicenceTypeCode: WorkerLicenceTypeCode | undefined = undefined,
+		serviceTypeCode: ServiceTypeCode | undefined = undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined = undefined,
 		originalLicenceNumber: string | undefined = undefined
 	) {
 		let title = '';
 		let mobileTitle = '';
 
-		if (workerLicenceTypeCode) {
-			title = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
-			switch (workerLicenceTypeCode) {
-				case WorkerLicenceTypeCode.SecurityBusinessLicence: {
+		if (serviceTypeCode) {
+			title = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+			switch (serviceTypeCode) {
+				case ServiceTypeCode.SecurityBusinessLicence: {
 					mobileTitle = 'SBL';
 					break;
 				}
-				case WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
+				case ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc: {
 					mobileTitle = 'CM CRC';
 					break;
 				}
-				case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+				case ServiceTypeCode.SecurityWorkerLicence: {
 					mobileTitle = 'SWL';
 					break;
 				}
-				case WorkerLicenceTypeCode.ArmouredVehiclePermit: {
+				case ServiceTypeCode.ArmouredVehiclePermit: {
 					mobileTitle = 'AVP';
 					break;
 				}
-				case WorkerLicenceTypeCode.BodyArmourPermit: {
+				case ServiceTypeCode.BodyArmourPermit: {
 					mobileTitle = 'BAP';
 					break;
 				}
@@ -604,29 +601,29 @@ export class ApplicationService {
 
 	setExpiredLicenceLookupMessage(
 		licence: LicenceResponse | null,
-		workerLicenceTypeCode: WorkerLicenceTypeCode,
+		serviceTypeCode: ServiceTypeCode,
 		isExpired: boolean,
 		isInRenewalPeriod: boolean
 	): [string | null, string | null] {
 		let messageWarn = null;
 		let messageError = null;
 
-		const selWorkerLicenceTypeDesc = this.optionsPipe.transform(workerLicenceTypeCode, 'WorkerLicenceTypes');
+		const selServiceTypeCodeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
 		if (licence) {
-			if (licence.workerLicenceTypeCode !== workerLicenceTypeCode) {
-				//   WorkerLicenceType does not match
-				messageError = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
+			if (licence.serviceTypeCode !== serviceTypeCode) {
+				//   ServiceTypeCode does not match
+				messageError = `This licence number is not a ${selServiceTypeCodeDesc}.`;
 			} else {
 				if (!isExpired) {
 					if (isInRenewalPeriod) {
-						messageWarn = `Your ${selWorkerLicenceTypeDesc} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${selWorkerLicenceTypeDesc}</a>.`;
+						messageWarn = `Your ${selServiceTypeCodeDesc} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${selServiceTypeCodeDesc}</a>.`;
 					} else {
-						messageWarn = `This ${selWorkerLicenceTypeDesc} is still valid. Please renew it when you get your renewal notice in the mail.`;
+						messageWarn = `This ${selServiceTypeCodeDesc} is still valid. Please renew it when you get your renewal notice in the mail.`;
 					}
 				}
 			}
 		} else {
-			messageError = `This ${selWorkerLicenceTypeDesc} number does not match any existing ${selWorkerLicenceTypeDesc}s.`;
+			messageError = `This ${selServiceTypeCodeDesc} number does not match any existing ${selServiceTypeCodeDesc}s.`;
 		}
 
 		return [messageWarn, messageError];
@@ -731,7 +728,7 @@ export class ApplicationService {
 			(item: MainApplicationResponse) => item.isExpiryWarning || item.isExpiryError || item.isControllingMemberWarning
 		);
 		applicationNotifications.forEach((item: MainApplicationResponse) => {
-			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'WorkerLicenceTypes');
+			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
 			const itemExpiry = this.formatDatePipe.transform(item.applicationExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
 			if (item.isExpiryWarning) {
 				warningMessages.push(
@@ -755,7 +752,7 @@ export class ApplicationService {
 
 		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
 		renewals.forEach((item: MainLicenceResponse) => {
-			const itemLabel = this.optionsPipe.transform(item.workerLicenceTypeCode, 'WorkerLicenceTypes');
+			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
 			const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
 
 			if (item.licenceExpiryNumberOfDays != null) {
@@ -905,7 +902,7 @@ export class ApplicationService {
 
 		// get Licence Reprint Fee
 		const fee = this.getLicenceTermsAndFees(
-			basicLicence.workerLicenceTypeCode!,
+			basicLicence.serviceTypeCode!,
 			ApplicationTypeCode.Replacement,
 			bizTypeCode,
 			basicLicence.licenceTermCode

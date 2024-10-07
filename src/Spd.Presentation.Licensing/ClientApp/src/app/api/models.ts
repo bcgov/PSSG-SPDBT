@@ -90,4 +90,3 @@ export { WorkerLicenceAppResponse } from './models/worker-licence-app-response';
 export { WorkerLicenceAppSubmitRequest } from './models/worker-licence-app-submit-request';
 export { WorkerLicenceAppUpsertRequest } from './models/worker-licence-app-upsert-request';
 export { WorkerLicenceCommandResponse } from './models/worker-licence-command-response';
-export { WorkerLicenceTypeCode } from './models/worker-licence-type-code';

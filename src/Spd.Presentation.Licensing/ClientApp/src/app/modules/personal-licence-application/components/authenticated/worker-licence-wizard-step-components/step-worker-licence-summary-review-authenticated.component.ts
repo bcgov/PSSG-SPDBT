@@ -4,8 +4,8 @@ import {
 	ApplicationTypeCode,
 	BizTypeCode,
 	LicenceFeeResponse,
+	ServiceTypeCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -44,7 +44,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Type</div>
 												<div class="summary-text-data">
-													{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+													{{ serviceTypeCode | options : 'ServiceTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
@@ -542,18 +542,13 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 		const originalLicenceTermCode = originalLicenceData.originalLicenceTermCode;
 
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(
-				this.workerLicenceTypeCode,
-				this.applicationTypeCode,
-				bizTypeCode,
-				originalLicenceTermCode
-			)
+			.getLicenceTermsAndFees(this.serviceTypeCode, this.applicationTypeCode, bizTypeCode, originalLicenceTermCode)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.workerApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.workerApplicationService.getSummaryserviceTypeCode(this.licenceModelData);
 	}
 
 	get applicationTypeCode(): ApplicationTypeCode | null {

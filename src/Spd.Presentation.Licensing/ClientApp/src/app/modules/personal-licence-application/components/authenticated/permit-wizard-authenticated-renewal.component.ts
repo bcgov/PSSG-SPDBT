@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -30,7 +30,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<ng-template matStepLabel>Permit Details</ng-template>
 						<app-steps-permit-details-renewal
 							[isLoggedIn]="true"
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
@@ -45,7 +45,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 							[isFormValid]="isFormValid"
 							[showSaveAndExit]="showSaveAndExit"
 							[showEmployerInformation]="showEmployerInformation"
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(nextReview)="onGoToReview()"
@@ -72,7 +72,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCodeRenewal"
 							[showEmployerInformation]="showEmployerInformation"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -115,7 +115,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
 	stepReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showSaveAndExit = false;
@@ -142,14 +142,14 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 			(_resp: any) => {
 				this.isFormValid = _resp;
 
-				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
 					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
 						'permitRequirementData.bodyArmourRequirementFormGroup'
 					)?.value;

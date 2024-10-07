@@ -8,8 +8,8 @@ import { ContactInfo } from '../models/contact-info';
 import { Document } from '../models/document';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { PrivateInvestigatorSwlContactInfo } from '../models/private-investigator-swl-contact-info';
+import { ServiceTypeCode } from '../models/service-type-code';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
-import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface BizLicAppResponse {
   agreeToCompleteAndAccurate?: boolean | null;
   applicantContactInfo?: ContactInfo;
@@ -32,8 +32,8 @@ export interface BizLicAppResponse {
   licenceTermCode?: LicenceTermCode;
   noBranding?: boolean | null;
   privateInvestigatorSwlInfo?: PrivateInvestigatorSwlContactInfo;
+  serviceTypeCode?: ServiceTypeCode;
   soleProprietorSWLAppId?: string | null;
   soleProprietorSWLAppOriginTypeCode?: ApplicationOriginTypeCode;
   useDogs?: boolean | null;
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

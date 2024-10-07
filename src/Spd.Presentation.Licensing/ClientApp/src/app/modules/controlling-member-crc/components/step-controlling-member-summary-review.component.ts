@@ -1,10 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-	ApplicationTypeCode,
-	PoliceOfficerRoleCode,
-	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
-} from '@app/api/models';
+import { ApplicationTypeCode, PoliceOfficerRoleCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { BooleanTypeCode, WorkerCategoryTypes } from '@app/core/code-types/model-desc.models';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { UtilService } from '@app/core/services/util.service';
@@ -412,8 +407,8 @@ export class StepControllingMemberSummaryReviewComponent implements OnInit {
 		return this.applicationTypeCode === ApplicationTypeCode.New;
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.controllingMemberModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.controllingMemberModelData.serviceTypeData?.serviceTypeCode ?? null;
 	}
 
 	get isPoliceOrPeaceOfficer(): string {

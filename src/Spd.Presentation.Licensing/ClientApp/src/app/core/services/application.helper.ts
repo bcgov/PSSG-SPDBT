@@ -32,8 +32,8 @@ export abstract class ApplicationHelper {
 		categoryCode: new FormControl(null),
 	});
 
-	workerLicenceTypeFormGroup: FormGroup = this.formBuilder.group({
-		workerLicenceTypeCode: new FormControl('', [Validators.required]),
+	serviceTypeFormGroup: FormGroup = this.formBuilder.group({
+		serviceTypeCode: new FormControl('', [Validators.required]),
 	});
 
 	applicationTypeFormGroup: FormGroup = this.formBuilder.group({

@@ -153,7 +153,7 @@ public class BizLicenceAppManagerTest
         BizLicAppUpsertRequest request = new()
         {
             LicenceAppId = null,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             BizId = bizId,
             DocumentInfos = new List<Document>() { workPermit },
         };
@@ -190,7 +190,7 @@ public class BizLicenceAppManagerTest
         BizLicAppUpsertRequest request = new()
         {
             LicenceAppId = licAppId,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             BizId = bizId
         };
 
@@ -216,7 +216,7 @@ public class BizLicenceAppManagerTest
         BizLicAppUpsertRequest request = new()
         {
             LicenceAppId = licAppId,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             BizId = bizId,
         };
 
@@ -256,7 +256,7 @@ public class BizLicenceAppManagerTest
         BizLicAppUpsertRequest request = new()
         {
             LicenceAppId = null,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             BizId = bizId,
             DocumentInfos = new List<Document>() { workPermit },
         };

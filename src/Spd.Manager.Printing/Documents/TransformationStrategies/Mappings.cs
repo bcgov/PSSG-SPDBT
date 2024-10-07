@@ -41,7 +41,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             CreateMap<LicenceResp, LicencePreviewJson>()
                 .ForMember(d => d.ApplicantName, opt => opt.MapFrom(s => $"{s.NameOnCard}"))
                 .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
-                .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
+                .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.ServiceTypeCode))
                 .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => DateTime.Now.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.LicenceCategories, opt => opt.MapFrom(s => s.CategoryCodes));
@@ -72,7 +72,7 @@ namespace Spd.Manager.Printing.Documents.TransformationStrategies
             CreateMap<LicenceResp, BizLicencePrintingJson>()
                 .ForMember(d => d.ApplicantName, opt => opt.Ignore())
                 .ForMember(d => d.LicenceNumber, opt => opt.MapFrom(s => s.LicenceNumber))
-                .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.WorkerLicenceTypeCode))
+                .ForMember(d => d.LicenceType, opt => opt.MapFrom(s => s.ServiceTypeCode))
                 .ForMember(d => d.IssuedDate, opt => opt.MapFrom(s => DateTime.Now.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.ExpiryDate, opt => opt.MapFrom(s => s.ExpiryDate.ToString("yyyy-MM-dd")))
                 .ForMember(d => d.LicenceCategories, opt => opt.MapFrom(s => s.CategoryCodes));
