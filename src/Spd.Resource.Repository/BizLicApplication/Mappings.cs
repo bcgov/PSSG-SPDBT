@@ -77,7 +77,7 @@ internal class Mappings : Profile
          .ForMember(d => d.HasExpiredLicence, opt => opt.MapFrom(s => s.spd_CurrentExpiredLicenceId == null ? false : true))
          .ForMember(d => d.PrivateInvestigatorSwlInfo, opt => opt.Ignore())
          .ForMember(d => d.SoleProprietorSWLAppId, opt => opt.MapFrom(s => GetSwlAppId(s.spd_businessapplication_spd_workerapplication.ToList())))
-         .ForMember(d => d.SolProprietorSWLAppOriginTypeCode, opt => opt.MapFrom(s => GetSwlAppOrigin(s.spd_businessapplication_spd_workerapplication.ToList())))
+         .ForMember(d => d.SoleProprietorSWLAppOriginTypeCode, opt => opt.MapFrom(s => GetSwlAppOrigin(s.spd_businessapplication_spd_workerapplication.ToList())))
          .ForMember(d => d.NonSwlControllingMemberCrcAppIds, opt => opt.MapFrom(s => GetNonSwlCmAppIds(s.spd_businessapplication_spd_workerapplication.ToList())))
          .IncludeBase<spd_application, BizLicApplication>();
 
