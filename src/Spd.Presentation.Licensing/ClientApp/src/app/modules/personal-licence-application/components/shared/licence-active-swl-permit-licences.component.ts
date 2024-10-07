@@ -1,7 +1,7 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { MainLicenceResponse } from '@app/core/services/application.service';
 
@@ -17,7 +17,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 				<div class="row">
 					<div class="col-lg-2">
 						<div class="fs-5" style="color: var(--color-primary);">
-							{{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+							{{ licence.serviceTypeCode | options : 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-10">
@@ -46,10 +46,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						</div>
 
 						<ng-container
-							*ngIf="
-								licence.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
-								else IsPermitContent
-							"
+							*ngIf="licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence; else IsPermitContent"
 						>
 							<div class="row mb-2">
 								<div class="col-lg-6">
@@ -129,8 +126,8 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								</div>
 								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 									<app-alert type="info" icon="info">
-										This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed, updated
-										or replaced while an application is in progress
+										This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed, updated or replaced
+										while an application is in progress
 									</app-alert>
 								</div>
 							</div>
@@ -160,12 +157,12 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 									<app-alert type="info" icon="info">
 										<ng-container *ngIf="licence.isReplacementPeriod; else NoPermitReplacementPeriod">
-											This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed,
-											updated or replaced while an application is in progress
+											This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed, updated or
+											replaced while an application is in progress
 										</ng-container>
 										<ng-template #NoPermitReplacementPeriod>
-											This {{ licence.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} cannot be renewed or
-											updated while an application is in progress
+											This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed or updated while
+											an application is in progress
 										</ng-template>
 									</app-alert>
 								</div>
@@ -175,10 +172,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 
 					<div class="row">
 						<ng-container
-							*ngIf="
-								licence.workerLicenceTypeCode === workerLicenceTypeCodes.SecurityWorkerLicence;
-								else IsPermitFooter
-							"
+							*ngIf="licence.serviceTypeCode === serviceTypeCodes.SecurityWorkerLicence; else IsPermitFooter"
 						>
 							<ng-container *ngIf="licence.isReplacementPeriod; else IsNotReplacementPeriod">
 								<div class="col-12" *ngIf="lostLicenceDaysText">
@@ -257,7 +251,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 export class LicenceActiveSwlPermitLicencesComponent {
 	constants = SPD_CONSTANTS;
 
-	workerLicenceTypeCodes = WorkerLicenceTypeCode;
+	serviceTypeCodes = ServiceTypeCode;
 
 	@Input() activeLicences!: Array<MainLicenceResponse>;
 	@Input() applicationIsInProgress!: boolean;

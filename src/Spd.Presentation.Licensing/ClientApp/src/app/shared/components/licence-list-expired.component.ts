@@ -16,7 +16,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 				<div class="row">
 					<div class="col-lg-3">
 						<div class="fs-5" style="color: var(--color-primary);">
-							{{ appl.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+							{{ appl.serviceTypeCode | options : 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-9">

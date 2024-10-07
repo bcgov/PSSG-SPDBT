@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitExpiredComponent } from './step-permit-expired.component';
@@ -35,7 +35,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			<mat-step>
 				<app-step-permit-expired
 					[isLoggedIn]="isLoggedIn"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 				></app-step-permit-expired>
 
 				<app-wizard-footer
@@ -53,7 +53,7 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	readonly STEP_PERMIT_EXPIRED = 2;
 
 	@Input() isLoggedIn = false;
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
@@ -64,7 +64,7 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	}
 
 	onGotoUserProfile(): void {
-		this.commonApplicationService.onGotoPermitUserProfile(this.workerLicenceTypeCode, this.applicationTypeCode);
+		this.commonApplicationService.onGotoPermitUserProfile(this.serviceTypeCode, this.applicationTypeCode);
 	}
 
 	override dirtyForm(step: number): boolean {

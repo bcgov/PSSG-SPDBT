@@ -2,8 +2,8 @@
 /* eslint-disable */
 import { LicenceStatusCode } from '../models/licence-status-code';
 import { LicenceTermCode } from '../models/licence-term-code';
+import { ServiceTypeCode } from '../models/service-type-code';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
-import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface LicenceBasicResponse {
   categoryCodes?: Array<WorkerCategoryTypeCode> | null;
   expiryDate?: string;
@@ -15,5 +15,5 @@ export interface LicenceBasicResponse {
   licenceStatusCode?: LicenceStatusCode;
   licenceTermCode?: LicenceTermCode;
   nameOnCard?: string | null;
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
+  serviceTypeCode?: ServiceTypeCode;
 }

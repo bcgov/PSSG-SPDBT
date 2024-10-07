@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -19,7 +19,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<app-expired-licence
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"
-				[workerLicenceTypeCode]="securityWorkerLicenceCode"
+				[serviceTypeCode]="securityWorkerLicenceCode"
 			></app-expired-licence>
 		</app-step-section>
 	`,
@@ -27,7 +27,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 })
 export class StepWorkerLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.workerApplicationService.expiredLicenceFormGroup;
-	securityWorkerLicenceCode = WorkerLicenceTypeCode.SecurityWorkerLicence;
+	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
 
 	@Input() isLoggedIn!: boolean;
 

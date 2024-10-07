@@ -7,11 +7,11 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { PermitLicenceAppResponse } from '../../models/permit-licence-app-response';
-import { WorkerLicenceTypeCode } from '../../models/worker-licence-type-code';
+import { ServiceTypeCode } from '../../models/service-type-code';
 
 export interface ApiApplicantsApplicantIdPermitLatestGet$Params {
   applicantId: string;
-  typeCode: WorkerLicenceTypeCode;
+  typeCode: ServiceTypeCode;
 }
 
 export function apiApplicantsApplicantIdPermitLatestGet(http: HttpClient, rootUrl: string, params: ApiApplicantsApplicantIdPermitLatestGet$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitLicenceAppResponse>> {

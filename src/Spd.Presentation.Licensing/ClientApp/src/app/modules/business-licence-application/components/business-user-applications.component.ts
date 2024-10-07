@@ -3,7 +3,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizProfileResponse, LicenceStatusCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizProfileResponse, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
 	ApplicationService,
@@ -132,7 +132,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	isSoleProprietor = false;
 
-	workerLicenceTypeCodes = WorkerLicenceTypeCode;
+	serviceTypeCodes = ServiceTypeCode;
 
 	activeLicencesList: Array<MainLicenceResponse> = [];
 	expiredLicencesList: Array<MainLicenceResponse> = [];
@@ -211,7 +211,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			})
 		);
 
-		this.commonApplicationService.setApplicationTitle(WorkerLicenceTypeCode.SecurityBusinessLicence);
+		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 	}
 
 	onManageMembersAndEmployees(): void {
@@ -263,7 +263,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	}
 
 	onPay(appl: MainApplicationResponse): void {
-		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'WorkerLicenceTypes');
+		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'ServiceTypes');
 		const paymentDesc = `Payment for ${serviceTypeCodeDesc} application`;
 
 		this.commonApplicationService.payNowBusinessLicence(appl.licenceAppId!, paymentDesc);

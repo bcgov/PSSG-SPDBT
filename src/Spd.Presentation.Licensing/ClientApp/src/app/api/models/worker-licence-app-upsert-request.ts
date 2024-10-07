@@ -14,9 +14,9 @@ import { LicenceTermCode } from '../models/licence-term-code';
 import { MailingAddress } from '../models/mailing-address';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
 import { ResidentialAddress } from '../models/residential-address';
+import { ServiceTypeCode } from '../models/service-type-code';
 import { WeightUnitCode } from '../models/weight-unit-code';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
-import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface WorkerLicenceAppUpsertRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
@@ -62,9 +62,9 @@ export interface WorkerLicenceAppUpsertRequest {
   phoneNumber?: string | null;
   policeOfficerRoleCode?: PoliceOfficerRoleCode;
   residentialAddress?: ResidentialAddress;
+  serviceTypeCode?: ServiceTypeCode;
   surname?: string | null;
   useDogs?: boolean | null;
   weight?: number | null;
   weightUnitCode?: WeightUnitCode;
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

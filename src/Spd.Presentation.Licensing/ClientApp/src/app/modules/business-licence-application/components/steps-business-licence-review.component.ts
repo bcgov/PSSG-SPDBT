@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
@@ -88,7 +88,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent {
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isRenewalShortForm!: boolean;
 	@Input() showSaveAndExit!: boolean;

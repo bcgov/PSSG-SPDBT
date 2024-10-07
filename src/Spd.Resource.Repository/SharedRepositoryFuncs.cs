@@ -30,7 +30,7 @@ internal static class SharedRepositoryFuncs
         }
     }
 
-    public static void LinkServiceType(DynamicsContext _context, WorkerLicenceTypeEnum? licenceType, spd_application app)
+    public static void LinkServiceType(DynamicsContext _context, ServiceTypeEnum? licenceType, spd_application app)
     {
         if (licenceType == null) throw new ArgumentException("invalid LicenceApplication type");
         spd_servicetype? servicetype = _context.LookupServiceType(licenceType.ToString());

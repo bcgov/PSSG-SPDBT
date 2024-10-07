@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
@@ -30,7 +30,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 			<mat-step>
 				<app-step-business-licence-term
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[bizTypeCode]="bizTypeCode"
 				></app-step-business-licence-term>
@@ -61,7 +61,7 @@ export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepCompon
 	@Input() showSaveAndExit!: boolean;
 	@Input() isRenewalShortForm!: boolean;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() bizTypeCode!: BizTypeCode;
 
