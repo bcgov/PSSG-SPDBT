@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -45,7 +45,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-business-licence-selection
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[bizTypeCode]="bizTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
@@ -94,7 +94,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step completed="false">
 				<ng-template matStepLabel>Business Licence Review</ng-template>
 				<app-steps-business-licence-review
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[showSaveAndExit]="showSaveAndExit"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
@@ -130,7 +130,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	isFormValid = false;
 	showSaveAndExit = true;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
@@ -166,8 +166,8 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 
 		this.businessModelValueChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'

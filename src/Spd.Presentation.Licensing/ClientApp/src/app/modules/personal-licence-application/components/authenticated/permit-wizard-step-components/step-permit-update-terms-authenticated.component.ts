@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { StepPermitTermsOfUseComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-terms-of-use.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -16,7 +16,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepPermitUpdateTermsAuthenticatedComponent {
-	workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
+	serviceTypeCode: ServiceTypeCode | null = null;
 	applicationTypeCodeUpdate = ApplicationTypeCode.Update;
 
 	@ViewChild(StepPermitTermsOfUseComponent)
@@ -24,7 +24,7 @@ export class StepPermitUpdateTermsAuthenticatedComponent {
 
 	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
+		this.serviceTypeCode = state && state['serviceTypeCode'];
 	}
 
 	onFormValidNextStep(): void {
@@ -35,7 +35,7 @@ export class StepPermitUpdateTermsAuthenticatedComponent {
 			PersonalLicenceApplicationRoutes.pathPermitAuthenticated(
 				PersonalLicenceApplicationRoutes.PERMIT_USER_PROFILE_AUTHENTICATED
 			),
-			{ state: { workerLicenceTypeCode: this.workerLicenceTypeCode, applicationTypeCode: ApplicationTypeCode.Update } }
+			{ state: { serviceTypeCode: this.serviceTypeCode, applicationTypeCode: ApplicationTypeCode.Update } }
 		);
 	}
 

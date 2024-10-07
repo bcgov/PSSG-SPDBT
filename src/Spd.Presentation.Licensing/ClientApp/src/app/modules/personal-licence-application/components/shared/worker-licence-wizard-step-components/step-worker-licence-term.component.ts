@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -12,7 +12,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			title="Select your licence term"
 			subtitle="The licence term will apply to all licence categories"
 			[isRenewalOrUpdate]="applicationTypeCode === applicationTypeCodes.Renewal"
-			[workerLicenceTypeCode]="workerLicenceTypes.SecurityWorkerLicence"
+			[serviceTypeCode]="securityWorkerLicenceCode"
 		>
 			<div class="row">
 				<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
@@ -44,7 +44,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	styles: [],
 })
 export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepComponent {
-	workerLicenceTypes = WorkerLicenceTypeCode;
+	securityWorkerLicenceCode = ServiceTypeCode.SecurityWorkerLicence;
 	applicationTypeCodes = ApplicationTypeCode;
 
 	form: FormGroup = this.workerApplicationService.licenceTermFormGroup;
@@ -62,8 +62,8 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 	}
 
 	get termCodes(): Array<LicenceFeeResponse> {
-		const workerLicenceTypeCode = this.workerApplicationService.workerModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
+		const serviceTypeCode = this.workerApplicationService.workerModelFormGroup.get(
+			'serviceTypeData.serviceTypeCode'
 		)?.value;
 
 		const applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
@@ -78,13 +78,13 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 
 		// console.debug(
 		// 	'get termCodes',
-		// 	workerLicenceTypeCode,
+		// 	serviceTypeCode,
 		// 	applicationTypeCode,
 		// 	bizTypeCode,
 		// 	originalLicenceTermCode
 		// );
 
-		if (!workerLicenceTypeCode || !applicationTypeCode || !bizTypeCode) {
+		if (!serviceTypeCode || !applicationTypeCode || !bizTypeCode) {
 			return [];
 		}
 
@@ -95,7 +95,7 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 
 		// console.debug(
 		// 	'get termCodes',
-		// 	workerLicenceTypeCode,
+		// 	serviceTypeCode,
 		// 	applicationTypeCode,
 		// 	bizTypeCode,
 		// 	originalLicenceTermCode,
@@ -103,7 +103,7 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 		// );
 
 		return this.commonApplicationService.getLicenceTermsAndFees(
-			workerLicenceTypeCode,
+			serviceTypeCode,
 			applicationTypeCode,
 			bizTypeCode,
 			originalLicenceTermCode

@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -33,7 +33,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 						<ng-template matStepLabel>Permit Details</ng-template>
 						<app-steps-permit-details-new
 							[isLoggedIn]="true"
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
@@ -49,7 +49,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 							[isFormValid]="isFormValid"
 							[showSaveAndExit]="showSaveAndExit"
 							[showEmployerInformation]="showEmployerInformation"
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							(childNextStep)="onChildNextStep()"
 							(saveAndExit)="onSaveAndExit()"
@@ -78,7 +78,7 @@ import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-co
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCodeNew"
 							[showEmployerInformation]="showEmployerInformation"
 							(saveAndExit)="onSaveAndExit()"
@@ -122,7 +122,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	@ViewChild(StepsPermitReviewAuthenticatedComponent)
 	stepReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showSaveAndExit = true;
@@ -150,14 +150,14 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 			(_resp: any) => {
 				this.isFormValid = _resp;
 
-				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
 					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
 						'permitRequirementData.bodyArmourRequirementFormGroup'
 					)?.value;

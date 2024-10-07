@@ -16,7 +16,6 @@ import {
 	ServiceTypeCode,
 	WeightUnitCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { CountryTypeCode } from './country-type.model';
 
@@ -155,17 +154,6 @@ export const RestraintDocumentTypeCode: Record<RestraintDocumentTypeCodeSubset, 
 // ============================================================
 // SelectOptions Lists
 // ============================================================
-
-export const WorkerLicenceTypes: SelectOptions[] = [
-	{ desc: 'Armoured Vehicle Permit', code: WorkerLicenceTypeCode.ArmouredVehiclePermit },
-	{ desc: 'Body Armour Permit', code: WorkerLicenceTypeCode.BodyArmourPermit },
-	{ desc: 'Security Worker Licence', code: WorkerLicenceTypeCode.SecurityWorkerLicence },
-	{ desc: 'Security Business Licence', code: WorkerLicenceTypeCode.SecurityBusinessLicence },
-	{
-		desc: 'Controlling Members CRC',
-		code: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
-	},
-];
 
 export const ApplicationTypes: SelectOptions[] = [
 	{ desc: 'New', code: ApplicationTypeCode.New },
@@ -322,7 +310,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{
-		desc: 'Security Business Licence Controlling Member Crc',
+		desc: 'Controlling Members CRC',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
 ];

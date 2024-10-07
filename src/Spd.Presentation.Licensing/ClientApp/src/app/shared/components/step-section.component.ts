@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 
 @Component({
 	selector: 'app-step-section',
@@ -8,7 +8,7 @@ import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
 			<div class="step">
 				<ng-container *ngIf="isRenewalOrUpdate">
 					<app-alert-update-or-renewal
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 					></app-alert-update-or-renewal>
 				</ng-container>
@@ -39,6 +39,6 @@ export class StepSectionComponent {
 	@Input() info = '';
 	@Input() showDivider = false;
 	@Input() isRenewalOrUpdate = false;
-	@Input() workerLicenceTypeCode: WorkerLicenceTypeCode | null = null;
+	@Input() serviceTypeCode: ServiceTypeCode | null = null;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 }

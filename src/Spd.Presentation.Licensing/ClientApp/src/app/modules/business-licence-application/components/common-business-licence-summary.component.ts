@@ -3,8 +3,8 @@ import {
 	ApplicationTypeCode,
 	BizTypeCode,
 	LicenceFeeResponse,
+	ServiceTypeCode,
 	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -45,7 +45,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Licence Type</div>
 											<div class="summary-text-data">
-												{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+												{{ serviceTypeCode | options : 'ServiceTypes' }}
 											</div>
 										</div>
 										<div class="col-lg-4 col-md-12">
@@ -489,8 +489,8 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		return this.businessModelData.liabilityData.attachments ?? [];
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.businessModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.businessModelData.serviceTypeData?.serviceTypeCode ?? null;
 	}
 	get applicationTypeCode(): ApplicationTypeCode | null {
 		return this.businessModelData.applicationTypeData?.applicationTypeCode ?? null;
@@ -507,7 +507,7 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		}
 
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, this.bizTypeCode)
+			.getLicenceTermsAndFees(this.serviceTypeCode, this.applicationTypeCode, this.bizTypeCode)
 			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
 		return fee ? fee.amount ?? null : null;
 	}

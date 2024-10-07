@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -53,7 +53,7 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-business-licence-review
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
 							[isRenewalShortForm]="false"
@@ -84,7 +84,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	isFormValid = false;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 
 	isBusinessLicenceSoleProprietor!: boolean;
@@ -113,8 +113,8 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 		this.businessModelValueChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'

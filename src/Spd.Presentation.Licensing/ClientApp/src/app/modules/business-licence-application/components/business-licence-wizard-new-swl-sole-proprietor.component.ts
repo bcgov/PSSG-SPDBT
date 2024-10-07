@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -57,7 +57,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<mat-step [completed]="step2Complete">
 					<ng-template matStepLabel>Business Selection</ng-template>
 					<app-steps-business-licence-selection
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
@@ -76,7 +76,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 				<mat-step completed="false">
 					<ng-template matStepLabel>Review Business Licence</ng-template>
 					<app-steps-business-licence-review
-						[workerLicenceTypeCode]="workerLicenceTypeCode"
+						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
@@ -112,7 +112,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	step4Complete = false;
 
 	isSoleProprietorReturnToSwl = false;
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 
@@ -144,8 +144,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 
 		this.businessModelValueChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
