@@ -26,7 +26,8 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
                 .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.Country))
                 .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.Province))
                 .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.PostalCode))
-                .Must(r => !string.IsNullOrEmpty(r.BranchManager)))
+                .Must(r => !string.IsNullOrEmpty(r.BranchManager))
+                .Must(r => r.BranchPhoneNumber == null || r.BranchPhoneNumber?.Length <= 15))
                 .WithMessage("Missing branch address information.")
             .When(r => r.Branches != null &&
                  r.BizTypeCode != BizTypeCode.NonRegisteredSoleProprietor &&
