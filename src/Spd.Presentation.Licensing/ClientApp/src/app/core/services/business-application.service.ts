@@ -1794,11 +1794,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityBusinessLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
 
+		const bceidBizTradeName = this.authUserBceidService.bceidUserProfile?.bceidBizTradeName;
+
 		const businessInformationData: any = {
 			bizTypeCode: businessProfile.bizTypeCode,
 			legalBusinessName: businessProfile.bizLegalName,
 			bizTradeName: businessProfile.bizTradeName,
-			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid // TODO update to look at bceidTradeName
+			isBizTradeNameReadonly: !!bceidBizTradeName, // user cannot overwrite value from bceid
 			soleProprietorLicenceId: null,
 			soleProprietorLicenceAppId: null,
 			soleProprietorCategoryCodes: null,

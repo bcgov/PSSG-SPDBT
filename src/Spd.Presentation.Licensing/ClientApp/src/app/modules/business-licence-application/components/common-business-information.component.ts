@@ -48,8 +48,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 							Trade or 'Doing Business As' Name
 							<mat-icon matTooltip="This is the name commonly used to refer to your business">info</mat-icon>
 						</div>
-
-						<ng-container *ngIf="isBizTradeNameReadonly.value; else EditBizTradeName">
+						<ng-container *ngIf="bizTradeNameReadonly; else EditBizTradeName">
 							<div class="text-primary-color fs-5">{{ bizTradeName.value | default }}</div>
 						</ng-container>
 						<ng-template #EditBizTradeName>
@@ -239,14 +238,8 @@ export class CommonBusinessInformationComponent implements OnInit {
 		// }
 
 		if (this.isReadonly || this.isSoleProprietorCombinedFlow) {
-			if (!this.isBizTradeNameReadonly.value) {
-				this.bizTradeName.disable({ emitEvent: false });
-			}
 			this.bizTypeCode.disable({ emitEvent: false });
 		} else {
-			if (!this.isBizTradeNameReadonly.value) {
-				this.bizTradeName.enable();
-			}
 			this.bizTypeCode.enable();
 		}
 
@@ -306,6 +299,9 @@ export class CommonBusinessInformationComponent implements OnInit {
 		return form.valid;
 	}
 
+	get bizTradeNameReadonly(): boolean {
+		return this.isReadonly || this.isSoleProprietorCombinedFlow || this.isBizTradeNameReadonly.value;
+	}
 	get isBusinessLicenceSoleProprietor(): boolean {
 		return (
 			this.bizTypeCode.value === BizTypeCode.NonRegisteredSoleProprietor ||

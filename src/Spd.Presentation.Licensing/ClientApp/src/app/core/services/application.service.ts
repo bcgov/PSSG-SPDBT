@@ -321,7 +321,6 @@ export class ApplicationService {
 						return of([]);
 					}
 
-					const apis: Observable<any>[] = [];
 					if (isSoleProprietorship) {
 						const response = applicationResps as Array<MainApplicationResponse>;
 
