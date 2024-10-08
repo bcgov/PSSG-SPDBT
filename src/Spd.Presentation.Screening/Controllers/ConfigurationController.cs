@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spd.Manager.Common.Admin;
@@ -75,6 +75,8 @@ namespace Spd.Presentation.Screening.Controllers
             RecaptchaConfiguration recaptchaResp = new(_captchaOption.Value.ClientKey);
             var bannerMessage = await _mediator.Send(new GetBannerMsgQuery());
             var payBcSearchInvoiceUrl = _configuration.GetValue<string>("PayBcSearchInvoiceUrl", string.Empty);
+            var version = _configuration.GetValue<string>("VERSION");
+
             return await Task.FromResult(new ConfigurationResponse()
             {
                 Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined",
@@ -82,8 +84,9 @@ namespace Spd.Presentation.Screening.Controllers
                 BcscConfiguration = bcscConfig,
                 IdirConfiguration = idirConfig,
                 RecaptchaConfiguration = recaptchaResp,
-                BannerMessage = bannerMessage,
-                PayBcSearchInvoiceUrl = payBcSearchInvoiceUrl ?? string.Empty
+                BannerMessage = bannerMessage ?? string.Empty,
+                PayBcSearchInvoiceUrl = payBcSearchInvoiceUrl ?? string.Empty,
+                Version = version
             });
         }
     }
@@ -97,6 +100,7 @@ namespace Spd.Presentation.Screening.Controllers
         public RecaptchaConfiguration RecaptchaConfiguration { get; set; } = null!;
         public string BannerMessage { get; set; } = null!;
         public string PayBcSearchInvoiceUrl { get; set; } = null!;
+        public string? Version { get; set; }
     }
 
     public record OidcConfiguration
