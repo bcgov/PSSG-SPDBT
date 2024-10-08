@@ -72,6 +72,10 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 						form.get('bizTypeCode')?.value == BizTypeCode.NonRegisteredSoleProprietor ||
 						form.get('bizTypeCode')?.value == BizTypeCode.RegisteredSoleProprietor
 				),
+				FormGroupValidators.conditionalDefaultRequiredValidator(
+					'bizTradeName',
+					(form) => form.get('isBizTradeNameReadonly')?.value != true
+				),
 			],
 		}
 	);

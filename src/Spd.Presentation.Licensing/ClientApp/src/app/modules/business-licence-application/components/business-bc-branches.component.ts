@@ -9,6 +9,7 @@ import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.co
 import { ModalBcBranchEditComponent } from './modal-bc-branch-edit.component';
 
 export interface BranchResponse {
+	isCreate?: null | boolean;
 	branchId?: null | number;
 	addressSelected?: null | boolean;
 	addressLine1?: null | string;
@@ -212,6 +213,8 @@ export class BusinessBcBranchesComponent implements OnInit, LicenceChildStepperS
 	}
 
 	private branchDialog(dialogOptions: BranchResponse, isCreate: boolean): void {
+		dialogOptions.isCreate = isCreate;
+
 		this.dialog
 			.open(ModalBcBranchEditComponent, {
 				width: '800px',

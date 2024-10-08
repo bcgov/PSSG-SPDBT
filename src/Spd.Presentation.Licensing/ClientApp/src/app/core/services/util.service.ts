@@ -35,12 +35,6 @@ export class LicenceDocumentsToSave {
 	'documents': Array<Blob>;
 }
 
-export interface SpdFile extends File {
-	name: string;
-	documentUrlId?: string | null;
-	lastModifiedDate?: string | null;
-}
-
 export type SortWeight = -1 | 0 | 1;
 
 @Injectable({ providedIn: 'root' })

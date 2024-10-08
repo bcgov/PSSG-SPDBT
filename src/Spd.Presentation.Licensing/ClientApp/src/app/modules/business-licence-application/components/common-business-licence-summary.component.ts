@@ -8,7 +8,7 @@ import {
 } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { SpdFile } from '@app/core/services/util.service';
+import { SpdFile } from '@app/core/services/file-util.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({

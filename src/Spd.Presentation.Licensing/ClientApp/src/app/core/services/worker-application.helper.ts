@@ -12,8 +12,8 @@ import {
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { LicenceDocumentsToSave, SpdFile, UtilService } from '@app/core/services/util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
+import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { BooleanTypeCode, SelectOptions } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';

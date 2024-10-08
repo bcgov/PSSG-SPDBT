@@ -5,6 +5,7 @@ import {
 	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
+	BizLicAppResponse,
 	BizProfileResponse,
 	BizTypeCode,
 	Document,
@@ -23,7 +24,13 @@ import {
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
-import { BizMembersService, LicenceAppService, LicenceService, PaymentService } from '@app/api/services';
+import {
+	BizLicensingService,
+	BizMembersService,
+	LicenceAppService,
+	LicenceService,
+	PaymentService,
+} from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -54,6 +61,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 	isExpiryWarning: boolean;
 	isExpiryError: boolean;
 	isControllingMemberWarning?: boolean;
+	isSoleProprietorComboFlow?: boolean; // Used only for business licence applications
 }
 
 export interface MainLicenceResponse extends LicenceResponse {
@@ -100,6 +108,7 @@ export class ApplicationService {
 		private authUserBcscService: AuthUserBcscService,
 		private authUserBceidService: AuthUserBceidService,
 		private licenceAppService: LicenceAppService,
+		private bizLicensingService: BizLicensingService,
 		private licenceService: LicenceService
 	) {
 		this.authProcessService.waitUntilAuthentication$.subscribe((isLoggedIn: boolean) => {
@@ -299,7 +308,7 @@ export class ApplicationService {
 		return of(response);
 	}
 
-	userBusinessApplicationsList(): Observable<Array<MainApplicationResponse>> {
+	userBusinessApplicationsList(isSoleProprietorship: boolean): Observable<Array<MainApplicationResponse>> {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.licenceAppService
@@ -312,28 +321,59 @@ export class ApplicationService {
 						return of([]);
 					}
 
-					return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
-						switchMap((controllingMembersAndEmployees: Members) => {
-							const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
-							const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
-								(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
-							);
-							const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
+					const apis: Observable<any>[] = [];
+					if (isSoleProprietorship) {
+						const response = applicationResps as Array<MainApplicationResponse>;
 
-							const response = applicationResps as Array<MainApplicationResponse>;
-							response.forEach((item: MainApplicationResponse) => {
-								this.setApplicationFlags(item);
+						response.sort((a, b) => {
+							return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
+						});
 
-								item.isControllingMemberWarning = isControllingMemberWarning;
-							});
+						response.forEach((item: MainApplicationResponse) => {
+							this.setApplicationFlags(item);
+						});
 
-							response.sort((a, b) => {
-								return this.utilService.sortByDirection(a.serviceTypeCode, b.serviceTypeCode);
-							});
+						const draftOrPaymentWaitingAppls = response.filter(
+							(item: MainApplicationResponse) =>
+								item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft ||
+								item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
+						);
 
+						if (draftOrPaymentWaitingAppls.length > 0) {
+							const appl = draftOrPaymentWaitingAppls[0];
+
+							return this.bizLicensingService
+								.apiBusinessLicenceApplicationLicenceAppIdGet({ licenceAppId: appl.licenceAppId! })
+								.pipe(
+									switchMap((resp: BizLicAppResponse) => {
+										response.forEach((item: MainApplicationResponse) => {
+											item.isSoleProprietorComboFlow = !!resp.soleProprietorSWLAppId;
+										});
+
+										return of(response);
+									})
+								);
+						} else {
 							return of(response);
-						})
-					);
+						}
+					} else {
+						return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
+							switchMap((controllingMembersAndEmployees: Members) => {
+								const nonSwlControllingMembers = controllingMembersAndEmployees.nonSwlControllingMembers ?? [];
+								const incompleteMemberIndex = nonSwlControllingMembers.findIndex(
+									(item: NonSwlContactInfo) => item.inviteStatusCode != ApplicationInviteStatusCode.Completed
+								);
+								const isControllingMemberWarning = nonSwlControllingMembers.length > 0 && incompleteMemberIndex >= 0;
+
+								const response = applicationResps as Array<MainApplicationResponse>;
+								response.forEach((item: MainApplicationResponse) => {
+									item.isControllingMemberWarning = isControllingMemberWarning;
+								});
+
+								return of(response);
+							})
+						);
+					}
 				})
 			);
 	}

@@ -55,6 +55,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 						<ng-template #EditBizTradeName>
 							<mat-form-field>
 								<input matInput formControlName="bizTradeName" [errorStateMatcher]="matcher" maxlength="160" />
+								<mat-error *ngIf="form.get('bizTradeName')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</ng-template>
 					</div>

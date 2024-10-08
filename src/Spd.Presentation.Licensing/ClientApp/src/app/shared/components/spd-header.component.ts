@@ -93,8 +93,6 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 	hasValidToken: boolean = false;
 	loggedInUserDisplay: string | null = null;
 
-	// env: string | null | undefined = null; // TODO add display of env
-
 	private applicationTitleSubscription!: Subscription;
 
 	constructor(
@@ -102,7 +100,6 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
 		private commonApplicationService: ApplicationService,
-		// private configService: ConfigService,
 		private utilService: UtilService
 	) {}
 
@@ -123,8 +120,6 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 
 			this.hasValidToken = hasValidToken;
 		});
-
-		// this.env = this.configService.isProduction() ? null : this.configService.configs?.environment;
 
 		this.applicationTitleSubscription = this.commonApplicationService.applicationTitle$.subscribe(
 			(_resp: [string, string]) => {

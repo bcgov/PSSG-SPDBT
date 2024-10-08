@@ -43,8 +43,8 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ApplicationService, MainLicenceResponse } from '@app/core/services/application.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { ConfigService } from '@app/core/services/config.service';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, SpdFile, UtilService } from '@app/core/services/util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -860,10 +860,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	getBusinessLicenceApplToResume(licenceAppId: string): Observable<BizLicAppResponse> {
+	getBusinessLicenceApplToResume(licenceAppId: string, isSoleProprietor: boolean): Observable<BizLicAppResponse> {
 		return this.loadPartialBusinessLicenceApplToResume({
 			licenceAppId,
 			applicationTypeCode: ApplicationTypeCode.New,
+			isSoleProprietor,
 		}).pipe(
 			tap((_resp: any) => {
 				this.setAsInitialized();
@@ -883,9 +884,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	getBusinessLicenceWithSelection(
 		applicationTypeCode: ApplicationTypeCode,
-		originalLicence: MainLicenceResponse
+		originalLicence: MainLicenceResponse,
+		isSoleProprietor: boolean
 	): Observable<BizLicAppResponse> {
-		return this.getBusinessLicenceOfType(applicationTypeCode, originalLicence).pipe(
+		return this.getBusinessLicenceOfType(applicationTypeCode, originalLicence, isSoleProprietor).pipe(
 			tap((_resp: any) => {
 				this.setAsInitialized();
 
@@ -1170,11 +1172,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	private getBusinessLicenceOfType(
 		applicationTypeCode: ApplicationTypeCode,
-		associatedLicence: MainLicenceResponse
+		associatedLicence: MainLicenceResponse,
+		isSoleProprietor: boolean
 	): Observable<any> {
 		return this.loadExistingBusinessLicenceWithLatestApp({
 			associatedLicence,
 			applicationTypeCode,
+			isSoleProprietor,
 		}).pipe(
 			switchMap((resp: any) => {
 				switch (applicationTypeCode) {
@@ -1205,6 +1209,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return this.loadPartialBusinessLicenceApplToResume({
 			licenceAppId,
 			applicationTypeCode,
+			isSoleProprietor: true,
 		}).pipe(
 			tap((_resp: any) => {
 				this.businessModelFormGroup.patchValue(
@@ -1224,30 +1229,37 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private loadPartialBusinessLicenceApplToResume({
 		licenceAppId,
 		applicationTypeCode,
+		isSoleProprietor,
 	}: {
 		licenceAppId: string;
 		applicationTypeCode: ApplicationTypeCode;
+		isSoleProprietor: boolean;
 	}): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return forkJoin([
+		const apis: Observable<any>[] = [
 			this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdGet({ licenceAppId }),
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }),
-		]).pipe(
+		];
+
+		if (!isSoleProprietor) {
+			apis.push(this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }));
+		}
+
+		return forkJoin(apis).pipe(
 			switchMap((resps: any[]) => {
 				const businessLicenceAppl = resps[0];
 				const businessProfile = resps[1];
-				const businessMembers = resps[2];
+				const businessMembers = isSoleProprietor ? undefined : resps[2];
 
-				return this.loadBusinessApplAndProfile(
+				return this.loadBusinessApplAndProfile({
 					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
-					businessMembers
-				);
+					businessMembers,
+				});
 			})
 		);
 	}
@@ -1259,31 +1271,38 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private loadExistingBusinessLicenceWithLatestApp({
 		associatedLicence,
 		applicationTypeCode,
+		isSoleProprietor,
 	}: {
 		associatedLicence?: MainLicenceResponse;
 		applicationTypeCode: ApplicationTypeCode;
+		isSoleProprietor: boolean;
 	}): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
-		return forkJoin([
+		const apis: Observable<any>[] = [
 			this.bizLicensingService.apiBusinessBizIdAppLatestGet({ bizId }),
 			this.bizProfileService.apiBizIdGet({ id: bizId }),
-			this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }),
-		]).pipe(
+		];
+
+		if (!isSoleProprietor) {
+			apis.push(this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }));
+		}
+
+		return forkJoin(apis).pipe(
 			switchMap((resps: any[]) => {
 				const businessLicenceAppl = resps[0];
 				const businessProfile = resps[1];
-				const businessMembers = resps[2];
+				const businessMembers = isSoleProprietor ? undefined : resps[2];
 
-				return this.loadBusinessApplAndProfile(
+				return this.loadBusinessApplAndProfile({
 					applicationTypeCode,
 					businessLicenceAppl,
 					businessProfile,
 					businessMembers,
-					associatedLicence
-				);
+					associatedLicence,
+				});
 			})
 		);
 	}
@@ -1292,13 +1311,19 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Loads the a business application and profile into the business model
 	 * @returns
 	 */
-	private loadBusinessApplAndProfile(
-		applicationTypeCode: ApplicationTypeCode,
-		businessLicenceAppl: BizLicAppResponse,
-		businessProfile: BizProfileResponse,
-		businessMembers: Members,
-		associatedLicence?: MainLicenceResponse
-	) {
+	private loadBusinessApplAndProfile({
+		applicationTypeCode,
+		businessLicenceAppl,
+		businessProfile,
+		businessMembers,
+		associatedLicence,
+	}: {
+		applicationTypeCode: ApplicationTypeCode;
+		businessLicenceAppl: BizLicAppResponse;
+		businessProfile: BizProfileResponse;
+		businessMembers?: Members;
+		associatedLicence?: MainLicenceResponse;
+	}) {
 		const apis: Observable<any>[] = [];
 		if (businessLicenceAppl.expiredLicenceId) {
 			apis.push(
@@ -1322,20 +1347,22 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			);
 		}
 
-		businessMembers.employees?.forEach((item: SwlContactInfo) => {
-			apis.push(
-				this.licenceService.apiLicencesLicenceIdGet({
-					licenceId: item.licenceId!,
-				})
-			);
-		});
-		businessMembers.swlControllingMembers?.forEach((item: SwlContactInfo) => {
-			apis.push(
-				this.licenceService.apiLicencesLicenceIdGet({
-					licenceId: item.licenceId!,
-				})
-			);
-		});
+		if (businessMembers) {
+			businessMembers.employees?.forEach((item: SwlContactInfo) => {
+				apis.push(
+					this.licenceService.apiLicencesLicenceIdGet({
+						licenceId: item.licenceId!,
+					})
+				);
+			});
+			businessMembers.swlControllingMembers?.forEach((item: SwlContactInfo) => {
+				apis.push(
+					this.licenceService.apiLicencesLicenceIdGet({
+						licenceId: item.licenceId!,
+					})
+				);
+			});
+		}
 
 		// using sole proprietor combined flow
 		if (businessLicenceAppl.soleProprietorSWLAppId) {
@@ -1353,7 +1380,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				  )
 				: [];
 
-		this.applyControllingMembersWithoutSwl(businessMembers.nonSwlControllingMembers ?? []);
+		if (businessMembers) {
+			this.applyControllingMembersWithoutSwl(businessMembers.nonSwlControllingMembers ?? []);
+		}
 
 		if (apis.length > 0) {
 			return forkJoin(apis).pipe(
@@ -1769,7 +1798,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			bizTypeCode: businessProfile.bizTypeCode,
 			legalBusinessName: businessProfile.bizLegalName,
 			bizTradeName: businessProfile.bizTradeName,
-			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid
+			isBizTradeNameReadonly: !!businessProfile.bizTradeName, // user cannot overwrite value from bceid // TODO update to look at bceidTradeName
 			soleProprietorLicenceId: null,
 			soleProprietorLicenceAppId: null,
 			soleProprietorCategoryCodes: null,
