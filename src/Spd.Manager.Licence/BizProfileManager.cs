@@ -84,7 +84,9 @@ public class BizProfileManager :
                 identityId = await CreateUserIdentity(cmd, ct);
 
             PortalUserResp resp = await AddPortalUserToBiz(cmd.BceidIdentityInfo, (Guid)identityId, (Guid)bizId, ct);
-            return _mapper.Map<BizUserLoginResponse>(resp);
+            BizUserLoginResponse response = _mapper.Map<BizUserLoginResponse>(resp);
+            response.BceidBizTradeName = bizInfoFormBceid.TradeName;
+            return response;
         }
         else
         {
@@ -95,7 +97,9 @@ public class BizProfileManager :
                 //return the loginResponse
                 //update the biz               
                 await UpdateBiz(cmd, bizInfoFormBceid, ct);
-                return _mapper.Map<BizUserLoginResponse>(portalUser);
+                BizUserLoginResponse response = _mapper.Map<BizUserLoginResponse>(portalUser);
+                response.BceidBizTradeName = bizInfoFormBceid.TradeName;
+                return response;
             }
             else
             {
