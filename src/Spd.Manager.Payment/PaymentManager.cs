@@ -15,6 +15,7 @@ using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.DocumentTemplate;
 using Spd.Resource.Repository.Invoice;
 using Spd.Resource.Repository.LicenceFee;
+using Spd.Resource.Repository.Org;
 using Spd.Resource.Repository.Payment;
 using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Resource.Repository.ServiceTypes;
@@ -56,6 +57,7 @@ namespace Spd.Manager.Payment
         private readonly IServiceTypeRepository _serviceTypeRepository;
         private readonly ILogger<IPaymentManager> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IOrgRepository _orgRepository;
         private readonly ITimeLimitedDataProtector _dataProtector;
 
         public PaymentManager(IPaymentService paymentService,
@@ -73,7 +75,8 @@ namespace Spd.Manager.Payment
             IPersonLicApplicationRepository personLicAppRepository,
             IServiceTypeRepository serviceTypeRepository,
             ILogger<IPaymentManager> logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IOrgRepository orgRepository)
         {
             _paymentService = paymentService;
             _configRepository = configRepository;
@@ -90,6 +93,7 @@ namespace Spd.Manager.Payment
             _serviceTypeRepository = serviceTypeRepository;
             _logger = logger;
             _configuration = configuration;
+            _orgRepository = orgRepository;
             _dataProtector = dpProvider.CreateProtector(nameof(PrePaymentLinkCreateCommand)).ToTimeLimitedDataProtector();
         }
 
@@ -227,7 +231,17 @@ namespace Spd.Manager.Payment
         public async Task<PaymentResponse> Handle(PaymentQuery query, CancellationToken ct)
         {
             var respList = await _paymentRepository.QueryAsync(new PaymentQry(null, query.PaymentId), ct);
-            return _mapper.Map<PaymentResponse>(respList.Items.First());
+            PaymentResp? paymentResp = respList.Items?.FirstOrDefault();
+            if (paymentResp == null)
+                throw new ApiException(HttpStatusCode.BadRequest, "Invalid payment id.");
+
+            PaymentResponse response = _mapper.Map<PaymentResponse>(paymentResp);
+            if (paymentResp.PayeeType == Resource.Repository.PayerPreferenceTypeCode.Organization)
+            {
+                OrgQryResult org = (OrgQryResult)await _orgRepository.QueryOrgAsync(new OrgByIdentifierQry(paymentResp.OrganizationId), ct);
+                response.Email = org.OrgResult.Email;
+            }
+            return response;
         }
 
         public async Task<int> Handle(PaymentFailedAttemptCountQuery query, CancellationToken ct)

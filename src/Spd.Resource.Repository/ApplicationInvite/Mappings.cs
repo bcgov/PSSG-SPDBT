@@ -18,7 +18,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
             .ForMember(d => d.spd_invitationtype, opt => opt.MapFrom(s => InvitationTypeOptionSet.ScreeningRequest))
             .ForMember(d => d.spd_screeningrequesttype, opt => opt.MapFrom(s => (int)Enum.Parse<ScreenTypeOptionSet>(s.ScreeningType.ToString())))
             .ForMember(d => d.spd_views, opt => opt.MapFrom(s => 0))
-            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => GetPayeeTypeCode(s.PayeeType)))
+            .ForMember(d => d.spd_payeetype, opt => opt.MapFrom(s => SharedMappingFuncs.GetPayeeTypeCode(s.PayeeType)))
             .ReverseMap()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.spd_surname))
@@ -26,7 +26,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
 
             _ = CreateMap<spd_portalinvitation, ApplicationInviteResult>()
             .IncludeBase<spd_portalinvitation, ApplicationInvite>()
-            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
+            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => SharedMappingFuncs.GetPayeeType(s.spd_payeetype)))
             .ForMember(d => d.OrgId, opt => opt.MapFrom(s => s._spd_organizationid_value))
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.spd_portalinvitationid))
             .ForMember(d => d.ErrorMsg, opt => opt.MapFrom(s => s.spd_errormessage))
@@ -48,7 +48,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
             .ForMember(d => d.OrgPostalCode, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_postalcode))
             .ForMember(d => d.OrgProvince, opt => opt.MapFrom(s => s.spd_OrganizationId.address1_stateorprovince))
             .ForMember(d => d.WorksWith, opt => opt.MapFrom(s => GetEmployeeInteractionType(s.spd_OrganizationId.spd_workswith)))
-            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => GetPayeeType(s.spd_payeetype)))
+            .ForMember(d => d.PayeeType, opt => opt.MapFrom(s => SharedMappingFuncs.GetPayeeType(s.spd_payeetype)))
             .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_email))
             .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
             .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_surname))
@@ -58,24 +58,7 @@ namespace Spd.Resource.Repository.ApplicationInvite
             .ForMember(d => d.EmployeeOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item1))
             .ForMember(d => d.VolunteerOrganizationTypeCode, opt => opt.MapFrom(s => DynamicsContextLookupHelpers.GetTypeFromTypeId(s.spd_OrganizationId._spd_organizationtypeid_value).Item2));
         }
-        private static string? GetPayeeType(int? code)
-        {
-            if (code == null) return null;
-            return Enum.GetName(typeof(PayerPreferenceOptionSet), code);
-        }
 
-        private static int? GetPayeeTypeCode(PayerPreferenceTypeCode? code)
-        {
-            if (code == null) return null;
-            try
-            {
-                return (int)Enum.Parse<PayerPreferenceOptionSet>(code.ToString());
-            }
-            catch
-            {
-                return null;
-            }
-        }
         private static string? GetEmployeeInteractionType(int? code)
         {
             if (code == null) return null;

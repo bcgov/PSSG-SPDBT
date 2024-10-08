@@ -1,0 +1,208 @@
+{
+    "dataSources": {
+        "ds_b45VJZ4P": {
+            "type": "ds.search",
+            "options": {
+                "query": "index=\"prod_sparc\" | search Properties.service=\"Spd.Presentation.Screening\" | chart count by Properties.StatusCode",
+                "refresh": "5s",
+                "refreshType": "delay"
+            },
+            "name": "Screening Portal Error Codes"
+        },
+        "ds_qVswa17a": {
+            "type": "ds.search",
+            "options": {
+                "query": "index=\"prod_sparc\" | search Properties.service=\"Spd.Presentation.Screening\" AND Properties.Elapsed=* | rangemap field=Properties.Elapsed 0-2s=0-2000 2-5s=2000-5000 5-12s=5000-12000 12-30s=12000-30000 30+s=30000-600000 | chart count by range | eval order = if(range=\"0-2s\",0,if(range=\"2-5s\",1,if(range=\"5-12s\",2,if(range=\"12-30s\",3,if(range=\"30+s\",4,5))))) | sort + order | fields - order",
+                "refresh": "5s",
+                "refreshType": "delay"
+            },
+            "name": "Screening Portal Latency"
+        },
+        "ds_sdk2SFv8": {
+            "type": "ds.search",
+            "options": {
+                "query": "index=\"prod_sparc\" | search Properties.service=\"Spd.Presentation.Screening\"  AND Properties.ExceptionDetail.Type=* | chart count by Properties.ExceptionDetail.Type",
+                "refresh": "5s",
+                "refreshType": "delay"
+            },
+            "name": "Screening Portal Exception types"
+        },
+        "ds_xd5yEbIj": {
+            "type": "ds.search",
+            "options": {
+                "query": "index=\"prod_sparc\" | search Properties.service=\"Spd.Presentation.Screening\"| search \"Level\"=\"Error\" | timechart span=1m count",
+                "refresh": "5s",
+                "refreshType": "delay"
+            },
+            "name": "Screening Portal Error rate"
+        },
+        "ds_bI8BWLTa": {
+            "type": "ds.search",
+            "options": {
+                "query": "index=\"prod_sparc\" | search \"Level\"=\"Error\" AND RenderedMessage=\"Exception\" | table _time , Properties.ExceptionDetail.InnerException.InnerException.Error.Message \n|  sort _time desc",
+                "refresh": "5s",
+                "refreshType": "delay"
+            },
+            "name": "Latest Errors"
+        }
+    },
+    "visualizations": {
+        "viz_feiVibnt": {
+            "type": "splunk.column",
+            "context": {
+                "convertedColorRange": [
+                    {
+                        "from": 100,
+                        "value": "#dc4e41"
+                    },
+                    {
+                        "from": 70,
+                        "to": 100,
+                        "value": "#f1813f"
+                    },
+                    {
+                        "from": 30,
+                        "to": 70,
+                        "value": "#f8be34"
+                    },
+                    {
+                        "from": 0,
+                        "to": 30,
+                        "value": "#0877a6"
+                    },
+                    {
+                        "to": 0,
+                        "value": "#53a051"
+                    }
+                ]
+            },
+            "dataSources": {
+                "primary": "ds_b45VJZ4P"
+            },
+            "containerOptions": {},
+            "showProgressBar": false,
+            "showLastUpdated": false,
+            "title": "Screening Portal Error Codes"
+        },
+        "viz_ncKtLuzv": {
+            "type": "splunk.column",
+            "containerOptions": {},
+            "showProgressBar": false,
+            "showLastUpdated": false,
+            "title": "Screening Portal HTTP Latency",
+            "dataSources": {
+                "primary": "ds_qVswa17a"
+            }
+        },
+        "viz_ed2DRa4f": {
+            "type": "splunk.column",
+            "dataSources": {
+                "primary": "ds_sdk2SFv8"
+            },
+            "title": "Screening Portal Exception Types"
+        },
+        "viz_5sYXUzsb": {
+            "type": "splunk.column",
+            "dataSources": {
+                "primary": "ds_xd5yEbIj"
+            },
+            "title": "Screening Portal Error Rate"
+        },
+        "viz_gHivAO1d": {
+            "type": "splunk.table",
+            "dataSources": {
+                "primary": "ds_bI8BWLTa"
+            },
+            "title": "Latest Errors",
+            "containerOptions": {},
+            "showProgressBar": false,
+            "showLastUpdated": false
+        }
+    },
+    "inputs": {
+        "input_global_trp": {
+            "type": "input.timerange",
+            "options": {
+                "token": "global_time",
+                "defaultValue": "-24h@h,now"
+            },
+            "title": "Global Time Range"
+        }
+    },
+    "layout": {
+        "type": "grid",
+        "options": {
+            "width": 1440,
+            "height": 960
+        },
+        "structure": [
+            {
+                "item": "viz_ed2DRa4f",
+                "type": "block",
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 699,
+                    "h": 400
+                }
+            },
+            {
+                "item": "viz_feiVibnt",
+                "type": "block",
+                "position": {
+                    "x": 0,
+                    "y": 400,
+                    "w": 720,
+                    "h": 200
+                }
+            },
+            {
+                "item": "viz_ncKtLuzv",
+                "type": "block",
+                "position": {
+                    "x": 699,
+                    "y": 0,
+                    "w": 741,
+                    "h": 400
+                }
+            },
+            {
+                "item": "viz_5sYXUzsb",
+                "type": "block",
+                "position": {
+                    "x": 720,
+                    "y": 400,
+                    "w": 720,
+                    "h": 200
+                }
+            },
+            {
+                "item": "viz_gHivAO1d",
+                "type": "block",
+                "position": {
+                    "x": 0,
+                    "y": 600,
+                    "w": 1440,
+                    "h": 400
+                }
+            }
+        ],
+        "globalInputs": [
+            "input_global_trp"
+        ]
+    },
+    "title": "SPD PROD",
+    "description": "",
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "latest": "$global_time.latest$",
+                        "earliest": "$global_time.earliest$"
+                    }
+                }
+            }
+        }
+    }
+}
