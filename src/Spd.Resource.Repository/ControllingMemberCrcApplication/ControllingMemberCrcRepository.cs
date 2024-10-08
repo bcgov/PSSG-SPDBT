@@ -41,8 +41,10 @@ public class ControllingMemberCrcRepository : IControllingMemberCrcRepository
         //check contact duplicate
         contact? contact = SharedRepositoryFuncs.GetDuplicateContact(_context, _mapper.Map<contact>(cmd), ct);
         //create or update contact
+        contact? contactToCreate = _mapper.Map<contact>(cmd);
+        contactToCreate.contactid = Guid.NewGuid();
         contact = contact == null ? 
-            await _context.CreateContact(_mapper.Map<contact>(cmd), null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) : 
+            await _context.CreateContact(contactToCreate, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct) : 
             await UpdatePersonalInformationAsync(cmd, contact, ct);
 
 
