@@ -73,6 +73,7 @@ public record BizUserLoginResponse
     public string? LastName { get; set; }
     public bool? IsFirstTimeLogin { get; set; } = false;
     public ContactRoleCode ContactRoleCode { get; set; }
+    public string? BceidBizTradeName { get; set; }
 }
 
 public record BizProfileUpdateRequest
