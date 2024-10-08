@@ -130,6 +130,7 @@ internal class Mappings : Profile
             .IncludeBase<ControllingMemberCrcApplication, spd_application>();
 
         _ = CreateMap<SaveControllingMemberCrcAppCmd, contact>()
+            .ForMember(d => d.contactid, opt => opt.MapFrom(s => s.ContactId == Guid.Empty ? Guid.NewGuid() : s.ContactId))
           .IncludeBase<ControllingMemberCrcApplication, contact>();
 
         _ = CreateMap<AliasResp, spd_alias>()
