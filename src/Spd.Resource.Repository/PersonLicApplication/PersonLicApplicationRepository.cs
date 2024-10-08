@@ -44,7 +44,6 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             else
             {
-                contact.contactid = Guid.NewGuid();
                 contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             }
         }
