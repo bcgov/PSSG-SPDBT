@@ -39,11 +39,14 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
             else
                 existingContact = SharedRepositoryFuncs.GetDuplicateContact(_context, contact, ct);
 
-                //for new, create a new contact if it doesn't exist with same info, or update the licence holder contact if Has expired licence.
+            //for new, create a new contact if it doesn't exist with same info, or update the licence holder contact if Has expired licence.
             if (existingContact != null)
                 contact = await _context.UpdateContact(existingContact, contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
             else
+            {
+                contact.contactid = Guid.NewGuid();
                 contact = await _context.CreateContact(contact, null, _mapper.Map<IEnumerable<spd_alias>>(cmd.Aliases), ct);
+            }
         }
         else
         {
