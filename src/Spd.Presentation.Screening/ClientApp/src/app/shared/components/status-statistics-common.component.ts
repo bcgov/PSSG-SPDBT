@@ -151,12 +151,16 @@ export class StatusStatisticsCommonComponent implements OnInit {
 			return;
 		}
 
+		this.refreshData();
+	}
+
+	refreshData(): void {
 		this.isCrrp = this.portal == PortalTypeCode.Crrp;
 
 		if (this.isCrrp) {
 			this.applicationStatistics$ = this.applicationService
 				.apiOrgsOrgIdApplicationStatisticsGet({
-					orgId: this.id,
+					orgId: this.id!,
 				})
 				.pipe(
 					tap((res: ApplicationStatisticsResponse) => {
@@ -166,7 +170,7 @@ export class StatusStatisticsCommonComponent implements OnInit {
 		} else {
 			this.applicationStatistics$ = this.applicationService
 				.apiUsersDelegateUserIdPssoApplicationStatisticsGet({
-					delegateUserId: this.id,
+					delegateUserId: this.id!,
 				})
 				.pipe(
 					tap((res: ApplicationStatisticsResponse) => {
