@@ -18,11 +18,6 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 				<div class="mt-3">
 					<div class="py-2">{{ title }}</div>
 
-					<app-alert type="info" icon="" [showBorder]="false">
-						A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security
-						worker licence.
-					</app-alert>
-
 					<app-form-police-background
 						[form]="form"
 						(fileUploaded)="onFileUploaded($event)"

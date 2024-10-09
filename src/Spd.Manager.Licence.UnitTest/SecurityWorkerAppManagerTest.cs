@@ -109,7 +109,7 @@ namespace Spd.Manager.Licence.UnitTest
             WorkerLicenceAppUpsertRequest request = new()
             {
                 LicenceAppId = licAppId,
-                WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+                ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
                 ApplicantId = applicantId,
             };
 
@@ -150,7 +150,7 @@ namespace Spd.Manager.Licence.UnitTest
             WorkerLicenceAppUpsertRequest request = new()
             {
                 LicenceAppId = licAppId,
-                WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+                ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
                 ApplicantId = applicantId,
             };
 
@@ -187,7 +187,7 @@ namespace Spd.Manager.Licence.UnitTest
             WorkerLicenceAppUpsertRequest request = new()
             {
                 LicenceAppId = licAppId,
-                WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+                ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
                 ApplicantId = applicantId,
             };
 
@@ -219,7 +219,7 @@ namespace Spd.Manager.Licence.UnitTest
             WorkerLicenceAppUpsertRequest request = new()
             {
                 LicenceAppId = null,
-                WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+                ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
                 ApplicantId = applicantId,
             };
 

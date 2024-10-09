@@ -5,7 +5,7 @@ import {
 	ApplicationTypeCode,
 	ControllingMemberAppInviteTypeCode,
 	ControllingMemberAppInviteVerifyResponse,
-	WorkerLicenceTypeCode,
+	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -141,7 +141,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 				: 'Log in to update your profile as a controlling member';
 
 		this.commonApplicationService.setApplicationTitle(
-			WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+			ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 			this.applicationTypeCode
 		);
 

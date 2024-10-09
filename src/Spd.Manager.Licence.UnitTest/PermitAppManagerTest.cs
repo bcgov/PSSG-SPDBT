@@ -66,7 +66,7 @@ public class PermitAppManagerTest
             .ReturnsAsync(new List<LicenceAppListResp> { });
 
         //Act
-        Func<Task> act = () => sut.Handle(new GetLatestPermitApplicationIdQuery(applicantId, WorkerLicenceTypeCode.SecurityBusinessLicence), CancellationToken.None);
+        Func<Task> act = () => sut.Handle(new GetLatestPermitApplicationIdQuery(applicantId, ServiceTypeCode.SecurityBusinessLicence), CancellationToken.None);
 
         //Assert
         await Assert.ThrowsAsync<ApiException>(act);
@@ -88,7 +88,7 @@ public class PermitAppManagerTest
             .ReturnsAsync(new DocumentListResp { Items = new List<DocumentResp>() });
 
         //Act
-        var viewResult = await sut.Handle(new GetLatestPermitApplicationIdQuery(applicantId, WorkerLicenceTypeCode.BodyArmourPermit), CancellationToken.None);
+        var viewResult = await sut.Handle(new GetLatestPermitApplicationIdQuery(applicantId, ServiceTypeCode.BodyArmourPermit), CancellationToken.None);
 
         //Assert
         Assert.Equal(applicationId, viewResult);
@@ -120,7 +120,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = null,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
             DocumentInfos = new List<Document>() { workPermit }
         };
@@ -156,7 +156,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = licAppId,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
         };
 
@@ -181,7 +181,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = licAppId,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
         };
 
@@ -328,7 +328,7 @@ public class PermitAppManagerTest
         PermitAppUpsertRequest request = new()
         {
             LicenceAppId = null,
-            WorkerLicenceTypeCode = WorkerLicenceTypeCode.SecurityWorkerLicence,
+            ServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence,
             ApplicantId = applicantId,
         };
 

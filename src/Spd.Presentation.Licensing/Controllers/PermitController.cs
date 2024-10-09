@@ -81,7 +81,7 @@ namespace Spd.Presentation.Licensing.Controllers
         [Route("api/applicants/{applicantId}/permit-latest")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpGet]
-        public async Task<PermitLicenceAppResponse> GetLatestPermitApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] WorkerLicenceTypeCode typeCode)
+        public async Task<PermitLicenceAppResponse> GetLatestPermitApplication([FromRoute][Required] Guid applicantId, [FromQuery][Required] ServiceTypeCode typeCode)
         {
             Guid licenceAppId = await _mediator.Send(new GetLatestPermitApplicationIdQuery(applicantId, typeCode));
             return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));

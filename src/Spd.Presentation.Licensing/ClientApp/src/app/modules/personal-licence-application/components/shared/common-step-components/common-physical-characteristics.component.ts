@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HeightUnitCode } from '@app/api/models';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import {
 	EyeColourTypes,
 	HairColourTypes,
 	HeightUnitTypes,
 	WeightUnitTypes,
 } from '@app/core/code-types/model-desc.models';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
 	selector: 'app-common-physical-characteristics',
@@ -40,7 +40,7 @@ import {
 						</div>
 					</div>
 					<div class="row">
-						<div class="text-minor-heading my-2">Height</div>
+						<div class="text-primary-color fs-6 mb-1">Height</div>
 						<div
 							class="col-lg-6 col-md-12 col-sm-12"
 							[ngClass]="heightUnitCode.value === heightUnitCodes.Inches ? 'col-xl-4' : 'col-xl-6'"
@@ -83,7 +83,7 @@ import {
 						</div>
 					</div>
 					<div class="row">
-						<div class="text-minor-heading my-2">Weight</div>
+						<div class="text-primary-color fs-6 mb-1">Weight</div>
 						<div class="col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
 								<mat-label>Number</mat-label>

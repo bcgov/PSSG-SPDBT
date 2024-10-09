@@ -9,7 +9,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 	selector: 'app-form-fingerprints',
 	template: `
 		<div class="row">
-			<div class="offset-md-2 col-md-8 col-sm-12">
+			<div class="col-md-8 col-sm-12 mx-auto">
 				<app-alert type="info" icon="info">
 					<div class="d-flex">
 						<div>
@@ -37,7 +37,7 @@ import { ModalFingerprintTearOffComponent } from './modal-fingerprint-tear-off.c
 			</div>
 		</div>
 		<div class="row my-2">
-			<div class="offset-md-2 col-md-8 col-sm-12">
+			<div class="col-md-8 col-sm-12 mx-auto">
 				<form [formGroup]="form" novalidate>
 					<div class="text-minor-heading mb-2">Upload your document</div>
 					<app-file-upload

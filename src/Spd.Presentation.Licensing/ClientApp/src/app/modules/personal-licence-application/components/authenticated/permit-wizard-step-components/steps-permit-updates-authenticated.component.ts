@@ -1,11 +1,11 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitEmployerInformationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
 import { StepPermitReprintComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-reprint.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-change.component';
 
@@ -35,7 +35,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 
 			<mat-step>
 				<app-step-permit-reason
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-reason>
 
@@ -58,7 +58,7 @@ import { StepPermitReviewNameChangeComponent } from './step-permit-review-name-c
 
 			<mat-step>
 				<app-step-permit-rationale
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-rationale>
 
@@ -93,7 +93,7 @@ export class StepsPermitUpdatesAuthenticatedComponent extends BaseWizardStepComp
 	@Input() hasGenderChanged = false;
 	@Input() showEmployerInformation = true;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode = ApplicationTypeCode.Update;
 
 	@ViewChild(StepPermitReviewNameChangeComponent)

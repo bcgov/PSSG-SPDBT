@@ -27,7 +27,8 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 
 				<ng-container *ngIf="isSoleProprietor; else IsNotSoleProprietor">
 					<app-wizard-footer
-						nextButtonLabel="Next"
+						nextButtonLabel="Save & Continue to Business Licence Application"
+						[isWidestNext]="true"
 						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onSaveSoleProprietor()"
 					></app-wizard-footer>

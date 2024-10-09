@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitConsentAndDeclarationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-consent-and-declaration.component';
@@ -40,7 +40,7 @@ import { StepPermitSummaryReviewUpdateAuthenticatedComponent } from '@app/module
 
 			<mat-step>
 				<app-step-permit-consent-and-declaration
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-consent-and-declaration>
 
@@ -71,7 +71,7 @@ export class StepsPermitReviewAuthenticatedComponent extends BaseWizardStepCompo
 	submitPayLabel = '';
 	applicationTypeCodes = ApplicationTypeCode;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() showEmployerInformation!: boolean;
 

@@ -96,7 +96,7 @@ public class PermitControllerTest
     public async void GetLatestSecurityWorkerLicenceApplication_ReturnWorkerLicenceAppResponse()
     {
         Guid applicantId = Guid.NewGuid();
-        var result = await sut.GetLatestPermitApplication(applicantId, WorkerLicenceTypeCode.ArmouredVehiclePermit);
+        var result = await sut.GetLatestPermitApplication(applicantId, ServiceTypeCode.ArmouredVehiclePermit);
 
         Assert.IsType<PermitLicenceAppResponse>(result);
         mockMediator.Verify();

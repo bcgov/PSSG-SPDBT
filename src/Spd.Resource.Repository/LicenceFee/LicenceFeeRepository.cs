@@ -20,9 +20,9 @@ internal class LicenceFeeRepository(IDynamicsContextFactory contextFactory, IMap
         if (!qry.IncludeInactive)
             feeResult = feeResult.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
-        if (qry.WorkerLicenceTypeEnum != null)
+        if (qry.ServiceTypeEnum != null)
         {
-            DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.WorkerLicenceTypeEnum.ToString()!, out Guid stGuid);
+            DynamicsContextLookupHelpers.ServiceTypeGuidDictionary.TryGetValue(qry.ServiceTypeEnum.ToString()!, out Guid stGuid);
             feeResult = feeResult.Where(f => f._spd_servicetypeid_value == stGuid);
         }
 

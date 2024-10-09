@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceDocumentTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -55,7 +55,7 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 
 	form: FormGroup = this.permitApplicationService.permitRationaleFormGroup;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
@@ -73,24 +73,23 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 	// TODO Show only if permit type = Body Armour Permit 90-day exemption AND reason = imminent risk
 
 	ngOnInit(): void {
-		const name =
-			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
-		const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+		const name = this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';
+		const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
 
 		this.documentType =
-			this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit
+			this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
 				? LicenceDocumentTypeCode.BodyArmourRationale
 				: LicenceDocumentTypeCode.ArmouredVehicleRationale;
 
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = `Provide your rationale for requiring ${name}`;
-				this.subtitle = `The information you provide will assist the Registrar in deciding whether to issue your ${workerLicenceTypeDesc}`;
+				this.subtitle = `The information you provide will assist the Registrar in deciding whether to issue your ${serviceTypeCodeDesc}`;
 				break;
 			}
 			default: {
 				this.title = `Confirm your rationale for requiring ${name}`;
-				this.subtitle = `If the purpose for requiring your ${workerLicenceTypeDesc} has changed from your previous application, update your rationale`;
+				this.subtitle = `If the purpose for requiring your ${serviceTypeCodeDesc} has changed from your previous application, update your rationale`;
 				break;
 			}
 		}

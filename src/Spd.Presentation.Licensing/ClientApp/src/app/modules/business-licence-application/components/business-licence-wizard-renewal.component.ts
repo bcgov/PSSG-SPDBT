@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
@@ -41,7 +41,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step [completed]="step2Complete">
 				<ng-template matStepLabel>Licence Selection</ng-template>
 				<app-steps-business-licence-selection
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[bizTypeCode]="bizTypeCode"
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
@@ -88,7 +88,7 @@ import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence
 			<mat-step completed="false">
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-business-licence-review
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 					[isRenewalShortForm]="isRenewalShortForm"
 					[isControllingMembersWithoutSwlExist]="isControllingMembersWithoutSwlExist"
@@ -124,7 +124,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	isFormValid = false;
 	isRenewalShortForm = false;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
 	isBusinessLicenceSoleProprietor!: boolean;
@@ -158,8 +158,8 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 
 		this.businessModelValueChangedSubscription = this.businessApplicationService.businessModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				this.workerLicenceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.businessApplicationService.businessModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.businessApplicationService.businessModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'

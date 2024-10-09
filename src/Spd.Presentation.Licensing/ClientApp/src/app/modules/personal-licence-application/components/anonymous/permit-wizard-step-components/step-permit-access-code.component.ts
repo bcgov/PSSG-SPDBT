@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -29,7 +29,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 			<app-common-access-code-anonymous
 				(linkSuccess)="onLinkSuccess($event)"
 				[form]="form"
-				[workerLicenceTypeCode]="workerLicenceTypeCode"
+				[serviceTypeCode]="serviceTypeCode"
 				[applicationTypeCode]="applicationTypeCode"
 			></app-common-access-code-anonymous>
 		</app-step-section>
@@ -43,7 +43,7 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 
 	form: FormGroup = this.permitApplicationService.accessCodeFormGroup;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(CommonAccessCodeAnonymousComponent)
@@ -56,14 +56,14 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 	) {}
 
 	ngOnInit(): void {
-		this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
+		this.serviceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'serviceTypeData.serviceTypeCode'
 		)?.value;
 		this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		this.commonApplicationService.setApplicationTitle(this.workerLicenceTypeCode, this.applicationTypeCode);
+		this.commonApplicationService.setApplicationTitle(this.serviceTypeCode, this.applicationTypeCode);
 	}
 
 	onStepPrevious(): void {
@@ -87,9 +87,9 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 		this.permitApplicationService
 			.getPermitWithAccessCodeDataAnonymous(accessCodeData, this.applicationTypeCode!, permitLicenceData)
 			.subscribe((_resp: any) => {
-				switch (this.workerLicenceTypeCode) {
-					case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-					case WorkerLicenceTypeCode.BodyArmourPermit: {
+				switch (this.serviceTypeCode) {
+					case ServiceTypeCode.ArmouredVehiclePermit:
+					case ServiceTypeCode.BodyArmourPermit: {
 						switch (this.applicationTypeCode) {
 							case ApplicationTypeCode.Update: {
 								this.router.navigateByUrl(

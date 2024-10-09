@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {
-	ApplicationTypeCode,
-	LicenceFeeResponse,
-	WorkerCategoryTypeCode,
-	WorkerLicenceTypeCode,
-} from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -217,7 +212,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
-				this.workerLicenceTypeCode,
+				this.serviceTypeCode,
 				ApplicationTypeCode.Update,
 				originalLicenceData.originalBizTypeCode,
 				originalLicenceData.originalLicenceTermCode
@@ -230,8 +225,8 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return this.workerApplicationService.getSummaryisSoleProprietor(this.licenceModelData);
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.workerApplicationService.getSummaryworkerLicenceTypeCode(this.licenceModelData);
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.workerApplicationService.getSummaryserviceTypeCode(this.licenceModelData);
 	}
 
 	get applicationTypeCode(): ApplicationTypeCode | null {

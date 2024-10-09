@@ -8,10 +8,7 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 @Component({
 	selector: 'app-step-controlling-member-police-background',
 	template: `
-		<app-step-section
-			[title]="title"
-			subtitle="A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence."
-		>
+		<app-step-section [title]="title">
 			<app-form-police-background
 				[form]="form"
 				[isWizardStep]="true"

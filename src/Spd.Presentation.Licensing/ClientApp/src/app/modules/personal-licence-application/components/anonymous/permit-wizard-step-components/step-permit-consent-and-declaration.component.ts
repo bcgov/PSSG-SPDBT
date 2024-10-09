@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -225,7 +225,7 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 
 	form: FormGroup = this.permitApplicationService.consentAndDeclarationFormGroup;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	applicationTypeCodes = ApplicationTypeCode;
@@ -275,6 +275,6 @@ export class StepPermitConsentAndDeclarationComponent implements OnInit, Licence
 		return this.form.get('captchaFormGroup')?.get('displayCaptcha') as FormControl;
 	}
 	get isArmouredVehiclePermit(): boolean {
-		return this.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit;
+		return this.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit;
 	}
 }

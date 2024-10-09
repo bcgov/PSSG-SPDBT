@@ -28,14 +28,14 @@ internal class BizLicencePrintingTransformStrategy(
         if (lics == null || !lics.Items.Any())
             throw new ApiException(HttpStatusCode.BadRequest, "No licence found for the licenceId");
         LicenceResp lic = lics.Items.First();
-        if (lic.WorkerLicenceTypeCode != WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (lic.ServiceTypeCode != ServiceTypeEnum.SecurityBusinessLicence)
             throw new ApiException(HttpStatusCode.BadRequest, "The licence is not a business licence.");
 
         BizLicencePrintingJson bizLicJson = mapper.Map<BizLicencePrintingJson>(lic);
         var serviceTypeListResp = await serviceTypeRepository.QueryAsync(
                 new ServiceTypeQry(null, Enum.Parse<ServiceTypeEnum>(bizLicJson.LicenceType)), cancellationToken);
         bizLicJson.LicenceType = serviceTypeListResp.Items.First().ServiceTypeName;
-        if (lic.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (lic.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence)
             bizLicJson.LicenceCategories = await GetCategoryNamesAsync(lic.CategoryCodes, cancellationToken);
 
         BizResult? biz = await bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken);

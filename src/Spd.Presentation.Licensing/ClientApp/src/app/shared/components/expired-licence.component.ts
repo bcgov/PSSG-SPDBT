@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -100,19 +100,19 @@ export class ExpiredLicenceComponent implements OnInit {
 
 	@Input() isLoggedIn!: boolean;
 	@Input() form!: FormGroup;
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private dialog: MatDialog, private optionsPipe: OptionsPipe) {}
 
 	ngOnInit(): void {
-		this.titleLabel = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
+		this.titleLabel = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
 	}
 
 	onLookup(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: `Search for a ${this.titleLabel}`,
 			isExpiredLicenceSearch: true,
-			lookupWorkerLicenceTypeCode: this.workerLicenceTypeCode,
+			lookupServiceTypeCode: this.serviceTypeCode,
 			isLoggedIn: this.isLoggedIn,
 		};
 		this.dialog

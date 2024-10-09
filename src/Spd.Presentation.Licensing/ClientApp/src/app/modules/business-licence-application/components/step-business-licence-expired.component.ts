@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -19,7 +19,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			<app-expired-licence
 				[form]="form"
 				[isLoggedIn]="true"
-				[workerLicenceTypeCode]="securityBusinessLicenceCode"
+				[serviceTypeCode]="securityBusinessLicenceCode"
 			></app-expired-licence>
 		</app-step-section>
 	`,
@@ -27,7 +27,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 })
 export class StepBusinessLicenceExpiredComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.expiredLicenceFormGroup;
-	securityBusinessLicenceCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
+	securityBusinessLicenceCode = ServiceTypeCode.SecurityBusinessLicence;
 
 	constructor(private businessApplicationService: BusinessApplicationService) {}
 

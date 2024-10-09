@@ -56,6 +56,8 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 							[isFormValid]="true"
 							[showSaveAndExit]="true"
 							(saveAndExit)="onNoSaveAndExit()"
+							nextButtonLabel="Save & Continue to Business Licence Application"
+							[isWidestNext]="true"
 							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onSaveSoleProprietor()"
 						></app-wizard-footer>
@@ -116,6 +118,10 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 	}
 
 	onSaveSoleProprietor(): void {
+		if (!this.consentAndDeclarationComponent.isFormValid()) {
+			return;
+		}
+
 		this.nextSubmitStep.emit();
 	}
 

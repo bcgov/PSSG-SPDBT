@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { ApplicationService, LicenceLookupResult } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -12,7 +12,7 @@ export interface LookupByLicenceNumberDialogData {
 	title: string;
 	subtitle?: string;
 	notValidSwlMessage?: string;
-	lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode;
+	lookupServiceTypeCode: ServiceTypeCode;
 	isExpiredLicenceSearch: boolean;
 	isLoggedIn: boolean;
 	selectButtonLabel?: string;
@@ -79,7 +79,7 @@ export interface LookupByLicenceNumberDialogData {
 										</div>
 										<div class="col-md-6 col-sm-12">
 											<div class="d-block text-muted mt-2">
-												{{ lookupWorkerLicenceTypeCode | options : 'WorkerLicenceTypes' }} Number
+												{{ lookupServiceTypeCode | options : 'ServiceTypes' }} Number
 											</div>
 											<div class="text-data">{{ searchResult.licenceNumber }}</div>
 										</div>
@@ -112,13 +112,13 @@ export interface LookupByLicenceNumberDialogData {
 								<div class="mt-3">
 									<app-alert type="warning" icon="">
 										<div class="fs-5 mb-2">
-											This licence is not valid {{ lookupWorkerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+											This licence is not valid {{ lookupServiceTypeCode | options : 'ServiceTypes' }}
 										</div>
 
 										<div class="row">
 											<div class="col-md-5 col-sm-12">
 												<div class="d-block text-muted mt-2">
-													{{ searchResult.workerLicenceTypeCode | options : 'WorkerLicenceTypes' }} Number
+													{{ searchResult.serviceTypeCode | options : 'ServiceTypes' }} Number
 												</div>
 												<div class="text-data">{{ searchResult.licenceNumber }}</div>
 											</div>
@@ -183,7 +183,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 
 	isExpiredLicenceSearch = false;
 	isLoggedIn = false;
-	lookupWorkerLicenceTypeCode!: WorkerLicenceTypeCode;
+	lookupServiceTypeCode!: ServiceTypeCode;
 
 	constructor(
 		private dialogRef: MatDialogRef<ModalLookupByLicenceNumberComponent>,
@@ -199,7 +199,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.subtitle = this.dialogData.subtitle ?? null;
 		this.notValidSwlMessage = this.dialogData.notValidSwlMessage ?? null;
 		this.isExpiredLicenceSearch = this.dialogData.isExpiredLicenceSearch ?? false;
-		this.lookupWorkerLicenceTypeCode = this.dialogData.lookupWorkerLicenceTypeCode;
+		this.lookupServiceTypeCode = this.dialogData.lookupServiceTypeCode;
 		this.isLoggedIn = this.dialogData.isLoggedIn;
 		this.selectButtonLabel = this.dialogData.selectButtonLabel ?? 'Select';
 	}
@@ -262,7 +262,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 		this.isFoundValid = resp.isFoundValid;
 
 		if (resp.searchResult) {
-			if (resp.searchResult.workerLicenceTypeCode !== this.lookupWorkerLicenceTypeCode) {
+			if (resp.searchResult.serviceTypeCode !== this.lookupServiceTypeCode) {
 				this.isFoundValid = false;
 			}
 
@@ -273,7 +273,7 @@ export class ModalLookupByLicenceNumberComponent implements OnInit {
 	private handlexpiredLicenceSearchResults(resp: LicenceLookupResult) {
 		[this.messageWarn, this.messageError] = this.commonApplicationService.setExpiredLicenceLookupMessage(
 			resp.searchResult,
-			this.lookupWorkerLicenceTypeCode,
+			this.lookupServiceTypeCode,
 			resp.isExpired,
 			resp.isInRenewalPeriod
 		);

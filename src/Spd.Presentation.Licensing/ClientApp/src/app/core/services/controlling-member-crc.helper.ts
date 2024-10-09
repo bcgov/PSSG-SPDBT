@@ -93,7 +93,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 	}
 
 	private getSaveBodyBase(controllingMemberCrcFormValue: any): any {
-		const workerLicenceTypeData = { ...controllingMemberCrcFormValue.workerLicenceTypeData };
+		const serviceTypeData = { ...controllingMemberCrcFormValue.serviceTypeData };
 		const applicationTypeData = { ...controllingMemberCrcFormValue.applicationTypeData };
 		const bcDriversLicenceData = { ...controllingMemberCrcFormValue.bcDriversLicenceData };
 		const residentialAddressData = { ...controllingMemberCrcFormValue.residentialAddressData };
@@ -206,7 +206,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 				}) ?? [];
 
 		const body = {
-			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			serviceTypeCode: serviceTypeData.serviceTypeCode,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			bizContactId: controllingMemberCrcFormValue.bizContactId,
 			controllingMemberAppId: controllingMemberCrcFormValue.controllingMemberAppId,

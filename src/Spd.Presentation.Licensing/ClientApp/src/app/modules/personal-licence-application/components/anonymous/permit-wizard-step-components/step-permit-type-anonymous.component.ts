@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -89,11 +89,11 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
+		const serviceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'serviceTypeData.serviceTypeCode'
 		)?.value;
 
-		const fees = this.commonApplicationService.getLicenceTermsAndFees(workerLicenceTypeCode, null, BizTypeCode.None);
+		const fees = this.commonApplicationService.getLicenceTermsAndFees(serviceTypeCode, null, BizTypeCode.None);
 
 		fees?.forEach((item: LicenceFeeResponse) => {
 			if (item.applicationTypeCode === ApplicationTypeCode.New) {
@@ -103,7 +103,7 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 			}
 		});
 
-		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode);
+		this.commonApplicationService.setApplicationTitle(serviceTypeCode);
 	}
 
 	onStepNext(): void {
@@ -111,19 +111,19 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 			return;
 		}
 
-		const workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-			'workerLicenceTypeData.workerLicenceTypeCode'
+		const serviceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+			'serviceTypeData.serviceTypeCode'
 		)?.value;
 		const applicationTypeCode = this.applicationTypeCode.value;
 
-		// console.debug('workerLicenceTypeCode', workerLicenceTypeCode);
+		// console.debug('serviceTypeCode', serviceTypeCode);
 		// console.debug('applicationTypeCode', applicationTypeCode);
 
-		this.commonApplicationService.setApplicationTitle(workerLicenceTypeCode, applicationTypeCode);
+		this.commonApplicationService.setApplicationTitle(serviceTypeCode, applicationTypeCode);
 
-		switch (workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+		switch (serviceTypeCode) {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				switch (applicationTypeCode) {
 					case ApplicationTypeCode.New: {
 						this.router.navigateByUrl(

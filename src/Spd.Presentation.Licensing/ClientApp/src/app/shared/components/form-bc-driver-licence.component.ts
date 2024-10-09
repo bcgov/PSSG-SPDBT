@@ -27,7 +27,7 @@ import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 			</div>
 
 			<div class="row mt-4" *ngIf="hasBcDriversLicence.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div class="offset-md-2 col-md-8 col-sm-12">
+				<div class="col-md-8 col-sm-12 mx-auto">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 					<div class="row mt-2">
 						<div class="col-lg-6 col-md-12 col-sm-12 mx-auto">

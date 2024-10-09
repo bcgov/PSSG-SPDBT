@@ -9,8 +9,8 @@ import {
 	LicenceDocumentTypeCode,
 	LicenceResponse,
 	NonSwlContactInfo,
+	ServiceTypeCode,
 	SwlContactInfo,
-	WorkerLicenceTypeCode,
 } from '@app/api/models';
 import { BizMembersService } from '@app/api/services';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -433,7 +433,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	onAddMemberWithSWL(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Member with Security Worker Licence',
-			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			lookupServiceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
 			notValidSwlMessage: `'Cancel' to exit this dialog and then add them as a member without a security worker licence to proceed.`,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,

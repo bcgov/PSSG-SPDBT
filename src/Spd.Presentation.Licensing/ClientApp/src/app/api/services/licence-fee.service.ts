@@ -24,7 +24,7 @@ export class LicenceFeeService extends BaseService {
 
   /**
    * Get licence fee
-   * Sample: api/licence-fee?workerLicenceTypeCode=SecurityWorkerLicence.
+   * Sample: api/licence-fee?serviceTypeCode=SecurityWorkerLicence.
    *
    *
    *
@@ -39,7 +39,7 @@ export class LicenceFeeService extends BaseService {
 
   /**
    * Get licence fee
-   * Sample: api/licence-fee?workerLicenceTypeCode=SecurityWorkerLicence.
+   * Sample: api/licence-fee?serviceTypeCode=SecurityWorkerLicence.
    *
    *
    *

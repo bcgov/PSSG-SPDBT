@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ApplicationTypeCode, BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -37,7 +37,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Permit Type</div>
 												<div class="summary-text-data">
-													{{ workerLicenceTypeCode | options : 'WorkerLicenceTypes' }}
+													{{ serviceTypeCode | options : 'ServiceTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
@@ -583,15 +583,15 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 		};
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.permitApplicationService.getSummaryworkerLicenceTypeCode(this.permitModelData);
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.permitApplicationService.getSummaryserviceTypeCode(this.permitModelData);
 	}
 	get applicationTypeCode(): ApplicationTypeCode | null {
 		return this.permitApplicationService.getSummaryapplicationTypeCode(this.permitModelData);
 	}
 	get licenceFee(): number | null {
 		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.workerLicenceTypeCode, this.applicationTypeCode, BizTypeCode.None)
+			.getLicenceTermsAndFees(this.serviceTypeCode, this.applicationTypeCode, BizTypeCode.None)
 			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
 
 		return fee ? fee.amount ?? null : null;

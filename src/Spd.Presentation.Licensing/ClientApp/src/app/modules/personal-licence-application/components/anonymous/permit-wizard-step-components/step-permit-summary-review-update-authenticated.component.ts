@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ApplicationTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -264,7 +264,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 
 		const fee = this.commonApplicationService
 			.getLicenceTermsAndFees(
-				this.workerLicenceTypeCode,
+				this.serviceTypeCode,
 				ApplicationTypeCode.Update,
 				originalLicenceData.originalBizTypeCode,
 				originalLicenceData.originalLicenceTermCode
@@ -276,8 +276,8 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitApplicationService.getSummaryisReprint(this.permitModelData);
 	}
 
-	get workerLicenceTypeCode(): WorkerLicenceTypeCode | null {
-		return this.permitApplicationService.getSummaryworkerLicenceTypeCode(this.permitModelData);
+	get serviceTypeCode(): ServiceTypeCode | null {
+		return this.permitApplicationService.getSummaryserviceTypeCode(this.permitModelData);
 	}
 	get applicationTypeCode(): ApplicationTypeCode | null {
 		return this.permitApplicationService.getSummaryapplicationTypeCode(this.permitModelData);

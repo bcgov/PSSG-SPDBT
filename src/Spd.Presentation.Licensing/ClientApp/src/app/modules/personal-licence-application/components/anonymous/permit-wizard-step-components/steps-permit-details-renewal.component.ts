@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
@@ -32,7 +32,7 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 			</mat-step>
 
 			<mat-step>
-				<app-step-permit-confirmation [workerLicenceTypeCode]="workerLicenceTypeCode"></app-step-permit-confirmation>
+				<app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
 
 				<app-wizard-footer
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -49,7 +49,7 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 	readonly STEP_PERMIT_CONFIRMATION = 1;
 
 	@Input() isLoggedIn = false;
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
@@ -59,7 +59,7 @@ export class StepsPermitDetailsRenewalComponent extends BaseWizardStepComponent 
 	}
 
 	onGotoUserProfile(): void {
-		this.commonApplicationService.onGotoPermitUserProfile(this.workerLicenceTypeCode, this.applicationTypeCode);
+		this.commonApplicationService.onGotoPermitUserProfile(this.serviceTypeCode, this.applicationTypeCode);
 	}
 
 	override dirtyForm(step: number): boolean {

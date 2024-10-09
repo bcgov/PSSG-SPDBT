@@ -47,7 +47,7 @@ internal abstract class LicenceAppManagerBase
             ApplicationTypeEnum = licAppBase.ApplicationTypeCode == null ? null : Enum.Parse<ApplicationTypeEnum>(licAppBase.ApplicationTypeCode.ToString()),
             BizTypeEnum = licAppBase.BizTypeCode == null ? BizTypeEnum.None : Enum.Parse<BizTypeEnum>(licAppBase.BizTypeCode.ToString()),
             LicenceTermEnum = licAppBase.LicenceTermCode == null ? null : Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()),
-            WorkerLicenceTypeEnum = licAppBase.WorkerLicenceTypeCode == null ? null : Enum.Parse<WorkerLicenceTypeEnum>(licAppBase.WorkerLicenceTypeCode.ToString()),
+            ServiceTypeEnum = licAppBase.ServiceTypeCode == null ? null : Enum.Parse<ServiceTypeEnum>(licAppBase.ServiceTypeCode.ToString()),
             HasValidSwl90DayLicence = HasSwl90DayLicence
         }, ct);
         LicenceFeeResp? licenceFee = price?.LicenceFees.FirstOrDefault();
@@ -181,9 +181,9 @@ internal abstract class LicenceAppManagerBase
         }
     }
 
-    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, WorkerLicenceTypeEnum licenceTypeEnum, CancellationToken cancellationToken)
+    protected async Task<Guid> GetLatestApplicationId(Guid? contactId, Guid? bizId, ServiceTypeEnum licenceTypeEnum, CancellationToken cancellationToken)
     {
-        if (licenceTypeEnum == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (licenceTypeEnum == ServiceTypeEnum.SecurityBusinessLicence)
         {
             contactId = null;
             if (bizId == null) throw new ApiException(HttpStatusCode.BadRequest, $"bizId should not be null if it is a Security Business Licence.");
@@ -199,7 +199,7 @@ internal abstract class LicenceAppManagerBase
             new LicenceAppQuery(
                 contactId,
                 bizId,
-                new List<WorkerLicenceTypeEnum> { licenceTypeEnum },
+                new List<ServiceTypeEnum> { licenceTypeEnum },
                 new List<ApplicationPortalStatusEnum>
                 {
                     ApplicationPortalStatusEnum.Completed,
@@ -213,14 +213,14 @@ internal abstract class LicenceAppManagerBase
         return app.LicenceAppId;
     }
 
-    protected async Task<bool> HasDuplicates(Guid applicantId, WorkerLicenceTypeEnum workerLicenceType, Guid? existingLicAppId, CancellationToken ct)
+    protected async Task<bool> HasDuplicates(Guid applicantId, ServiceTypeEnum serviceType, Guid? existingLicAppId, CancellationToken ct)
     {
         LicenceAppQuery q = new(
             applicantId,
             null,
-            new List<WorkerLicenceTypeEnum>
+            new List<ServiceTypeEnum>
             {
-                workerLicenceType
+                serviceType
             },
             new List<ApplicationPortalStatusEnum>
             {
@@ -252,7 +252,7 @@ internal abstract class LicenceAppManagerBase
             new LicenceQry
             {
                 ContactId = applicantId,
-                Type = workerLicenceType,
+                Type = serviceType,
                 IsExpired = false
             }, ct);
 

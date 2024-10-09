@@ -81,12 +81,12 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 		// only show fee for Replacement flow
 
 		if (this.applicationTypeCode === ApplicationTypeCode.Replacement) {
-			const workerLicenceTypeCode = this.businessLicenceModelData.workerLicenceTypeData?.workerLicenceTypeCode;
+			const serviceTypeCode = this.businessLicenceModelData.serviceTypeData?.serviceTypeCode;
 			const originalLicenceData = this.businessLicenceModelData.originalLicenceData;
 
 			const fee = this.commonApplicationService
 				.getLicenceTermsAndFees(
-					workerLicenceTypeCode,
+					serviceTypeCode,
 					this.applicationTypeCode,
 					originalLicenceData.originalBizTypeCode,
 					originalLicenceData.originalLicenceTermCode

@@ -10,7 +10,7 @@ internal class Mappings : Profile
     {
         _ = CreateMap<spd_application, LicenceAppListResp>()
           .ForMember(d => d.LicenceAppId, opt => opt.MapFrom(s => s.spd_applicationid))
-          .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
+          .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
           .ForMember(d => d.CreatedOn, opt => opt.MapFrom(s => s.createdon))
           .ForMember(d => d.SubmittedOn, opt => opt.MapFrom(s => s.spd_submittedon))
           .ForMember(d => d.UpdatedOn, opt => opt.MapFrom(s => s.modifiedon))

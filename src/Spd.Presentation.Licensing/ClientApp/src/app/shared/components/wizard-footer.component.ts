@@ -37,7 +37,14 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 						Previous
 					</button>
 				</div>
-				<div class="col-md-12" [ngClass]="isWideNext ? 'col-xxl-3 col-xl-4 col-lg-4' : 'col-xxl-2 col-xl-3 col-lg-3'">
+				<div
+					class="col-md-12"
+					[ngClass]="{
+						'col-xxl-6 col-xl-6 col-lg-6': isWidestNext,
+						'col-xxl-3 col-xl-4 col-lg-4': isWideNext,
+						'col-xxl-2 col-xl-3 col-lg-3': !isWideNext && !isWidestNext
+					}"
+				>
 					<button
 						*ngIf="isNextStepperStepObserved"
 						mat-flat-button
@@ -119,6 +126,7 @@ export class WizardFooterComponent implements OnInit {
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() isWideNext = false;
+	@Input() isWidestNext = false;
 	@Input() showExit = true;
 	@Input() isSoleProprietorReturnToSwl = false;
 

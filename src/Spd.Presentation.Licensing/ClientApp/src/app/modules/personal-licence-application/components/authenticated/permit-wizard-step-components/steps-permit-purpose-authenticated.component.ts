@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitEmployerInformationComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-rationale.component';
 import { StepPermitReasonComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-reason.component';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-steps-permit-purpose-authenticated',
@@ -12,7 +12,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
 			<mat-step>
 				<app-step-permit-reason
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-reason>
 
@@ -43,7 +43,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 
 			<mat-step>
 				<app-step-permit-rationale
-					[workerLicenceTypeCode]="workerLicenceTypeCode"
+					[serviceTypeCode]="serviceTypeCode"
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-permit-rationale>
 
@@ -67,7 +67,7 @@ export class StepsPermitPurposeAuthenticatedComponent extends BaseWizardStepComp
 	readonly STEP_PERMIT_RATIONALE = 3;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() isFormValid = false;
 	@Input() showSaveAndExit = false;
 	@Input() showEmployerInformation = false;

@@ -7,16 +7,16 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { LicenceFeeListResponse } from '../../models/licence-fee-list-response';
-import { WorkerLicenceTypeCode } from '../../models/worker-licence-type-code';
+import { ServiceTypeCode } from '../../models/service-type-code';
 
 export interface ApiLicenceFeeGet$Params {
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
+  serviceTypeCode?: ServiceTypeCode;
 }
 
 export function apiLicenceFeeGet(http: HttpClient, rootUrl: string, params?: ApiLicenceFeeGet$Params, context?: HttpContext): Observable<StrictHttpResponse<LicenceFeeListResponse>> {
   const rb = new RequestBuilder(rootUrl, apiLicenceFeeGet.PATH, 'get');
   if (params) {
-    rb.query('workerLicenceTypeCode', params.workerLicenceTypeCode, {});
+    rb.query('serviceTypeCode', params.serviceTypeCode, {});
   }
 
   return http.request(

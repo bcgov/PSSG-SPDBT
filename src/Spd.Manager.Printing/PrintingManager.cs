@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Printing.Documents;
 using Spd.Manager.Printing.Documents.TransformationStrategies;
+using Spd.Resource.Repository;
 using Spd.Resource.Repository.Event;
 using Spd.Resource.Repository.Licence;
 using Spd.Resource.Repository.PersonLicApplication;
@@ -111,7 +112,7 @@ internal class PrintingManager
     public async Task<PreviewDocumentResp> Handle(PreviewDocumentCommand cmd, CancellationToken cancellationToken)
     {
         LicenceResp? licence = await _licenceRepository.GetAsync(cmd.LicenceId, cancellationToken);
-        if (licence == null || licence.WorkerLicenceTypeCode == WorkerLicenceTypeEnum.SecurityBusinessLicence)
+        if (licence == null || licence.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence)
             throw new ApiException(System.Net.HttpStatusCode.BadRequest, "Cannot find the licence or the licence is not person licence.");
         DocumentTransformRequest transformRequest = new PersonalLicencePreviewTransformRequest(cmd.LicenceId);
         var transformResponse = await _documentTransformationEngine.Transform(transformRequest, cancellationToken);

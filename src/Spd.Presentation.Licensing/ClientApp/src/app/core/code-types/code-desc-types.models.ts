@@ -24,5 +24,4 @@ export {
 	ServiceTypes,
 	WeightUnitTypes,
 	WorkerCategoryTypes,
-	WorkerLicenceTypes,
 } from './model-desc.models';

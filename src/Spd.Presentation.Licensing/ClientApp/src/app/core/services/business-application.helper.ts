@@ -466,7 +466,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const soleProprietorSWLAppId = businessModelFormValue.soleProprietorSWLAppId;
-		const workerLicenceTypeData = { ...businessModelFormValue.workerLicenceTypeData };
+		const serviceTypeData = { ...businessModelFormValue.serviceTypeData };
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
 		const companyBrandingData = { ...businessModelFormValue.companyBrandingData };
@@ -508,9 +508,9 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 
 		if (categoryData.SecurityGuard) {
 			const dogsPurposeFormGroup = businessModelFormValue.categorySecurityGuardFormGroup.dogsPurposeFormGroup;
-			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs ?? false;
-			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives ?? false;
-			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection ?? false;
+			const isDetectionDrugs = dogsPurposeFormGroup.isDogsPurposeDetectionDrugs;
+			const isDetectionExplosives = dogsPurposeFormGroup.isDogsPurposeDetectionExplosives;
+			const isProtection = dogsPurposeFormGroup.isDogsPurposeProtection;
 			const useDogs = this.utilService.booleanTypeToBoolean(
 				businessModelFormValue.categorySecurityGuardFormGroup.useDogs
 			);
@@ -546,7 +546,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			soleProprietorSWLAppId,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
-			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			serviceTypeCode: serviceTypeData.serviceTypeCode,
 			licenceTermCode: businessModelFormValue.licenceTermData.licenceTermCode,
 			//-----------------------------------
 			noBranding: companyBrandingData.noLogoOrBranding ?? false,

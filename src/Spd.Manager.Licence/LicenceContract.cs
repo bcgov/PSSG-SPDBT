@@ -17,7 +17,7 @@ public record LicenceBasicResponse
     public Guid? LicenceAppId { get; set; }
     public string? LicenceNumber { get; set; }
     public DateOnly ExpiryDate { get; set; }
-    public WorkerLicenceTypeCode? WorkerLicenceTypeCode { get; set; }
+    public ServiceTypeCode? ServiceTypeCode { get; set; }
     public LicenceTermCode? LicenceTermCode { get; set; }
     public string? LicenceHolderName { get; set; }
     public Guid? LicenceHolderId { get; set; }

@@ -19,7 +19,7 @@ import { MainApplicationResponse } from '@app/core/services/application.service'
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Licence Type:</span>
 								<span class="my-2">
-									{{ application.serviceTypeCode | options : 'WorkerLicenceTypes' }}
+									{{ application.serviceTypeCode | options : 'ServiceTypes' }}
 								</span>
 							</mat-cell>
 						</ng-container>

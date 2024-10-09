@@ -13,7 +13,7 @@ import {
 	PermitAppSubmitRequest,
 	PermitAppUpsertRequest,
 	PoliceOfficerRoleCode,
-	WorkerLicenceTypeCode,
+	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUtilService } from '@app/core/services/file-util.service';
@@ -44,7 +44,7 @@ export interface PermitChildStepperStepComponent {
 export abstract class PermitApplicationHelper extends ApplicationHelper {
 	permitRequirementFormGroup: FormGroup = this.formBuilder.group(
 		{
-			workerLicenceTypeCode: new FormControl(),
+			serviceTypeCode: new FormControl(),
 			bodyArmourRequirementFormGroup: new FormGroup(
 				{
 					isOutdoorRecreation: new FormControl(false),
@@ -53,7 +53,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 					isTravelForConflict: new FormControl(false),
 					isOther: new FormControl(false),
 				},
-				FormGroupValidators.atLeastOneCheckboxValidator('workerLicenceTypeCode', WorkerLicenceTypeCode.BodyArmourPermit)
+				FormGroupValidators.atLeastOneCheckboxValidator('serviceTypeCode', ServiceTypeCode.BodyArmourPermit)
 			),
 			armouredVehicleRequirementFormGroup: new FormGroup(
 				{
@@ -64,10 +64,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 					isProtectionOfOthersProperty: new FormControl(false),
 					isOther: new FormControl(false),
 				},
-				FormGroupValidators.atLeastOneCheckboxValidator(
-					'workerLicenceTypeCode',
-					WorkerLicenceTypeCode.ArmouredVehiclePermit
-				)
+				FormGroupValidators.atLeastOneCheckboxValidator('serviceTypeCode', ServiceTypeCode.ArmouredVehiclePermit)
 			),
 			otherReason: new FormControl(),
 		},
@@ -312,7 +309,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		const documents: Array<PermitDocumentsToSave> = [];
 
 		const applicationTypeData = permitModelFormValue.applicationTypeData;
-		const workerLicenceTypeData = permitModelFormValue.workerLicenceTypeData;
+		const serviceTypeData = permitModelFormValue.serviceTypeData;
 		const citizenshipData = permitModelFormValue.citizenshipData;
 		const photographOfYourselfData = permitModelFormValue.photographOfYourselfData;
 		const personalInformationData = permitModelFormValue.personalInformationData;
@@ -380,7 +377,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 
 		if (permitRationaleData.attachments) {
 			const documentTypeCode =
-				workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+				serviceTypeData.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
 					? LicenceDocumentTypeCode.ArmouredVehicleRationale
 					: LicenceDocumentTypeCode.BodyArmourRationale;
 
@@ -452,7 +449,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	private getSaveBodyBase(permitModelFormValue: any, isAuthenticated: boolean): any {
 		const licenceAppId = permitModelFormValue.licenceAppId;
 		const originalLicenceData = permitModelFormValue.originalLicenceData;
-		const workerLicenceTypeData = permitModelFormValue.workerLicenceTypeData;
+		const serviceTypeData = permitModelFormValue.serviceTypeData;
 		const applicationTypeData = permitModelFormValue.applicationTypeData;
 		const bcDriversLicenceData = permitModelFormValue.bcDriversLicenceData;
 		const contactInformationData = permitModelFormValue.contactInformationData;
@@ -492,7 +489,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 
 		permitRationaleData.attachments?.forEach((doc: any) => {
 			const licenceDocumentTypeCode =
-				workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit
+				serviceTypeData.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
 					? LicenceDocumentTypeCode.ArmouredVehicleRationale
 					: LicenceDocumentTypeCode.BodyArmourRationale;
 			documentInfos.push({
@@ -556,7 +553,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		let permitOtherRequiredReason: string | null = null;
 		let includesMyEmployement = false;
 
-		if (workerLicenceTypeData.workerLicenceTypeCode === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+		if (serviceTypeData.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirements = permitRequirementData.armouredVehicleRequirementFormGroup;
 			if (armouredVehicleRequirements.isPersonalProtection) {
 				armouredVehiclePermitReasonCodes.push(ArmouredVehiclePermitReasonCode.PersonalProtection);
@@ -664,7 +661,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 			originalApplicationId: originalLicenceData.originalApplicationId,
 			originalLicenceId: originalLicenceData.originalLicenceId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
-			workerLicenceTypeCode: workerLicenceTypeData.workerLicenceTypeCode,
+			serviceTypeCode: serviceTypeData.serviceTypeCode,
 			//-----------------------------------
 			bizTypeCode: BizTypeCode.None,
 			//-----------------------------------
@@ -771,8 +768,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	getSummaryoriginalLicenceTermCode(permitModelData: any): string {
 		return permitModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
-	getSummaryworkerLicenceTypeCode(permitModelData: any): WorkerLicenceTypeCode | null {
-		return permitModelData.workerLicenceTypeData?.workerLicenceTypeCode ?? null;
+	getSummaryserviceTypeCode(permitModelData: any): ServiceTypeCode | null {
+		return permitModelData.serviceTypeData?.serviceTypeCode ?? null;
 	}
 	getSummaryapplicationTypeCode(permitModelData: any): ApplicationTypeCode | null {
 		return permitModelData.applicationTypeData?.applicationTypeCode ?? null;
@@ -942,7 +939,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	}
 
 	getSummarypurposeLabel(permitModelData: any): string {
-		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+		if (this.getSummaryserviceTypeCode(permitModelData) === ServiceTypeCode.ArmouredVehiclePermit) {
 			return 'Reasons for Requiring an Armoured Vehicle';
 		} else {
 			return 'Reasons for Requiring Body Armour';
@@ -951,7 +948,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	getSummarypurposeReasons(permitModelData: any): Array<string> {
 		const reasonList = [];
 
-		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+		if (this.getSummaryserviceTypeCode(permitModelData) === ServiceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirement = permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
 			if (armouredVehicleRequirement.isPersonalProtection) {
 				reasonList.push(
@@ -1027,7 +1024,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 		return reasonList;
 	}
 	getSummaryisOtherReason(permitModelData: any): boolean {
-		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+		if (this.getSummaryserviceTypeCode(permitModelData) === ServiceTypeCode.ArmouredVehiclePermit) {
 			const armouredVehicleRequirement = permitModelData.permitRequirementData.armouredVehicleRequirementFormGroup;
 			return armouredVehicleRequirement.isOther;
 		} else {
@@ -1040,7 +1037,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	}
 
 	getSummaryrationaleLabel(permitModelData: any): string {
-		if (this.getSummaryworkerLicenceTypeCode(permitModelData) === WorkerLicenceTypeCode.ArmouredVehiclePermit) {
+		if (this.getSummaryserviceTypeCode(permitModelData) === ServiceTypeCode.ArmouredVehiclePermit) {
 			return 'Rationale for Requiring an Armoured Vehicle';
 		} else {
 			return 'Rationale for Requiring Body Armour';

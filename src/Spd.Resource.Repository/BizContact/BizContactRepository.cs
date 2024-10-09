@@ -127,7 +127,7 @@ namespace Spd.Resource.Repository.BizContact
             if (bizContact == null)
                 throw new ApiException(HttpStatusCode.BadRequest, $"business contact with id {cmd.BizContactId} not found.");
 
-            Guid? cmServiceType = DynamicsContextLookupHelpers.GetServiceTypeGuid(WorkerLicenceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
+            Guid? cmServiceType = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC.ToString());
             spd_application? app = _context.spd_applications
                 .Expand(a => a.spd_businesscontact_spd_application)
                 .Where(x => x.spd_businesscontact_spd_application.Any(y => y.spd_businesscontactid == cmd.BizContactId))

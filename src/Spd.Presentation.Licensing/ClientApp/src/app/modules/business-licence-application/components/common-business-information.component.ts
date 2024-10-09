@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BizTypeCode, WorkerLicenceTypeCode } from '@app/api/models';
+import { BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -266,7 +266,7 @@ export class CommonBusinessInformationComponent implements OnInit {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Select Sole Proprietor',
 			subtitle: 'A sole proprietor must have a valid security worker licence',
-			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			lookupServiceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,
 		};

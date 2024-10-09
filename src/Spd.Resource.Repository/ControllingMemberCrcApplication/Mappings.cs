@@ -60,7 +60,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_lastname, opt => opt.MapFrom(s => s.Surname))
          .ForMember(d => d.spd_middlename1, opt => opt.MapFrom(s => s.MiddleName1))
          .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
-         .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)SharedMappingFuncs.GetOptionset<ApplicationOriginTypeCode, ApplicationOriginOptionSet>(s.ApplicationOriginTypeCode)))
+         .ForMember(d => d.spd_origin, opt => opt.MapFrom(s => (int)SharedMappingFuncs.GetOptionset<ApplicationOriginTypeEnum, ApplicationOriginOptionSet>(s.ApplicationOriginTypeCode)))
          .ForMember(d => d.spd_payer, opt => opt.MapFrom(s => (int)PayerPreferenceOptionSet.Organization))
          .ForMember(d => d.spd_dateofbirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateFromDateOnly(s.DateOfBirth)))
          .ForMember(d => d.spd_sex, opt => opt.MapFrom(s => SharedMappingFuncs.GetGender(s.GenderCode)))
@@ -93,13 +93,13 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => SharedMappingFuncs.GetIdentityConfirmed(s.ApplicationOriginTypeCode, s.ApplicationTypeCode)))
          .ReverseMap()
          .ForMember(d => d.EmailAddress, opt => opt.MapFrom(s => s.spd_emailaddress1))
-         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeCode>(s.spd_origin)))
+         .ForMember(d => d.ApplicationOriginTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeEnum>(s.spd_origin)))
          .ForMember(d => d.DateOfBirth, opt => opt.MapFrom(s => SharedMappingFuncs.GetDateOnly(s.spd_dateofbirth)))
          .ForMember(d => d.GivenName, opt => opt.MapFrom(s => s.spd_firstname))
          .ForMember(d => d.Surname, opt => opt.MapFrom(s => s.spd_lastname))
          .ForMember(d => d.MiddleName1, opt => opt.MapFrom(s => s.spd_middlename1))
          .ForMember(d => d.MiddleName2, opt => opt.MapFrom(s => s.spd_middlename2))
-         .ForMember(d => d.WorkerLicenceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
+         .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
          .ForMember(d => d.ApplicationTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetLicenceApplicationTypeEnum(s.spd_licenceapplicationtype)))
          .ForMember(d => d.GenderCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetGenderEnum(s.spd_sex)))
          .ForMember(d => d.HasCriminalHistory, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_criminalhistory)))
@@ -130,6 +130,7 @@ internal class Mappings : Profile
             .IncludeBase<ControllingMemberCrcApplication, spd_application>();
 
         _ = CreateMap<SaveControllingMemberCrcAppCmd, contact>()
+            .ForMember(d => d.contactid, opt => opt.MapFrom(s => s.ContactId == Guid.Empty ? Guid.NewGuid() : s.ContactId))
           .IncludeBase<ControllingMemberCrcApplication, contact>();
 
         _ = CreateMap<AliasResp, spd_alias>()

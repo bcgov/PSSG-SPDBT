@@ -6,7 +6,7 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
 {
     public PersonalLicenceAppBaseValidator()
     {
-        RuleFor(r => r.WorkerLicenceTypeCode).NotEmpty();
+        RuleFor(r => r.ServiceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.Surname).NotEmpty();
         RuleFor(r => r.DateOfBirth).NotEmpty();

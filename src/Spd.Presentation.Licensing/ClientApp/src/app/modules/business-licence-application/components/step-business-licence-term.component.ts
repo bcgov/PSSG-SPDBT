@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -12,7 +12,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 			title="Select your licence term"
 			subtitle="The licence term will apply to all licence categories"
 			[isRenewalOrUpdate]="applicationTypeCode === applicationTypeRenewal"
-			[workerLicenceTypeCode]="securityBusinessLicenceCode"
+			[serviceTypeCode]="securityBusinessLicenceCode"
 		>
 			<div class="row" *ngIf="infoText">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
@@ -53,13 +53,13 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 })
 export class StepBusinessLicenceTermComponent implements LicenceChildStepperStepComponent {
 	form: FormGroup = this.businessApplicationService.licenceTermFormGroup;
-	securityBusinessLicenceCode = WorkerLicenceTypeCode.SecurityBusinessLicence;
+	securityBusinessLicenceCode = ServiceTypeCode.SecurityBusinessLicence;
 
 	applicationTypeRenewal = ApplicationTypeCode.Renewal;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() bizTypeCode!: BizTypeCode;
 
@@ -74,12 +74,12 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 	}
 
 	get termCodes(): Array<LicenceFeeResponse> {
-		if (!this.workerLicenceTypeCode || !this.applicationTypeCode || !this.bizTypeCode) {
+		if (!this.serviceTypeCode || !this.applicationTypeCode || !this.bizTypeCode) {
 			return [];
 		}
 
 		return this.commonApplicationService.getLicenceTermsAndFees(
-			this.workerLicenceTypeCode,
+			this.serviceTypeCode,
 			this.applicationTypeCode,
 			this.bizTypeCode
 		);

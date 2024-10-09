@@ -15,7 +15,7 @@ import {
 	IActionResult,
 	LicenceAppDocumentResponse,
 	LicenceDocumentTypeCode,
-	WorkerLicenceTypeCode,
+	ServiceTypeCode,
 } from '@app/api/models';
 import { ApplicantProfileService, ControllingMemberCrcAppService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
@@ -57,7 +57,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		bizContactId: new FormControl(),
 		parentBizLicApplicationId: new FormControl(),
 
-		workerLicenceTypeData: this.workerLicenceTypeFormGroup,
+		serviceTypeData: this.serviceTypeFormGroup,
 		applicationTypeData: this.applicationTypeFormGroup,
 
 		personalInformationData: this.personalInformationFormGroup,
@@ -259,7 +259,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 								this.initialized = true;
 
 								this.commonApplicationService.setApplicationTitle(
-									WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+									ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 									applicationTypeCode
 								);
 							})
@@ -271,7 +271,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 							this.initialized = true;
 
 							this.commonApplicationService.setApplicationTitle(
-								WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+								ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 								applicationTypeCode
 							);
 						})
@@ -294,7 +294,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 					this.initialized = true;
 
 					this.commonApplicationService.setApplicationTitle(
-						WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+						ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 						applicationTypeCode
 					);
 				})
@@ -308,7 +308,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 						this.initialized = true;
 
 						this.commonApplicationService.setApplicationTitle(
-							WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+							ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 							applicationTypeCode
 						);
 					})
@@ -450,7 +450,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			}
 		});
 
-		delete body.workerLicenceTypeCode;
+		delete body.serviceTypeCode;
 		delete body.applicationTypeCode;
 		delete body.hasPreviousName;
 		delete body.aliases;
@@ -525,7 +525,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			}
 		});
 
-		delete body.workerLicenceTypeCode;
+		delete body.serviceTypeCode;
 		delete body.applicationTypeCode;
 		delete body.hasPreviousName;
 		delete body.aliases;
@@ -560,7 +560,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		crcInviteData: ControllingMemberAppInviteVerifyResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		const workerLicenceTypeData = { workerLicenceTypeCode: crcAppl.workerLicenceTypeCode };
+		const serviceTypeData = { serviceTypeCode: crcAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode };
 
 		const personalInformationData = {
@@ -713,7 +713,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 		this.controllingMembersModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData,
+				serviceTypeData,
 				applicationTypeData,
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
 				bizContactId: crcInviteData.bizContactId,
@@ -779,8 +779,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 		this.controllingMembersModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData: {
-					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+				serviceTypeData: {
+					serviceTypeCode: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
 				applicationTypeData: { applicationTypeCode },
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,
@@ -860,8 +860,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 
 		this.controllingMembersModelFormGroup.patchValue(
 			{
-				workerLicenceTypeData: {
-					workerLicenceTypeCode: WorkerLicenceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+				serviceTypeData: {
+					serviceTypeCode: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 				},
 				applicationTypeData: { applicationTypeCode },
 				parentBizLicApplicationId: crcInviteData.bizLicAppId,

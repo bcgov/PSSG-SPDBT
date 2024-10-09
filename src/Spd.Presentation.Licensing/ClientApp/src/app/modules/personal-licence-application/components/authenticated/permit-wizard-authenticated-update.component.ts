@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, PermitAppCommandResponse, WorkerLicenceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -29,9 +29,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 				>
 					<mat-step completed="true">
 						<ng-template matStepLabel>Permit Confirmation</ng-template>
-						<app-step-permit-confirmation
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
-						></app-step-permit-confirmation>
+						<app-step-permit-confirmation [serviceTypeCode]="serviceTypeCode"></app-step-permit-confirmation>
 
 						<app-wizard-footer
 							(previousStepperStep)="onGotoUserProfile()"
@@ -42,7 +40,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 					<mat-step completed="false">
 						<ng-template matStepLabel>Permit Updates</ng-template>
 						<app-steps-permit-updates-authenticated
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[hasBcscNameChanged]="hasBcscNameChanged"
 							[hasGenderChanged]="hasGenderChanged"
@@ -57,7 +55,7 @@ import { StepsPermitUpdatesAuthenticatedComponent } from './permit-wizard-step-c
 					<mat-step completed="false">
 						<ng-template matStepLabel>Review & Confirm</ng-template>
 						<app-steps-permit-review-authenticated
-							[workerLicenceTypeCode]="workerLicenceTypeCode"
+							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[showEmployerInformation]="showEmployerInformation"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -86,7 +84,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	@ViewChild(StepsPermitUpdatesAuthenticatedComponent) stepsUpdatesComponent!: StepsPermitUpdatesAuthenticatedComponent;
 	@ViewChild(StepsPermitReviewAuthenticatedComponent) stepsReviewComponent!: StepsPermitReviewAuthenticatedComponent;
 
-	workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	isFormValid = false;
 	showSaveAndExit = false;
@@ -106,7 +104,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 		super(breakpointObserver);
 
 		const state = this.router.getCurrentNavigation()?.extras.state;
-		this.workerLicenceTypeCode = state && state['workerLicenceTypeCode'];
+		this.serviceTypeCode = state && state['serviceTypeCode'];
 	}
 
 	ngOnInit(): void {
@@ -117,14 +115,14 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 
 		this.permitModelChangedSubscription = this.permitApplicationService.permitModelValueChanges$.subscribe(
 			(_resp: boolean) => {
-				this.workerLicenceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
-					'workerLicenceTypeData.workerLicenceTypeCode'
+				this.serviceTypeCode = this.permitApplicationService.permitModelFormGroup.get(
+					'serviceTypeData.serviceTypeCode'
 				)?.value;
 				this.applicationTypeCode = this.permitApplicationService.permitModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				if (this.workerLicenceTypeCode === WorkerLicenceTypeCode.BodyArmourPermit) {
+				if (this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit) {
 					const bodyArmourRequirement = this.permitApplicationService.permitModelFormGroup.get(
 						'permitRequirementData.bodyArmourRequirementFormGroup'
 					)?.value;
@@ -158,7 +156,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 	}
 
 	onGotoUserProfile(): void {
-		this.commonApplicationService.onGotoPermitUserProfile(this.workerLicenceTypeCode, ApplicationTypeCode.Update);
+		this.commonApplicationService.onGotoPermitUserProfile(this.serviceTypeCode, ApplicationTypeCode.Update);
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {

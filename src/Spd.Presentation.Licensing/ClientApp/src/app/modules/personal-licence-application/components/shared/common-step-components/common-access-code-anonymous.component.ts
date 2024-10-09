@@ -6,7 +6,7 @@ import {
 	LicenceResponse,
 	LicenceStatusCode,
 	LicenceTermCode,
-	WorkerLicenceTypeCode,
+	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -99,7 +99,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	label = '';
 
 	@Input() form!: FormGroup;
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@Output() linkSuccess = new EventEmitter<LicenceResponse>();
@@ -113,7 +113,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.titleLabel = this.workerLicenceTypeCode === WorkerLicenceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
+		this.titleLabel = this.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence ? 'Licence' : 'Permit';
 		this.label = this.titleLabel.toLowerCase();
 	}
 
@@ -137,8 +137,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			return;
 		}
 
-		switch (this.workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+		switch (this.serviceTypeCode) {
+			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
 					.getLicenceWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
@@ -150,8 +150,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 					.subscribe();
 				break;
 			}
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				this.permitApplicationService
 					.getPermitWithAccessCodeAnonymous(licenceNumber, accessCode, recaptchaCode)
 					.pipe(
@@ -200,10 +200,10 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			renewPeriodDays = SPD_CONSTANTS.periods.licenceRenewPeriodDaysNinetyDayTerm;
 		}
 
-		if (resp.workerLicenceTypeCode !== this.workerLicenceTypeCode) {
-			//  access code matches licence, but the WorkerLicenceType does not match
-			const selWorkerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-			this.errorMessage = `This licence number is not a ${selWorkerLicenceTypeDesc}.`;
+		if (resp.serviceTypeCode !== this.serviceTypeCode) {
+			//  access code matches licence, but the ServiceTypeCode does not match
+			const selServiceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
+			this.errorMessage = `This licence number is not a ${selServiceTypeCodeDesc}.`;
 		} else if (resp.licenceStatusCode != LicenceStatusCode.Active) {
 			// access code matches licence, but the licence is expired
 			this.isExpired = true;
@@ -240,8 +240,8 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			});
 			this.linkSuccess.emit(resp);
 
-			const workerLicenceTypeDesc = this.optionsPipe.transform(this.workerLicenceTypeCode, 'WorkerLicenceTypes');
-			this.hotToastService.success(`The ${workerLicenceTypeDesc} has been found.`);
+			const serviceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
+			this.hotToastService.success(`The ${serviceTypeCodeDesc} has been found.`);
 		}
 
 		if (this.errorMessage) {

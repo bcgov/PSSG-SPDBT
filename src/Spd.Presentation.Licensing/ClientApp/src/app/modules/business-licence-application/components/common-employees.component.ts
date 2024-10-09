@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { BizMemberResponse, LicenceResponse, SwlContactInfo, WorkerLicenceTypeCode } from '@app/api/models';
+import { BizMemberResponse, LicenceResponse, ServiceTypeCode, SwlContactInfo } from '@app/api/models';
 import { BizMembersService } from '@app/api/services';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -182,7 +182,7 @@ export class CommonEmployeesComponent implements OnInit, LicenceChildStepperStep
 	onAddEmployee(): void {
 		const dialogOptions: LookupByLicenceNumberDialogData = {
 			title: 'Add Member with Security Worker Licence',
-			lookupWorkerLicenceTypeCode: WorkerLicenceTypeCode.SecurityWorkerLicence,
+			lookupServiceTypeCode: ServiceTypeCode.SecurityWorkerLicence,
 			isExpiredLicenceSearch: false,
 			isLoggedIn: true,
 			selectButtonLabel: 'Save',

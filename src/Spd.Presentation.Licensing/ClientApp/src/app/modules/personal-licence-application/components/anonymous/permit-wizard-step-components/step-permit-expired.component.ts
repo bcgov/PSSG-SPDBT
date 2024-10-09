@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { WorkerLicenceTypeCode } from '@app/api/models';
+import { ServiceTypeCode } from '@app/api/models';
 import { PermitChildStepperStepComponent } from '@app/core/services/permit-application.helper';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 
@@ -19,7 +19,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 			<app-expired-licence
 				[form]="form"
 				[isLoggedIn]="isLoggedIn"
-				[workerLicenceTypeCode]="workerLicenceTypeCode"
+				[serviceTypeCode]="serviceTypeCode"
 			></app-expired-licence>
 		</app-step-section>
 	`,
@@ -29,7 +29,7 @@ export class StepPermitExpiredComponent implements PermitChildStepperStepCompone
 	form: FormGroup = this.permitApplicationService.expiredLicenceFormGroup;
 
 	@Input() isLoggedIn!: boolean;
-	@Input() workerLicenceTypeCode!: WorkerLicenceTypeCode;
+	@Input() serviceTypeCode!: ServiceTypeCode;
 
 	constructor(private permitApplicationService: PermitApplicationService) {}
 

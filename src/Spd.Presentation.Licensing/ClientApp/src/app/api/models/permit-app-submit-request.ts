@@ -15,8 +15,8 @@ import { HeightUnitCode } from '../models/height-unit-code';
 import { LicenceTermCode } from '../models/licence-term-code';
 import { MailingAddress } from '../models/mailing-address';
 import { ResidentialAddress } from '../models/residential-address';
+import { ServiceTypeCode } from '../models/service-type-code';
 import { WeightUnitCode } from '../models/weight-unit-code';
-import { WorkerLicenceTypeCode } from '../models/worker-licence-type-code';
 export interface PermitAppSubmitRequest {
   agreeToCompleteAndAccurate?: boolean | null;
   aliases?: Array<Alias> | null;
@@ -62,11 +62,11 @@ export interface PermitAppSubmitRequest {
   rationale?: string | null;
   reprint?: boolean | null;
   residentialAddress?: ResidentialAddress;
+  serviceTypeCode?: ServiceTypeCode;
   supervisorEmailAddress?: string | null;
   supervisorName?: string | null;
   supervisorPhoneNumber?: string | null;
   surname?: string | null;
   weight?: number | null;
   weightUnitCode?: WeightUnitCode;
-  workerLicenceTypeCode?: WorkerLicenceTypeCode;
 }

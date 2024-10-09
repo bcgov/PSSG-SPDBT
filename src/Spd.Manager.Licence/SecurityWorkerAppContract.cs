@@ -59,7 +59,7 @@ public record WorkerLicenceAppResponse : WorkerLicenceAppBase
 public record LicenceAppListResponse
 {
     public Guid LicenceAppId { get; set; }
-    public WorkerLicenceTypeCode ServiceTypeCode { get; set; }
+    public ServiceTypeCode ServiceTypeCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? SubmittedOn { get; set; }
     public DateTimeOffset? UpdatedOn { get; set; }

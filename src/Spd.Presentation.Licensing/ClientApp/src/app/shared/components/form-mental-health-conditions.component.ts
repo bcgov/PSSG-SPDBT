@@ -31,7 +31,7 @@ import { FileUploadComponent } from './file-upload.component';
 			</div>
 
 			<div class="row my-4" *ngIf="isTreatedForMHC.value === booleanTypeCodes.Yes" @showHideTriggerSlideAnimation>
-				<div [ngClass]="isWizardStep ? 'offset-md-2 col-md-8 col-sm-12' : 'col-12'">
+				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
 					<mat-divider class="mb-3 mat-divider-primary"></mat-divider>
 					<p>
 						If you don't have a completed form, you can download and provide it to your physician to fill out, or your

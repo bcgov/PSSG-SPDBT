@@ -5,7 +5,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { PermitApplicationService } from '@core/services/permit-application.service';
 import { take, tap } from 'rxjs';
-import { WorkerLicenceTypeCode } from './api/models';
+import { ServiceTypeCode } from './api/models';
 import { SPD_CONSTANTS } from './core/constants/constants';
 import { ApplicationService } from './core/services/application.service';
 import { AuthProcessService } from './core/services/auth-process.service';
@@ -67,8 +67,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
-											(click)="onContinue(workerLicenceTypeCodes.SecurityWorkerLicence)"
-											(keydown)="onKeydownContinue($event, workerLicenceTypeCodes.SecurityWorkerLicence)"
+											(click)="onContinue(serviceTypeCodes.SecurityWorkerLicence)"
+											(keydown)="onKeydownContinue($event, serviceTypeCodes.SecurityWorkerLicence)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -123,8 +123,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
-											(click)="onContinue(workerLicenceTypeCodes.BodyArmourPermit)"
-											(keydown)="onKeydownContinue($event, workerLicenceTypeCodes.BodyArmourPermit)"
+											(click)="onContinue(serviceTypeCodes.BodyArmourPermit)"
+											(keydown)="onKeydownContinue($event, serviceTypeCodes.BodyArmourPermit)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -151,8 +151,8 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 										<a
 											tabindex="0"
 											class="large login-link"
-											(click)="onContinue(workerLicenceTypeCodes.ArmouredVehiclePermit)"
-											(keydown)="onKeydownContinue($event, workerLicenceTypeCodes.ArmouredVehiclePermit)"
+											(click)="onContinue(serviceTypeCodes.ArmouredVehiclePermit)"
+											(keydown)="onKeydownContinue($event, serviceTypeCodes.ArmouredVehiclePermit)"
 										>
 											Continue without a BC Services Card
 										</a>
@@ -185,7 +185,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 })
 export class LandingComponent implements OnInit {
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
-	workerLicenceTypeCodes = WorkerLicenceTypeCode;
+	serviceTypeCodes = ServiceTypeCode;
 
 	constructor(
 		private router: Router,
@@ -208,15 +208,15 @@ export class LandingComponent implements OnInit {
 		this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathUserApplications());
 	}
 
-	onContinue(workerLicenceTypeCode: WorkerLicenceTypeCode): void {
+	onContinue(serviceTypeCode: ServiceTypeCode): void {
 		// make sure the user is not logged in.
 		this.authProcessService.logoutBceid();
 		this.authProcessService.logoutBcsc();
 
-		switch (workerLicenceTypeCode) {
-			case WorkerLicenceTypeCode.SecurityWorkerLicence: {
+		switch (serviceTypeCode) {
+			case ServiceTypeCode.SecurityWorkerLicence: {
 				this.workerApplicationService
-					.createNewLicenceAnonymous(workerLicenceTypeCode)
+					.createNewLicenceAnonymous(serviceTypeCode)
 					.pipe(
 						tap((_resp: any) => {
 							this.router.navigateByUrl(
@@ -231,8 +231,8 @@ export class LandingComponent implements OnInit {
 
 				break;
 			}
-			case WorkerLicenceTypeCode.ArmouredVehiclePermit:
-			case WorkerLicenceTypeCode.BodyArmourPermit: {
+			case ServiceTypeCode.ArmouredVehiclePermit:
+			case ServiceTypeCode.BodyArmourPermit: {
 				const data: DialogOptions = {
 					icon: 'video_call',
 					title: 'Pending Video Call',
@@ -251,7 +251,7 @@ export class LandingComponent implements OnInit {
 						}
 
 						this.permitApplicationService
-							.createNewPermitAnonymous(workerLicenceTypeCode)
+							.createNewPermitAnonymous(serviceTypeCode)
 							.pipe(
 								tap((_resp: any) => {
 									this.router.navigateByUrl(
@@ -270,9 +270,9 @@ export class LandingComponent implements OnInit {
 		}
 	}
 
-	onKeydownContinue(event: KeyboardEvent, workerLicenceTypeCode: WorkerLicenceTypeCode) {
+	onKeydownContinue(event: KeyboardEvent, serviceTypeCode: ServiceTypeCode) {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
-		this.onContinue(workerLicenceTypeCode);
+		this.onContinue(serviceTypeCode);
 	}
 }
