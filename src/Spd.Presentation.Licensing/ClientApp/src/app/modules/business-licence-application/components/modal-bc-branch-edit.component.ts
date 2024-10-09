@@ -4,11 +4,6 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { BranchResponse } from './business-bc-branches.component';
 
-export interface UserDialogData {
-	// user: OrgUserResponse;
-	isAllowedPrimary: boolean;
-}
-
 @Component({
 	selector: 'app-modal-bc-branch-edit',
 	template: `
@@ -65,8 +60,8 @@ export interface UserDialogData {
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-flat-button color="primary" class="large" (click)="onSave()">
-						<span *ngIf="!isEdit">Add</span>
-						<span *ngIf="isEdit">Update</span>
+						<span *ngIf="isCreate">Add</span>
+						<span *ngIf="!isCreate">Update</span>
 					</button>
 				</div>
 			</div>
@@ -76,7 +71,7 @@ export interface UserDialogData {
 })
 export class ModalBcBranchEditComponent implements OnInit {
 	title = '';
-	isEdit = false;
+	isCreate = false;
 
 	form = this.businessApplicationService.branchInBcFormGroup;
 
@@ -91,8 +86,15 @@ export class ModalBcBranchEditComponent implements OnInit {
 	ngOnInit(): void {
 		this.form.reset();
 		this.form.patchValue(this.dialogData);
-		this.isEdit = !!this.dialogData.branchId;
-		this.title = this.dialogData.branchId ? 'Edit Branch' : 'Add Branch';
+
+		this.isCreate = this.dialogData.isCreate ?? false;
+
+		if (this.isCreate) {
+			this.title = 'Add Branch';
+		} else {
+			this.title = 'Edit Branch';
+			this.form.patchValue({ addressSelected: true });
+		}
 	}
 
 	onSave(): void {
