@@ -10,4 +10,5 @@ export interface ConfigurationResponse {
   idirConfiguration?: OidcConfiguration;
   payBcSearchInvoiceUrl?: string | null;
   recaptchaConfiguration?: RecaptchaConfiguration;
+  version?: string | null;
 }
