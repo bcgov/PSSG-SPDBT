@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -77,7 +78,9 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             if (bizUpsertRequest.BizId == Guid.Empty)
                 throw new ApiException(HttpStatusCode.BadRequest, "must have business");
+
             bizUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+            bizUpsertRequest.SubmittedByPoralUserId = Guid.Parse(_currentUser.GetUserId());
             return await _mediator.Send(new BizLicAppUpsertCommand(bizUpsertRequest), ct);
         }
 
@@ -182,6 +185,7 @@ namespace Spd.Presentation.Licensing.Controllers
             if (!validateResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, JsonSerializer.Serialize(validateResult.Errors));
             bizUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
+            bizUpsertRequest.SubmittedByPoralUserId = Guid.Parse(_currentUser.GetUserId());
             var response = await _mediator.Send(new BizLicAppSubmitCommand(bizUpsertRequest), ct);
 
             //clear the cookie for the sole proprietor swl
