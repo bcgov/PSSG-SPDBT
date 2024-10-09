@@ -42,7 +42,7 @@ public record BizLicApplication
     public IEnumerable<UploadedDocumentEnum>? UploadedDocumentEnums { get; set; }
     public PrivateInvestigatorSwlContactInfo? PrivateInvestigatorSwlInfo { get; set; }
     public bool? AgreeToCompleteAndAccurate { get; set; }
-    public Guid? SubmittedByPoralUserId { get; set; }
+    public Guid? SubmittedByPortalUserId { get; set; }
 }
 
 public record SaveBizLicApplicationCmd() : BizLicApplication

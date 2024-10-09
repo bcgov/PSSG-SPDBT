@@ -60,7 +60,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         await SetAddresses(applicantId, app, ct);
         await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
-        SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPoralUserId, app);
+        SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
         LinkOrganization(applicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
@@ -115,7 +115,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         else
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
-        SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPoralUserId, app);
+        SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
         LinkOrganization(cmd.ApplicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
