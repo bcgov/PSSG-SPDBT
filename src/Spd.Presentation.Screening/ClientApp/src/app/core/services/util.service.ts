@@ -76,7 +76,7 @@ export class UtilService {
 	getDecodedAccessToken(token: string): any {
 		try {
 			return jwt_decode(token);
-		} catch (Error) {
+		} catch (_error) {
 			return null;
 		}
 	}
