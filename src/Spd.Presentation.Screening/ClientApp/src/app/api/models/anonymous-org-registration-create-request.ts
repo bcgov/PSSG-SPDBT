@@ -21,7 +21,6 @@ export interface AnonymousOrgRegistrationCreateRequest {
   employeeOrganizationTypeCode?: EmployeeOrganizationTypeCode;
   genericEmail?: string | null;
   genericPhoneNumber?: string | null;
-  hasPhoneOrEmail?: BooleanTypeCode;
   hasPotentialDuplicate?: BooleanTypeCode;
   loginIdentityGuid?: string | null;
   loginIdentityProvider?: string | null;
