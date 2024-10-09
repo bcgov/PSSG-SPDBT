@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import {
 	ActionResult,
 	Address,
-	ApplicationInviteStatusCode,
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
@@ -575,16 +574,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	sendControllingMembersWithoutSwlInvitation(
 		bizContactId: string,
-		statusCode?: ApplicationInviteStatusCode
+		inviteTypeCode: ControllingMemberAppInviteTypeCode
 	): Observable<ControllingMemberInvitesCreateResponse> {
-		const inviteType =
-			statusCode === ApplicationInviteStatusCode.Completed
-				? ControllingMemberAppInviteTypeCode.Update
-				: ControllingMemberAppInviteTypeCode.New;
-
 		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
 			bizContactId,
-			inviteType,
+			inviteType: inviteTypeCode,
 		});
 	}
 
