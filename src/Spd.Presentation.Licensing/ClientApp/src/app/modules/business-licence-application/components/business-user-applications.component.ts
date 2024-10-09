@@ -29,7 +29,13 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<button mat-flat-button color="primary" class="large w-auto me-2 mb-3" (click)="onBusinessProfile()">
+								<button
+									mat-flat-button
+									color="primary"
+									*ngIf="!isSoleProprietorComboFlow"
+									class="large w-auto me-2 mb-3"
+									(click)="onBusinessProfile()"
+								>
 									<mat-icon>storefront</mat-icon>
 									{{ businessProfileLabel }}
 								</button>
@@ -131,6 +137,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	activeLicenceExist = false;
 
 	isSoleProprietor = false;
+	isSoleProprietorComboFlow = false;
 
 	serviceTypeCodes = ServiceTypeCode;
 
@@ -156,9 +163,11 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 		this.results$ = this.businessApplicationService.getBusinessProfile().pipe(
 			switchMap((businessProfile: BizProfileResponse) => {
+				this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+
 				return forkJoin([
 					this.commonApplicationService.userBusinessLicencesList(businessProfile),
-					this.commonApplicationService.userBusinessApplicationsList(),
+					this.commonApplicationService.userBusinessApplicationsList(this.isSoleProprietor),
 				]).pipe(
 					tap((resps: Array<any>) => {
 						const businessLicencesList: Array<MainLicenceResponse> = resps[0];
@@ -168,7 +177,10 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						// console.debug('businessApplicationsList', businessApplicationsList);
 						// console.debug('businessProfile', businessProfile);
 
-						this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+						this.isSoleProprietorComboFlow =
+							businessApplicationsList.length > 0
+								? businessApplicationsList[0].isSoleProprietorComboFlow ?? false
+								: false;
 
 						// Only show the manage members and employees when an application or licence exist.
 						this.showManageMembersAndEmployees = this.isSoleProprietor
@@ -238,7 +250,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onResume(appl: MainApplicationResponse): void {
 		this.businessApplicationService
-			.getBusinessLicenceApplToResume(appl.licenceAppId!)
+			.getBusinessLicenceApplToResume(appl.licenceAppId!, this.isSoleProprietor)
 			.pipe(
 				tap((resp: any) => {
 					// return to the swl sole proprietor / business licence combo flow
@@ -273,7 +285,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(ApplicationTypeCode.Replacement, licence)
+			.getBusinessLicenceWithSelection(ApplicationTypeCode.Replacement, licence, this.isSoleProprietor)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -292,7 +304,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(ApplicationTypeCode.Renewal, licence)
+			.getBusinessLicenceWithSelection(ApplicationTypeCode.Renewal, licence, this.isSoleProprietor)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -311,7 +323,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (this.applicationIsInProgress) return;
 
 		this.businessApplicationService
-			.getBusinessLicenceWithSelection(ApplicationTypeCode.Update, licence)
+			.getBusinessLicenceWithSelection(ApplicationTypeCode.Update, licence, this.isSoleProprietor)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(

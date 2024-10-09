@@ -7,8 +7,8 @@ export interface DialogOptions {
 	message?: string;
 	type?: 'primary' | 'accent' | 'warn' | string;
 	cancelText?: string;
-	altOptionText?: string;
 	actionText?: string;
+	wideButtons?: boolean;
 	data?: { [key: string]: any };
 }
 
@@ -35,17 +35,12 @@ export enum DialogCloseCode {
 
 		<mat-dialog-actions>
 			<div class="row m-0 p-0 w-100 mt-2">
-				<div class="col-md-4 col-sm-12 mb-2">
+				<div class="col-sm-12 mb-2" [ngClass]="data.wideButtons ? 'col-md-6' : 'col-md-4'">
 					<button *ngIf="data.cancelText" mat-stroked-button color="primary" class="large" [mat-dialog-close]="false">
 						{{ data.cancelText }}
 					</button>
 				</div>
-				<div class="offset-md-1 col-md-3 col-sm-12 mb-2">
-					<button *ngIf="data.altOptionText" mat-flat-button color="primary" class="large" (click)="onAltConfirm()">
-						{{ data.altOptionText }}
-					</button>
-				</div>
-				<div class="col-md-4 col-sm-12 mb-2">
+				<div class="col-sm-12 mb-2" [ngClass]="data.wideButtons ? 'col-md-6' : 'offset-md-4 col-md-4'">
 					<button *ngIf="data.actionText" mat-flat-button color="primary" class="large" (click)="onConfirm()">
 						{{ data.actionText }}
 					</button>
@@ -83,9 +78,6 @@ export class DialogComponent {
 	constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogOptions) {}
 
 	public onConfirm(): void {
-		this.dialogRef.close(this.data.altOptionText ? DialogCloseCode.Action : true);
-	}
-	public onAltConfirm(): void {
-		this.dialogRef.close(DialogCloseCode.AltAction);
+		this.dialogRef.close(true);
 	}
 }
