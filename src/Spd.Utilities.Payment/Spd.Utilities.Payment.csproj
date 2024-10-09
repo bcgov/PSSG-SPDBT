@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-				<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+			<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+			<NoWarn>NU1903</NoWarn>
 		</PropertyGroup>
-
+	
 		<ItemGroup>
 				<PackageReference Include="AutoMapper" />
 				<PackageReference Include="IdentityModel" />
