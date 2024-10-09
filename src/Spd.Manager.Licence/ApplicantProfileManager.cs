@@ -97,6 +97,9 @@ namespace Spd.Manager.Licence
                         UpdateContactCmd updateContactCmd = _mapper.Map<UpdateContactCmd>(cmd);
                         updateContactCmd.Id = (Guid)id.ContactId;
                         updateContactCmd.IdentityId = id.Id;
+                        updateContactCmd.IsPoliceOrPeaceOfficer = contactResp.IsPoliceOrPeaceOfficer;
+                        updateContactCmd.PoliceOfficerRoleCode = contactResp.PoliceOfficerRoleCode;
+                        updateContactCmd.OtherOfficerRole = contactResp.OtherOfficerRole;
                         contactResp = await _contactRepository.ManageAsync(updateContactCmd, ct);
                     }
                 }
