@@ -40,6 +40,8 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 			<mat-step>
 				<app-step-worker-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
+					[isSoleProprietor]="isSoleProprietor"
+					[isAnonymous]="false"
 				></app-step-worker-licence-consent-and-declaration>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">

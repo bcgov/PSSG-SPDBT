@@ -23,6 +23,8 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 			<mat-step>
 				<app-step-worker-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
+					[isSoleProprietor]="isSoleProprietor"
+					[isAnonymous]="true"
 				></app-step-worker-licence-consent-and-declaration>
 
 				<ng-container *ngIf="isSoleProprietor; else IsNotSoleProprietor">

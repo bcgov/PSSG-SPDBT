@@ -1068,7 +1068,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}).pipe(
 			tap((_resp: any) => {
 				this.businessModelFormGroup.patchValue(
-					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: true },
+					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: !isSoleProprietorSWLAnonymous },
 					{ emitEvent: false }
 				);
 
@@ -1213,7 +1213,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}).pipe(
 			tap((_resp: any) => {
 				this.businessModelFormGroup.patchValue(
-					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: true },
+					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: !isSoleProprietorSWLAnonymous },
 					{ emitEvent: false }
 				);
 
