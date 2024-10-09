@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
@@ -89,6 +88,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Manager.Printing", "Spd.Manager.Printing\Spd.Manager.Printing.csproj", "{A3483065-B07D-4FD1-8FE4-D261A58AFFB1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spd.Utilities.FileScanning", "Spd.Utilities.FileScanning\Spd.Utilities.FileScanning.csproj", "{A0C46F0B-2D42-4FA5-AF2A-567BDB7B7040}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spd.Utilities.LogonUser.UnitTest", "Spd.Utilities.LogonUser.UnitTest\Spd.Utilities.LogonUser.UnitTest.csproj", "{54C141E8-B756-49BB-AF06-602FCDB9B25F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -228,6 +229,10 @@ Global
 		{A0C46F0B-2D42-4FA5-AF2A-567BDB7B7040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0C46F0B-2D42-4FA5-AF2A-567BDB7B7040}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0C46F0B-2D42-4FA5-AF2A-567BDB7B7040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C141E8-B756-49BB-AF06-602FCDB9B25F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C141E8-B756-49BB-AF06-602FCDB9B25F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C141E8-B756-49BB-AF06-602FCDB9B25F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C141E8-B756-49BB-AF06-602FCDB9B25F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -266,6 +271,7 @@ Global
 		{176888CB-63E7-41C9-A96D-67428EC6D27E} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 		{A3483065-B07D-4FD1-8FE4-D261A58AFFB1} = {AFA7034A-A8B1-489C-9A24-030B05C5412B}
 		{A0C46F0B-2D42-4FA5-AF2A-567BDB7B7040} = {744553C0-C41C-4315-9592-92A97938234E}
+		{54C141E8-B756-49BB-AF06-602FCDB9B25F} = {44CEC402-28D1-4A94-B18A-F3147AD4CCCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07609A1C-A62A-4B0C-85C1-40600CB3DC45}

@@ -2,6 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, ServiceTypeCode } from '@app/api/models';
@@ -11,6 +12,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
@@ -117,7 +119,6 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	bizTypeCode!: BizTypeCode;
 
 	private businessModelValueChangedSubscription!: Subscription;
-	private isSoleProprietorSWLAnonymous = false;
 
 	@ViewChild(StepsBusinessLicenceSwlSpInformationComponent)
 	stepsBusinessInformationComponent!: StepsBusinessLicenceSwlSpInformationComponent;
@@ -129,6 +130,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private dialog: MatDialog,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
@@ -154,8 +156,6 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 					'businessInformationData.bizTypeCode'
 				)?.value;
 
-				this.isSoleProprietorSWLAnonymous =
-					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSWLAnonymous')?.value;
 				this.isSoleProprietorReturnToSwl =
 					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorReturnToSwl')?.value;
 
@@ -244,16 +244,24 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	onReturnToSwl(): void {
-		if (this.isSoleProprietorSWLAnonymous) {
-			this.router.navigate([
-				PersonalLicenceApplicationRoutes.MODULE_PATH,
-				PersonalLicenceApplicationRoutes.LICENCE_APPLICATION_ANONYMOUS,
-				PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS,
-			]);
-			return;
-		}
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message:
+				'Are you sure you want to cancel your security business licence application?<br><br>You will be returned to the portal to pay the application fee for your security worker licence.',
+			actionText: 'Yes, cancel this application',
+			cancelText: 'No, continue application',
+			wideButtons: true,
+		};
 
-		this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
+				}
+			});
 	}
 
 	private saveStep(stepper?: MatStepper): void {
