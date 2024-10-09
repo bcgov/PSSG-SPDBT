@@ -23,6 +23,7 @@ import {
 	ScreeningStatusFilterCommonComponent,
 	ScreeningStatusFilterMap,
 } from './screening-status-filter-common.component';
+import { StatusStatisticsCommonComponent } from './status-statistics-common.component';
 
 export interface ScreeningStatusResponse extends ApplicationResponse {
 	applicationPortalStatusClass: string;
@@ -36,7 +37,13 @@ export interface ScreeningStatusResponse extends ApplicationResponse {
 		<section class="step-section my-3 px-md-4 py-md-3 p-sm-0">
 			<div class="row">
 				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 col-12">
-					<h2 class="mb-2">{{ heading }}</h2>
+					<div class="d-flex justify-content-between mb-3">
+						<h2 class="m-0">{{ heading }}</h2>
+						<button mat-flat-button class="large w-auto" color="primary" (click)="onRefreshAll()">
+							<mat-icon>refresh</mat-icon>Refresh All
+						</button>
+					</div>
+
 					<app-applications-banner></app-applications-banner>
 				</div>
 			</div>
@@ -330,6 +337,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChild('paginator') paginator!: MatPaginator;
 	@ViewChild(ScreeningStatusFilterCommonComponent) filterComponent!: ScreeningStatusFilterCommonComponent;
+	@ViewChild(StatusStatisticsCommonComponent) statisticsComponent!: StatusStatisticsCommonComponent;
 
 	constructor(
 		private router: Router,
@@ -405,6 +413,11 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 
 			this.onFilterReset();
 		}
+	}
+
+	onRefreshAll(): void {
+		this.statisticsComponent.refreshData();
+		this.loadList();
 	}
 
 	onPayNow(application: ScreeningStatusResponse): void {

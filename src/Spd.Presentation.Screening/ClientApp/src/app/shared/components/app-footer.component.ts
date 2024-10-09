@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ConfigurationResponse } from 'src/app/api/models';
+import { ConfigService } from 'src/app/core/services/config.service';
 
 @Component({
 	selector: 'app-footer',
@@ -10,6 +12,10 @@ import { Component } from '@angular/core';
 			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>
 			<a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">Contact Us</a>
+
+			<span style="flex: 1 1 auto;"></span>
+
+			<span class="fs-7 p-2 text-muted" *ngIf="env">{{ env }}</span>
 		</mat-toolbar>
 	`,
 	styles: [
@@ -40,4 +46,18 @@ import { Component } from '@angular/core';
 		`,
 	],
 })
-export class FooterComponent {}
+export class FooterComponent implements OnInit {
+	env: string | null | undefined = null;
+
+	constructor(private configService: ConfigService) {}
+
+	ngOnInit(): void {
+		this.configService.getConfigs().subscribe((config: ConfigurationResponse) => {
+			if (this.configService.isProduction()) {
+				this.env = config.version ?? null;
+			} else {
+				this.env = `${config.environment ?? ''} ${config.version ?? ''}`;
+			}
+		});
+	}
+}

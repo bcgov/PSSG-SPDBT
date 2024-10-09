@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Screening;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Net;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Screening.Controllers
 {
@@ -19,12 +21,14 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IMediator _mediator;
         private readonly IRecaptchaVerificationService _verificationService;
         private readonly IConfiguration _configuration;
+        private readonly IPrincipal _currentUser;
 
-        public OrgRegistrationController(IMediator mediator, IRecaptchaVerificationService verificationService, IConfiguration configuration)
+        public OrgRegistrationController(IMediator mediator, IRecaptchaVerificationService verificationService, IConfiguration configuration, IPrincipal currentUser)
         {
             _mediator = mediator;
             _verificationService = verificationService;
             _configuration = configuration;
+            _currentUser = currentUser;
         }
 
         /// <summary>
@@ -68,6 +72,8 @@ namespace Spd.Presentation.Screening.Controllers
             string? hostUrl = _configuration.GetValue<string>("HostUrl");
             if (hostUrl == null)
                 throw new ConfigurationErrorsException("HostUrl is not set correctly in configuration.");
+            BceidIdentityInfo identityInfo = _currentUser.GetBceidUserIdentityInfo();
+            orgRegistrationCreateRequest.OrganizationLegalName = identityInfo.BizName; //legal name from bceid
             return await _mediator.Send(new RegisterOrganizationCommand(orgRegistrationCreateRequest, hostUrl));
         }
 
