@@ -77,17 +77,16 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 			<ng-container *ngIf="isSoleProprietorReturnToSwl; else defaultFlow">
 				<div
-					class="col-xxl-4 col-xl-5 col-lg-6 col-md-12"
-					[ngClass]="isSoleProprietorReturnToSwl ? '' : 'offset-xxl-2'"
-					[ngClass]="isPreviousStepperStepObserved ? '' : 'offset-xxl-1'"
+					class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : isSoleProprietorReturnToSwl ? 'offset-xxl-3' : ''"
 				>
 					<button
 						mat-flat-button
-						class="large bordered mb-2"
+						class="large button-small-caps bordered mb-2"
 						(click)="onCancelAndExit()"
 						*ngIf="isCancelAndExitObserved"
 					>
-						Return to Worker Application
+						Cancel
 					</button>
 				</div>
 			</ng-container>
