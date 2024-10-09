@@ -16,8 +16,8 @@ import {
 	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { FileUtilService } from '@app/core/services/file-util.service';
-import { SpdFile, UtilService } from '@app/core/services/util.service';
+import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
+import { UtilService } from '@app/core/services/util.service';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 import { ConfigService } from 'src/app/core/services/config.service';
