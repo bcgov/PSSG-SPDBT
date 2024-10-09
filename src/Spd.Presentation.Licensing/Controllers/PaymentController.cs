@@ -12,6 +12,7 @@ using System.Configuration;
 namespace Spd.Presentation.Licensing.Controllers
 {
     /// <summary>
+    /// Licensing application Payment endpoints
     /// </summary>
     public class PaymentController : SpdControllerBase
     {
@@ -21,13 +22,6 @@ namespace Spd.Presentation.Licensing.Controllers
         private readonly PaymentsConfiguration _paymentsConfiguration;
         private readonly ILogger<PaymentController> _logger;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mediator"></param>
-        /// <param name="mapper"></param>
-        /// <param name="configuration"></param>
-        /// <param name="logger"></param>
         public PaymentController(IMediator mediator,
             IMapper mapper,
             IConfiguration configuration,

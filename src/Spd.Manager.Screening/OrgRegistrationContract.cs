@@ -29,7 +29,6 @@ namespace Spd.Manager.Screening
         public string? GenericEmail { get; set; }
         public string? GenericPhoneNumber { get; set; }
         public BooleanTypeCode EmployeeMonetaryCompensationFlag { get; set; }
-        public BooleanTypeCode HasPhoneOrEmail { get; set; }
         public string? MailingAddressLine1 { get; set; }
         public string? MailingAddressLine2 { get; set; }
         public string? MailingCity { get; set; }
@@ -38,6 +37,7 @@ namespace Spd.Manager.Screening
         public string? MailingProvince { get; set; }
         public FundsFromBcGovtExceedsThresholdCode OperatingBudgetFlag { get; set; }
         public string? OrganizationName { get; set; }
+        public string? OrganizationLegalName { get; set; }
         public EmployeeOrganizationTypeCode? EmployeeOrganizationTypeCode { get; set; }
         public VolunteerOrganizationTypeCode? VolunteerOrganizationTypeCode { get; set; }
         public RegistrationTypeCode RegistrationTypeCode { get; set; }
@@ -144,9 +144,6 @@ namespace Spd.Manager.Screening
                 .NotEmpty()
                 .MaximumLength(12);
 
-            RuleFor(r => r.HasPhoneOrEmail)
-                .IsInEnum();
-
             RuleFor(r => r.EmployeeMonetaryCompensationFlag)
                 .IsInEnum();
 
@@ -188,12 +185,7 @@ namespace Spd.Manager.Screening
                 .MaximumLength(12);
 
             RuleFor(r => r.GenericEmail)
-                .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes && string.IsNullOrWhiteSpace(r.GenericPhoneNumber));
-
-            RuleFor(r => r.GenericPhoneNumber)
-                .NotEmpty()
-                .When(r => r.HasPhoneOrEmail == BooleanTypeCode.Yes && string.IsNullOrWhiteSpace(r.GenericEmail));
+                .EmailAddress();
 
             RuleFor(r => r.PortalUserIdentityTypeCode)
                 .IsInEnum()
