@@ -16,4 +16,5 @@ export enum ApplicationPortalStatisticsTypeCode {
 	CancelledByOrganization = 'CancelledByOrganization',
 	ClearedLastSevenDays = 'ClearedLastSevenDays',
 	NotClearedLastSevenDays = 'NotClearedLastSevenDays',
+	Complete = 'Complete',
 }

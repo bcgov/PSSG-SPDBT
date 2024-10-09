@@ -18,5 +18,6 @@ export interface ApplicationStatisticsResponse {
 'CancelledByOrganization'?: number;
 'ClearedLastSevenDays'?: number;
 'NotClearedLastSevenDays'?: number;
+'Complete'?: number;
 }) | null;
 }

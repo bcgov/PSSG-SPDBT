@@ -112,6 +112,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
+					<div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
+						<div class="fs-4 m-2 ms-3">
+							{{ applicationStatistics[statisticsCodes.Complete] ?? 0 }}
+						</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Complete) }}</div>
+						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Complete)">
+							<mat-icon>info_outline</mat-icon>
+						</div>
+					</div>
 				</div>
 			</div>
 		</ng-container>
@@ -181,10 +190,10 @@ export class StatusStatisticsCommonComponent implements OnInit {
 	}
 
 	getStatusDesc(code: string): string {
-		return this.utilService.getApplicationPortalStatusDesc(code);
+		return this.utilService.getApplicationPortalStatisticsDesc(code);
 	}
 
 	getStatusHint(code: string): string {
-		return this.utilService.getApplicationPortalStatusHint(code);
+		return this.utilService.getApplicationPortalStatisticsHint(code);
 	}
 }
