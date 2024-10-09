@@ -44,14 +44,8 @@ public class IntegrationTestFixture : IAsyncLifetime, ITestOutputHelperAccessor
             .AddEnvironmentVariables();
 
         builder.Logging.AddXUnit(this);
-#pragma warning disable ASP0012 // Suggest using builder.Services over Host.ConfigureServices or WebHost.ConfigureServices
-        builder.WebHost.ConfigureServices((ctx, services) =>
-        {
-            services.AddDistributedMemoryCache();
-
-            services.ConfigureComponents(ctx.Configuration, ctx.HostingEnvironment, assemblies, loggerFactory);
-        });
-#pragma warning restore ASP0012 // Suggest using builder.Services over Host.ConfigureServices or WebHost.ConfigureServices
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.ConfigureComponents(builder.Configuration, builder.Environment, assemblies, loggerFactory);
 
         webApp = builder.Build();
 

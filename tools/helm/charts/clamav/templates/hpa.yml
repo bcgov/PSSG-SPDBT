@@ -1,0 +1,28 @@
+{{- if .Values.hpa.create -}}
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2
+  name: {{ include "clamav.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    kind: StatefulSet
+    name: {{ include "clamav.fullname" . }}
+    apiVersion: apps/v1
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.cpuTargetAverageUtilization | default 100 }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization:  {{ .Values.hpa.memoryTargetAverageUtilization | default 150 }}
+{{- end -}}
