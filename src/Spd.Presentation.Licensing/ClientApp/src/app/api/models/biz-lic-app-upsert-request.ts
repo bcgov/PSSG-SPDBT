@@ -30,5 +30,6 @@ export interface BizLicAppUpsertRequest {
   privateInvestigatorSwlInfo?: PrivateInvestigatorSwlContactInfo;
   serviceTypeCode?: ServiceTypeCode;
   soleProprietorSWLAppId?: string | null;
+  submittedByPortalUserId?: string | null;
   useDogs?: boolean | null;
 }

@@ -10,7 +10,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 @Component({
 	selector: 'app-common-business-profile',
 	template: `
-		<div class="row mt-3">
+		<div class="row">
 			<div class="col-12">
 				<section>
 					<mat-accordion>
@@ -143,7 +143,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	businessTypes = BusinessLicenceTypes;
 
