@@ -4,12 +4,14 @@ updates:
     directory: "/src"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 20
   - package-ecosystem: "npm" # See documentation for possible values
     directories:
      - "/src/Spd.Presentation.Licensing/ClientApp"
      - "/src/Spd.Presentation.Screening/ClientApp"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 20
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
