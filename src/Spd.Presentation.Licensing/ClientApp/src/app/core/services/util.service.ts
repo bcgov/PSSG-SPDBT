@@ -6,7 +6,7 @@ import { SortDirection } from '@angular/material/sort';
 import { LicenceDocumentTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { SelectOptions } from '../code-types/model-desc.models';
@@ -95,7 +95,7 @@ export class UtilService {
 		givenName: string | null | undefined,
 		middleName1: string | null | undefined,
 		middleName2: string | null | undefined,
-		surname: string | null | undefined
+		surname: string | null | undefined,
 	): string {
 		const userNameArray: string[] = [];
 		if (givenName) {
@@ -137,7 +137,7 @@ export class UtilService {
 
 	getDecodedAccessToken(token: string): any {
 		try {
-			return jwt_decode(token);
+			return jwtDecode(token);
 		} catch (Error) {
 			return null;
 		}
@@ -165,7 +165,7 @@ export class UtilService {
 
 	getDescByCode(codeTableName: keyof typeof CodeDescTypes, input: string): string {
 		const codeDescs = this.getCodeDescByType(codeTableName);
-		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
+		return codeDescs ? ((codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '') : '';
 	}
 
 	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
@@ -235,7 +235,7 @@ export class UtilService {
 	public sortDate(
 		a: string | null | undefined,
 		b: string | null | undefined,
-		direction: SortDirection = 'asc'
+		direction: SortDirection = 'asc',
 	): SortWeight {
 		if (!a) {
 			return -1;
@@ -341,7 +341,7 @@ export class UtilService {
 		isCanadianResident: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 		proofOfResidentStatusCode: LicenceDocumentTypeCode | null,
-		proofOfCitizenshipCode: LicenceDocumentTypeCode | null
+		proofOfCitizenshipCode: LicenceDocumentTypeCode | null,
 	): boolean {
 		const canadianCitizenProof = canadianCitizenProofTypeCode ?? LicenceDocumentTypeCode.CanadianPassport;
 		const proofOfResidentStatus = proofOfResidentStatusCode ?? LicenceDocumentTypeCode.PermanentResidentCard;
@@ -359,31 +359,31 @@ export class UtilService {
 	public getSwlShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 	): boolean {
 		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
 			isCanadianCitizen,
 			canadianCitizenProofTypeCode,
-			notCanadianCitizenProofTypeCode
+			notCanadianCitizenProofTypeCode,
 		);
 	}
 
 	public getControllingMemberCrcShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 	): boolean {
 		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
 			isCanadianCitizen,
 			canadianCitizenProofTypeCode,
-			notCanadianCitizenProofTypeCode
+			notCanadianCitizenProofTypeCode,
 		);
 	}
 
 	private getSwlOrControllingMemberCrcShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 	): boolean {
 		const canadianCitizenProof = canadianCitizenProofTypeCode
 			? canadianCitizenProofTypeCode

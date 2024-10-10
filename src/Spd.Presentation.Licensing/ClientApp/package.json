@@ -33,7 +33,7 @@
     "angular-oauth2-oidc": "^17.0.2",
     "bootstrap": "^5.2.3",
     "jquery": "^3.7.0",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
     "ng-openapi-gen": "^0.52.0",
     "ng-recaptcha-2": "^14.0.0",
