@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { HotToastService } from '@ngxpert/hot-toast';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
@@ -75,7 +75,7 @@ export class UtilService {
 
 	getDecodedAccessToken(token: string): any {
 		try {
-			return jwt_decode(token);
+			return jwtDecode(token);
 		} catch (_error) {
 			return null;
 		}
