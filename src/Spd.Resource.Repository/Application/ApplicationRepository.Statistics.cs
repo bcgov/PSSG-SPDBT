@@ -44,7 +44,7 @@ internal partial class ApplicationRepository : IApplicationRepository
             if (pssoUserStatistics.RiskFound.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.RiskFound, pssoUserStatistics.RiskFound.Value);
             if (pssoUserStatistics.UnderAssessment.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.UnderAssessment, pssoUserStatistics.UnderAssessment.Value);
             if (pssoUserStatistics.VerifyIdentity.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.VerifyIdentity, pssoUserStatistics.VerifyIdentity.Value);
-            if (pssoUserStatistics.Complete.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.Complete, pssoUserStatistics.Complete.Value);
+            if (pssoUserStatistics.Completed.HasValue) statisticsDictionary.Add(ApplicationPortalStatisticsCd.Completed, pssoUserStatistics.Completed.Value);
             return new ApplicationStatisticsResp { Statistics = statisticsDictionary };
         }
         return null;
