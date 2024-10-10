@@ -19,20 +19,6 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							<div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 my-auto">
 								<h2 class="fs-3">Confirm your Profile</h2>
 							</div>
-
-							<div class="col-xl-6 col-lg-4 col-md-12">
-								<div class="d-flex justify-content-end">
-									<button
-										mat-stroked-button
-										color="primary"
-										class="large w-auto mb-3"
-										aria-label="Back"
-										(click)="onBack()"
-									>
-										<mat-icon>arrow_back</mat-icon>Back
-									</button>
-								</div>
-							</div>
 						</div>
 
 						<mat-divider class="mat-divider-main mb-3"></mat-divider>
@@ -76,9 +62,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							</form>
 						</section>
 
-						<div class="mt-3">
-							<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
-						</div>
+						<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
 					</div>
 				</div>
 			</div>

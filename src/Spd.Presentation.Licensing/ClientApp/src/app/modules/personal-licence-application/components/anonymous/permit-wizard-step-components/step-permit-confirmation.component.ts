@@ -30,7 +30,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
+								{{ originalExpiryDate | formatDate : formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-6 col-md-12">
@@ -45,7 +45,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	styles: [],
 })
 export class StepPermitConfirmationComponent implements OnInit {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;

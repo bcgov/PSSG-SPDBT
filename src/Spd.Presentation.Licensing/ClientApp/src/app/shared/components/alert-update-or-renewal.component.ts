@@ -19,7 +19,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label text-center d-block text-muted mt-3">Current Licence Expiry Date</div>
 							<div class="summary-text-data text-center">
-								{{ originalExpiryDate | formatDate : constants.date.formalDateFormat }}
+								{{ originalExpiryDate | formatDate : formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-12">
@@ -45,8 +45,9 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	],
 })
 export class AlertUpdateOrRenewalComponent implements OnInit {
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	licenceModelData: any = {};
-	constants = SPD_CONSTANTS;
 
 	@Input() serviceTypeCode: ServiceTypeCode | null = null;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

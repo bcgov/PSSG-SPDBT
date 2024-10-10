@@ -77,9 +77,7 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 							</form>
 						</section>
 
-						<div class="mt-3">
-							<app-collection-notice></app-collection-notice>
-						</div>
+						<app-collection-notice></app-collection-notice>
 					</div>
 				</div>
 			</div>

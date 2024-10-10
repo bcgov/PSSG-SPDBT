@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import {
 	ApplicationInviteStatusCode,
 	BizMemberResponse,
+	ControllingMemberAppInviteTypeCode,
 	ControllingMemberInvitesCreateResponse,
 	LicenceDocumentTypeCode,
 	LicenceResponse,
@@ -388,10 +389,12 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	getInvitationButtonLabel(inviteStatusCode?: ApplicationInviteStatusCode): string {
-		if (inviteStatusCode === ApplicationInviteStatusCode.Completed) {
+		const inviteTypeCode = this.getSendInvitationType(inviteStatusCode);
+
+		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
 			return 'Send Update Invitation';
 		}
-		return inviteStatusCode ? 'Re-Send Invitation' : 'Send Invitation';
+		return inviteStatusCode ? 'Resend Invitation' : 'Send Invitation';
 	}
 
 	onRemoveMember(bizContactId: string, isWithSwl: boolean, index: number) {
@@ -491,10 +494,18 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 	}
 
 	onSendInvitation(member: NonSwlContactInfo): void {
+		const inviteTypeCode = this.getSendInvitationType(member.inviteStatusCode);
+
+		let message = `Are you sure you send an invitation to ${member.emailAddress}?`;
+		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
+			message =
+				'Does this controlling member need to report an update to their criminal record check?<br><br>Send them a link so they can submit their information directly to the Security Programs Division.';
+		}
+
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: `Are you sure you send an invitation to ${member.emailAddress}?`,
+			message,
 			actionText: 'Yes',
 			cancelText: 'Cancel',
 		};
@@ -505,7 +516,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 			.subscribe((response: boolean) => {
 				if (response) {
 					this.businessApplicationService
-						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, member.inviteStatusCode!)
+						.sendControllingMembersWithoutSwlInvitation(member.bizContactId!, inviteTypeCode)
 						.pipe(
 							tap((_resp: ControllingMemberInvitesCreateResponse) => {
 								if (_resp.createSuccess) {
@@ -565,6 +576,13 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	onFileRemoved(): void {
 		this.businessApplicationService.hasValueChanged = true;
+	}
+
+	getSendInvitationType(inviteStatusCode?: ApplicationInviteStatusCode): ControllingMemberAppInviteTypeCode {
+		if (inviteStatusCode === ApplicationInviteStatusCode.Completed) {
+			return ControllingMemberAppInviteTypeCode.Update;
+		}
+		return ControllingMemberAppInviteTypeCode.New;
 	}
 
 	private memberAlreadyListed(): void {

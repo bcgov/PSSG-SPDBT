@@ -35,5 +35,6 @@ export interface BizLicAppResponse {
   serviceTypeCode?: ServiceTypeCode;
   soleProprietorSWLAppId?: string | null;
   soleProprietorSWLAppOriginTypeCode?: ApplicationOriginTypeCode;
+  submittedByPortalUserId?: string | null;
   useDogs?: boolean | null;
 }

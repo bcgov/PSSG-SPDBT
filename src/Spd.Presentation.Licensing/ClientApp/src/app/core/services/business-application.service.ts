@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import {
 	ActionResult,
 	Address,
-	ApplicationInviteStatusCode,
 	ApplicationOriginTypeCode,
 	ApplicationTypeCode,
 	BizLicAppCommandResponse,
@@ -85,9 +84,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		isControllingMembersWithoutSwlExist: new FormControl(),
 
-		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
-		isSoleProprietorReturnToSwl: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
+		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
+		isSoleProprietorComboFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
@@ -575,16 +574,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 	sendControllingMembersWithoutSwlInvitation(
 		bizContactId: string,
-		statusCode?: ApplicationInviteStatusCode
+		inviteTypeCode: ControllingMemberAppInviteTypeCode
 	): Observable<ControllingMemberInvitesCreateResponse> {
-		const inviteType =
-			statusCode === ApplicationInviteStatusCode.Completed
-				? ControllingMemberAppInviteTypeCode.Update
-				: ControllingMemberAppInviteTypeCode.New;
-
 		return this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
 			bizContactId,
-			inviteType,
+			inviteType: inviteTypeCode,
 		});
 	}
 
@@ -1068,7 +1062,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}).pipe(
 			tap((_resp: any) => {
 				this.businessModelFormGroup.patchValue(
-					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: !isSoleProprietorSWLAnonymous },
+					{ isSoleProprietorSWLAnonymous, isSoleProprietorComboFlow: true },
 					{ emitEvent: false }
 				);
 
@@ -1213,7 +1207,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}).pipe(
 			tap((_resp: any) => {
 				this.businessModelFormGroup.patchValue(
-					{ isSoleProprietorSWLAnonymous, isSoleProprietorReturnToSwl: !isSoleProprietorSWLAnonymous },
+					{ isSoleProprietorSWLAnonymous, isSoleProprietorComboFlow: true },
 					{ emitEvent: false }
 				);
 
@@ -1875,13 +1869,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const isBcBusinessAddress = this.utilService.isBcAddress(businessAddressData.province, businessAddressData.country);
 		const isBusinessLicenceSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
 
-		let isSoleProprietorSWLAnonymous: boolean | null = null;
-		let isSoleProprietorReturnToSwl: boolean | null = null;
-
-		if (soleProprietorSwlAppl) {
-			isSoleProprietorSWLAnonymous = soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal;
-			isSoleProprietorReturnToSwl = soleProprietorSWLAppOriginTypeCode === ApplicationOriginTypeCode.Portal;
-		}
+		const isSoleProprietorSWLAnonymous = soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal;
+		const isSoleProprietorComboFlow = !!soleProprietorSwlAppl;
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -1889,7 +1878,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 				soleProprietorSWLAppId: soleProprietorSWLAppId ?? soleProprietorSwlLicence?.licenceAppId,
 				isSoleProprietorSWLAnonymous,
-				isSoleProprietorReturnToSwl,
+				isSoleProprietorComboFlow,
 
 				serviceTypeData,
 				applicationTypeData,

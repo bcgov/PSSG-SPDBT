@@ -38,7 +38,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 px-3">
 							<div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
 							<div class="text-minor-heading">
-								{{ dateOfBirth.value | formatDate : constants.date.formalDateFormat }}
+								{{ dateOfBirth.value | formatDate : formalDateFormat }}
 							</div>
 						</div>
 					</div>
@@ -103,9 +103,10 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 })
 export class FormPersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	genderTypes = GenderTypes;
 	booleanTypeCodes = BooleanTypeCode;
+
 	matcher = new FormErrorStateMatcher();
 
 	@Input() isReadonly = false;

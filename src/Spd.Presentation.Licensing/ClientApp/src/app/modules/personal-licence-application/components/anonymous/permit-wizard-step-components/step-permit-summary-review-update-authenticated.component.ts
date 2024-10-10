@@ -207,9 +207,10 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 	],
 })
 export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnInit {
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	permitModelData: any = {};
 	showEmployerInformation = false;
-	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 

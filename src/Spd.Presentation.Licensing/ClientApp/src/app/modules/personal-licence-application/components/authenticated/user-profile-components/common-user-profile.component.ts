@@ -10,7 +10,7 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 @Component({
 	selector: 'app-common-user-profile',
 	template: `
-		<div class="row mt-3">
+		<div class="row">
 			<div class="col-12">
 				<mat-accordion>
 					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">

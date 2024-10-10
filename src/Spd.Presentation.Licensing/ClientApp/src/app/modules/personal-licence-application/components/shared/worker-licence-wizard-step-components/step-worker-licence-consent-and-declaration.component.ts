@@ -12,7 +12,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="mb-4" *ngIf="isSoleProprietor && isAnonymous">
+						<div class="mb-3" *ngIf="isSoleProprietor && isAnonymous">
 							<app-alert type="warning" icon="warning">
 								After you submit your application and continue to the business licence application, you will not be able
 								to return and make changes to this security worker licence application.
@@ -210,11 +210,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-12">
-								<app-collection-notice></app-collection-notice>
-							</div>
-						</div>
+						<app-collection-notice></app-collection-notice>
 					</div>
 				</div>
 			</form>

@@ -30,5 +30,6 @@ export interface BizLicAppSubmitRequest {
   reprint?: boolean | null;
   serviceTypeCode?: ServiceTypeCode;
   soleProprietorSWLAppId?: string | null;
+  submittedByPortalUserId?: string | null;
   useDogs?: boolean | null;
 }

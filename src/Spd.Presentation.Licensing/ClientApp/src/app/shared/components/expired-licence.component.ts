@@ -71,7 +71,7 @@ import {
 								<div class="col-md-6 col-sm-12">
 									<div class="d-block text-muted mt-2">Expiry Date</div>
 									<div class="text-data">
-										{{ expiredLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
+										{{ expiredLicenceExpiryDate.value | formatDate : formalDateFormat }}
 									</div>
 								</div>
 								<div class="col-md-6 col-sm-12">
@@ -89,8 +89,8 @@ import {
 	animations: [showHideTriggerSlideAnimation],
 })
 export class ExpiredLicenceComponent implements OnInit {
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	booleanTypeCodes = BooleanTypeCode;
-	constants = SPD_CONSTANTS;
 
 	titleLabel!: string;
 

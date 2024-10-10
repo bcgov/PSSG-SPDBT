@@ -7,6 +7,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
@@ -47,7 +48,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<ng-template matStepLabel>Business Information</ng-template>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
-						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
+						[isSoleProprietorComboFlow]="isSoleProprietorComboFlow"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -63,7 +64,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[applicationTypeCode]="applicationTypeCode"
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
-						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
+						[isSoleProprietorComboFlow]="isSoleProprietorComboFlow"
 						[isFormValid]="false"
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
@@ -81,7 +82,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
-						[isSoleProprietorReturnToSwl]="isSoleProprietorReturnToSwl"
+						[isSoleProprietorComboFlow]="isSoleProprietorComboFlow"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -113,7 +114,9 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	step3Complete = false;
 	step4Complete = false;
 
-	isSoleProprietorReturnToSwl = false;
+	isSoleProprietorSWLAnonymous!: boolean;
+	isSoleProprietorComboFlow!: boolean;
+
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
@@ -156,8 +159,10 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 					'businessInformationData.bizTypeCode'
 				)?.value;
 
-				this.isSoleProprietorReturnToSwl =
-					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorReturnToSwl')?.value;
+				this.isSoleProprietorSWLAnonymous =
+					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSWLAnonymous')?.value;
+				this.isSoleProprietorComboFlow =
+					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorComboFlow')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -244,11 +249,14 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	onReturnToSwl(): void {
+		const message = this.isSoleProprietorSWLAnonymous
+			? 'Are you sure you want to cancel your security business licence application?<br><br>If you cancel this application, you will have to re-submit your Security Worker Licence application.'
+			: 'Are you sure you want to cancel your security business licence application?<br><br>You will be returned to the portal to pay the application fee for your security worker licence.';
+
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message:
-				'Are you sure you want to cancel your security business licence application?<br><br>You will be returned to the portal to pay the application fee for your security worker licence.',
+			message,
 			actionText: 'Yes, cancel this application',
 			cancelText: 'No, continue application',
 			wideButtons: true,
@@ -259,7 +267,11 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
+					if (this.isSoleProprietorSWLAnonymous) {
+						this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
+					} else {
+						this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
+					}
 				}
 			});
 	}

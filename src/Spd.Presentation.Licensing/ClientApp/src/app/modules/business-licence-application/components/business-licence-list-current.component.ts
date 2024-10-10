@@ -34,7 +34,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
 								<div class="text-data">
 									<div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-										{{ licence.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+										{{ licence.licenceExpiryDate | formatDate : formalDateFormat }}
 									</div>
 								</div>
 							</div>
@@ -70,7 +70,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									<ng-container *ngIf="licence.dogAuthorizationExpiryDate">
 										<div class="d-block text-muted mt-2">Expiry Date</div>
 										<div class="text-data">
-											{{ licence.dogAuthorizationExpiryDate | formatDate : constants.date.formalDateFormat }}
+											{{ licence.dogAuthorizationExpiryDate | formatDate : formalDateFormat }}
 										</div>
 									</ng-container>
 								</div>
@@ -120,7 +120,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							<div class="col-12">
 								<mat-divider class="my-2"></mat-divider>
 								<span class="fw-semibold">Lost your licence? </span>
-								<a class="large" [href]="constants.urls.contactSpdUrl" target="_blank">Contact SPD</a>
+								<a class="large" [href]="contactSpdUrl" target="_blank">Contact SPD</a>
 								for a digital copy of your current licence before it expires.
 							</div>
 						</ng-container>
@@ -164,7 +164,8 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 	],
 })
 export class BusinessLicenceListCurrentComponent {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
 	serviceTypeCodes = ServiceTypeCode;
 

@@ -122,7 +122,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 	styles: [],
 })
 export class BusinessUserApplicationsComponent implements OnInit {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	results$!: Observable<any>;
 	warningMessages: Array<string> = [];

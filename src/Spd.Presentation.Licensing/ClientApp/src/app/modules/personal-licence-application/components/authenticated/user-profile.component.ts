@@ -17,25 +17,29 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 							<h2 class="fs-3">Your Profile</h2>
 						</div>
 
-						<div class="col-xl-6 col-lg-4 col-md-12" *ngIf="isReadonly">
+						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<button
-									mat-stroked-button
-									color="primary"
-									class="large w-auto mb-3"
-									aria-label="Back"
-									(click)="onCancel()"
-								>
-									<mat-icon>arrow_back</mat-icon>Back
-								</button>
+								<ng-container *ngIf="isReadonly; else IsEditable">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large w-auto mb-3"
+										aria-label="Back"
+										(click)="onCancel()"
+									>
+										<mat-icon>arrow_back</mat-icon>Back
+									</button>
+								</ng-container>
+								<ng-template #IsEditable>
+									<button mat-stroked-button color="primary" class="large mx-3 mb-3" (click)="onCancel()">
+										Cancel
+									</button>
+									<button mat-flat-button color="primary" class="large mx-3 mb-3" (click)="onSave()">Save</button>
+								</ng-template>
 							</div>
 						</div>
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-
-					<ng-container *ngIf="!isReadonly">
-						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
-					</ng-container>
 
 					<app-common-user-profile
 						[personalInformationFormGroup]="personalInformationFormGroup"
@@ -47,20 +51,10 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 						[isReadonlyMailingAddress]="isReadonly"
 					></app-common-user-profile>
 
-					<div class="mt-3">
-						<app-collection-notice></app-collection-notice>
-					</div>
+					<app-collection-notice></app-collection-notice>
 				</div>
 			</div>
 		</section>
-
-		<ng-container *ngIf="!isReadonly">
-			<app-wizard-outside-footer
-				nextButtonLabel="Save"
-				(nextStepperStep)="onSave()"
-				(cancel)="onCancel()"
-			></app-wizard-outside-footer>
-		</ng-container>
 	`,
 	styles: [],
 })

@@ -63,6 +63,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 })
 export class StepWorkerLicenceConfirmationComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	feeAmount: null | number = null;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 

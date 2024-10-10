@@ -112,7 +112,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Expiry Date</div>
 										<div class="text-primary-color fs-5">
-											{{ soleProprietorLicenceExpiryDate.value | formatDate : constants.date.formalDateFormat }}
+											{{ soleProprietorLicenceExpiryDate.value | formatDate : formalDateFormat }}
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
@@ -207,7 +207,8 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessInformationComponent implements OnInit {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	matcher = new FormErrorStateMatcher();
 
 	businessTypes = BusinessLicenceTypes;

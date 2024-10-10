@@ -306,53 +306,44 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 									</mat-expansion-panel-header>
 
 									<div class="panel-body">
-										<div class="text-minor-heading mt-4">Active Security Worker Licence Holders</div>
-										<div class="row mt-0">
+										<div class="text-minor-heading mt-4 mb-2">Active Security Worker Licence Holders</div>
+										<div class="row summary-text-data mt-0">
 											<ng-container *ngIf="membersWithSwlList.length > 0; else NoMembersWithSwlList">
-												<div class="col-xl-4 col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Members</div>
-													<div class="summary-text-data">
+												<ng-container *ngFor="let member of membersWithSwlList; let i = index">
+													<div class="col-xl-6 col-lg-12">
 														<ul class="m-0">
-															<ng-container *ngFor="let member of membersWithSwlList; let i = index">
-																<li>{{ member.licenceHolderName }} - {{ member.licenceNumber }}</li>
-															</ng-container>
+															<li>{{ member.licenceHolderName }} - {{ member.licenceNumber }}</li>
 														</ul>
 													</div>
-												</div>
+												</ng-container>
 											</ng-container>
 											<ng-template #NoMembersWithSwlList> <div class="col-12">None</div> </ng-template>
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Members who require Criminal Record Checks</div>
-										<div class="row mt-0">
+										<div class="text-minor-heading mb-2">Members who require Criminal Record Checks</div>
+										<div class="row summary-text-data mt-0">
 											<ng-container *ngIf="membersWithoutSwlList.length > 0; else NoMembersWithoutSwlList">
-												<div class="col-xl-4 col-lg-6 col-md-12">
-													<div class="text-label d-block text-muted">Members</div>
-													<div class="summary-text-data">
+												<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
+													<div class="col-xl-6 col-lg-12">
 														<ul class="m-0">
-															<ng-container *ngFor="let member of membersWithoutSwlList; let i = index">
-																<li>{{ member.licenceHolderName }}</li>
-															</ng-container>
+															<li>{{ member.licenceHolderName }}</li>
 														</ul>
 													</div>
-												</div>
+												</ng-container>
 											</ng-container>
 											<ng-template #NoMembersWithoutSwlList> <div class="col-12">None</div></ng-template>
 										</div>
 
 										<mat-divider class="mt-3 mb-2"></mat-divider>
-										<div class="text-minor-heading">Employees</div>
-										<div class="row mt-0">
+										<div class="text-minor-heading mb-2">Employees</div>
+										<div class="row summary-text-data mt-0">
 											<ng-container *ngIf="employeesList.length > 0; else NoEmployeesList">
 												<ng-container *ngFor="let employee of employeesList; let i = index">
-													<div class="col-lg-4 col-md-12">
-														<div class="text-label d-block text-muted">
-															Employee <span *ngIf="employeesList.length > 1"> #{{ i + 1 }}</span>
-														</div>
-														<div class="summary-text-data">
-															{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}
-														</div>
+													<div class="col-xl-6 col-lg-12">
+														<ul class="m-0">
+															<li>{{ employee.licenceHolderName }} - {{ employee.licenceNumber }}</li>
+														</ul>
 													</div>
 												</ng-container>
 											</ng-container>
