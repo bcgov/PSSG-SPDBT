@@ -297,7 +297,7 @@ namespace Spd.Manager.Screening
         CancelledByOrganization,
         ClearedLastSevenDays,
         NotClearedLastSevenDays,
-        Complete
+        Completed
     }
 
     public enum ApplicationOriginTypeCode
