@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "clamav.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+data:
+  clamd.conf: |
+    LogFile /etc/logs/clamav/clamd.log
+    LogFileMaxSize 2M
+    LogTime yes
+    LogClean yes
+    LogSyslog no
+    LogVerbose yes
+    LogRotate yes
+
+    LocalSocket /tmp/clamd.sock
+    TCPSocket 3310
+
+    StreamMaxLength {{.Values.clamav.limits.scanSize}}M
+    MaxThreads {{.Values.clamav.limits.maxThreads}}
+    SendBufTimeout {{.Values.clamav.limits.sendBufTimeout}}
+
+    Foreground yes
+    MaxFileSize {{.Values.clamav.limits.fileSize}}M
+  freshclam.conf: |  
+    UpdateLogFile /etc/logs/clamav/freshclam.log
+    LogFileMaxSize 2M
+    LogTime yes
+    LogVerbose yes
+    LogSyslog no
+    LogRotate yes
+
+    DatabaseOwner clamupdate
+
+    # Use the ClamAV Mirror provided in OCP4 Silver cluster
+    {{- range .Values.clamav.freshclam.mirrors }}
+    DatabaseMirror {{ required "Empty mirror name is supplied. Check your clamav.freshclam.mirrors values" . }}
+    {{- end }}
+
+    Foreground yes
