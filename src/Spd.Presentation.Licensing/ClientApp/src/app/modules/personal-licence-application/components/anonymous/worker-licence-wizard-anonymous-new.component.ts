@@ -73,7 +73,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 			</mat-step>
 
 			<mat-step completed="false">
-				<ng-template matStepLabel>Review Worker Licence</ng-template>
+				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
 					[isSoleProprietor]="isSoleProprietor"
@@ -86,23 +86,25 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
-			<ng-container *ngIf="isSoleProprietor">
+			<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business Information</ng-template>
+					<ng-template matStepLabel>Business<br />Information</ng-template>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Business Selection</ng-template>
+					<ng-template matStepLabel>Business<br />Selection</ng-template>
 				</mat-step>
 
 				<mat-step completed="false">
-					<ng-template matStepLabel>Review Business Licence</ng-template>
+					<ng-template matStepLabel>Review<br />Business<br />Licence</ng-template>
 				</mat-step>
 			</ng-container>
 
-			<mat-step completed="false">
-				<ng-template matStepLabel>Pay</ng-template>
-			</mat-step>
+			<ng-template #isNotSoleProprietor>
+				<mat-step completed="false">
+					<ng-template matStepLabel>Pay</ng-template>
+				</mat-step>
+			</ng-template>
 		</mat-stepper>
 	`,
 	styles: [],

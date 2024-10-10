@@ -68,8 +68,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 				</div>
 				<div class="offset-md-4 col-md-4 col-sm-12 mb-2">
 					<button mat-flat-button color="primary" class="large" (click)="onSave()">
-						<span *ngIf="!isEdit">Add</span>
-						<span *ngIf="isEdit">Update</span>
+						Save
 					</button>
 				</div>
 			</div>

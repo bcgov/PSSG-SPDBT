@@ -205,11 +205,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-12">
-								<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
-							</div>
-						</div>
+						<app-collection-notice [collectionNoticeActName]="collectionNoticeActName"></app-collection-notice>
 					</div>
 				</div>
 			</form>

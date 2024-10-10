@@ -11,7 +11,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="mb-4" *ngIf="isControllingMembersWithoutSwlExist">
+						<div class="mb-3" *ngIf="isControllingMembersWithoutSwlExist">
 							<app-alert type="warning" icon="warning">
 								<p>
 									After you submit your application, the application will remain on hold until we receive consent forms
@@ -203,11 +203,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-12">
-								<app-collection-notice></app-collection-notice>
-							</div>
-						</div>
+						<app-collection-notice></app-collection-notice>
 					</div>
 				</div>
 			</form>
