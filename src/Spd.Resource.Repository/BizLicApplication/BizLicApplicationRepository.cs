@@ -57,11 +57,10 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         SharedRepositoryFuncs.LinkLicence(_context, cmd.OriginalLicenceId, app);
         applicantId = (Guid)originalApp.spd_ApplicantId_account.accountid;
 
-        await SetAddresses(applicantId, app, ct);
+        await SetInfoFromBiz(applicantId, app, cmd.ApplicantIsBizManager ?? false, ct);
         await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
-        LinkOrganization(applicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator))
         {
@@ -107,7 +106,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         // Save changes done to the application, given that these are lost further down the logic (method "DeletePrivateInvestigatorLink")
         // when the business contact table is joined with application
         await _context.SaveChangesAsync(ct);
-        await SetAddresses(cmd.ApplicantId, app, ct);
+        await SetInfoFromBiz(cmd.ApplicantId, app, cmd.ApplicantIsBizManager ?? false, ct);
         await SetOwner(app, Guid.Parse(DynamicsConstants.Licensing_Client_Service_Team_Guid), ct);
         SharedRepositoryFuncs.LinkServiceType(_context, cmd.ServiceTypeCode, app);
         if (cmd.HasExpiredLicence == true && cmd.ExpiredLicenceId != null)
@@ -116,7 +115,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
             _context.SetLink(app, nameof(app.spd_CurrentExpiredLicenceId), null);
 
         SharedRepositoryFuncs.LinkSubmittedByPortalUser(_context, cmd.SubmittedByPortalUserId, app);
-        LinkOrganization(cmd.ApplicantId, app);
 
         if (cmd.CategoryCodes.Any(c => c == WorkerCategoryTypeEnum.PrivateInvestigator) &&
             cmd.PrivateInvestigatorSwlInfo?.ContactId != null &&
@@ -213,19 +211,6 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         return response;
     }
 
-    private void LinkOrganization(Guid? accountId, spd_application app)
-    {
-        if (accountId == null) return;
-        var account = _context.accounts
-            .Where(a => a.accountid == accountId)
-            .Where(a => a.statecode == DynamicsConstants.StateCode_Active)
-            .FirstOrDefault();
-        if (account != null)
-        {
-            _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), account);
-        }
-    }
-
     private spd_businesscontact UpsertPrivateInvestigator(PrivateInvestigatorSwlContactInfo privateInvestigatorInfo, spd_application app)
     {
         spd_businesscontact? bizContact = null;
@@ -304,7 +289,8 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         _context.DeleteLink(licence, nameof(spd_licence.spd_licence_spd_businesscontact_SWLNumber), bizContact);
     }
 
-    private async Task SetAddresses(Guid accountId, spd_application app, CancellationToken ct)
+    //set biz manager info, applicant info, address and link biz to application
+    private async Task SetInfoFromBiz(Guid accountId, spd_application app, bool applicantIsManager, CancellationToken ct)
     {
         IQueryable<account> accounts = _context.accounts
                 .Where(a => a.statecode != DynamicsConstants.StateCode_Inactive)
@@ -314,6 +300,7 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
 
         if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
+        //address
         app.spd_addressline1 = biz.address1_line1;
         app.spd_addressline2 = biz.address1_line2;
         app.spd_city = biz.address1_city;
@@ -326,8 +313,26 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         app.spd_residentialprovince = biz.address2_stateorprovince;
         app.spd_residentialcountry = biz.address2_country;
         app.spd_residentialpostalcode = biz.address2_postalcode;
-
+        //biz manager
+        app.spd_businessmanageremail = biz.spd_businessmanageremail;
+        app.spd_businessmanagerfirstname = biz.spd_businessmanagerfirstname;
+        app.spd_businessmanagermiddlename1 = biz.spd_businessmanagermiddlename1;
+        app.spd_businessmanagermiddlename2 = biz.spd_businessmanagermiddlename2;
+        app.spd_businessmanagerphone = biz.spd_businessmanagerphone;
+        app.spd_businessmanagersurname = biz.spd_businessmanagersurname;
+        if (applicantIsManager)
+        {
+            app.spd_emailaddress1 = biz.spd_businessmanageremail;
+            app.spd_firstname = biz.spd_businessmanagerfirstname;
+            app.spd_middlename1 = biz.spd_businessmanagermiddlename1;
+            app.spd_middlename2 = biz.spd_businessmanagermiddlename2;
+            app.spd_phonenumber = biz.spd_businessmanagerphone;
+            app.spd_lastname = biz.spd_businessmanagersurname;
+        }
         _context.UpdateObject(app);
+
+        _context.SetLink(app, nameof(spd_application.spd_ApplicantId_account), biz);
+        _context.SetLink(app, nameof(spd_application.spd_OrganizationId), biz);
     }
 
     private async Task SetOwner(spd_application app, Guid ownerId, CancellationToken ct)
