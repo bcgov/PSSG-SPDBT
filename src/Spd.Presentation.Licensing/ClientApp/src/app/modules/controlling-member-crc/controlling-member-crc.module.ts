@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@app/shared/shared.module';
 import { ControllingMemberSubmissionReceivedComponent } from './components/controlling-member-submission-received.component';
-import { ControllingMemberWizardUpdateComponent } from './components/controlling-member-wizard-update.component';
 import { ControllingMemberWizardNewComponent } from './components/controlling-member-wizard-new.component';
+import { ControllingMemberWizardUpdateComponent } from './components/controlling-member-wizard-update.component';
 import { StepControllingMemberAliasesComponent } from './components/step-controlling-member-aliases.component';
 import { StepControllingMemberBcDriverLicenceComponent } from './components/step-controlling-member-bc-driver-licence.component';
 import { StepControllingMemberBcSecurityLicenceHistoryComponent } from './components/step-controlling-member-bc-security-licence-history.component';
@@ -16,6 +16,7 @@ import { StepControllingMemberPersonalInfoComponent } from './components/step-co
 import { StepControllingMemberPoliceBackgroundComponent } from './components/step-controlling-member-police-background.component';
 import { StepControllingMemberResidentialAddressComponent } from './components/step-controlling-member-residential-address.component';
 import { StepControllingMemberSummaryReviewComponent } from './components/step-controlling-member-summary-review.component';
+import { StepControllingMemberTermsComponent } from './components/step-controlling-member-terms.component';
 import { StepsControllingMemberBackgroundComponent } from './components/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from './components/steps-controlling-member-citizenship-residency.component';
 import { StepsControllingMemberPersonalInformationComponent } from './components/steps-controlling-member-personal-information.component';
@@ -41,6 +42,7 @@ import { ControllingMemberLoginComponent } from './controlling-member-login.comp
 		StepControllingMemberBcSecurityLicenceHistoryComponent,
 		StepControllingMemberSummaryReviewComponent,
 		StepControllingMemberConsentAndDeclarationComponent,
+		StepControllingMemberTermsComponent,
 		ControllingMemberSubmissionReceivedComponent,
 		ControllingMemberWizardNewComponent,
 		ControllingMemberWizardUpdateComponent,
