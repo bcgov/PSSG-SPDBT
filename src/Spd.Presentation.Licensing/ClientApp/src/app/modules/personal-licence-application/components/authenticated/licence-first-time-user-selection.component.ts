@@ -32,13 +32,13 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 										<div class="summary-text-data">{{ getFullName(option) }}</div>
 										<div class="text-label d-block text-muted">Date of Birth</div>
 										<div class="summary-text-data">
-											{{ option.birthDate | formatDate : constants.date.formalDateFormat }}
+											{{ option.birthDate | formatDate : formalDateFormat }}
 										</div>
 										<div class="text-label d-block text-muted">Licence Number</div>
 										<div class="summary-text-data">{{ option.licenceNumber }}</div>
 										<div class="text-label d-block text-muted">Expiry Date</div>
 										<div class="summary-text-data">
-											{{ option.licenceExpiryDate | formatDate : constants.date.formalDateFormat }}
+											{{ option.licenceExpiryDate | formatDate : formalDateFormat }}
 										</div>
 									</div>
 								</div>
@@ -73,7 +73,8 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 	],
 })
 export class LicenceFirstTimeUserSelectionComponent implements OnInit, LicenceChildStepperStepComponent {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	selectedLicenceNumber: string | null = null;
 	showValidationError = false;
 

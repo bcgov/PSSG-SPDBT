@@ -74,6 +74,7 @@ import {
 })
 export class BusinessCategoryPrivateInvestigatorComponent implements LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	form = this.businessApplicationService.categoryPrivateInvestigatorFormGroup;
 
 	constructor(private dialog: MatDialog, private businessApplicationService: BusinessApplicationService) {}
