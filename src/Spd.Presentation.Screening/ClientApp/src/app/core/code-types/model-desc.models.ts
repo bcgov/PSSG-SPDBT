@@ -8,7 +8,7 @@ import {
 	PayerPreferenceTypeCode,
 	ServiceTypeCode,
 } from 'src/app/api/models';
-import { ScreeningTypeCode } from './code-types.models';
+import { ApplicationPortalStatisticsTypeCode, ScreeningTypeCode } from './code-types.models';
 import { CountryTypeCode } from './country-type.model';
 
 export interface SelectOptions<k = string | number | boolean> {
@@ -113,69 +113,95 @@ export const ContactAuthorizationTypes: SelectOptions[] = [
 
 export const ApplicationPortalStatusTypes: SelectOptions[] = [
 	{ desc: 'Draft', code: ApplicationPortalStatusCode.Draft },
+	{ desc: 'Verify Identity', code: ApplicationPortalStatusCode.VerifyIdentity },
+	{ desc: 'In Progress', code: ApplicationPortalStatusCode.InProgress },
+	{ desc: 'Payment Pending', code: ApplicationPortalStatusCode.AwaitingPayment },
+	{ desc: 'Awaiting Third Party', code: ApplicationPortalStatusCode.AwaitingThirdParty },
+	{ desc: 'Awaiting Applicant', code: ApplicationPortalStatusCode.AwaitingApplicant },
+	{ desc: 'Under Assessment', code: ApplicationPortalStatusCode.UnderAssessment },
+	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete },
+	{ desc: 'Completed', code: ApplicationPortalStatusCode.Completed },
+	{ desc: 'Completed - Cleared', code: ApplicationPortalStatusCode.CompletedCleared },
+	{ desc: 'Completed - Risk Found', code: ApplicationPortalStatusCode.RiskFound },
+	{ desc: 'Closed - No Response', code: ApplicationPortalStatusCode.ClosedNoResponse },
+	{ desc: 'Closed - No Consent', code: ApplicationPortalStatusCode.ClosedNoConsent },
+	{ desc: 'Cancelled by Organization', code: ApplicationPortalStatusCode.CancelledByOrganization },
+	{ desc: 'Cancelled by Applicant', code: ApplicationPortalStatusCode.CancelledByApplicant },
+	{ desc: 'Refund Requested', code: ApplicationPortalStatusCode.RefundRequested },
+];
+
+export const ApplicationPortalStatisticsTypes: SelectOptions[] = [
+	{ desc: 'Draft', code: ApplicationPortalStatisticsTypeCode.Draft },
 	{
 		desc: 'Verify Identity',
-		code: ApplicationPortalStatusCode.VerifyIdentity,
+		code: ApplicationPortalStatisticsTypeCode.VerifyIdentity,
 		extra: `The applicant has submitted their CRC application, and the organization must confirm they have checked the applicant's government-issued photo ID`,
 	},
 	{
 		desc: 'In Progress',
-		code: ApplicationPortalStatusCode.InProgress,
+		code: ApplicationPortalStatisticsTypeCode.InProgress,
 		extra: 'The application is currently undergoing the screening process',
 	},
 	{
 		desc: 'Payment Pending',
-		code: ApplicationPortalStatusCode.AwaitingPayment,
+		code: ApplicationPortalStatisticsTypeCode.AwaitingPayment,
 		extra: 'The organization or the applicant must pay the application fee',
 	},
 	{
 		desc: 'Awaiting Third Party',
-		code: ApplicationPortalStatusCode.AwaitingThirdParty,
+		code: ApplicationPortalStatisticsTypeCode.AwaitingThirdParty,
 		extra: 'Waiting for information from an external party',
 	},
 	{
 		desc: 'Awaiting Applicant',
-		code: ApplicationPortalStatusCode.AwaitingApplicant,
+		code: ApplicationPortalStatisticsTypeCode.AwaitingApplicant,
 		extra: 'Waiting for the applicant to provide additional information',
 	},
 	{
 		desc: 'Under Assessment',
-		code: ApplicationPortalStatusCode.UnderAssessment,
+		code: ApplicationPortalStatisticsTypeCode.UnderAssessment,
 		extra: 'The application is in risk assessment',
 	},
-	{ desc: 'Incomplete', code: ApplicationPortalStatusCode.Incomplete, extra: 'Incomplete application received' },
-	{ desc: 'Completed', code: ApplicationPortalStatusCode.Completed },
+	{
+		desc: 'Incomplete',
+		code: ApplicationPortalStatisticsTypeCode.Incomplete,
+		extra: 'Incomplete application received',
+	},
+	{
+		desc: 'Completed',
+		code: ApplicationPortalStatisticsTypeCode.Completed,
+		extra: 'Criminal record check completed',
+	},
 	{
 		desc: 'Completed - Cleared',
-		code: ApplicationPortalStatusCode.CompletedCleared,
+		code: ApplicationPortalStatisticsTypeCode.CompletedCleared,
 		extra: 'Criminal record check completed - no risk',
 	},
 	{
 		desc: 'Completed - Risk Found',
-		code: ApplicationPortalStatusCode.RiskFound,
+		code: ApplicationPortalStatisticsTypeCode.RiskFound,
 		extra: 'The applicant is not cleared due to risk found',
 	},
 	{
 		desc: 'Closed - No Response',
-		code: ApplicationPortalStatusCode.ClosedNoResponse,
+		code: ApplicationPortalStatisticsTypeCode.ClosedNoResponse,
 		extra: 'No response from applicant',
 	},
 	{
 		desc: 'Closed - No Consent',
-		code: ApplicationPortalStatusCode.ClosedNoConsent,
+		code: ApplicationPortalStatisticsTypeCode.ClosedNoConsent,
 		extra: 'The applicant did not consent to the CRC',
 	},
 	{
 		desc: 'Cancelled by Organization',
-		code: ApplicationPortalStatusCode.CancelledByOrganization,
+		code: ApplicationPortalStatisticsTypeCode.CancelledByOrganization,
 		extra: 'Organization cancelled the application',
 	},
 	{
 		desc: 'Cancelled by Applicant',
-		code: ApplicationPortalStatusCode.CancelledByApplicant,
+		code: ApplicationPortalStatisticsTypeCode.CancelledByApplicant,
 		extra: 'The applicant cancelled their application',
 	},
-	{ desc: 'Refund Requested', code: ApplicationPortalStatusCode.RefundRequested },
 ];
 
 export const CountryTypes: SelectOptions[] = [
