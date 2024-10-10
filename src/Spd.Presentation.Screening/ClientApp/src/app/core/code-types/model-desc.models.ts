@@ -169,7 +169,7 @@ export const ApplicationPortalStatisticsTypes: SelectOptions[] = [
 	},
 	{
 		desc: 'Completed',
-		code: ApplicationPortalStatisticsTypeCode.Complete,
+		code: ApplicationPortalStatisticsTypeCode.Completed,
 		extra: 'Criminal record check completed',
 	},
 	{

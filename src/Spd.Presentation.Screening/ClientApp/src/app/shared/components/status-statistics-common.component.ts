@@ -112,12 +112,15 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
+						*ngIf="!isCrrp"
+					>
 						<div class="fs-4 m-2 ms-3">
-							{{ applicationStatistics[statisticsCodes.Complete] ?? 0 }}
+							{{ applicationStatistics[statisticsCodes.Completed] ?? 0 }}
 						</div>
-						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Complete) }}</div>
-						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Complete)">
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Completed) }}</div>
+						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Completed)">
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
