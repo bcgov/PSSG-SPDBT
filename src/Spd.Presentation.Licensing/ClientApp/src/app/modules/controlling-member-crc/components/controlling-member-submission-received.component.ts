@@ -45,7 +45,7 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 
 				<div class="row mt-4">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<a mat-flat-button color="primary" class="large w-100" [href]="constants.urls.contactSpdUrl">Close</a>
+						<a mat-flat-button color="primary" class="large w-100" [href]="contactSpdUrl">Close</a>
 					</div>
 				</div>
 			</section>
@@ -54,7 +54,9 @@ import { ControllingMemberCrcRoutes } from '@app/modules/controlling-member-crc/
 	styles: [],
 })
 export class ControllingMemberSubmissionReceivedComponent implements OnInit {
-	constants = SPD_CONSTANTS;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
+
 	isSubmit: boolean | null = null;
 
 	constructor(

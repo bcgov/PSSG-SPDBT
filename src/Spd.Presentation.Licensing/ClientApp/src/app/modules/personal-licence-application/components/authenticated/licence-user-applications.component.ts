@@ -163,8 +163,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 	styles: [],
 })
 export class LicenceUserApplicationsComponent implements OnInit {
-	constants = SPD_CONSTANTS;
-	serviceTypeCodes = ServiceTypeCode;
+	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	results$!: Observable<any>;
 	applicationIsInProgress = false;

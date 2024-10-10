@@ -123,8 +123,9 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	styles: [],
 })
 export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implements OnInit {
-	licenceModelData: any = {};
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
+	licenceModelData: any = {};
 	booleanTypeCodeYes = BooleanTypeCode.Yes;
 
 	categoryArmouredCarGuardFormGroup: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
