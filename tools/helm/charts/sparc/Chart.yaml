@@ -11,3 +11,8 @@ dependencies:
     version: 1.0.0
     condition: redis.enabled
     repository: "file://../redis-sentinel"
+  - name: clamav
+    alias: clamav
+    version: 1.0.0
+    condition: clamav.enabled
+    repository: "file://../clamav"
