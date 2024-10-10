@@ -1,7 +1,9 @@
 ﻿using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Spd.Tests.Integration;
 
+[IntegrationTest]
 public abstract class IntegrationTestBase : IClassFixture<IntegrationTestFixture>
 {
     protected IntegrationTestBase(ITestOutputHelper output, IntegrationTestFixture fixture)
