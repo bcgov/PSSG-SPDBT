@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Printing.Documents;
@@ -6,7 +6,6 @@ using Spd.Manager.Printing.Documents.TransformationStrategies;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Event;
 using Spd.Resource.Repository.Licence;
-using Spd.Resource.Repository.PersonLicApplication;
 using Spd.Utilities.Printing;
 using Spd.Utilities.Shared.Exceptions;
 
