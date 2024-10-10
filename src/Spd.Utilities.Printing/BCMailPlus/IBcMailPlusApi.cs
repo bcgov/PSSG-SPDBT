@@ -136,7 +136,7 @@ public static class Jobs
 internal static class JobStatusValues
 {
     /// <summary>
-    /// Job status that indicates success
+    /// Job status that indicates success, record data rendered to pdb
     /// </summary>
     public const string PdfCreated = "PDF_CREATED";
 
@@ -146,7 +146,22 @@ internal static class JobStatusValues
     public const string ProcessingError = "PROCESSING_ERROR";
 
     /// <summary>
-    /// Job status that indicates errors
+    /// Job status that indicates errors, Initial record data received 
     /// </summary>
     public const string FileReceived = "FILE_RECEIVED";
+
+    /// <summary>
+    /// Initial request data received, for PSSG-SPD-CARD-RELEASE
+    /// </summary>
+    public const string RequestReceived = "REQUEST_RECEIVED";
+
+    /// <summary>
+    /// Batch configured for QA, for PSSG-SPD-CARD-RELEASE
+    /// </summary>
+    public const string BatchConfigured = "BATCH_CONFIGURED";
+
+    /// <summary>
+    /// Batch enqueued for print, for PSSG-SPD-CARD-RELEASE
+    /// </summary>
+    public const string SentForProcessing = "SENT_FOR_PROCESSING";
 }
