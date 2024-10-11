@@ -66,7 +66,7 @@ internal class DocumentRepository : IDocumentRepository
             documents = documents.Where(d => d._bcgov_tag1id_value == tagId || d._bcgov_tag2id_value == tagId || d._bcgov_tag3id_value == tagId);
         }
 
-        var results = await documents.GetAllPagesAsync(ct);
+        IEnumerable<bcgov_documenturl> results =  documents.ToList();
         IEnumerable<DocumentResp> resp = null;
         if (qry.MultiFileTypes != null)
         {

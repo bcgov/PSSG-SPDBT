@@ -479,7 +479,13 @@ public class DocumentRepositoryTest : IClassFixture<IntegrationTestSetup>
         var saveCommand = new SaveTempFileCommand(new byte[1]);
         string fileKey = await _tempFileService.HandleCommand(saveCommand, CancellationToken.None);
 
-        contact contact = new() { contactid = applicantId };
+        contact contact = new() { contactid = applicantId, 
+            firstname = IntegrationTestSetup.DataPrefix + "firstname",
+            lastname = IntegrationTestSetup.DataPrefix + "lastname",
+            birthdate = new Microsoft.OData.Edm.Date(2024, 1, 1),
+            statecode = DynamicsConstants.StateCode_Active,
+            statuscode = DynamicsConstants.StatusCode_Active
+        };
         _context.AddTocontacts(contact);
         await _context.SaveChangesAsync(CancellationToken.None);
 
@@ -512,7 +518,7 @@ public class DocumentRepositoryTest : IClassFixture<IntegrationTestSetup>
             Assert.NotNull(response.Items);
             Assert.Equal(response.Items?.Count(), 1);
             Assert.Equal(response.Items?.FirstOrDefault().ExpiryDate, cmd.ExpiryDate);
-            Assert.Equal(documenturl?._bcgov_customer_value, cmd.ApplicantId);
+            Assert.Equal(response.Items?.FirstOrDefault().ContactId,documenturl?._bcgov_customer_value);
             
         }
         catch (Exception e)
