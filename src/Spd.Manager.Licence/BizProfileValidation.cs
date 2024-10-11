@@ -18,6 +18,7 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.SoleProprietorSwlPhoneNumber)
             .NotEmpty()
+            .MaximumLength(30)
             .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.Branches)
             .ForEach(r => r

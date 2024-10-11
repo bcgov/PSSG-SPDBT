@@ -1,10 +1,5 @@
 ﻿using FluentValidation;
 using Spd.Manager.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spd.Manager.Licence;
 public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractValidator<ControllingMemberCrcAppSubmitRequest>
@@ -29,7 +24,7 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
             .NotEmpty();
         RuleFor(r => r.DateOfBirth).NotNull().NotEmpty();
         RuleFor(r => r.PhoneNumber)
-            .MaximumLength(15);
+            .MaximumLength(30);
         RuleFor(r => r.EmailAddress)
             .MaximumLength(75)
             .EmailAddress();
@@ -142,7 +137,7 @@ public class ControllingMemberCrcAppSubmitRequestValidator : AbstractValidator<C
             .NotEmpty();
         RuleFor(r => r.DateOfBirth).NotNull().NotEmpty();
         RuleFor(r => r.PhoneNumber)
-            .MaximumLength(15);
+            .MaximumLength(30);
         RuleFor(r => r.EmailAddress)
             .MaximumLength(75)
             .EmailAddress();
@@ -252,7 +247,7 @@ public class ControllingMemberCrcAppUpdateRequestValidator : AbstractValidator<C
             .NotNull()
             .NotEmpty();
         RuleFor(r => r.PhoneNumber)
-            .MaximumLength(15);
+            .MaximumLength(30);
         RuleFor(r => r.EmailAddress)
             .MaximumLength(75)
             .EmailAddress();
