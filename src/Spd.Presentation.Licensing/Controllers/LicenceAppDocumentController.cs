@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -39,8 +38,7 @@ public class LicenceAppDocumentController : SpdLicenceControllerBase
     [Route("api/licence-application-documents/{licenceAppId}/files")]
     [HttpPost]
     [RequestSizeLimit(26214400)] //25M
-    [Authorize(Policy = "OnlyBcsc")]
-    [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+    [Authorize(Policy = "BcscBCeID")]
     public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
     {
         VerifyFiles(fileUploadRequest.Documents);
@@ -61,8 +59,7 @@ public class LicenceAppDocumentController : SpdLicenceControllerBase
     /// <returns></returns>
     [Route("api/licence-application-documents/files")]
     [HttpPost]
-    [Authorize(Policy = "OnlyBcsc")]
-    [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
+    [Authorize(Policy = "BcscBCeID")]
     [RequestSizeLimit(26214400)] //25M
     public async Task<Guid> UploadFilesToCache([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
     {
