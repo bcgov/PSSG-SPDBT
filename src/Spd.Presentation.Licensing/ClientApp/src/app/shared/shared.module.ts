@@ -22,6 +22,7 @@ import { ExpiredLicenceComponent } from './components/expired-licence.component'
 import { FileUploadComponent } from './components/file-upload.component';
 import { FormAliasesComponent } from './components/form-aliases.component';
 import { FormBcDriverLicenceComponent } from './components/form-bc-driver-licence.component';
+import { FormBusinessTermsComponent } from './components/form-business-terms.component';
 import { FormContactInformationComponent } from './components/form-contact-information.component';
 import { FormFingerprintsComponent } from './components/form-fingerprints.component';
 import { FormMentalHealthConditionsComponent } from './components/form-mental-health-conditions.component';
@@ -108,6 +109,7 @@ const SHARED_COMPONENTS = [
 	FormPersonalInformationComponent,
 	FormPersonalInformationNewAnonymousComponent,
 	FormPersonalInformationRenewUpdateAnonymousComponent,
+	FormBusinessTermsComponent,
 	LicenceCategoryPanelSimpleComponent,
 ];
 
