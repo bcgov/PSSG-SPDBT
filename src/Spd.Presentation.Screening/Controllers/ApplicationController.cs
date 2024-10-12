@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Screening;
 using Spd.Manager.Shared;
+using Spd.Utilities.FileScanning;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Shared;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
+using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
@@ -26,13 +28,15 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IConfiguration _configuration;
         private readonly IPrincipal _currentUser;
         private readonly ILogger<ApplicationController> _logger;
+        private readonly IFileScanProvider _fileScanProvider;
 
         public ApplicationController(IMediator mediator,
             IValidator<ApplicationCreateRequest> appCreateRequestValidator,
             IValidator<ApplicationCreateRequestFromBulk> appCreateRequestFromBulkValidator,
             IConfiguration configuration,
             IPrincipal currentUser,
-            ILogger<ApplicationController> logger)
+            ILogger<ApplicationController> logger,
+            IFileScanProvider fileScanProvider)
         {
             _mediator = mediator;
             _appCreateRequestValidator = appCreateRequestValidator;
@@ -40,6 +44,7 @@ namespace Spd.Presentation.Screening.Controllers
             _configuration = configuration;
             _currentUser = currentUser;
             _logger = logger;
+            _fileScanProvider = fileScanProvider;
         }
 
         #region application-invites
@@ -174,6 +179,7 @@ namespace Spd.Presentation.Screening.Controllers
             var userId = this.HttpContext.User.GetUserId();
             if (userId == null) throw new ApiException(System.Net.HttpStatusCode.Unauthorized);
 
+            await FileVirusScanAsync(bulkUploadRequest.File, ct);
             //validation file
             string fileName = bulkUploadRequest.File.FileName;
             string exe = fileName.Split(".").Last();
@@ -363,7 +369,7 @@ namespace Spd.Presentation.Screening.Controllers
         /// <returns></returns>
         [Route("api/orgs/{orgId}/application")]
         [HttpPost]
-        public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId)
+        public async Task<ApplicationCreateResponse> AddApplication([FromForm][Required] CreateApplication createApplication, [FromRoute] Guid orgId, CancellationToken ct)
         {
 
             bool isPSSO = false;
@@ -384,6 +390,7 @@ namespace Spd.Presentation.Screening.Controllers
             {
                 if (createApplication.ConsentFormFile == null)
                     throw new ApiException(System.Net.HttpStatusCode.BadRequest, "The consent file must be supplied.");
+                await FileVirusScanAsync(createApplication.ConsentFormFile, ct);
             }
 
             var userId = this.HttpContext.User.GetUserId();
@@ -743,6 +750,13 @@ namespace Spd.Presentation.Screening.Controllers
             };
         }
         #endregion
+
+        protected async Task FileVirusScanAsync(IFormFile document, CancellationToken ct)
+        {
+            var result = await _fileScanProvider.ScanAsync(document.OpenReadStream(), ct);
+            if (result.Result != ScanResult.Clean)
+                throw new ApiException(HttpStatusCode.BadRequest, "The uploaded file is not clean.");
+        }
     }
 }
 
