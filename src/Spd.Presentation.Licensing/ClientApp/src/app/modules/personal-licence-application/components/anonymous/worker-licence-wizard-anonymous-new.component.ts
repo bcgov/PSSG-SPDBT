@@ -63,7 +63,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<app-steps-worker-licence-identification-anonymous
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
-					[showCitizenshipStep]="showCitizenshipStep"
+					[showCitizenshipStep]="true"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
@@ -125,7 +125,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
-	showCitizenshipStep = false;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
@@ -174,8 +173,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
-
-				this.showCitizenshipStep = this.applicationTypeCode === ApplicationTypeCode.New;
 
 				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
 					'policeBackgroundData.policeOfficerRoleCode'
