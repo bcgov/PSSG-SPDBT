@@ -95,7 +95,7 @@ export class UtilService {
 		givenName: string | null | undefined,
 		middleName1: string | null | undefined,
 		middleName2: string | null | undefined,
-		surname: string | null | undefined,
+		surname: string | null | undefined
 	): string {
 		const userNameArray: string[] = [];
 		if (givenName) {
@@ -138,7 +138,7 @@ export class UtilService {
 	getDecodedAccessToken(token: string): any {
 		try {
 			return jwtDecode(token);
-		} catch (Error) {
+		} catch (_error: any) {
 			return null;
 		}
 	}
@@ -235,7 +235,7 @@ export class UtilService {
 	public sortDate(
 		a: string | null | undefined,
 		b: string | null | undefined,
-		direction: SortDirection = 'asc',
+		direction: SortDirection = 'asc'
 	): SortWeight {
 		if (!a) {
 			return -1;
@@ -341,7 +341,7 @@ export class UtilService {
 		isCanadianResident: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
 		proofOfResidentStatusCode: LicenceDocumentTypeCode | null,
-		proofOfCitizenshipCode: LicenceDocumentTypeCode | null,
+		proofOfCitizenshipCode: LicenceDocumentTypeCode | null
 	): boolean {
 		const canadianCitizenProof = canadianCitizenProofTypeCode ?? LicenceDocumentTypeCode.CanadianPassport;
 		const proofOfResidentStatus = proofOfResidentStatusCode ?? LicenceDocumentTypeCode.PermanentResidentCard;
@@ -359,31 +359,31 @@ export class UtilService {
 	public getSwlShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
 	): boolean {
 		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
 			isCanadianCitizen,
 			canadianCitizenProofTypeCode,
-			notCanadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
 		);
 	}
 
 	public getControllingMemberCrcShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
 	): boolean {
 		return this.getSwlOrControllingMemberCrcShowAdditionalGovIdData(
 			isCanadianCitizen,
 			canadianCitizenProofTypeCode,
-			notCanadianCitizenProofTypeCode,
+			notCanadianCitizenProofTypeCode
 		);
 	}
 
 	private getSwlOrControllingMemberCrcShowAdditionalGovIdData(
 		isCanadianCitizen: boolean,
 		canadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
-		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null,
+		notCanadianCitizenProofTypeCode: LicenceDocumentTypeCode | null
 	): boolean {
 		const canadianCitizenProof = canadianCitizenProofTypeCode
 			? canadianCitizenProofTypeCode

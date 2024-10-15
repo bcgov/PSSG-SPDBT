@@ -175,13 +175,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				const isCanadianCitizen = this.workerApplicationService.workerModelFormGroup.get(
-					'citizenshipData.isCanadianCitizen'
-				)?.value;
-
-				this.showCitizenshipStep =
-					this.applicationTypeCode === ApplicationTypeCode.New ||
-					(this.applicationTypeCode === ApplicationTypeCode.Renewal && isCanadianCitizen === BooleanTypeCode.No);
+				this.showCitizenshipStep = this.applicationTypeCode === ApplicationTypeCode.New;
 
 				this.policeOfficerRoleCode = this.workerApplicationService.workerModelFormGroup.get(
 					'policeBackgroundData.policeOfficerRoleCode'
