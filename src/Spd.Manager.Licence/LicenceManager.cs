@@ -75,6 +75,7 @@ internal class LicenceManager :
         }
         LicenceResp response = qryResponse.Items.OrderByDescending(i => i.CreatedOn).First();
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
+        await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
 
@@ -157,11 +158,11 @@ internal class LicenceManager :
                     new LicenceQry
                     {
                         AccountId = licResp.SoleProprietorOrgId,
-                        IncludeInactive = true
+                        IncludeInactive = false
                     }, cancellationToken);
-            var bizLic = bizLicences.Items.OrderByDescending(i => i.CreatedOn).First();
-            lic.LinkedSoleProprietorLicenceId = bizLic.LicenceId;
-            lic.LinkedSoleProprietorExpiryDate = bizLic.ExpiryDate;
+            var bizLic = bizLicences.Items.OrderByDescending(i => i.CreatedOn).FirstOrDefault();
+            lic.LinkedSoleProprietorLicenceId = bizLic?.LicenceId;
+            lic.LinkedSoleProprietorExpiryDate = bizLic?.ExpiryDate;
         }
         if (licResp.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence)
         {
