@@ -17,7 +17,7 @@ import {
 	LicenceDocumentTypeCode,
 	ServiceTypeCode,
 } from '@app/api/models';
-import { ApplicantProfileService, ControllingMemberCrcAppService } from '@app/api/services';
+import { ApplicantProfileService, ControllingMemberCrcAppService, LicenceAppDocumentService } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
@@ -87,6 +87,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		private authUserBcscService: AuthUserBcscService,
 		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
+		private licenceAppDocumentService: LicenceAppDocumentService,
 		private commonApplicationService: ApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
@@ -220,8 +221,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsOriginalAppIdFilesPost$Response({
-			originalAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
+		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
+			licenceAppId: this.controllingMembersModelFormGroup.get('controllingMemberAppId')?.value,
 			body: doc,
 		});
 	}
@@ -395,7 +396,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			// should always be at least one new document
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
@@ -440,7 +441,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			// should always be at least one new document
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAuthenticatedFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,
@@ -515,7 +516,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 			// should always be at least one new document
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.controllingMemberCrcAppService.apiControllingMemberCrcApplicationsAnonymousFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,

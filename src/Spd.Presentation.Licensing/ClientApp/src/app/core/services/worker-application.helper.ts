@@ -840,21 +840,19 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 			});
 		});
 
-		if (!isAuthenticated) {
-			policeBackgroundData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
-				});
+		policeBackgroundData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.PoliceBackgroundLetterOfNoConflict,
 			});
+		});
 
-			mentalHealthConditionsData.attachments?.forEach((doc: any) => {
-				documentInfos.push({
-					documentUrlId: doc.documentUrlId,
-					licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
-				});
+		mentalHealthConditionsData.attachments?.forEach((doc: any) => {
+			documentInfos.push({
+				documentUrlId: doc.documentUrlId,
+				licenceDocumentTypeCode: LicenceDocumentTypeCode.MentalHealthCondition,
 			});
-		}
+		});
 
 		citizenshipData.attachments?.forEach((doc: any) => {
 			documentInfos.push({
@@ -883,7 +881,7 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 						? this.formatDatePipe.transform(
 								citizenshipData.governmentIssuedExpiryDate,
 								SPD_CONSTANTS.date.backendDateFormat
-						  )
+							)
 						: null,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
@@ -1415,12 +1413,12 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 	}
 	getSummarycanadianCitizenProofTypeCode(workerLicenceModelData: any): string {
 		return workerLicenceModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
-			? workerLicenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
+			? (workerLicenceModelData.citizenshipData.canadianCitizenProofTypeCode ?? '')
 			: '';
 	}
 	getSummarynotCanadianCitizenProofTypeCode(workerLicenceModelData: any): string {
 		return workerLicenceModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? workerLicenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? ''
+			? (workerLicenceModelData.citizenshipData.notCanadianCitizenProofTypeCode ?? '')
 			: '';
 	}
 	getSummaryproofOfAbility(workerLicenceModelData: any): string {
@@ -1455,7 +1453,7 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 
 	getSummarybcDriversLicenceNumber(workerLicenceModelData: any): string {
 		return workerLicenceModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
-			? workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			? (workerLicenceModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '')
 			: '';
 	}
 
