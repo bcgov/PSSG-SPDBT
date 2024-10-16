@@ -73,7 +73,8 @@ namespace Spd.Presentation.Licensing.Controllers
                 invalidCategoryMatrix,
                 (List<LicenceFeeResponse>)licenceFeesResponse.LicenceFees,
                 replacementProcessingTime,
-                version));
+                version,
+                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Undefined"));
         }
     }
 
@@ -84,7 +85,8 @@ namespace Spd.Presentation.Licensing.Controllers
         Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>> InvalidWorkerLicenceCategoryMatrixConfiguration,
         List<LicenceFeeResponse> LicenceFees,
         string? ReplacementProcessingTime,
-        string? Version
+        string? Version,
+        string? Environment
     );
 
     public record OidcConfiguration
