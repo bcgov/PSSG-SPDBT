@@ -73,24 +73,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         controllingMemberCrcAppUpsertRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
         return await _mediator.Send(new ControllingMemberCrcUpsertCommand(controllingMemberCrcAppUpsertRequest));
     }
-    /// <summary>
-    /// Upload Controlling Member application files to transient storage
-    /// </summary>
-    /// <param name="fileUploadRequest"></param>
-    /// <param name="originalAppId"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    [Route("api/controlling-member-crc-applications/{originalAppId}/files")]
-    [HttpPost]
-    [RequestSizeLimit(26214400)] //25M
-    [Authorize(Policy = "OnlyBcsc")]
-    public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid originalAppId, CancellationToken ct)
-    {
-        VerifyFiles(fileUploadRequest.Documents);
-        var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
-
-        return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, originalAppId), ct);
-    }
+   
     /// <summary>
     /// Submit Controlling Member Crc New Application
     /// authenticated
@@ -108,26 +91,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
         controllingMemberCrcSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
         return await _mediator.Send(new ControllingMemberCrcSubmitCommand(controllingMemberCrcSubmitRequest));
     }
-    /// <summary>
-    /// Upload Controlling member crc application files for authenticated users.
-    /// </summary>
-    /// <param name="fileUploadRequest"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    [Route("api/controlling-member-crc-applications/authenticated/files")]
-    [Authorize(Policy = "OnlyBcsc")]
-    [HttpPost]
-    [RequestSizeLimit(26214400)] //25M
-    public async Task<Guid> UploadControllingMemberCrcAppFilesAuthenticated([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-    {
-        VerifyFiles(fileUploadRequest.Documents);
-
-        CreateDocumentInCacheCommand command = new(fileUploadRequest);
-        var newFileInfos = await _mediator.Send(command, ct);
-        Guid fileKeyCode = Guid.NewGuid();
-        await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
-        return fileKeyCode;
-    }
+    
     /// <summary>
     /// Submit an update for Controlling member crc application for authenticated users,
     /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
@@ -155,44 +119,7 @@ public class ControllingMemberCrcAppController : SpdLicenceControllerBase
     #endregion authenticated
 
     #region anonymous
-    /// <summary>
-    /// Upload Controlling Member Crc application first step: frontend needs to make this first request to get a Guid code.
-    /// the keycode will be set in the cookies
-    /// </summary>
-    /// <param name="recaptcha"></param>
-    /// <param name="ct"></param>
-    /// <returns>Guid: keyCode</returns>
-    [Route("api/controlling-member-crc-applications/anonymous/keyCode")]
-    [HttpPost]
-    public async Task<IActionResult> GetControllingMemberCrcAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
-    {
-        await VerifyGoogleRecaptchaAsync(recaptcha, ct);
-        string keyCode = Guid.NewGuid().ToString();
-        await Cache.SetAsync(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20), ct);
-        SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
-        return Ok();
-    }
-    /// <summary>
-    /// Upload Controlling Member Crc application files: frontend use the keyCode (in cookies) to upload following files.
-    /// Uploading file only save files in cache, the files are not connected to the application yet.
-    /// </summary>
-    /// <param name="fileUploadRequest"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    [Route("api/controlling-member-crc-applications/anonymous/files")]
-    [HttpPost]
-    [RequestSizeLimit(26214400)] //25M
-    public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-    {
-        await VerifyKeyCode();
-        VerifyFiles(fileUploadRequest.Documents);
-
-        CreateDocumentInCacheCommand command = new(fileUploadRequest);
-        var newFileInfos = await _mediator.Send(command, ct);
-        Guid fileKeyCode = Guid.NewGuid();
-        await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
-        return fileKeyCode;
-    }
+    
 
     /// <summary>
     /// Submit Controlling Member Crc New Application Anonymously.
