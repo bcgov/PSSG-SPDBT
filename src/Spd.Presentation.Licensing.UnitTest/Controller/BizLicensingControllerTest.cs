@@ -121,16 +121,6 @@ public class BizLicensingControllerTest
         _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SaveBusinessLicenceApplication(request, CancellationToken.None));
     }
 
-    [Fact]
-    public async void Post_UploadLicenceAppFiles_Return_LicenceAppDocumentResponse_List()
-    {
-        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BizInsurance);
-
-        var result = await sut.UploadLicenceAppFiles(request, Guid.NewGuid(), CancellationToken.None);
-
-        Assert.IsType<List<LicenceAppDocumentResponse>>(result);
-        mockMediator.Verify();
-    }
 
     [Fact]
     public async void Post_SubmitBusinessLicenceApplication_Return_BizLicAppCommandResponse()

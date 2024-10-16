@@ -52,26 +52,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetApplicantProfileQuery(id));
         }
 
-        /// <summary>
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/applicant/files")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBcsc")]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadApplicantProfileFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
-            return fileKeyCode;
-        }
 
         /// <summary>
         /// Submit applicant update
