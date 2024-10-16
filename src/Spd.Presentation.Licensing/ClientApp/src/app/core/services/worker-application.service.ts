@@ -21,7 +21,12 @@ import {
 	WorkerLicenceAppUpsertRequest,
 	WorkerLicenceCommandResponse,
 } from '@app/api/models';
-import { ApplicantProfileService, LicenceService, SecurityWorkerLicensingService } from '@app/api/services';
+import {
+	ApplicantProfileService,
+	LicenceAppDocumentService,
+	LicenceService,
+	SecurityWorkerLicensingService,
+} from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -121,6 +126,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		fileUtilService: FileUtilService,
 		private router: Router,
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
+		private licenceAppDocumentService: LicenceAppDocumentService,
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
@@ -189,7 +195,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdFilesPost$Response({
+		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.workerModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -638,7 +644,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.applicantProfileService.apiApplicantFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
@@ -733,7 +739,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAuthenticatedFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
@@ -1150,7 +1156,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// should always be at least one new document
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.securityWorkerLicensingService.apiWorkerLicenceApplicationsAnonymousFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,

@@ -34,6 +34,7 @@ import {
 	BizMembersService,
 	BizPortalUserService,
 	BizProfileService,
+	LicenceAppDocumentService,
 	LicenceService,
 	SecurityWorkerLicensingService,
 } from '@app/api/services';
@@ -132,6 +133,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private securityWorkerLicensingService: SecurityWorkerLicensingService,
 		private bizProfileService: BizProfileService,
 		private bizLicensingService: BizLicensingService,
+		private licenceAppDocumentService: LicenceAppDocumentService,
 		private bizMembersService: BizMembersService,
 		private authUserBceidService: AuthUserBceidService,
 		private bizPortalUserService: BizPortalUserService,
@@ -439,7 +441,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.bizLicensingService.apiBusinessLicenceApplicationFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
@@ -489,7 +491,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.bizLicensingService.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response({
+		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.businessModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -1371,7 +1373,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			applicationTypeCode === ApplicationTypeCode.New || applicationTypeCode === ApplicationTypeCode.Renewal
 				? businessLicenceAppl.documentInfos?.filter(
 						(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding
-				  )
+					)
 				: [];
 
 		if (businessMembers) {
@@ -1614,7 +1616,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				? {
 						noLogoOrBranding: businessLicenceAppl.noBranding,
 						attachments: companyBrandingAttachments,
-				  }
+					}
 				: {};
 
 		const liabilityData = {
