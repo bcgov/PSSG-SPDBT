@@ -18,6 +18,7 @@ public class BizLicAppBaseValidator<T> : AbstractValidator<T> where T : BizLicen
             .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.ApplicantContactInfo.PhoneNumber)
             .NotEmpty()
+            .MaximumLength(30)
             .When(r => r.ApplicantContactInfo != null && r.ApplicantIsBizManager == false);
         RuleFor(r => r.ApplicantContactInfo.EmailAddress)
             .NotEmpty()

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spd.Manager.Screening;
 using Spd.Manager.Shared;
 using Spd.Presentation.Screening.Configurations;
+using Spd.Utilities.FileScanning;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared;
@@ -23,17 +24,19 @@ namespace Spd.Presentation.Screening.Controllers
         private readonly IPrincipal _currentUser;
         private readonly IRecaptchaVerificationService _verificationService;
         private readonly IConfiguration _configuration;
-
+        private readonly IFileScanProvider _fileScanProvider;
 
         public ApplicantController(IMediator mediator,
             IPrincipal currentUser,
             IRecaptchaVerificationService verificationService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IFileScanProvider fileScanProvider)
         {
             _mediator = mediator;
             _currentUser = currentUser;
             _verificationService = verificationService;
             _configuration = configuration;
+            _fileScanProvider = fileScanProvider;
         }
 
         #region application-invites
@@ -219,6 +222,7 @@ namespace Spd.Presentation.Screening.Controllers
                 {
                     throw new ApiException(HttpStatusCode.BadRequest, $"{file.Name} exceeds maximum supported file size {fileUploadConfig.MaxFileSizeMB} MB.");
                 }
+                await FileVirusScanAsync(file, ct);
             }
             if (fileUploadRequest.FileType != FileTypeCode.ApplicantInformation && fileUploadRequest.Files.Count > 1)
             {
@@ -248,6 +252,13 @@ namespace Spd.Presentation.Screening.Controllers
 
         }
         #endregion
+
+        protected async Task FileVirusScanAsync(IFormFile document, CancellationToken ct)
+        {
+            var result = await _fileScanProvider.ScanAsync(document.OpenReadStream(), ct);
+            if (result.Result != ScanResult.Clean)
+                throw new ApiException(HttpStatusCode.BadRequest, "The uploaded file is not clean.");
+        }
     }
 }
 

@@ -198,11 +198,7 @@ import { LicenceChildStepperStepComponent, UtilService } from '@app/core/service
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-12">
-								<app-collection-notice></app-collection-notice>
-							</div>
-						</div>
+						<app-collection-notice></app-collection-notice>
 					</div>
 				</div>
 			</form>

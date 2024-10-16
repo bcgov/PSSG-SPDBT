@@ -6,8 +6,7 @@ import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-
-import { CommonBusinessTermsComponent } from './common-business-terms.component';
+import { FormBusinessTermsComponent } from '@app/shared/components/form-business-terms.component';
 
 @Component({
 	selector: 'app-business-first-time-user-terms-of-use',
@@ -19,10 +18,10 @@ import { CommonBusinessTermsComponent } from './common-business-terms.component'
 						title="Terms and Conditions"
 						subtitle="Read, download, and accept the Terms of Use to continue"
 					>
-						<app-common-business-terms
+						<app-form-business-terms
 							[form]="form"
 							[applicationTypeCode]="applicationTypeCodes.New"
-						></app-common-business-terms>
+						></app-form-business-terms>
 
 						<div class="row">
 							<div class="offset-xxl-8 col-xxl-3 offset-xl-7 col-xl-4 offset-lg-7 col-lg-5 col-md-12 col-sm-12 mb-2">
@@ -39,7 +38,7 @@ import { CommonBusinessTermsComponent } from './common-business-terms.component'
 export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, LicenceChildStepperStepComponent {
 	form = this.businessApplicationService.termsAndConditionsFormGroup;
 
-	@ViewChild(CommonBusinessTermsComponent) commonTermsComponent!: CommonBusinessTermsComponent;
+	@ViewChild(FormBusinessTermsComponent) commonTermsComponent!: FormBusinessTermsComponent;
 
 	@Input() isWizard = false;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
@@ -49,7 +48,7 @@ export class BusinessFirstTimeUserTermsOfUseComponent implements OnInit, Licence
 		private router: Router,
 		private loginService: LoginService,
 		private businessApplicationService: BusinessApplicationService,
-		private authUserBceidService: AuthUserBceidService
+		private authUserBceidService: AuthUserBceidService,
 	) {}
 
 	ngOnInit(): void {

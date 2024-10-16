@@ -5,7 +5,7 @@ import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { UtilService } from '@app/core/services/util.service';
 
 @Component({
-	selector: 'app-common-business-terms',
+	selector: 'app-form-business-terms',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
@@ -339,7 +339,7 @@ import { UtilService } from '@app/core/services/util.service';
 		`,
 	],
 })
-export class CommonBusinessTermsComponent implements OnInit {
+export class FormBusinessTermsComponent implements OnInit {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
