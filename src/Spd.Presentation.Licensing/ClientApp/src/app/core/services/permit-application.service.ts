@@ -43,7 +43,12 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { ApplicantProfileService, LicenceService, PermitService } from 'src/app/api/services';
+import {
+	ApplicantProfileService,
+	LicenceAppDocumentService,
+	LicenceService,
+	PermitService,
+} from 'src/app/api/services';
 import { StrictHttpResponse } from 'src/app/api/strict-http-response';
 import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -109,6 +114,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private router: Router,
 		private permitService: PermitService,
 		private licenceService: LicenceService,
+		private licenceAppDocumentService: LicenceAppDocumentService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
 		private commonApplicationService: ApplicationService,
@@ -178,7 +184,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			LicenceDocumentTypeCode: documentCode,
 		};
 
-		return this.permitService.apiPermitApplicationsLicenceAppIdFilesPost$Response({
+		return this.licenceAppDocumentService.apiLicenceApplicationDocumentsLicenceAppIdFilesPost$Response({
 			licenceAppId: this.permitModelFormGroup.get('licenceAppId')?.value,
 			body: doc,
 		});
@@ -567,7 +573,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 			if (newDocumentsOnly.length > 0) {
 				documentsToSaveApis.push(
-					this.permitService.apiPermitApplicationsFilesPost({
+					this.licenceAppDocumentService.apiLicenceApplicationDocumentsFilesPost({
 						body: {
 							Documents: newDocumentsOnly,
 							LicenceDocumentTypeCode: doc.licenceDocumentTypeCode,
@@ -941,7 +947,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 						// should always be at least one new document
 						if (newDocumentsOnly.length > 0) {
 							documentsToSaveApis.push(
-								this.permitService.apiPermitApplicationsAnonymousFilesPost({
+								this.licenceAppDocumentService.apiLicenceApplicationDocumentsAnonymousFilesPost({
 									body: {
 										Documents: newDocumentsOnly,
 										LicenceDocumentTypeCode: docBody.licenceDocumentTypeCode,

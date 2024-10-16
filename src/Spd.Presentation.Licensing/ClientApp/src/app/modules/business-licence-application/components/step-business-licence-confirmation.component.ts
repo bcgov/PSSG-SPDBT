@@ -63,6 +63,7 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 })
 export class StepBusinessLicenceConfirmationComponent implements OnInit {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
+
 	feeAmount: null | number = null;
 	spdPhoneNumber = SPD_CONSTANTS.phone.spdPhoneNumber;
 

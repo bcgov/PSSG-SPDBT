@@ -77,7 +77,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
-					<ng-container *ngIf="isSoleProprietor">
+					<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
 						<mat-step completed="false">
 							<ng-template matStepLabel>Business Information</ng-template>
 						</mat-step>
@@ -91,9 +91,11 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						</mat-step>
 					</ng-container>
 
-					<mat-step completed="false">
-						<ng-template matStepLabel>Pay</ng-template>
-					</mat-step>
+					<ng-template #isNotSoleProprietor>
+						<mat-step completed="false">
+							<ng-template matStepLabel>Pay</ng-template>
+						</mat-step>
+					</ng-template>
 				</mat-stepper>
 			</div>
 		</div>

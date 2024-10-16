@@ -24,7 +24,8 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
             .When(r =>
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
             (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
-        RuleFor(r => r.SupervisorPhoneNumber).NotEmpty()
+        RuleFor(r => r.SupervisorPhoneNumber)
+            .NotEmpty()
             .MaximumLength(30)
             .When(r =>
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
@@ -106,7 +107,8 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
             .When(r =>
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
             (r.BodyArmourPermitReasonCodes != null && r.BodyArmourPermitReasonCodes.Contains(BodyArmourPermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.BodyArmourPermit));
-        RuleFor(r => r.SupervisorPhoneNumber).NotEmpty()
+        RuleFor(r => r.SupervisorPhoneNumber)
+            .NotEmpty()
             .MaximumLength(30)
             .When(r =>
             (r.ArmouredVehiclePermitReasonCodes != null && r.ArmouredVehiclePermitReasonCodes.Contains(ArmouredVehiclePermitReasonCode.MyEmployment) && r.ServiceTypeCode == ServiceTypeCode.ArmouredVehiclePermit) ||
@@ -158,5 +160,4 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
     }
 
 }
-
 

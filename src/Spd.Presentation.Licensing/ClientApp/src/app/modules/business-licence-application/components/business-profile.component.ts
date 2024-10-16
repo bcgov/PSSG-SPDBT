@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { UtilService } from '@app/core/services/util.service';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 import { CommonBusinessProfileComponent } from './common-business-profile.component';
 
@@ -18,25 +18,29 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 							<h2 class="fs-3">Business Profile</h2>
 						</div>
 
-						<div class="col-xl-6 col-lg-4 col-md-12" *ngIf="isReadonly">
+						<div class="col-xl-6 col-lg-4 col-md-12">
 							<div class="d-flex justify-content-end">
-								<button
-									mat-stroked-button
-									color="primary"
-									class="large w-auto mb-3"
-									aria-label="Back"
-									(click)="onCancel()"
-								>
-									<mat-icon>arrow_back</mat-icon>Back
-								</button>
+								<ng-container *ngIf="isReadonly; else IsEditable">
+									<button
+										mat-stroked-button
+										color="primary"
+										class="large w-auto mb-3"
+										aria-label="Back"
+										(click)="onCancel()"
+									>
+										<mat-icon>arrow_back</mat-icon>Back
+									</button>
+								</ng-container>
+								<ng-template #IsEditable>
+									<button mat-stroked-button color="primary" class="large mx-3 mb-3" (click)="onCancel()">
+										Cancel
+									</button>
+									<button mat-flat-button color="primary" class="large mx-3 mb-3" (click)="onSave()">Save</button>
+								</ng-template>
 							</div>
 						</div>
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-
-					<ng-container *ngIf="!isReadonly">
-						<app-alert type="warning" icon="warning">Fill out your profile information </app-alert>
-					</ng-container>
 
 					<app-common-business-profile
 						[businessInformationFormGroup]="businessInformationFormGroup"
@@ -49,22 +53,10 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 						[isReadonly]="isReadonly"
 					></app-common-business-profile>
 
-					<div class="row mt-3">
-						<div class="col-12">
-							<app-collection-notice></app-collection-notice>
-						</div>
-					</div>
+					<app-collection-notice></app-collection-notice>
 				</div>
 			</div>
 		</div>
-
-		<ng-container *ngIf="!isReadonly">
-			<app-wizard-outside-footer
-				nextButtonLabel="Save"
-				(nextStepperStep)="onSave()"
-				(cancel)="onCancel()"
-			></app-wizard-outside-footer>
-		</ng-container>
 	`,
 	styles: [],
 })
