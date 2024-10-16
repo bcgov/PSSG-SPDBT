@@ -85,24 +85,6 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload business licence application files to transient storage
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/{licenceAppId}/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, null, licenceAppId), ct);
-        }
-
-        /// <summary>
         /// Submit Biz licence update, renew and replace
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
         /// </summary>
@@ -149,27 +131,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return response;
         }
 
-        ///<summary>
-        /// Uploading file only save files in cache, the files are not connected to the biz and application yet.
-        /// this is used for uploading member files or update, renew, replace.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/business-licence-application/files")]
-        [HttpPost]
-        [Authorize(Policy = "OnlyBceid", Roles = "PrimaryBusinessManager,BusinessManager")]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadFilesToCache([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
-            return fileKeyCode;
-        }
 
         /// <summary>
         /// Submit Business Licence Application
