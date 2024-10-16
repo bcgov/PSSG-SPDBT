@@ -5,11 +5,20 @@ import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberAliasesComponent } from './step-controlling-member-aliases.component';
 import { StepControllingMemberPersonalInfoComponent } from './step-controlling-member-personal-info.component';
 import { StepControllingMemberResidentialAddressComponent } from './step-controlling-member-residential-address.component';
+import { StepControllingMemberTermsComponent } from './step-controlling-member-terms.component';
 
 @Component({
 	selector: 'app-steps-controlling-member-personal-information',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
+			<mat-step>
+				<app-step-controlling-member-terms
+					[applicationTypeCode]="applicationTypeCode"
+				></app-step-controlling-member-terms>
+
+				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+			</mat-step>
+
 			<mat-step>
 				<ng-container *ngIf="isNew; else isUpdate">
 					<app-step-controlling-member-checklist-new></app-step-controlling-member-checklist-new>
@@ -22,6 +31,7 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 					[showSaveAndExit]="isLoggedIn"
 					(saveAndExit)="onSaveAndExit(STEP_CHECKLIST)"
 					(cancelAndExit)="onCancelAndExit()"
+					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
 			</mat-step>
@@ -81,15 +91,17 @@ import { StepControllingMemberResidentialAddressComponent } from './step-control
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsControllingMemberPersonalInformationComponent extends BaseWizardStepComponent {
-	readonly STEP_CHECKLIST = 0;
-	readonly STEP_PERSONAL_INFO = 1;
-	readonly STEP_ALIASES = 2;
-	readonly STEP_RESIDENTIAL_ADDRESS = 3;
+	readonly STEP_TERMS = 0;
+	readonly STEP_CHECKLIST = 1;
+	readonly STEP_PERSONAL_INFO = 2;
+	readonly STEP_ALIASES = 3;
+	readonly STEP_RESIDENTIAL_ADDRESS = 4;
 
 	@Input() isFormValid!: boolean;
 	@Input() isLoggedIn!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
+	@ViewChild(StepControllingMemberTermsComponent) termsOfUseComponent!: StepControllingMemberTermsComponent;
 	@ViewChild(StepControllingMemberPersonalInfoComponent) stepPersonalInfo!: StepControllingMemberPersonalInfoComponent;
 	@ViewChild(StepControllingMemberAliasesComponent) stepAliases!: StepControllingMemberAliasesComponent;
 	@ViewChild(StepControllingMemberResidentialAddressComponent)
@@ -101,6 +113,8 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_TERMS:
+				return this.termsOfUseComponent.isFormValid();
 			case this.STEP_CHECKLIST:
 				return true;
 			case this.STEP_PERSONAL_INFO:

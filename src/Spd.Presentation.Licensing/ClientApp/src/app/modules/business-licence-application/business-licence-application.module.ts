@@ -35,7 +35,6 @@ import { BusinessManagerInvitationComponent } from './components/business-manage
 import { BusinessManagersComponent } from './components/business-managers.component';
 import { BusinessProfileComponent } from './components/business-profile.component';
 import { CommonBusinessInformationComponent } from './components/common-business-information.component';
-import { CommonBusinessTermsComponent } from './components/common-business-terms.component';
 import { ModalBcBranchEditComponent } from './components/modal-bc-branch-edit.component';
 import { ModalBusinessManagerEditComponent } from './components/modal-business-manager-edit.component';
 import { ModalMemberWithoutSwlEditComponent } from './components/modal-member-without-swl-edit.component';
@@ -81,7 +80,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		CommonBusinessLicenceSummaryComponent,
 		CommonBusinessProfileComponent,
 		CommonBusinessInformationComponent,
-		CommonBusinessTermsComponent,
 		CommonControllingMembersComponent,
 		CommonEmployeesComponent,
 		BusinessLicencePaymentCancelComponent,
