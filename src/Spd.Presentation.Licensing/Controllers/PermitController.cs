@@ -87,45 +87,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));
         }
 
-        /// <summary>
-        /// Upload permit application files to transient storage
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/permit-applications/{licenceAppId}/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
-
-            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
-        }
-
-        /// <summary>
-        /// Uploading file only save files in cache, the files are not connected to the application yet
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/permit-applications/files")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadPermitAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
-            return fileKeyCode;
-        }
 
         /// <summary>
         /// Submit Permit Application
@@ -218,44 +179,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
         }
 
-        /// <summary>
-        /// Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
-        /// </summary>
-        /// <param name="recaptcha"></param>
-        /// <param name="ct"></param>
-        /// <returns>Guid: keyCode</returns>
-        [Route("api/permit-applications/anonymous/keyCode")]
-        [HttpPost]
-        public async Task<IActionResult> GetPermitAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
-        {
-            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
-            string keyCode = Guid.NewGuid().ToString();
-            await Cache.SetAsync(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20));
-            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/permit-applications/anonymous/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadPermitAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            await VerifyKeyCode();
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(20), ct);
-            return fileKeyCode;
-        }
 
         /// <summary>
         /// Submit Body Armour or Armour Vehicle permit application Anonymously
