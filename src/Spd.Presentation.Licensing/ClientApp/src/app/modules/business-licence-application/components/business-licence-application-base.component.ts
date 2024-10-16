@@ -38,7 +38,8 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		const defaultBizId: string | undefined = queryParams['bizId'];
 		const swlLicAppId: string | undefined = queryParams['swlLicAppId'];
 		const bizLicAppId: string | undefined = queryParams['bizLicAppId'];
-		const isSoleProprietorSWLAnonymous: string | undefined = queryParams['isSoleProprietorSWLAnonymous'];
+		const isSoleProprietorSimultaneousSWLAnonymous: string | undefined =
+			queryParams['isSoleProprietorSimultaneousSWLAnonymous'];
 
 		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
 
@@ -46,7 +47,8 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		if (defaultBizId) params.set('bizId', defaultBizId);
 		if (swlLicAppId) params.set('swlLicAppId', swlLicAppId);
 		if (bizLicAppId) params.set('bizLicAppId', bizLicAppId);
-		if (isSoleProprietorSWLAnonymous) params.set('isSoleProprietorSWLAnonymous', isSoleProprietorSWLAnonymous);
+		if (isSoleProprietorSimultaneousSWLAnonymous)
+			params.set('isSoleProprietorSimultaneousSWLAnonymous', isSoleProprietorSimultaneousSWLAnonymous);
 
 		const currentPath = location.pathname;
 		let redirectComponentRoute: string | undefined;

@@ -35,7 +35,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
-					[showWorkerLicenceSoleProprietorStep]="isSoleProprietor"
+					[showWorkerLicenceSoleProprietorStep]="isSoleProprietorSimultaneousFlow"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -75,7 +75,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[isSoleProprietor]="isSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(nextSubmitStep)="onNextSoleProprietor()"
@@ -85,7 +85,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
-			<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
+			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 				<mat-step completed="false">
 					<ng-template matStepLabel>Business<br />Information</ng-template>
 				</mat-step>
@@ -133,7 +133,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	@ViewChild(StepsWorkerLicenceReviewAnonymousComponent)
 	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
-	isSoleProprietor = false;
+	isSoleProprietorSimultaneousFlow = false;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
@@ -167,9 +167,9 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				this.isSoleProprietor =
+				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
-					BooleanTypeCode.Yes;
+					BooleanTypeCode.Yes; // TODO update calculation of isSoleProprietorSimultaneousFlow
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
@@ -276,7 +276,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 		this.submitStep(true);
 	}
 
-	private submitStep(isSoleProprietorComboFlow: boolean = false): void {
+	private submitStep(isSoleProprietorSimultaneousFlow: boolean = false): void {
 		// If the creation worked and the payment failed, do not post again
 		if (this.licenceAppId) {
 			this.payNow(this.licenceAppId);
@@ -288,7 +288,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 
 					this.hotToastService.success('Your licence renewal has been successfully submitted');
 
-					if (isSoleProprietorComboFlow) {
+					if (isSoleProprietorSimultaneousFlow) {
 						this.router.navigate(
 							[
 								BusinessLicenceApplicationRoutes.MODULE_PATH,
@@ -297,7 +297,7 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 							{
 								queryParams: {
 									swlLicAppId: this.licenceAppId,
-									isSoleProprietorSWLAnonymous: 'Y',
+									isSoleProprietorSimultaneousSWLAnonymous: 'Y',
 								},
 							}
 						);

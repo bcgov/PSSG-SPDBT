@@ -61,7 +61,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 	isExpiryWarning: boolean;
 	isExpiryError: boolean;
 	isControllingMemberWarning?: boolean;
-	isSoleProprietorComboFlow?: boolean; // Used only for business licence applications
+	isSoleProprietorSimultaneousFlow?: boolean;
 }
 
 export interface MainLicenceResponse extends LicenceResponse {
@@ -340,7 +340,7 @@ export class ApplicationService {
 								.pipe(
 									switchMap((resp: BizLicAppResponse) => {
 										response.forEach((item: MainApplicationResponse) => {
-											item.isSoleProprietorComboFlow = !!resp.soleProprietorSWLAppId;
+											item.isSoleProprietorSimultaneousFlow = !!resp.soleProprietorSWLAppId; // TODO populate Simultaneous
 										});
 
 										return of(response);

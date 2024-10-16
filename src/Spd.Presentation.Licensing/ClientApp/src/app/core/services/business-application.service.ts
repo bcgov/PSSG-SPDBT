@@ -86,8 +86,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		isControllingMembersWithoutSwlExist: new FormControl(),
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
-		isSoleProprietorSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
-		isSoleProprietorComboFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
+		isSoleProprietorSimultaneousSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
+		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
 
 		isBcBusinessAddress: new FormControl(), // placeholder for flag
 		isBusinessLicenceSoleProprietor: new FormControl(), // placeholder for flag
@@ -745,9 +745,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
 			switchMap((businessProfile: BizProfileResponse) => {
-				const isSoleProprietor = this.isSoleProprietor(businessProfile.bizTypeCode);
-
-				if (isSoleProprietor) {
+				if (this.isSoleProprietor(businessProfile.bizTypeCode)) {
 					// If the profile is a sole proprietor, then we need to get the associated licence info
 					if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
 						return this.licenceService
@@ -1318,7 +1316,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				})
 			);
 		}
-		if (businessProfile.soleProprietorSwlContactInfo?.licenceId) {
+		if (this.isSoleProprietor(businessProfile.bizTypeCode) && businessProfile.soleProprietorSwlContactInfo?.licenceId) {
 			apis.push(
 				this.licenceService.apiLicencesLicenceIdGet({
 					licenceId: businessProfile.soleProprietorSwlContactInfo?.licenceId,
@@ -1705,10 +1703,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		const soleProprietorSWLAppId = businessLicenceAppl.soleProprietorSWLAppId ?? null;
-		const isSoleProprietorComboFlow = soleProprietorSWLAppId ? !!businessLicenceAppl.soleProprietorSWLAppId : null;
-		const isSoleProprietorSWLAnonymous = isSoleProprietorComboFlow
-			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
+		const isSoleProprietorSimultaneousFlow = soleProprietorSWLAppId
+			? !!businessLicenceAppl.soleProprietorSWLAppId
 			: null;
+		const isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
+			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
+			: null; // TODO populate Simultaneous
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -1716,8 +1716,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				latestApplicationId: businessLicenceAppl.licenceAppId,
 
 				soleProprietorSWLAppId,
-				isSoleProprietorComboFlow,
-				isSoleProprietorSWLAnonymous,
+				isSoleProprietorSimultaneousFlow,
+				isSoleProprietorSimultaneousSWLAnonymous,
 
 				serviceTypeData,
 				applicationTypeData,
@@ -1961,8 +1961,9 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
-						isSoleProprietorComboFlow: true,
-						isSoleProprietorSWLAnonymous: resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,
+						isSoleProprietorSimultaneousFlow: true,
+						isSoleProprietorSimultaneousSWLAnonymous:
+							resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,
 
 						isBusinessLicenceSoleProprietor,
 						businessInformationData,
@@ -2023,8 +2024,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.businessModelFormGroup.patchValue(
 			{
 				soleProprietorSWLAppId: null,
-				isSoleProprietorSWLAnonymous: null,
-				isSoleProprietorComboFlow: null,
+				isSoleProprietorSimultaneousSWLAnonymous: null,
+				isSoleProprietorSimultaneousFlow: null,
 
 				businessInformationData,
 				categoryData,

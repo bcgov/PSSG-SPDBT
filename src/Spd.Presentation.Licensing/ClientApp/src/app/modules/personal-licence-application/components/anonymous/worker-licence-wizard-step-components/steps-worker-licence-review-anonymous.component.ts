@@ -23,11 +23,11 @@ import { StepWorkerLicenceSummaryReviewAnonymousComponent } from './step-worker-
 			<mat-step>
 				<app-step-worker-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
-					[isSoleProprietor]="isSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[isAnonymous]="true"
 				></app-step-worker-licence-consent-and-declaration>
 
-				<ng-container *ngIf="isSoleProprietor; else IsNotSoleProprietor">
+				<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else IsNotSoleProprietor">
 					<app-wizard-footer
 						nextButtonLabel="Save & Continue to Business Licence Application"
 						[isWidestNext]="true"
@@ -64,7 +64,7 @@ export class StepsWorkerLicenceReviewAnonymousComponent extends BaseWizardStepCo
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() licenceCost = 0;
-	@Input() isSoleProprietor = false;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();
 
