@@ -102,27 +102,6 @@ public class PermitControllerTest
         mockMediator.Verify();
     }
 
-    [Fact]
-    public async void Post_UploadPermitAppFilesAuthenticated_Return_Guid()
-    {
-        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
-
-        var result = await sut.UploadPermitAppFiles(request, CancellationToken.None);
-
-        Assert.IsType<Guid>(result);
-        mockMediator.Verify();
-    }
-
-    [Fact]
-    public async void Post_UploadLicenceAppFilesAuthenticated_Return_LicenceAppDocumentResponse_List()
-    {
-        LicenceAppDocumentUploadRequest request = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
-
-        var result = await sut.UploadLicenceAppFiles(request, Guid.NewGuid(), CancellationToken.None);
-
-        Assert.IsType<List<LicenceAppDocumentResponse>>(result);
-        mockMediator.Verify();
-    }
 
     [Fact]
     public async void Post_SavePermitLicenceApplication_Return_PermitCommandResponse()

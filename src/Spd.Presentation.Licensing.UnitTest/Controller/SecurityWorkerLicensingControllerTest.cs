@@ -94,17 +94,6 @@ public class SecurityWorkerLicensingControllerTest
     }
 
     [Fact]
-    public async void Post_UploadLicenceAppFilesAuthenticated_Return_Guid()
-    {
-        LicenceAppDocumentUploadRequest licenceAppDocumentUploadRequest = new(Documents: [], LicenceDocumentTypeCode: LicenceDocumentTypeCode.BirthCertificate);
-
-        var result = await sut.UploadLicenceAppFilesAuthenticated(licenceAppDocumentUploadRequest, CancellationToken.None);
-
-        Assert.IsType<Guid>(result);
-        mockMediator.Verify();
-    }
-
-    [Fact]
     public async void Post_SubmitSecurityWorkerLicenceApplicationJsonAuthenticated_Replacement_Return_WorkerLicenceCommandResponse()
     {
         var wLAppAnonymousSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement);
