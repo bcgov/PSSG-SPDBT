@@ -35,6 +35,7 @@
         public bool UpdateSoleProprietor { get; set; } = true;
         //sole proprietor properties
         public SwlContactInfo? SoleProprietorSwlContactInfo { get; set; } = new(); //for sole proprietor (registered or non-registered)
+        public DateOnly? SoleProprietorSwlExpiryDate { get; set; }
         public ContactInfo? BizManagerContactInfo { get; set; }
     }
 
