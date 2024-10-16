@@ -197,13 +197,7 @@ export class ApplicationService {
 		bizTypeCode: BizTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
-		// console.debug(
-		// 	'getLicenceTermsAndFees',
-		// 	serviceTypeCode,
-		// 	applicationTypeCode,
-		// 	bizTypeCode,
-		// 	originalLicenceTermCode
-		// );
+		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode, originalLicenceTermCode);
 
 		if (!serviceTypeCode || !bizTypeCode) {
 			return [];
@@ -217,7 +211,7 @@ export class ApplicationService {
 		return this.configService
 			.getLicenceFees()
 			.filter(
-				(item) =>
+				(item: LicenceFeeResponse) =>
 					item.serviceTypeCode == serviceTypeCode &&
 					item.bizTypeCode == bizTypeCode &&
 					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&

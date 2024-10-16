@@ -3,9 +3,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { lastValueFrom, take, tap } from 'rxjs';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
-
+import { lastValueFrom, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'app-business-licence-application-base',
@@ -78,7 +77,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		) {
 			// handle new business licence creation from swl - for sole proprietor
 			this.businessApplicationService
-				.getBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId, isSoleProprietorSWLAnonymous === 'Y')
+				.getBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

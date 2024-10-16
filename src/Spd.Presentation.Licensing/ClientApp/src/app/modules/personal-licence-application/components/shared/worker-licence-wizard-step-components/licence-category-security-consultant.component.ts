@@ -38,7 +38,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 			<div class="fs-5 mb-2">Upload your resume</div>
 
-			<div class="my-2">
+			<div class="mt-2 mb-3">
 				<app-file-upload
 					(fileUploaded)="onFileResumeAdded($event)"
 					(fileRemoved)="onFileRemoved()"
@@ -137,7 +137,10 @@ export class LicenceCategorySecurityConsultantComponent implements OnInit, Licen
 	@ViewChild('resumeAttachmentsRef') fileUploadResumeComponent!: FileUploadComponent;
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityConsultant, 'WorkerCategoryTypes');

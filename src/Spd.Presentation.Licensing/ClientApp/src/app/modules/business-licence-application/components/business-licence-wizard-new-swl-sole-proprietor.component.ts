@@ -250,8 +250,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 
 	onReturnToSwl(): void {
 		const message = this.isSoleProprietorSWLAnonymous
-			? 'Are you sure you want to cancel your security business licence application?<br><br>If you cancel this application, you will have to re-submit your Security Worker Licence application.'
-			: 'Are you sure you want to cancel your security business licence application?<br><br>You will be returned to the portal to pay the application fee for your security worker licence.';
+			? '<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>If you cancel this application, you will have to re-submit your Security Worker Licence application.'
+			: '<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>You will be returned to the portal to pay the application fee for your security worker licence.';
 
 		const data: DialogOptions = {
 			icon: 'warning',
