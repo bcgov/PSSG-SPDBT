@@ -2,6 +2,7 @@
 using AutoMapper;
 using Moq;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
@@ -17,6 +18,7 @@ public class LicenceManagerTest
     private readonly Mock<IDocumentRepository> mockDocRepo = new();
     private readonly Mock<IMainFileStorageService> mockFileService = new();
     private readonly Mock<IIncidentRepository> mockIncidentRepo = new();
+    private readonly Mock<IBizRepository> mockBizRepo = new();
 
     private readonly LicenceManager sut;
 
@@ -38,6 +40,7 @@ public class LicenceManagerTest
             null,
             mockFileService.Object,
             mockIncidentRepo.Object,
+            mockBizRepo.Object,
             mapper);
     }
 
