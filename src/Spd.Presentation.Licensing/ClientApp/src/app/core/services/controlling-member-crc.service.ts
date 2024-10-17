@@ -907,8 +907,8 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		documentsToSaveApis: Observable<string>[],
 		body: ControllingMemberCrcAppSubmitRequest | ControllingMemberCrcAppUpdateRequest
 	) {
-		return this.controllingMemberCrcAppService
-			.apiControllingMemberCrcApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+		return this.licenceAppDocumentService
+			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
 					return forkJoin(documentsToSaveApis);

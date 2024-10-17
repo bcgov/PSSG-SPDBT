@@ -15,26 +15,16 @@ import { apiApplicantsApplicantIdPermitLatestGet } from '../fn/permit/api-applic
 import { ApiApplicantsApplicantIdPermitLatestGet$Params } from '../fn/permit/api-applicants-applicant-id-permit-latest-get';
 import { apiPermitApplicationGet } from '../fn/permit/api-permit-application-get';
 import { ApiPermitApplicationGet$Params } from '../fn/permit/api-permit-application-get';
-import { apiPermitApplicationsAnonymousFilesPost } from '../fn/permit/api-permit-applications-anonymous-files-post';
-import { ApiPermitApplicationsAnonymousFilesPost$Params } from '../fn/permit/api-permit-applications-anonymous-files-post';
-import { apiPermitApplicationsAnonymousKeyCodePost } from '../fn/permit/api-permit-applications-anonymous-key-code-post';
-import { ApiPermitApplicationsAnonymousKeyCodePost$Params } from '../fn/permit/api-permit-applications-anonymous-key-code-post';
 import { apiPermitApplicationsAnonymousSubmitPost } from '../fn/permit/api-permit-applications-anonymous-submit-post';
 import { ApiPermitApplicationsAnonymousSubmitPost$Params } from '../fn/permit/api-permit-applications-anonymous-submit-post';
 import { apiPermitApplicationsAuthenticatedSubmitPost } from '../fn/permit/api-permit-applications-authenticated-submit-post';
 import { ApiPermitApplicationsAuthenticatedSubmitPost$Params } from '../fn/permit/api-permit-applications-authenticated-submit-post';
-import { apiPermitApplicationsFilesPost } from '../fn/permit/api-permit-applications-files-post';
-import { ApiPermitApplicationsFilesPost$Params } from '../fn/permit/api-permit-applications-files-post';
-import { apiPermitApplicationsLicenceAppIdFilesPost } from '../fn/permit/api-permit-applications-licence-app-id-files-post';
-import { ApiPermitApplicationsLicenceAppIdFilesPost$Params } from '../fn/permit/api-permit-applications-licence-app-id-files-post';
 import { apiPermitApplicationsLicenceAppIdGet } from '../fn/permit/api-permit-applications-licence-app-id-get';
 import { ApiPermitApplicationsLicenceAppIdGet$Params } from '../fn/permit/api-permit-applications-licence-app-id-get';
 import { apiPermitApplicationsPost } from '../fn/permit/api-permit-applications-post';
 import { ApiPermitApplicationsPost$Params } from '../fn/permit/api-permit-applications-post';
 import { apiPermitApplicationsSubmitPost } from '../fn/permit/api-permit-applications-submit-post';
 import { ApiPermitApplicationsSubmitPost$Params } from '../fn/permit/api-permit-applications-submit-post';
-import { IActionResult } from '../models/i-action-result';
-import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 import { PermitAppCommandResponse } from '../models/permit-app-command-response';
 import { PermitLicenceAppResponse } from '../models/permit-licence-app-response';
 
@@ -145,72 +135,6 @@ export class PermitService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiPermitApplicationsLicenceAppIdFilesPost()` */
-  static readonly ApiPermitApplicationsLicenceAppIdFilesPostPath = '/api/permit-applications/{licenceAppId}/files';
-
-  /**
-   * Upload permit application files to transient storage.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsLicenceAppIdFilesPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiPermitApplicationsLicenceAppIdFilesPost$Response(params: ApiPermitApplicationsLicenceAppIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-    return apiPermitApplicationsLicenceAppIdFilesPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Upload permit application files to transient storage.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsLicenceAppIdFilesPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiPermitApplicationsLicenceAppIdFilesPost(params: ApiPermitApplicationsLicenceAppIdFilesPost$Params, context?: HttpContext): Observable<Array<LicenceAppDocumentResponse>> {
-    return this.apiPermitApplicationsLicenceAppIdFilesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>): Array<LicenceAppDocumentResponse> => r.body)
-    );
-  }
-
-  /** Path part for operation `apiPermitApplicationsFilesPost()` */
-  static readonly ApiPermitApplicationsFilesPostPath = '/api/permit-applications/files';
-
-  /**
-   * Uploading file only save files in cache, the files are not connected to the application yet.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsFilesPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiPermitApplicationsFilesPost$Response(params?: ApiPermitApplicationsFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return apiPermitApplicationsFilesPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Uploading file only save files in cache, the files are not connected to the application yet.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsFilesPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiPermitApplicationsFilesPost(params?: ApiPermitApplicationsFilesPost$Params, context?: HttpContext): Observable<string> {
-    return this.apiPermitApplicationsFilesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<string>): string => r.body)
-    );
-  }
-
   /** Path part for operation `apiPermitApplicationsSubmitPost()` */
   static readonly ApiPermitApplicationsSubmitPostPath = '/api/permit-applications/submit';
 
@@ -309,74 +233,6 @@ export class PermitService extends BaseService {
   apiPermitApplicationGet(params?: ApiPermitApplicationGet$Params, context?: HttpContext): Observable<PermitLicenceAppResponse> {
     return this.apiPermitApplicationGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<PermitLicenceAppResponse>): PermitLicenceAppResponse => r.body)
-    );
-  }
-
-  /** Path part for operation `apiPermitApplicationsAnonymousKeyCodePost()` */
-  static readonly ApiPermitApplicationsAnonymousKeyCodePostPath = '/api/permit-applications/anonymous/keyCode';
-
-  /**
-   * Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsAnonymousKeyCodePost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiPermitApplicationsAnonymousKeyCodePost$Response(params?: ApiPermitApplicationsAnonymousKeyCodePost$Params, context?: HttpContext): Observable<StrictHttpResponse<IActionResult>> {
-    return apiPermitApplicationsAnonymousKeyCodePost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Upload Body Armour or Armour Vehicle permit application first step: frontend needs to make this first request to get a Guid code.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousKeyCodePost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiPermitApplicationsAnonymousKeyCodePost(params?: ApiPermitApplicationsAnonymousKeyCodePost$Params, context?: HttpContext): Observable<IActionResult> {
-    return this.apiPermitApplicationsAnonymousKeyCodePost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<IActionResult>): IActionResult => r.body)
-    );
-  }
-
-  /** Path part for operation `apiPermitApplicationsAnonymousFilesPost()` */
-  static readonly ApiPermitApplicationsAnonymousFilesPostPath = '/api/permit-applications/anonymous/files';
-
-  /**
-   * Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the application yet.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsAnonymousFilesPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiPermitApplicationsAnonymousFilesPost$Response(params?: ApiPermitApplicationsAnonymousFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return apiPermitApplicationsAnonymousFilesPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Upload Body Armour or Armour Vehicle permit application files: frontend use the keyCode (which is in cookies) to upload following files.
-   * Uploading file only save files in cache, the files are not connected to the application yet.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousFilesPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiPermitApplicationsAnonymousFilesPost(params?: ApiPermitApplicationsAnonymousFilesPost$Params, context?: HttpContext): Observable<string> {
-    return this.apiPermitApplicationsAnonymousFilesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 

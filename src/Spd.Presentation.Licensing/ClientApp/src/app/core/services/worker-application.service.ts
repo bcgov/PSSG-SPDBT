@@ -1215,8 +1215,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		body: WorkerLicenceAppSubmitRequest
 	) {
 		if (documentsToSaveApis) {
-			return this.securityWorkerLicensingService
-				.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
 					switchMap((_resp: IActionResult) => {
 						return forkJoin(documentsToSaveApis);
@@ -1235,8 +1235,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				)
 				.pipe(take(1));
 		} else {
-			return this.securityWorkerLicensingService
-				.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
 					switchMap((_resp: IActionResult) => {
 						// pass in the list of document ids that were in the original
