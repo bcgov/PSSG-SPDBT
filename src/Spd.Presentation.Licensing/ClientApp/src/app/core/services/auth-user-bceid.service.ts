@@ -1,18 +1,23 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BizListResponse, BizUserLoginResponse } from '@app/api/models';
+import { BizListResponse, BizUserLoginResponse, ServiceTypeCode } from '@app/api/models';
 import {
 	BizSelectionDialogData,
 	ModalBizSelectionComponent,
 } from '@app/shared/components/modal-biz-selection.component';
 import { lastValueFrom } from 'rxjs';
 import { LoginService } from 'src/app/api/services';
+import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserBceidService {
 	bceidUserProfile: BizUserLoginResponse | null = null;
 
-	constructor(private loginService: LoginService, private dialog: MatDialog) {}
+	constructor(
+		private configService: ConfigService,
+		private loginService: LoginService,
+		private dialog: MatDialog
+	) {}
 
 	//----------------------------------------------------------
 	// *
@@ -35,12 +40,14 @@ export class AuthUserBceidService {
 			}
 
 			// SPDBT-2941 use first SecurityBusinessLicence Biz as the default
-			// const securityBusinessLicenceBiz = bizsList.find((biz: BizListResponse) =>
-			// 	biz.serviceTypeCodes?.findIndex((item: ServiceTypeCode) => item === ServiceTypeCode.SecurityBusinessLicence)
-			// );
-			// if (securityBusinessLicenceBiz) {
-			// 	return await this.setBizProfile(securityBusinessLicenceBiz.bizId);
-			// }
+			if (this.configService.isProduction()) {
+				const securityBusinessLicenceBiz = bizsList.find((biz: BizListResponse) =>
+					biz.serviceTypeCodes?.findIndex((item: ServiceTypeCode) => item === ServiceTypeCode.SecurityBusinessLicence)
+				);
+				if (securityBusinessLicenceBiz) {
+					return await this.setBizProfile(securityBusinessLicenceBiz.bizId);
+				}
+			}
 
 			const biz = await this.bizSelectionAsync(bizsList);
 			return await this.setBizProfile(biz.bizId);

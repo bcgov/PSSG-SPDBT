@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
-import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
+import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -22,7 +22,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				<div class="col-lg-6 col-md-12 my-auto" [ngClass]="isSoleProprietorCombinedFlow ? 'col-lg-12' : 'col-lg-6'">
 					<ng-container *ngIf="isBusinessLicenceSoleProprietor">
 						<app-alert type="info" icon="" [showBorder]="false">
-							The name of your business must be your name, as it appears on your security worker licence
+							The name of your business must be your name, as it appears on your security worker licence.
 						</app-alert>
 					</ng-container>
 					<ng-container *ngIf="!isBusinessLicenceSoleProprietor">
@@ -112,7 +112,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
 										<div class="text-primary-color">Expiry Date</div>
 										<div class="text-primary-color fs-5">
-											{{ soleProprietorLicenceExpiryDate.value | formatDate : formalDateFormat }}
+											{{ soleProprietorLicenceExpiryDate.value | formatDate: formalDateFormat }}
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-6 col-sm-12 mt-2 mt-lg-0">
@@ -229,14 +229,14 @@ export class CommonBusinessInformationComponent implements OnInit {
 		// Biz type can only be changed from sole proprietor to non-sole proprietor
 		// so limit the dropdown values when a value has previously been selected
 		// and the business is non-sole proprietor
-		// if (this.bizTypeCode.value && !this.isBusinessLicenceSoleProprietor) {
-		// 	this.businessTypes = BusinessLicenceTypes.filter(
-		// 		(item: SelectOptions) =>
-		// 			item.code === BizTypeCode.Corporation ||
-		// 			item.code === BizTypeCode.NonRegisteredPartnership ||
-		// 			item.code === BizTypeCode.RegisteredPartnership
-		// 	);
-		// }
+		if (this.bizTypeCode.value && !this.isBusinessLicenceSoleProprietor) {
+			this.businessTypes = BusinessLicenceTypes.filter(
+				(item: SelectOptions) =>
+					item.code === BizTypeCode.Corporation ||
+					item.code === BizTypeCode.NonRegisteredPartnership ||
+					item.code === BizTypeCode.RegisteredPartnership
+			);
+		}
 
 		if (this.isReadonly || this.isSoleProprietorCombinedFlow) {
 			this.bizTypeCode.disable({ emitEvent: false });

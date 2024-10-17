@@ -42,7 +42,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 					[ngClass]="{
 						'col-xxl-6 col-xl-6 col-lg-6': isWidestNext,
 						'col-xxl-3 col-xl-4 col-lg-4': isWideNext,
-						'col-xxl-2 col-xl-3 col-lg-3': !isWideNext && !isWidestNext
+						'col-xxl-2 col-xl-3 col-lg-3': !isWideNext && !isWidestNext,
 					}"
 				>
 					<button
@@ -75,7 +75,7 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 			</ng-template>
 
-			<ng-container *ngIf="isSoleProprietorComboFlow; else defaultFlow">
+			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else defaultFlow">
 				<div
 					class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12"
 					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
@@ -127,7 +127,7 @@ export class WizardFooterComponent implements OnInit {
 	@Input() isWideNext = false;
 	@Input() isWidestNext = false;
 	@Input() showExit = true;
-	@Input() isSoleProprietorComboFlow = false;
+	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() cancel: EventEmitter<any> = new EventEmitter();

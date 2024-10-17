@@ -17,10 +17,6 @@ import { apiBusinessLicenceApplicationBrandImageDocumentIdGet } from '../fn/biz-
 import { ApiBusinessLicenceApplicationBrandImageDocumentIdGet$Params } from '../fn/biz-licensing/api-business-licence-application-brand-image-document-id-get';
 import { apiBusinessLicenceApplicationChangePost } from '../fn/biz-licensing/api-business-licence-application-change-post';
 import { ApiBusinessLicenceApplicationChangePost$Params } from '../fn/biz-licensing/api-business-licence-application-change-post';
-import { apiBusinessLicenceApplicationFilesPost } from '../fn/biz-licensing/api-business-licence-application-files-post';
-import { ApiBusinessLicenceApplicationFilesPost$Params } from '../fn/biz-licensing/api-business-licence-application-files-post';
-import { apiBusinessLicenceApplicationLicenceAppIdFilesPost } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-files-post';
-import { ApiBusinessLicenceApplicationLicenceAppIdFilesPost$Params } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-files-post';
 import { apiBusinessLicenceApplicationLicenceAppIdGet } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-get';
 import { ApiBusinessLicenceApplicationLicenceAppIdGet$Params } from '../fn/biz-licensing/api-business-licence-application-licence-app-id-get';
 import { apiBusinessLicenceApplicationPost } from '../fn/biz-licensing/api-business-licence-application-post';
@@ -29,7 +25,6 @@ import { apiBusinessLicenceApplicationSubmitPost } from '../fn/biz-licensing/api
 import { ApiBusinessLicenceApplicationSubmitPost$Params } from '../fn/biz-licensing/api-business-licence-application-submit-post';
 import { BizLicAppCommandResponse } from '../models/biz-lic-app-command-response';
 import { BizLicAppResponse } from '../models/biz-lic-app-response';
-import { LicenceAppDocumentResponse } from '../models/licence-app-document-response';
 
 @Injectable({ providedIn: 'root' })
 export class BizLicensingService extends BaseService {
@@ -136,39 +131,6 @@ export class BizLicensingService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiBusinessLicenceApplicationLicenceAppIdFilesPost()` */
-  static readonly ApiBusinessLicenceApplicationLicenceAppIdFilesPostPath = '/api/business-licence-application/{licenceAppId}/files';
-
-  /**
-   * Upload business licence application files to transient storage.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationLicenceAppIdFilesPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response(params: ApiBusinessLicenceApplicationLicenceAppIdFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<LicenceAppDocumentResponse>>> {
-    return apiBusinessLicenceApplicationLicenceAppIdFilesPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Upload business licence application files to transient storage.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiBusinessLicenceApplicationLicenceAppIdFilesPost(params: ApiBusinessLicenceApplicationLicenceAppIdFilesPost$Params, context?: HttpContext): Observable<Array<LicenceAppDocumentResponse>> {
-    return this.apiBusinessLicenceApplicationLicenceAppIdFilesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<LicenceAppDocumentResponse>>): Array<LicenceAppDocumentResponse> => r.body)
-    );
-  }
-
   /** Path part for operation `apiBusinessLicenceApplicationChangePost()` */
   static readonly ApiBusinessLicenceApplicationChangePostPath = '/api/business-licence-application/change';
 
@@ -201,41 +163,6 @@ export class BizLicensingService extends BaseService {
   apiBusinessLicenceApplicationChangePost(params?: ApiBusinessLicenceApplicationChangePost$Params, context?: HttpContext): Observable<BizLicAppCommandResponse> {
     return this.apiBusinessLicenceApplicationChangePost$Response(params, context).pipe(
       map((r: StrictHttpResponse<BizLicAppCommandResponse>): BizLicAppCommandResponse => r.body)
-    );
-  }
-
-  /** Path part for operation `apiBusinessLicenceApplicationFilesPost()` */
-  static readonly ApiBusinessLicenceApplicationFilesPostPath = '/api/business-licence-application/files';
-
-  /**
-   * Uploading file only save files in cache, the files are not connected to the biz and application yet.
-   * this is used for uploading member files or update, renew, replace.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBusinessLicenceApplicationFilesPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiBusinessLicenceApplicationFilesPost$Response(params?: ApiBusinessLicenceApplicationFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return apiBusinessLicenceApplicationFilesPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Uploading file only save files in cache, the files are not connected to the biz and application yet.
-   * this is used for uploading member files or update, renew, replace.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBusinessLicenceApplicationFilesPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiBusinessLicenceApplicationFilesPost(params?: ApiBusinessLicenceApplicationFilesPost$Params, context?: HttpContext): Observable<string> {
-    return this.apiBusinessLicenceApplicationFilesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 
