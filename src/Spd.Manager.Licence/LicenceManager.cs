@@ -164,7 +164,8 @@ internal class LicenceManager :
             lic.LinkedSoleProprietorLicenceId = bizLic?.LicenceId;
             lic.LinkedSoleProprietorExpiryDate = bizLic?.ExpiryDate;
         }
-        if (licResp.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence)
+        if (licResp.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence &&
+            (licResp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || licResp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor))
         {
             BizResult? biz = await _bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken);
             lic.LinkedSoleProprietorLicenceId = biz?.SoleProprietorSwlContactInfo?.LicenceId;
