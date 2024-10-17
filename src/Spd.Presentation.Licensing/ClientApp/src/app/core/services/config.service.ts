@@ -55,6 +55,10 @@ export class ConfigService {
 		return this.configs?.environment === 'Production' || this.configs?.environment === 'Training';
 	}
 
+	public isDevelopment(): boolean {
+		return this.configs?.environment === 'Development';
+	}
+
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {
 		const resp = this.configs?.oidcConfiguration!;
 		const bceIdConfig = {
