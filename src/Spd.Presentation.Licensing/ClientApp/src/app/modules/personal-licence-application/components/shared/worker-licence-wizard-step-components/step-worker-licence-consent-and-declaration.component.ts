@@ -12,7 +12,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-9 col-xl-10 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="mb-3" *ngIf="isSoleProprietor && isAnonymous">
+						<div class="mb-3" *ngIf="isSoleProprietorSimultaneousFlow && isAnonymous">
 							<app-alert type="warning" icon="warning">
 								After you submit your application and continue to the business licence application, you will not be able
 								to return and make changes to this security worker licence application.
@@ -224,7 +224,7 @@ export class StepWorkerLicenceConsentAndDeclarationComponent implements OnInit, 
 	form: FormGroup = this.workerApplicationService.consentAndDeclarationFormGroup;
 
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
-	@Input() isSoleProprietor!: boolean;
+	@Input() isSoleProprietorSimultaneousFlow!: boolean;
 	@Input() isAnonymous!: boolean;
 
 	constructor(

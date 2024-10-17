@@ -76,7 +76,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review<br />Worker Licence</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[isSoleProprietor]="isSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextStepperStep)="onNextStepperStep(stepper)"
 					(nextSubmitStep)="onNextSoleProprietor()"
@@ -86,7 +86,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				></app-steps-worker-licence-review-anonymous>
 			</mat-step>
 
-			<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
+			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 				<mat-step completed="false">
 					<ng-template matStepLabel>Business<br />Information</ng-template>
 				</mat-step>
@@ -121,7 +121,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 	licenceAppId: string | null = null;
 
-	isSoleProprietor = false;
+	isSoleProprietorSimultaneousFlow = false;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
@@ -163,9 +163,9 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 			(_resp: boolean) => {
 				this.isFormValid = _resp;
 
-				this.isSoleProprietor =
+				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
-					BooleanTypeCode.Yes;
+					BooleanTypeCode.Yes; // TODO update calculation of isSoleProprietorSimultaneousFlow
 
 				this.applicationTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'applicationTypeData.applicationTypeCode'
@@ -230,7 +230,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 		this.submitStep(true);
 	}
 
-	private submitStep(isSoleProprietorComboFlow: boolean = false): void {
+	private submitStep(isSoleProprietorSimultaneousFlow: boolean = false): void {
 		// If the creation worked and the payment failed, do not post again
 		if (this.licenceAppId) {
 			this.payNow(this.licenceAppId);
@@ -242,7 +242,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 
 					this.hotToastService.success('Your licence has been successfully submitted');
 
-					if (isSoleProprietorComboFlow) {
+					if (isSoleProprietorSimultaneousFlow) {
 						this.router.navigate(
 							[
 								BusinessLicenceApplicationRoutes.MODULE_PATH,
@@ -251,7 +251,7 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 							{
 								queryParams: {
 									swlLicAppId: this.licenceAppId,
-									isSoleProprietorSWLAnonymous: 'Y',
+									isSoleProprietorSimultaneousSWLAnonymous: 'Y',
 								},
 							}
 						);

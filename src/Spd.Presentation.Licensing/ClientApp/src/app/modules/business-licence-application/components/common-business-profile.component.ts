@@ -80,7 +80,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 							<div class="mt-3">
 								<div class="mb-4 text-primary-color">
-									Provide your business address, if different from your mailing address
+									Provide your business address, if different from your mailing address.
 								</div>
 
 								<app-address-and-is-same-flag
@@ -105,7 +105,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 							<div class="mt-3">
 								<app-alert type="info" icon="" [showBorder]="false">
-									Provide an address in British Columbia for document service
+									Provide an address in British Columbia for document service.
 								</app-alert>
 
 								<app-address
