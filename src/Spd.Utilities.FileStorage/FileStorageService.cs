@@ -53,7 +53,7 @@ namespace Spd.Utilities.FileStorage
                 TagSet = GetTagSet(cmd.FileTag?.Tags ?? []),
             };
             request.Metadata.Add("contenttype", file.ContentType);
-            request.Metadata.Add("filename", HttpUtility.HtmlEncode(file.FileName));
+            request.Metadata.Add("filename", HttpUtility.UrlEncode(file.FileName));
             if (file.Metadata != null)
             {
                 foreach (FileMetadata md in file.Metadata)
