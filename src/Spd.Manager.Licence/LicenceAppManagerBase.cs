@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Spd.Manager.Shared;
 using Spd.Resource.Repository;
 using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Document;
@@ -39,7 +40,12 @@ internal abstract class LicenceAppManagerBase
         _licAppRepository = licAppRepository;
     }
 
-    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase, Guid licenceAppId, CancellationToken ct, bool HasSwl90DayLicence = false, Guid? companionAppId = null)
+    protected async Task<decimal> CommitApplicationAsync(LicenceAppBase licAppBase,
+        Guid licenceAppId,
+        CancellationToken ct,
+        bool HasSwl90DayLicence = false,
+        Guid? companionAppId = null,
+        ApplicationOriginTypeCode? companionAppOrigin = null)
     {
         //if payment price is 0, directly set to Submitted, or PaymentPending
         var price = await _feeRepository.QueryAsync(new LicenceFeeQry()
@@ -66,7 +72,8 @@ internal abstract class LicenceAppManagerBase
         //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
         if (companionAppId != null)
         {
-            await MoveFilesAsync((Guid)companionAppId, ct);
+            if (companionAppOrigin == ApplicationOriginTypeCode.Portal) //only authenticated swl save file in transient storage
+                await MoveFilesAsync((Guid)companionAppId, ct);
             await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, null, ct);
         }
         // Commit the main licence application
