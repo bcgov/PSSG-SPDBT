@@ -142,7 +142,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 					'soleProprietorData.bizTypeCode'
 				)?.value;
 				this.showWorkerLicenceSoleProprietorStep =
-					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode); // TODO update calculation of isSoleProprietorSimultaneousFlow
 
 				this.updateCompleteStatus();
 			}

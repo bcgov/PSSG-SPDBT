@@ -40,7 +40,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 			<mat-step>
 				<app-step-worker-licence-consent-and-declaration
 					[applicationTypeCode]="applicationTypeCode"
-					[isSoleProprietor]="isSoleProprietor"
+					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[isAnonymous]="false"
 				></app-step-worker-licence-consent-and-declaration>
 
@@ -53,7 +53,7 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.New">
-					<ng-container *ngIf="isSoleProprietor; else IsNotSoleProprietor">
+					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else IsNotSoleProprietor">
 						<app-wizard-footer
 							[isFormValid]="true"
 							[showSaveAndExit]="true"
@@ -103,7 +103,7 @@ export class StepsWorkerLicenceReviewAuthenticatedComponent extends BaseWizardSt
 	applicationTypeCodes = ApplicationTypeCode;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() isSoleProprietor!: boolean;
+	@Input() isSoleProprietorSimultaneousFlow!: boolean;
 	@Input() licenceCost = 0;
 
 	@Output() goToStep: EventEmitter<number> = new EventEmitter<number>();

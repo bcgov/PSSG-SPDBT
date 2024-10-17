@@ -902,8 +902,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	) {
 		console.debug('[postPermitAnonymousNoNewDocuments]');
 
-		return this.permitService
-			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+		return this.licenceAppDocumentService
+			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
 					// pass in the list of document ids that were in the original
@@ -930,8 +930,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	) {
 		console.debug('[postPermitAnonymousNewDocuments]');
 
-		return this.permitService
-			.apiPermitApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+		return this.licenceAppDocumentService
+			.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 			.pipe(
 				switchMap((_resp: IActionResult) => {
 					const documentsToSaveApis: Observable<string>[] = [];
