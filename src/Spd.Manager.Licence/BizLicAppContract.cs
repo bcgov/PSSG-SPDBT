@@ -73,7 +73,6 @@ public record BizLicAppResponse : BizLicenceApp
     public Guid? ExpiredLicenceId { get; set; }
     public bool? HasExpiredLicence { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
-    public ApplicationOriginTypeCode SoleProprietorSWLAppOriginTypeCode { get; set; }
 
     // Contains branding, insurance, registrar, security dog certificate and BC report documents
     public IEnumerable<Document>? DocumentInfos { get; set; }
@@ -94,6 +93,7 @@ public abstract record BizLicenceApp : LicenceAppBase
     public bool? AgreeToCompleteAndAccurate { get; set; }
     public bool? ApplicantIsBizManager { get; set; }
     public Guid? SoleProprietorSWLAppId { get; set; } //for swl apply for sole proprietor, they need to input swl app id here.
+    public ApplicationOriginTypeCode? SoleProprietorSWLAppOriginTypeCode { get; set; }
     public Guid? SubmittedByPortalUserId { get; set; }
 }
 
