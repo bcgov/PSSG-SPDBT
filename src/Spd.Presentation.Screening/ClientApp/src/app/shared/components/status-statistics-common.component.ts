@@ -40,7 +40,10 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-yellow align-items-center justify-content-between mt-2 me-2"
+						*ngIf="isCrrp"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.AwaitingThirdParty] ?? 0 }}
 						</div>
@@ -58,12 +61,27 @@ import { UtilService } from 'src/app/core/services/util.service';
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
-					<div class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2">
+					<div
+						class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2"
+						*ngIf="isCrrp"
+					>
 						<div class="fs-4 m-2 ms-3">
 							{{ applicationStatistics[statisticsCodes.UnderAssessment] ?? 0 }}
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.UnderAssessment) }}</div>
 						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.UnderAssessment)">
+							<mat-icon>info_outline</mat-icon>
+						</div>
+					</div>
+					<div
+						class="d-flex flex-row statistic-card area-blue align-items-center justify-content-between mt-2 me-2"
+						*ngIf="!isCrrp"
+					>
+						<div class="fs-4 m-2 ms-3">
+							{{ applicationStatistics[statisticsCodes.Incomplete] ?? 0 }}
+						</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.Incomplete) }}</div>
+						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.Incomplete)">
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
@@ -109,6 +127,18 @@ import { UtilService } from 'src/app/core/services/util.service';
 						</div>
 						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByApplicant) }}</div>
 						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.CancelledByApplicant)">
+							<mat-icon>info_outline</mat-icon>
+						</div>
+					</div>
+					<div
+						class="d-flex flex-row statistic-card area-grey align-items-center justify-content-between mt-2 me-2"
+						*ngIf="!isCrrp"
+					>
+						<div class="fs-4 m-2 ms-3">
+							{{ applicationStatistics[statisticsCodes.CancelledByOrganization] ?? 0 }}
+						</div>
+						<div class="fs-6 m-2">{{ getStatusDesc(statisticsCodes.CancelledByOrganization) }}</div>
+						<div class="m-2" [matTooltip]="getStatusHint(statisticsCodes.CancelledByOrganization)">
 							<mat-icon>info_outline</mat-icon>
 						</div>
 					</div>
