@@ -88,7 +88,7 @@ namespace Spd.Resource.Repository.Licence
         internal static BizTypeEnum GetBizType(spd_licence s)
         {
             int? bizTypeInt = SharedMappingFuncs.GetServiceType(s._spd_licencetype_value) == ServiceTypeEnum.SecurityBusinessLicence ?
-                s.spd_LicenceHolder_account.businesstypecode : null;
+                s.spd_LicenceHolder_account.spd_licensingbusinesstype : null;
             if (bizTypeInt == null) return BizTypeEnum.None;
             else
                 return SharedMappingFuncs.GetBizTypeEnum(bizTypeInt).Value;
