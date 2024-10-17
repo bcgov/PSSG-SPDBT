@@ -17,7 +17,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 				<div class="row">
 					<div class="col-lg-2">
 						<div class="fs-5" style="color: var(--color-primary);">
-							{{ licence.serviceTypeCode | options : 'ServiceTypes' }}
+							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-10">
@@ -28,13 +28,13 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Licence Term</div>
-								<div class="text-data fw-bold">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+								<div class="text-data fw-bold">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
 								<div class="text-data">
 									<div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-										{{ licence.licenceExpiryDate | formatDate : formalDateFormat }}
+										{{ licence.licenceExpiryDate | formatDate: formalDateFormat }}
 									</div>
 								</div>
 							</div>
@@ -53,7 +53,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="text-data">
 									<ul class="m-0">
 										<ng-container *ngFor="let catCode of licence.licenceCategoryCodes; let i = index">
-											<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
+											<li>{{ catCode | options: 'WorkerCategoryTypes' }}</li>
 										</ng-container>
 									</ul>
 								</div>
@@ -70,7 +70,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									<ng-container *ngIf="licence.dogAuthorizationExpiryDate">
 										<div class="d-block text-muted mt-2">Expiry Date</div>
 										<div class="text-data">
-											{{ licence.dogAuthorizationExpiryDate | formatDate : formalDateFormat }}
+											{{ licence.dogAuthorizationExpiryDate | formatDate: formalDateFormat }}
 										</div>
 									</ng-container>
 								</div>
@@ -82,7 +82,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						<div class="row mb-2">
 							<div class="col-lg-9">
 								The following updates have a
-								{{ licence.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
+								{{ licence.licenceReprintFee | currency: 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
 								<ul class="m-0">
 									<li>add or remove branch</li>
 									<li>change to business trade name</li>
@@ -93,24 +93,28 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								</ul>
 							</div>
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
-								<!-- // TODO only show renew when non-simulataneous renewal  -->
-
 								<button
 									mat-flat-button
 									color="primary"
 									class="large my-2"
 									(click)="onRenew(licence)"
-									*ngIf="licence.isRenewalPeriod"
+									*ngIf="licence.isRenewalPeriod && !licence.isSimultaneousFlow"
 								>
 									<mat-icon>restore</mat-icon>Renew
 								</button>
+
 								<button mat-flat-button color="primary" class="large my-2" (click)="onUpdate(licence)">
 									<mat-icon>update</mat-icon>Update
 								</button>
 							</div>
+							<div class="col-12 mt-3" *ngIf="!applicationIsInProgress && licence.isSimultaneousFlow">
+								<app-alert type="info" icon="info">
+									This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} can only be renewed from the SWL side
+								</app-alert>
+							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
-									This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed, updated or replaced
+									This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or replaced
 									while an application is in progress
 								</app-alert>
 							</div>

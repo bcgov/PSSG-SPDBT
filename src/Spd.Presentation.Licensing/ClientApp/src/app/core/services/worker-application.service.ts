@@ -70,6 +70,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		latestApplicationId: new FormControl(), // placeholder for id
 
 		soleProprietorBizAppId: new FormControl(), // placeholder for Simultaneous flow
+		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for Simultaneous flow
 
 		originalLicenceData: this.originalLicenceFormGroup,
 
@@ -578,9 +579,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	getLicenceWithSelectionAuthenticated(
 		applicationTypeCode: ApplicationTypeCode,
-		licence: MainLicenceResponse
+		associatedLicence: MainLicenceResponse
 	): Observable<WorkerLicenceAppResponse> {
-		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, licence).pipe(
+		return this.getLicenceOfTypeAuthenticated(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -805,7 +806,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	private loadExistingLicenceWithLatestAuthenticated(
 		applicantId: string,
-		licence: MainLicenceResponse
+		associatedLicence: MainLicenceResponse
 	): Observable<any> {
 		this.reset();
 
@@ -821,7 +822,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				const workerLicenceAppl = resps[0];
 				const applicantProfile = resps[1];
 
-				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, licence);
+				return this.loadLicenceAppAndProfile(workerLicenceAppl, applicantProfile, associatedLicence);
 			})
 		);
 	}
@@ -875,7 +876,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	private getLicenceOfTypeAuthenticated(
 		applicationTypeCode: ApplicationTypeCode,
-		licence: MainLicenceResponse
+		associatedLicence: MainLicenceResponse
 	): Observable<any> {
 		const applicantId = this.authUserBcscService.applicantLoginProfile?.applicantId!;
 
@@ -883,8 +884,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceWithLatestAuthenticated(applicantId, licence),
-					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: licence?.licenceId! }),
+					this.loadExistingLicenceWithLatestAuthenticated(applicantId, associatedLicence),
+					this.licenceService.apiLicencesLicencePhotoLicenceIdGet({ licenceId: associatedLicence?.licenceId! }),
 				]).pipe(
 					catchError((error) => of(error)),
 					switchMap((resps: any[]) => {
@@ -892,18 +893,18 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						const photoOfYourself = resps[1];
 
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(latestApplication, true, licence, photoOfYourself);
+							return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(latestApplication, licence, photoOfYourself);
+						return this.applyUpdateDataUpdatesToModel(latestApplication, associatedLicence, photoOfYourself);
 					})
 				);
 			}
 			default: {
 				// ApplicationTypeCode.Replacement
-				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, licence).pipe(
+				return this.loadExistingLicenceWithLatestAuthenticated(applicantId, associatedLicence).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, licence);
+						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
 					})
 				);
 			}
@@ -1410,10 +1411,21 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
 		const applicationTypeData = { applicationTypeCode: workerLicenceAppl.applicationTypeCode };
 
+		const originalLicenceData = this.originalLicenceFormGroup.value;
+		originalLicenceData.originalBizTypeCode = workerLicenceAppl.bizTypeCode;
+
+		const isSoleProprietor = workerLicenceAppl.bizTypeCode === BizTypeCode.None;
 		const soleProprietorData = {
-			isSoleProprietor: workerLicenceAppl.bizTypeCode === BizTypeCode.None ? BooleanTypeCode.No : BooleanTypeCode.Yes,
+			isSoleProprietor: this.utilService.booleanToBooleanType(isSoleProprietor),
 			bizTypeCode: workerLicenceAppl.bizTypeCode,
 		};
+
+		let isSoleProprietorSimultaneousFlow: boolean | null = null;
+		if (associatedLicence) {
+			isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+		} else {
+			isSoleProprietorSimultaneousFlow = isSoleProprietor;
+		}
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(
@@ -1809,10 +1821,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				latestApplicationId: workerLicenceAppl.licenceAppId,
 				caseNumber: workerLicenceAppl.caseNumber,
 				soleProprietorBizAppId: workerLicenceAppl.soleProprietorBizAppId,
+				isSoleProprietorSimultaneousFlow,
 				serviceTypeData,
 				applicationTypeData,
 				soleProprietorData,
 				expiredLicenceData,
+				originalLicenceData,
 				licenceTermData,
 				bcDriversLicenceData,
 				fingerprintProofData,

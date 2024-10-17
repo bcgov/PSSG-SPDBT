@@ -77,11 +77,21 @@ import { StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent } from './st
 				</ng-container>
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Renewal">
-					<app-wizard-footer
-						nextButtonLabel="Pay Now"
-						(previousStepperStep)="onGoToPreviousStep()"
-						(nextStepperStep)="onPayNow()"
-					></app-wizard-footer>
+					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else IsNotSoleProprietor">
+						<app-wizard-footer
+							nextButtonLabel="Save & Continue to Business Licence Application"
+							[isWidestNext]="true"
+							(previousStepperStep)="onGoToPreviousStep()"
+							(nextStepperStep)="onSaveSoleProprietor()"
+						></app-wizard-footer>
+					</ng-container>
+					<ng-template #IsNotSoleProprietor>
+						<app-wizard-footer
+							nextButtonLabel="Pay Now"
+							(previousStepperStep)="onGoToPreviousStep()"
+							(nextStepperStep)="onPayNow()"
+						></app-wizard-footer>
+					</ng-template>
 				</ng-container>
 			</mat-step>
 

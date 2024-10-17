@@ -1716,12 +1716,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		const soleProprietorSWLAppId = businessLicenceAppl.soleProprietorSWLAppId ?? null;
-		const isSoleProprietorSimultaneousFlow = soleProprietorSWLAppId
-			? !!businessLicenceAppl.soleProprietorSWLAppId
-			: null;
-		const isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
-			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
-			: null; // TODO populate Simultaneous
+
+		let isSoleProprietorSimultaneousFlow: boolean | null = null;
+		let isSoleProprietorSimultaneousSWLAnonymous: boolean | null = null;
+
+		if (associatedLicence) {
+			isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+		} else {
+			isSoleProprietorSimultaneousFlow = !!soleProprietorSWLAppId;
+			isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
+				? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
+				: null;
+		}
 
 		this.businessModelFormGroup.patchValue(
 			{

@@ -3,12 +3,14 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
+import { Router } from '@angular/router';
 import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
+import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepsWorkerLicenceSelectionComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-selection.component';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
@@ -44,7 +46,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step [completed]="step2Complete">
-						<ng-template matStepLabel>Identification</ng-template>
+						<ng-template matStepLabel>Worker Information</ng-template>
 						<app-steps-worker-licence-identification-authenticated
 							[isFormValid]="isFormValid"
 							[applicationTypeCode]="applicationTypeCode"
@@ -59,19 +61,37 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 					</mat-step>
 
 					<mat-step completed="false">
-						<ng-template matStepLabel>Review & Confirm</ng-template>
+						<ng-template matStepLabel>Review Worker Licence</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
+							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
-							(nextPayStep)="onPayNow()"
+							(nextSubmitStep)="onNextSoleProprietor()"
+							(nextPayStep)="onNextPayStep()"
 							(scrollIntoView)="onScrollIntoView()"
 							(goToStep)="onGoToStep($event)"
 						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
-					<mat-step completed="false">
-						<ng-template matStepLabel>Pay</ng-template>
-					</mat-step>
+					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
+						<mat-step completed="false">
+							<ng-template matStepLabel>Business Information</ng-template>
+						</mat-step>
+
+						<mat-step completed="false">
+							<ng-template matStepLabel>Business Selection</ng-template>
+						</mat-step>
+
+						<mat-step completed="false">
+							<ng-template matStepLabel>Review Business Licence</ng-template>
+						</mat-step>
+					</ng-container>
+
+					<ng-template #isNotSoleProprietor>
+						<mat-step completed="false">
+							<ng-template matStepLabel>Pay</ng-template>
+						</mat-step>
+					</ng-template>
 				</mat-stepper>
 			</div>
 		</div>
@@ -101,11 +121,14 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
 	showWorkerLicenceSoleProprietorStep = false;
+	isSoleProprietorSimultaneousFlow = false;
 
 	private licenceModelChangedSubscription!: Subscription;
+	private soleProprietorBizAppId: string | null = null;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
+		private router: Router,
 		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private workerApplicationService: WorkerApplicationService
@@ -141,8 +164,19 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.bizTypeCode'
 				)?.value;
+				const originalBizTypeCode = this.workerApplicationService.workerModelFormGroup.get(
+					'originalLicenceData.originalBizTypeCode'
+				)?.value;
+
 				this.showWorkerLicenceSoleProprietorStep =
-					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode); // TODO update calculation of isSoleProprietorSimultaneousFlow
+					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode) ||
+					this.commonApplicationService.isBusinessLicenceSoleProprietor(originalBizTypeCode);
+
+				this.isSoleProprietorSimultaneousFlow =
+					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+
+				this.soleProprietorBizAppId =
+					this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -218,11 +252,56 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 		this.goToChildNextStep();
 	}
 
-	onPayNow(): void {
+	onNextPayStep(): void {
+		this.submitStep();
+	}
+
+	onNextSoleProprietor(): void {
+		this.submitSoleProprietorSimultaneousFlowStep();
+	}
+
+	private submitStep(): void {
 		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				this.hotToastService.success('Your licence renewal has been successfully submitted');
 				this.payNow(_resp.body.licenceAppId!);
+			},
+			error: (error: any) => {
+				console.log('An error occurred during save', error);
+			},
+		});
+	}
+
+	private submitSoleProprietorSimultaneousFlowStep(): void {
+		this.workerApplicationService.submitSoleProprietorSimultaneousFlow().subscribe({
+			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
+				// if a business licence app already exists, use it
+				if (this.soleProprietorBizAppId) {
+					this.router.navigate(
+						[
+							BusinessLicenceApplicationRoutes.MODULE_PATH,
+							BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR,
+						],
+						{
+							queryParams: {
+								bizLicAppId: this.soleProprietorBizAppId,
+							},
+						}
+					);
+					return;
+				}
+
+				this.router.navigate(
+					[
+						BusinessLicenceApplicationRoutes.MODULE_PATH,
+						BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR,
+					],
+					{
+						queryParams: {
+							swlLicAppId: _resp.body.licenceAppId!,
+						},
+					}
+				);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
