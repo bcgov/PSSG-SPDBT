@@ -285,12 +285,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			// Send the controlling member invitations
 			const apis: Observable<any>[] = [];
 			membersWithoutSwl.forEach((item: NonSwlContactInfo) => {
-				apis.push(
-					this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
-						bizContactId: item.bizContactId!,
-						inviteType: ControllingMemberAppInviteTypeCode.New,
-					})
-				);
+				if (item.emailAddress) {
+					apis.push(
+						this.bizMembersService.apiBusinessLicenceApplicationControllingMemberInvitationBizContactIdGet({
+							bizContactId: item.bizContactId!,
+							inviteType: ControllingMemberAppInviteTypeCode.New,
+						})
+					);
+				}
 			});
 
 			if (apis.length > 0) {
@@ -309,6 +311,17 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 							console.log('An error occurred during save', error);
 						},
 					});
+				return;
+			} else {
+				this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
+					next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
+						this.hotToastService.success(params.paymentSuccess);
+						this.commonApplicationService.onGoToHome();
+					},
+					error: (error: any) => {
+						console.log('An error occurred during save', error);
+					},
+				});
 				return;
 			}
 		}
