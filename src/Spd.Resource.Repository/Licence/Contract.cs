@@ -48,6 +48,9 @@ namespace Spd.Resource.Repository.Licence
 
         //swl
         public bool CarryAndUseRestraints { get; set; }
+
+        //sole proprietor
+        public Guid? SoleProprietorOrgId { get; set; }
     }
 
     public record Licence

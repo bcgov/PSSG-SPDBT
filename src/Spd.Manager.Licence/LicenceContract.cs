@@ -55,6 +55,10 @@ public record LicenceResponse : LicenceBasicResponse
     //swl
     public bool CarryAndUseRestraints { get; set; }
     public IEnumerable<Document> RestraintsDocumentInfos { get; set; } = [];
+
+    //sole-proprietor
+    public Guid? LinkedSoleProprietorLicenceId { get; set; }
+    public DateOnly? LinkedSoleProprietorExpiryDate { get; set; }
 };
 
 public record LicenceQuery(string? LicenceNumber, string? AccessCode) : IRequest<LicenceResponse>;
