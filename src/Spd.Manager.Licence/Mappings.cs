@@ -122,7 +122,7 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.City, opt => opt.MapFrom(s => s.ResidentialAddress.City))
             .ForPath(d => d.ResidentialAddress.PostalCode, opt => opt.MapFrom(s => s.ResidentialAddress.PostalCode))
             .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
-        
+
         CreateMap<ControllingMemberCrcAppBase, CreateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
@@ -136,10 +136,10 @@ internal class Mappings : Profile
             .ForPath(d => d.ResidentialAddress.Country, opt => opt.MapFrom(s => s.ResidentialAddress.Country));
 
         CreateMap<ControllingMemberCrcAppSubmitRequest, UpdateContactCmd>()
-            .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>(); 
-        
+            .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
+
         CreateMap<ControllingMemberCrcAppSubmitRequest, CreateContactCmd>()
-            .IncludeBase<ControllingMemberCrcAppBase, CreateContactCmd>(); 
+            .IncludeBase<ControllingMemberCrcAppBase, CreateContactCmd>();
 
         CreateMap<ControllingMemberCrcAppUpsertRequest, UpdateContactCmd>()
             .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
@@ -318,9 +318,16 @@ internal class Mappings : Profile
             .ForMember(d => d.BizAddress, opt => opt.MapFrom(s => s.BusinessAddress))
             .ForMember(d => d.BizBCAddress, opt => opt.MapFrom(s => s.BCBusinessAddress))
             .ForMember(d => d.Branches, opt => opt.MapFrom(s => GetBranchInfo(s.BranchAddresses)))
-            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s => s.PhoneNumber))
-            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s => s.Email))
-            .ForPath(d => d.SoleProprietorSwlContactInfo.LicenceId, opt => opt.MapFrom(s => s.SoleProprietorSwlContactInfo.LicenceId))
+            .ForMember(d => d.SoleProprietorSwlPhoneNumber, opt => opt.MapFrom(s =>
+               (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
+               ? s.PhoneNumber : null))
+            .ForMember(d => d.SoleProprietorSwlEmailAddress, opt => opt.MapFrom(s =>
+            (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
+               ? s.Email : null))
+            .ForPath(d => d.SoleProprietorSwlContactInfo, opt => opt.MapFrom(s =>
+            (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
+                ? new SwlContactInfo {LicenceId = s.SoleProprietorSwlContactInfo.LicenceId} : null))
+
             .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
             .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
             .ForPath(d => d.BizManagerContactInfo.PhoneNumber, opt => opt.MapFrom(s => s.BizManagerContactInfo.PhoneNumber))
@@ -378,7 +385,7 @@ internal class Mappings : Profile
 
         CreateMap<ControllingMemberCrcAppSubmitRequest, SaveControllingMemberCrcAppCmd>()
             .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
-        
+
         CreateMap<ControllingMemberCrcAppUpsertRequest, SaveControllingMemberCrcAppCmd>()
             .ForMember(d => d.ContactId, opt => opt.MapFrom(s => s.ApplicantId))
             .IncludeBase<ControllingMemberCrcAppBase, SaveControllingMemberCrcAppCmd>();
