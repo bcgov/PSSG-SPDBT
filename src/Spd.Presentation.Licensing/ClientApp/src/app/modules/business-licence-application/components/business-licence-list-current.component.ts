@@ -108,14 +108,15 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								</button>
 							</div>
 							<div class="col-12 mt-3" *ngIf="!applicationIsInProgress && licence.isSimultaneousFlow">
-								<app-alert type="info" icon="info">
-									This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} can only be renewed from the SWL side
+								<app-alert type="warning" icon="warning">
+									To renew your {{ licence.serviceTypeCode | options: 'ServiceTypes' }}, please renew your
+									{{ swlServiceTypeCode | options: 'ServiceTypes' }} first.
 								</app-alert>
 							</div>
 							<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 								<app-alert type="info" icon="info">
 									This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or replaced
-									while an application is in progress
+									while an application is in progress.
 								</app-alert>
 							</div>
 						</div>
@@ -173,7 +174,7 @@ export class BusinessLicenceListCurrentComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	contactSpdUrl = SPD_CONSTANTS.urls.contactSpdUrl;
 
-	serviceTypeCodes = ServiceTypeCode;
+	swlServiceTypeCode = ServiceTypeCode.SecurityWorkerLicence;
 
 	@Input() activeLicences!: Array<MainLicenceResponse>;
 	@Input() applicationIsInProgress!: boolean;

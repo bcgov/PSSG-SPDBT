@@ -147,6 +147,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
 					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
+					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
+
 					const isAddressTheSame = this.businessModelFormGroup.get('businessAddressData.isAddressTheSame')?.value;
 					const province = isAddressTheSame
 						? this.businessModelFormGroup.get('businessMailingAddressData.province')?.value
@@ -154,11 +156,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const country = isAddressTheSame
 						? this.businessModelFormGroup.get('businessMailingAddressData.country')?.value
 						: this.businessModelFormGroup.get('businessAddressData.country')?.value;
+
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
-					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
 					let isControllingMembersWithoutSwlExist = false;
-
 					if (!isBusinessLicenceSoleProprietor) {
 						const membersWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
@@ -1983,7 +1984,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						isSoleProprietorSimultaneousFlow: true,
 						isSoleProprietorSimultaneousSWLAnonymous:
 							resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,
-
 						isBusinessLicenceSoleProprietor,
 						businessInformationData,
 						categoryData,
