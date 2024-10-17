@@ -93,6 +93,8 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								</ul>
 							</div>
 							<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
+								<!-- // TODO only show renew when non-simulataneous renewal  -->
+
 								<button
 									mat-flat-button
 									color="primary"
