@@ -110,22 +110,17 @@ internal class LicenceManager :
     public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)
     {
         //find contact id through licenceId
-        LicenceListResp lic = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = query.LicenceId }, cancellationToken);
-        Guid? applicantId = lic.Items.FirstOrDefault()?.LicenceHolderId;
-        if (applicantId == null)
+        LicenceResp lic = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
+        if (lic == null)
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence holder.");
+            throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence.");
         }
+        if (lic.PhotoDocumentUrlId == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "the licence does not have photo");
 
-        DocumentQry qry = new()
-        {
-            ApplicantId = applicantId,
-            FileType = Enum.Parse<DocumentTypeEnum>(DocumentTypeEnum.Photograph.ToString()),
-        };
-        DocumentListResp docList = await _documentRepository.QueryAsync(qry, cancellationToken);
-        if (docList == null || !docList.Items.Any())
+        DocumentResp? docUrl = await _documentRepository.GetAsync((Guid)lic.PhotoDocumentUrlId, cancellationToken);
+        if (docUrl == null)
             return new FileResponse();
-        var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
 
         if (docUrl != null)
         {
