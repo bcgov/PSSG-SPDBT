@@ -273,23 +273,9 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	private submitSoleProprietorSimultaneousFlowStep(): void {
-		this.workerApplicationService.submitSoleProprietorSimultaneousFlow().subscribe({
+		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				// if a business licence app already exists, use it
-				if (this.soleProprietorBizAppId) {
-					this.router.navigate(
-						[
-							BusinessLicenceApplicationRoutes.MODULE_PATH,
-							BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR,
-						],
-						{
-							queryParams: {
-								bizLicAppId: this.soleProprietorBizAppId,
-							},
-						}
-					);
-					return;
-				}
+				this.hotToastService.success('Your licence renewal has been successfully submitted');
 
 				this.router.navigate(
 					[

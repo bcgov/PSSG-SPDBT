@@ -477,6 +477,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const soleProprietorSWLAppId = businessModelFormValue.soleProprietorSWLAppId;
+		const soleProprietorSWLAppOriginTypeCode = businessModelFormValue.soleProprietorSWLAppOriginTypeCode;
 		const serviceTypeData = { ...businessModelFormValue.serviceTypeData };
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
@@ -555,6 +556,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			bizTypeCode,
 			licenceAppId,
 			soleProprietorSWLAppId,
+			soleProprietorSWLAppOriginTypeCode,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,

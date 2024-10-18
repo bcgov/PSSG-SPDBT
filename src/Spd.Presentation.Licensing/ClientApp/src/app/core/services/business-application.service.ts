@@ -86,6 +86,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		isControllingMembersWithoutSwlExist: new FormControl(),
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
+		soleProprietorSWLAppOriginTypeCode: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
 
@@ -709,13 +710,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Either create an empty licence or continue with the existing business lic app
 	 * @returns
 	 */
-	getBusinessLicenceWithSwlCombinedFlow(
+	getNewBusinessLicenceWithSwlCombinedFlow(
 		soleProprietorSWLAppId: string | null | undefined, // one of these two must have a value
 		soleProprietorBizAppId: string | null | undefined // one of these two must have a value
 	): Observable<any> {
-		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-
 		if (soleProprietorSWLAppId) {
+			const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
 			return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
 				switchMap((businessProfile: BizProfileResponse) => {
 					return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
@@ -745,6 +746,32 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	/**
+	 * Either create an empty licence or continue with the existing business lic app
+	 * @returns
+	 */
+	getRenewBusinessLicenceWithSwlCombinedFlow(soleProprietorSWLAppId: string): Observable<any> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+			switchMap((businessProfile: BizProfileResponse) => {
+				return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
+					soleProprietorSWLAppId,
+					businessProfile,
+				}).pipe(
+					tap((_resp: any) => {
+						this.setAsInitialized();
+
+						this.commonApplicationService.setApplicationTitle(
+							ServiceTypeCode.SecurityBusinessLicence,
+							ApplicationTypeCode.Renewal
+						);
+					})
 				);
 			})
 		);
@@ -1981,6 +2008,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
+						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
 						isSoleProprietorSimultaneousFlow: true,
 						isSoleProprietorSimultaneousSWLAnonymous:
 							resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,

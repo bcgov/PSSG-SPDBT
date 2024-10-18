@@ -3,8 +3,8 @@ export class BusinessLicenceApplicationRoutes {
 
 	public static readonly BUSINESS_FIRST_TIME_USER_TERMS = 'terms-and-conditions';
 
-	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp'; // should contain url parameters for licenceAppId & isSoleProprietorSimultaneousSWLAnonymous
-	public static readonly BUSINESS_RENEW_SOLE_PROPRIETOR = 'business-licence-renew-sp'; // should contain url parameters for licenceAppId & isSoleProprietorSimultaneousSWLAnonymous
+	public static readonly BUSINESS_NEW_SOLE_PROPRIETOR = 'business-licence-new-sp'; // should contain url parameters for licenceAppId
+	public static readonly BUSINESS_RENEW_SOLE_PROPRIETOR = 'business-licence-renew-sp'; // should contain url parameters for licenceAppId
 
 	public static readonly BUSINESS_LICENCE_UPDATE_TERMS = 'business-licence-update-terms';
 	public static readonly BUSINESS_LICENCE_APP_PROFILE = 'app-profile';

@@ -251,7 +251,6 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 							{
 								queryParams: {
 									swlLicAppId: this.licenceAppId,
-									isSoleProprietorSimultaneousSWLAnonymous: 'Y',
 								},
 							}
 						);
