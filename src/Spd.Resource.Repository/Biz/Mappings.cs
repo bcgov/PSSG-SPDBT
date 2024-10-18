@@ -62,6 +62,7 @@ namespace Spd.Resource.Repository.Biz
 
             CreateMap<CreateBizCmd, account>()
             .IncludeBase<Biz, account>()
+            .ForMember(d => d.accountid, opt => opt.MapFrom(s => Guid.NewGuid()))
             .ForMember(d => d.spd_licensingbusinesstype, opt => opt.MapFrom(s => SharedMappingFuncs.GetBizTypeOptionSet(s.BizType)));
 
             CreateMap<BranchAddr, spd_address>()
