@@ -12,7 +12,7 @@ import { FileUploadComponent } from './file-upload.component';
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
-					<div class="fs-6 fw-bold p-3">
+					<div class="fs-6 fw-bold m-3">
 						A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security
 						worker licence.
 					</div>

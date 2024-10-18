@@ -17,7 +17,7 @@ import { FormMentalHealthConditionsComponent } from '@app/shared/components/form
 				<div class="mt-3">
 					<div class="py-2">{{ title }}</div>
 
-					<div class="fs-6 fw-bold p-3" *ngIf="subtitle">
+					<div class="fs-6 fw-bold m-3" *ngIf="subtitle">
 						{{ subtitle }}
 					</div>
 
