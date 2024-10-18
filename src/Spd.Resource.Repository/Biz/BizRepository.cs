@@ -62,9 +62,9 @@ namespace Spd.Resource.Repository.Biz
 
             if (biz == null) throw new ApiException(HttpStatusCode.NotFound);
 
-              spd_licence? swl = biz.spd_organization_spd_licence_soleproprietor
-                .OrderByDescending(a => a.createdon)
-                .FirstOrDefault();
+            spd_licence? swl = biz.spd_organization_spd_licence_soleproprietor
+              .OrderByDescending(a => a.createdon)
+              .FirstOrDefault();
 
             var response = _mapper.Map<BizResult>(biz);
             response.SoleProprietorSwlContactInfo.LicenceId = swl?.spd_licenceid;
@@ -201,7 +201,7 @@ namespace Spd.Resource.Repository.Biz
         {
             if (bizType == null) return false;
 
-            return soleProprietorTypes.Any(s => s.Equals(bizType));
+            return soleProprietorTypes.Contains((BizTypeEnum)bizType);
         }
     }
 }
