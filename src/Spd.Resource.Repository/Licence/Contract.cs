@@ -88,6 +88,7 @@ namespace Spd.Resource.Repository.Licence
         Active,
         Inactive,
         Expired,
-        Suspended
+        Suspended,
+        Preview
     }
 }
