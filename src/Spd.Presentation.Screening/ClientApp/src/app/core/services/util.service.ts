@@ -7,7 +7,12 @@ import * as moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import { ApplicationPortalStatusTypes, ScreeningTypes, SelectOptions } from '../code-types/model-desc.models';
+import {
+	ApplicationPortalStatisticsTypes,
+	ApplicationPortalStatusTypes,
+	ScreeningTypes,
+	SelectOptions,
+} from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
@@ -182,8 +187,12 @@ export class UtilService {
 		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 
-	getApplicationPortalStatusHint(code: string): string {
-		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.extra as string) ?? '';
+	getApplicationPortalStatisticsDesc(code: string): string {
+		return (ApplicationPortalStatisticsTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+	}
+
+	getApplicationPortalStatisticsHint(code: string): string {
+		return (ApplicationPortalStatisticsTypes.find((item: SelectOptions) => item.code == code)?.extra as string) ?? '';
 	}
 
 	getDateString(date: Date): string {

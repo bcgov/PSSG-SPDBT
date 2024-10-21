@@ -1,4 +1,5 @@
 export {
+	ApplicationPortalStatisticsTypes,
 	ApplicationPortalStatusTypes,
 	CaseSubStatuses,
 	ContactAuthorizationTypes,
