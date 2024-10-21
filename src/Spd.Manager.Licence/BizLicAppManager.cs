@@ -127,7 +127,8 @@ internal class BizLicAppManager :
 
         decimal cost = await CommitApplicationAsync(cmd.BizLicAppUpsertRequest, cmd.BizLicAppUpsertRequest.LicenceAppId.Value, cancellationToken,
             HasSwl90DayLicence: false,
-            cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId);
+            cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppId,
+            cmd.BizLicAppUpsertRequest.SoleProprietorSWLAppOriginTypeCode);
         return new BizLicAppCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
     }
 

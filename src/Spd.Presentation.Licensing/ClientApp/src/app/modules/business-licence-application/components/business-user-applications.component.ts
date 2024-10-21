@@ -32,7 +32,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								<button
 									mat-flat-button
 									color="primary"
-									*ngIf="!isSoleProprietorComboFlow"
+									*ngIf="!isSoleProprietorSimultaneousFlow"
 									class="large w-auto me-2 mb-3"
 									(click)="onBusinessProfile()"
 								>
@@ -137,7 +137,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	activeLicenceExist = false;
 
 	isSoleProprietor = false;
-	isSoleProprietorComboFlow = false;
+	isSoleProprietorSimultaneousFlow = false;
 
 	serviceTypeCodes = ServiceTypeCode;
 
@@ -177,9 +177,9 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						// console.debug('businessApplicationsList', businessApplicationsList);
 						// console.debug('businessProfile', businessProfile);
 
-						this.isSoleProprietorComboFlow =
+						this.isSoleProprietorSimultaneousFlow =
 							businessApplicationsList.length > 0
-								? businessApplicationsList[0].isSoleProprietorComboFlow ?? false
+								? (businessApplicationsList[0].isSoleProprietorSimultaneousFlow ?? false)
 								: false;
 
 						// Only show the manage members and employees when an application or licence exist.
@@ -253,7 +253,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.getBusinessLicenceApplToResume(appl.licenceAppId!, this.isSoleProprietor)
 			.pipe(
 				tap((resp: any) => {
-					// return to the swl sole proprietor / business licence combo flow
+					// return to the swl sole proprietor / business licence Simultaneous flow
 					if (resp.soleProprietorSWLAppId) {
 						this.router.navigate([
 							BusinessLicenceApplicationRoutes.MODULE_PATH,

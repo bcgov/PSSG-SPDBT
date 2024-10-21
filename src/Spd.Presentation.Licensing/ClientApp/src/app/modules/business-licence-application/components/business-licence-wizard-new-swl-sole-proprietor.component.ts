@@ -48,7 +48,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<ng-template matStepLabel>Business Information</ng-template>
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
-						[isSoleProprietorComboFlow]="isSoleProprietorComboFlow"
+						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -64,7 +64,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[applicationTypeCode]="applicationTypeCode"
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
-						[isSoleProprietorComboFlow]="isSoleProprietorComboFlow"
+						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 						[isFormValid]="false"
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
@@ -82,7 +82,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[serviceTypeCode]="serviceTypeCode"
 						[applicationTypeCode]="applicationTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
-						[isSoleProprietorComboFlow]="isSoleProprietorComboFlow"
+						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 						(previousStepperStep)="onPreviousStepperStep(stepper)"
 						(nextPayStep)="onNextPayStep()"
 						(cancelAndExit)="onReturnToSwl()"
@@ -114,8 +114,8 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	step3Complete = false;
 	step4Complete = false;
 
-	isSoleProprietorSWLAnonymous!: boolean;
-	isSoleProprietorComboFlow!: boolean;
+	isSoleProprietorSimultaneousSWLAnonymous!: boolean;
+	isSoleProprietorSimultaneousFlow!: boolean;
 
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
@@ -159,10 +159,12 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 					'businessInformationData.bizTypeCode'
 				)?.value;
 
-				this.isSoleProprietorSWLAnonymous =
-					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorSWLAnonymous')?.value;
-				this.isSoleProprietorComboFlow =
-					this.businessApplicationService.businessModelFormGroup.get('isSoleProprietorComboFlow')?.value;
+				this.isSoleProprietorSimultaneousSWLAnonymous = this.businessApplicationService.businessModelFormGroup.get(
+					'isSoleProprietorSimultaneousSWLAnonymous'
+				)?.value;
+				this.isSoleProprietorSimultaneousFlow = this.businessApplicationService.businessModelFormGroup.get(
+					'isSoleProprietorSimultaneousFlow'
+				)?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -249,9 +251,9 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	onReturnToSwl(): void {
-		const message = this.isSoleProprietorSWLAnonymous
-			? 'Are you sure you want to cancel your security business licence application?<br><br>If you cancel this application, you will have to re-submit your Security Worker Licence application.'
-			: 'Are you sure you want to cancel your security business licence application?<br><br>You will be returned to the portal to pay the application fee for your security worker licence.';
+		const message = this.isSoleProprietorSimultaneousSWLAnonymous
+			? '<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>If you cancel this application, you will have to re-submit your Security Worker Licence application.'
+			: '<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>You will be returned to the portal to pay the application fee for your security worker licence.';
 
 		const data: DialogOptions = {
 			icon: 'warning',
@@ -267,7 +269,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 			.afterClosed()
 			.subscribe((response: boolean) => {
 				if (response) {
-					if (this.isSoleProprietorSWLAnonymous) {
+					if (this.isSoleProprietorSimultaneousSWLAnonymous) {
 						this.router.navigateByUrl(AppRoutes.path(AppRoutes.LANDING));
 					} else {
 						this.router.navigateByUrl(PersonalLicenceApplicationRoutes.pathReturnFromBusinessLicenceSoleProprietor());
