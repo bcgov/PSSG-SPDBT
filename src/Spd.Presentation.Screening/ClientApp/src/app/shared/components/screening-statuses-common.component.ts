@@ -382,9 +382,7 @@ export class ScreeningStatusesCommonComponent implements OnInit {
 			this.defaultStatuses = [
 				ApplicationPortalStatusCode.AwaitingApplicant,
 				ApplicationPortalStatusCode.AwaitingPayment,
-				ApplicationPortalStatusCode.AwaitingThirdParty,
 				ApplicationPortalStatusCode.InProgress,
-				ApplicationPortalStatusCode.UnderAssessment,
 				ApplicationPortalStatusCode.VerifyIdentity,
 			];
 
