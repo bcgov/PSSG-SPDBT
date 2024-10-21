@@ -287,7 +287,8 @@ namespace Spd.Utilities.Dynamics
         Active = 1,
         Inactive = 2,
         Expired = 100000000,
-        Suspended = 100000001
+        Suspended = 100000001,
+        Preview = 100000002
     }
 
     public enum HairColorOptionSet
