@@ -141,6 +141,11 @@ internal static class JobStatusValues
     public const string PdfCreated = "PDF_CREATED";
 
     /// <summary>
+    /// Pdf created that awaiting for batching
+    /// </summary>
+    public const string PdfCreatedAwaitingBatching = "PDF_CREATED_AWAITING_BATCHING";
+
+    /// <summary>
     /// Job status that indicates errors
     /// </summary>
     public const string ProcessingError = "PROCESSING_ERROR";
