@@ -42,10 +42,10 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 
 		if (currentPath.includes(PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS)) {
 			// handle new business licence creation from swl - for sole proprietor
-			console.debug('BusinessLicenceApplicationBaseComponent populateSoleProprietorComboFlowAnonymous');
+			console.debug('BusinessLicenceApplicationBaseComponent populateSoleProprietorSimultaneousFlowAnonymous');
 
 			this.workerApplicationService
-				.populateSoleProprietorComboFlowAnonymous()
+				.populateSoleProprietorSimultaneousFlowAnonymous()
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(

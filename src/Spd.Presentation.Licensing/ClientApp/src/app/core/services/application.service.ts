@@ -61,7 +61,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 	isExpiryWarning: boolean;
 	isExpiryError: boolean;
 	isControllingMemberWarning?: boolean;
-	isSoleProprietorComboFlow?: boolean; // Used only for business licence applications
+	isSoleProprietorSimultaneousFlow?: boolean;
 }
 
 export interface MainLicenceResponse extends LicenceResponse {
@@ -197,13 +197,7 @@ export class ApplicationService {
 		bizTypeCode: BizTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
-		// console.debug(
-		// 	'getLicenceTermsAndFees',
-		// 	serviceTypeCode,
-		// 	applicationTypeCode,
-		// 	bizTypeCode,
-		// 	originalLicenceTermCode
-		// );
+		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode, originalLicenceTermCode);
 
 		if (!serviceTypeCode || !bizTypeCode) {
 			return [];
@@ -217,7 +211,7 @@ export class ApplicationService {
 		return this.configService
 			.getLicenceFees()
 			.filter(
-				(item) =>
+				(item: LicenceFeeResponse) =>
 					item.serviceTypeCode == serviceTypeCode &&
 					item.bizTypeCode == bizTypeCode &&
 					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
@@ -346,7 +340,7 @@ export class ApplicationService {
 								.pipe(
 									switchMap((resp: BizLicAppResponse) => {
 										response.forEach((item: MainApplicationResponse) => {
-											item.isSoleProprietorComboFlow = !!resp.soleProprietorSWLAppId;
+											item.isSoleProprietorSimultaneousFlow = !!resp.soleProprietorSWLAppId; // TODO populate Simultaneous
 										});
 
 										return of(response);

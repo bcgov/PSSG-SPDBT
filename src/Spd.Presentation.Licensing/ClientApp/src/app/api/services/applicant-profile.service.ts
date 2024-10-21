@@ -13,8 +13,6 @@ import { StrictHttpResponse } from '../strict-http-response';
 
 import { apiApplicantApplicantIdPut } from '../fn/applicant-profile/api-applicant-applicant-id-put';
 import { ApiApplicantApplicantIdPut$Params } from '../fn/applicant-profile/api-applicant-applicant-id-put';
-import { apiApplicantFilesPost } from '../fn/applicant-profile/api-applicant-files-post';
-import { ApiApplicantFilesPost$Params } from '../fn/applicant-profile/api-applicant-files-post';
 import { apiApplicantGet } from '../fn/applicant-profile/api-applicant-get';
 import { ApiApplicantGet$Params } from '../fn/applicant-profile/api-applicant-get';
 import { apiApplicantIdGet } from '../fn/applicant-profile/api-applicant-id-get';
@@ -63,39 +61,6 @@ export class ApplicantProfileService extends BaseService {
   apiApplicantIdGet(params: ApiApplicantIdGet$Params, context?: HttpContext): Observable<ApplicantProfileResponse> {
     return this.apiApplicantIdGet$Response(params, context).pipe(
       map((r: StrictHttpResponse<ApplicantProfileResponse>): ApplicantProfileResponse => r.body)
-    );
-  }
-
-  /** Path part for operation `apiApplicantFilesPost()` */
-  static readonly ApiApplicantFilesPostPath = '/api/applicant/files';
-
-  /**
-   * Uploading file only save files in cache, the files are not connected to the application yet.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiApplicantFilesPost()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiApplicantFilesPost$Response(params?: ApiApplicantFilesPost$Params, context?: HttpContext): Observable<StrictHttpResponse<string>> {
-    return apiApplicantFilesPost(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Uploading file only save files in cache, the files are not connected to the application yet.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiApplicantFilesPost$Response()` instead.
-   *
-   * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
-   */
-  apiApplicantFilesPost(params?: ApiApplicantFilesPost$Params, context?: HttpContext): Observable<string> {
-    return this.apiApplicantFilesPost$Response(params, context).pipe(
-      map((r: StrictHttpResponse<string>): string => r.body)
     );
   }
 

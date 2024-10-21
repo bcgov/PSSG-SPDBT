@@ -46,6 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "clamav.selectorLabels" -}}
+name: {{ include "clamav.fullname" . }}
 app.kubernetes.io/name: {{ include "clamav.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

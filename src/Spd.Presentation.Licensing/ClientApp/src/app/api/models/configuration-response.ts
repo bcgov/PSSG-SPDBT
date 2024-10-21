@@ -8,6 +8,7 @@ import { RecaptchaConfiguration } from '../models/recaptcha-configuration';
 import { WorkerCategoryTypeCode } from '../models/worker-category-type-code';
 export interface ConfigurationResponse {
   bcscConfiguration?: OidcConfiguration;
+  environment?: string | null;
   invalidWorkerLicenceCategoryMatrixConfiguration?: ({
 'ArmouredCarGuard'?: Array<WorkerCategoryTypeCode>;
 'BodyArmourSales'?: Array<WorkerCategoryTypeCode>;

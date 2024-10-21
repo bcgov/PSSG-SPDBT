@@ -2,6 +2,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Spd.Manager.Shared;
+using Spd.Resource.Repository;
+using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.Document;
 using Spd.Resource.Repository.Incident;
 using Spd.Resource.Repository.Licence;
@@ -20,6 +22,7 @@ internal class LicenceManager :
 {
     private readonly ILicenceRepository _licenceRepository;
     private readonly IIncidentRepository _incidentRepository;
+    private readonly IBizRepository _bizRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly ILogger<ILicenceManager> _logger;
     private readonly IMainFileStorageService _fileStorageService;
@@ -31,6 +34,7 @@ internal class LicenceManager :
         ILogger<ILicenceManager> logger,
         IMainFileStorageService fileStorageService,
         IIncidentRepository incidentRepository,
+        IBizRepository bizRepository,
         IMapper mapper)
     {
         _licenceRepository = licenceRepository;
@@ -39,6 +43,7 @@ internal class LicenceManager :
         _logger = logger;
         _fileStorageService = fileStorageService;
         _incidentRepository = incidentRepository;
+        _bizRepository = bizRepository;
     }
 
     public async Task<LicenceResponse> Handle(LicenceByIdQuery query, CancellationToken cancellationToken)
@@ -46,6 +51,7 @@ internal class LicenceManager :
         var response = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
 
+        await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
 
@@ -69,6 +75,7 @@ internal class LicenceManager :
         }
         LicenceResp response = qryResponse.Items.OrderByDescending(i => i.CreatedOn).First();
         LicenceResponse lic = _mapper.Map<LicenceResponse>(response);
+        await GetSoleProprietorInfoAsync(lic, response, cancellationToken);
         await GetRationalDocumentsInfoAsync(lic, cancellationToken);
         await GetDogRestraintsDocumentsInfoAsync(lic, cancellationToken);
 
@@ -103,22 +110,17 @@ internal class LicenceManager :
     public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)
     {
         //find contact id through licenceId
-        LicenceListResp lic = await _licenceRepository.QueryAsync(new LicenceQry() { LicenceId = query.LicenceId }, cancellationToken);
-        Guid? applicantId = lic.Items.FirstOrDefault()?.LicenceHolderId;
-        if (applicantId == null)
+        LicenceResp lic = await _licenceRepository.GetAsync(query.LicenceId, cancellationToken);
+        if (lic == null)
         {
-            throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence holder.");
+            throw new ApiException(HttpStatusCode.BadRequest, "cannot find the licence.");
         }
+        if (lic.PhotoDocumentUrlId == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "the licence does not have photo");
 
-        DocumentQry qry = new()
-        {
-            ApplicantId = applicantId,
-            FileType = Enum.Parse<DocumentTypeEnum>(DocumentTypeEnum.Photograph.ToString()),
-        };
-        DocumentListResp docList = await _documentRepository.QueryAsync(qry, cancellationToken);
-        if (docList == null || !docList.Items.Any())
+        DocumentResp? docUrl = await _documentRepository.GetAsync((Guid)lic.PhotoDocumentUrlId, cancellationToken);
+        if (docUrl == null)
             return new FileResponse();
-        var docUrl = docList.Items.OrderByDescending(f => f.UploadedDateTime).FirstOrDefault();
 
         if (docUrl != null)
         {
@@ -141,6 +143,29 @@ internal class LicenceManager :
             }
         }
         return new FileResponse();
+    }
+
+    private async Task GetSoleProprietorInfoAsync(LicenceResponse lic, LicenceResp licResp, CancellationToken cancellationToken)
+    {
+        if (licResp.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence && licResp.SoleProprietorOrgId != null)
+        {
+            var bizLicences = await _licenceRepository.QueryAsync(
+                    new LicenceQry
+                    {
+                        AccountId = licResp.SoleProprietorOrgId,
+                        IncludeInactive = false
+                    }, cancellationToken);
+            var bizLic = bizLicences.Items.OrderByDescending(i => i.CreatedOn).FirstOrDefault();
+            lic.LinkedSoleProprietorLicenceId = bizLic?.LicenceId;
+            lic.LinkedSoleProprietorExpiryDate = bizLic?.ExpiryDate;
+        }
+        if (licResp.ServiceTypeCode == ServiceTypeEnum.SecurityBusinessLicence &&
+            (licResp.BizTypeCode == BizTypeEnum.NonRegisteredSoleProprietor || licResp.BizTypeCode == BizTypeEnum.RegisteredSoleProprietor))
+        {
+            BizResult? biz = await _bizRepository.GetBizAsync((Guid)lic.LicenceHolderId, cancellationToken);
+            lic.LinkedSoleProprietorLicenceId = biz?.SoleProprietorSwlContactInfo?.LicenceId;
+            lic.LinkedSoleProprietorExpiryDate = biz?.SoleProprietorSwlExpiryDate;
+        }
     }
 
     private async Task GetRationalDocumentsInfoAsync(LicenceResponse lic, CancellationToken cancellationToken)

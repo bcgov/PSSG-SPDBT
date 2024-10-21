@@ -127,13 +127,13 @@ internal static class SharedMappingFuncs
     internal static int? GetPoliceRoleOptionSet(PoliceOfficerRoleEnum? policeRole)
     {
         if (policeRole == null)
-            return (int) PoliceOfficerRoleOptionSet.None;
+            return (int)PoliceOfficerRoleOptionSet.None;
         return (int)Enum.Parse<PoliceOfficerRoleOptionSet>(policeRole.ToString());
     }
 
     internal static PoliceOfficerRoleEnum? GetPoliceRoleEnum(int? optionset)
     {
-        if (optionset == null || optionset == (int) PoliceOfficerRoleOptionSet.None) return null;
+        if (optionset == null || optionset == (int)PoliceOfficerRoleOptionSet.None) return null;
         return Enum.Parse<PoliceOfficerRoleEnum>(Enum.GetName(typeof(PoliceOfficerRoleOptionSet), optionset));
     }
 
