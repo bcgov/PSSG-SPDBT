@@ -11,7 +11,10 @@ import { ConfigurationService } from 'src/app/api/services';
 export class ConfigService {
 	public configs: ConfigurationResponse | null = null;
 
-	constructor(private oauthService: OAuthService, private configurationService: ConfigurationService) {}
+	constructor(
+		private oauthService: OAuthService,
+		private configurationService: ConfigurationService
+	) {}
 
 	public getConfigs(): Observable<ConfigurationResponse> {
 		if (this.configs) {
@@ -46,6 +49,14 @@ export class ConfigService {
 
 	public getLicenceFees(): Array<LicenceFeeResponse> {
 		return this.configs?.licenceFees ?? [];
+	}
+
+	public isProduction(): boolean {
+		return this.configs?.environment === 'Production' || this.configs?.environment === 'Training';
+	}
+
+	public isDevelopment(): boolean {
+		return this.configs?.environment === 'Development';
 	}
 
 	private async getBceidConfig(redirectUri?: string): Promise<AuthConfig> {

@@ -28,3 +28,7 @@ Please delete package-lock.json and node_modules, then reinstall node modules wi
 ```
 npm install
 ```
+or 
+```
+npm install --force
+```

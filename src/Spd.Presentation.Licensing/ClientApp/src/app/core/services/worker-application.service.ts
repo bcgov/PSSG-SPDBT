@@ -69,7 +69,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		caseNumber: new FormControl(), // placeholder to save info for display purposes
 		latestApplicationId: new FormControl(), // placeholder for id
 
-		soleProprietorBizAppId: new FormControl(), // placeholder for combo flow
+		soleProprietorBizAppId: new FormControl(), // placeholder for Simultaneous flow
 
 		originalLicenceData: this.originalLicenceFormGroup,
 
@@ -426,7 +426,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * Partial Save - Save the licence data as is.
 	 * @returns StrictHttpResponse<WorkerLicenceCommandResponse>
 	 */
-	submitSoleProprietorComboFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
+	submitSoleProprietorSimultaneousFlow(): Observable<StrictHttpResponse<WorkerLicenceCommandResponse>> {
 		const licenceModelFormValue = this.workerModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBaseAuthenticated(licenceModelFormValue) as WorkerLicenceAppUpsertRequest;
 
@@ -1028,8 +1028,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @param licenceAppId
 	 * @returns
 	 */
-	populateSoleProprietorComboFlowAnonymous(): Observable<any> {
-		return this.getSoleProprietorComboFlowAnonymous().pipe(
+	populateSoleProprietorSimultaneousFlowAnonymous(): Observable<any> {
+		return this.getSoleProprietorSimultaneousFlowAnonymous().pipe(
 			tap((_resp: any) => {
 				this.initialized = true;
 
@@ -1041,7 +1041,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private getSoleProprietorComboFlowAnonymous(): Observable<any> {
+	private getSoleProprietorSimultaneousFlowAnonymous(): Observable<any> {
 		this.reset();
 
 		return this.securityWorkerLicensingService.apiSpWorkerLicenceApplicationGet().pipe(
@@ -1215,8 +1215,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		body: WorkerLicenceAppSubmitRequest
 	) {
 		if (documentsToSaveApis) {
-			return this.securityWorkerLicensingService
-				.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
 					switchMap((_resp: IActionResult) => {
 						return forkJoin(documentsToSaveApis);
@@ -1235,8 +1235,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				)
 				.pipe(take(1));
 		} else {
-			return this.securityWorkerLicensingService
-				.apiWorkerLicenceApplicationsAnonymousKeyCodePost({ body: googleRecaptcha })
+			return this.licenceAppDocumentService
+				.apiLicenceApplicationDocumentsAnonymousKeyCodePost({ body: googleRecaptcha })
 				.pipe(
 					switchMap((_resp: IActionResult) => {
 						// pass in the list of document ids that were in the original
