@@ -353,5 +353,6 @@ public enum ApplicationPortalStatisticsCd
     CancelledByApplicant,
     CancelledByOrganization,
     ClearedLastSevenDays,
-    NotClearedLastSevenDays
+    NotClearedLastSevenDays,
+    Completed
 }
