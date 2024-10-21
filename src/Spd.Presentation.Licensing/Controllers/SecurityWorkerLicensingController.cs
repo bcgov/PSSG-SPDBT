@@ -92,25 +92,6 @@ namespace Spd.Presentation.Licensing.Controllers
         }
 
         /// <summary>
-        /// Upload licence application files
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="licenceAppId"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/worker-licence-applications/{licenceAppId}/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        [Authorize(Policy = "OnlyBcsc")]
-        public async Task<IEnumerable<LicenceAppDocumentResponse>> UploadLicenceAppFiles([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, [FromRoute] Guid licenceAppId, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-            var applicantInfo = _currentUser.GetBcscUserIdentityInfo();
-
-            return await _mediator.Send(new CreateDocumentInTransientStoreCommand(fileUploadRequest, applicantInfo.Sub, licenceAppId), ct);
-        }
-
-        /// <summary>
         /// Submit Security Worker Licence Application
         /// </summary>
         /// <param name="licenceSubmitRequest"></param>
@@ -126,27 +107,6 @@ namespace Spd.Presentation.Licensing.Controllers
             licenceSubmitRequest.ApplicationOriginTypeCode = ApplicationOriginTypeCode.Portal;
             _logger.LogInformation("Get SubmitSecurityWorkerLicenceApplication");
             return await _mediator.Send(new WorkerLicenceSubmitCommand(licenceSubmitRequest));
-        }
-
-        /// <summary>
-        /// Upload licence application files for authenticated users.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/worker-licence-applications/authenticated/files")]
-        [Authorize(Policy = "OnlyBcsc")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadLicenceAppFilesAuthenticated([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
-            return fileKeyCode;
         }
 
         /// <summary>
@@ -230,46 +190,6 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             string swlApplicationId = GetInfoFromRequestCookie(SessionConstants.AnonymousSoleProprietorApplicationContext);
             return await _mediator.Send(new GetWorkerLicenceQuery(Guid.Parse(swlApplicationId)));
-        }
-
-        /// <summary>
-        /// Upload licence application first step: frontend needs to make this first request to get a Guid code.
-        /// the keycode will be set in the cookies
-        /// </summary>
-        /// <param name="recaptcha"></param>
-        /// <param name="ct"></param>
-        /// <returns>Guid: keyCode</returns>
-        [Route("api/worker-licence-applications/anonymous/keyCode")]
-        [HttpPost]
-        public async Task<IActionResult> GetLicenceAppSubmissionAnonymousCode([FromBody] GoogleRecaptcha recaptcha, CancellationToken ct)
-        {
-            await VerifyGoogleRecaptchaAsync(recaptcha, ct);
-            string keyCode = Guid.NewGuid().ToString();
-            await Cache.SetAsync(keyCode, new LicenceAppDocumentsCache(), TimeSpan.FromMinutes(20), ct);
-            SetValueToResponseCookie(SessionConstants.AnonymousApplicationSubmitKeyCode, keyCode);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Upload licence application files: frontend use the keyCode (in cookies) to upload following files.
-        /// Uploading file only save files in cache, the files are not connected to the application yet.
-        /// </summary>
-        /// <param name="fileUploadRequest"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        [Route("api/worker-licence-applications/anonymous/files")]
-        [HttpPost]
-        [RequestSizeLimit(26214400)] //25M
-        public async Task<Guid> UploadLicenceAppFilesAnonymous([FromForm][Required] LicenceAppDocumentUploadRequest fileUploadRequest, CancellationToken ct)
-        {
-            await VerifyKeyCode();
-            VerifyFiles(fileUploadRequest.Documents);
-
-            CreateDocumentInCacheCommand command = new(fileUploadRequest);
-            var newFileInfos = await _mediator.Send(command, ct);
-            Guid fileKeyCode = Guid.NewGuid();
-            await Cache.SetAsync(fileKeyCode.ToString(), newFileInfos, TimeSpan.FromMinutes(30), ct);
-            return fileKeyCode;
         }
 
         /// <summary>

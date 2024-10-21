@@ -67,7 +67,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						<ng-template matStepLabel>Review Worker Licence</ng-template>
 						<app-steps-worker-licence-review-authenticated
 							[applicationTypeCode]="applicationTypeCode"
-							[isSoleProprietor]="isSoleProprietor"
+							[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 							(saveAndExit)="onSaveAndExit()"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextSubmitStep)="onNextSoleProprietor()"
@@ -77,7 +77,7 @@ import { StepsWorkerLicenceReviewAuthenticatedComponent } from './worker-licence
 						></app-steps-worker-licence-review-authenticated>
 					</mat-step>
 
-					<ng-container *ngIf="isSoleProprietor; else isNotSoleProprietor">
+					<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else isNotSoleProprietor">
 						<mat-step completed="false">
 							<ng-template matStepLabel>Business Information</ng-template>
 						</mat-step>
@@ -111,7 +111,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	step2Complete = false;
 
 	isFormValid = false;
-	isSoleProprietor = false;
+	isSoleProprietorSimultaneousFlow = false;
 
 	showSaveAndExit = false;
 	showStepDogsAndRestraints = false;
@@ -158,9 +158,9 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
 
-				this.isSoleProprietor =
+				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
-					BooleanTypeCode.Yes;
+					BooleanTypeCode.Yes; // TODO update calculation of isSoleProprietorSimultaneousFlow
 
 				this.showSaveAndExit = this.workerApplicationService.isSaveAndExit();
 
@@ -244,7 +244,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	onNextSoleProprietor(): void {
-		this.submitSoleProprietorComboFlowStep();
+		this.submitSoleProprietorSimultaneousFlowStep();
 	}
 
 	onGoToStep(step: number) {
@@ -324,8 +324,8 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 		});
 	}
 
-	private submitSoleProprietorComboFlowStep(): void {
-		this.workerApplicationService.submitSoleProprietorComboFlow().subscribe({
+	private submitSoleProprietorSimultaneousFlowStep(): void {
+		this.workerApplicationService.submitSoleProprietorSimultaneousFlow().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				// if a business licence app already exists, use it
 				if (this.soleProprietorBizAppId) {

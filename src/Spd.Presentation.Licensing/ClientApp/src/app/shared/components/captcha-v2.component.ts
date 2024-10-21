@@ -5,8 +5,8 @@ import { Subject } from 'rxjs';
 import { ConfigService } from 'src/app/core/services/config.service';
 @UntilDestroy({ checkProperties: true })
 @Component({
-  selector: 'app-captcha-v2',
-  template: `
+	selector: 'app-captcha-v2',
+	template: `
 		<div [formGroup]="captchaFormGroup">
 			<re-captcha
 				formControlName="token"
@@ -17,50 +17,54 @@ import { ConfigService } from 'src/app/core/services/config.service';
 			></re-captcha>
 		</div>
 	`,
-  styles: [],
+	styles: [],
 })
 export class CaptchaV2Component implements OnInit {
-  @Input() captchaFormGroup!: FormGroup;
-  @Input() resetControl: Subject<void> = new Subject<void>();
-  @Output() captchaResponse = new EventEmitter<CaptchaResponse>();
-  siteKey = '';
+	@Input() captchaFormGroup!: FormGroup;
+	@Input() resetControl: Subject<void> = new Subject<void>();
+	@Output() captchaResponse = new EventEmitter<CaptchaResponse>();
+	siteKey = '';
 
-  constructor(private configService: ConfigService) {
-    this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;
-  }
+	constructor(private configService: ConfigService) {
+		if (configService.isDevelopment()) {
+			this.siteKey = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+		} else {
+			this.siteKey = this.configService.configs?.recaptchaConfiguration?.key!;
+		}
+	}
 
-  ngOnInit() {
-    this.resetControl.subscribe(() => this.reset());
-  }
+	ngOnInit() {
+		this.resetControl.subscribe(() => this.reset());
+	}
 
-  reset(): void {
-    this.captchaFormGroup.reset();
-    grecaptcha.reset();
-  }
+	reset(): void {
+		this.captchaFormGroup.reset();
+		grecaptcha.reset();
+	}
 
-  resolved($event: string) {
-    this.captchaResponse.emit({
-      type: $event ? CaptchaResponseType.success : CaptchaResponseType.error,
-      resolved: $event,
-    });
-  }
+	resolved($event: string) {
+		this.captchaResponse.emit({
+			type: $event ? CaptchaResponseType.success : CaptchaResponseType.error,
+			resolved: $event,
+		});
+	}
 
-  errored($event: any) {
-    console.debug('[CaptchaV2Component] errored', $event);
-    this.captchaResponse.emit({
-      type: CaptchaResponseType.error,
-      error: $event,
-    });
-  }
+	errored($event: any) {
+		console.debug('[CaptchaV2Component] errored', $event);
+		this.captchaResponse.emit({
+			type: CaptchaResponseType.error,
+			error: $event,
+		});
+	}
 }
 
 export interface CaptchaResponse {
-  type: CaptchaResponseType;
-  resolved?: string;
-  error?: string;
+	type: CaptchaResponseType;
+	resolved?: string;
+	error?: string;
 }
 
 export enum CaptchaResponseType {
-  success = 'SUCCESS',
-  error = 'ERROR',
+	success = 'SUCCESS',
+	error = 'ERROR',
 }

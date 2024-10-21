@@ -25,6 +25,7 @@ internal class LicenceRepository : ILicenceRepository
                 .Expand(i => i.spd_LicenceHolder_contact)
                 .Expand(i => i.spd_LicenceHolder_account)
                 .Expand(i => i.spd_CaseId)
+                .Expand(i => i.spd_SoleProprietorId)
                 .Expand(i => i.spd_spd_licence_spd_caselicencecategory_licenceid)
                 .Where(l => l.spd_licenceid == licenceId)
                 .FirstOrDefaultAsync(ct);
@@ -57,7 +58,7 @@ internal class LicenceRepository : ILicenceRepository
             lics = lics.Where(d => d.statecode != DynamicsConstants.StateCode_Inactive);
 
         if (qry.IncludeInactive)
-            lics = lics.Where(d => d.statuscode != (int)LicenceStatusOptionSet.Suspended);
+            lics = lics.Where(d => d.statuscode != (int)LicenceStatusOptionSet.Inactive && d.statuscode != (int)LicenceStatusOptionSet.Suspended);
 
         if (qry.LicenceId != null)
         {
