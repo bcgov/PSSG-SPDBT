@@ -82,7 +82,7 @@ internal sealed class Printer(IBcMailPlusApi bcMailPlusApi) : IPrinter
         var jobStatus = (await bcMailPlusApi.GetJobStatus([req.PrintJobId], ct)).Jobs.SingleOrDefault();
         var status = jobStatus?.Status switch
         {
-            JobStatusValues.PdfCreated => JobStatus.Completed,
+            JobStatusValues.PdfCreatedAwaitingBatching => JobStatus.Completed, //see spdbt-3075
             JobStatusValues.SentForProcessing => JobStatus.Completed,
             JobStatusValues.ProcessingError => JobStatus.Failed,
             _ => JobStatus.InProgress
