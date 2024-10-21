@@ -31,6 +31,7 @@ export interface AnonymousOrgRegistrationCreateRequest {
   mailingPostalCode?: string | null;
   mailingProvince?: string | null;
   operatingBudgetFlag?: FundsFromBcGovtExceedsThresholdCode;
+  organizationLegalName?: string | null;
   organizationName?: string | null;
   payerPreference?: PayerPreferenceTypeCode;
   portalUserIdentityTypeCode?: IdentityProviderTypeCode;

@@ -115,6 +115,8 @@ export class ScreeningStatusFilterCommonComponent extends BaseFilterComponent im
 		} else {
 			this.applicationPortalStatusCodes = statuses.filter(
 				(item: SelectOptions) =>
+					item.code != ApplicationPortalStatusCode.AwaitingThirdParty &&
+					item.code != ApplicationPortalStatusCode.UnderAssessment &&
 					item.code != ApplicationPortalStatusCode.CompletedCleared &&
 					item.code != ApplicationPortalStatusCode.RiskFound
 			);
