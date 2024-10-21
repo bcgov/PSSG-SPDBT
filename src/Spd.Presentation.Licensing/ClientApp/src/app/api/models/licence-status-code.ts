@@ -6,5 +6,6 @@ export enum LicenceStatusCode {
   Active = 'Active',
   Inactive = 'Inactive',
   Expired = 'Expired',
-  Suspended = 'Suspended'
+  Suspended = 'Suspended',
+  Preview = 'Preview'
 }
