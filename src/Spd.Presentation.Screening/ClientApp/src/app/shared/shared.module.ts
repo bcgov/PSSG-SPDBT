@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha-2';
-import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { MaterialModule } from '../material.module';
 import { AccessDeniedComponent } from './components/access-denied.component';
@@ -61,6 +60,7 @@ import { ScreeningStatusFilterCommonComponent } from './components/screening-sta
 import { ScreeningStatusesCommonComponent } from './components/screening-statuses-common.component';
 import { StatusStatisticsCommonComponent } from './components/status-statistics-common.component';
 import { StepTitleComponent } from './components/step-title.component';
+import { FileDragNDropDirective } from './directives/file-drag-n-drop.directive';
 import { DefaultPipe } from './pipes/default.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { FullnamePipe } from './pipes/fullname.pipe';
@@ -131,6 +131,7 @@ const SHARED_COMPONENTS = [
 	SaDeclarationComponent,
 	SaApplicationSubmittedComponent,
 	SaConsentToCrcComponent,
+	FileDragNDropDirective,
 ];
 
 @NgModule({
@@ -143,7 +144,6 @@ const SHARED_COMPONENTS = [
 		ReactiveFormsModule,
 		NgxMaskDirective,
 		NgxMaskPipe,
-		NgxDropzoneModule,
 		RecaptchaFormsModule,
 		RecaptchaModule,
 	],
@@ -155,7 +155,6 @@ const SHARED_COMPONENTS = [
 		ReactiveFormsModule,
 		NgxMaskDirective,
 		NgxMaskPipe,
-		NgxDropzoneModule,
 		...SHARED_COMPONENTS,
 	],
 })
