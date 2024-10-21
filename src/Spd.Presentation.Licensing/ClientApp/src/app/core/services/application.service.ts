@@ -582,19 +582,7 @@ export class ApplicationService {
 			.apiLicenceLookupAnonymousLicenceNumberPost({ licenceNumber, body: { recaptchaCode } })
 			.pipe(
 				switchMap((resp: LicenceResponse) => {
-					const isFound = !!resp;
-					const isFoundValid = isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
-					const isExpired = isFound && resp.licenceStatusCode != LicenceStatusCode.Active;
-					const isInRenewalPeriod =
-						!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
-
-					const lookupResp: LicenceLookupResult = {
-						isFound,
-						isFoundValid,
-						isExpired,
-						isInRenewalPeriod,
-						searchResult: resp,
-					};
+					const lookupResp = this.getLicenceSearchFlags(resp);
 					return of(lookupResp);
 				})
 			);
@@ -603,19 +591,7 @@ export class ApplicationService {
 	getLicenceNumberLookup(licenceNumber: string): Observable<LicenceLookupResult> {
 		return this.licenceService.apiLicenceLookupLicenceNumberGet({ licenceNumber }).pipe(
 			switchMap((resp: LicenceResponse) => {
-				const isFound = !!resp;
-				const isFoundValid = isFound && resp.licenceStatusCode === LicenceStatusCode.Active;
-				const isExpired = isFound && resp.licenceStatusCode != LicenceStatusCode.Active;
-				const isInRenewalPeriod =
-					!isFound || isExpired ? false : this.getIsInRenewalPeriod(resp.expiryDate, resp.licenceTermCode);
-
-				const lookupResp: LicenceLookupResult = {
-					isFound,
-					isFoundValid,
-					isExpired,
-					isInRenewalPeriod,
-					searchResult: resp,
-				};
+				const lookupResp = this.getLicenceSearchFlags(resp);
 				return of(lookupResp);
 			})
 		);
@@ -834,6 +810,34 @@ export class ApplicationService {
 				item.isExpiryWarning = true;
 			}
 		}
+	}
+
+	private getLicenceSearchFlags(licence: LicenceResponse): LicenceLookupResult {
+		const isFound = !!licence;
+		let isFoundValid = false;
+
+		if (isFound) {
+			isFoundValid =
+				licence.licenceStatusCode === LicenceStatusCode.Active ||
+				licence.licenceStatusCode === LicenceStatusCode.Preview;
+		}
+
+		const isExpired = !isFoundValid;
+		const isInRenewalPeriod = !isFoundValid
+			? false
+			: this.getIsInRenewalPeriod(licence.expiryDate, licence.licenceTermCode);
+
+		const lookupResp: LicenceLookupResult = {
+			isFound,
+			isFoundValid,
+			isExpired,
+			isInRenewalPeriod,
+			searchResult: licence,
+		};
+
+		console.debug('getLicenceSearchFlags lookupResp', lookupResp);
+
+		return lookupResp;
 	}
 
 	private getLicence(
