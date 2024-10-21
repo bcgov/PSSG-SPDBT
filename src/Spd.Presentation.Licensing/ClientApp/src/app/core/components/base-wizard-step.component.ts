@@ -51,10 +51,6 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 		this.cancelAndExit.emit(true);
 	}
 
-	onExit(): void {
-		this.commonApplicationService.cancelAndLoseChanges();
-	}
-
 	onNextReview(formNumber: number): void {
 		const isValid = this.dirtyForm(formNumber);
 		if (!isValid) return;
