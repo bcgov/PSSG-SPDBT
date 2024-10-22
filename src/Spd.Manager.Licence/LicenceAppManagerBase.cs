@@ -69,12 +69,18 @@ internal abstract class LicenceAppManagerBase
             status = ApplicationStatusEnum.PaymentPending;
 
         // Commit the companion application if it exists
-        //companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
+        // companionAppId is the swl for sole proprietor which the business would pay for it, therefore the licence fee should be null here.
         if (companionAppId != null)
         {
             if (companionAppOrigin == ApplicationOriginTypeCode.Portal) //only authenticated swl save file in transient storage
                 await MoveFilesAsync((Guid)companionAppId, ct);
-            await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId, ApplicationStatusEnum.PaymentPending, null, ct);
+
+            //spdbt-3194: update swl term with bl term
+            await _licAppRepository.CommitLicenceApplicationAsync((Guid)companionAppId,
+                ApplicationStatusEnum.PaymentPending,
+                null,
+                ct,
+                Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()));
         }
         // Commit the main licence application
         await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount, ct);
