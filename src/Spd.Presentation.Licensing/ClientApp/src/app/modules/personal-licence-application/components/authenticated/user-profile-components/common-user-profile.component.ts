@@ -55,11 +55,11 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 						</mat-expansion-panel-header>
 
 						<div class="my-3">
-							<app-alert type="info" icon="" [showBorder]="false">
+							<div class="fs-6 fw-bold mb-4">
 								Has your residential address changed?
 								<a [href]="addressChangeUrl" target="_blank">Change your address online</a> to update this information
 								on your BC Services Card. Any changes you make will then be updated here.
-							</app-alert>
+							</div>
 
 							<section>
 								<app-address [form]="residentialAddressFormGroup" [isReadonly]="true"></app-address>
@@ -77,10 +77,10 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 						</mat-expansion-panel-header>
 
 						<div class="my-3">
-							<app-alert type="info" icon="" [showBorder]="false" *ngIf="!isReadonlyMailingAddress">
+							<div class="fs-6 fw-bold mb-4" *ngIf="!isReadonlyMailingAddress">
 								Provide your mailing address, if different from your residential address. This cannot be a company
 								address.
-							</app-alert>
+							</div>
 
 							<app-address-and-is-same-flag
 								[form]="mailingAddressFormGroup"

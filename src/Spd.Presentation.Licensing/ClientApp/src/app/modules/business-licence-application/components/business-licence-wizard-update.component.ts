@@ -2,12 +2,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
@@ -97,8 +95,6 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private router: Router,
-		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {

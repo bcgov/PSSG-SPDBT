@@ -333,7 +333,10 @@ export class UtilService {
 	}
 
 	public isBcAddress(province: string | null | undefined, country: string | null | undefined): boolean {
-		return province === SPD_CONSTANTS.address.provinceBC && country === SPD_CONSTANTS.address.countryCanada;
+		return (
+			(province === SPD_CONSTANTS.address.provinceBC || province === SPD_CONSTANTS.address.provinceBritishColumbia) &&
+			(country === SPD_CONSTANTS.address.countryCA || country === SPD_CONSTANTS.address.countryCanada)
+		);
 	}
 
 	public getPermitShowAdditionalGovIdData(

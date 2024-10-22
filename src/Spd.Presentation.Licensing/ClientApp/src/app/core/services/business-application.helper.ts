@@ -270,8 +270,14 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		province: new FormControl('', [
 			FormControlValidators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBritishColumbia),
 		]),
-		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
+		country: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA),
+			FormControlValidators.required,
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCanada),
+		]),
 	});
 
 	branchesInBcFormGroup: FormGroup = this.formBuilder.group({
@@ -315,6 +321,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		province: new FormControl('', [
 			FormControlValidators.required,
 			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBritishColumbia),
 		]),
 		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
@@ -470,6 +477,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const soleProprietorSWLAppId = businessModelFormValue.soleProprietorSWLAppId;
+		const soleProprietorSWLAppOriginTypeCode = businessModelFormValue.soleProprietorSWLAppOriginTypeCode;
 		const serviceTypeData = { ...businessModelFormValue.serviceTypeData };
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
@@ -548,6 +556,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			bizTypeCode,
 			licenceAppId,
 			soleProprietorSWLAppId,
+			soleProprietorSWLAppOriginTypeCode,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,

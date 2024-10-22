@@ -15,9 +15,8 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 				<app-wizard-footer
 					[isFormValid]="true"
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					[showSaveAndExit]="true"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onNoSaveAndExit()"
-					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onGoToNextStep()"
 				></app-wizard-footer>
@@ -57,6 +56,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 
 				<ng-container *ngIf="applicationTypeCode === applicationTypeCodes.Update">
 					<app-wizard-footer
+						[showSaveAndExit]="false"
 						nextButtonLabel="Pay Now"
 						(previousStepperStep)="onConsentGoToPreviousStep()"
 						(nextStepperStep)="onPayNow()"

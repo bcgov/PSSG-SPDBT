@@ -43,9 +43,9 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							></app-common-user-profile-licence-criminal-history>
 						</section>
 
-						<section *ngIf="showConfirmation">
+						<section class="mb-2" *ngIf="showConfirmation">
 							<form [formGroup]="form" novalidate>
-								<div class="text-minor-heading py-2">Confirmation</div>
+								<div class="text-minor-heading">Confirmation</div>
 								<mat-checkbox formControlName="isProfileUpToDate">
 									I confirm that this information is up-to-date
 								</mat-checkbox>
