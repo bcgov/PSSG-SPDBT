@@ -78,7 +78,9 @@ export const SPD_CONSTANTS = {
 		requestForFingerprintingForm: './assets/files/SPD Request for Fingerprinting Form.pdf',
 	},
 	address: {
-		provinceBC: 'British Columbia',
+		provinceBC: 'BC',
+		provinceBritishColumbia: 'British Columbia',
+		countryCA: 'CA',
 		countryCanada: 'Canada',
 	},
 };

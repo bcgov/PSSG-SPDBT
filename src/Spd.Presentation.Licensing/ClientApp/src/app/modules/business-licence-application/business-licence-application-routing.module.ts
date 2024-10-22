@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BusinessLicenceApplicationRoutes } from './business-license-application-routes';
 import { BusinessControllingMembersAndEmployeesComponent } from './components/business-controlling-members-and-employees.component';
 import { BusinessFirstTimeUserTermsOfUseComponent } from './components/business-first-time-user-terms-of-use.component';
 import { BusinessLicenceApplicationBaseComponent } from './components/business-licence-application-base.component';
@@ -19,7 +20,6 @@ import { BusinessProfileComponent } from './components/business-profile.componen
 import { BusinessUserApplicationsComponent } from './components/business-user-applications.component';
 import { StepBusinessLicenceProfileComponent } from './components/step-business-licence-profile.component';
 import { StepBusinessLicenceUpdateTermsComponent } from './components/step-business-licence-update-terms.component';
-import { BusinessLicenceApplicationRoutes } from './business-license-application-routes';
 
 const routes: Routes = [
 	{
@@ -40,6 +40,10 @@ const routes: Routes = [
 			},
 			{
 				path: BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+				component: BusinessLicenceWizardNewSwlSoleProprietorComponent,
+			},
+			{
+				path: BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR,
 				component: BusinessLicenceWizardNewSwlSoleProprietorComponent,
 			},
 			{
