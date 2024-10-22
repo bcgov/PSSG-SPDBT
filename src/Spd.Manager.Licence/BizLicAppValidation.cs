@@ -61,7 +61,7 @@ public class BizLicAppUpsertRequestValidator : BizLicAppBaseValidator<BizLicAppU
         RuleFor(r => r.DocumentInfos)
             .Must(r => r != null && r.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) <= 10)
             .When(r => r.DocumentInfos?.Count(d => d.LicenceDocumentTypeCode == LicenceDocumentTypeCode.BizInsurance) > 0)
-            .WithMessage("No more than 1 business insurance document is allowed.");
+            .WithMessage("No more than 10 business insurance document is allowed.");
 
         // Document required for "Armoured car guard"
         RuleFor(r => r.DocumentInfos)

@@ -237,12 +237,11 @@ public class BizPortalUserManagerTest
             .Create();
         List<PortalUserResp> userResults = new() { userToDelete, existingUser };
         BizResult bizResult = new() { Id = bizId};
-        List<BizResult> biz = new() { bizResult };
 
         mockPortalUserRepo.Setup(u => u.QueryAsync(It.Is<PortalUserQry>(s => s.OrgId == bizId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new PortalUserListResp() { Items = userResults });
-        mockBizRepo.Setup(o => o.QueryBizAsync(It.Is<BizsQry>(q => q.BizGuid == bizId), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(biz);
+        mockBizRepo.Setup(o => o.GetBizAsync(It.Is<Guid>(q => q == bizId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(bizResult);
 
         BizPortalUserDeleteCommand cmd = new(userId, bizId);
 
