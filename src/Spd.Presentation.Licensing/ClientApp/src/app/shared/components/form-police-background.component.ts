@@ -12,10 +12,16 @@ import { FileUploadComponent } from './file-upload.component';
 		<form [formGroup]="form" novalidate>
 			<div class="row">
 				<div [ngClass]="isWizardStep ? 'col-md-8 col-sm-12 mx-auto' : 'col-12'">
-					<div class="fs-6 fw-bold m-3">
-						A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security
-						worker licence.
-					</div>
+					<ng-container *ngIf="isWizardStep; else isNotWizardStep">
+						<app-alert type="warning" icon="warning">
+							<ng-container *ngTemplateOutlet="policeWarningMessage"></ng-container>
+						</app-alert>
+					</ng-container>
+					<ng-template #isNotWizardStep>
+						<div class="fs-6 fw-bold m-3">
+							<ng-container *ngTemplateOutlet="policeWarningMessage"></ng-container>
+						</div>
+					</ng-template>
 				</div>
 			</div>
 
@@ -110,6 +116,11 @@ import { FileUploadComponent } from './file-upload.component';
 				</div>
 			</div>
 		</form>
+
+		<ng-template #policeWarningMessage>
+			A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker
+			licence.
+		</ng-template>
 	`,
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
@@ -118,6 +129,7 @@ export class FormPoliceBackgroundComponent {
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodeOther = PoliceOfficerRoleCode.Other;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;
+	warningMessage = `A member of a police force as defined in the <i>British Columbia Police Act</i> may not hold a security worker licence.`;
 
 	matcher = new FormErrorStateMatcher();
 
