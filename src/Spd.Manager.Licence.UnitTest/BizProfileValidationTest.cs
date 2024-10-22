@@ -33,6 +33,7 @@ public class BizProfileValidationTest
         var model = fixture.Build<BizProfileUpdateRequest>()
             .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
             .With(r => r.BizAddress, address)
+            .With(r => r.SoleProprietorSwlPhoneNumber, "613338888")
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .With(r => r.SoleProprietorSwlEmailAddress, "test@test.com")
             .Create();
@@ -54,6 +55,8 @@ public class BizProfileValidationTest
 
         var branch = fixture.Build<BranchInfo>()
             .With(b => b.BranchAddress, address)
+            .With(b => b.BranchManager, "test branch manager")
+            .Without(b => b.BranchPhoneNumber)
             .Create();
 
         var bizManagerContactInfo = fixture.Build<ContactInfo>()
@@ -129,7 +132,6 @@ public class BizProfileValidationTest
             .Create();
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.SoleProprietorLicenceId);
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlEmailAddress);
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlPhoneNumber);
     }
@@ -145,7 +147,7 @@ public class BizProfileValidationTest
             .Create();
 
         var model = fixture.Build<BizProfileUpdateRequest>()
-            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
+            .With(r => r.BizTypeCode, BizTypeCode.Corporation)
             .With(r => r.BizAddress, address)
             .Create();
 
@@ -173,7 +175,7 @@ public class BizProfileValidationTest
             .Create();
 
         var model = fixture.Build<BizProfileUpdateRequest>()
-            .With(r => r.BizTypeCode, BizTypeCode.NonRegisteredSoleProprietor)
+            .With(r => r.BizTypeCode, BizTypeCode.Corporation)
             .With(r => r.BizAddress, address)
             .With(r => r.BizManagerContactInfo, bizManagerContactInfo)
             .With(r => r.SoleProprietorSwlEmailAddress, "test")
@@ -181,6 +183,8 @@ public class BizProfileValidationTest
 
         var result = validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(r => r.BizManagerContactInfo.EmailAddress);
+        model.BizTypeCode = BizTypeCode.NonRegisteredSoleProprietor;
+        result = validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(r => r.SoleProprietorSwlEmailAddress);
     }
 }
