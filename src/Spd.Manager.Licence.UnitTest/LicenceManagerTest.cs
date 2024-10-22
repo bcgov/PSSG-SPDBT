@@ -49,22 +49,23 @@ public class LicenceManagerTest
     {
         Guid licenceId = Guid.NewGuid();
         Guid applicantId = Guid.NewGuid();
+        Guid photoDocumentUrlId = Guid.NewGuid();
 
         LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.LicenceId, licenceId)
                 .With(r => r.LicenceHolderId, applicantId)
+                .With(r => r.PhotoDocumentUrlId, photoDocumentUrlId)
                 .Create();
 
-        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == licenceId), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new LicenceListResp()
-            {
-                Items = new List<LicenceResp> { licenceResp }
-            });
+         mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(licenceResp);
 
-        DocumentResp document = fixture.Create<DocumentResp>();
-        mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == applicantId &&
-            q.FileType == DocumentTypeEnum.Photograph), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new DocumentListResp() { Items = new List<DocumentResp>() { document } });
+
+        DocumentResp document = fixture.Build<DocumentResp>()
+            .With(r => r.LicenceId, licenceId)
+            .Create();
+        mockDocRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == photoDocumentUrlId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(document);
 
         LicencePhotoQuery request = fixture.Build<LicencePhotoQuery>()
             .With(q => q.LicenceId, licenceId)
@@ -94,11 +95,8 @@ public class LicenceManagerTest
                 .With(r => r.LicenceHolderId, applicantId)
                 .Create();
 
-        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == licenceId), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new LicenceListResp()
-            {
-                Items = new List<LicenceResp> { licenceResp }
-            });
+        mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(licenceResp);
 
         LicencePhotoQuery request = fixture.Build<LicencePhotoQuery>()
             .With(q => q.LicenceId, licenceId)
@@ -122,12 +120,9 @@ public class LicenceManagerTest
                 .With(r => r.LicenceId, licenceId)
                 .With(r => r.LicenceHolderId, applicantId)
                 .Create();
+        mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceId), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(licenceResp);
 
-        mockLicRepo.Setup(m => m.QueryAsync(It.Is<LicenceQry>(q => q.LicenceId == licenceId), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new LicenceListResp()
-            {
-                Items = new List<LicenceResp> { licenceResp }
-            });
         mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicantId == applicantId &&
             q.FileType == DocumentTypeEnum.Photograph), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp());
