@@ -752,23 +752,22 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	getPermitWithAccessCodeDataAnonymous(
-		accessCodeData: any,
-		applicationTypeCode: ApplicationTypeCode,
-		permitLicenceData: LicenceResponse
+		associatedLicence: LicenceResponse,
+		applicationTypeCode: ApplicationTypeCode
 	): Observable<PermitLicenceAppResponse> {
-		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode, permitLicenceData).pipe(
+		return this.getPermitOfTypeUsingAccessCode(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = { ..._resp.personalInformationData };
 
-				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
-				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
+				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
+				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
 
 				const originalLicenceData = {
-					originalApplicationId: accessCodeData.linkedLicenceAppId,
-					originalLicenceId: accessCodeData.linkedLicenceId,
-					originalLicenceNumber: accessCodeData.licenceNumber,
-					originalExpiryDate: accessCodeData.linkedExpiryDate,
-					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode, // TODO do we need other licence data to link?
+					originalApplicationId: associatedLicence.licenceAppId,
+					originalLicenceId: associatedLicence.licenceId,
+					originalLicenceNumber: associatedLicence.licenceNumber,
+					originalExpiryDate: associatedLicence.expiryDate,
+					originalLicenceTermCode: associatedLicence.licenceTermCode, // TODO do we need other licence data to link?
 				};
 
 				this.permitModelFormGroup.patchValue(
@@ -784,7 +783,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
-					accessCodeData.licenceNumber
+					associatedLicence.licenceNumber!
 				);
 
 				console.debug('[getPermitWithAccessCodeDataAnonymous] permitModelFormGroup', this.permitModelFormGroup.value);
@@ -1043,7 +1042,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			origSurname: profileData.surname,
 			origDateOfBirth: profileData.dateOfBirth,
 			origGenderCode: profileData.genderCode,
-			cardHolderName: updateLicenceData?.nameOnCard ?? associatedLicence?.cardHolderName ?? null,
+			cardHolderName: updateLicenceData?.nameOnCard ?? associatedLicence?.nameOnCard ?? null,
 			licenceHolderName: updateLicenceData?.licenceHolderName ?? associatedLicence?.licenceHolderName ?? null,
 		};
 
@@ -1051,7 +1050,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			originalApplicationId: associatedLicence?.licenceAppId ?? null,
 			originalLicenceId: associatedLicence?.licenceId ?? null,
 			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
-			originalExpiryDate: associatedLicence?.licenceExpiryDate ?? null,
+			originalExpiryDate: associatedLicence?.expiryDate ?? null,
 			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: 'bizTypeCode' in profileData ? profileData.bizTypeCode : associatedLicence?.bizTypeCode,
 		};

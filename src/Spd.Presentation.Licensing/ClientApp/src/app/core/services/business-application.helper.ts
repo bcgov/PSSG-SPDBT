@@ -5,6 +5,8 @@ import {
 	ContactInfo,
 	Document,
 	LicenceDocumentTypeCode,
+	LicenceTermCode,
+	ServiceTypeCode,
 	SwlContactInfo,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
@@ -545,7 +547,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			this.clearPrivateInvestigatorModelData();
 		}
 
-		const hasExpiredLicence = expiredLicenceData.hasExpiredLicence == BooleanTypeCode.Yes;
+		const hasExpiredLicence = this.utilService.booleanTypeToBoolean(expiredLicenceData.hasExpiredLicence);
 		const expiredLicenceId = hasExpiredLicence ? expiredLicenceData.expiredLicenceId : null;
 		if (!hasExpiredLicence) {
 			this.clearExpiredLicenceModelData();
@@ -718,6 +720,131 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		if (!applicationTypeCode) return false;
 
 		return applicationTypeCode === ApplicationTypeCode.Update;
+	}
+
+	getSummarycaseNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.caseNumber ?? '';
+	}
+
+	getSummaryisBusinessLicenceSoleProprietor(businessLicenceModelData: any): string {
+		return businessLicenceModelData.isBusinessLicenceSoleProprietor ?? false;
+	}
+
+	getSummaryhasExpiredLicence(businessLicenceModelData: any): string {
+		return businessLicenceModelData.expiredLicenceData.hasExpiredLicence ?? '';
+	}
+	getSummaryexpiredLicenceNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+	}
+	getSummaryexpiredLicenceExpiryDate(businessLicenceModelData: any): string {
+		return businessLicenceModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+	}
+
+	getSummarynoLogoOrBranding(businessLicenceModelData: any): string {
+		return businessLicenceModelData.companyBrandingData.noLogoOrBranding ?? '';
+	}
+	getSummarycompanyBrandingAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.companyBrandingData.attachments ?? [];
+	}
+
+	getSummaryproofOfInsuranceAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.liabilityData.attachments ?? [];
+	}
+
+	getSummaryserviceTypeCode(businessLicenceModelData: any): ServiceTypeCode | null {
+		return businessLicenceModelData.serviceTypeData?.serviceTypeCode ?? null;
+	}
+	getSummaryapplicationTypeCode(businessLicenceModelData: any): ApplicationTypeCode | null {
+		return businessLicenceModelData.applicationTypeData?.applicationTypeCode ?? null;
+	}
+	getSummarybizTypeCode(businessLicenceModelData: any): BizTypeCode | null {
+		return businessLicenceModelData.businessInformationData?.bizTypeCode ?? null;
+	}
+	getSummarylicenceTermCode(businessLicenceModelData: any): LicenceTermCode | null {
+		return businessLicenceModelData.licenceTermData.licenceTermCode ?? '';
+	}
+
+	getSummarycategoryList(businessLicenceModelData: any): Array<WorkerCategoryTypeCode> {
+		const list: Array<WorkerCategoryTypeCode> = [];
+		const categoryData = { ...businessLicenceModelData.categoryData };
+
+		for (const [key, value] of Object.entries(categoryData)) {
+			if (value && key in WorkerCategoryTypeCode) {
+				list.push(key as WorkerCategoryTypeCode);
+			}
+		}
+		return list.sort();
+	}
+	getSummaryisAnyDocuments(businessLicenceModelData: any): boolean {
+		return (
+			this.getSummaryshowArmouredCarGuard(businessLicenceModelData) ||
+			this.getSummaryshowSecurityGuard(businessLicenceModelData)
+		);
+	}
+	getSummaryshowArmouredCarGuard(businessLicenceModelData: any): boolean {
+		return businessLicenceModelData.categoryArmouredCarGuardData?.isInclude ?? false;
+	}
+	getSummaryshowSecurityGuard(businessLicenceModelData: any): boolean {
+		const isInclude = businessLicenceModelData.categorySecurityGuardData?.isInclude ?? false;
+		return isInclude && businessLicenceModelData.categorySecurityGuardData?.useDogs === BooleanTypeCode.Yes;
+	}
+	getSummarycategoryArmouredCarGuardAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.categoryArmouredCarGuardData.attachments ?? [];
+	}
+	getSummarycategorySecurityGuardAttachments(businessLicenceModelData: any): File[] {
+		return businessLicenceModelData.categorySecurityGuardData.attachments ?? [];
+	}
+
+	getSummarybusinessManagerGivenName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessManagerData.givenName ?? '';
+	}
+	getSummarybusinessManagerMiddleName1(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessManagerData.middleName1 ?? '';
+	}
+	getSummarybusinessManagerMiddleName2(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessManagerData.middleName2 ?? '';
+	}
+	getSummarybusinessManagerSurname(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessManagerData.surname ?? '';
+	}
+	getSummarybusinessManagerEmailAddress(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessManagerData.emailAddress ?? '';
+	}
+	getSummarybusinessManagerPhoneNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.businessManagerData.phoneNumber ?? '';
+	}
+
+	getSummaryapplicantIsBizManager(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.applicantIsBizManager ?? '';
+	}
+	getSummaryyourContactGivenName(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.givenName ?? '';
+	}
+	getSummaryyourContactMiddleName1(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.middleName1 ?? '';
+	}
+	getSummaryyourContactMiddleName2(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.middleName2 ?? '';
+	}
+	getSummaryyourContactSurname(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.surname ?? '';
+	}
+	getSummaryyourContactEmailAddress(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.emailAddress ?? '';
+	}
+	getSummaryyourContactPhoneNumber(businessLicenceModelData: any): string {
+		return businessLicenceModelData.applicantData.phoneNumber ?? '';
+	}
+
+	getSummarymembersWithSwlList(businessLicenceModelData: any): Array<any> {
+		return businessLicenceModelData.controllingMembersData.membersWithSwl;
+	}
+	getSummarymembersWithoutSwlList(businessLicenceModelData: any): Array<any> {
+		return businessLicenceModelData.controllingMembersData.membersWithoutSwl;
+	}
+
+	getSummaryemployeesList(businessLicenceModelData: any): Array<any> {
+		return businessLicenceModelData.employeesData.employees ?? [];
 	}
 
 	private clearPrivateInvestigatorModelData(): void {

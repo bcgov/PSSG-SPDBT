@@ -1,14 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-	ApplicationTypeCode,
-	LicenceResponse,
-	LicenceStatusCode,
-	LicenceTermCode,
-	ServiceTypeCode,
-} from '@app/api/models';
+import { ApplicationTypeCode, LicenceResponse, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { ApplicationService } from '@app/core/services/application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -108,6 +103,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 		private router: Router,
 		private optionsPipe: OptionsPipe,
 		private hotToastService: HotToastService,
+		private commonApplicationService: ApplicationService,
 		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService
 	) {}
@@ -204,7 +200,7 @@ export class CommonAccessCodeAnonymousComponent implements OnInit {
 			//  access code matches licence, but the ServiceTypeCode does not match
 			const selServiceTypeCodeDesc = this.optionsPipe.transform(this.serviceTypeCode, 'ServiceTypes');
 			this.errorMessage = `This licence number is not a ${selServiceTypeCodeDesc}.`;
-		} else if (resp.licenceStatusCode != LicenceStatusCode.Active) {
+		} else if (!this.commonApplicationService.isLicenceActive(resp.licenceStatusCode)) {
 			// access code matches licence, but the licence is expired
 			this.isExpired = true;
 			if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {

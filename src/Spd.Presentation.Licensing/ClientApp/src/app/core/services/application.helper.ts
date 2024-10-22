@@ -71,6 +71,8 @@ export abstract class ApplicationHelper {
 		originalIsDogsPurposeProtection: new FormControl(null),
 		originalPhotoOfYourselfExpired: new FormControl(false), // not used for Business Licence
 		originalDogAuthorizationExists: new FormControl(false), // not used for Business Licence
+		linkedSoleProprietorExpiryDate: new FormControl(null), // not used for Business Licence
+		linkedSoleProprietorLicenceId: new FormControl(null), // not used for Business Licence
 	});
 
 	linkAccountCodeFormGroup: FormGroup = this.formBuilder.group({

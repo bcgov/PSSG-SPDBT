@@ -30,7 +30,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="isRenewalOrUpdate">
+			<mat-step *ngIf="isRenewal">
 				<app-step-business-licence-confirmation
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-business-licence-confirmation>
@@ -206,12 +206,5 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }

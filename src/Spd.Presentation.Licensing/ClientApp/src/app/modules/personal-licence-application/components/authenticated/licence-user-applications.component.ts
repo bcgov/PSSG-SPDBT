@@ -216,8 +216,8 @@ export class LicenceUserApplicationsComponent implements OnInit {
 					this.commonApplicationService.getApplicationIsInProgress(userPersonApplicationsList);
 
 				// Swl Licences/ Permits
-				const activeLicencesList = userPersonLicencesList.filter(
-					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+				const activeLicencesList = userPersonLicencesList.filter((item: MainLicenceResponse) =>
+					this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
 				);
 
 				const expiredLicences = userPersonLicencesList.filter(

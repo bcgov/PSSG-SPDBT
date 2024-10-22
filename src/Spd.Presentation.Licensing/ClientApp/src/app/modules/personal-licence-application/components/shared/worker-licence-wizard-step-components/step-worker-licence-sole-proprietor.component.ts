@@ -26,11 +26,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 			<form [formGroup]="form" novalidate>
 				<div class="row">
 					<div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mx-auto">
-						<mat-radio-group
-							aria-label="Select an option"
-							formControlName="isSoleProprietor"
-							(change)="onSoleProprietorChange()"
-						>
+						<mat-radio-group aria-label="Select an option" formControlName="isSoleProprietor">
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.No">No</mat-radio-button>
 							<mat-divider class="my-2"></mat-divider>
 							<mat-radio-button class="radio-label" [value]="booleanTypeCodes.Yes">Yes</mat-radio-button>
@@ -109,26 +105,6 @@ export class StepWorkerLicenceSoleProprietorComponent implements OnInit, Licence
 				break;
 			}
 		}
-	}
-
-	onSoleProprietorChange(): void {
-		if (this.form.value.isSoleProprietor == BooleanTypeCode.No) {
-			this.form.patchValue({ bizTypeCode: BizTypeCode.None });
-		} else {
-			this.form.patchValue({ bizTypeCode: null });
-		}
-
-		// const soleProprietorData = {
-		// 	isSoleProprietor: null,
-		// 	BusinessTypeCode: null,
-		// };
-
-		// this.workerApplicationService.licenceModelFormGroup.patchValue({
-		// 	bizTypeCode:
-		// 		this.form.value.isSoleProprietor === BooleanTypeCode.No
-		// 			? BusinessTypeCode.None
-		// 			: this.form.value.bizTypeCode,
-		// });
 	}
 
 	isFormValid(): boolean {

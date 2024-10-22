@@ -81,11 +81,9 @@ export class StepPermitAccessCodeComponent implements OnInit, LicenceChildSteppe
 		return this.form.valid;
 	}
 
-	onLinkSuccess(permitLicenceData: LicenceResponse): void {
-		const accessCodeData = this.form.value;
-
+	onLinkSuccess(associatedLicence: LicenceResponse): void {
 		this.permitApplicationService
-			.getPermitWithAccessCodeDataAnonymous(accessCodeData, this.applicationTypeCode!, permitLicenceData)
+			.getPermitWithAccessCodeDataAnonymous(associatedLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.serviceTypeCode) {
 					case ServiceTypeCode.ArmouredVehiclePermit:

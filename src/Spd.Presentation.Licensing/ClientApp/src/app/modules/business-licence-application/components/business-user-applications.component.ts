@@ -186,8 +186,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
 
 						// User Licences/Permits
-						const activeBusinessLicencesList = businessLicencesList.filter(
-							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+						const activeBusinessLicencesList = businessLicencesList.filter((item: MainLicenceResponse) =>
+							this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
 						);
 
 						this.expiredLicencesList = businessLicencesList.filter(

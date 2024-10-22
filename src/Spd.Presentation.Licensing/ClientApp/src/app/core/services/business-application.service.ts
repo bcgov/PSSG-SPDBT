@@ -755,7 +755,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Either create an empty licence or continue with the existing business lic app
 	 * @returns
 	 */
-	getRenewBusinessLicenceWithSwlCombinedFlow(soleProprietorSWLAppId: string): Observable<any> {
+	getRenewalBusinessLicenceWithSwlCombinedFlow(
+		soleProprietorSWLAppId: string,
+		soleProprietorBizLicId: string
+	): Observable<any> {
+		// TODO fix renewal sp
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
@@ -769,12 +773,143 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 						this.commonApplicationService.setApplicationTitle(
 							ServiceTypeCode.SecurityBusinessLicence,
-							ApplicationTypeCode.Renewal
+							ApplicationTypeCode.New
 						);
 					})
 				);
 			})
 		);
+
+		// const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+		// const apis = [
+		// 	this.bizProfileService.apiBizIdGet({ id: bizId }),
+		// 	this.licenceService.apiLicencesLicenceIdGet({ licenceId: soleProprietorBizLicId }),
+		// ];
+
+		// return forkJoin(apis).pipe(
+		// 	switchMap((resps: any[]) => {
+		// 		const businessProfile = resps[0];
+		// 		const associatedLicence = resps[1];
+		// 		// xxxxxxxxxxxxxx;
+		// 		return this.applyLicenceProfileIntoModel({
+		// 			businessProfile,
+		// 			applicationTypeCode: ApplicationTypeCode.Renewal,
+		// 			soleProprietorSWLAppId,
+		// 		});
+		// 		// return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
+		// 		// 	soleProprietorSWLAppId,
+		// 		// 	businessProfile,
+		// 		// }).pipe(
+		// 		// 	switchMap((_resp: any) => {
+		// 		// 		return this.loadBusinessApplAndProfile({
+		// 		// 			applicationTypeCode: ApplicationTypeCode.Renewal,
+		// 		// 			businessLicenceAppl,
+		// 		// 			businessProfile,
+		// 		// 			associatedLicence,
+		// 		// 		});
+
+		// 		// 		// return this.loadExistingBusinessLicenceWithLatestApp({xxx
+		// 		// 		// 	associatedLicence,
+		// 		// 		// 	applicationTypeCode: ApplicationTypeCode.Renewal,
+		// 		// 		// 	isSoleProprietor: true,
+		// 		// 		// });
+		// 		// 	}),
+		// 		// 	switchMap((_resp: any) => {
+		// 		// 		return this.applyRenewalDataUpdatesToModel(_resp);
+		// 		// 	}),
+		// 		// 	tap((_resp: any) => {
+		// 		// 		this.setAsInitialized();
+
+		// 		// 		this.commonApplicationService.setApplicationTitle(
+		// 		// 			_resp.serviceTypeData.serviceTypeCode,
+		// 		// 			_resp.applicationTypeData.applicationTypeCode,
+		// 		// 			_resp.originalLicenceData.originalLicenceNumber
+		// 		// 		);
+		// 		// 	})
+		// 		// );
+		// 	})
+		// );
+
+		// return this.loadExistingBusinessLicenceWithLatestApp({
+		// 	associatedLicence,
+		// 	applicationTypeCode,
+		// 	isSoleProprietor,
+		// }).pipe(
+		// 	switchMap((resp: any) => {
+		// 		switch (applicationTypeCode) {
+		// 			case ApplicationTypeCode.Renewal:
+		// 				return this.applyRenewalDataUpdatesToModel(resp);
+		// 			case ApplicationTypeCode.Update:
+		// 				return this.applyUpdateDataUpdatesToModel(resp);
+		// 			default:
+		// 				return this.applyReplacementDataUpdatesToModel(resp);
+		// 		}
+		// 	})
+		// );
+		// return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+		// 	switchMap((businessProfile: BizProfileResponse) => {
+		// 		return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
+		// 			soleProprietorSWLAppId,
+		// 			businessProfile,
+		// 		}).pipe(
+		// 			tap((_resp: any) => {
+		// 				this.setAsInitialized();
+
+		// 				return this.applyRenewalDataUpdatesToModel(resp);
+		// 				this.commonApplicationService.setApplicationTitle(
+		// 					ServiceTypeCode.SecurityBusinessLicence,
+		// 					ApplicationTypeCode.Renewal
+		// 				);
+		// 			})
+		// 		);
+		// 	})E100102
+		// );
+
+		// return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+		// switchMap((businessProfile: BizProfileResponse) => {
+		// return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId: soleProprietorSWLAppId }).pipe(
+		// 	tap((resp: WorkerLicenceAppResponse) => {
+
+		// 		return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
+
+		// return this.licenceService.apiLicencesLicenceIdGet({ licenceId: soleProprietorBizLicId }).pipe(
+		// 	switchMap((licence: LicenceResponse) => {
+		// 		return this.getBusinessLicenceWithSelection(ApplicationTypeCode.Renewal, licence, true);xxx
+		// 	})
+		// tap((_resp: any) => {
+		// 	this.setAsInitialized();
+
+		// 		this.commonApplicationService.setApplicationTitle(
+		// 			ServiceTypeCode.SecurityBusinessLicence,
+		// 			ApplicationTypeCode.Renewal
+		// 		);
+		// }),
+
+		/*
+				return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
+					soleProprietorSWLAppId,
+					businessProfile,
+				}).pipe(
+					switchMap((resp: any) => {
+						// this.commonApplicationService.setApplicationTitle(
+						// 	ServiceTypeCode.SecurityBusinessLicence,
+						// 	ApplicationTypeCode.Renewal
+						// );
+
+						return this.applyRenewalDataUpdatesToModel(resp);
+					}),
+					tap((_resp: any) => {
+						this.setAsInitialized();
+
+						this.commonApplicationService.setApplicationTitle(
+							ServiceTypeCode.SecurityBusinessLicence,
+							ApplicationTypeCode.Renewal
+						);
+					})
+				);
+				*/
+		// })
+		// );
 	}
 
 	/**
@@ -916,7 +1051,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	getBusinessLicenceWithSelection(
 		applicationTypeCode: ApplicationTypeCode,
-		originalLicence: MainLicenceResponse,
+		originalLicence: LicenceResponse | MainLicenceResponse,
 		isSoleProprietor: boolean
 	): Observable<BizLicAppResponse> {
 		return this.getBusinessLicenceOfType(applicationTypeCode, originalLicence, isSoleProprietor).pipe(
@@ -1197,7 +1332,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 */
 	private getBusinessLicenceOfType(
 		applicationTypeCode: ApplicationTypeCode,
-		associatedLicence: MainLicenceResponse,
+		associatedLicence: LicenceResponse | MainLicenceResponse,
 		isSoleProprietor: boolean
 	): Observable<any> {
 		return this.loadExistingBusinessLicenceWithLatestApp({
@@ -1291,7 +1426,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		applicationTypeCode,
 		isSoleProprietor,
 	}: {
-		associatedLicence?: MainLicenceResponse;
+		associatedLicence?: LicenceResponse | MainLicenceResponse;
 		applicationTypeCode: ApplicationTypeCode;
 		isSoleProprietor: boolean;
 	}): Observable<any> {
@@ -1340,7 +1475,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessLicenceAppl: BizLicAppResponse;
 		businessProfile: BizProfileResponse;
 		businessMembers?: Members;
-		associatedLicence?: MainLicenceResponse;
+		associatedLicence?: LicenceResponse | MainLicenceResponse;
 	}) {
 		const apis: Observable<any>[] = [];
 		if (businessLicenceAppl.expiredLicenceId) {
@@ -1511,7 +1646,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	}: {
 		businessLicenceAppl: BizLicAppResponse;
 		businessProfile: BizProfileResponse;
-		associatedLicence?: MainLicenceResponse;
+		associatedLicence?: LicenceResponse | MainLicenceResponse;
 		associatedExpiredLicence?: LicenceResponse;
 		soleProprietorSwlLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
@@ -1552,7 +1687,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessLicenceAppl: BizLicAppResponse;
 		associatedExpiredLicence?: LicenceResponse;
 		privateInvestigatorSwlLicence?: LicenceResponse;
-		associatedLicence?: MainLicenceResponse;
+		associatedLicence?: LicenceResponse | MainLicenceResponse;
 		brandingDocumentInfos?: Array<Document>;
 	}): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: businessLicenceAppl.serviceTypeCode };
@@ -1568,7 +1703,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			originalApplicationId: associatedLicence?.licenceAppId ?? null,
 			originalLicenceId: associatedLicence?.licenceId ?? null,
 			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
-			originalExpiryDate: associatedLicence?.licenceExpiryDate ?? null,
+			originalExpiryDate: associatedLicence?.expiryDate ?? null,
 			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: associatedLicence?.bizTypeCode ?? null,
 			originalCategoryCodes: associatedLicence?.categoryCodes ?? null,
@@ -1749,7 +1884,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		let isSoleProprietorSimultaneousSWLAnonymous: boolean | null = null;
 
 		if (associatedLicence) {
-			isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+			if ('isSimultaneousFlow' in associatedLicence) {
+				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+			} else {
+				isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
+			}
 		} else {
 			isSoleProprietorSimultaneousFlow = !!soleProprietorSWLAppId;
 			isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow

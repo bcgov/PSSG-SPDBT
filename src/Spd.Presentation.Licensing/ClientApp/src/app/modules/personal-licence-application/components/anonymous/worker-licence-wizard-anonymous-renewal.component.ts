@@ -8,6 +8,7 @@ import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
+import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepsWorkerLicenceBackgroundRenewAndUpdateComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/steps-worker-licence-background-renew-and-update.component';
@@ -35,7 +36,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 					[isFormValid]="isFormValid"
 					[applicationTypeCode]="applicationTypeCode"
 					[showStepDogsAndRestraints]="showStepDogsAndRestraints"
-					[showWorkerLicenceSoleProprietorStep]="isSoleProprietorSimultaneousFlow"
+					[showWorkerLicenceSoleProprietorStep]="showWorkerLicenceSoleProprietorStep"
 					(childNextStep)="onChildNextStep()"
 					(nextReview)="onGoToReview()"
 					(nextStepperStep)="onNextStepperStep(stepper)"
@@ -134,18 +135,20 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	stepReviewLicenceComponent!: StepsWorkerLicenceReviewAnonymousComponent;
 
 	isSoleProprietorSimultaneousFlow = false;
+	showWorkerLicenceSoleProprietorStep = false;
 	showSaveAndExit = false;
 	isFormValid = false;
 	showStepDogsAndRestraints = false;
 	showCitizenshipStep = false;
 	policeOfficerRoleCode: string | null = null;
-	showWorkerLicenceSoleProprietorStep = false;
+	linkedSoleProprietorBizLicId: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
+		private utilService: UtilService,
 		private hotToastService: HotToastService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
@@ -167,9 +170,21 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				this.isSoleProprietorSimultaneousFlow =
-					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
-					BooleanTypeCode.Yes; // TODO update calculation of isSoleProprietorSimultaneousFlow
+				this.showWorkerLicenceSoleProprietorStep =
+					!!this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
+
+				const isSoleProprietor = this.workerApplicationService.workerModelFormGroup.get(
+					'soleProprietorData.isSoleProprietor'
+				)?.value;
+
+				if (isSoleProprietor) {
+					// for new flow, use value selected by the user
+					this.isSoleProprietorSimultaneousFlow = this.utilService.booleanTypeToBoolean(isSoleProprietor) ?? false;
+				} else {
+					// during a renewal - use this flag
+					this.isSoleProprietorSimultaneousFlow =
+						this.workerApplicationService.workerModelFormGroup.get('isSoleProprietorSimultaneousFlow')?.value ?? false;
+				}
 
 				this.showStepDogsAndRestraints =
 					this.workerApplicationService.categorySecurityGuardFormGroup.get('isInclude')?.value;
@@ -190,6 +205,10 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 				)?.value;
 				this.showWorkerLicenceSoleProprietorStep =
 					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
+
+				this.linkedSoleProprietorBizLicId = this.workerApplicationService.workerModelFormGroup.get(
+					'originalLicenceData.linkedSoleProprietorLicenceId'
+				)?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -292,11 +311,12 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 						this.router.navigate(
 							[
 								BusinessLicenceApplicationRoutes.MODULE_PATH,
-								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR,
+								BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR,
 							],
 							{
 								queryParams: {
 									swlLicAppId: this.licenceAppId,
+									linkedSoleProprietorBizLicId: this.linkedSoleProprietorBizLicId,
 								},
 							}
 						);
