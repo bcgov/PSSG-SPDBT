@@ -236,6 +236,8 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
+            Guid originalLicenceId = Guid.NewGuid();
+
             DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceReplaceValidBeforeExpirationInDays + 1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
@@ -243,11 +245,9 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
+
             mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), CancellationToken.None))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockDocRepo.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == licAppId), It.IsAny<CancellationToken>()))
@@ -257,7 +257,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             var swlAppSubmitRequest = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Replacement, licAppId);
             WorkerLicenceAppReplaceCommand request = new(swlAppSubmitRequest, []);
-
+            request.LicenceAnonymousRequest.OriginalLicenceId = originalLicenceId;
             var result = await sut.Handle(request, CancellationToken.None);
 
             Assert.IsType<WorkerLicenceCommandResponse>(result);
@@ -349,6 +349,8 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
+            Guid originalLicenceId = Guid.NewGuid();
+
             DateTime dateTime = DateTime.UtcNow.AddDays(-1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
@@ -357,17 +359,16 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
+
             mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceFeeListResp());
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
+            request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
@@ -386,6 +387,7 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
+            Guid originalLicenceId = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow.AddDays(-1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
@@ -394,11 +396,9 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
+
             mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
@@ -406,6 +406,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
             request.HasNewMentalHealthCondition = true;
+            request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
@@ -425,17 +426,16 @@ namespace Spd.Manager.Licence.UnitTest
             Guid applicantId = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow.AddDays(-1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
+            Guid originalLicenceId = Guid.NewGuid();
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.ExpiryDate, expiryDate)
                 .With(r => r.LicenceTermCode, LicenceTermEnum.NinetyDays)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
+
             mockPersonLicAppRepo.Setup(m => m.CreateLicenceApplicationAsync(It.Is<CreateLicenceApplicationCmd>(c => c.OriginalApplicationId == licAppId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LicenceApplicationCmdResp(licAppId, applicantId));
             mockLicFeeRepo.Setup(m => m.QueryAsync(It.IsAny<LicenceFeeQry>(), It.IsAny<CancellationToken>()))
@@ -443,6 +443,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Renewal, licAppId);
             request.IsPoliceOrPeaceOfficer = true;
+            request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
@@ -511,18 +512,21 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
+            Guid originalLicenceId = Guid.NewGuid();
+            Guid licenceHolderId = Guid.NewGuid();
+
             DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays + 1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
             LicenceResp licenceResp = fixture.Build<LicenceResp>()
                 .With(r => r.ExpiryDate, expiryDate)
+                .With(r => r.LicenceHolderId, licenceHolderId)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
+            mockContactRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == licenceResp.LicenceHolderId), CancellationToken.None))
+                .ReturnsAsync(new ContactResp());
 
             LicenceApplicationResp originalApp = fixture.Build<LicenceApplicationResp>()
                 .With(r => r.ExpiryDate, expiryDate)
@@ -539,6 +543,7 @@ namespace Spd.Manager.Licence.UnitTest
                 .ReturnsAsync(new LicenceFeeListResp());
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
+            request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
@@ -558,6 +563,8 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
+            Guid originalLicenceId = Guid.NewGuid();
+
             DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays + 1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
@@ -565,12 +572,8 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
-
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
             LicenceApplicationResp originalApp = fixture.Build<LicenceApplicationResp>()
                 .With(r => r.ExpiryDate, expiryDate)
                 .With(r => r.LicenceAppId, licAppId)
@@ -587,6 +590,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
             request.HasNewMentalHealthCondition = true;
+            request.OriginalLicenceId = originalLicenceId;
 
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
@@ -604,6 +608,7 @@ namespace Spd.Manager.Licence.UnitTest
         {
             Guid licAppId = Guid.NewGuid();
             Guid applicantId = Guid.NewGuid();
+            Guid originalLicenceId = Guid.NewGuid();
             DateTime dateTime = DateTime.UtcNow.AddDays(Constants.LicenceUpdateValidBeforeExpirationInDays + 1);
             DateOnly expiryDate = new(dateTime.Year, dateTime.Month, dateTime.Day);
 
@@ -611,12 +616,8 @@ namespace Spd.Manager.Licence.UnitTest
                 .With(r => r.ExpiryDate, expiryDate)
                 .Create();
 
-            mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-                .ReturnsAsync(new LicenceListResp()
-                {
-                    Items = new List<LicenceResp> { licenceResp }
-                });
-
+            mockLicRepo.Setup(m => m.GetAsync(It.Is<Guid>(q => q == originalLicenceId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(licenceResp);
             LicenceApplicationResp originalApp = fixture.Build<LicenceApplicationResp>()
                 .With(r => r.ExpiryDate, expiryDate)
                 .With(r => r.LicenceAppId, licAppId)
@@ -633,7 +634,7 @@ namespace Spd.Manager.Licence.UnitTest
 
             WorkerLicenceAppSubmitRequest request = workerLicenceFixture.GenerateValidWorkerLicenceAppSubmitRequest(ApplicationTypeCode.Update, licAppId);
             request.IsPoliceOrPeaceOfficer = true;
-
+            request.OriginalLicenceId = originalLicenceId;
             LicAppFileInfo canadianCitizenship = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.CanadianCitizenship };
             LicAppFileInfo proofOfFingerprint = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.ProofOfFingerprint };
             LicAppFileInfo photoOfYourself = new() { LicenceDocumentTypeCode = LicenceDocumentTypeCode.PhotoOfYourself };
