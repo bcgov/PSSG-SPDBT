@@ -31,6 +31,8 @@ export interface LicenceResponse {
   licenceNumber?: string | null;
   licenceStatusCode?: LicenceStatusCode;
   licenceTermCode?: LicenceTermCode;
+  linkedSoleProprietorExpiryDate?: string | null;
+  linkedSoleProprietorLicenceId?: string | null;
   nameOnCard?: string | null;
   permitOtherRequiredReason?: string | null;
   rationalDocumentInfos?: Array<Document> | null;

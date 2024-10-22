@@ -60,17 +60,10 @@ export class StepPermitRationaleComponent implements OnInit, LicenceChildStepper
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private permitApplicationService: PermitApplicationService) {}
-
-	// Provide your rationale for requiring ${name}
-	// The information you provide will assist the Registrar in deciding whether to issue your body armour permit
-	// What are your proposed activities in British Columbia for which you require body armour?
-	// TODO Show only if permit type = Body Armour Permit 90-day exemption AND reason = temporary
-
-	// Provide your rationale for requiring ${name}
-	// The information you provide will assist the Registrar in deciding whether to issue your body armour permit
-	// Please provide documented evidence of the imminent risk to your safety
-	// TODO Show only if permit type = Body Armour Permit 90-day exemption AND reason = imminent risk
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private permitApplicationService: PermitApplicationService
+	) {}
 
 	ngOnInit(): void {
 		const name = this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';

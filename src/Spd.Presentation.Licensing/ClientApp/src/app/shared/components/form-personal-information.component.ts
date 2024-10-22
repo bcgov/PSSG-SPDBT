@@ -18,7 +18,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						</app-alert>
 					</ng-container>
 					<ng-template #hasNameChanged>
-						<app-alert type="info" icon="" [showBorder]="false">
+						<div class="fs-6 fw-bold mb-4">
 							Have you changed your name?
 							<a
 								href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address"
@@ -26,7 +26,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								>Visit ICBC</a
 							>
 							to update this information on your BC Services Card. Any changes you make will then be updated here.
-						</app-alert>
+						</div>
 					</ng-template>
 
 					<div class="row mb-3">
@@ -38,7 +38,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 px-3">
 							<div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
 							<div class="text-minor-heading">
-								{{ dateOfBirth.value | formatDate : formalDateFormat }}
+								{{ dateOfBirth.value | formatDate: formalDateFormat }}
 							</div>
 						</div>
 					</div>

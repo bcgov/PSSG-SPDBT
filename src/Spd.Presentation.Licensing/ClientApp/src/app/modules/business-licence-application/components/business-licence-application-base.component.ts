@@ -38,8 +38,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		const defaultBizId: string | undefined = queryParams['bizId'];
 		const swlLicAppId: string | undefined = queryParams['swlLicAppId'];
 		const bizLicAppId: string | undefined = queryParams['bizLicAppId'];
-		const isSoleProprietorSimultaneousSWLAnonymous: string | undefined =
-			queryParams['isSoleProprietorSimultaneousSWLAnonymous'];
 
 		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
 
@@ -47,8 +45,6 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		if (defaultBizId) params.set('bizId', defaultBizId);
 		if (swlLicAppId) params.set('swlLicAppId', swlLicAppId);
 		if (bizLicAppId) params.set('bizLicAppId', bizLicAppId);
-		if (isSoleProprietorSimultaneousSWLAnonymous)
-			params.set('isSoleProprietorSimultaneousSWLAnonymous', isSoleProprietorSimultaneousSWLAnonymous);
 
 		const currentPath = location.pathname;
 		let redirectComponentRoute: string | undefined;
@@ -79,12 +75,34 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		) {
 			// handle new business licence creation from swl - for sole proprietor
 			this.businessApplicationService
-				.getBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
+				.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
 				.pipe(
 					tap((_resp: any) => {
 						this.router.navigateByUrl(
 							`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
 								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
+							)}?${loginInfo.state}`
+						);
+					}),
+					take(1)
+				)
+				.subscribe();
+			return;
+		}
+
+		if (
+			swlLicAppId &&
+			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR) &&
+			loginInfo.state
+		) {
+			// handle renew business licence creation from swl - for sole proprietor
+			this.businessApplicationService
+				.getRenewBusinessLicenceWithSwlCombinedFlow(swlLicAppId)
+				.pipe(
+					tap((_resp: any) => {
+						this.router.navigateByUrl(
+							`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
+								BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR
 							)}?${loginInfo.state}`
 						);
 					}),

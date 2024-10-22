@@ -32,7 +32,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								<button
 									mat-flat-button
 									color="primary"
-									*ngIf="!isSoleProprietorSimultaneousFlow"
+									*ngIf="!isSoleProprietorAppSimultaneousFlow"
 									class="large w-auto me-2 mb-3"
 									(click)="onBusinessProfile()"
 								>
@@ -137,7 +137,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	activeLicenceExist = false;
 
 	isSoleProprietor = false;
-	isSoleProprietorSimultaneousFlow = false;
+	isSoleProprietorAppSimultaneousFlow = false;
 
 	serviceTypeCodes = ServiceTypeCode;
 
@@ -177,10 +177,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						// console.debug('businessApplicationsList', businessApplicationsList);
 						// console.debug('businessProfile', businessProfile);
 
-						this.isSoleProprietorSimultaneousFlow =
-							businessApplicationsList.length > 0
-								? (businessApplicationsList[0].isSoleProprietorSimultaneousFlow ?? false)
-								: false;
+						this.isSoleProprietorAppSimultaneousFlow =
+							businessApplicationsList.length > 0 ? (businessApplicationsList[0].isSimultaneousFlow ?? false) : false;
 
 						// Only show the manage members and employees when an application or licence exist.
 						this.showManageMembersAndEmployees = this.isSoleProprietor
