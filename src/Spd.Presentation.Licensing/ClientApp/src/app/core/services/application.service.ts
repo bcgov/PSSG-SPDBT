@@ -61,7 +61,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 	isExpiryWarning: boolean;
 	isExpiryError: boolean;
 	isControllingMemberWarning?: boolean;
-	isSoleProprietorSimultaneousFlow?: boolean;
+	isSimultaneousFlow: boolean;
 }
 
 export interface MainLicenceResponse extends LicenceResponse {
@@ -79,6 +79,7 @@ export interface MainLicenceResponse extends LicenceResponse {
 	dogAuthorizationExpiryDate: string | null;
 	restraintAuthorization: boolean;
 	restraintAuthorizationExpiryDate: string | null;
+	isSimultaneousFlow: boolean;
 }
 
 @Injectable({
@@ -253,13 +254,7 @@ export class ApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (
-							resp.licenceStatusCode === LicenceStatusCode.Active &&
-							resp.categoryCodes &&
-							resp.categoryCodes.findIndex(
-								(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
-							) >= 0
-						) {
+						if (resp.licenceStatusCode === LicenceStatusCode.Active) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -340,7 +335,7 @@ export class ApplicationService {
 								.pipe(
 									switchMap((resp: BizLicAppResponse) => {
 										response.forEach((item: MainApplicationResponse) => {
-											item.isSoleProprietorSimultaneousFlow = !!resp.soleProprietorSWLAppId; // TODO populate Simultaneous
+											item.isSimultaneousFlow = !!resp.soleProprietorSWLAppId; // TODO populate Simultaneous
 										});
 
 										return of(response);
@@ -386,13 +381,7 @@ export class ApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (
-							resp.licenceStatusCode === LicenceStatusCode.Active &&
-							resp.categoryCodes &&
-							resp.categoryCodes.findIndex(
-								(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
-							) >= 0
-						) {
+						if (resp.licenceStatusCode === LicenceStatusCode.Active) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -866,6 +855,7 @@ export class ApplicationService {
 		licence.isRenewalPeriod = false;
 		licence.isUpdatePeriod = false;
 		licence.isReplacementPeriod = false;
+		licence.isSimultaneousFlow = false;
 
 		const today = moment().startOf('day');
 
@@ -880,24 +870,28 @@ export class ApplicationService {
 				(item: WorkerCategoryTypeCode) => item === WorkerCategoryTypeCode.SecurityGuard
 			) >= 0;
 
-		if (licence.hasSecurityGuardCategory && matchingLicence) {
-			licence.dogAuthorization = matchingLicence.useDogs ?? false;
-			if (licence.dogAuthorization) {
-				const dogDocumentInfos = licence.dogDocumentInfos ?? [];
-				if (dogDocumentInfos.length > 0) {
-					// get first document with an expiry date
-					const doc = dogDocumentInfos.find((item: Document) => item.expiryDate);
-					licence.dogAuthorizationExpiryDate = doc?.expiryDate ?? null;
-				}
-			}
+		if (matchingLicence) {
+			licence.isSimultaneousFlow = matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
 
-			licence.restraintAuthorization = matchingLicence.carryAndUseRestraints ?? false;
-			if (licence.restraintAuthorization) {
-				const restraintsDocumentInfos = licence.restraintsDocumentInfos ?? [];
-				if (restraintsDocumentInfos.length > 0) {
-					// get first document with an expiry date
-					const doc = restraintsDocumentInfos.find((item: Document) => item.expiryDate);
-					licence.restraintAuthorizationExpiryDate = doc?.expiryDate ?? null;
+			if (licence.hasSecurityGuardCategory) {
+				licence.dogAuthorization = matchingLicence.useDogs ?? false;
+				if (licence.dogAuthorization) {
+					const dogDocumentInfos = licence.dogDocumentInfos ?? [];
+					if (dogDocumentInfos.length > 0) {
+						// get first document with an expiry date
+						const doc = dogDocumentInfos.find((item: Document) => item.expiryDate);
+						licence.dogAuthorizationExpiryDate = doc?.expiryDate ?? null;
+					}
+				}
+
+				licence.restraintAuthorization = matchingLicence.carryAndUseRestraints ?? false;
+				if (licence.restraintAuthorization) {
+					const restraintsDocumentInfos = licence.restraintsDocumentInfos ?? [];
+					if (restraintsDocumentInfos.length > 0) {
+						// get first document with an expiry date
+						const doc = restraintsDocumentInfos.find((item: Document) => item.expiryDate);
+						licence.restraintAuthorizationExpiryDate = doc?.expiryDate ?? null;
+					}
 				}
 			}
 		}

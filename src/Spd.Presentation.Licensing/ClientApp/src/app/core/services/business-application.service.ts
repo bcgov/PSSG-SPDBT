@@ -86,6 +86,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		isControllingMembersWithoutSwlExist: new FormControl(),
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
+		soleProprietorSWLAppOriginTypeCode: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousSWLAnonymous: new FormControl(), // placeholder for sole proprietor flow
 		isSoleProprietorSimultaneousFlow: new FormControl(), // placeholder for sole proprietor flow - whether or not user can return to swl
 
@@ -147,6 +148,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			.subscribe((_resp: any) => {
 				if (this.initialized) {
 					const bizTypeCode = this.businessModelFormGroup.get('businessInformationData.bizTypeCode')?.value;
+					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
+
 					const isAddressTheSame = this.businessModelFormGroup.get('businessAddressData.isAddressTheSame')?.value;
 					const province = isAddressTheSame
 						? this.businessModelFormGroup.get('businessMailingAddressData.province')?.value
@@ -154,11 +157,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					const country = isAddressTheSame
 						? this.businessModelFormGroup.get('businessMailingAddressData.country')?.value
 						: this.businessModelFormGroup.get('businessAddressData.country')?.value;
+
 					const isBcBusinessAddress = this.utilService.isBcAddress(province, country);
-					const isBusinessLicenceSoleProprietor = this.isSoleProprietor(bizTypeCode);
 
 					let isControllingMembersWithoutSwlExist = false;
-
 					if (!isBusinessLicenceSoleProprietor) {
 						const membersWithoutSwl =
 							this.businessModelFormGroup.get('controllingMembersData.membersWithoutSwl')?.value ?? [];
@@ -708,13 +710,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	 * Either create an empty licence or continue with the existing business lic app
 	 * @returns
 	 */
-	getBusinessLicenceWithSwlCombinedFlow(
+	getNewBusinessLicenceWithSwlCombinedFlow(
 		soleProprietorSWLAppId: string | null | undefined, // one of these two must have a value
 		soleProprietorBizAppId: string | null | undefined // one of these two must have a value
 	): Observable<any> {
-		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-
 		if (soleProprietorSWLAppId) {
+			const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
 			return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
 				switchMap((businessProfile: BizProfileResponse) => {
 					return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
@@ -744,6 +746,32 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode
+				);
+			})
+		);
+	}
+
+	/**
+	 * Either create an empty licence or continue with the existing business lic app
+	 * @returns
+	 */
+	getRenewBusinessLicenceWithSwlCombinedFlow(soleProprietorSWLAppId: string): Observable<any> {
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
+			switchMap((businessProfile: BizProfileResponse) => {
+				return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
+					soleProprietorSWLAppId,
+					businessProfile,
+				}).pipe(
+					tap((_resp: any) => {
+						this.setAsInitialized();
+
+						this.commonApplicationService.setApplicationTitle(
+							ServiceTypeCode.SecurityBusinessLicence,
+							ApplicationTypeCode.Renewal
+						);
+					})
 				);
 			})
 		);
@@ -1716,12 +1744,18 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		}
 
 		const soleProprietorSWLAppId = businessLicenceAppl.soleProprietorSWLAppId ?? null;
-		const isSoleProprietorSimultaneousFlow = soleProprietorSWLAppId
-			? !!businessLicenceAppl.soleProprietorSWLAppId
-			: null;
-		const isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
-			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
-			: null; // TODO populate Simultaneous
+
+		let isSoleProprietorSimultaneousFlow: boolean | null = null;
+		let isSoleProprietorSimultaneousSWLAnonymous: boolean | null = null;
+
+		if (associatedLicence) {
+			isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+		} else {
+			isSoleProprietorSimultaneousFlow = !!soleProprietorSWLAppId;
+			isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
+				? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
+				: null;
+		}
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -1974,10 +2008,10 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				this.businessModelFormGroup.patchValue(
 					{
 						soleProprietorSWLAppId: licenceAppId,
+						soleProprietorSWLAppOriginTypeCode: resp.applicationOriginTypeCode,
 						isSoleProprietorSimultaneousFlow: true,
 						isSoleProprietorSimultaneousSWLAnonymous:
 							resp.applicationOriginTypeCode != ApplicationOriginTypeCode.Portal,
-
 						isBusinessLicenceSoleProprietor,
 						businessInformationData,
 						categoryData,

@@ -51,7 +51,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 					</section>
 				</div>
 
-				<div class="col-12" *ngIf="!showBcBusinessAddress">
+				<div class="col-12" *ngIf="showBcBusinessAddress">
 					<section>
 						<mat-accordion>
 							<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
@@ -87,15 +87,15 @@ export class StepBusinessLicenceBusinessAddressComponent implements LicenceChild
 		this.bcBusinessAddressFormGroup.markAllAsTouched();
 
 		const valid1 = this.businessAddressFormGroup.valid;
-		const valid2 = this.showBcBusinessAddress ? true : this.bcBusinessAddressFormGroup.valid;
+		const valid2 = this.showBcBusinessAddress ? this.bcBusinessAddressFormGroup.valid : true;
 		return valid1 && valid2;
 	}
 
 	get showBcBusinessAddress(): boolean {
 		if (!this.businessAddressFormGroup.valid) {
-			return true;
+			return false;
 		}
 
-		return this.businessApplicationService.isBcBusinessAddress();
+		return !this.businessApplicationService.isBcBusinessAddress();
 	}
 }
