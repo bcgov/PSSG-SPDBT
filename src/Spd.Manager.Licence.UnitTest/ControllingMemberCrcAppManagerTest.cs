@@ -151,6 +151,8 @@ public class ControllingMemberCrcAppManagerTests
             });
         _controllingMemberCrcRepositoryMock.Setup(a => a.SaveControllingMemberCrcApplicationAsync(It.IsAny<SaveControllingMemberCrcAppCmd>(), CancellationToken.None))
             .ReturnsAsync(new ControllingMemberCrcApplicationCmdResp(controllingMemberAppId, applicantId));
+        _controllingMemberCrcRepositoryMock.Setup(a => a.CreateControllingMemberCrcApplicationAsync(It.IsAny<SaveControllingMemberCrcAppCmd>(), CancellationToken.None))
+            .ReturnsAsync(new ControllingMemberCrcApplicationCmdResp(controllingMemberAppId, applicantId));
         _documentRepositoryMock.Setup(m => m.QueryAsync(It.Is<DocumentQry>(q => q.ApplicationId == controllingMemberAppId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new DocumentListResp()
             {
