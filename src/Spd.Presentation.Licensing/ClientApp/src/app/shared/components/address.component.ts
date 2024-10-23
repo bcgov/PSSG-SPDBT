@@ -69,7 +69,7 @@ import { Address } from './address-autocomplete.component';
 							<input matInput formControlName="province" maxlength="100" />
 							<mat-error *ngIf="form.get('province')?.hasError('required')">This is required</mat-error>
 							<mat-error *ngIf="form.get('province')?.hasError('requiredValue')"
-								>This must be '{{ provinceOfBC }}'</mat-error
+								>This must be '{{ provinceOfBC }}' or '{{ provinceBritishColumbia }}'</mat-error
 							>
 						</mat-form-field>
 					</div>
@@ -78,7 +78,9 @@ import { Address } from './address-autocomplete.component';
 							<mat-label>Country</mat-label>
 							<input matInput formControlName="country" maxlength="100" />
 							<mat-error *ngIf="form.get('country')?.hasError('required')">This is required</mat-error>
-							<mat-error *ngIf="form.get('country')?.hasError('requiredValue')">This must be 'Canada'</mat-error>
+							<mat-error *ngIf="form.get('country')?.hasError('requiredValue')"
+								>This must be '{{ countryCA }}' or '{{ countryCanada }}'</mat-error
+							>
 						</mat-form-field>
 					</div>
 				</div>
@@ -89,7 +91,11 @@ import { Address } from './address-autocomplete.component';
 })
 export class AddressComponent implements OnInit {
 	matcher = new FormErrorStateMatcher();
+
 	provinceOfBC = SPD_CONSTANTS.address.provinceBC;
+	provinceBritishColumbia = SPD_CONSTANTS.address.provinceBritishColumbia;
+	countryCA = SPD_CONSTANTS.address.countryCA;
+	countryCanada = SPD_CONSTANTS.address.countryCanada;
 
 	@Input() form!: FormGroup;
 	@Input() isWideView = false;
