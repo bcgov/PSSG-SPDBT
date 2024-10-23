@@ -134,7 +134,16 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						</ng-container>
 						<ng-template #IsPermitContent>
 							<div class="row mb-2">
-								<div class="offset-lg-9 col-lg-3 text-end" *ngIf="!applicationIsInProgress">
+								<div class="col-lg-9">
+									Permit updates include the following changes:
+									<ul class="m-0">
+										<li>changing your name</li>
+										<li>changing your reasons or rationale</li>
+										<li>changing your employer information</li>
+										<li>replacing your photo or permit</li>
+									</ul>
+								</div>
+								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 									<button
 										mat-flat-button
 										color="primary"

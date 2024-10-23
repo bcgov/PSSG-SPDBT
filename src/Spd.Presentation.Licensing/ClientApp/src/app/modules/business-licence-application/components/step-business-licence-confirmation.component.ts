@@ -80,7 +80,6 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 		this.businessLicenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 
 		// only show fee for Replacement flow
-
 		if (this.applicationTypeCode === ApplicationTypeCode.Replacement) {
 			const serviceTypeCode = this.businessLicenceModelData.serviceTypeData?.serviceTypeCode;
 			const originalLicenceData = this.businessLicenceModelData.originalLicenceData;
@@ -113,10 +112,10 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 		return this.businessLicenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 	get categoryData(): Array<WorkerCategoryTypeCode> {
-		const categoryData = this.businessLicenceModelData.categoryData;
+		const categoryData = this.businessLicenceModelData.originalLicenceData.originalCategoryCodes ?? [];
 		const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
 		const selected = workerCategoryTypeCodes.filter((item: string) => {
-			return !!categoryData[item];
+			return categoryData.find((cat: WorkerCategoryTypeCode) => cat === item);
 		});
 		return selected.sort() ?? [];
 	}

@@ -759,157 +759,20 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		soleProprietorSWLAppId: string,
 		soleProprietorBizLicId: string
 	): Observable<any> {
-		// TODO fix renewal sp
-		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+		return this.createRenewalBusinessLicenceWithSwlCombinedFlow({
+			soleProprietorSWLAppId,
+			soleProprietorBizLicId,
+		}).pipe(
+			tap((_resp: any) => {
+				this.setAsInitialized();
 
-		return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
-			switchMap((businessProfile: BizProfileResponse) => {
-				return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
-					soleProprietorSWLAppId,
-					businessProfile,
-				}).pipe(
-					tap((_resp: any) => {
-						this.setAsInitialized();
-
-						this.commonApplicationService.setApplicationTitle(
-							ServiceTypeCode.SecurityBusinessLicence,
-							ApplicationTypeCode.New
-						);
-					})
+				this.commonApplicationService.setApplicationTitle(
+					_resp.serviceTypeData.serviceTypeCode,
+					_resp.applicationTypeData.applicationTypeCode,
+					_resp.originalLicenceData.originalLicenceNumber
 				);
 			})
 		);
-
-		// const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-		// const apis = [
-		// 	this.bizProfileService.apiBizIdGet({ id: bizId }),
-		// 	this.licenceService.apiLicencesLicenceIdGet({ licenceId: soleProprietorBizLicId }),
-		// ];
-
-		// return forkJoin(apis).pipe(
-		// 	switchMap((resps: any[]) => {
-		// 		const businessProfile = resps[0];
-		// 		const associatedLicence = resps[1];
-		// 		// xxxxxxxxxxxxxx;
-		// 		return this.applyLicenceProfileIntoModel({
-		// 			businessProfile,
-		// 			applicationTypeCode: ApplicationTypeCode.Renewal,
-		// 			soleProprietorSWLAppId,
-		// 		});
-		// 		// return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
-		// 		// 	soleProprietorSWLAppId,
-		// 		// 	businessProfile,
-		// 		// }).pipe(
-		// 		// 	switchMap((_resp: any) => {
-		// 		// 		return this.loadBusinessApplAndProfile({
-		// 		// 			applicationTypeCode: ApplicationTypeCode.Renewal,
-		// 		// 			businessLicenceAppl,
-		// 		// 			businessProfile,
-		// 		// 			associatedLicence,
-		// 		// 		});
-
-		// 		// 		// return this.loadExistingBusinessLicenceWithLatestApp({xxx
-		// 		// 		// 	associatedLicence,
-		// 		// 		// 	applicationTypeCode: ApplicationTypeCode.Renewal,
-		// 		// 		// 	isSoleProprietor: true,
-		// 		// 		// });
-		// 		// 	}),
-		// 		// 	switchMap((_resp: any) => {
-		// 		// 		return this.applyRenewalDataUpdatesToModel(_resp);
-		// 		// 	}),
-		// 		// 	tap((_resp: any) => {
-		// 		// 		this.setAsInitialized();
-
-		// 		// 		this.commonApplicationService.setApplicationTitle(
-		// 		// 			_resp.serviceTypeData.serviceTypeCode,
-		// 		// 			_resp.applicationTypeData.applicationTypeCode,
-		// 		// 			_resp.originalLicenceData.originalLicenceNumber
-		// 		// 		);
-		// 		// 	})
-		// 		// );
-		// 	})
-		// );
-
-		// return this.loadExistingBusinessLicenceWithLatestApp({
-		// 	associatedLicence,
-		// 	applicationTypeCode,
-		// 	isSoleProprietor,
-		// }).pipe(
-		// 	switchMap((resp: any) => {
-		// 		switch (applicationTypeCode) {
-		// 			case ApplicationTypeCode.Renewal:
-		// 				return this.applyRenewalDataUpdatesToModel(resp);
-		// 			case ApplicationTypeCode.Update:
-		// 				return this.applyUpdateDataUpdatesToModel(resp);
-		// 			default:
-		// 				return this.applyReplacementDataUpdatesToModel(resp);
-		// 		}
-		// 	})
-		// );
-		// return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
-		// 	switchMap((businessProfile: BizProfileResponse) => {
-		// 		return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
-		// 			soleProprietorSWLAppId,
-		// 			businessProfile,
-		// 		}).pipe(
-		// 			tap((_resp: any) => {
-		// 				this.setAsInitialized();
-
-		// 				return this.applyRenewalDataUpdatesToModel(resp);
-		// 				this.commonApplicationService.setApplicationTitle(
-		// 					ServiceTypeCode.SecurityBusinessLicence,
-		// 					ApplicationTypeCode.Renewal
-		// 				);
-		// 			})
-		// 		);
-		// 	})E100102
-		// );
-
-		// return this.bizProfileService.apiBizIdGet({ id: bizId }).pipe(
-		// switchMap((businessProfile: BizProfileResponse) => {
-		// return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId: soleProprietorSWLAppId }).pipe(
-		// 	tap((resp: WorkerLicenceAppResponse) => {
-
-		// 		return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
-
-		// return this.licenceService.apiLicencesLicenceIdGet({ licenceId: soleProprietorBizLicId }).pipe(
-		// 	switchMap((licence: LicenceResponse) => {
-		// 		return this.getBusinessLicenceWithSelection(ApplicationTypeCode.Renewal, licence, true);xxx
-		// 	})
-		// tap((_resp: any) => {
-		// 	this.setAsInitialized();
-
-		// 		this.commonApplicationService.setApplicationTitle(
-		// 			ServiceTypeCode.SecurityBusinessLicence,
-		// 			ApplicationTypeCode.Renewal
-		// 		);
-		// }),
-
-		/*
-				return this.createEmptyBusinessLicenceWithSwlCombinedFlow({
-					soleProprietorSWLAppId,
-					businessProfile,
-				}).pipe(
-					switchMap((resp: any) => {
-						// this.commonApplicationService.setApplicationTitle(
-						// 	ServiceTypeCode.SecurityBusinessLicence,
-						// 	ApplicationTypeCode.Renewal
-						// );
-
-						return this.applyRenewalDataUpdatesToModel(resp);
-					}),
-					tap((_resp: any) => {
-						this.setAsInitialized();
-
-						this.commonApplicationService.setApplicationTitle(
-							ServiceTypeCode.SecurityBusinessLicence,
-							ApplicationTypeCode.Renewal
-						);
-					})
-				);
-				*/
-		// })
-		// );
 	}
 
 	/**
@@ -1230,9 +1093,56 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSWLAppId,
-		}).pipe(
-			tap((_resp: any) => {
-				this.commonApplicationService.setApplicationTitle(_resp.serviceTypeData.serviceTypeCode);
+		});
+	}
+
+	private createRenewalBusinessLicenceWithSwlCombinedFlow({
+		soleProprietorSWLAppId,
+		soleProprietorBizLicId,
+	}: {
+		soleProprietorSWLAppId: string;
+		soleProprietorBizLicId: string;
+	}): Observable<any> {
+		this.reset();
+
+		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
+
+		const apis = [
+			this.bizProfileService.apiBizIdGet({ id: bizId }),
+			this.licenceService.apiLicencesLicenceIdGet({ licenceId: soleProprietorBizLicId }),
+			this.bizLicensingService.apiBusinessBizIdAppLatestGet({ bizId }),
+		];
+
+		return forkJoin(apis).pipe(
+			switchMap((resps: Array<any>) => {
+				const businessProfile = resps[0];
+				const associatedLicence = resps[1];
+				const businessLicenceAppl = resps[2];
+
+				// console.debug('************* businessProfile', businessProfile);
+				// console.debug('************* associatedLicence', associatedLicence);
+				// console.debug('************* businessLicenceAppl', businessLicenceAppl);
+
+				return this.applyLicenceProfileIntoModel({
+					businessProfile,
+					applicationTypeCode: ApplicationTypeCode.Renewal,
+					soleProprietorSWLAppId,
+				}).pipe(
+					switchMap((_resp1: any) => {
+						const brandingDocumentInfos = businessLicenceAppl.documentInfos?.filter(
+							(item: Document) => item.licenceDocumentTypeCode === LicenceDocumentTypeCode.BizBranding
+						);
+
+						return this.applyLicenceIntoModel({
+							businessLicenceAppl,
+							associatedLicence,
+							brandingDocumentInfos,
+						});
+					}),
+					switchMap((_resp2: any) => {
+						return this.applyRenewalDataUpdatesToModel(_resp2);
+					})
+				);
 			})
 		);
 	}
@@ -1759,7 +1669,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						noLogoOrBranding: businessLicenceAppl.noBranding,
 						attachments: companyBrandingAttachments,
 					}
-				: {};
+				: { noLogoOrBranding: true, attachments: [] };
 
 		const liabilityData = {
 			attachments: liabilityAttachments,
@@ -1881,8 +1791,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		const soleProprietorSWLAppId = businessLicenceAppl.soleProprietorSWLAppId ?? null;
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
-		let isSoleProprietorSimultaneousSWLAnonymous: boolean | null = null;
-
 		if (associatedLicence) {
 			if ('isSimultaneousFlow' in associatedLicence) {
 				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
@@ -1891,10 +1799,11 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			}
 		} else {
 			isSoleProprietorSimultaneousFlow = !!soleProprietorSWLAppId;
-			isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
-				? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
-				: null;
 		}
+
+		const isSoleProprietorSimultaneousSWLAnonymous = isSoleProprietorSimultaneousFlow
+			? businessLicenceAppl.soleProprietorSWLAppOriginTypeCode != ApplicationOriginTypeCode.Portal
+			: null;
 
 		this.businessModelFormGroup.patchValue(
 			{
@@ -2095,16 +2004,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 	private applyBusinessLicenceSoleProprietorSwl(licenceAppId: string): Observable<any> {
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationsLicenceAppIdGet({ licenceAppId }).pipe(
 			tap((resp: WorkerLicenceAppResponse) => {
-				console.debug('[applyBusinessLicenceSoleProprietorSwl]');
+				console.debug('[applyBusinessLicenceSoleProprietorSwl] resp', resp);
 
 				const businessInformationData = this.businessModelFormGroup.get('businessInformationData')?.value;
 
 				businessInformationData.bizTypeCode = resp.bizTypeCode;
 				businessInformationData.soleProprietorCategoryCodes = resp.categoryCodes;
-
-				const licenceTermData: any = {
-					licenceTermCode: resp.licenceTermCode ?? null,
-				};
 
 				const categoryData: any = {};
 				const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
@@ -2156,7 +2061,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						categoryData,
 						categoryArmouredCarGuardFormGroup,
 						categorySecurityGuardFormGroup,
-						licenceTermData,
 					},
 					{
 						emitEvent: false,
@@ -2176,6 +2080,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		businessInformationData.soleProprietorCategoryCodes = soleProprietorSwlLicence.categoryCodes;
 
 		const categoryData: any = {};
+
+		// default object with all category types
+		const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
+		workerCategoryTypeCodes.forEach((item: string) => {
+			categoryData[item] = false;
+		});
+
 		soleProprietorSwlLicence.categoryCodes?.forEach((item: string) => {
 			categoryData[item] = true;
 		});
