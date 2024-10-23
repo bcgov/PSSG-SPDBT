@@ -270,13 +270,20 @@ internal class SecurityWorkerAppManager :
             }
         }
 
-        //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
-        bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
-            originalLic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence;
+        if (IsSoleProprietorComboApp(request)) //for sole proprietor, we only commit application until user submit the biz liz app
+        {
+            return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = 0 };
+        }
+        else
+        {
+            //todo: update all expiration date : for some doc type, some file got updated, some are still old files, and expiration data changed.
+            bool hasSwl90DayLicence = originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays &&
+                originalLic.ServiceTypeCode == ServiceTypeEnum.SecurityWorkerLicence;
 
-        decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence);
+            decimal? cost = await CommitApplicationAsync(request, response.LicenceAppId, cancellationToken, hasSwl90DayLicence);
 
-        return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+            return new WorkerLicenceCommandResponse { LicenceAppId = response.LicenceAppId, Cost = cost };
+        }
     }
 
     /// <summary>
@@ -576,7 +583,7 @@ internal class SecurityWorkerAppManager :
 
     }
 
-    private bool IsSoleProprietorComboApp(LicenceAppBase app)
+    private static bool IsSoleProprietorComboApp(LicenceAppBase app)
     {
         return app.ServiceTypeCode == ServiceTypeCode.SecurityWorkerLicence &&
             (app.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || app.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);

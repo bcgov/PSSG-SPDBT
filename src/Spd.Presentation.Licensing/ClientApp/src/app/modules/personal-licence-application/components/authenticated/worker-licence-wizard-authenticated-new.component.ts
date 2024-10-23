@@ -325,7 +325,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 	}
 
 	private submitSoleProprietorSimultaneousFlowStep(): void {
-		this.workerApplicationService.submitSoleProprietorSimultaneousFlow().subscribe({
+		this.workerApplicationService.submitNewSoleProprietorSimultaneousFlow().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
 				// if a business licence app already exists, use it
 				if (this.soleProprietorBizAppId) {

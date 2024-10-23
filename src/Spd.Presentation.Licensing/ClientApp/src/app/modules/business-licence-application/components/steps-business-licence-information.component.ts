@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -21,12 +20,18 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				</ng-container>
 
 				<ng-container *ngIf="isBusinessLicenceSoleProprietor; else NotSoleProprietor">
-					<app-wizard-footer (nextStepperStep)="onGoToNextStep()"></app-wizard-footer>
+					<app-wizard-footer
+						[isFormValid]="isFormValid"
+						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
+					></app-wizard-footer>
 				</ng-container>
 				<ng-template #NotSoleProprietor>
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGotoBusinessProfile()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
@@ -65,8 +70,10 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				<app-step-business-licence-expired></app-step-business-licence-expired>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_EXPIRED)"
+					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
 
@@ -105,10 +112,11 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 	encapsulation: ViewEncapsulation.None,
 })
 export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComponent {
-	readonly STEP_LICENCE_CONFIRMATION = 0;
-	readonly STEP_LICENCE_EXPIRED = 1;
-	readonly STEP_LICENCE_BRANDING = 2;
-	readonly STEP_LICENCE_LIABILITY = 3;
+	readonly STEP_CHECKLIST = 0;
+	readonly STEP_LICENCE_CONFIRMATION = 1;
+	readonly STEP_LICENCE_EXPIRED = 2;
+	readonly STEP_LICENCE_BRANDING = 3;
+	readonly STEP_LICENCE_LIABILITY = 4;
 
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
 	@Input() isFormValid!: boolean;
@@ -123,7 +131,7 @@ export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComp
 	stepCompanyBrandingComponent!: StepBusinessLicenceCompanyBrandingComponent;
 	@ViewChild(StepBusinessLicenceLiabilityComponent) stepLiabilityComponent!: StepBusinessLicenceLiabilityComponent;
 
-	constructor(override commonApplicationService: ApplicationService, private router: Router) {
+	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
 	}
 
@@ -141,6 +149,8 @@ export class StepsBusinessLicenceInformationComponent extends BaseWizardStepComp
 
 	override dirtyForm(step: number): boolean {
 		switch (step) {
+			case this.STEP_CHECKLIST:
+				return true;
 			case this.STEP_LICENCE_CONFIRMATION:
 				return true;
 			case this.STEP_LICENCE_EXPIRED:

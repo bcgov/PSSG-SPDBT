@@ -269,9 +269,15 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
+			FormControlValidators.requiredValue(
+				SPD_CONSTANTS.address.provinceBC,
+				SPD_CONSTANTS.address.provinceBritishColumbia
+			),
 		]),
-		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
+		country: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
+		]),
 	});
 
 	branchesInBcFormGroup: FormGroup = this.formBuilder.group({
@@ -314,9 +320,15 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
+			FormControlValidators.requiredValue(
+				SPD_CONSTANTS.address.provinceBC,
+				SPD_CONSTANTS.address.provinceBritishColumbia
+			),
 		]),
-		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
+		country: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
+		]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
 		branchPhoneNumber: new FormControl(''),
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
@@ -470,6 +482,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		const bizId = businessModelFormValue.bizId;
 		const licenceAppId = businessModelFormValue.licenceAppId;
 		const soleProprietorSWLAppId = businessModelFormValue.soleProprietorSWLAppId;
+		const soleProprietorSWLAppOriginTypeCode = businessModelFormValue.soleProprietorSWLAppOriginTypeCode;
 		const serviceTypeData = { ...businessModelFormValue.serviceTypeData };
 		const applicationTypeData = { ...businessModelFormValue.applicationTypeData };
 		const expiredLicenceData = { ...businessModelFormValue.expiredLicenceData };
@@ -548,6 +561,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			bizTypeCode,
 			licenceAppId,
 			soleProprietorSWLAppId,
+			soleProprietorSWLAppOriginTypeCode,
 			latestApplicationId: businessModelFormValue.latestApplicationId,
 			applicationTypeCode: applicationTypeData.applicationTypeCode,
 			serviceTypeCode: serviceTypeData.serviceTypeCode,

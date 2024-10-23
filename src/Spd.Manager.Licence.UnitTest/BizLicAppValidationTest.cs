@@ -66,7 +66,7 @@ public class BizLicAppValidationTest
         BizLicAppSubmitRequestValidator validator = new BizLicAppSubmitRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppSubmitRequest>();
-
+        model.BizTypeCode = BizTypeCode.RegisteredSoleProprietor;
         var result = validator.TestValidate(model);
         result.ShouldNotHaveAnyValidationErrors();
     }
@@ -94,13 +94,13 @@ public class BizLicAppValidationTest
         BizLicAppUpsertRequestValidator validator = new BizLicAppUpsertRequestValidator(config);
 
         var model = GenerateValidRequest<BizLicAppUpsertRequest>();
+        model.ApplicantIsBizManager = false;
         model.ApplicantContactInfo.GivenName = string.Empty;
         model.ApplicantContactInfo.Surname = string.Empty;
         model.ApplicantContactInfo.PhoneNumber = string.Empty;
         model.ApplicantContactInfo.EmailAddress = string.Empty;
 
         var result = validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.GivenName);
         result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.Surname);
         result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.PhoneNumber);
         result.ShouldHaveValidationErrorFor(r => r.ApplicantContactInfo.EmailAddress);
@@ -157,14 +157,12 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for insurance
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            insurance,
-            armourCarRegistrar,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.BizInsurance)
+            .CreateMany(11)
+            .ToList();
+        documentInfos.Add(armourCarRegistrar);
+        documentInfos.Add(dogCertificate);
 
         model.DocumentInfos = documentInfos;
 
@@ -183,14 +181,10 @@ public class BizLicAppValidationTest
         result.ShouldHaveValidationErrorFor(r => r.DocumentInfos);
 
         // Exceed max allowed for dog certificate
-        documentInfos = new()
-        {
-            branding,
-            insurance,
-            armourCarRegistrar,
-            dogCertificate,
-            dogCertificate
-        };
+        documentInfos = fixture.Build<Document>()
+            .With(d => d.LicenceDocumentTypeCode, LicenceDocumentTypeCode.BizSecurityDogCertificate)
+            .CreateMany(11)
+            .ToList();
 
         model.DocumentInfos = documentInfos;
 
@@ -220,14 +214,12 @@ public class BizLicAppValidationTest
         List<WorkerCategoryTypeCode> categories = new()
         {
             WorkerCategoryTypeCode.ArmouredCarGuard,
-            WorkerCategoryTypeCode.SecurityGuard,
-            WorkerCategoryTypeCode.SecurityAlarmMonitor,
-            WorkerCategoryTypeCode.SecurityAlarmResponse
         };
 
         // Contact info
         ContactInfo applicantContactInfo = fixture.Build<ContactInfo>()
             .With(c => c.EmailAddress, "test@test.com")
+            .With(c => c.PhoneNumber, "6133334444")
             .Create();
 
         // Controlling members

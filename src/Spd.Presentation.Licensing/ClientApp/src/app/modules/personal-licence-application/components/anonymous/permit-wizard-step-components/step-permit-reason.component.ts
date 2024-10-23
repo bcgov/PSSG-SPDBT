@@ -12,7 +12,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 		<app-step-section [title]="title" [subtitle]="subtitle">
 			<form [formGroup]="form" novalidate>
 				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.BodyArmourPermit">
-					<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
+					<div class="col-xxl-5 col-xl-5 col-lg-8 col-md-12 mx-auto">
 						<div class="form-group" formGroupName="bodyArmourRequirementFormGroup">
 							<mat-checkbox formControlName="isOutdoorRecreation"> Outdoor recreation </mat-checkbox>
 							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
@@ -35,7 +35,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 					</div>
 				</div>
 				<div class="row" *ngIf="serviceTypeCode === serviceTypeCodes.ArmouredVehiclePermit">
-					<div class="col-xxl-4 col-xl-5 col-lg-12 mx-auto">
+					<div class="col-xxl-4 col-xl-5 col-lg-8 col-md-12 mx-auto">
 						<div class="form-group" formGroupName="armouredVehicleRequirementFormGroup">
 							<mat-checkbox formControlName="isPersonalProtection"> Personal protection </mat-checkbox>
 							<mat-checkbox formControlName="isMyEmployment"> My employment </mat-checkbox>
@@ -93,7 +93,10 @@ export class StepPermitReasonComponent implements OnInit, LicenceChildStepperSte
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 	@Input() serviceTypeCode: ServiceTypeCode | null = null;
 
-	constructor(private optionsPipe: OptionsPipe, private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private permitApplicationService: PermitApplicationService
+	) {}
 
 	ngOnInit(): void {
 		const name = this.serviceTypeCode === ServiceTypeCode.BodyArmourPermit ? 'body armour' : 'an armoured vehicle';

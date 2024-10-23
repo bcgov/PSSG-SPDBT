@@ -7,12 +7,22 @@ import moment from 'moment';
 import { ApplicationPortalStatusCode, PaginationResponse, ScreeningTypeCode } from 'src/app/api/models';
 import * as CodeDescTypes from 'src/app/core/code-types/code-desc-types.models';
 import { CaptchaResponse, CaptchaResponseType } from 'src/app/shared/components/captcha-v2.component';
-import { ApplicationPortalStatusTypes, ScreeningTypes, SelectOptions } from '../code-types/model-desc.models';
+import {
+	ApplicationPortalStatisticsTypes,
+	ApplicationPortalStatusTypes,
+	ScreeningTypes,
+	SelectOptions,
+} from '../code-types/model-desc.models';
 import { SPD_CONSTANTS } from '../constants/constants';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
-	constructor(@Inject(DOCUMENT) private document: Document, private hotToastService: HotToastService) {}
+	private uniqueId = 1;
+
+	constructor(
+		@Inject(DOCUMENT) private document: Document,
+		private hotToastService: HotToastService,
+	) {}
 
 	//------------------------------------
 	// Session storage
@@ -36,6 +46,11 @@ export class UtilService {
 		this.clearSessionData(this.ORG_REG_STATE_KEY);
 		this.clearSessionData(this.CRRPA_PORTAL_STATE_KEY);
 		this.clearSessionData(this.PSSOA_PORTAL_STATE_KEY);
+	}
+
+	public getUniqueId(): string {
+		this.uniqueId = this.uniqueId + 1;
+		return `ID${this.uniqueId}`;
 	}
 
 	//------------------------------------
@@ -108,7 +123,7 @@ export class UtilService {
 
 	getDescByCode(codeTableName: keyof typeof CodeDescTypes, input: string): string {
 		const codeDescs = this.getCodeDescByType(codeTableName);
-		return codeDescs ? (codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '' : '';
+		return codeDescs ? ((codeDescs.find((item: SelectOptions) => item.code == input)?.desc as string) ?? '') : '';
 	}
 
 	getCodeDescSorted(codeTableName: keyof typeof CodeDescTypes): SelectOptions[] {
@@ -140,7 +155,7 @@ export class UtilService {
 			document.body.removeChild(anchor);
 		} else {
 			this.hotToastService.error(
-				notFoundMessage ? notFoundMessage : 'File could not be found. Please try again later.'
+				notFoundMessage ? notFoundMessage : 'File could not be found. Please try again later.',
 			);
 			console.error(`fileName ${fileName} is empty`);
 		}
@@ -182,8 +197,12 @@ export class UtilService {
 		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
 	}
 
-	getApplicationPortalStatusHint(code: string): string {
-		return (ApplicationPortalStatusTypes.find((item: SelectOptions) => item.code == code)?.extra as string) ?? '';
+	getApplicationPortalStatisticsDesc(code: string): string {
+		return (ApplicationPortalStatisticsTypes.find((item: SelectOptions) => item.code == code)?.desc as string) ?? '';
+	}
+
+	getApplicationPortalStatisticsHint(code: string): string {
+		return (ApplicationPortalStatisticsTypes.find((item: SelectOptions) => item.code == code)?.extra as string) ?? '';
 	}
 
 	getDateString(date: Date): string {
@@ -192,7 +211,7 @@ export class UtilService {
 
 	getShowScreeningType(
 		licenseesNeedVulnerableSectorScreening: boolean,
-		contractorsNeedVulnerableSectorScreening: boolean
+		contractorsNeedVulnerableSectorScreening: boolean,
 	): boolean {
 		if (!licenseesNeedVulnerableSectorScreening && !contractorsNeedVulnerableSectorScreening) {
 			return false;
@@ -203,7 +222,7 @@ export class UtilService {
 
 	getScreeningTypes(
 		licenseesNeedVulnerableSectorScreening: boolean,
-		contractorsNeedVulnerableSectorScreening: boolean
+		contractorsNeedVulnerableSectorScreening: boolean,
 	): SelectOptions[] {
 		if (!licenseesNeedVulnerableSectorScreening && contractorsNeedVulnerableSectorScreening) {
 			return ScreeningTypes.filter((item) => item.code != ScreeningTypeCode.Licensee);

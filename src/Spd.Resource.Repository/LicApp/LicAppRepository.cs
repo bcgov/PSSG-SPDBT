@@ -18,7 +18,7 @@ internal class LicAppRepository : ILicAppRepository
     }
 
     //for unauth, set applcation status to submitted.
-    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, decimal? price, CancellationToken ct)
+    public async Task<LicenceApplicationCmdResp> CommitLicenceApplicationAsync(Guid applicationId, ApplicationStatusEnum status, decimal? price, CancellationToken ct, LicenceTermEnum? term = null)
     {
         spd_application? app = await _context.GetApplicationById(applicationId, ct);
         if (app == null)
@@ -28,11 +28,19 @@ internal class LicAppRepository : ILicAppRepository
 
         if (status == ApplicationStatusEnum.Submitted)
             app.statecode = DynamicsConstants.StateCode_Inactive;
-               
+
         app.spd_submittedon = DateTimeOffset.Now;
         app.spd_portalmodifiedon = DateTimeOffset.Now;
+
         if (price is > 0)
             app.spd_licencefee = price;
+
+        if (term != null) //spdbt-3194
+        {
+            int? bizLicAppTerm = (int?)SharedMappingFuncs.GetOptionset<LicenceTermEnum, LicenceTermOptionSet>(term);
+            if (bizLicAppTerm > app.spd_licenceterm)
+                app.spd_licenceterm = bizLicAppTerm;
+        }
         _context.UpdateObject(app);
         await _context.SaveChangesAsync(ct);
 

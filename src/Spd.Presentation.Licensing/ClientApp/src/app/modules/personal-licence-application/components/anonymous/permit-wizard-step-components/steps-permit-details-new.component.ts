@@ -20,14 +20,18 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 
 				<ng-container *ngIf="showTermsOfUse; else isLoggedInChecklistSteps">
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-container>
 				<ng-template #isLoggedInChecklistSteps>
 					<app-wizard-footer
+						[isFormValid]="isFormValid"
 						(previousStepperStep)="onGotoUserProfile()"
 						(nextStepperStep)="onGoToNextStep()"
+						(nextReviewStepperStep)="onNextReview(STEP_CHECKLIST)"
 					></app-wizard-footer>
 				</ng-template>
 			</mat-step>
@@ -39,8 +43,10 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 				></app-step-permit-expired>
 
 				<app-wizard-footer
+					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_PERMIT_EXPIRED)"
+					(nextReviewStepperStep)="onNextReview(STEP_PERMIT_EXPIRED)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -50,9 +56,11 @@ import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.compon
 })
 export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	readonly STEP_TERMS = 1;
-	readonly STEP_PERMIT_EXPIRED = 2;
+	readonly STEP_CHECKLIST = 2;
+	readonly STEP_PERMIT_EXPIRED = 3;
 
 	@Input() isLoggedIn = false;
+	@Input() isFormValid = false;
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
@@ -71,6 +79,8 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 		switch (step) {
 			case this.STEP_TERMS:
 				return this.termsOfUseComponent.isFormValid();
+			case this.STEP_CHECKLIST:
+				return true;
 			case this.STEP_PERMIT_EXPIRED:
 				return this.permitExpiredComponent.isFormValid();
 			default:
