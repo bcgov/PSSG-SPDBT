@@ -271,14 +271,14 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBritishColumbia),
+			FormControlValidators.requiredValue(
+				SPD_CONSTANTS.address.provinceBC,
+				SPD_CONSTANTS.address.provinceBritishColumbia
+			),
 		]),
 		country: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA),
-			FormControlValidators.required,
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCanada),
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
 		]),
 	});
 
@@ -322,10 +322,15 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		postalCode: new FormControl('', [FormControlValidators.required]),
 		province: new FormControl('', [
 			FormControlValidators.required,
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBC),
-			FormControlValidators.requiredValue(SPD_CONSTANTS.address.provinceBritishColumbia),
+			FormControlValidators.requiredValue(
+				SPD_CONSTANTS.address.provinceBC,
+				SPD_CONSTANTS.address.provinceBritishColumbia
+			),
 		]),
-		country: new FormControl('', [FormControlValidators.required, FormControlValidators.requiredValue('Canada')]),
+		country: new FormControl('', [
+			FormControlValidators.required,
+			FormControlValidators.requiredValue(SPD_CONSTANTS.address.countryCA, SPD_CONSTANTS.address.countryCanada),
+		]),
 		branchManager: new FormControl('', [FormControlValidators.required]),
 		branchPhoneNumber: new FormControl(''),
 		branchEmailAddr: new FormControl('', [FormControlValidators.email]),
