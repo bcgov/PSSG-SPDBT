@@ -107,7 +107,7 @@ export class FormControlValidators {
 	 * @description
 	 * Checks the form control must have a specific value.
 	 */
-	public static requiredValue(matchValue: string): ValidatorFn {
+	public static requiredValue(matchValue: string, otherMatchValue: string | null = null): ValidatorFn {
 		return (control: AbstractControl): ValidationErrors | null => {
 			if (!control.value) {
 				return null;
@@ -115,7 +115,10 @@ export class FormControlValidators {
 			if (!matchValue) {
 				return null;
 			}
-			const valid = control.valid && control.value === matchValue;
+			let valid = control.valid && control.value === matchValue;
+			if (otherMatchValue && !valid) {
+				valid = control.valid && control.value === otherMatchValue;
+			}
 			return valid ? null : { requiredValue: true };
 		};
 	}
