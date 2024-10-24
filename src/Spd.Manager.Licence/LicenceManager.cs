@@ -104,7 +104,7 @@ internal class LicenceManager :
         }
 
         //only return expired and active ones
-        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired));
+        return _mapper.Map<IEnumerable<LicenceBasicResponse>>(response.Items.Where(r => r.LicenceStatusCode == LicenceStatusEnum.Active || r.LicenceStatusCode == LicenceStatusEnum.Expired || r.LicenceStatusCode == LicenceStatusEnum.Preview));
     }
 
     public async Task<FileResponse?> Handle(LicencePhotoQuery query, CancellationToken cancellationToken)
