@@ -48,7 +48,7 @@ namespace Spd.Utilities.LogonUser
             if (birthDateStr == null)
                 throw new ArgumentNullException("principal.birthdate");
             DateOnly birthDate = DateOnly.ParseExact(birthDateStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            string? sub = claim.GetClaimValue<string>("sub");
+            string? sub = claim.GetClaimValue<string>("sub")?.Split('@')[0];
             if (sub == null)
                 throw new ArgumentNullException("principal.sub");
 
@@ -148,7 +148,6 @@ namespace Spd.Utilities.LogonUser
                     if (pos == 0) return (givenNames.Substring(temp.Length, givenNames.Length - temp.Length).Trim(), null);
                     else return (givenNames, null);
                 }
-
             }
             return (null, null);
         }
