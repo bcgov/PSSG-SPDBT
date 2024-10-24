@@ -767,7 +767,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					originalLicenceId: associatedLicence.licenceId,
 					originalLicenceNumber: associatedLicence.licenceNumber,
 					originalExpiryDate: associatedLicence.expiryDate,
-					originalLicenceTermCode: associatedLicence.licenceTermCode, // TODO do we need other licence data to link?
+					originalLicenceTermCode: associatedLicence.licenceTermCode,
 				};
 
 				this.permitModelFormGroup.patchValue(

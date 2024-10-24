@@ -377,7 +377,7 @@ export class ApplicationService {
 								.pipe(
 									switchMap((resp: BizLicAppResponse) => {
 										response.forEach((item: MainApplicationResponse) => {
-											item.isSimultaneousFlow = !!resp.soleProprietorSWLAppId; // TODO populate Simultaneous
+											item.isSimultaneousFlow = !!resp.soleProprietorSWLAppId;
 										});
 
 										return of(response);
@@ -909,6 +909,7 @@ export class ApplicationService {
 			) >= 0;
 
 		if (matchingLicence) {
+			// expiry dates of both licences must match to be simultaneous
 			licence.isSimultaneousFlow = matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
 
 			if (licence.hasSecurityGuardCategory) {
