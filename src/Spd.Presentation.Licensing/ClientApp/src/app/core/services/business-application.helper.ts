@@ -509,18 +509,16 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 		let applicantContactInfo: ContactInfo = {};
 		let applicantIsBizManager: boolean | null = null;
 
-		if (!this.isSoleProprietor(bizTypeCode)) {
-			applicantIsBizManager = applicantData.applicantIsBizManager;
-			if (applicantData.applicantIsBizManager != true) {
-				applicantContactInfo = {
-					emailAddress: applicantData.emailAddress,
-					givenName: applicantData.givenName,
-					middleName1: applicantData.middleName1,
-					middleName2: applicantData.middleName2,
-					phoneNumber: applicantData.phoneNumber,
-					surname: applicantData.surname,
-				};
-			}
+		applicantIsBizManager = applicantData.applicantIsBizManager ?? true;
+		if (applicantData.applicantIsBizManager != true) {
+			applicantContactInfo = {
+				emailAddress: applicantData.emailAddress,
+				givenName: applicantData.givenName,
+				middleName1: applicantData.middleName1,
+				middleName2: applicantData.middleName2,
+				phoneNumber: applicantData.phoneNumber,
+				surname: applicantData.surname,
+			};
 		}
 
 		const categoryData = { ...businessModelFormValue.categoryData };

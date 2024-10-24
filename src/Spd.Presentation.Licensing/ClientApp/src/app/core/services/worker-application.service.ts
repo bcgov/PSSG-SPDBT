@@ -1307,6 +1307,8 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: associatedLicence?.bizTypeCode,
 			originalCategoryCodes: associatedLicence?.categoryCodes,
+			linkedSoleProprietorExpiryDate: associatedLicence?.linkedSoleProprietorExpiryDate,
+			linkedSoleProprietorLicenceId: associatedLicence?.linkedSoleProprietorLicenceId,
 			originalPhotoOfYourselfExpired: null,
 			originalDogAuthorizationExists: null,
 			originalCarryAndUseRestraints: associatedLicence?.carryAndUseRestraints ?? null,

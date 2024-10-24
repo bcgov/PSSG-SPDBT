@@ -1966,12 +1966,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		// if there is no applicationTypeCode, then we are supporting just loading the profile
 		if (applicationTypeCode) {
-			if (soleProprietorSWLAppId) {
-				// using sole proprietor combined flow
-				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
-			} else if (soleProprietorSwlLicence?.licenceAppId) {
+			if (soleProprietorSwlLicence?.licenceAppId) {
 				// business licence is sole proprietor
 				return this.applyBusinessLicenceSoleProprietorSelection(soleProprietorSwlLicence);
+			} else if (soleProprietorSWLAppId) {
+				// using sole proprietor combined flow
+				return this.applyBusinessLicenceSoleProprietorSwl(soleProprietorSWLAppId);
 			}
 		}
 
