@@ -117,6 +117,10 @@ export class UtilService {
 		return moment().startOf('day').subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
+	getDateMin(): moment.Moment {
+		return moment().startOf('day').subtract(SPD_CONSTANTS.date.dateMaxYears, 'years');
+	}
+
 	getIsFutureDate(aDate: string | null | undefined): boolean {
 		if (!aDate) return false;
 		return moment(aDate).startOf('day').isAfter(moment().startOf('day'), 'day');

@@ -5,6 +5,7 @@ export const SPD_CONSTANTS = {
 	date: {
 		birthDateStartAtYears: 25,
 		birthDateMinAgeYears: 12,
+		dateMaxYears: 150,
 		dateFormat: 'YYYY-MM-DD',
 		formalDateFormat: 'MMM DD, YYYY',
 		formalDateTimeFormat: 'MMM DD, YYYY HH:mm',

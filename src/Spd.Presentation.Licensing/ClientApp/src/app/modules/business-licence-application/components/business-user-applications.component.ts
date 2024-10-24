@@ -159,7 +159,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	ngOnInit(): void {
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 
-		this.commonApplicationService.setApplicationTitle();
+		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 
 		this.results$ = this.businessApplicationService.getBusinessProfile().pipe(
 			switchMap((businessProfile: BizProfileResponse) => {
@@ -220,8 +220,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				);
 			})
 		);
-
-		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 	}
 
 	onManageMembersAndEmployees(): void {

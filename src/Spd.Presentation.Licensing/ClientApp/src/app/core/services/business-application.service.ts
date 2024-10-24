@@ -1171,16 +1171,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 						businessProfile,
 						applicationTypeCode: ApplicationTypeCode.New,
 						soleProprietorSwlLicence,
-					}).pipe(
-						tap((_resp: any) => {
-							this.setAsInitialized();
-
-							this.commonApplicationService.setApplicationTitle(
-								ServiceTypeCode.SecurityBusinessLicence,
-								ApplicationTypeCode.New
-							);
-						})
-					);
+					});
 				})
 			);
 		}
@@ -1189,16 +1180,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			businessProfile,
 			applicationTypeCode: ApplicationTypeCode.New,
 			soleProprietorSwlLicence,
-		}).pipe(
-			tap((_resp: any) => {
-				this.setAsInitialized();
-
-				this.commonApplicationService.setApplicationTitle(
-					ServiceTypeCode.SecurityBusinessLicence,
-					ApplicationTypeCode.New
-				);
-			})
-		);
+		});
 	}
 
 	private applyLicenceProfileMembersIntoModel(members: Members) {
@@ -1278,11 +1260,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			licenceAppId,
 			applicationTypeCode,
 			isSoleProprietor: true,
-		}).pipe(
-			tap((_resp: any) => {
-				this.commonApplicationService.setApplicationTitle(_resp.serviceTypeData.serviceTypeCode);
-			})
-		);
+		});
 	}
 
 	/**

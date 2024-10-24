@@ -962,7 +962,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					originalDogAuthorizationExists: null,
 					originalCarryAndUseRestraints: null,
 					originalUseDogs: null,
-					originalIsDogsPurposeDetectionDrugs: null, // TODO do we need other licence data to link?
+					originalIsDogsPurposeDetectionDrugs: null,
 					originalIsDogsPurposeDetectionExplosives: null,
 					originalIsDogsPurposeProtection: null,
 				};
