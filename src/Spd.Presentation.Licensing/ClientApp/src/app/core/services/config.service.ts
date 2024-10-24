@@ -86,7 +86,6 @@ export class ConfigService {
 			responseType: resp.responseType!,
 			scope: resp.scope!,
 			showDebugInformation: true,
-			strictDiscoveryDocumentValidation: false,
 			customQueryParams: { kc_idp_hint: resp.identityProvider },
 		};
 		console.debug('[ConfigService] getBcscConfig', bcscConfig, 'redirectUri', redirectUri);
