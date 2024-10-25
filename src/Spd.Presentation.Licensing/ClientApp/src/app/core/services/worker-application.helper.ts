@@ -7,6 +7,7 @@ import {
 	DocumentExpiredInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
+	LicenceTermCode,
 	PoliceOfficerRoleCode,
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
@@ -1296,7 +1297,7 @@ export abstract class WorkerApplicationHelper extends ApplicationHelper {
 		return workerLicenceModelData.categoryPrivateInvestigatorSupFormGroup.attachments ?? [];
 	}
 
-	getSummarylicenceTermCode(workerLicenceModelData: any): string {
+	getSummarylicenceTermCode(workerLicenceModelData: any): LicenceTermCode | null {
 		return workerLicenceModelData.licenceTermData.licenceTermCode ?? '';
 	}
 

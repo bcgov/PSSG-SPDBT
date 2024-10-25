@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import {
 	ApplicationTypeCode,
 	BizTypeCode,
-	LicenceFeeResponse,
+	LicenceTermCode,
 	PoliceOfficerRoleCode,
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
@@ -45,29 +45,29 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Type</div>
 												<div class="summary-text-data">
-													{{ serviceTypeCode | options : 'ServiceTypes' }}
+													{{ serviceTypeCode | options: 'ServiceTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Application Type</div>
 												<div class="summary-text-data">
-													{{ applicationTypeCode | options : 'ApplicationTypes' }}
+													{{ applicationTypeCode | options: 'ApplicationTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12" *ngIf="soleProprietorBizTypeCode">
 												<div class="text-label d-block text-muted">Sole Proprietorship Security Business Licence</div>
 												<div class="summary-text-data">
-													{{ soleProprietorBizTypeCode | options : 'BizTypes' }}
+													{{ soleProprietorBizTypeCode | options: 'BizTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
-												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Fee</div>
 												<div class="summary-text-data">
-													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 												</div>
 											</div>
 											<div class="col-xl-4 col-lg-6 col-md-12">
@@ -75,7 +75,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="summary-text-data">
 													<ul class="m-0">
 														<ng-container *ngFor="let category of categoryList; let i = index">
-															<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+															<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
 														</ng-container>
 													</ul>
 												</div>
@@ -88,7 +88,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -100,7 +100,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												</div>
 												<div class="col-lg-6 col-md-12" *ngIf="showFireInvestigator">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -121,7 +121,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												</div>
 												<div class="col-lg-6 col-md-12" *ngIf="showLocksmith">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -134,7 +134,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 												<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigator">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+														{{ categoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
 														Documents
 													</div>
 													<div class="summary-text-data">
@@ -157,9 +157,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 												<div class="col-lg-6 col-md-12" *ngIf="showPrivateInvestigatorUnderSupervision">
 													<div class="text-label d-block text-muted">
-														{{
-															categoryTypeCodes.PrivateInvestigatorUnderSupervision | options : 'WorkerCategoryTypes'
-														}}
+														{{ categoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes' }}
 														Documents
 													</div>
 													<div class="summary-text-data">
@@ -178,7 +176,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 												<div class="col-lg-6 col-md-12" *ngIf="showSecurityAlarmInstaller">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
+														{{ categoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
 														Documents
 													</div>
 													<div class="summary-text-data">
@@ -194,7 +192,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 												<div class="col-lg-6 col-md-12" *ngIf="showSecurityConsultant">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -214,7 +212,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -251,13 +249,13 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="col-lg-4 col-md-12">
 													<div class="text-label d-block text-muted">Request to Use Restraints</div>
 													<div class="summary-text-data">
-														{{ carryAndUseRestraints | options : 'BooleanTypes' }}
+														{{ carryAndUseRestraints | options: 'BooleanTypes' }}
 													</div>
 												</div>
 												<ng-container *ngIf="carryAndUseRestraints === booleanTypeCodes.Yes">
 													<div class="col-lg-8 col-md-12">
 														<div class="text-label d-block text-muted">
-															{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
+															{{ carryAndUseRestraintsDocument | options: 'RestraintDocumentTypes' }}
 														</div>
 														<div class="summary-text-data">
 															<ul class="m-0">
@@ -336,7 +334,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 																policeOfficerRoleCode !== policeOfficerRoleCodes.Other;
 																else otherPoliceOfficerRole
 															"
-															>{{ policeOfficerRoleCode | options : 'PoliceOfficerRoleTypes' | default }}</span
+															>{{ policeOfficerRoleCode | options: 'PoliceOfficerRoleTypes' | default }}</span
 														>
 														<ng-template #otherPoliceOfficerRole> Other: {{ otherOfficerRole }} </ng-template>
 													</div>
@@ -442,7 +440,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Sex</div>
 												<div class="summary-text-data">
-													{{ genderCode | options : 'GenderTypes' | default }}
+													{{ genderCode | options: 'GenderTypes' | default }}
 												</div>
 											</div>
 										</div>
@@ -485,10 +483,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="col-lg-6 col-md-12">
 													<div class="text-label d-block text-muted">
 														<span *ngIf="canadianCitizenProofTypeCode">
-															{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+															{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
 														</span>
 														<span *ngIf="notCanadianCitizenProofTypeCode">
-															{{ notCanadianCitizenProofTypeCode | options : 'ProofOfAbilityToWorkInCanadaTypes' }}
+															{{ notCanadianCitizenProofTypeCode | options: 'ProofOfAbilityToWorkInCanadaTypes' }}
 														</span>
 													</div>
 													<div class="summary-text-data">
@@ -502,7 +500,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 
 												<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
 													<div class="text-label d-block text-muted">
-														{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+														{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -537,20 +535,20 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Hair Colour</div>
 												<div class="summary-text-data">
-													{{ hairColourCode | options : 'HairColourTypes' }}
+													{{ hairColourCode | options: 'HairColourTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Eye Colour</div>
 												<div class="summary-text-data">
-													{{ eyeColourCode | options : 'EyeColourTypes' }}
+													{{ eyeColourCode | options: 'EyeColourTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Height</div>
 												<div class="summary-text-data">
 													{{ height }}
-													{{ heightUnitCode | options : 'HeightUnitTypes' }}
+													{{ heightUnitCode | options: 'HeightUnitTypes' }}
 													{{ heightInches }}
 												</div>
 											</div>
@@ -558,7 +556,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 												<div class="text-label d-block text-muted">Weight</div>
 												<div class="summary-text-data">
 													{{ weight }}
-													{{ weightUnitCode | options : 'WeightUnitTypes' }}
+													{{ weightUnitCode | options: 'WeightUnitTypes' }}
 												</div>
 											</div>
 										</div>
@@ -840,7 +838,7 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		);
 	}
 
-	get licenceTermCode(): string {
+	get licenceTermCode(): LicenceTermCode | null {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 	get licenceFee(): number | null {
@@ -855,15 +853,14 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 			bizTypeCode = this.licenceModelData.soleProprietorData.bizTypeCode;
 		}
 
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(
-				this.serviceTypeCode,
-				this.applicationTypeCode,
-				bizTypeCode,
-				originalLicenceData.originalLicenceTermCode
-			)
-			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
-		return fee ? fee.amount ?? null : null;
+		const fee = this.commonApplicationService.getLicenceFee(
+			this.serviceTypeCode,
+			this.applicationTypeCode,
+			bizTypeCode,
+			this.licenceTermCode,
+			originalLicenceData.originalLicenceTermCode
+		);
+		return fee ? (fee.amount ?? null) : null;
 	}
 
 	get hasExpiredLicence(): string {
@@ -1022,8 +1019,8 @@ export class StepWorkerLicenceSummaryReviewAnonymousComponent implements OnInit 
 		return this.workerApplicationService.getSummaryweightUnitCode(this.licenceModelData);
 	}
 
-	get photoOfYourselfAttachments(): File[] {
-		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData) ?? [];
+	get photoOfYourselfAttachments(): File[] | null {
+		return this.workerApplicationService.getSummaryphotoOfYourselfAttachments(this.licenceModelData) ?? null;
 	}
 
 	get emailAddress(): string {

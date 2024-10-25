@@ -159,7 +159,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	ngOnInit(): void {
 		this.lostLicenceDaysText = this.configService.configs?.replacementProcessingTime ?? 'TBD';
 
-		this.commonApplicationService.setApplicationTitle();
+		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 
 		this.results$ = this.businessApplicationService.getBusinessProfile().pipe(
 			switchMap((businessProfile: BizProfileResponse) => {
@@ -186,8 +186,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
 
 						// User Licences/Permits
-						const activeBusinessLicencesList = businessLicencesList.filter(
-							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Active
+						const activeBusinessLicencesList = businessLicencesList.filter((item: MainLicenceResponse) =>
+							this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
 						);
 
 						this.expiredLicencesList = businessLicencesList.filter(
@@ -220,8 +220,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 				);
 			})
 		);
-
-		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 	}
 
 	onManageMembersAndEmployees(): void {
