@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceTypeCode } from '@app/api/models';
+import { LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 
@@ -25,7 +25,7 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 					<div class="mt-4 text-center fs-5">
-						Your update to your {{ serviceTypeCode | options : 'ServiceTypes' }} has been received.
+						Your update to your {{ serviceTypeCode | options: 'ServiceTypes' }} has been received.
 					</div>
 
 					<div class="my-4 text-center">We will contact you if we need more information.</div>
@@ -35,13 +35,13 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 							<div class="d-block payment__text-label text-md-end">Licence Term</div>
 						</div>
 						<div class="col-md-6 col-sm-12 mt-md-2">
-							<div class="payment__text">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+							<div class="payment__text">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
 						</div>
 						<div class="col-md-6 col-sm-12 mt-2">
 							<div class="d-block payment__text-label text-md-end">Update Fee</div>
 						</div>
 						<div class="col-md-6 col-sm-12 mt-md-2">
-							<div class="payment__text">{{ 0 | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
+							<div class="payment__text">{{ 0 | currency: 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 						</div>
 						<div class="col-md-6 col-sm-12 mt-2">
 							<div class="d-block payment__text-label text-md-end">Case Number</div>
@@ -93,12 +93,12 @@ export class BusinessLicenceUpdateReceivedSuccessComponent implements OnInit {
 	}
 
 	get serviceTypeCode(): ServiceTypeCode | null {
-		return this.businessModelData.serviceTypeData?.serviceTypeCode ?? null;
+		return this.businessApplicationService.getSummaryserviceTypeCode(this.businessModelData);
 	}
-	get licenceTermCode(): string {
-		return this.businessModelData.licenceTermData.licenceTermCode ?? '';
+	get licenceTermCode(): LicenceTermCode | null {
+		return this.businessApplicationService.getSummarylicenceTermCode(this.businessModelData);
 	}
 	get caseNumber(): string {
-		return this.businessModelData.caseNumber ?? '';
+		return this.businessApplicationService.getSummarycaseNumber(this.businessModelData);
 	}
 }
