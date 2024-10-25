@@ -16,7 +16,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 				<div class="row">
 					<div class="col-lg-3">
 						<div class="fs-5" style="color: var(--color-primary);">
-							{{ appl.serviceTypeCode | options : 'ServiceTypes' }}
+							{{ appl.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-9">
@@ -32,7 +32,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
 								<div class="text-data">
-									{{ appl.licenceExpiryDate | formatDate : formalDateFormat }}
+									{{ appl.expiryDate | formatDate: formalDateFormat }}
 								</div>
 							</div>
 							<div class="col-lg-3 text-end">

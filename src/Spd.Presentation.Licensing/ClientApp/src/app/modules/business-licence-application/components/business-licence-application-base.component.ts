@@ -38,6 +38,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		const defaultBizId: string | undefined = queryParams['bizId'];
 		const swlLicAppId: string | undefined = queryParams['swlLicAppId'];
 		const bizLicAppId: string | undefined = queryParams['bizLicAppId'];
+		const linkedSoleProprietorBizLicId: string | undefined = queryParams['linkedSoleProprietorBizLicId'];
 
 		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
 
@@ -45,12 +46,17 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		if (defaultBizId) params.set('bizId', defaultBizId);
 		if (swlLicAppId) params.set('swlLicAppId', swlLicAppId);
 		if (bizLicAppId) params.set('bizLicAppId', bizLicAppId);
+		if (linkedSoleProprietorBizLicId) params.set('linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
 		const currentPath = location.pathname;
 		let redirectComponentRoute: string | undefined;
 		if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
 			redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
 				BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
+			)}?${params.toString()}`;
+		} else if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR)) {
+			redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
+				BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR
 			)}?${params.toString()}`;
 		}
 
@@ -64,51 +70,56 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			params.toString()
 		);
 
-		console.debug('BusinessLicenceApplicationBaseComponent loginInfo', loginInfo);
-		console.debug('BusinessLicenceApplicationBaseComponent swlLicAppId', swlLicAppId);
-		console.debug('BusinessLicenceApplicationBaseComponent bizLicAppId', bizLicAppId);
+		console.debug('**** BASE **** loginInfo', loginInfo);
+		console.debug('**** BASE **** swlLicAppId', swlLicAppId);
+		console.debug('**** BASE **** bizLicAppId', bizLicAppId);
+		console.debug('**** BASE **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
-		if (
-			(swlLicAppId || bizLicAppId) &&
-			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR) &&
-			loginInfo.state
-		) {
-			// handle new business licence creation from swl - for sole proprietor
-			this.businessApplicationService
-				.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
-								BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
-							)}?${loginInfo.state}`
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
+		if (loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
+			if ((swlLicAppId || bizLicAppId) && loginInfo.state) {
+				// handle new business licence creation from swl - for sole proprietor
+				this.businessApplicationService
+					.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
+									BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
+								)}?${loginInfo.state}`
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				return;
+			}
+
+			// data is missing - return to home page
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
 			return;
 		}
 
-		if (
-			swlLicAppId &&
-			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR) &&
-			loginInfo.state
-		) {
-			// handle renew business licence creation from swl - for sole proprietor
-			this.businessApplicationService
-				.getRenewBusinessLicenceWithSwlCombinedFlow(swlLicAppId)
-				.pipe(
-					tap((_resp: any) => {
-						this.router.navigateByUrl(
-							`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
-								BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR
-							)}?${loginInfo.state}`
-						);
-					}),
-					take(1)
-				)
-				.subscribe();
+		if (loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR)) {
+			if (swlLicAppId && linkedSoleProprietorBizLicId && loginInfo.state) {
+				// handle renew business licence creation from swl - for sole proprietor
+				this.businessApplicationService
+					.getRenewalBusinessLicenceWithSwlCombinedFlow(swlLicAppId, linkedSoleProprietorBizLicId)
+					.pipe(
+						tap((_resp: any) => {
+							this.router.navigateByUrl(
+								`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
+									BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR
+								)}?${loginInfo.state}`
+							);
+						}),
+						take(1)
+					)
+					.subscribe();
+				return;
+			}
+
+			// data is missing - return to home page
+			this.router.navigateByUrl(BusinessLicenceApplicationRoutes.pathBusinessLicence());
 			return;
 		}
 

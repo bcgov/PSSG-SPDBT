@@ -63,7 +63,7 @@ export class AuthenticationService {
 	): Promise<{ returnRoute: string | null; state: string | null; loggedIn: boolean }> {
 		await this.configService.configureOAuthService(loginType, this.createRedirectUrl(returnComponentRoute));
 
-		const returnRoute = location.pathname.substring(1); // TODO CRC
+		const returnRoute = location.pathname.substring(1);
 
 		const isLoggedIn = await this.oauthService
 			.loadDiscoveryDocumentAndTryLogin()

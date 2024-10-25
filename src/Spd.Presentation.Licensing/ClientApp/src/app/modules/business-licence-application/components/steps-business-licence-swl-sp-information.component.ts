@@ -30,7 +30,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="isRenewalOrUpdate">
+			<mat-step *ngIf="isRenewal">
 				<app-step-business-licence-confirmation
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-business-licence-confirmation>
@@ -45,7 +45,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="isRenewal">
+			<!-- <mat-step *ngIf="isRenewal">
 				<app-step-business-licence-static-summary></app-step-business-licence-static-summary>
 
 				<div class="row wizard-button-row">
@@ -64,7 +64,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onRenewalShortFormNextStep()"
 				></app-wizard-footer>
-			</mat-step>
+			</mat-step> -->
 
 			<mat-step *ngIf="isNew">
 				<app-step-business-licence-expired></app-step-business-licence-expired>
@@ -206,12 +206,5 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 
 	get isRenewal(): boolean {
 		return this.applicationTypeCode === ApplicationTypeCode.Renewal;
-	}
-
-	get isRenewalOrUpdate(): boolean {
-		return (
-			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
-			this.applicationTypeCode === ApplicationTypeCode.Update
-		);
 	}
 }
