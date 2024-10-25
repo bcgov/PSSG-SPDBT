@@ -47,7 +47,7 @@ public class UsersMiddleware
                 await next(context);
             }
         }
-        else if (context.User.GetIssuer() == bcscConfig.Issuer)
+        else if (context.User.GetIdentityProvider() == bcscConfig.IdentityProvider)
         {
             await next(context);
         }
