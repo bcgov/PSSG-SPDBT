@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -25,7 +25,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 					</p>"
 		>
 			<app-common-access-code-anonymous
-				(linkSuccess)="onLinkSuccess()"
+				(linkSuccess)="onLinkSuccess($event)"
 				[form]="form"
 				[serviceTypeCode]="serviceTypeCode"
 				[applicationTypeCode]="applicationTypeCode"
@@ -81,11 +81,9 @@ export class StepWorkerLicenceAccessCodeComponent implements OnInit, LicenceChil
 		return this.form.valid;
 	}
 
-	onLinkSuccess(): void {
-		const accessCodeData = this.form.value;
-
+	onLinkSuccess(linkLicence: LicenceResponse): void {
 		this.workerApplicationService
-			.getLicenceWithAccessCodeDataAnonymous(accessCodeData, this.applicationTypeCode!)
+			.getLicenceWithAccessCodeDataAnonymous(linkLicence, this.applicationTypeCode!)
 			.subscribe((_resp: any) => {
 				switch (this.serviceTypeCode) {
 					case ServiceTypeCode.SecurityWorkerLicence: {

@@ -12,14 +12,14 @@ public class BizProfileUpdateRequestValidator : AbstractValidator<BizProfileUpda
         RuleFor(r => r.BizBCAddress)
             .NotEmpty()
             .When(r => r.BizAddress?.Province != "BC" && r.BizAddress?.Province != "British Columbia");
-        RuleFor(r => r.SoleProprietorSwlEmailAddress)
-            .NotEmpty()
-            .EmailAddress()
-            .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
-        RuleFor(r => r.SoleProprietorSwlPhoneNumber)
-            .NotEmpty()
-            .MaximumLength(30)
-            .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
+        //RuleFor(r => r.SoleProprietorSwlEmailAddress)
+        //    .NotEmpty()
+        //    .EmailAddress()
+        //    .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
+        //RuleFor(r => r.SoleProprietorSwlPhoneNumber)
+        //    .NotEmpty()
+        //    .MaximumLength(30)
+        //    .When(r => r.BizTypeCode == BizTypeCode.NonRegisteredSoleProprietor || r.BizTypeCode == BizTypeCode.RegisteredSoleProprietor);
         RuleFor(r => r.Branches)
             .ForEach(r => r
                 .Must(r => !string.IsNullOrEmpty(r.BranchAddress?.AddressLine1))

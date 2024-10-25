@@ -13,11 +13,11 @@ import { ConfigService } from './core/services/config.service';
 
 			<ng-container *ngIf="configs$ | async">
 				<router-outlet></router-outlet>
-			</ng-container>
 
-			<footer class="mt-auto">
-				<app-spd-footer></app-spd-footer>
-			</footer>
+				<footer class="mt-auto">
+					<app-spd-footer></app-spd-footer>
+				</footer>
+			</ng-container>
 		</body>
 	`,
 	styles: [],

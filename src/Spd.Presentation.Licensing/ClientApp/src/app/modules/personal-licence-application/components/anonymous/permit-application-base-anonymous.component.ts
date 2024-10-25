@@ -27,7 +27,7 @@ export class PermitApplicationBaseAnonymousComponent implements OnInit {
 
 	ngOnInit(): void {
 		// make sure the user is not logged in.
-		this.authProcessService.logoutBceid(); // TODO needed?
+		this.authProcessService.logoutBceid();
 		this.authProcessService.logoutBcsc();
 
 		if (!this.permitApplicationService.initialized) {

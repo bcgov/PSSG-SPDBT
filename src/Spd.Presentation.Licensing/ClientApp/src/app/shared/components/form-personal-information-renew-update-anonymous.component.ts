@@ -47,11 +47,18 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									[matDatepicker]="picker"
 									formControlName="dateOfBirth"
 									[max]="maxBirthDate"
+									[min]="minDate"
 									[errorStateMatcher]="matcher"
 								/>
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
+								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMin')"
+									>Invalid date of birth</mat-error
+								>
+								<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')"
+									>Invalid date of birth</mat-error
+								>
 							</mat-form-field>
 						</div>
 
@@ -116,6 +123,7 @@ export class FormPersonalInformationRenewUpdateAnonymousComponent implements OnI
 	matcher = new FormErrorStateMatcher();
 
 	maxBirthDate = this.utilService.getBirthDateMax();
+	minDate = this.utilService.getDateMin();
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;

@@ -17,7 +17,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 				<div class="row">
 					<div class="col-lg-2">
 						<div class="fs-5" style="color: var(--color-primary);">
-							{{ licence.serviceTypeCode | options : 'ServiceTypes' }}
+							{{ licence.serviceTypeCode | options: 'ServiceTypes' }}
 						</div>
 					</div>
 					<div class="col-lg-10">
@@ -28,12 +28,12 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Licence Term</div>
-								<div class="text-data fw-bold">{{ licence.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+								<div class="text-data fw-bold">{{ licence.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-lg-3">
 								<div class="d-block text-muted mt-2 mt-lg-0">Expiry Date</div>
 								<div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-									{{ licence.licenceExpiryDate | formatDate : formalDateFormat }}
+									{{ licence.expiryDate | formatDate: formalDateFormat }}
 								</div>
 							</div>
 							<div class="col-lg-3 text-end">
@@ -54,7 +54,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									<div class="text-data">
 										<ul class="m-0">
 											<ng-container *ngFor="let catCode of licence.licenceCategoryCodes; let i = index">
-												<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
+												<li>{{ catCode | options: 'WorkerCategoryTypes' }}</li>
 											</ng-container>
 										</ul>
 									</div>
@@ -71,7 +71,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 										<ng-container *ngIf="licence.dogAuthorizationExpiryDate">
 											<div class="d-block text-muted mt-2">Expiry Date</div>
 											<div class="text-data">
-												{{ licence.dogAuthorizationExpiryDate | formatDate : formalDateFormat }}
+												{{ licence.dogAuthorizationExpiryDate | formatDate: formalDateFormat }}
 											</div>
 										</ng-container>
 									</div>
@@ -86,7 +86,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 										<ng-container *ngIf="licence.restraintAuthorizationExpiryDate">
 											<div class="d-block text-muted mt-2">Expiry Date</div>
 											<div class="text-data">
-												{{ licence.restraintAuthorizationExpiryDate | formatDate : formalDateFormat }}
+												{{ licence.restraintAuthorizationExpiryDate | formatDate: formalDateFormat }}
 											</div>
 										</ng-container>
 									</div>
@@ -96,7 +96,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 							<div class="row mb-2">
 								<div class="col-lg-9">
 									The following updates have a
-									{{ licence.licenceReprintFee | currency : 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
+									{{ licence.licenceReprintFee | currency: 'CAD' : 'symbol-narrow' : '1.0' }} licence reprint fee:
 									<ul class="m-0">
 										<li>changes to licence category</li>
 										<li>requests for authorization for dogs or restraints</li>
@@ -126,7 +126,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								</div>
 								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 									<app-alert type="info" icon="info">
-										This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed, updated or replaced
+										This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or replaced
 										while an application is in progress
 									</app-alert>
 								</div>
@@ -134,7 +134,16 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 						</ng-container>
 						<ng-template #IsPermitContent>
 							<div class="row mb-2">
-								<div class="offset-lg-9 col-lg-3 text-end" *ngIf="!applicationIsInProgress">
+								<div class="col-lg-9">
+									Permit updates include the following changes:
+									<ul class="m-0">
+										<li>changing your name</li>
+										<li>changing your reasons or rationale</li>
+										<li>changing your employer information</li>
+										<li>replacing your photo or permit</li>
+									</ul>
+								</div>
+								<div class="col-lg-3 text-end" *ngIf="!applicationIsInProgress">
 									<button
 										mat-flat-button
 										color="primary"
@@ -157,12 +166,12 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="col-12 mt-3" *ngIf="applicationIsInProgress">
 									<app-alert type="info" icon="info">
 										<ng-container *ngIf="licence.isReplacementPeriod; else NoPermitReplacementPeriod">
-											This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed, updated or
+											This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed, updated or
 											replaced while an application is in progress
 										</ng-container>
 										<ng-template #NoPermitReplacementPeriod>
-											This {{ licence.serviceTypeCode | options : 'ServiceTypes' }} cannot be renewed or updated while
-											an application is in progress
+											This {{ licence.serviceTypeCode | options: 'ServiceTypes' }} cannot be renewed or updated while an
+											application is in progress
 										</ng-template>
 									</app-alert>
 								</div>

@@ -28,6 +28,7 @@ import { BusinessLicencePaymentSuccessComponent } from './components/business-li
 import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business-licence-update-received-success.component';
 import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
+import { BusinessLicenceWizardRenewalSwlSoleProprietorComponent } from './components/business-licence-wizard-renewal-swl-sole-proprietor.component';
 import { BusinessLicenceWizardRenewalComponent } from './components/business-licence-wizard-renewal.component';
 import { BusinessLicenceWizardReplacementComponent } from './components/business-licence-wizard-replacement.component';
 import { BusinessLicenceWizardUpdateComponent } from './components/business-licence-wizard-update.component';
@@ -70,6 +71,7 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessLicenceApplicationBaseComponent,
 		BusinessLicenceWizardNewComponent,
 		BusinessLicenceWizardNewSwlSoleProprietorComponent,
+		BusinessLicenceWizardRenewalSwlSoleProprietorComponent,
 		BusinessLicenceWizardRenewalComponent,
 		BusinessLicenceWizardUpdateComponent,
 		BusinessLicenceWizardReplacementComponent,

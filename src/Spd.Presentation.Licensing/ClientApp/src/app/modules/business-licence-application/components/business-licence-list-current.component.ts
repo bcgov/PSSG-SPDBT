@@ -34,7 +34,7 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 								<div class="d-block text-muted mt-2 mt-md-0">Expiry Date</div>
 								<div class="text-data">
 									<div class="text-data fw-bold" [ngClass]="licence.isRenewalPeriod ? 'error-color' : ''">
-										{{ licence.licenceExpiryDate | formatDate: formalDateFormat }}
+										{{ licence.expiryDate | formatDate: formalDateFormat }}
 									</div>
 								</div>
 							</div>
@@ -107,7 +107,10 @@ import { MainLicenceResponse } from '@app/core/services/application.service';
 									<mat-icon>update</mat-icon>Update
 								</button>
 							</div>
-							<div class="col-12 mt-3" *ngIf="!applicationIsInProgress && licence.isSimultaneousFlow">
+							<div
+								class="col-12 mt-3"
+								*ngIf="!applicationIsInProgress && licence.isRenewalPeriod && licence.isSimultaneousFlow"
+							>
 								<app-alert type="warning" icon="warning">
 									To renew your {{ licence.serviceTypeCode | options: 'ServiceTypes' }}, please renew your
 									{{ swlServiceTypeCode | options: 'ServiceTypes' }} first.
