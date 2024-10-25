@@ -30,18 +30,18 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
+								{{ originalExpiryDate | formatDate: formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-12" *ngIf="feeAmount">
 							<div class="text-label d-block text-muted">{{ applicationTypeCode }} Fee</div>
 							<div class="summary-text-data">
-								{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								{{ feeAmount | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
 						<div class="col-md-12" [ngClass]="feeAmount ? 'col-lg-4' : 'col-lg-8'">
@@ -49,7 +49,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<div class="summary-text-data">
 								<ul class="m-0">
 									<ng-container *ngFor="let category of categoryList; let i = index">
-										<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+										<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
 									</ng-container>
 								</ul>
 							</div>
@@ -85,18 +85,15 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 			const serviceTypeCode = this.licenceModelData.serviceTypeData?.serviceTypeCode;
 			const originalLicenceData = this.licenceModelData.originalLicenceData;
 
-			const fee = this.commonApplicationService
-				.getLicenceTermsAndFees(
-					serviceTypeCode,
-					this.applicationTypeCode,
-					originalLicenceData.originalBizTypeCode,
-					originalLicenceData.originalLicenceTermCode
-				)
-				.filter((item) => item.licenceTermCode == originalLicenceData.originalLicenceTermCode);
+			const fee = this.commonApplicationService.getLicenceFee(
+				serviceTypeCode,
+				this.applicationTypeCode,
+				originalLicenceData.originalBizTypeCode,
+				originalLicenceData.originalLicenceTermCode,
+				originalLicenceData.originalLicenceTermCode
+			);
 
-			if (fee?.length > 0) {
-				this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
-			}
+			this.feeAmount = fee ? (fee.amount ?? null) : null;
 		}
 	}
 

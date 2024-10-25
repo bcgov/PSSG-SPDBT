@@ -35,15 +35,19 @@ public abstract class SpdLicenceControllerBase : SpdControllerBase
     protected void SetValueToResponseCookie(string key, string value, int durationInMins = 20)
     {
         var encryptedKeyCode = _dataProtector.Protect(value, DateTimeOffset.UtcNow.AddMinutes(durationInMins));
-        this.Response.Cookies.Append(key,
-            encryptedKeyCode,
-            new CookieOptions
-            {
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict,
-                Secure = true,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(durationInMins)
-            });
+        try
+        {
+            this.Response.Cookies.Append(key,
+                encryptedKeyCode,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(durationInMins)
+                });
+        }
+        catch (Exception ex) { }
     }
 
     protected string GetInfoFromRequestCookie(string key)

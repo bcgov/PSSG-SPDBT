@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceFeeResponse, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceTermCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -37,19 +37,19 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 						<div class="col-xl-4 col-lg-6 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
+								{{ originalExpiryDate | formatDate: formalDateFormat }}
 							</div>
 						</div>
 
 						<div class="col-xl-4 col-lg-6 col-md-12">
 							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
 						</div>
 						<div class="col-xl-4 col-lg-6 col-md-12">
 							<ng-container *ngIf="isUpdate">
 								<div class="text-label d-block text-muted">Reprint Fee</div>
 								<div class="summary-text-data">
-									{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+									{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 								</div>
 							</ng-container>
 						</div>
@@ -58,7 +58,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 							<div class="summary-text-data">
 								<ul class="m-0">
 									<ng-container *ngFor="let category of categoryList; let i = index">
-										<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+										<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
 									</ng-container>
 								</ul>
 							</div>
@@ -75,7 +75,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								<div class="col-xl-4 col-lg-6 col-md-12">
 									<div class="text-label d-block text-muted">Proof of Qualification</div>
 									<div class="summary-text-data">
-										{{ carryAndUseRestraintsDocument | options : 'RestraintDocumentTypes' }}
+										{{ carryAndUseRestraintsDocument | options: 'RestraintDocumentTypes' }}
 									</div>
 								</div>
 								<div class="col-xl-4 col-lg-6 col-md-12">
@@ -211,15 +211,14 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 
 		const originalLicenceData = this.licenceModelData.originalLicenceData;
 
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(
-				this.serviceTypeCode,
-				ApplicationTypeCode.Update,
-				originalLicenceData.originalBizTypeCode,
-				originalLicenceData.originalLicenceTermCode
-			)
-			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.originalLicenceTermCode);
-		return fee ? fee.amount ?? null : null;
+		const fee = this.commonApplicationService.getLicenceFee(
+			this.serviceTypeCode,
+			ApplicationTypeCode.Update,
+			originalLicenceData.originalBizTypeCode,
+			originalLicenceData.originalLicenceTermCode,
+			originalLicenceData.originalLicenceTermCode
+		);
+		return fee ? (fee.amount ?? null) : null;
 	}
 
 	get isSoleProprietor(): string {
@@ -234,7 +233,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 		return this.workerApplicationService.getSummaryapplicationTypeCode(this.licenceModelData);
 	}
 
-	get licenceTermCode(): string {
+	get licenceTermCode(): LicenceTermCode | null {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 

@@ -30,8 +30,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 
 				<div class="row">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<mat-divider class="my-3 mat-divider-primary"></mat-divider>
-						<div class="text-minor-heading mb-2">Contact Information</div>
+						<div class="text-primary-color fs-6 mb-1">Contact Information</div>
 					</div>
 				</div>
 

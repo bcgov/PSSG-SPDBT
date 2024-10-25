@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ApplicationTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -24,21 +24,21 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						<div class="col-lg-3 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
+								{{ originalExpiryDate | formatDate: formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-3 col-md-12">
 							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
 						</div>
 						<div class="col-lg-3 col-md-12">
 							<div class="text-label d-block text-muted">Print Permit</div>
 							<div class="summary-text-data">{{ isReprint }}</div>
 						</div>
-						<div class="col-lg-3 col-md-12" *ngIf="licenceFee">
+						<div class="col-lg-3 col-md-12">
 							<div class="text-label d-block text-muted">Reprint Fee</div>
 							<div class="summary-text-data">
-								{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
 						<div class="col-lg-6 col-md-12" *ngIf="showPhotographOfYourself">
@@ -262,16 +262,15 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		}
 
 		const originalLicenceData = this.permitModelData.originalLicenceData;
+		const fee = this.commonApplicationService.getLicenceFee(
+			this.serviceTypeCode,
+			ApplicationTypeCode.Update,
+			originalLicenceData.originalBizTypeCode,
+			this.licenceTermCode,
+			originalLicenceData.originalLicenceTermCode
+		);
 
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(
-				this.serviceTypeCode,
-				ApplicationTypeCode.Update,
-				originalLicenceData.originalBizTypeCode,
-				originalLicenceData.originalLicenceTermCode
-			)
-			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
-		return fee ? fee.amount ?? null : null;
+		return fee ? (fee.amount ?? null) : null;
 	}
 	get isReprint(): string {
 		return this.permitApplicationService.getSummaryisReprint(this.permitModelData);
@@ -284,7 +283,7 @@ export class StepPermitSummaryReviewUpdateAuthenticatedComponent implements OnIn
 		return this.permitApplicationService.getSummaryapplicationTypeCode(this.permitModelData);
 	}
 
-	get licenceTermCode(): string {
+	get licenceTermCode(): LicenceTermCode | null {
 		return this.permitApplicationService.getSummarylicenceTermCode(this.permitModelData);
 	}
 

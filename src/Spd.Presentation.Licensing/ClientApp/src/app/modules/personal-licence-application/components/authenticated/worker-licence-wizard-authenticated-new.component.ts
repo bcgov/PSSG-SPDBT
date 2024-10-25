@@ -160,7 +160,7 @@ export class WorkerLicenceWizardAuthenticatedNewComponent extends BaseWizardComp
 
 				this.isSoleProprietorSimultaneousFlow =
 					this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value ===
-					BooleanTypeCode.Yes; // TODO update calculation of isSoleProprietorSimultaneousFlow
+					BooleanTypeCode.Yes;
 
 				this.showSaveAndExit = this.workerApplicationService.isSaveAndExit();
 

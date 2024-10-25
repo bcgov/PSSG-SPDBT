@@ -10,6 +10,7 @@ import {
 	DocumentExpiredInfo,
 	HeightUnitCode,
 	LicenceDocumentTypeCode,
+	LicenceTermCode,
 	PermitAppSubmitRequest,
 	PermitAppUpsertRequest,
 	PoliceOfficerRoleCode,
@@ -535,7 +536,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 						? this.formatDatePipe.transform(
 								citizenshipData.governmentIssuedExpiryDate,
 								SPD_CONSTANTS.date.backendDateFormat
-						  )
+							)
 						: null,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});
@@ -774,8 +775,8 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	getSummaryapplicationTypeCode(permitModelData: any): ApplicationTypeCode | null {
 		return permitModelData.applicationTypeData?.applicationTypeCode ?? null;
 	}
-	getSummarylicenceTermCode(permitModelData: any): string {
-		return permitModelData.licenceTermData.licenceTermCode ?? '';
+	getSummarylicenceTermCode(permitModelData: any): LicenceTermCode | null {
+		return permitModelData.licenceTermData.licenceTermCode ?? null;
 	}
 	getSummaryhasExpiredLicence(permitModelData: any): string {
 		return permitModelData.expiredLicenceData.hasExpiredLicence ?? '';
@@ -838,24 +839,24 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 	}
 	getSummarycanadianCitizenProofTypeCode(permitModelData: any): string {
 		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.Yes
-			? permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? ''
+			? (permitModelData.citizenshipData.canadianCitizenProofTypeCode ?? '')
 			: '';
 	}
 	getSummaryisCanadianResident(permitModelData: any): string {
 		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No
-			? permitModelData.citizenshipData.isCanadianResident ?? ''
+			? (permitModelData.citizenshipData.isCanadianResident ?? '')
 			: '';
 	}
 	getSummaryproofOfResidentStatusCode(permitModelData: any): string {
 		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
 			permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.Yes
-			? permitModelData.citizenshipData.proofOfResidentStatusCode ?? ''
+			? (permitModelData.citizenshipData.proofOfResidentStatusCode ?? '')
 			: '';
 	}
 	getSummaryproofOfCitizenshipCode(permitModelData: any): string {
 		return permitModelData.citizenshipData.isCanadianCitizen === BooleanTypeCode.No &&
 			permitModelData.citizenshipData.isCanadianResident === BooleanTypeCode.No
-			? permitModelData.citizenshipData.proofOfCitizenshipCode ?? ''
+			? (permitModelData.citizenshipData.proofOfCitizenshipCode ?? '')
 			: '';
 	}
 	getSummarycitizenshipExpiryDate(permitModelData: any): string {
@@ -893,7 +894,7 @@ export abstract class PermitApplicationHelper extends ApplicationHelper {
 
 	getSummarybcDriversLicenceNumber(permitModelData: any): string {
 		return permitModelData.bcDriversLicenceData.hasBcDriversLicence === BooleanTypeCode.Yes
-			? permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? ''
+			? (permitModelData.bcDriversLicenceData.bcDriversLicenceNumber ?? '')
 			: '';
 	}
 

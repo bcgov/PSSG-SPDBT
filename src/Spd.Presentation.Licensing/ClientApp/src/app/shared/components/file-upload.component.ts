@@ -246,7 +246,7 @@ export class FileUploadComponent implements OnInit {
 			return;
 		}
 
-		// BUG: for some reason the file uploader will not allow deletion of files that contain multiple periods
+		// For some reason the file uploader will not allow deletion of files that contain multiple periods
 		// for example: filename.gov.bc.ca.docx ... Block the uploading of these files.
 		const numberOfPeriods = newFile.name.match(/\./g)?.length ?? 0;
 

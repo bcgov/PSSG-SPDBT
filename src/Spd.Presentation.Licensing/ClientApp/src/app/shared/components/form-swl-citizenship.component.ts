@@ -86,10 +86,17 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						<div class="col-lg-5 col-md-12" *ngIf="showExpiryDate">
 							<mat-form-field>
 								<mat-label>Document Expiry Date</mat-label>
-								<input matInput [matDatepicker]="picker" formControlName="expiryDate" [errorStateMatcher]="matcher" />
+								<input
+									matInput
+									[matDatepicker]="picker"
+									formControlName="expiryDate"
+									[min]="minDate"
+									[errorStateMatcher]="matcher"
+								/>
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 								<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">Invalid expiry date</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -108,7 +115,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<ng-container *ngIf="isShowFrontAndBack">
 										<app-alert type="info" icon="">
 											Upload a photo of the front and back of your
-											{{ canadianCitizenProofTypeCode.value | options : 'ProofOfCanadianCitizenshipTypes' }}
+											{{ canadianCitizenProofTypeCode.value | options: 'ProofOfCanadianCitizenshipTypes' }}
 										</app-alert>
 									</ng-container>
 
@@ -167,6 +174,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 											matInput
 											[matDatepicker]="picker"
 											formControlName="governmentIssuedExpiryDate"
+											[min]="minDate"
 											[errorStateMatcher]="matcher"
 										/>
 										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -174,6 +182,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('required')">
 											This is required
 										</mat-error>
+										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')"
+											>Invalid expiry date</mat-error
+										>
 									</mat-form-field>
 								</div>
 							</div>
@@ -183,7 +194,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 									<ng-container *ngIf="isShowNonCanadianFrontAndBackAdditional">
 										<app-alert type="info" icon="">
 											Upload a photo of the front and back of your
-											{{ governmentIssuedPhotoTypeCode.value | options : 'GovernmentIssuedPhotoIdTypes' }}
+											{{ governmentIssuedPhotoTypeCode.value | options: 'GovernmentIssuedPhotoIdTypes' }}
 										</app-alert>
 									</ng-container>
 									<app-file-upload
@@ -228,6 +239,7 @@ export class FormSwlCitizenshipComponent implements LicenceChildStepperStepCompo
 
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
+	minDate = this.utilService.getDateMin();
 
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
