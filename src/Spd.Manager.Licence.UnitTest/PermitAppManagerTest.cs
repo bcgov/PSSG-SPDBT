@@ -488,11 +488,8 @@ public class PermitAppManagerTest
             .With(r => r.ExpiryDate, expiryDate)
             .Create();
 
-        mockLicRepo.Setup(a => a.QueryAsync(It.IsAny<LicenceQry>(), CancellationToken.None))
-            .ReturnsAsync(new LicenceListResp()
-            {
-                Items = new List<LicenceResp> { licenceResp }
-            });
+        mockLicRepo.Setup(a => a.GetAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(licenceResp);
         mockLicRepo.Setup(a => a.ManageAsync(It.IsAny<UpdateLicenceCmd>(), CancellationToken.None))
             .ReturnsAsync(licenceResp);
 
