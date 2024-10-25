@@ -192,6 +192,7 @@ namespace Spd.Utilities.LogonUser
                 options.ForwardDefaultSelector = context =>
                 {
                     string? authorization = context.Request.Headers[HeaderNames.Authorization];
+
                     if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
                     {
                         var token = authorization["Bearer ".Length..].Trim();
@@ -200,20 +201,18 @@ namespace Spd.Utilities.LogonUser
                         if (jwtHandler.CanReadToken(token))
                         {
                             JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(token);
-                            if (bceidConfig.Authority == jwtToken.Issuer || (jwtToken.Audiences ?? []).Any(a => bceidConfig.Audiences.Equals(a)))
+                            //idir and bceid and bcsc have the same authoritiy and audience.
+                            var identityProviderClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "identity_provider");
+                            if (identityProviderClaim != null && identityProviderClaim.Value.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                //idir and bceid have the same authoritiy and audience.
-                                var identityProviderClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "identity_provider");
-                                if (identityProviderClaim != null && identityProviderClaim.Value.Equals("idir", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    return IdirAuthenticationConfiguration.AuthSchemeName;
-                                }
-                                return BCeIDAuthenticationConfiguration.AuthSchemeName;
+                                return IdirAuthenticationConfiguration.AuthSchemeName;
                             }
-                            else if (bcscConfig.Issuer == jwtToken.Issuer || (jwtToken.Audiences ?? []).Any(a => bcscConfig.Audiences.Equals(a)))
+                            else if (identityProviderClaim != null && identityProviderClaim.Value.Equals(bcscConfig.IdentityProvider, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 return BcscAuthenticationConfiguration.AuthSchemeName;
                             }
+                            else
+                                return BCeIDAuthenticationConfiguration.AuthSchemeName;
                         }
                         return BCeIDAuthenticationConfiguration.AuthSchemeName;
                     }
