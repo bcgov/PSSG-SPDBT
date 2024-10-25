@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	BizTypeCode,
-	LicenceFeeResponse,
+	LicenceTermCode,
 	ServiceTypeCode,
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
@@ -45,19 +45,19 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Licence Type</div>
 											<div class="summary-text-data">
-												{{ serviceTypeCode | options : 'ServiceTypes' }}
+												{{ serviceTypeCode | options: 'ServiceTypes' }}
 											</div>
 										</div>
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Application Type</div>
 											<div class="summary-text-data">
-												{{ applicationTypeCode | options : 'ApplicationTypes' }}
+												{{ applicationTypeCode | options: 'ApplicationTypes' }}
 											</div>
 										</div>
 										<div class="col-lg-4 col-md-12">
 											<div class="text-label d-block text-muted">Business Type</div>
 											<div class="summary-text-data">
-												{{ bizTypeCode | options : 'BizTypes' }}
+												{{ bizTypeCode | options: 'BizTypes' }}
 											</div>
 										</div>
 										<ng-container *ngIf="isUpdate">
@@ -65,10 +65,10 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												<div class="text-label d-block text-muted">Print Licence</div>
 												<div class="summary-text-data">Yes</div>
 											</div>
-											<div class="col-lg-4 col-md-12" *ngIf="licenceFee">
+											<div class="col-lg-4 col-md-12">
 												<div class="text-label d-block text-muted">Reprint Fee</div>
 												<div class="summary-text-data">
-													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 												</div>
 											</div>
 										</ng-container>
@@ -156,12 +156,12 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										<ng-container *ngIf="!isStaticDataView && !isUpdate">
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
-												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Fee</div>
 												<div class="summary-text-data">
-													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 												</div>
 											</div>
 										</ng-container>
@@ -171,7 +171,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											<div class="summary-text-data">
 												<ul class="m-0">
 													<ng-container *ngFor="let category of categoryList; let i = index">
-														<li>{{ category | options : 'WorkerCategoryTypes' }}</li>
+														<li>{{ category | options: 'WorkerCategoryTypes' }}</li>
 													</ng-container>
 												</ul>
 											</div>
@@ -183,7 +183,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											<div class="row mt-0">
 												<div class="col-lg-6 col-md-12" *ngIf="showArmouredCarGuard">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -195,7 +195,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 												</div>
 												<div class="col-lg-6 col-md-12" *ngIf="showSecurityGuard">
 													<div class="text-label d-block text-muted">
-														{{ categoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }} Documents
+														{{ categoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }} Documents
 													</div>
 													<div class="summary-text-data">
 														<ul class="m-0">
@@ -456,131 +456,125 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	get isBusinessLicenceSoleProprietor(): string {
-		return this.businessModelData.isBusinessLicenceSoleProprietor ?? false;
+		return this.businessApplicationService.getSummaryisBusinessLicenceSoleProprietor(this.businessModelData);
 	}
 
 	get hasExpiredLicence(): string {
-		return this.businessModelData.expiredLicenceData.hasExpiredLicence ?? '';
+		return this.businessApplicationService.getSummaryhasExpiredLicence(this.businessModelData);
 	}
 	get expiredLicenceNumber(): string {
-		return this.businessModelData.expiredLicenceData.expiredLicenceNumber ?? '';
+		return this.businessApplicationService.getSummaryexpiredLicenceNumber(this.businessModelData);
 	}
 	get expiredLicenceExpiryDate(): string {
-		return this.businessModelData.expiredLicenceData.expiredLicenceExpiryDate ?? '';
+		return this.businessApplicationService.getSummaryexpiredLicenceExpiryDate(this.businessModelData);
 	}
 
 	get noLogoOrBranding(): string {
-		return this.businessModelData.companyBrandingData.noLogoOrBranding ?? '';
+		return this.businessApplicationService.getSummarynoLogoOrBranding(this.businessModelData);
 	}
 	get companyBrandingAttachments(): File[] {
-		return this.businessModelData.companyBrandingData.attachments ?? [];
+		return this.businessApplicationService.getSummarycompanyBrandingAttachments(this.businessModelData);
 	}
 
 	get proofOfInsuranceAttachments(): File[] {
-		return this.businessModelData.liabilityData.attachments ?? [];
+		return this.businessApplicationService.getSummaryproofOfInsuranceAttachments(this.businessModelData);
 	}
 
 	get serviceTypeCode(): ServiceTypeCode | null {
-		return this.businessModelData.serviceTypeData?.serviceTypeCode ?? null;
+		return this.businessApplicationService.getSummaryserviceTypeCode(this.businessModelData);
 	}
 	get applicationTypeCode(): ApplicationTypeCode | null {
-		return this.businessModelData.applicationTypeData?.applicationTypeCode ?? null;
+		return this.businessApplicationService.getSummaryapplicationTypeCode(this.businessModelData);
 	}
 	get bizTypeCode(): BizTypeCode | null {
-		return this.businessModelData.businessInformationData?.bizTypeCode ?? null;
+		return this.businessApplicationService.getSummarybizTypeCode(this.businessModelData);
 	}
-	get licenceTermCode(): string {
-		return this.businessModelData.licenceTermData.licenceTermCode ?? '';
+	get licenceTermCode(): LicenceTermCode | null {
+		return this.businessApplicationService.getSummarylicenceTermCode(this.businessModelData);
 	}
 	get licenceFee(): number | null {
 		if (!this.licenceTermCode) {
 			return null;
 		}
 
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.serviceTypeCode, this.applicationTypeCode, this.bizTypeCode)
-			.find((item: LicenceFeeResponse) => item.licenceTermCode == this.licenceTermCode);
-		return fee ? fee.amount ?? null : null;
+		const fee = this.commonApplicationService.getLicenceFee(
+			this.serviceTypeCode,
+			this.applicationTypeCode,
+			this.bizTypeCode,
+			this.licenceTermCode
+		);
+		return fee ? (fee.amount ?? null) : null;
 	}
 
 	get categoryList(): Array<WorkerCategoryTypeCode> {
-		const list: Array<WorkerCategoryTypeCode> = [];
-		const categoryData = { ...this.businessModelData.categoryData };
-
-		for (const [key, value] of Object.entries(categoryData)) {
-			if (value && key in WorkerCategoryTypeCode) {
-				list.push(key as WorkerCategoryTypeCode);
-			}
-		}
-		return list.sort();
+		return this.businessApplicationService.getSummarycategoryList(this.businessModelData);
 	}
 	get isAnyDocuments(): boolean {
-		return this.showArmouredCarGuard || this.showSecurityGuard;
+		return this.businessApplicationService.getSummaryisAnyDocuments(this.businessModelData);
 	}
 	get showArmouredCarGuard(): boolean {
-		return this.businessModelData.categoryArmouredCarGuardData?.isInclude ?? false;
+		return this.businessApplicationService.getSummaryshowArmouredCarGuard(this.businessModelData);
 	}
 	get showSecurityGuard(): boolean {
-		const isInclude = this.businessModelData.categorySecurityGuardData?.isInclude ?? false;
-		return isInclude && this.businessModelData.categorySecurityGuardData?.useDogs === BooleanTypeCode.Yes;
+		return this.businessApplicationService.getSummaryshowSecurityGuard(this.businessModelData);
 	}
 	get categoryArmouredCarGuardAttachments(): File[] {
-		return this.businessModelData.categoryArmouredCarGuardData.attachments ?? [];
+		return this.businessApplicationService.getSummarycategoryArmouredCarGuardAttachments(this.businessModelData);
 	}
 	get categorySecurityGuardAttachments(): File[] {
-		return this.businessModelData.categorySecurityGuardData.attachments ?? [];
+		return this.businessApplicationService.getSummarycategorySecurityGuardAttachments(this.businessModelData);
 	}
 
 	get businessManagerGivenName(): string {
-		return this.businessModelData.businessManagerData.givenName ?? '';
+		return this.businessApplicationService.getSummarybusinessManagerGivenName(this.businessModelData);
 	}
 	get businessManagerMiddleName1(): string {
-		return this.businessModelData.businessManagerData.middleName1 ?? '';
+		return this.businessApplicationService.getSummarybusinessManagerMiddleName1(this.businessModelData);
 	}
 	get businessManagerMiddleName2(): string {
-		return this.businessModelData.businessManagerData.middleName2 ?? '';
+		return this.businessApplicationService.getSummarybusinessManagerMiddleName2(this.businessModelData);
 	}
 	get businessManagerSurname(): string {
-		return this.businessModelData.businessManagerData.surname ?? '';
+		return this.businessApplicationService.getSummarybusinessManagerSurname(this.businessModelData);
 	}
 	get businessManagerEmailAddress(): string {
-		return this.businessModelData.businessManagerData.emailAddress ?? '';
+		return this.businessApplicationService.getSummarybusinessManagerEmailAddress(this.businessModelData);
 	}
 	get businessManagerPhoneNumber(): string {
-		return this.businessModelData.businessManagerData.phoneNumber ?? '';
+		return this.businessApplicationService.getSummarybusinessManagerPhoneNumber(this.businessModelData);
 	}
 
 	get applicantIsBizManager(): string {
-		return this.businessModelData.applicantData.applicantIsBizManager ?? '';
+		return this.businessApplicationService.getSummaryapplicantIsBizManager(this.businessModelData);
 	}
 	get yourContactGivenName(): string {
-		return this.businessModelData.applicantData.givenName ?? '';
+		return this.businessApplicationService.getSummaryyourContactGivenName(this.businessModelData);
 	}
 	get yourContactMiddleName1(): string {
-		return this.businessModelData.applicantData.middleName1 ?? '';
+		return this.businessApplicationService.getSummaryyourContactMiddleName1(this.businessModelData);
 	}
 	get yourContactMiddleName2(): string {
-		return this.businessModelData.applicantData.middleName2 ?? '';
+		return this.businessApplicationService.getSummaryyourContactMiddleName2(this.businessModelData);
 	}
 	get yourContactSurname(): string {
-		return this.businessModelData.applicantData.surname ?? '';
+		return this.businessApplicationService.getSummaryyourContactSurname(this.businessModelData);
 	}
 	get yourContactEmailAddress(): string {
-		return this.businessModelData.applicantData.emailAddress ?? '';
+		return this.businessApplicationService.getSummaryyourContactEmailAddress(this.businessModelData);
 	}
 	get yourContactPhoneNumber(): string {
-		return this.businessModelData.applicantData.phoneNumber ?? '';
+		return this.businessApplicationService.getSummaryyourContactPhoneNumber(this.businessModelData);
 	}
 
 	get membersWithSwlList(): Array<any> {
-		return this.businessModelData.controllingMembersData.membersWithSwl;
+		return this.businessApplicationService.getSummarymembersWithSwlList(this.businessModelData);
 	}
 	get membersWithoutSwlList(): Array<any> {
-		return this.businessModelData.controllingMembersData.membersWithoutSwl;
+		return this.businessApplicationService.getSummarymembersWithoutSwlList(this.businessModelData);
 	}
 
 	get employeesList(): Array<any> {
-		return this.businessModelData.employeesData.employees ?? [];
+		return this.businessApplicationService.getSummaryemployeesList(this.businessModelData);
 	}
 
 	get isUpdate(): boolean {

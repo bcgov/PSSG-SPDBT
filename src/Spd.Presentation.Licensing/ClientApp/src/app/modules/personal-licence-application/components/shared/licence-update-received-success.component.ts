@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceTypeCode } from '@app/api/models';
+import { LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -32,7 +32,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 						<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
 						<div class="mt-4 text-center fs-5">
-							Your update to your {{ serviceTypeCode | options : 'ServiceTypes' }} has been received.
+							Your update to your {{ serviceTypeCode | options: 'ServiceTypes' }} has been received.
 						</div>
 
 						<div class="my-4 text-center">We will contact you if we need more information.</div>
@@ -42,13 +42,13 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								<div class="d-block payment__text-label text-md-end">Licence Term</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+								<div class="payment__text">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-2">
 								<div class="d-block payment__text-label text-md-end">Update Fee</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">{{ 0 | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
+								<div class="payment__text">{{ 0 | currency: 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-2">
 								<div class="d-block payment__text-label text-md-end">Case Number</div>
@@ -103,7 +103,7 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	get serviceTypeCode(): ServiceTypeCode | null {
 		return this.workerApplicationService.getSummaryserviceTypeCode(this.licenceModelData);
 	}
-	get licenceTermCode(): string {
+	get licenceTermCode(): LicenceTermCode | null {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
 	get caseNumber(): string {

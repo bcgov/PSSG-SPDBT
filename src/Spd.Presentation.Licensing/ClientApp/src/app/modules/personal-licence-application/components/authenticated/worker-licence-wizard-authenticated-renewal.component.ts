@@ -122,9 +122,9 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	showCitizenshipStep = false;
 	showWorkerLicenceSoleProprietorStep = false;
 	isSoleProprietorSimultaneousFlow = false;
+	linkedSoleProprietorBizLicId: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
-	private soleProprietorBizAppId: string | null = null;
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
@@ -175,8 +175,9 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				this.isSoleProprietorSimultaneousFlow =
 					this.commonApplicationService.isBusinessLicenceSoleProprietor(bizTypeCode);
 
-				this.soleProprietorBizAppId =
-					this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
+				this.linkedSoleProprietorBizLicId = this.workerApplicationService.workerModelFormGroup.get(
+					'originalLicenceData.linkedSoleProprietorLicenceId'
+				)?.value;
 
 				this.updateCompleteStatus();
 			}
@@ -280,11 +281,12 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 				this.router.navigate(
 					[
 						BusinessLicenceApplicationRoutes.MODULE_PATH,
-						BusinessLicenceApplicationRoutes.BUSINESS_RENEW_SOLE_PROPRIETOR,
+						BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR,
 					],
 					{
 						queryParams: {
 							swlLicAppId: _resp.body.licenceAppId!,
+							linkedSoleProprietorBizLicId: this.linkedSoleProprietorBizLicId,
 						},
 					}
 				);

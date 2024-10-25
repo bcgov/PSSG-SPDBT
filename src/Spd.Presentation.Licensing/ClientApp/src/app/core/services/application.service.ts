@@ -66,9 +66,7 @@ export interface MainApplicationResponse extends LicenceAppListResponse {
 
 export interface MainLicenceResponse extends LicenceResponse {
 	hasLoginNameChanged: boolean;
-	cardHolderName?: null | string;
 	licenceCategoryCodes?: Array<WorkerCategoryTypeCode> | null;
-	licenceExpiryDate?: string;
 	licenceExpiryNumberOfDays?: null | number;
 	licenceReprintFee: null | number;
 	isRenewalPeriod: boolean;
@@ -126,6 +124,12 @@ export class ApplicationService {
 		return (
 			bizTypeCode === BizTypeCode.NonRegisteredSoleProprietor || bizTypeCode === BizTypeCode.RegisteredSoleProprietor
 		);
+	}
+
+	public isLicenceActive(licenceStatusCode: LicenceStatusCode | null | undefined): boolean {
+		if (!licenceStatusCode) return false;
+
+		return licenceStatusCode === LicenceStatusCode.Active || licenceStatusCode === LicenceStatusCode.Preview;
 	}
 
 	public cancelAndLoseChanges() {
@@ -198,9 +202,9 @@ export class ApplicationService {
 		bizTypeCode: BizTypeCode | null,
 		originalLicenceTermCode: LicenceTermCode | undefined = undefined
 	): Array<LicenceFeeResponse> {
-		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode, originalLicenceTermCode);
+		// console.debug('getLicenceTermsAndFees', serviceTypeCode, applicationTypeCode, bizTypeCode);
 
-		if (!serviceTypeCode || !bizTypeCode) {
+		if (!serviceTypeCode || !applicationTypeCode || !bizTypeCode) {
 			return [];
 		}
 
@@ -209,15 +213,53 @@ export class ApplicationService {
 			hasValidSwl90DayLicence = true;
 		}
 
-		return this.configService
+		const fees = this.configService
 			.getLicenceFees()
 			.filter(
 				(item: LicenceFeeResponse) =>
 					item.serviceTypeCode == serviceTypeCode &&
+					item.applicationTypeCode == applicationTypeCode &&
 					item.bizTypeCode == bizTypeCode &&
-					(!applicationTypeCode || (applicationTypeCode && item.applicationTypeCode == applicationTypeCode)) &&
 					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
 			);
+
+		return fees;
+	}
+
+	/**
+	 * Get the licence fees for the licence and application type and business type
+	 * @returns list of fees
+	 */
+	public getLicenceFee(
+		serviceTypeCode: ServiceTypeCode | null,
+		applicationTypeCode: ApplicationTypeCode | null,
+		bizTypeCode: BizTypeCode | null,
+		licenceTermCode: LicenceTermCode | null,
+		originalLicenceTermCode: LicenceTermCode | undefined = undefined
+	): LicenceFeeResponse | null {
+		// console.debug('getLicenceFee',serviceTypeCode,applicationTypeCode,bizTypeCode,licenceTermCode,originalLicenceTermCode);
+
+		if (!serviceTypeCode || !applicationTypeCode || !bizTypeCode || !licenceTermCode) {
+			return null;
+		}
+
+		let hasValidSwl90DayLicence = false;
+		if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
+			hasValidSwl90DayLicence = true;
+		}
+
+		const fees = this.configService
+			.getLicenceFees()
+			.find(
+				(item: LicenceFeeResponse) =>
+					item.serviceTypeCode == serviceTypeCode &&
+					item.applicationTypeCode == applicationTypeCode &&
+					item.bizTypeCode == bizTypeCode &&
+					item.licenceTermCode == licenceTermCode &&
+					item.hasValidSwl90DayLicence === hasValidSwl90DayLicence
+			);
+
+		return fees ?? null;
 	}
 
 	userPersonApplicationsList(): Observable<Array<MainApplicationResponse>> {
@@ -254,7 +296,7 @@ export class ApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (resp.licenceStatusCode === LicenceStatusCode.Active) {
+						if (this.isLicenceActive(resp.licenceStatusCode)) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -291,7 +333,7 @@ export class ApplicationService {
 		});
 
 		response.sort((a, b) => {
-			return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate);
+			return this.utilService.sortDate(a.expiryDate, b.expiryDate);
 		});
 
 		return of(response);
@@ -335,7 +377,7 @@ export class ApplicationService {
 								.pipe(
 									switchMap((resp: BizLicAppResponse) => {
 										response.forEach((item: MainApplicationResponse) => {
-											item.isSimultaneousFlow = !!resp.soleProprietorSWLAppId; // TODO populate Simultaneous
+											item.isSimultaneousFlow = !!resp.soleProprietorSWLAppId;
 										});
 
 										return of(response);
@@ -381,7 +423,7 @@ export class ApplicationService {
 
 					const apis: Observable<any>[] = [];
 					basicLicenceResps.forEach((resp: LicenceBasicResponse) => {
-						if (resp.licenceStatusCode === LicenceStatusCode.Active) {
+						if (this.isLicenceActive(resp.licenceStatusCode)) {
 							apis.push(
 								this.licenceService.apiLicencesLicenceIdGet({
 									licenceId: resp.licenceId!,
@@ -420,7 +462,7 @@ export class ApplicationService {
 		});
 
 		response.sort((a, b) => {
-			return this.utilService.sortDate(a.licenceExpiryDate, b.licenceExpiryDate, 'desc');
+			return this.utilService.sortDate(a.expiryDate, b.expiryDate, 'desc');
 		});
 
 		return of(response);
@@ -751,7 +793,7 @@ export class ApplicationService {
 		const renewals = activeLicencesList.filter((item: MainLicenceResponse) => item.isRenewalPeriod);
 		renewals.forEach((item: MainLicenceResponse) => {
 			const itemLabel = this.optionsPipe.transform(item.serviceTypeCode, 'ServiceTypes');
-			const itemExpiry = this.formatDatePipe.transform(item.licenceExpiryDate, SPD_CONSTANTS.date.formalDateFormat);
+			const itemExpiry = this.formatDatePipe.transform(item.expiryDate, SPD_CONSTANTS.date.formalDateFormat);
 
 			if (item.licenceExpiryNumberOfDays != null) {
 				if (item.licenceExpiryNumberOfDays < 0) {
@@ -817,9 +859,7 @@ export class ApplicationService {
 		let isFoundValid = false;
 
 		if (isFound) {
-			isFoundValid =
-				licence.licenceStatusCode === LicenceStatusCode.Active ||
-				licence.licenceStatusCode === LicenceStatusCode.Preview;
+			isFoundValid = this.isLicenceActive(licence.licenceStatusCode);
 		}
 
 		const isExpired = !isFoundValid;
@@ -859,9 +899,7 @@ export class ApplicationService {
 
 		const today = moment().startOf('day');
 
-		licence.cardHolderName = basicLicence.nameOnCard;
-		licence.licenceExpiryDate = basicLicence.expiryDate;
-		licence.licenceExpiryNumberOfDays = moment(licence.licenceExpiryDate).startOf('day').diff(today, 'days');
+		licence.licenceExpiryNumberOfDays = moment(licence.expiryDate).startOf('day').diff(today, 'days');
 		licence.hasLoginNameChanged = basicLicence.nameOnCard != licence.licenceHolderName;
 		licence.licenceCategoryCodes = basicLicence.categoryCodes?.sort() ?? [];
 
@@ -871,6 +909,7 @@ export class ApplicationService {
 			) >= 0;
 
 		if (matchingLicence) {
+			// expiry dates of both licences must match to be simultaneous
 			licence.isSimultaneousFlow = matchingLicence.linkedSoleProprietorExpiryDate === licence.expiryDate;
 
 			if (licence.hasSecurityGuardCategory) {
@@ -898,10 +937,8 @@ export class ApplicationService {
 
 		if (licence.licenceExpiryNumberOfDays >= 0) {
 			if (
-				licence.licenceStatusCode === LicenceStatusCode.Active &&
-				today.isBefore(
-					moment(licence.licenceExpiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days')
-				)
+				this.isLicenceActive(licence.licenceStatusCode) &&
+				today.isBefore(moment(licence.expiryDate).startOf('day').subtract(licenceUpdatePeriodPreventionDays, 'days'))
 			) {
 				licence.isUpdatePeriod = true;
 			}
@@ -909,22 +946,20 @@ export class ApplicationService {
 			if (basicLicence.licenceTermCode === LicenceTermCode.NinetyDays) {
 				if (
 					today.isSameOrAfter(
-						moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
+						moment(licence.expiryDate).startOf('day').subtract(licenceRenewPeriodDaysNinetyDayTerm, 'days')
 					)
 				) {
 					licence.isRenewalPeriod = true;
 				}
 			} else {
-				if (
-					today.isSameOrAfter(moment(licence.licenceExpiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days'))
-				) {
+				if (today.isSameOrAfter(moment(licence.expiryDate).startOf('day').subtract(licenceRenewPeriodDays, 'days'))) {
 					licence.isRenewalPeriod = true;
 				}
 			}
 
 			if (
 				today.isBefore(
-					moment(licence.licenceExpiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
+					moment(licence.expiryDate).startOf('day').subtract(licenceReplacementPeriodPreventionDays, 'days')
 				)
 			) {
 				licence.isReplacementPeriod = true;
@@ -932,12 +967,12 @@ export class ApplicationService {
 		}
 
 		// get Licence Reprint Fee
-		const fee = this.getLicenceTermsAndFees(
+		const fee = this.getLicenceFee(
 			basicLicence.serviceTypeCode!,
 			ApplicationTypeCode.Replacement,
 			bizTypeCode,
-			basicLicence.licenceTermCode
-		).find((item: LicenceFeeResponse) => item.licenceTermCode === basicLicence.licenceTermCode);
+			basicLicence.licenceTermCode!
+		);
 		licence.licenceReprintFee = fee?.amount ? fee.amount : null;
 
 		return licence;
