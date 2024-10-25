@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
@@ -50,7 +50,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 	animations: [showHideTriggerSlideAnimation],
 })
-export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, LicenceChildStepperStepComponent {
+export class StepBusinessLicenceCompanyBrandingComponent implements LicenceChildStepperStepComponent {
 	title = '';
 	subtitle = '';
 	info = '';
@@ -61,14 +61,17 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 
 	accept = ['.jpeg', '.jpg', '.tif', '.tiff', '.png'].join(', ');
 
-	@Input() applicationTypeCode!: ApplicationTypeCode;
+	private _applicationTypeCode: ApplicationTypeCode | null = null;
+	@Input()
+	set applicationTypeCode(data: ApplicationTypeCode) {
+		if (data == null) {
+			this._applicationTypeCode = null;
+			return;
+		}
 
-	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+		this._applicationTypeCode = data;
 
-	constructor(private businessApplicationService: BusinessApplicationService) {}
-
-	ngOnInit(): void {
-		this.isRenewalOrUpdate = this.businessApplicationService.isRenewalOrUpdate(this.applicationTypeCode);
+		this.isRenewalOrUpdate = this.businessApplicationService.isRenewalOrUpdate(this._applicationTypeCode);
 
 		if (this.isRenewalOrUpdate) {
 			this.title = "Confirm your business' branding";
@@ -83,6 +86,13 @@ export class StepBusinessLicenceCompanyBrandingComponent implements OnInit, Lice
 				'We recommend you do not finalize any branding, marketing or advertising until your licence is approved.';
 		}
 	}
+	get applicationTypeCode(): ApplicationTypeCode | null {
+		return this._applicationTypeCode;
+	}
+
+	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
+
+	constructor(private businessApplicationService: BusinessApplicationService) {}
 
 	onFileUploaded(file: File): void {
 		this.businessApplicationService.hasValueChanged = true;

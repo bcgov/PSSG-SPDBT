@@ -938,29 +938,31 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 * @returns
 	 */
 	getLicenceWithAccessCodeDataAnonymous(
-		accessCodeData: any,
+		associatedLicence: LicenceResponse,
 		applicationTypeCode: ApplicationTypeCode
 	): Observable<any> {
-		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, accessCodeData).pipe(
+		return this.getLicenceOfTypeUsingAccessCodeAnonymous(applicationTypeCode, associatedLicence).pipe(
 			tap((_resp: any) => {
 				const personalInformationData = { ..._resp.personalInformationData };
 
-				personalInformationData.cardHolderName = accessCodeData.linkedCardHolderName;
-				personalInformationData.licenceHolderName = accessCodeData.linkedLicenceHolderName;
+				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
+				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
 
 				const originalLicenceData = {
-					originalApplicationId: accessCodeData.linkedLicenceAppId,
-					originalLicenceId: accessCodeData.linkedLicenceId,
-					originalLicenceNumber: accessCodeData.licenceNumber,
-					originalExpiryDate: accessCodeData.linkedExpiryDate,
-					originalLicenceTermCode: accessCodeData.linkedLicenceTermCode,
-					originalCategoryCodes: accessCodeData.linkedLicenceCategoryCodes,
+					originalApplicationId: associatedLicence.licenceAppId,
+					originalLicenceId: associatedLicence.licenceId,
+					originalLicenceNumber: associatedLicence.licenceNumber,
+					originalExpiryDate: associatedLicence.expiryDate,
+					originalLicenceTermCode: associatedLicence.licenceTermCode,
+					originalCategoryCodes: associatedLicence.categoryCodes,
+					linkedSoleProprietorExpiryDate: associatedLicence.linkedSoleProprietorExpiryDate,
+					linkedSoleProprietorLicenceId: associatedLicence.linkedSoleProprietorLicenceId,
 					originalBizTypeCode: BizTypeCode.None,
 					originalPhotoOfYourselfExpired: null,
 					originalDogAuthorizationExists: null,
 					originalCarryAndUseRestraints: null,
 					originalUseDogs: null,
-					originalIsDogsPurposeDetectionDrugs: null, // TODO do we need other licence data to link?
+					originalIsDogsPurposeDetectionDrugs: null,
 					originalIsDogsPurposeDetectionExplosives: null,
 					originalIsDogsPurposeProtection: null,
 				};
@@ -983,7 +985,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 					categorySecurityConsultantFormGroup,
 					categorySecurityGuardFormGroup,
 					categorySecurityGuardSupFormGroup,
-				] = this.initializeCategoryFormGroups(accessCodeData.linkedLicenceCategoryCodes);
+				] = this.initializeCategoryFormGroups(associatedLicence.categoryCodes);
 
 				this.workerModelFormGroup.patchValue(
 					{
@@ -1016,7 +1018,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.commonApplicationService.setApplicationTitle(
 					_resp.serviceTypeData.serviceTypeCode,
 					_resp.applicationTypeData.applicationTypeCode,
-					accessCodeData.licenceNumber
+					associatedLicence.licenceNumber!
 				);
 
 				console.debug('[getLicenceWithAccessCodeData] licenceFormGroup', this.workerModelFormGroup.value);
@@ -1090,13 +1092,13 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	 */
 	private getLicenceOfTypeUsingAccessCodeAnonymous(
 		applicationTypeCode: ApplicationTypeCode,
-		accessCodeData: any
+		associatedLicence: LicenceResponse
 	): Observable<any> {
 		switch (applicationTypeCode) {
 			case ApplicationTypeCode.Renewal:
 			case ApplicationTypeCode.Update: {
 				return forkJoin([
-					this.loadExistingLicenceApplicationAnonymous(),
+					this.loadExistingLicenceApplicationAnonymous(associatedLicence),
 					this.licenceService.apiLicencesLicencePhotoGet(),
 				]).pipe(
 					catchError((error) => of(error)),
@@ -1105,29 +1107,37 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						const photoOfYourself = resps[1];
 
 						if (applicationTypeCode === ApplicationTypeCode.Renewal) {
-							return this.applyRenewalDataUpdatesToModel(latestApplication, true, accessCodeData, photoOfYourself);
+							return this.applyRenewalDataUpdatesToModel(latestApplication, true, associatedLicence, photoOfYourself);
 						}
 
-						return this.applyUpdateDataUpdatesToModel(latestApplication, accessCodeData, photoOfYourself);
+						return this.applyUpdateDataUpdatesToModel(latestApplication, associatedLicence, photoOfYourself);
 					})
 				);
 			}
 			default: {
-				return this.loadExistingLicenceApplicationAnonymous().pipe(
+				return this.loadExistingLicenceApplicationAnonymous(associatedLicence).pipe(
 					switchMap((_resp: any) => {
-						return this.applyReplacementDataUpdatesToModel(_resp, accessCodeData);
+						return this.applyReplacementDataUpdatesToModel(_resp, associatedLicence);
 					})
 				);
 			}
 		}
 	}
 
-	private loadExistingLicenceApplicationAnonymous(): Observable<any> {
+	private loadExistingLicenceApplicationAnonymous(associatedLicence: LicenceResponse): Observable<any> {
 		this.reset();
 
 		return this.securityWorkerLicensingService.apiWorkerLicenceApplicationGet().pipe(
-			switchMap((resp: WorkerLicenceAppResponse) => {
-				return this.applyLicenceAndProfileIntoModel(resp, null);
+			switchMap((workerLicenceAppl: WorkerLicenceAppResponse) => {
+				return this.applyLicenceProfileIntoModel(
+					workerLicenceAppl,
+					workerLicenceAppl.applicationTypeCode,
+					associatedLicence
+				).pipe(
+					switchMap((_resp: any) => {
+						return this.applyLicenceIntoModel(workerLicenceAppl, associatedLicence);
+					})
+				);
 			})
 		);
 	}
@@ -1260,10 +1270,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private applyLicenceProfileIntoModel(
 		profile: ApplicantProfileResponse | WorkerLicenceAppResponse,
 		applicationTypeCode: ApplicationTypeCode | undefined,
-		associatedLicence?: MainLicenceResponse
+		associatedLicence?: MainLicenceResponse | LicenceResponse
 	): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: ServiceTypeCode.SecurityWorkerLicence };
 		const applicationTypeData = { applicationTypeCode: applicationTypeCode ?? null };
+
+		let hasBcscNameChanged = false;
+		if (associatedLicence && 'hasLoginNameChanged' in associatedLicence) {
+			hasBcscNameChanged = associatedLicence.hasLoginNameChanged ?? false;
+		}
 
 		const personalInformationData = {
 			givenName: profile.givenName,
@@ -1273,14 +1288,14 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			dateOfBirth: profile.dateOfBirth,
 			genderCode: profile.genderCode,
 			hasGenderChanged: false,
-			hasBcscNameChanged: associatedLicence?.hasLoginNameChanged ?? false,
+			hasBcscNameChanged,
 			origGivenName: profile.givenName,
 			origMiddleName1: profile.middleName1,
 			origMiddleName2: profile.middleName2,
 			origSurname: profile.surname,
 			origDateOfBirth: profile.dateOfBirth,
 			origGenderCode: profile.genderCode,
-			cardHolderName: associatedLicence?.cardHolderName ?? null,
+			cardHolderName: associatedLicence?.nameOnCard ?? null,
 			licenceHolderName: associatedLicence?.licenceHolderName ?? null,
 		};
 
@@ -1288,10 +1303,12 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			originalApplicationId: associatedLicence?.licenceAppId ?? null,
 			originalLicenceId: associatedLicence?.licenceId ?? null,
 			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
-			originalExpiryDate: associatedLicence?.licenceExpiryDate ?? null,
+			originalExpiryDate: associatedLicence?.expiryDate ?? null,
 			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
 			originalBizTypeCode: associatedLicence?.bizTypeCode,
 			originalCategoryCodes: associatedLicence?.categoryCodes,
+			linkedSoleProprietorExpiryDate: associatedLicence?.linkedSoleProprietorExpiryDate,
+			linkedSoleProprietorLicenceId: associatedLicence?.linkedSoleProprietorLicenceId,
 			originalPhotoOfYourselfExpired: null,
 			originalDogAuthorizationExists: null,
 			originalCarryAndUseRestraints: associatedLicence?.carryAndUseRestraints ?? null,
@@ -1405,7 +1422,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	private applyLicenceIntoModel(
 		workerLicenceAppl: WorkerLicenceAppResponse,
-		associatedLicence?: MainLicenceResponse,
+		associatedLicence?: MainLicenceResponse | LicenceResponse,
 		associatedExpiredLicence?: LicenceResponse
 	): Observable<any> {
 		const serviceTypeData = { serviceTypeCode: workerLicenceAppl.serviceTypeCode };
@@ -1414,7 +1431,9 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		const originalLicenceData = this.originalLicenceFormGroup.value;
 		originalLicenceData.originalBizTypeCode = workerLicenceAppl.bizTypeCode;
 
-		const isSoleProprietor = workerLicenceAppl.bizTypeCode === BizTypeCode.None;
+		const isSoleProprietor = this.commonApplicationService.isBusinessLicenceSoleProprietor(
+			workerLicenceAppl.bizTypeCode!
+		);
 		const soleProprietorData = {
 			isSoleProprietor: this.utilService.booleanToBooleanType(isSoleProprietor),
 			bizTypeCode: workerLicenceAppl.bizTypeCode,
@@ -1422,10 +1441,22 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		let isSoleProprietorSimultaneousFlow: boolean | null = null;
 		if (associatedLicence) {
-			isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+			if ('isSimultaneousFlow' in associatedLicence) {
+				isSoleProprietorSimultaneousFlow = associatedLicence.isSimultaneousFlow;
+			} else {
+				isSoleProprietorSimultaneousFlow = !!associatedLicence.linkedSoleProprietorLicenceId;
+			}
 		} else {
 			isSoleProprietorSimultaneousFlow = isSoleProprietor;
 		}
+
+		// console.debug('************* applyLicenceIntoModel');
+		// console.debug('************* workerLicenceAppl', workerLicenceAppl);
+		// console.debug('************* associatedLicence', associatedLicence);
+		// console.debug('************* associatedExpiredLicence', associatedExpiredLicence);
+		// console.debug('************* isSoleProprietor', isSoleProprietor);
+		// console.debug('************* isSoleProprietorSimultaneousFlow', isSoleProprietorSimultaneousFlow);
+		// console.debug('************* soleProprietorData', soleProprietorData);
 
 		const hasExpiredLicence = workerLicenceAppl.hasExpiredLicence ?? false;
 		const expiredLicenceData = this.getExpiredLicenceData(
@@ -1961,7 +1992,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 	private applyRenewalDataUpdatesToModel(
 		resp: any,
 		isAuthenticated: boolean,
-		licence: MainLicenceResponse,
+		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Renewal };
@@ -1993,7 +2024,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			categorySecurityConsultantFormGroup,
 			categorySecurityGuardFormGroup,
 			categorySecurityGuardSupFormGroup,
-		] = this.initializeCategoryFormGroups(licence.licenceCategoryCodes);
+		] = this.initializeCategoryFormGroups(associatedLicence.categoryCodes);
 
 		// If they do not have canadian citizenship, they have to show proof for renewal
 		let citizenshipData = {};
@@ -2116,7 +2147,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 	private applyUpdateDataUpdatesToModel(
 		resp: any,
-		userLicenceInformation: MainLicenceResponse,
+		associatedLicence: MainLicenceResponse | LicenceResponse,
 		photoOfYourself: Blob
 	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Update };
@@ -2148,7 +2179,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			categorySecurityConsultantFormGroup,
 			categorySecurityGuardFormGroup,
 			categorySecurityGuardSupFormGroup,
-		] = this.initializeCategoryFormGroups(userLicenceInformation.licenceCategoryCodes);
+		] = this.initializeCategoryFormGroups(associatedLicence.categoryCodes);
 
 		const policeBackgroundData = {
 			isPoliceOrPeaceOfficer: null,
@@ -2203,7 +2234,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		);
 	}
 
-	private applyReplacementDataUpdatesToModel(resp: any, userLicenceInformation: MainLicenceResponse): Observable<any> {
+	private applyReplacementDataUpdatesToModel(
+		resp: any,
+		associatedLicence: MainLicenceResponse | LicenceResponse
+	): Observable<any> {
 		const applicationTypeData = { applicationTypeCode: ApplicationTypeCode.Replacement };
 
 		const originalLicenceData = resp.originalLicenceData;
@@ -2231,7 +2265,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			categorySecurityConsultantFormGroup,
 			categorySecurityGuardFormGroup,
 			categorySecurityGuardSupFormGroup,
-		] = this.initializeCategoryFormGroups(userLicenceInformation.licenceCategoryCodes);
+		] = this.initializeCategoryFormGroups(associatedLicence.categoryCodes);
 
 		this.workerModelFormGroup.patchValue(
 			{

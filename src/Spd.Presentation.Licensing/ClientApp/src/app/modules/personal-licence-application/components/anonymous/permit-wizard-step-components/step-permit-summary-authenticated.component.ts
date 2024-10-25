@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -37,23 +37,23 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Permit Type</div>
 												<div class="summary-text-data">
-													{{ serviceTypeCode | options : 'ServiceTypes' }}
+													{{ serviceTypeCode | options: 'ServiceTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Application Type</div>
 												<div class="summary-text-data">
-													{{ applicationTypeCode | options : 'ApplicationTypes' }}
+													{{ applicationTypeCode | options: 'ApplicationTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Permit Term</div>
-												<div class="summary-text-data">{{ licenceTermCode | options : 'LicenceTermTypes' }}</div>
+												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Fee</div>
 												<div class="summary-text-data">
-													{{ licenceFee | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 												</div>
 											</div>
 										</div>
@@ -231,13 +231,13 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 											<div class="col-lg-6 col-md-12">
 												<div class="text-label d-block text-muted">
 													<span *ngIf="canadianCitizenProofTypeCode">
-														{{ canadianCitizenProofTypeCode | options : 'ProofOfCanadianCitizenshipTypes' }}
+														{{ canadianCitizenProofTypeCode | options: 'ProofOfCanadianCitizenshipTypes' }}
 													</span>
 													<span *ngIf="proofOfResidentStatusCode">
-														{{ proofOfResidentStatusCode | options : 'PermitProofOfResidenceStatusTypes' }}
+														{{ proofOfResidentStatusCode | options: 'PermitProofOfResidenceStatusTypes' }}
 													</span>
 													<span *ngIf="proofOfCitizenshipCode">
-														{{ proofOfCitizenshipCode | options : 'PermitProofOfCitizenshipTypes' }}
+														{{ proofOfCitizenshipCode | options: 'PermitProofOfCitizenshipTypes' }}
 													</span>
 												</div>
 												<div class="summary-text-data">
@@ -251,7 +251,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 
 											<div class="col-lg-6 col-md-12" *ngIf="governmentIssuedPhotoTypeCode">
 												<div class="text-label d-block text-muted">
-													{{ governmentIssuedPhotoTypeCode | options : 'GovernmentIssuedPhotoIdTypes' }}
+													{{ governmentIssuedPhotoTypeCode | options: 'GovernmentIssuedPhotoIdTypes' }}
 												</div>
 												<div class="summary-text-data">
 													<ul class="m-0">
@@ -287,20 +287,20 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Hair Colour</div>
 												<div class="summary-text-data">
-													{{ hairColourCode | options : 'HairColourTypes' }}
+													{{ hairColourCode | options: 'HairColourTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Eye Colour</div>
 												<div class="summary-text-data">
-													{{ eyeColourCode | options : 'EyeColourTypes' }}
+													{{ eyeColourCode | options: 'EyeColourTypes' }}
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Height</div>
 												<div class="summary-text-data">
 													{{ height }}
-													{{ heightUnitCode | options : 'HeightUnitTypes' }}
+													{{ heightUnitCode | options: 'HeightUnitTypes' }}
 													{{ heightInches }}
 												</div>
 											</div>
@@ -308,7 +308,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 												<div class="text-label d-block text-muted">Weight</div>
 												<div class="summary-text-data">
 													{{ weight }}
-													{{ weightUnitCode | options : 'WeightUnitTypes' }}
+													{{ weightUnitCode | options: 'WeightUnitTypes' }}
 												</div>
 											</div>
 										</div>
@@ -400,14 +400,17 @@ export class StepPermitSummaryAuthenticatedComponent implements OnInit {
 		return this.permitApplicationService.getSummaryapplicationTypeCode(this.permitModelData);
 	}
 	get licenceFee(): number | null {
-		const fee = this.commonApplicationService
-			.getLicenceTermsAndFees(this.serviceTypeCode, this.applicationTypeCode, BizTypeCode.None)
-			.find((item) => item.applicationTypeCode === this.permitModelData.applicationTypeData.applicationTypeCode);
+		const fee = this.commonApplicationService.getLicenceFee(
+			this.serviceTypeCode,
+			this.applicationTypeCode,
+			BizTypeCode.None,
+			this.licenceTermCode
+		);
 
-		return fee ? fee.amount ?? null : null;
+		return fee ? (fee.amount ?? null) : null;
 	}
 
-	get licenceTermCode(): string {
+	get licenceTermCode(): LicenceTermCode | null {
 		return this.permitApplicationService.getSummarylicenceTermCode(this.permitModelData);
 	}
 	get hasExpiredLicence(): string {

@@ -39,11 +39,13 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 				</div>
 				<div
 					class="col-md-12"
-					[ngClass]="{
-						'col-xxl-6 col-xl-6 col-lg-6': isWidestNext,
-						'col-xxl-3 col-xl-4 col-lg-4': isWideNext,
-						'col-xxl-2 col-xl-3 col-lg-3': !isWideNext && !isWidestNext,
-					}"
+					[ngClass]="
+						isWidestNext
+							? 'col-xxl-6 col-xl-6 col-lg-6'
+							: isWideNext
+								? 'col-xxl-3 col-xl-3 col-lg-4'
+								: 'col-xxl-2 col-xl-3 col-lg-3'
+					"
 				>
 					<button
 						*ngIf="isNextStepperStepObserved"
@@ -77,8 +79,14 @@ export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
 			<ng-container *ngIf="isSoleProprietorSimultaneousFlow; else defaultFlow">
 				<div
-					class="offset-xxl-2 col-xxl-2 col-xl-3 col-lg-3 col-md-12"
-					[ngClass]="isPreviousStepperStepObserved ? 'offset-xxl-2' : 'offset-xxl-3'"
+					class="col-xxl-2 col-xl-3 col-lg-3 col-md-12"
+					[ngClass]="
+						!isWideNext && !isPreviousStepperStepObserved
+							? 'offset-xxl-3'
+							: !isWideNext && isPreviousStepperStepObserved
+								? 'offset-xxl-2'
+								: 'offset-xxl-1'
+					"
 				>
 					<button
 						mat-flat-button

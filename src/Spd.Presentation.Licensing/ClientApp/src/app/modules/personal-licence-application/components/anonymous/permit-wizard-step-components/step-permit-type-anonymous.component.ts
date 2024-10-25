@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { PermitApplicationService } from '@core/services/permit-application.service';
@@ -17,8 +17,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							<div class="row">
 								<div class="col-xl-5 col-lg-4">
 									<mat-radio-button class="radio-label" [value]="applicationTypeCodes.New"
-										>New ({{ newCost | currency : 'CAD' : 'symbol-narrow' : '1.0' }} for a 5-year
-										term)</mat-radio-button
+										>New ({{ newCost | currency: 'CAD' : 'symbol-narrow' : '1.0' }} for a 5-year term)</mat-radio-button
 									>
 								</div>
 								<div class="col-xl-7 col-lg-8">
@@ -32,7 +31,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							<div class="row">
 								<div class="col-xl-5 col-lg-4">
 									<mat-radio-button class="radio-label" [value]="applicationTypeCodes.Renewal"
-										>Renewal ({{ renewCost | currency : 'CAD' : 'symbol-narrow' : '1.0' }} for a 5-year
+										>Renewal ({{ renewCost | currency: 'CAD' : 'symbol-narrow' : '1.0' }} for a 5-year
 										term)</mat-radio-button
 									>
 								</div>
@@ -93,15 +92,21 @@ export class StepPermitTypeAnonymousComponent implements OnInit {
 			'serviceTypeData.serviceTypeCode'
 		)?.value;
 
-		const fees = this.commonApplicationService.getLicenceTermsAndFees(serviceTypeCode, null, BizTypeCode.None);
+		const newFee = this.commonApplicationService.getLicenceFee(
+			serviceTypeCode,
+			ApplicationTypeCode.New,
+			BizTypeCode.None,
+			LicenceTermCode.FiveYears
+		);
+		this.newCost = newFee ? (newFee.amount ?? null) : null;
 
-		fees?.forEach((item: LicenceFeeResponse) => {
-			if (item.applicationTypeCode === ApplicationTypeCode.New) {
-				this.newCost = item.amount ? item.amount : null;
-			} else if (item.applicationTypeCode === ApplicationTypeCode.Renewal) {
-				this.renewCost = item.amount ? item.amount : null;
-			}
-		});
+		const renewFee = this.commonApplicationService.getLicenceFee(
+			serviceTypeCode,
+			ApplicationTypeCode.Renewal,
+			BizTypeCode.None,
+			LicenceTermCode.FiveYears
+		);
+		this.renewCost = renewFee ? (renewFee.amount ?? null) : null;
 
 		this.commonApplicationService.setApplicationTitle(serviceTypeCode);
 	}

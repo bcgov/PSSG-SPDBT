@@ -30,18 +30,18 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Licence Term</div>
-							<div class="summary-text-data">{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}</div>
+							<div class="summary-text-data">{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}</div>
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
+								{{ originalExpiryDate | formatDate: formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-12" *ngIf="feeAmount">
 							<div class="text-label d-block text-muted">{{ applicationTypeCode }} Fee</div>
 							<div class="summary-text-data">
-								{{ feeAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' | default }}
+								{{ feeAmount | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 							</div>
 						</div>
 						<div class="col-md-12" [ngClass]="feeAmount ? 'col-lg-4' : 'col-lg-8'">
@@ -49,7 +49,7 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 							<div class="summary-text-data">
 								<ul class="m-0">
 									<ng-container *ngFor="let catCode of categoryData; let i = index">
-										<li>{{ catCode | options : 'WorkerCategoryTypes' }}</li>
+										<li>{{ catCode | options: 'WorkerCategoryTypes' }}</li>
 									</ng-container>
 								</ul>
 							</div>
@@ -80,23 +80,19 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 		this.businessLicenceModelData = { ...this.businessApplicationService.businessModelFormGroup.getRawValue() };
 
 		// only show fee for Replacement flow
-
 		if (this.applicationTypeCode === ApplicationTypeCode.Replacement) {
 			const serviceTypeCode = this.businessLicenceModelData.serviceTypeData?.serviceTypeCode;
 			const originalLicenceData = this.businessLicenceModelData.originalLicenceData;
 
-			const fee = this.commonApplicationService
-				.getLicenceTermsAndFees(
-					serviceTypeCode,
-					this.applicationTypeCode,
-					originalLicenceData.originalBizTypeCode,
-					originalLicenceData.originalLicenceTermCode
-				)
-				.filter((item) => item.licenceTermCode == originalLicenceData.originalLicenceTermCode);
+			const fee = this.commonApplicationService.getLicenceFee(
+				serviceTypeCode,
+				ApplicationTypeCode.Replacement,
+				originalLicenceData.originalBizTypeCode,
+				originalLicenceData.originalLicenceTermCode,
+				originalLicenceData.originalLicenceTermCode
+			);
 
-			if (fee?.length > 0) {
-				this.feeAmount = fee[0]?.amount ? fee[0]?.amount : null;
-			}
+			this.feeAmount = fee ? (fee.amount ?? null) : null;
 		}
 	}
 
@@ -116,10 +112,10 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 		return this.businessLicenceModelData.originalLicenceData.originalLicenceTermCode ?? '';
 	}
 	get categoryData(): Array<WorkerCategoryTypeCode> {
-		const categoryData = this.businessLicenceModelData.categoryData;
+		const categoryData = this.businessLicenceModelData.originalLicenceData.originalCategoryCodes ?? [];
 		const workerCategoryTypeCodes = Object.values(WorkerCategoryTypeCode);
 		const selected = workerCategoryTypeCodes.filter((item: string) => {
-			return !!categoryData[item];
+			return categoryData.find((cat: WorkerCategoryTypeCode) => cat === item);
 		});
 		return selected.sort() ?? [];
 	}

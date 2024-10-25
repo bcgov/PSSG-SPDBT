@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BizTypeCode, ServiceTypeCode } from '@app/api/models';
+import { BizTypeCode, LicenceResponse, ServiceTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
@@ -273,21 +273,20 @@ export class CommonBusinessInformationComponent implements OnInit {
 			})
 			.afterClosed()
 			.subscribe((resp: any) => {
-				if (resp?.data) {
-					this.form.patchValue(
-						{
-							soleProprietorLicenceId: resp.data.licenceId,
-							soleProprietorLicenceAppId: resp.data.licenceAppId,
-							soleProprietorLicenceHolderName: resp.data.licenceHolderName,
-							soleProprietorLicenceNumber: resp.data.licenceNumber,
-							soleProprietorLicenceExpiryDate: resp.data.expiryDate,
-							soleProprietorLicenceStatusCode: resp.data.licenceStatusCode,
-						},
-						{ emitEvent: false }
-					);
+				const lookupData: LicenceResponse | null = resp?.data;
+				if (lookupData) {
+					this.form.patchValue({
+						soleProprietorLicenceId: lookupData.licenceId,
+						soleProprietorLicenceAppId: lookupData.licenceAppId,
+						soleProprietorCategoryCodes: lookupData.categoryCodes,
+						soleProprietorLicenceHolderName: lookupData.licenceHolderName,
+						soleProprietorLicenceNumber: lookupData.licenceNumber,
+						soleProprietorLicenceExpiryDate: lookupData.expiryDate,
+						soleProprietorLicenceStatusCode: lookupData.licenceStatusCode,
+					});
 
 					this.businessApplicationService
-						.applyBusinessLicenceSoleProprietorSelection(resp.data.licenceAppId)
+						.applyBusinessLicenceSoleProprietorSelection(lookupData)
 						.subscribe((_resp: any) => {
 							this.hotToastService.success('A sole proprietor was successfully selected');
 						});
