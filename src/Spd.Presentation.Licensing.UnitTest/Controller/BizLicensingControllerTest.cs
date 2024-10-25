@@ -9,9 +9,11 @@ using Moq;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
 using Spd.Presentation.Licensing.Controllers;
+using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 public class BizLicensingControllerTest
@@ -59,6 +61,8 @@ public class BizLicensingControllerTest
             .ReturnsAsync(new BizLicAppCommandResponse());
         mockMediator.Setup(m => m.Send(It.IsAny<BizLicAppReplaceCommand>(), CancellationToken.None))
             .ReturnsAsync(new BizLicAppCommandResponse());
+       
+
         var validationResults = fixture.Build<ValidationResult>()
                 .With(r => r.Errors, [])
                 .Create();
@@ -70,6 +74,7 @@ public class BizLicensingControllerTest
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             [
                 new Claim("birthdate", "2000-01-01"),
+                new Claim("spd_userid", Guid.NewGuid().ToString()),
                 new Claim("sub", "test"),
             ], "mock"));
 
