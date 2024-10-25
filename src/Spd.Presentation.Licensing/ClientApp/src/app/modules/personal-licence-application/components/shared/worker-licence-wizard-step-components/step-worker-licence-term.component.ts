@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ApplicationTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
+import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
 import { ApplicationService } from '@app/core/services/application.service';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
@@ -20,8 +20,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 						<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
 							<ng-container *ngFor="let term of termCodes; let i = index; let last = last">
 								<mat-radio-button class="radio-label" [value]="term.licenceTermCode">
-									{{ term.licenceTermCode | options : 'LicenceTermTypes' }} ({{
-										term.amount | currency : 'CAD' : 'symbol-narrow' : '1.0'
+									{{ term.licenceTermCode | options: 'LicenceTermTypes' }} ({{
+										term.amount | currency: 'CAD' : 'symbol-narrow' : '1.0'
 									}})
 								</mat-radio-button>
 								<mat-divider *ngIf="!last" class="my-2"></mat-divider>
@@ -52,6 +52,7 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
 	constructor(
+		private utilService: UtilService,
 		private workerApplicationService: WorkerApplicationService,
 		private commonApplicationService: ApplicationService
 	) {}
@@ -70,37 +71,19 @@ export class StepWorkerLicenceTermComponent implements LicenceChildStepperStepCo
 			'applicationTypeData.applicationTypeCode'
 		)?.value;
 
-		const bizTypeCode = this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.bizTypeCode')?.value;
+		const isSoleProprietorYN = this.workerApplicationService.workerModelFormGroup.get(
+			'soleProprietorData.isSoleProprietor'
+		)?.value;
+
+		const isSoleProprietor = this.utilService.booleanTypeToBoolean(isSoleProprietorYN);
+
+		const bizTypeCode = isSoleProprietor
+			? this.workerApplicationService.workerModelFormGroup.get('soleProprietorData.bizTypeCode')?.value
+			: BizTypeCode.None;
 
 		const originalLicenceTermCode = this.workerApplicationService.workerModelFormGroup.get(
 			'originalLicenceData.originalLicenceTermCode'
 		)?.value;
-
-		// console.debug(
-		// 	'get termCodes',
-		// 	serviceTypeCode,
-		// 	applicationTypeCode,
-		// 	bizTypeCode,
-		// 	originalLicenceTermCode
-		// );
-
-		if (!serviceTypeCode || !applicationTypeCode || !bizTypeCode) {
-			return [];
-		}
-
-		// let hasValidSwl90DayLicence = false;
-		// if (applicationTypeCode === ApplicationTypeCode.Renewal && originalLicenceTermCode === LicenceTermCode.NinetyDays) {
-		// 	hasValidSwl90DayLicence = true;
-		// }
-
-		// console.debug(
-		// 	'get termCodes',
-		// 	serviceTypeCode,
-		// 	applicationTypeCode,
-		// 	bizTypeCode,
-		// 	originalLicenceTermCode,
-		// 	hasValidSwl90DayLicence
-		// );
 
 		return this.commonApplicationService.getLicenceTermsAndFees(
 			serviceTypeCode,

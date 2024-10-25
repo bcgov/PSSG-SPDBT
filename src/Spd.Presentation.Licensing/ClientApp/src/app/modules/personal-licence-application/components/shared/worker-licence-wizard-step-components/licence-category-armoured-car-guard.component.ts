@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
@@ -45,10 +45,17 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				<div class="col-lg-4 col-md-12 col-sm-12">
 					<mat-form-field>
 						<mat-label>Document Expiry Date</mat-label>
-						<input matInput [matDatepicker]="picker" formControlName="expiryDate" [errorStateMatcher]="matcher" />
+						<input
+							matInput
+							[matDatepicker]="picker"
+							formControlName="expiryDate"
+							[min]="minDate"
+							[errorStateMatcher]="matcher"
+						/>
 						<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 						<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 						<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
+						<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">Invalid expiry date</mat-error>
 					</mat-form-field>
 				</div>
 			</div>
@@ -60,11 +67,16 @@ export class LicenceCategoryArmouredCarGuardComponent implements OnInit, Licence
 	form: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
+	minDate = this.utilService.getDateMin();
 	matcher = new FormErrorStateMatcher();
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private utilService: UtilService,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');

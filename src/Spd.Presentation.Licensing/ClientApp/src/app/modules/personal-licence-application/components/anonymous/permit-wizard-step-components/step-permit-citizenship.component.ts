@@ -70,10 +70,19 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 							<div class="col-lg-5 col-md-12" *ngIf="showIfPassport">
 								<mat-form-field>
 									<mat-label>Document Expiry Date</mat-label>
-									<input matInput [matDatepicker]="picker" formControlName="expiryDate" [errorStateMatcher]="matcher" />
+									<input
+										matInput
+										[matDatepicker]="picker"
+										formControlName="expiryDate"
+										[min]="minDate"
+										[errorStateMatcher]="matcher"
+									/>
 									<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 									<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 									<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+									<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')"
+										>Invalid expiry date</mat-error
+									>
 								</mat-form-field>
 							</div>
 						</div>
@@ -143,11 +152,15 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 											matInput
 											[matDatepicker]="picker"
 											formControlName="expiryDate"
+											[min]="minDate"
 											[errorStateMatcher]="matcher"
 										/>
 										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 										<mat-datepicker #picker startView="multi-year"></mat-datepicker>
 										<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+										<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')"
+											>Invalid expiry date</mat-error
+										>
 									</mat-form-field>
 								</div>
 							</div>
@@ -215,6 +228,7 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 												matInput
 												[matDatepicker]="picker"
 												formControlName="governmentIssuedExpiryDate"
+												[min]="minDate"
 												[errorStateMatcher]="matcher"
 											/>
 											<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -222,6 +236,9 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 											<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('required')">
 												This is required
 											</mat-error>
+											<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')"
+												>Invalid expiry date</mat-error
+											>
 										</mat-form-field>
 									</div>
 								</div>
@@ -272,6 +289,7 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 	proofOfCitizenshipTypes = PermitProofOfCitizenshipTypes;
 	governmentIssuedPhotoIdTypes = GovernmentIssuedPhotoIdTypes;
 
+	minDate = this.utilService.getDateMin();
 	booleanTypeCodes = BooleanTypeCode;
 	matcher = new FormErrorStateMatcher();
 
@@ -281,7 +299,10 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private permitApplicationService: PermitApplicationService, private utilService: UtilService) {}
+	constructor(
+		private permitApplicationService: PermitApplicationService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit(): void {
 		this.title = 'Are you a Canadian citizen?';
