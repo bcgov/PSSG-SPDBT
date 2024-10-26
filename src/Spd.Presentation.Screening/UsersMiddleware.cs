@@ -1,5 +1,3 @@
-using System.Net;
-using System.Security.Claims;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
@@ -7,6 +5,8 @@ using Spd.Manager.Screening;
 using Spd.Utilities.LogonUser;
 using Spd.Utilities.LogonUser.Configurations;
 using Spd.Utilities.Shared;
+using System.Net;
+using System.Security.Claims;
 
 namespace Spd.Presentation.Screening
 {
@@ -72,7 +72,7 @@ namespace Spd.Presentation.Screening
                     await next(context);
                 }
             }
-            else if (context.User.GetIssuer() == bcscConfig.Issuer)
+            else if (context.User.GetIdentityProvider() == bcscConfig.IdentityProvider)
             {
                 //bcsc user
                 var applicantInfo = context.User.GetBcscUserIdentityInfo();
