@@ -133,6 +133,8 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
                 .Expand(a => a.spd_CurrentExpiredLicenceId)
                 .Where(a => a.spd_applicationid == licenceApplicationId)
                 .SingleOrDefaultAsync(ct);
+            if (app == null)
+                throw new ArgumentException("application not found");
         }
         catch (DataServiceQueryException ex)
         {
@@ -143,7 +145,6 @@ internal class PersonLicApplicationRepository : IPersonLicApplicationRepository
         }
 
         LicenceApplicationResp appResp = _mapper.Map<LicenceApplicationResp>(app);
-
         if (app.spd_ApplicantId_contact?.contactid != null)
         {
             var aliases = SharedRepositoryFuncs.GetAliases((Guid)app.spd_ApplicantId_contact.contactid, _context);

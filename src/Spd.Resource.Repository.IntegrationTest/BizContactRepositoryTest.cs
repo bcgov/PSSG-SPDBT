@@ -64,18 +64,24 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         account biz = await CreateAccountAsync();
         await _context.SaveChangesAsync(CancellationToken.None);
 
-        BizContactUpsertCmd cmd = new((Guid)biz.accountid, new List<BizContactResp>());
+        BizContactCreateCmd createCmd = new BizContactCreateCmd(new()
+        {
+            BizId = (Guid)biz.accountid,
+            GivenName = "newFirstName3",
+            EmailAddress = "firstName3@add.com",
+            BizContactRoleCode = BizContactRoleEnum.ControllingMember
+        });
 
         try
         {
             // Action
-            var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
+            var response = await _bizContactRepo.ManageBizContactsAsync(createCmd, CancellationToken.None);
 
             // Assert
             var contact = await _context.spd_businesscontacts
                 .Where(c => c._spd_organizationid_value == biz.accountid)
                 .FirstOrDefaultAsync(CancellationToken.None);
-            Assert.Equal(null, contact);
+            Assert.Equal(response, contact.spd_businesscontactid);
         }
         finally
         {
@@ -205,38 +211,55 @@ public class BizContactRepositoryTest : IClassFixture<IntegrationTestSetup>
     public async Task ManageBizContactsAsync_WithExistingBizContacts_Correctly()
     {
         // Arrange
+
         account biz = await CreateAccountAsync();
         await _context.SaveChangesAsync(CancellationToken.None);
         spd_businesscontact bizContact = await CreateBizContactAsync(biz, "firstName1", BizContactRoleOptionSet.ControllingMember);
         spd_businesscontact bizContact2 = await CreateBizContactAsync(biz, "firstName2", BizContactRoleOptionSet.ControllingMember);
         await _context.SaveChangesAsync(CancellationToken.None);
+        
+        Guid? bizContactId1 = bizContact.spd_businesscontactid;
+        Guid? bizContactId2 = bizContact2.spd_businesscontactid;
+        Guid? bizContactId3 = null;
 
         try
         {
-            List<BizContactResp> requests = new()
+            BizContactUpdateCmd updateCmd = new BizContactUpdateCmd((Guid)bizContact.spd_businesscontactid, new()
             {
-                new BizContactResp{ BizContactId = bizContact.spd_businesscontactid, GivenName = "newFirstName1", EmailAddress="firstName1@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-                new BizContactResp{ GivenName = "newFirstName3", EmailAddress="firstName3@add.com", BizContactRoleCode=BizContactRoleEnum.ControllingMember},
-            };
-
-            BizContactUpsertCmd cmd = new((Guid)biz.accountid, requests);
-
-            // Action
-            var response = await _bizContactRepo.ManageBizContactsAsync(cmd, CancellationToken.None);
-
+                GivenName = "newFirstName1",
+                EmailAddress = "firstName1@add.com",
+                BizContactRoleCode = BizContactRoleEnum.ControllingMember
+            });
+            BizContactCreateCmd createCmd = new BizContactCreateCmd(new()
+            {
+                BizId = (Guid) biz.accountid,
+                GivenName = "newFirstName3",
+                EmailAddress = "firstName3@add.com",
+                BizContactRoleCode = BizContactRoleEnum.ControllingMember
+            });
+             // Action
+             var response = await _bizContactRepo.ManageBizContactsAsync(updateCmd, CancellationToken.None);
+            var response2 = await _bizContactRepo.ManageBizContactsAsync(createCmd, CancellationToken.None);
+            bizContactId3 = response2;
             // Assert
             var bizContacts = _context.spd_businesscontacts
                 .Where(c => c._spd_organizationid_value == biz.accountid)
                 .Where(c => c.statecode == DynamicsConstants.StateCode_Active)
                 .ToList();
-            Assert.Equal(2, bizContacts.Count());
+            Assert.Equal(3, bizContacts.Count());
             Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName1")); //updated
+            Assert.Equal(true, bizContacts.Any(c => c.spd_firstname == "newFirstName3")); //created
         }
         finally
         {
             //Annihilate
-            _context.DeleteObject(bizContact);
-            _context.DeleteObject(bizContact2);
+            spd_businesscontact bizContact1ToRemove = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId1).FirstOrDefault();
+            spd_businesscontact bizContact2ToRemove = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId2).FirstOrDefault();
+            spd_businesscontact bizContact3ToRemove = _context.spd_businesscontacts.Where(b => b.spd_businesscontactid == bizContactId3).FirstOrDefault();
+            _context.DeleteObject(bizContact1ToRemove);
+            _context.DeleteObject(bizContact2ToRemove);
+            _context.DeleteObject(bizContact3ToRemove);
+            await _context.SaveChangesAsync(CancellationToken.None);
             _context.DeleteObject(biz);
             await _context.SaveChangesAsync(CancellationToken.None);
         }
