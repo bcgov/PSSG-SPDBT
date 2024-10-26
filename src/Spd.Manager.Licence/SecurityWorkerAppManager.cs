@@ -229,13 +229,14 @@ internal class SecurityWorkerAppManager :
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         if (originalLic.LicenceTermCode == LicenceTermEnum.NinetyDays)
         {
-            if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0)))
+            if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
+                || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith90DaysRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
         else
         {
             if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-                || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+                || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
                 throw new ArgumentException($"the licence can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
         }
         var existingFiles = await GetExistingFileInfo(cmd.LicenceAnonymousRequest.LatestApplicationId, cmd.LicenceAnonymousRequest.PreviousDocumentIds, cancellationToken);
