@@ -695,7 +695,6 @@ public class BizLicApplicationRepositoryTest : IClassFixture<IntegrationTestSetu
         await _context.SaveChangesAsync();
     }
 
-    //TODO: Adjust verification according to ticket SPDBT-2796
     [Fact]
     public async Task SaveBizLicApplicationAsync_UpdateExistingPrivateInvestigator_Run_Correctly()
     {
