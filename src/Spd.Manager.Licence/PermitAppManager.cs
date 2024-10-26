@@ -102,8 +102,6 @@ internal class PermitAppManager :
     }
     #endregion
 
-
-
     public async Task<PermitLicenceAppResponse> Handle(GetPermitApplicationQuery query, CancellationToken cancellationToken)
     {
         var response = await _personLicAppRepository.GetLicenceApplicationAsync(query.LicenceApplicationId, cancellationToken);
@@ -182,7 +180,7 @@ internal class PermitAppManager :
 
         //check Renew your existing permit before it expires, within 90 days of the expiry date.
         if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
             throw new ArgumentException($"the permit can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
@@ -192,7 +190,7 @@ internal class PermitAppManager :
         await ValidateFilesForRenewUpdateAppAsync(cmd.LicenceAnonymousRequest,
             cmd.LicAppFileInfos.ToList(),
             cancellationToken);
-       
+
         CreateLicenceApplicationCmd createApp = _mapper.Map<CreateLicenceApplicationCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         LicenceApplicationCmdResp response = await _personLicAppRepository.CreateLicenceApplicationAsync(createApp, cancellationToken);
