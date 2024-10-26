@@ -175,7 +175,7 @@ internal class BizLicAppManager :
             throw new ArgumentException("cannot find the licence that needs to be renewed.");
         // Check Renew your licence before it expires, within 90 days of the expiry date.
         if (DateTime.UtcNow < originalLic.ExpiryDate.AddDays(-Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays).ToDateTime(new TimeOnly(0, 0))
-            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(0, 0)))
+            || DateTime.UtcNow > originalLic.ExpiryDate.ToDateTime(new TimeOnly(23, 59, 59)))
             throw new ArgumentException($"the application can only be renewed within {Constants.LicenceWith123YearsRenewValidBeforeExpirationInDays} days of the expiry date.");
 
         var existingFiles = await GetExistingFileInfo(
