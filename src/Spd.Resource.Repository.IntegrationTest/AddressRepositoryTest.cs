@@ -52,24 +52,22 @@ public class AddressRepositoryTest : IClassFixture<IntegrationTestSetup>
     public async Task CreateAddressesAsync_Run_Correctly()
     {
         // Arrange
-        Guid bizId = Guid.NewGuid();
         CreateBizCmd createBizCmd = new()
         {
             BizGuid = Guid.NewGuid(),
-            Id = bizId,
             BizLegalName = IntegrationTestSetup.DataPrefix + "test",
             BizType = BizTypeEnum.Corporation,
             ServiceTypes = new List<ServiceTypeEnum>() { ServiceTypeEnum.MDRA }
         };
 
-        await _bizRepository.ManageBizAsync(createBizCmd, CancellationToken.None);
+        BizResult bizResult = await _bizRepository.ManageBizAsync(createBizCmd, CancellationToken.None);
 
         BranchAddr addressToCreate = fixture.Build<BranchAddr>()
             .With(a => a.BranchId, Guid.NewGuid())
             .With(a => a.BranchPhoneNumber, "90000000")
             .With(a => a.PostalCode, "V7N 5J2")
             .Create();
-        UpsertAddressCmd upsertAddressCmd = new() { BizId = bizId, Addresses = new List<BranchAddr> { addressToCreate } };
+        UpsertAddressCmd upsertAddressCmd = new() { BizId = bizResult.Id, Addresses = new List<BranchAddr> { addressToCreate } };
 
         // Act
         await _addressRepository.CreateAddressesAsync(upsertAddressCmd, CancellationToken.None);

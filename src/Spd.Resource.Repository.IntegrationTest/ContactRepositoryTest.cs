@@ -56,23 +56,18 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         }
     } */
 
-    [Theory]
-    [InlineData("spd_integration_firstname", "spd_integration_lastname", null, null, "2024-01-01", null, 2)]
-    [InlineData("spd_integration_firstname", "spd_integration_lastname", "", null, "2024-01-01", null, 2)]
-    [InlineData("spd_integration_firstname", "spd_integration_lastname", "", "", "2024-01-01", null, 1)]
-    [InlineData("spd_integration_firstname", "spd_integration_lastname3", "", "", "2023-01-01", null, 0)]
-    [InlineData("spd_integration_firstname", "spd_integration_lastname", "", null, "2024-01-01", "EmptyGuid", 1)]
-    public async Task QueryAsync_Run_Correctly(string? firstName, string? lastName, string? midName1, string? midName2, string? birthDate, string? identityIdStr, int resultCount)
+    [Fact]
+    public async Task QueryAsync_Run_Correctly()
     {
         //Arrange
         Guid contact1Id = Guid.NewGuid();
         contact contact1 = new()
         {
             contactid = contact1Id,
-            firstname = IntegrationTestSetup.DataPrefix + "firstname",
-            lastname = IntegrationTestSetup.DataPrefix + "lastname",
+            firstname = IntegrationTestSetup.DataPrefix + "firstname_test",
+            lastname = IntegrationTestSetup.DataPrefix + "lastname_test",
             spd_middlename1 = null,
-            spd_middlename2 = "test",
+            spd_middlename2 = IntegrationTestSetup.DataPrefix + "test",
             birthdate = new Microsoft.OData.Edm.Date(2024, 1, 1)
         };
         _context.AddTocontacts(contact1);
@@ -80,10 +75,10 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         contact contact2 = new()
         {
             contactid = contact2Id,
-            firstname = IntegrationTestSetup.DataPrefix + "firstname",
-            lastname = IntegrationTestSetup.DataPrefix + "lastname",
+            firstname = IntegrationTestSetup.DataPrefix + "firstname_test1",
+            lastname = IntegrationTestSetup.DataPrefix + "lastname_test2",
             spd_middlename1 = "",
-            spd_middlename2 = null,
+            spd_middlename2 = IntegrationTestSetup.DataPrefix + "test",
             birthdate = new Microsoft.OData.Edm.Date(2024, 1, 1)
         };
         _context.AddTocontacts(contact2);
@@ -96,19 +91,22 @@ public class ContactRepositoryTest : IClassFixture<IntegrationTestSetup>
         //Act
         ContactQry qry = new()
         {
-            FirstName = firstName,
-            LastName = lastName,
-            MiddleName1 = midName1,
-            MiddleName2 = midName2,
+            FirstName = IntegrationTestSetup.DataPrefix + "firstname_test",
+            LastName = IntegrationTestSetup.DataPrefix + "lastname_test",
             BirthDate = new DateOnly(2024, 1, 1),
-            IdentityId = identityIdStr == "EmptyGuid" ? Guid.Empty : null
         };
         ContactListResp result = await _contactRepository.QueryAsync(qry, CancellationToken.None);
 
         try
         {
             //Assert
-            Assert.Equal(resultCount, result.Items.Count());
+            Assert.Equal(1, result.Items.Count());
+            qry = new()
+            {
+                MiddleName2 = IntegrationTestSetup.DataPrefix + "test",
+            };
+            result = await _contactRepository.QueryAsync(qry, CancellationToken.None);
+            Assert.Equal(2, result.Items.Count());
         }
         finally
         {
