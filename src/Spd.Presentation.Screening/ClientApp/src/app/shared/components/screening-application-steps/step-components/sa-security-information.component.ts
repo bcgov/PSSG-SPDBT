@@ -68,7 +68,12 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 									<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
 										<mat-form-field>
 											<mat-label>{{ companyFacilityLabel }}</mat-label>
-											<input matInput formControlName="contractedCompanyName" />
+											<input
+												matInput
+												formControlName="contractedCompanyName"
+												[errorStateMatcher]="matcher"
+												maxlength="100"
+											/>
 											<mat-hint>{{ companyFacilityHint }}</mat-hint>
 											<mat-error *ngIf="form.get('contractedCompanyName')?.hasError('required')"
 												>This is required</mat-error
