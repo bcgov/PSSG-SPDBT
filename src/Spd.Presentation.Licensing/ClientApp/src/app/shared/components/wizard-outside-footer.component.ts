@@ -24,7 +24,7 @@ export class WizardOutsideFooterComponent implements OnInit {
 
 	@Input() nextButtonLabel = 'Next';
 
-	@Output() cancel: EventEmitter<any> = new EventEmitter();
+	@Output() cancelStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 
 	ngOnInit(): void {
@@ -36,6 +36,6 @@ export class WizardOutsideFooterComponent implements OnInit {
 	}
 
 	onCancel(): void {
-		this.cancel.emit();
+		this.cancelStep.emit();
 	}
 }
