@@ -59,12 +59,13 @@ import { AppInviteOrgData, CrcFormStepComponent } from '../screening-application
 						</div>
 						<div class="col-lg-4 col-md-12 col-sm-12">
 							<mat-form-field>
-								<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
+								<mat-label>Sex</mat-label>
 								<mat-select formControlName="genderCode">
 									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
 										{{ gdr.desc }}
 									</mat-option>
 								</mat-select>
+								<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 					</div>
@@ -97,7 +98,7 @@ export class SaPersonalInformationComponent implements CrcFormStepComponent {
 				Validators.required,
 			]),
 			employeeId: new FormControl(data.employeeId),
-			genderCode: new FormControl(data.genderCode),
+			genderCode: new FormControl(data.genderCode, [FormControlValidators.required]),
 		});
 	}
 	get orgData(): AppInviteOrgData | null {
