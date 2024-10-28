@@ -635,6 +635,9 @@ namespace Spd.Manager.Screening
             RuleFor(r => r.BirthPlace)
                     .NotEmpty();
 
+            RuleFor(r => r.GenderCode)
+                    .NotEmpty();
+
             RuleFor(r => r.JobTitle)
                     .NotEmpty()
                     .MaximumLength(100);
