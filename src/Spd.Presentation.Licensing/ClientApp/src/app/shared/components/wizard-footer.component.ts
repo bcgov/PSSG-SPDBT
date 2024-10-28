@@ -138,7 +138,7 @@ export class WizardFooterComponent implements OnInit {
 	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
-	@Output() cancel: EventEmitter<any> = new EventEmitter();
+	@Output() cancelStep: EventEmitter<any> = new EventEmitter();
 	@Output() cancelAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
@@ -148,7 +148,7 @@ export class WizardFooterComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.isSaveAndExitObserved = this.saveAndExit.observed;
-		this.isCancelObserved = this.cancel.observed;
+		this.isCancelObserved = this.cancelStep.observed;
 		this.isCancelAndExitObserved = this.cancelAndExit.observed;
 		this.isPreviousStepperStepObserved = this.previousStepperStep.observed;
 		this.isNextStepperStepObserved = this.nextStepperStep.observed;
@@ -177,7 +177,7 @@ export class WizardFooterComponent implements OnInit {
 
 	onCancel(): void {
 		if (this.isCancelObserved) {
-			this.cancel.emit();
+			this.cancelStep.emit();
 			return;
 		}
 
