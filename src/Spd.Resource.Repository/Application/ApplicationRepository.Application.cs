@@ -138,16 +138,38 @@ internal partial class ApplicationRepository : IApplicationRepository
         if (!createApplicationCmd.SharedClearanceId.HasValue)
             throw new ArgumentException("SharedClearanceId cannot be null");
         account? org = await _context.GetOrgById(createApplicationCmd.OrgId, ct);
-        spd_clearance? clearance = await _context.GetClearanceById((Guid)createApplicationCmd.SharedClearanceId, ct);
         contact? contact = await _context.contacts.Where(c => c.contactid == createApplicationCmd.ContactId).FirstOrDefaultAsync(ct);
         _mapper.Map<ApplicationCreateCmd, contact>(createApplicationCmd, contact);
         _context.UpdateObject(contact);
 
-        Guid teamGuid = Guid.Parse(DynamicsConstants.Screening_Risk_Assessment_Coordinator_Team_Guid);
-        team? team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+        //spdbt-3220
+        spd_clearance? clearance = await _context.spd_clearances
+            .Expand(c => c.spd_CaseID)
+            .Where(c => c.spd_clearanceid == (Guid)createApplicationCmd.SharedClearanceId)
+            .FirstOrDefaultAsync(ct);
+        if (clearance == null)
+            throw new ApiException(HttpStatusCode.BadRequest, "Cannot find specified clearance.");
+        team? team = null;
+        int state;
+        int status;
+        if (clearance.spd_CaseID.spd_risklevel == (int)CaseRiskLevelOptionSet.L2 || clearance.spd_CaseID.spd_risklevel == (int)CaseRiskLevelOptionSet.L3)
+        {
+            Guid teamGuid = Guid.Parse(DynamicsConstants.Screening_Risk_Assessment_Coordinator_Team_Guid);
+            team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+            status = (int)ClearanceAccessStatusOptionSet.Draft;
+            state = DynamicsConstants.StateCode_Active;
+        }
+        else
+        {
+            Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
+            team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
+            status = (int)ClearanceAccessStatusOptionSet.Approved;
+            state = DynamicsConstants.StateCode_Inactive;
+        }
+
         spd_clearanceaccess clearanceaccess = new() { spd_clearanceaccessid = Guid.NewGuid() };
-        clearanceaccess.statecode = DynamicsConstants.StateCode_Active;
-        clearanceaccess.statuscode = (int)ClearanceAccessStatusOptionSet.Draft;
+        clearanceaccess.statecode = state;
+        clearanceaccess.statuscode = status;
         _context.AddTospd_clearanceaccesses(clearanceaccess);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_OrganizationId), org);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_ClearanceId), clearance);
