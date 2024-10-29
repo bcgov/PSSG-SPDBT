@@ -164,12 +164,13 @@ internal partial class ApplicationRepository : IApplicationRepository
             Guid teamGuid = Guid.Parse(DynamicsConstants.Client_Service_Team_Guid);
             team = await _context.teams.Where(t => t.teamid == teamGuid).FirstOrDefaultAsync(ct);
             status = (int)ClearanceAccessStatusOptionSet.Approved;
-            state = DynamicsConstants.StateCode_Inactive;
+            state = DynamicsConstants.StateCode_Active;
         }
 
         spd_clearanceaccess clearanceaccess = new() { spd_clearanceaccessid = Guid.NewGuid() };
         clearanceaccess.statecode = state;
         clearanceaccess.statuscode = status;
+        clearanceaccess.spd_issystemgenerated = true;
         _context.AddTospd_clearanceaccesses(clearanceaccess);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_OrganizationId), org);
         _context.SetLink(clearanceaccess, nameof(clearanceaccess.spd_ClearanceId), clearance);
