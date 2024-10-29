@@ -83,7 +83,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		licenceAppId: new FormControl(),
 		latestApplicationId: new FormControl(), // placeholder for id
 
-		isControllingMembersWithoutSwlExist: new FormControl(),
+		isControllingMembersWithoutSwlExist: new FormControl(), // placeholder
 
 		soleProprietorSWLAppId: new FormControl(), // placeholder for sole proprietor flow
 		soleProprietorSWLAppOriginTypeCode: new FormControl(), // placeholder for sole proprietor flow
@@ -932,14 +932,14 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	getMembersAndEmployees(): Observable<any> {
+	getMembersAndEmployees(applicationIsInProgress: boolean): Observable<any> {
 		this.reset();
 
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
 
 		return this.bizMembersService.apiBusinessBizIdMembersGet({ bizId }).pipe(
 			switchMap((members: Members) => {
-				return this.applyLicenceProfileMembersIntoModel(members).pipe(
+				return this.applyLicenceProfileMembersIntoModel(members, applicationIsInProgress).pipe(
 					tap((_resp: any) => {
 						this.setAsInitialized();
 
@@ -1165,7 +1165,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		this.reset();
 
 		if (controllingMembersAndEmployees) {
-			return this.applyLicenceProfileMembersIntoModel(controllingMembersAndEmployees).pipe(
+			return this.applyLicenceProfileMembersIntoModel(controllingMembersAndEmployees, false).pipe(
 				switchMap((_resp: any) => {
 					return this.applyLicenceProfileIntoModel({
 						businessProfile,
@@ -1183,7 +1183,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyLicenceProfileMembersIntoModel(members: Members) {
+	private applyLicenceProfileMembersIntoModel(members: Members, applicationIsInProgress: boolean) {
 		const apis: Observable<any>[] = [];
 		members.swlControllingMembers?.forEach((item: SwlContactInfo) => {
 			apis.push(
@@ -1199,6 +1199,12 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				})
 			);
 		});
+
+		const modelFormValue = this.businessModelFormGroup.value;
+		const controllingMembersData = modelFormValue.controllingMembersData;
+		controllingMembersData.applicationIsInProgress = applicationIsInProgress;
+
+		this.businessModelFormGroup.patchValue({ controllingMembersData }, { emitEvent: false });
 
 		if (apis.length > 0) {
 			return forkJoin(apis).pipe(
@@ -2116,7 +2122,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		return of(this.businessModelFormGroup.value);
 	}
 
-	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
+	private applyControllingMembersWithSwl(members: Array<SwlContactInfo>, licences: Array<LicenceResponse>): void {
 		const controllingMembersWithSwlData: Array<ControllingMemberContactInfo> = [];
 
 		members.forEach((item: SwlContactInfo) => {
@@ -2156,7 +2162,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyControllingMembersWithoutSwl(members: Array<NonSwlContactInfo>) {
+	private applyControllingMembersWithoutSwl(members: Array<NonSwlContactInfo>): void {
 		const controllingMembersWithoutSwlData: Array<ControllingMemberContactInfo> = [];
 
 		members.forEach((item: NonSwlContactInfo) => {
@@ -2207,7 +2213,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	private applyEmployees(employees: Array<SwlContactInfo>, licences: Array<LicenceResponse>) {
+	private applyEmployees(employees: Array<SwlContactInfo>, licences: Array<LicenceResponse>): void {
 		const employeesData: Array<ControllingMemberContactInfo> = [];
 
 		employees.forEach((item: SwlContactInfo) => {
