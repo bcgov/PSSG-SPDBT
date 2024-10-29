@@ -80,6 +80,10 @@ export class UtilService {
 		return moment().subtract(SPD_CONSTANTS.date.birthDateMinAgeYears, 'years');
 	}
 
+	getDateMin(): moment.Moment {
+		return moment('1800-01-01');
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 
