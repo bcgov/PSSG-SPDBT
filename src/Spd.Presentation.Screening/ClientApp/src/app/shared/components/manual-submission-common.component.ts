@@ -154,6 +154,7 @@ export interface ManualSubmissionBody {
 											[matDatepicker]="picker"
 											formControlName="dateOfBirth"
 											[max]="maxBirthDate"
+											[min]="minDate"
 											[errorStateMatcher]="matcher"
 										/>
 										<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -161,6 +162,9 @@ export interface ManualSubmissionBody {
 										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('required')">This is required</mat-error>
 										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMax')">
 											This must be on or before {{ maxBirthDate | formatDate }}
+										</mat-error>
+										<mat-error *ngIf="form.get('dateOfBirth')?.hasError('matDatepickerMin')">
+											Invalid date of birth
 										</mat-error>
 									</mat-form-field>
 								</div>
@@ -612,6 +616,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 		},
 	);
 	maxBirthDate = this.utilService.getBirthDateMax();
+	minDate = this.utilService.getDateMin();
 
 	// org id - for PSSO this is the ministry OrgId, otherwise the CRRP org
 	@Input() orgId: string | null = null;
