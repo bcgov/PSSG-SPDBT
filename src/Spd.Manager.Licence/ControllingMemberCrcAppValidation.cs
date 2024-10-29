@@ -22,7 +22,7 @@ public class ControllingMemberCrcAppAnonymousSubmitRequestValidator : AbstractVa
         RuleFor(r => r.GenderCode)
             .NotNull()
             .NotEmpty();
-        RuleFor(r => r.DateOfBirth).NotNull().NotEmpty();
+        RuleFor(r => r.DateOfBirth).Must(d => d > new DateOnly(1800, 1, 1)).NotNull().NotEmpty();
         RuleFor(r => r.PhoneNumber)
             .MaximumLength(30);
         RuleFor(r => r.EmailAddress)
