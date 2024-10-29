@@ -157,16 +157,14 @@ namespace Spd.Utilities.LogonUser
         {
             if (name == null) return null;
             string[] n = name.Split(' ');
-            return n[0];
+            return n[0].Trim();
         }
 
         private static string? GetBceidUserLastName(string? name)
         {
             if (name == null) return null;
             string[] n = name.Split(' ');
-            if (n.Length > 1)
-                return n[1];
-            return null;
+            return name.Substring(n[0].Length).Trim();
         }
     }
 }
