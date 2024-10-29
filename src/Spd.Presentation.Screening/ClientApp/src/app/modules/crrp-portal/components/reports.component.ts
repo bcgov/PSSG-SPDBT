@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -28,7 +29,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 					<app-month-picker
 						label="From Month/Year"
-						[monthAndYear]="reportMonthYearFrom"
+						[form]="formMonthAndYearFrom"
 						[minDate]="minDate"
 						[maxDate]="maxDate"
 						(monthAndYearChange)="onMonthAndYearChangeFrom($event)"
@@ -37,7 +38,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 				<div class="col-xxl-3 col-xl-4 col-lg-6 col-md-12">
 					<app-month-picker
 						label="To Month/Year"
-						[monthAndYear]="reportMonthYearTo"
+						[form]="formMonthAndYearTo"
 						[minDate]="minDate"
 						[maxDate]="maxDate"
 						(monthAndYearChange)="onMonthAndYearChangeTo($event)"
@@ -51,7 +52,7 @@ import { UtilService } from 'src/app/core/services/util.service';
 						<ng-container matColumnDef="reportDate">
 							<mat-cell *matCellDef="let report">
 								<span class="mobile-label"></span>
-								Monthly Report - {{ report.reportDate | formatDate : constants.date.monthYearFormat }}
+								Monthly Report - {{ report.reportDate | formatDate: constants.date.monthYearFormat }}
 							</mat-cell>
 						</ng-container>
 
@@ -108,10 +109,16 @@ export class ReportsComponent implements OnInit {
 	private allReports: Array<OrgReportResponse> = [];
 
 	constants = SPD_CONSTANTS;
-	reportMonthYearFrom: moment.Moment | null = moment().startOf('year');
-	reportMonthYearTo: moment.Moment | null = null;
 	minDate = moment('2023-01-01');
 	maxDate = moment().endOf('month');
+
+	formMonthAndYearFrom: FormGroup = this.formBuilder.group({
+		monthAndYear: new FormControl(''),
+	});
+
+	formMonthAndYearTo: FormGroup = this.formBuilder.group({
+		monthAndYear: new FormControl(''),
+	});
 
 	dataSource: MatTableDataSource<OrgReportResponse> = new MatTableDataSource<OrgReportResponse>([]);
 	tablePaginator = this.utilService.getDefaultTablePaginatorConfig();
@@ -119,9 +126,10 @@ export class ReportsComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private formBuilder: FormBuilder,
 		private utilService: UtilService,
 		private authUserService: AuthUserBceidService,
-		private orgReportService: OrgReportService
+		private orgReportService: OrgReportService,
 	) {}
 
 	ngOnInit() {
@@ -132,19 +140,24 @@ export class ReportsComponent implements OnInit {
 			return;
 		}
 
+		const reportMonthYearFrom: moment.Moment | null = moment().startOf('year');
+		this.formMonthAndYearFrom.patchValue({ monthAndYear: reportMonthYearFrom });
+
+		const reportMonthYearTo: moment.Moment | null = null;
+		this.formMonthAndYearTo.patchValue({ monthAndYear: reportMonthYearTo });
+
 		this.loadList();
 	}
 
 	onMonthAndYearChangeFrom(val: moment.Moment | null) {
-		this.reportMonthYearFrom = val;
+		this.formMonthAndYearFrom.patchValue({ monthAndYear: val });
+
 		this.filterList();
 	}
 
 	onMonthAndYearChangeTo(val: moment.Moment | null) {
-		this.reportMonthYearTo = val;
-		if (val) {
-			this.reportMonthYearTo = val.endOf('month');
-		}
+		this.formMonthAndYearTo.patchValue({ monthAndYear: val ? val.endOf('month') : null });
+
 		this.filterList();
 	}
 
@@ -180,15 +193,21 @@ export class ReportsComponent implements OnInit {
 	private filterList(): void {
 		let reports: Array<OrgReportResponse> = [];
 
-		if (!this.reportMonthYearFrom && !this.reportMonthYearTo) {
+		const formMonthAndYearFrom = this.formMonthAndYearFrom.value;
+		const reportMonthYearFrom = formMonthAndYearFrom.monthAndYear;
+
+		const formMonthAndYearTo = this.formMonthAndYearTo.value;
+		const reportMonthYearTo = formMonthAndYearTo.monthAndYear;
+
+		if (!reportMonthYearFrom && !reportMonthYearTo) {
 			reports = this.allReports;
-		} else if (this.reportMonthYearFrom && !this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isBefore(this.reportMonthYearFrom));
-		} else if (!this.reportMonthYearFrom && this.reportMonthYearTo) {
-			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isAfter(this.reportMonthYearTo));
+		} else if (reportMonthYearFrom && !reportMonthYearTo) {
+			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isBefore(reportMonthYearFrom));
+		} else if (!reportMonthYearFrom && reportMonthYearTo) {
+			reports = this.allReports.filter((rpt) => !moment(rpt.reportDate!).isAfter(reportMonthYearTo));
 		} else {
 			reports = this.allReports.filter((rpt) =>
-				moment(rpt.reportDate!).isBetween(this.reportMonthYearFrom!, this.reportMonthYearTo!)
+				moment(rpt.reportDate!).isBetween(reportMonthYearFrom!, reportMonthYearTo!),
 			);
 		}
 
