@@ -5,8 +5,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizLicAppCommandResponse, BizTypeCode, ServiceTypeCode } from '@app/api/models';
-import { StrictHttpResponse } from '@app/api/strict-http-response';
+import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -14,7 +13,6 @@ import { BusinessApplicationService } from '@app/core/services/business-applicat
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsBusinessLicenceReviewComponent } from './steps-business-licence-review.component';
 import { StepsBusinessLicenceSelectionComponent } from './steps-business-licence-selection.component';
@@ -138,7 +136,6 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private hotToastService: HotToastService,
 		private commonApplicationService: ApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
@@ -212,15 +209,9 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.submitBusinessLicenceWithSwlCombinedFlowNew().subscribe({
-			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence has been successfully submitted');
-				this.payNow(resp.body.licenceAppId!);
-			},
-			error: (error: any) => {
-				console.log('An error occurred during save', error);
-				this.hotToastService.error('An error occurred during the save. Please try again.');
-			},
+		this.businessApplicationService.payBusinessLicenceRenewal({
+			paymentSuccess: 'Your business licence and security worker licence renewal have been successfully submitted',
+			paymentReason: 'Payment for renewal of Business Licence application',
 		});
 	}
 
