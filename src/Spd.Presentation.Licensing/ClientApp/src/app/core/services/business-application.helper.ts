@@ -293,6 +293,7 @@ export abstract class BusinessApplicationHelper extends ApplicationHelper {
 			membersWithoutSwl: this.formBuilder.array([]),
 			attachmentIsRequired: new FormControl(false),
 			attachments: new FormControl([]),
+			applicationIsInProgress: new FormControl(null),
 		},
 		{
 			validators: [
