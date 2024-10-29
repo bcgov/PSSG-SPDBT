@@ -224,7 +224,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembersAndEmployees(): void {
 		this.businessApplicationService
-			.getMembersAndEmployees()
+			.getMembersAndEmployees(this.applicationIsInProgress)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
