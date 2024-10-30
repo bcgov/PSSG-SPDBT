@@ -95,7 +95,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								/>
 								<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 								<mat-datepicker #picker startView="multi-year"></mat-datepicker>
-								<mat-error *ngIf="form.get('expiryDate')?.hasError('required')"> This is required </mat-error>
+								<mat-error *ngIf="form.get('expiryDate')?.hasError('required')">This is required</mat-error>
 								<mat-error *ngIf="form.get('expiryDate')?.hasError('matDatepickerMin')">Invalid expiry date</mat-error>
 							</mat-form-field>
 						</div>
@@ -182,9 +182,9 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('required')">
 											This is required
 										</mat-error>
-										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')"
-											>Invalid expiry date</mat-error
-										>
+										<mat-error *ngIf="form.get('governmentIssuedExpiryDate')?.hasError('matDatepickerMin')">
+											Invalid expiry date
+										</mat-error>
 									</mat-form-field>
 								</div>
 							</div>
