@@ -54,7 +54,6 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
-							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
