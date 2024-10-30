@@ -14,6 +14,7 @@ public interface IBizLicAppManager
     public Task<BizLicAppCommandResponse> Handle(BizLicAppUpdateCommand command, CancellationToken ct);
     public Task<IEnumerable<LicenceAppListResponse>> Handle(GetBizLicAppListQuery cmd, CancellationToken ct);
     public Task<FileResponse> Handle(BrandImageQuery qry, CancellationToken ct);
+    public Task<Unit> Handle(CancelDraftApplicationCommand cmd, CancellationToken ct);
 }
 
 public record BizLicAppUpsertCommand(BizLicAppUpsertRequest BizLicAppUpsertRequest) : IRequest<BizLicAppCommandResponse>;
@@ -22,6 +23,8 @@ public record BizLicAppSubmitCommand(BizLicAppUpsertRequest BizLicAppUpsertReque
 public record GetBizLicAppQuery(Guid LicenceApplicationId) : IRequest<BizLicAppResponse>;
 public record GetLatestBizLicenceAppQuery(Guid BizId) : IRequest<BizLicAppResponse>;
 public record GetBizLicAppListQuery(Guid BizId) : IRequest<IEnumerable<LicenceAppListResponse>>;
+public record CancelDraftApplicationCommand(Guid ApplicationId) : IRequest<Unit>;
+
 public record BizLicAppReplaceCommand(
     BizLicAppSubmitRequest LicenceRequest,
     IEnumerable<LicAppFileInfo> LicAppFileInfos)
