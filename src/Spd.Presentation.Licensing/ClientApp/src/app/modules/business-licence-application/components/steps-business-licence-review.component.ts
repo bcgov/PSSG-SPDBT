@@ -9,7 +9,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 	selector: 'app-steps-business-licence-review',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="!isRenewalShortForm">
+			<mat-step>
 				<app-step-business-licence-summary (editStep)="onGoToStep($event)"></app-step-business-licence-summary>
 
 				<app-wizard-footer
@@ -36,7 +36,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 							[isSoleProprietorSimultaneousFlow]="false"
 							(saveAndExit)="onNoSaveAndExit()"
 							nextButtonLabel="Submit"
-							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onInviteAndSubmitStep()"
 						></app-wizard-footer>
 					</ng-container>
@@ -48,7 +48,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 							(saveAndExit)="onNoSaveAndExit()"
 							(cancelAndExit)="onCancelAndExit()"
 							nextButtonLabel="Pay Now"
-							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onPayNow()"
 						></app-wizard-footer>
 					</ng-template>
@@ -58,7 +58,7 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 					<app-wizard-footer
 						[showSaveAndExit]="false"
 						nextButtonLabel="Pay Now"
-						(previousStepperStep)="onConsentGoToPreviousStep()"
+						(previousStepperStep)="onGoToPreviousStep()"
 						(nextStepperStep)="onPayNow()"
 					></app-wizard-footer>
 				</ng-container>
@@ -67,14 +67,14 @@ import { StepBusinessLicenceSummaryComponent } from './step-business-licence-sum
 					<ng-container *ngIf="isControllingMembersWithoutSwlExist; else noControllingMembersWithoutSwlExist">
 						<app-wizard-footer
 							nextButtonLabel="Submit"
-							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onInviteAndSubmitStep()"
 						></app-wizard-footer>
 					</ng-container>
 					<ng-template #noControllingMembersWithoutSwlExist>
 						<app-wizard-footer
 							nextButtonLabel="Pay Now"
-							(previousStepperStep)="onConsentGoToPreviousStep()"
+							(previousStepperStep)="onGoToPreviousStep()"
 							(nextStepperStep)="onPayNow()"
 						></app-wizard-footer>
 					</ng-template>
@@ -90,7 +90,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
-	@Input() isRenewalShortForm!: boolean;
 	@Input() showSaveAndExit!: boolean;
 	@Input() licenceCost = 0;
 	@Input() isBusinessLicenceSoleProprietor!: boolean;
@@ -105,15 +104,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
-	}
-
-	onConsentGoToPreviousStep(): void {
-		if (this.isRenewalShortForm) {
-			this.onStepPrevious();
-			return;
-		}
-
-		this.onGoToPreviousStep();
 	}
 
 	onInviteAndSubmitStep(): void {
@@ -144,11 +134,6 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	}
 
 	override onGoToFirstStep() {
-		if (this.isRenewalShortForm) {
-			this.childstepper.selectedIndex = 1;
-			return;
-		}
-
 		this.childstepper.selectedIndex = 0;
 		this.summaryReviewComponent.onUpdateData();
 	}

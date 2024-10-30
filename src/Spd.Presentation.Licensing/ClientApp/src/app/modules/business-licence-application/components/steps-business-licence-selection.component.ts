@@ -9,7 +9,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 	selector: 'app-steps-business-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="!isRenewalShortForm">
+			<mat-step>
 				<app-step-business-licence-category
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[applicationTypeCode]="applicationTypeCode"
@@ -20,6 +20,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_CATEGORY)"
+					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onFormValidNextStep(STEP_LICENCE_CATEGORY)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_CATEGORY)"
@@ -39,7 +40,8 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
-					(previousStepperStep)="onLicenceTermGoToPreviousStep()"
+					(cancelAndExit)="onCancelAndExit()"
+					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
 				></app-wizard-footer>
@@ -57,7 +59,6 @@ export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepCompon
 	@Input() isSoleProprietorSimultaneousFlow = false;
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
-	@Input() isRenewalShortForm!: boolean;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
@@ -68,15 +69,6 @@ export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepCompon
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
-	}
-
-	onLicenceTermGoToPreviousStep(): void {
-		if (this.isRenewalShortForm) {
-			this.onStepPrevious();
-			return;
-		}
-
-		this.onGoToPreviousStep();
 	}
 
 	override dirtyForm(step: number): boolean {
