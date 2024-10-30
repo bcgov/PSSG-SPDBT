@@ -30,7 +30,10 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 
 	@ViewChild(FormSwlCitizenshipComponent) formSwlCitizenshipComponent!: FormSwlCitizenshipComponent;
 
-	constructor(private workerApplicationService: WorkerApplicationService, private utilService: UtilService) {}
+	constructor(
+		private workerApplicationService: WorkerApplicationService,
+		private utilService: UtilService
+	) {}
 
 	ngOnInit(): void {
 		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {
