@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
 import { ApplicationService } from '@app/core/services/application.service';
@@ -45,27 +45,6 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				></app-wizard-footer>
 			</mat-step>
 
-			<!-- <mat-step *ngIf="isRenewal">
-				<app-step-business-licence-static-summary></app-step-business-licence-static-summary>
-
-				<div class="row wizard-button-row">
-					<div class="offset-xxl-4 col-xxl-5 offset-xl-3 col-xl-7 offset-lg-3 col-lg-7 col-md-12">
-						<button mat-flat-button color="primary" class="large mb-2" (click)="onRenewalLongFormNextStep()">
-							Yes, I need to update
-						</button>
-					</div>
-				</div>
-
-				<app-wizard-footer
-					[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-					(cancelAndExit)="onCancelAndExit()"
-					nextButtonLabel="No updates needed"
-					[isWideNext]="true"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onRenewalShortFormNextStep()"
-				></app-wizard-footer>
-			</mat-step> -->
-
 			<mat-step *ngIf="isNew">
 				<app-step-business-licence-expired></app-step-business-licence-expired>
 
@@ -107,7 +86,7 @@ import { StepBusinessLicenceLiabilityComponent } from './step-business-licence-l
 				></app-wizard-footer>
 			</mat-step>
 
-			<mat-step *ngIf="!isRenewalShortForm">
+			<mat-step>
 				<app-step-business-licence-company-branding
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-business-licence-company-branding>
@@ -149,11 +128,8 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 	readonly STEP_LICENCE_BRANDING = 4;
 	readonly STEP_LICENCE_LIABILITY = 5;
 
-	@Input() isRenewalShortForm!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isSoleProprietorSimultaneousFlow!: boolean;
-
-	@Output() renewalShortForm: EventEmitter<boolean> = new EventEmitter();
 
 	@ViewChild(StepBusinessLicenceExpiredComponent) stepExpiredComponent!: StepBusinessLicenceExpiredComponent;
 	@ViewChild(StepBusinessLicenceBusinessInformationComponent)
@@ -170,14 +146,6 @@ export class StepsBusinessLicenceSwlSpInformationComponent extends BaseWizardSte
 
 	onGotoBusinessProfile(): void {
 		this.commonApplicationService.onGotoBusinessProfile(this.applicationTypeCode);
-	}
-
-	onRenewalShortFormNextStep(): void {
-		this.renewalShortForm.emit(true);
-	}
-
-	onRenewalLongFormNextStep(): void {
-		this.renewalShortForm.emit(false);
 	}
 
 	override dirtyForm(step: number): boolean {

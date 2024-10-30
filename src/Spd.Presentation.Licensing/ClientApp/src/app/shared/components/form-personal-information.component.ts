@@ -30,12 +30,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					</ng-template>
 
 					<div class="row mb-3">
-						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
+						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 px-3">
 							<div class="fs-6 text-muted">Full Name</div>
 							<div class="text-minor-heading">{{ fullname }}</div>
 						</div>
 
-						<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12 px-3">
+						<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 px-3">
 							<div class="fs-6 text-muted mt-2 mt-lg-0">Date of Birth</div>
 							<div class="text-minor-heading">
 								{{ dateOfBirth.value | formatDate: formalDateFormat }}

@@ -210,7 +210,9 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	onNextPayStep(): void {
 		this.businessApplicationService.submitBusinessLicenceWithSwlCombinedFlowNew().subscribe({
 			next: (resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success('Your business licence has been successfully submitted');
+				this.hotToastService.success(
+					'Your business licence and security worker licence have been successfully submitted'
+				);
 				this.payNow(resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
