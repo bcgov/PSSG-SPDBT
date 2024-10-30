@@ -8,7 +8,7 @@ public class ApplicantUpdateRequestValidator : AbstractValidator<ApplicantUpdate
     {
         RuleFor(r => r.ApplicationTypeCode).NotEmpty().IsInEnum().When(r => r.LicenceId != null);
         RuleFor(r => r.Surname).NotEmpty();
-        RuleFor(r => r.DateOfBirth).Must(d => d > new DateOnly(1800, 1, 1)).NotEmpty();
+        RuleFor(r => r.DateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.GenderCode).NotEmpty().IsInEnum();
         RuleFor(r => r.PhoneNumber).MaximumLength(30).NotEmpty();
         RuleFor(r => r.EmailAddress).MaximumLength(75).NotEmpty().EmailAddress();
