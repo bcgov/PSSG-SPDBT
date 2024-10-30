@@ -184,12 +184,13 @@ export interface ManualSubmissionBody {
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12">
 							<mat-form-field>
-								<mat-label>Sex <span class="optional-label">(optional)</span></mat-label>
+								<mat-label>Sex</mat-label>
 								<mat-select formControlName="genderCode">
 									<mat-option *ngFor="let gdr of genderTypes" [value]="gdr.code">
 										{{ gdr.desc }}
 									</mat-option>
 								</mat-select>
+								<mat-error *ngIf="form.get('genderCode')?.hasError('required')">This is required</mat-error>
 							</mat-form-field>
 						</div>
 						<div class="col-xl-3 col-lg-6 col-md-12">
@@ -541,7 +542,7 @@ export class ManualSubmissionCommonComponent implements OnInit {
 			emailAddress: new FormControl('', [FormControlValidators.email]),
 			phoneNumber: new FormControl('', [Validators.required]),
 			driversLicense: new FormControl(''),
-			genderCode: new FormControl(''),
+			genderCode: new FormControl('', [Validators.required]),
 			dateOfBirth: new FormControl(null, [Validators.required]),
 			birthPlace: new FormControl('', [FormControlValidators.required]),
 			jobTitle: new FormControl('', [FormControlValidators.required]),

@@ -402,4 +402,11 @@ namespace Spd.Utilities.Dynamics
         Success = 100000002, //Inactive State status reason
         Fail = 100000003 //Inactive State status reason
     }
+
+    public enum CaseRiskLevelOptionSet
+    {
+        L1 = 100000000,
+        L2 = 100000001,
+        L3 = 100000002
+    }
 }
