@@ -9,7 +9,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 	selector: 'app-steps-business-licence-selection',
 	template: `
 		<mat-stepper class="child-stepper" (selectionChange)="onStepSelectionChange($event)" #childstepper>
-			<mat-step *ngIf="!isRenewalShortForm">
+			<mat-step>
 				<app-step-business-licence-category
 					[isBusinessLicenceSoleProprietor]="isBusinessLicenceSoleProprietor"
 					[applicationTypeCode]="applicationTypeCode"
@@ -41,7 +41,7 @@ import { StepBusinessLicenceTermComponent } from './step-business-licence-term.c
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_LICENCE_TERM)"
 					(cancelAndExit)="onCancelAndExit()"
-					(previousStepperStep)="onLicenceTermGoToPreviousStep()"
+					(previousStepperStep)="onStepPrevious()"
 					(nextStepperStep)="onStepNext(STEP_LICENCE_TERM)"
 					(nextReviewStepperStep)="onNextReview(STEP_LICENCE_TERM)"
 				></app-wizard-footer>
@@ -59,7 +59,6 @@ export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepCompon
 	@Input() isSoleProprietorSimultaneousFlow = false;
 	@Input() isFormValid!: boolean;
 	@Input() showSaveAndExit!: boolean;
-	@Input() isRenewalShortForm!: boolean;
 
 	@Input() serviceTypeCode!: ServiceTypeCode;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
@@ -70,15 +69,6 @@ export class StepsBusinessLicenceSelectionComponent extends BaseWizardStepCompon
 
 	constructor(override commonApplicationService: ApplicationService) {
 		super(commonApplicationService);
-	}
-
-	onLicenceTermGoToPreviousStep(): void {
-		if (this.isRenewalShortForm) {
-			this.onStepPrevious();
-			return;
-		}
-
-		this.onGoToPreviousStep();
 	}
 
 	override dirtyForm(step: number): boolean {

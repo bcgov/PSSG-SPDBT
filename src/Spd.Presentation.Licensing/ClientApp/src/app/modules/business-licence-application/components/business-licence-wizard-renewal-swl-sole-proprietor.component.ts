@@ -47,13 +47,11 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 					<app-steps-business-licence-swl-sp-information
 						[applicationTypeCode]="applicationTypeCode"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-						[isRenewalShortForm]="isRenewalShortForm"
 						(childNextStep)="onChildNextStep()"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onReturnToSwl()"
 						(nextStepperStep)="onNextStepperStep(stepper)"
 						(scrollIntoView)="onScrollIntoView()"
-						(renewalShortForm)="onRenewalShortForm($event)"
 					></app-steps-business-licence-swl-sp-information>
 				</mat-step>
 
@@ -65,7 +63,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './steps-business-
 						[bizTypeCode]="bizTypeCode"
 						[isBusinessLicenceSoleProprietor]="true"
 						[isSoleProprietorSimultaneousFlow]="isSoleProprietorSimultaneousFlow"
-						[isRenewalShortForm]="isRenewalShortForm"
 						[isFormValid]="false"
 						[showSaveAndExit]="true"
 						(childNextStep)="onChildNextStep()"
@@ -121,7 +118,6 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	serviceTypeCode!: ServiceTypeCode;
 	applicationTypeCode!: ApplicationTypeCode;
 	bizTypeCode!: BizTypeCode;
-	isRenewalShortForm = false;
 
 	private businessModelValueChangedSubscription!: Subscription;
 
@@ -243,15 +239,6 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 				this.handlePartialSaveError(error);
 			},
 		});
-	}
-
-	onRenewalShortForm(isShortForm: boolean) {
-		this.businessApplicationService.businessModelFormGroup.patchValue(
-			{ isRenewalShortForm: isShortForm },
-			{ emitEvent: false }
-		);
-		this.isRenewalShortForm = isShortForm;
-		this.goToChildNextStep();
 	}
 
 	onReturnToSwl(): void {
