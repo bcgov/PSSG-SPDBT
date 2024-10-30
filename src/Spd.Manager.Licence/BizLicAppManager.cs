@@ -192,6 +192,12 @@ internal class BizLicAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
         if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
+
+        if (cmd.LicenceRequest.SoleProprietorSWLAppId != null)//this is renew biz lic app from swl as sole proprietor
+        {
+            await _personLicApplicationRepository.UpdateSwlSoleProprietorApplicationAsync((Guid)cmd.LicenceRequest.SoleProprietorSWLAppId, response.LicenceAppId, cancellationToken);
+        }
+
         // Upload new files
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
