@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepWorkerLicenceCategoryComponent } from './step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from './step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicenceExpiredComponent } from './step-worker-licence-expired.component';
@@ -189,8 +189,8 @@ export class StepsWorkerLicenceSelectionComponent extends BaseWizardStepComponen
 	@ViewChild(StepWorkerLicenceTermComponent)
 	licenceTermComponent!: StepWorkerLicenceTermComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor(private commonApplicationService: CommonApplicationService) {
+		super();
 	}
 
 	onFormDogsValidNextStep() {
