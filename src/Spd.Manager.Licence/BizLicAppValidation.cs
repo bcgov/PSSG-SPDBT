@@ -94,9 +94,6 @@ public class BizLicAppSubmitRequestValidator : BizLicAppBaseValidator<BizLicAppS
         // General validations
         RuleFor(r => r.LatestApplicationId).NotEmpty();
         RuleFor(r => r.OriginalLicenceId).NotEmpty();
-        RuleFor(r => r.PreviousDocumentIds)
-            .Must(r => r != null && r.Any())
-            .WithMessage("Missing previous documents.");
         RuleFor(r => r.BizTypeCode)
             .Must(r => r == BizTypeCode.NonRegisteredSoleProprietor || r == BizTypeCode.RegisteredSoleProprietor)
             .When(r => r.SoleProprietorSWLAppId != null);

@@ -103,8 +103,8 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								You must be authenticated before you can submit an online application for a new or renewed security
 								licence or permit, including a request to submit to Prescribed Checks. Your identity will be verified
-								through your BC Services Card, approved government-issued ID, or other approved authentication method as
-								may be implemented from time to time.
+								through your BC Services Card account login, approved government-issued ID, or other approved
+								authentication method as may be implemented from time to time.
 							</li>
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
@@ -155,7 +155,7 @@ import { UtilService } from '@app/core/services/util.service';
 										Services;
 									</li>
 									<li>
-										take any action that might reasonably be construed as altering, destroying, defeating, compromising,
+										take any action that might reasonably be construed as altering, destroying, defeating, compromising
 										or rendering ineffective the security related to the Site or any Associated Service, or being likely
 										to affect other users of the Services;
 									</li>

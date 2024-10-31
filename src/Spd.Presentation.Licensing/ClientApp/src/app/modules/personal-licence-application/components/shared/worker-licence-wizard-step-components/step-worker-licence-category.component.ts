@@ -71,7 +71,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														"
 														>error</mat-icon
 													>
-													{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
+													{{ workerCategoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -157,7 +157,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														"
 														>error</mat-icon
 													>
-													{{ workerCategoryTypeCodes.FireInvestigator | options : 'WorkerCategoryTypes' }}
+													{{ workerCategoryTypeCodes.FireInvestigator | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -213,7 +213,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														>error</mat-icon
 													>
 
-													{{ workerCategoryTypeCodes.Locksmith | options : 'WorkerCategoryTypes' }}
+													{{ workerCategoryTypeCodes.Locksmith | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -280,7 +280,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 															categoryPrivateInvestigatorFormGroup?.invalid
 														"
 														>error</mat-icon
-													>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+													>{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -339,8 +339,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														>error</mat-icon
 													>
 													{{
-														workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision
-															| options : 'WorkerCategoryTypes'
+														workerCategoryTypeCodes.PrivateInvestigatorUnderSupervision | options: 'WorkerCategoryTypes'
 													}}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
@@ -400,7 +399,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														>error</mat-icon
 													>
 
-													{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options : 'WorkerCategoryTypes' }}
+													{{ workerCategoryTypeCodes.SecurityAlarmInstaller | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -497,7 +496,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 															categorySecurityConsultantFormGroup?.invalid
 														"
 														>error</mat-icon
-													>{{ workerCategoryTypeCodes.SecurityConsultant | options : 'WorkerCategoryTypes' }}
+													>{{ workerCategoryTypeCodes.SecurityConsultant | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -551,7 +550,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														matTooltip="One or more errors exist in this category"
 														*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
 														>error</mat-icon
-													>{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
+													>{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">

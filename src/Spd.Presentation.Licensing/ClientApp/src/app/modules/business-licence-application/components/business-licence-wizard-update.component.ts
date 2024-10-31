@@ -4,8 +4,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 
 import { StepBusinessLicenceConfirmationComponent } from './step-business-licence-confirmation.component';
@@ -54,7 +54,6 @@ import { StepsBusinessLicenceUpdatesComponent } from './steps-business-licence-u
 							[serviceTypeCode]="serviceTypeCode"
 							[applicationTypeCode]="applicationTypeCode"
 							[licenceCost]="newLicenceCost"
-							[isRenewalShortForm]="false"
 							[showSaveAndExit]="false"
 							(previousStepperStep)="onPreviousStepperStep(stepper)"
 							(nextPayStep)="onNextPayStep()"
@@ -95,7 +94,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);

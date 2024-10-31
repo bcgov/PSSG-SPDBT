@@ -8,7 +8,7 @@ import {
 	WorkerCategoryTypeCode,
 } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
@@ -500,7 +500,7 @@ export class StepWorkerLicenceSummaryReviewAuthenticatedComponent implements OnI
 
 	constructor(
 		private workerApplicationService: WorkerApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {

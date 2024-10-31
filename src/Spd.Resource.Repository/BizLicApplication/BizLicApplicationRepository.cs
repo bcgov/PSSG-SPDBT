@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Dynamics.CRM;
 using Microsoft.OData.Client;
 using Spd.Resource.Repository.PersonLicApplication;
@@ -355,5 +357,21 @@ internal class BizLicApplicationRepository : IBizLicApplicationRepository
         if (licence == null) throw new ArgumentException($"cannot find the licence with licenceId : {licenceId}");
 
         return licence;
+    }
+
+    public async Task CancelDraftApplicationAsync(Guid applicationId, CancellationToken ct)
+    {
+        spd_application? app = _context.spd_applications.Where(a => a.spd_applicationid == applicationId).FirstOrDefault();
+        if (app == null) 
+            throw new ArgumentException("Application not found");
+        if (app.spd_licenceapplicationtype == (int)LicenceApplicationTypeOptionSet.New) 
+            throw new ArgumentException("Canceling application with this type is not allowed.");
+        if (app.statuscode != (int)ApplicationStatusOptionSet.Draft && app.statuscode != (int)ApplicationStatusOptionSet.Incomplete) 
+            throw new ArgumentException("Canceling application with this status is not allowed.");
+
+        app.statecode = DynamicsConstants.StateCode_Inactive;
+        app.statuscode = (int) ApplicationStatusOptionSet.Cancelled;
+        _context.UpdateObject(app);
+        await _context.SaveChangesAsync(ct);
     }
 }

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceTermCode, ServiceTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -155,7 +155,7 @@ export class StepWorkerLicenceSummaryReviewUpdateAuthenticatedComponent implemen
 
 	constructor(
 		private workerApplicationService: WorkerApplicationService,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
 	) {}
 

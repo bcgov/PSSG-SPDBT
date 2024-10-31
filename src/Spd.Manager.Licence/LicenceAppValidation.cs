@@ -9,7 +9,7 @@ public class PersonalLicenceAppBaseValidator<T> : AbstractValidator<T> where T :
         RuleFor(r => r.ServiceTypeCode).NotEmpty();
         RuleFor(r => r.ApplicationTypeCode).NotEmpty();
         RuleFor(r => r.Surname).NotEmpty();
-        RuleFor(r => r.DateOfBirth).NotEmpty();
+        RuleFor(r => r.DateOfBirth).NotNull().NotEmpty().Must(d => d > new DateOnly(1800, 1, 1));
         RuleFor(r => r.GenderCode).NotEmpty();
         RuleFor(r => r.LicenceTermCode).NotEmpty();
         RuleFor(r => r.HasExpiredLicence).NotEmpty();

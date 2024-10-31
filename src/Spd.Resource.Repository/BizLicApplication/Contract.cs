@@ -1,4 +1,5 @@
-﻿using Spd.Resource.Repository.Application;
+﻿using MediatR;
+using Spd.Resource.Repository.Application;
 using Spd.Resource.Repository.Biz;
 using Spd.Resource.Repository.PersonLicApplication;
 
@@ -8,6 +9,7 @@ public partial interface IBizLicApplicationRepository
     public Task<BizLicApplicationCmdResp> CreateBizLicApplicationAsync(CreateBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationCmdResp> SaveBizLicApplicationAsync(SaveBizLicApplicationCmd cmd, CancellationToken ct);
     public Task<BizLicApplicationResp> GetBizLicApplicationAsync(Guid licenceApplicationId, CancellationToken ct);
+    public Task CancelDraftApplicationAsync(Guid applicationId, CancellationToken ct);
 }
 
 public record BizLicApplicationCmdResp(Guid LicenceAppId, Guid AccountId);

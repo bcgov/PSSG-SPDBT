@@ -73,12 +73,13 @@ namespace Spd.Utilities.LogonUser
         public static BceidIdentityInfo GetBceidUserIdentityInfo(this IPrincipal principal)
         {
             var claim = ValidatePrincipal(principal);
+
             return new BceidIdentityInfo()
             {
                 DisplayName = claim.GetClaimValue<string>("display_name"),
                 Email = claim.GetClaimValue<string>(BCeID_Email),
-                FirstName = claim.GetClaimValue<string>(BCeID_GIVEN_NAME),
-                LastName = claim.GetClaimValue<string>(BCeID_SUR_NAME),
+                FirstName = GetBceidUserFirstName(claim.GetClaimValue<string>("name")),
+                LastName = GetBceidUserLastName(claim.GetClaimValue<string>("name")),
                 PreferredUserName = claim.GetClaimValue<string>("preferred_username"),
                 BCeIDUserName = claim.GetClaimValue<string>("bceid_username"),
                 UserGuid = claim.GetClaimValue<Guid?>("bceid_user_guid"),
@@ -150,6 +151,20 @@ namespace Spd.Utilities.LogonUser
                 }
             }
             return (null, null);
+        }
+
+        private static string? GetBceidUserFirstName(string? name)
+        {
+            if (name == null) return null;
+            string[] n = name.Split(' ');
+            return n[0].Trim();
+        }
+
+        private static string? GetBceidUserLastName(string? name)
+        {
+            if (name == null) return null;
+            string[] n = name.Split(' ');
+            return name.Substring(n[0].Length).Trim();
         }
     }
 }

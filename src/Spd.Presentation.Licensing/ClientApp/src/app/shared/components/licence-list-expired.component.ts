@@ -2,7 +2,7 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, Input } from '@angular/core';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { MainLicenceResponse } from '@app/core/services/application.service';
+import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
 	selector: 'app-licence-list-expired',

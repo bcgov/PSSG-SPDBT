@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, PaymentResponse } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
 	selector: 'app-payment-success',
@@ -40,26 +40,26 @@ import { ApplicationService } from '@app/core/services/application.service';
 				<div class="row mt-4">
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.New">
 						<div class="text-center fs-5">
-							Your application for a new {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been received.
+							Your application for a new {{ payment?.serviceTypeCode | options: 'ServiceTypes' }} has been received.
 						</div>
 					</ng-container>
 
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Renewal">
 						<div class="text-center fs-5">
-							Your application for renewing your {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been
+							Your application for renewing your {{ payment?.serviceTypeCode | options: 'ServiceTypes' }} has been
 							received.
 						</div>
 					</ng-container>
 
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Update">
 						<div class="text-center fs-5">
-							Your update to your {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been received.
+							Your update to your {{ payment?.serviceTypeCode | options: 'ServiceTypes' }} has been received.
 						</div>
 					</ng-container>
 
 					<ng-container *ngIf="payment?.applicationTypeCode === applicationTypeCodes.Replacement">
 						<div class="text-center fs-5">
-							Your application for a replacement {{ payment?.serviceTypeCode | options : 'ServiceTypes' }} has been
+							Your application for a replacement {{ payment?.serviceTypeCode | options: 'ServiceTypes' }} has been
 							received.
 						</div>
 					</ng-container>
@@ -92,13 +92,13 @@ import { ApplicationService } from '@app/core/services/application.service';
 						<div class="d-block payment__text-label text-md-end">Licence Term</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
-						<div class="payment__text">{{ payment?.licenceTermCode | options : 'LicenceTermTypes' }}</div>
+						<div class="payment__text">{{ payment?.licenceTermCode | options: 'LicenceTermTypes' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
 						<div class="d-block payment__text-label text-md-end">Amount Paid</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
-						<div class="payment__text">{{ payment?.transAmount | currency : 'CAD' : 'symbol-narrow' : '1.0' }}</div>
+						<div class="payment__text">{{ payment?.transAmount | currency: 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
 						<div class="d-block payment__text-label text-md-end">Case Number</div>
@@ -111,7 +111,7 @@ import { ApplicationService } from '@app/core/services/application.service';
 					</div>
 					<div class="col-md-6 col-sm-12 mt-md-2">
 						<div class="payment__text">
-							{{ payment?.transDateTime | formatDate : appConstants.date.formalDateTimeFormat }}
+							{{ payment?.transDateTime | formatDate: appConstants.date.formalDateTimeFormat }}
 						</div>
 					</div>
 					<div class="col-md-6 col-sm-12 mt-2">
@@ -162,7 +162,10 @@ export class PaymentSuccessComponent {
 
 	@Output() downloadReceipt: EventEmitter<any> = new EventEmitter();
 
-	constructor(private router: Router, private commonApplicationService: ApplicationService) {}
+	constructor(
+		private router: Router,
+		private commonApplicationService: CommonApplicationService
+	) {}
 
 	onDownloadReceipt(): void {
 		this.downloadReceipt.emit();

@@ -83,7 +83,7 @@ export interface MainLicenceResponse extends LicenceResponse {
 @Injectable({
 	providedIn: 'root',
 })
-export class ApplicationService {
+export class CommonApplicationService {
 	isLoggedIn = false;
 
 	private uniqueId = 1;
@@ -775,13 +775,19 @@ export class ApplicationService {
 					`You haven't submitted your ${itemLabel} application yet. It will expire on <strong>${itemExpiry}</strong>.`
 				);
 			} else if (checkControllingMemberWarning && item.isControllingMemberWarning) {
-				// Must have application in Payment Pending status to show this message.
-				const awaitingPaymentIndex = applicationsList.findIndex(
-					(item: MainApplicationResponse) =>
-						item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
-				);
-				if (awaitingPaymentIndex >= 0) {
-					isControllingMemberWarning = true;
+				// applications only wait for controlling member completion on New or Renewal
+				if (
+					item.applicationTypeCode === ApplicationTypeCode.New ||
+					item.applicationTypeCode === ApplicationTypeCode.Renewal
+				) {
+					// Must have application in Payment Pending status to show this message.
+					const awaitingPaymentIndex = applicationsList.findIndex(
+						(item: MainApplicationResponse) =>
+							item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
+					);
+					if (awaitingPaymentIndex >= 0) {
+						isControllingMemberWarning = true;
+					}
 				}
 			} else if (item.isExpiryError) {
 				errorMessages.push(

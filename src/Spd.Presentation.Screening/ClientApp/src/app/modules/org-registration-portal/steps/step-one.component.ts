@@ -229,8 +229,10 @@ export class StepOneComponent {
 
 		this.setShowStepCompensationQuestionFlag();
 		if (this.compensationQuestionComponent) {
-			this.compensationQuestionComponent.employeeMonetaryCompensationFlag =
-				currentStateInfo.employeeMonetaryCompensationFlag ? currentStateInfo.employeeMonetaryCompensationFlag : null;
+			const val = currentStateInfo.employeeMonetaryCompensationFlag
+				? currentStateInfo.employeeMonetaryCompensationFlag
+				: null;
+			this.compensationQuestionComponent.form.patchValue({ employeeMonetaryCompensationFlag: val });
 		}
 		this.vulnerableSectorQuestionComponent.employeeInteractionFlag = currentStateInfo.employeeInteractionFlag;
 

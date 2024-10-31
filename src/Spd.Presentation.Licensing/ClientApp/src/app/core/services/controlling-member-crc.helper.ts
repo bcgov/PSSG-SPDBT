@@ -8,7 +8,7 @@ import {
 	LicenceDocumentTypeCode,
 	PoliceOfficerRoleCode,
 } from '@app/api/models';
-import { ApplicationHelper } from '@app/core/services/application.helper';
+import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
@@ -18,7 +18,7 @@ import { SPD_CONSTANTS } from '../constants/constants';
 import { FormControlValidators } from '../validators/form-control.validators';
 import { FormGroupValidators } from '../validators/form-group.validators';
 
-export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
+export abstract class ControllingMemberCrcHelper extends CommonApplicationHelper {
 	bcSecurityLicenceHistoryFormGroup: FormGroup = this.formBuilder.group(
 		{
 			hasCriminalHistory: new FormControl('', [FormControlValidators.required]),
@@ -179,7 +179,7 @@ export abstract class ControllingMemberCrcHelper extends ApplicationHelper {
 						? this.formatDatePipe.transform(
 								citizenshipData.governmentIssuedExpiryDate,
 								SPD_CONSTANTS.date.backendDateFormat
-						  )
+							)
 						: null,
 					licenceDocumentTypeCode: citizenshipData.governmentIssuedPhotoTypeCode,
 				});

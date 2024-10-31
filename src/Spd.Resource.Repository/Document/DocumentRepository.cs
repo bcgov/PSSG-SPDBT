@@ -125,6 +125,8 @@ internal class DocumentRepository : IDocumentRepository
     {
         bcgov_documenturl documenturl = _mapper.Map<bcgov_documenturl>(cmd.TempFile);
         documenturl.bcgov_url = cmd.ApplicationId == null ? $"contact/{cmd.ApplicantId}" : $"spd_application/{cmd.ApplicationId}";
+        if (cmd.ExpiryDate != null && cmd.ExpiryDate < new DateOnly(1800, 1, 1))
+           throw new ArgumentException("Invalid Document Expiry Date");
         if (cmd.ExpiryDate != null) documenturl.spd_expirydate = SharedMappingFuncs.GetDateFromDateOnly(cmd.ExpiryDate);
         _context.AddTobcgov_documenturls(documenturl);
         if (cmd.ApplicationId != null)
@@ -253,6 +255,8 @@ internal class DocumentRepository : IDocumentRepository
             .Expand(d => d.bcgov_Tag2Id)
             .Where(d => d.bcgov_documenturlid == cmd.DocumentUrlId).FirstOrDefault();
         if (documenturl == null) { return null; }
+        if (cmd.ExpiryDate != null && cmd.ExpiryDate < new DateOnly(1800, 1, 1))
+            throw new ArgumentException("Invalid Document Expiry Date");
         documenturl.spd_expirydate = cmd.ExpiryDate == null ? null :
             new Microsoft.OData.Edm.Date(cmd.ExpiryDate.Value.Year, cmd.ExpiryDate.Value.Month, cmd.ExpiryDate.Value.Day);
         if (cmd.Tag1 != null)

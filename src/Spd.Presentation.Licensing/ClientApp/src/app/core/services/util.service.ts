@@ -118,7 +118,7 @@ export class UtilService {
 	}
 
 	getDateMin(): moment.Moment {
-		return moment().startOf('day').subtract(SPD_CONSTANTS.date.dateMaxPastYears, 'years');
+		return moment('1800-01-01');
 	}
 
 	getIsFutureDate(aDate: string | null | undefined): boolean {

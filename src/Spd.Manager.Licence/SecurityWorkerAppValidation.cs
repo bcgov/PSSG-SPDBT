@@ -11,6 +11,7 @@ public class WorkerLicenceAppUpsertRequestValidator : PersonalLicenceAppBaseVali
     public WorkerLicenceAppUpsertRequestValidator(IConfiguration configuration)
     {
         RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
+        RuleFor(r => r.DateOfBirth).Must(d => d > new DateOnly(1800, 1, 1)).When(d => d.DateOfBirth != null);
         //category
         RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7);
         var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();
@@ -108,6 +109,7 @@ public class WorkerLicenceAppAnonymousSubmitRequestValidator : PersonalLicenceAp
 {
     public WorkerLicenceAppAnonymousSubmitRequestValidator(IConfiguration configuration)
     {
+        RuleFor(r => r.DateOfBirth).Must(d => d > new DateOnly(1800, 1, 1)).When(d => d.DateOfBirth != null);
         //category
         RuleFor(r => r.CategoryCodes).NotEmpty().Must(d => d.Any() && d.Count() < 7);
         var invalidCategoryMatrix = configuration.GetSection("InvalidWorkerLicenceCategoryMatrix").Get<Dictionary<WorkerCategoryTypeCode, List<WorkerCategoryTypeCode>>>();

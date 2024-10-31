@@ -49,9 +49,9 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { ApplicationService, MainLicenceResponse } from './application.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
+import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { ConfigService } from './config.service';
 import { FileUtilService, SpdFile } from './file-util.service';
 import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
@@ -131,7 +131,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		private licenceService: LicenceService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
 		private hotToastService: HotToastService
 	) {

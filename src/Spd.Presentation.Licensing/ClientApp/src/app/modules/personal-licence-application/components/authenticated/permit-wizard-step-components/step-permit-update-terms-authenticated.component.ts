@@ -1,9 +1,9 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { StepPermitTermsOfUseComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-terms-of-use.component';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-update-terms-authenticated',
@@ -22,7 +22,10 @@ export class StepPermitUpdateTermsAuthenticatedComponent {
 	@ViewChild(StepPermitTermsOfUseComponent)
 	termsOfUseComponent!: StepPermitTermsOfUseComponent;
 
-	constructor(private router: Router, private permitApplicationService: PermitApplicationService) {
+	constructor(
+		private router: Router,
+		private permitApplicationService: PermitApplicationService
+	) {
 		const state = this.router.getCurrentNavigation()?.extras.state;
 		this.serviceTypeCode = state && state['serviceTypeCode'];
 	}

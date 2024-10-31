@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepWorkerLicenceCategoryComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-category.component';
 import { StepWorkerLicenceDogsAuthorizationComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-dogs-authorization.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
@@ -93,8 +92,8 @@ export class StepsWorkerLicenceUpdatesAuthenticatedComponent extends BaseWizardS
 	@ViewChild(StepWorkerLicenceDogsAuthorizationComponent)
 	stepDogsComponent!: StepWorkerLicenceDogsAuthorizationComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor() {
+		super();
 	}
 
 	onStepUpdatePrevious(step: number): void {

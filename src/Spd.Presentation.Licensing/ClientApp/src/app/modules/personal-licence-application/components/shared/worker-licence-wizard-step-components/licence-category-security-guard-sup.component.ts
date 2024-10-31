@@ -19,7 +19,10 @@ export class LicenceCategorySecurityGuardSupComponent implements OnInit, Licence
 	form = this.workerApplicationService.categorySecurityGuardSupFormGroup;
 	title = '';
 
-	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(

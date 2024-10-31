@@ -3,12 +3,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 import { take, tap } from 'rxjs';
 import { ServiceTypeCode } from './api/models';
 import { SPD_CONSTANTS } from './core/constants/constants';
-import { ApplicationService } from './core/services/application.service';
 import { AuthProcessService } from './core/services/auth-process.service';
+import { CommonApplicationService } from './core/services/common-application.service';
+import { PermitApplicationService } from './core/services/permit-application.service';
 import { WorkerApplicationService } from './core/services/worker-application.service';
 import { DialogComponent, DialogOptions } from './shared/components/dialog.component';
 
@@ -193,7 +193,7 @@ export class LandingComponent implements OnInit {
 		private authProcessService: AuthProcessService,
 		private workerApplicationService: WorkerApplicationService,
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
