@@ -6,7 +6,6 @@ import {
 	ApplicantProfileResponse,
 	ApplicantUpdateRequest,
 	ApplicationTypeCode,
-	BizTypeCode,
 	Document,
 	GoogleRecaptcha,
 	HeightUnitCode,
@@ -35,7 +34,6 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
-import moment from 'moment';
 import {
 	BehaviorSubject,
 	Observable,
@@ -948,25 +946,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
 
-				const originalLicenceData = {
-					originalApplicationId: associatedLicence.licenceAppId,
-					originalLicenceId: associatedLicence.licenceId,
-					originalLicenceNumber: associatedLicence.licenceNumber,
-					originalExpiryDate: associatedLicence.expiryDate,
-					originalLicenceTermCode: associatedLicence.licenceTermCode,
-					originalCategoryCodes: associatedLicence.categoryCodes,
-					linkedSoleProprietorExpiryDate: associatedLicence.linkedSoleProprietorExpiryDate,
-					linkedSoleProprietorLicenceId: associatedLicence.linkedSoleProprietorLicenceId,
-					originalBizTypeCode: BizTypeCode.None,
-					originalPhotoOfYourselfExpired: null,
-					originalDogAuthorizationExists: null,
-					originalCarryAndUseRestraints: null,
-					originalUseDogs: null,
-					originalIsDogsPurposeDetectionDrugs: null,
-					originalIsDogsPurposeDetectionExplosives: null,
-					originalIsDogsPurposeProtection: null,
-				};
-
 				const [
 					categoryArmouredCarGuardFormGroup,
 					categoryBodyArmourSalesFormGroup,
@@ -989,7 +968,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 				this.workerModelFormGroup.patchValue(
 					{
-						originalLicenceData,
 						personalInformationData,
 
 						categoryArmouredCarGuardFormGroup,
