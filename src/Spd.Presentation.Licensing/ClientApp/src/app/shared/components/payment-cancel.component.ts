@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
 	selector: 'app-payment-cancel',
@@ -66,7 +66,7 @@ export class PaymentCancelComponent {
 	@Output() payNow: EventEmitter<any> = new EventEmitter();
 	@Output() downloadManualPaymentForm: EventEmitter<any> = new EventEmitter();
 
-	constructor(private commonApplicationService: ApplicationService) {}
+	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	onDownloadManualPaymentForm(): void {
 		this.downloadManualPaymentForm.emit();

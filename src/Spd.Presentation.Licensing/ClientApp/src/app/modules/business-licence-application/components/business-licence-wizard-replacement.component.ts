@@ -2,8 +2,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { distinctUntilChanged } from 'rxjs';
 
 @Component({
@@ -45,7 +45,7 @@ export class BusinessLicenceWizardReplacementComponent extends BaseWizardCompone
 
 	constructor(
 		override breakpointObserver: BreakpointObserver,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);

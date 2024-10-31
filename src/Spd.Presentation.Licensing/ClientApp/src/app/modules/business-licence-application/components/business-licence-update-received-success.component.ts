@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LicenceTermCode, ServiceTypeCode } from '@app/api/models';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
 	selector: 'app-licence-update-received-success',
@@ -73,7 +73,7 @@ export class BusinessLicenceUpdateReceivedSuccessComponent implements OnInit {
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {

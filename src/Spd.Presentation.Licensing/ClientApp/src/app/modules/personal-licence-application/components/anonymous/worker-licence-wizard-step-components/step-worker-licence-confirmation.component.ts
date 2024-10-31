@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
 @Component({
@@ -73,7 +73,7 @@ export class StepWorkerLicenceConfirmationComponent implements OnInit {
 
 	constructor(
 		private workerApplicationService: WorkerApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit() {

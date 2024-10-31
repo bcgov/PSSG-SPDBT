@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizTypeCode, ServiceTypeCode } from '@app/api/models';
 import { AppRoutes } from '@app/app-routing.module';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
@@ -132,7 +132,7 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 		override breakpointObserver: BreakpointObserver,
 		private router: Router,
 		private dialog: MatDialog,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private businessApplicationService: BusinessApplicationService
 	) {
 		super(breakpointObserver);

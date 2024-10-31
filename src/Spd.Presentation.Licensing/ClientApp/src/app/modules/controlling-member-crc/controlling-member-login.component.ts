@@ -8,8 +8,8 @@ import {
 	ServiceTypeCode,
 } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService } from '@app/core/services/application.service';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { UtilService } from '@app/core/services/util.service';
 import { take, takeWhile, tap } from 'rxjs';
@@ -104,7 +104,7 @@ export class ControllingMemberLoginComponent implements OnInit {
 		private router: Router,
 		private utilService: UtilService,
 		private authProcessService: AuthProcessService,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private controllingMembersService: ControllingMemberCrcService,
 		private location: Location
 	) {}
