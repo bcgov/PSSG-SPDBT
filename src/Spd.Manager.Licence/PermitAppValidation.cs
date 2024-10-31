@@ -8,6 +8,7 @@ public class PermitAppSubmitRequestValidator : PersonalLicenceAppBaseValidator<P
     public PermitAppSubmitRequestValidator()
     {
         RuleFor(r => r.ApplicantId).NotEqual(Guid.Empty);
+        RuleFor(r => r.DateOfBirth).Must(d => d > new DateOnly(1800, 1, 1)).When(d => d.DateOfBirth != null);
         RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.ArmouredVehiclePermit || t == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.AgreeToCompleteAndAccurate).NotEmpty().Equal(true);
         RuleFor(r => r.PermitOtherRequiredReason).NotEmpty()
@@ -89,6 +90,7 @@ public class PermitAppAnonymousSubmitRequestValidator : PersonalLicenceAppBaseVa
 {
     public PermitAppAnonymousSubmitRequestValidator()
     {
+        RuleFor(r => r.DateOfBirth).Must(d => d > new DateOnly(1800, 1, 1)).When(d => d.DateOfBirth != null);
         RuleFor(r => r.ServiceTypeCode).Must(t => t == ServiceTypeCode.ArmouredVehiclePermit || t == ServiceTypeCode.BodyArmourPermit);
         RuleFor(r => r.OriginalApplicationId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
         RuleFor(r => r.OriginalLicenceId).NotEmpty().When(r => r.ApplicationTypeCode != ApplicationTypeCode.New);
