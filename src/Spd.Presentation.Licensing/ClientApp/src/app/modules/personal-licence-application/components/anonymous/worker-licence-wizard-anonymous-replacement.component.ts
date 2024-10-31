@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { StepWorkerLicenceMailingAddressReplacementAnonymousComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-mailing-address-replacement-anonymous.component';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -48,7 +48,7 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private workerApplicationService: WorkerApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}
