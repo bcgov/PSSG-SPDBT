@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LicenceTermCode, ServiceTypeCode } from '@app/api/models';
-import { ApplicationService } from '@app/core/services/application.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
 	selector: 'app-permit-update-received-success',
@@ -81,7 +81,7 @@ export class PermitUpdateReceivedSuccessComponent implements OnInit {
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {

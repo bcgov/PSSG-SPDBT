@@ -1,7 +1,6 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { ApplicationService } from '@app/core/services/application.service';
 import { LicenceStepperStepComponent } from '../services/util.service';
 
 @Component({
@@ -21,8 +20,6 @@ export class BaseWizardStepComponent implements LicenceStepperStepComponent {
 	@Output() nextReview: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextSubmitStep: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() nextPayStep: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-	constructor(protected commonApplicationService: ApplicationService) {}
 
 	onStepSelectionChange(_event: StepperSelectionEvent) {
 		this.scrollIntoView.emit(true);

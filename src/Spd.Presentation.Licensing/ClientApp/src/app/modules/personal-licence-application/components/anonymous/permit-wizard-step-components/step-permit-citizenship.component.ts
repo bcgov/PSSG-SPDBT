@@ -9,10 +9,10 @@ import {
 	PermitProofOfResidenceStatusTypes,
 	ProofOfCanadianCitizenshipTypes,
 } from '@app/core/code-types/model-desc.models';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-citizenship',

@@ -100,7 +100,10 @@ export class LicenceCategorySecurityAlarmInstallerComponent implements OnInit, L
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.SecurityAlarmInstaller, 'WorkerCategoryTypes');
