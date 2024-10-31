@@ -35,7 +35,10 @@ export class StepWorkerLicenceReviewNameChangeComponent implements LicenceChildS
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	constructor(private utilService: UtilService, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private utilService: UtilService,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { BaseWizardStepComponent } from 'src/app/core/components/base-wizard-step.component';
 import { StepBusinessLicenceConsentAndDeclarationComponent } from './step-business-licence-consent-and-declaration.component';
 import { StepBusinessLicenceSummaryComponent } from './step-business-licence-summary.component';
@@ -102,8 +102,8 @@ export class StepsBusinessLicenceReviewComponent extends BaseWizardStepComponent
 	@ViewChild(StepBusinessLicenceConsentAndDeclarationComponent)
 	consentAndDeclarationComponent!: StepBusinessLicenceConsentAndDeclarationComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor(private commonApplicationService: CommonApplicationService) {
+		super();
 	}
 
 	onInviteAndSubmitStep(): void {
