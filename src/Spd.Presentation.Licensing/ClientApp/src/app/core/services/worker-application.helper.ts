@@ -20,9 +20,9 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { ApplicationHelper } from './application.helper';
+import { CommonApplicationHelper } from './common-application.helper';
 
-export abstract class WorkerApplicationHelper extends ApplicationHelper {
+export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 	soleProprietorFormGroup = this.formBuilder.group(
 		{
 			isSoleProprietor: new FormControl('', [FormControlValidators.required]),

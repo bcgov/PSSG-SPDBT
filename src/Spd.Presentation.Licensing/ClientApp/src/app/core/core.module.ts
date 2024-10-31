@@ -6,18 +6,18 @@ import { RouterModule } from '@angular/router';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
-import { ApplicationService } from './services/application.service';
 import { AuthProcessService } from './services/auth-process.service';
 import { AuthUserBceidService } from './services/auth-user-bceid.service';
 import { AuthUserBcscService } from './services/auth-user-bcsc.service';
 import { AuthenticationService } from './services/authentication.service';
 import { BusinessApplicationService } from './services/business-application.service';
+import { CommonApplicationService } from './services/common-application.service';
 import { ConfigService } from './services/config.service';
 import { ControllingMemberCrcService } from './services/controlling-member-crc.service';
 import { FileUtilService } from './services/file-util.service';
-import { WorkerApplicationService } from './services/worker-application.service';
 import { PermitApplicationService } from './services/permit-application.service';
 import { UtilService } from './services/util.service';
+import { WorkerApplicationService } from './services/worker-application.service';
 
 const CORE_COMPONENTS: any[] = [];
 
@@ -25,7 +25,7 @@ const CORE_COMPONENTS: any[] = [];
 	declarations: [...CORE_COMPONENTS],
 	imports: [CommonModule, RouterModule, ReactiveFormsModule],
 	providers: [
-		ApplicationService,
+		CommonApplicationService,
 		AuthProcessService,
 		AuthUserBceidService,
 		AuthUserBcscService,

@@ -12,7 +12,7 @@ import {
 } from '@app/api/models';
 import { BooleanTypeCode, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationHelper } from '@app/core/services/application.helper';
+import { CommonApplicationHelper } from '@app/core/services/common-application.helper';
 import { ConfigService } from '@app/core/services/config.service';
 import { FileUtilService } from '@app/core/services/file-util.service';
 import { LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
@@ -20,7 +20,7 @@ import { FormControlValidators } from '@app/core/validators/form-control.validat
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 
-export abstract class BusinessApplicationHelper extends ApplicationHelper {
+export abstract class BusinessApplicationHelper extends CommonApplicationHelper {
 	companyBrandingFormGroup: FormGroup = this.formBuilder.group(
 		{
 			noLogoOrBranding: new FormControl(''),
