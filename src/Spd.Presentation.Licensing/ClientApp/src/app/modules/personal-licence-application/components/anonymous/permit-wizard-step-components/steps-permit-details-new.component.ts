@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepPermitExpiredComponent } from './step-permit-expired.component';
 import { StepPermitTermsOfUseComponent } from './step-permit-terms-of-use.component';
 
@@ -67,8 +67,8 @@ export class StepsPermitDetailsNewComponent extends BaseWizardStepComponent {
 	@ViewChild(StepPermitTermsOfUseComponent) termsOfUseComponent!: StepPermitTermsOfUseComponent;
 	@ViewChild(StepPermitExpiredComponent) permitExpiredComponent!: StepPermitExpiredComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor(private commonApplicationService: CommonApplicationService) {
+		super();
 	}
 
 	onGotoUserProfile(): void {

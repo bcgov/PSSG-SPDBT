@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { PermitApplicationService } from '@core/services/permit-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-confirmation',
@@ -25,12 +25,12 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						</div>
 						<div class="col-lg-6 col-md-12">
 							<div class="text-label d-block text-muted">Permit Type</div>
-							<div class="summary-text-data">{{ serviceTypeCode | options : 'ServiceTypes' }}</div>
+							<div class="summary-text-data">{{ serviceTypeCode | options: 'ServiceTypes' }}</div>
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label d-block text-muted">Expiry Date</div>
 							<div class="summary-text-data">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
+								{{ originalExpiryDate | formatDate: formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-6 col-md-12">

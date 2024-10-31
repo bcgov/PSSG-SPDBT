@@ -5,12 +5,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode, BizProfileResponse, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
+import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import {
-	ApplicationService,
+	CommonApplicationService,
 	MainApplicationResponse,
 	MainLicenceResponse,
-} from '@app/core/services/application.service';
-import { BusinessApplicationService } from '@app/core/services/business-application.service';
+} from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
@@ -153,7 +153,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		private configService: ConfigService,
 		private optionsPipe: OptionsPipe,
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {

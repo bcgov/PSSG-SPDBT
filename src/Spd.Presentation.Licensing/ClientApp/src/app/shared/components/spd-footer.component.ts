@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigurationResponse } from '@app/api/models';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 
 @Component({
@@ -56,7 +56,7 @@ export class SpdFooterComponent implements OnInit {
 	env: string | null | undefined = null;
 
 	constructor(
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private configService: ConfigService
 	) {}
 

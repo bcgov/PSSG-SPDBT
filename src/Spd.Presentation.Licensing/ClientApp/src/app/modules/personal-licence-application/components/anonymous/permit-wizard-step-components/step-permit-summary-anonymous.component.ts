@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApplicationTypeCode, BizTypeCode, LicenceTermCode, ServiceTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { ApplicationService } from '@app/core/services/application.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-summary-anonymous',
@@ -566,7 +566,7 @@ export class StepPermitSummaryAnonymousComponent implements OnInit {
 
 	constructor(
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {
