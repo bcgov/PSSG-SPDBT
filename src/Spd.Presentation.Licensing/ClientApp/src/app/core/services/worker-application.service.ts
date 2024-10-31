@@ -2064,20 +2064,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
 		const photographOfYourselfData = { ...resp.photographOfYourselfData };
-		originalLicenceData.originalPhotoOfYourselfExpired = false;
 
-		if (resp.photographOfYourselfData.uploadedDateTime) {
-			const originalPhotoOfYourselfLastUpload = moment(resp.photographOfYourselfData.uploadedDateTime).startOf('day');
+		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
+		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
+			originalPhotoOfYourselfLastUploadDateTime
+		);
 
-			// We require a new photo every 5 years. Please provide a new photo for your licence
-			const today = moment().startOf('day');
-			const yearsDiff = today.diff(originalPhotoOfYourselfLastUpload, 'years');
-			originalLicenceData.originalPhotoOfYourselfExpired = yearsDiff >= 5;
-
-			if (originalLicenceData.originalPhotoOfYourselfExpired) {
-				// set flag - user will be updating their photo
-				photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
-			}
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,
