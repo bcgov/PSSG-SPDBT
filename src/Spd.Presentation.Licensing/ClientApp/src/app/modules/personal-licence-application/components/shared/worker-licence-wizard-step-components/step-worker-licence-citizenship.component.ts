@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
-import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
+import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormSwlCitizenshipComponent } from '@app/shared/components/form-swl-citizenship.component';
 
@@ -30,7 +30,7 @@ export class StepWorkerLicenceCitizenshipComponent implements OnInit, LicenceChi
 
 	@ViewChild(FormSwlCitizenshipComponent) formSwlCitizenshipComponent!: FormSwlCitizenshipComponent;
 
-	constructor(private workerApplicationService: WorkerApplicationService, private utilService: UtilService) {}
+	constructor(private workerApplicationService: WorkerApplicationService) {}
 
 	ngOnInit(): void {
 		if (this.applicationTypeCode === ApplicationTypeCode.Renewal) {

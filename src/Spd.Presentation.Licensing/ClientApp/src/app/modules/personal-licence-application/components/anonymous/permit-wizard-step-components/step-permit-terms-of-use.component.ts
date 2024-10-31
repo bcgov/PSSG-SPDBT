@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonSwlPermitTermsComponent } from '@app/modules/personal-licence-application/components/shared/common-step-components/common-swl-permit-terms.component';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-terms-of-use',

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode, ServiceTypeCode } from '@app/api/models';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-rationale',

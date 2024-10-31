@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { DialogComponent, DialogOptions } from './dialog.component';
 
@@ -199,7 +199,7 @@ export class FileUploadComponent implements OnInit {
 		private hotToastService: HotToastService,
 		private dialog: MatDialog,
 		private domSanitizer: DomSanitizer,
-		private applicationService: ApplicationService
+		private applicationService: CommonApplicationService
 	) {}
 
 	ngOnInit(): void {

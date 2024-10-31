@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberAliasesComponent } from './step-controlling-member-aliases.component';
 import { StepControllingMemberPersonalInfoComponent } from './step-controlling-member-personal-info.component';
 import { StepControllingMemberResidentialAddressComponent } from './step-controlling-member-residential-address.component';
@@ -107,8 +106,8 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 	@ViewChild(StepControllingMemberResidentialAddressComponent)
 	stepAddress!: StepControllingMemberResidentialAddressComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor() {
+		super();
 	}
 
 	override dirtyForm(step: number): boolean {
