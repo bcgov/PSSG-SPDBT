@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IdentityProviderTypeCode } from '@app/api/models';
-import { ApplicationService } from '@app/core/services/application.service';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
 import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
 import { AuthUserBcscService } from '@app/core/services/auth-user-bcsc.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { UtilService } from '@app/core/services/util.service';
 import { Subscription } from 'rxjs';
 
@@ -99,7 +99,7 @@ export class SpdHeaderComponent implements OnInit, OnDestroy {
 		private authUserBcscService: AuthUserBcscService,
 		private authUserBceidService: AuthUserBceidService,
 		private authProcessService: AuthProcessService,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private utilService: UtilService
 	) {}
 

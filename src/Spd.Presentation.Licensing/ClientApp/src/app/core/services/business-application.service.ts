@@ -40,11 +40,6 @@ import {
 } from '@app/api/services';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
-import { ApplicationService, MainLicenceResponse } from '@app/core/services/application.service';
-import { AuthUserBceidService } from '@app/core/services/auth-user-bceid.service';
-import { ConfigService } from '@app/core/services/config.service';
-import { FileUtilService, SpdFile } from '@app/core/services/file-util.service';
-import { LicenceDocument, LicenceDocumentsToSave, UtilService } from '@app/core/services/util.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -60,7 +55,12 @@ import {
 	take,
 	tap,
 } from 'rxjs';
+import { AuthUserBceidService } from './auth-user-bceid.service';
 import { BusinessApplicationHelper } from './business-application.helper';
+import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
+import { ConfigService } from './config.service';
+import { FileUtilService, SpdFile } from './file-util.service';
+import { LicenceDocument, LicenceDocumentsToSave, UtilService } from './util.service';
 
 export interface ControllingMemberContactInfo extends NonSwlContactInfo {
 	licenceId?: string | null;
@@ -137,7 +137,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		private bizMembersService: BizMembersService,
 		private authUserBceidService: AuthUserBceidService,
 		private bizPortalUserService: BizPortalUserService,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private hotToastService: HotToastService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);

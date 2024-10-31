@@ -6,16 +6,16 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
-	ApplicationService,
+	CommonApplicationService,
 	MainApplicationResponse,
 	MainLicenceResponse,
-} from '@app/core/services/application.service';
+} from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
-import { PermitApplicationService } from '@core/services/permit-application.service';
 import { Observable, forkJoin, take, tap } from 'rxjs';
 
 @Component({
@@ -192,7 +192,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private configService: ConfigService,
 		private optionsPipe: OptionsPipe,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private workerApplicationService: WorkerApplicationService
 	) {}

@@ -83,7 +83,7 @@ export interface MainLicenceResponse extends LicenceResponse {
 @Injectable({
 	providedIn: 'root',
 })
-export class ApplicationService {
+export class CommonApplicationService {
 	isLoggedIn = false;
 
 	private uniqueId = 1;

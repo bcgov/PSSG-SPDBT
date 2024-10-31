@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppRoutes } from '@app/app-routing.module';
 import { AuthProcessService } from '@app/core/services/auth-process.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 
 @Component({
 	selector: 'app-permit-application-base-anonymous',
