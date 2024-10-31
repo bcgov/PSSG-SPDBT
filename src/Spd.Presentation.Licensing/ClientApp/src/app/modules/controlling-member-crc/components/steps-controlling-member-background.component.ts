@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberBcSecurityLicenceHistoryComponent } from './step-controlling-member-bc-security-licence-history.component';
 import { StepControllingMemberMentalHealthConditionsComponent } from './step-controlling-member-mental-health-conditions.component';
 import { StepControllingMemberPoliceBackgroundComponent } from './step-controlling-member-police-background.component';
@@ -78,8 +77,8 @@ export class StepsControllingMemberBackgroundComponent extends BaseWizardStepCom
 	@ViewChild(StepControllingMemberMentalHealthConditionsComponent)
 	stepMentalHealth!: StepControllingMemberMentalHealthConditionsComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor() {
+		super();
 	}
 
 	override dirtyForm(step: number): boolean {

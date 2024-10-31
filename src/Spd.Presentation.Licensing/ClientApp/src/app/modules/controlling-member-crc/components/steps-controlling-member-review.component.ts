@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberConsentAndDeclarationComponent } from './step-controlling-member-consent-and-declaration.component';
 import { StepControllingMemberSummaryReviewComponent } from './step-controlling-member-summary-review.component';
 
@@ -57,8 +56,8 @@ export class StepsControllingMemberReviewComponent extends BaseWizardStepCompone
 	@ViewChild(StepControllingMemberConsentAndDeclarationComponent)
 	stepConsent!: StepControllingMemberConsentAndDeclarationComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor() {
+		super();
 	}
 
 	onEditStep(stepNumber: number) {

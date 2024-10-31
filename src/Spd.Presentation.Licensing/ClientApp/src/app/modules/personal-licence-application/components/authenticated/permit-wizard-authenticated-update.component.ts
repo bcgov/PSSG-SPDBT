@@ -6,9 +6,9 @@ import { Router } from '@angular/router';
 import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitReviewAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-review-authenticated.component';
@@ -99,7 +99,7 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 		private router: Router,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 

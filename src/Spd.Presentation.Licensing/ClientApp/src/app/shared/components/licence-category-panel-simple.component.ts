@@ -66,7 +66,10 @@ export class LicenceCategoryPanelSimpleComponent implements OnInit {
 	@Output() removeCategory: EventEmitter<WorkerCategoryTypeCode> = new EventEmitter();
 	@Output() deselectCategory: EventEmitter<WorkerCategoryTypeCode> = new EventEmitter();
 
-	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(this.categoryTypeCode, 'WorkerCategoryTypes');

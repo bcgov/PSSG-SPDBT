@@ -192,6 +192,7 @@ import { ModalMemberWithoutSwlEditComponent } from './modal-member-without-swl-e
 												class="w-100 invitation-button"
 												aria-label="Send invitation"
 												(click)="onSendInvitation(member)"
+												*ngIf="getInvitationButtonLabel(member.inviteStatusCode)"
 											>
 												{{ getInvitationButtonLabel(member.inviteStatusCode) }}
 											</button>
@@ -388,8 +389,9 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		return null;
 	}
 
-	getInvitationButtonLabel(inviteStatusCode?: ApplicationInviteStatusCode): string {
+	getInvitationButtonLabel(inviteStatusCode?: ApplicationInviteStatusCode): string | null {
 		const inviteTypeCode = this.getSendInvitationType(inviteStatusCode);
+		if (!inviteTypeCode) return null;
 
 		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
 			return 'Send Update Invitation';
@@ -495,6 +497,7 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 
 	onSendInvitation(member: NonSwlContactInfo): void {
 		const inviteTypeCode = this.getSendInvitationType(member.inviteStatusCode);
+		if (!inviteTypeCode) return;
 
 		let message = `Are you sure you send an invitation to ${member.emailAddress}?`;
 		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
@@ -578,10 +581,17 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		this.businessApplicationService.hasValueChanged = true;
 	}
 
-	getSendInvitationType(inviteStatusCode?: ApplicationInviteStatusCode): ControllingMemberAppInviteTypeCode {
+	getSendInvitationType(inviteStatusCode?: ApplicationInviteStatusCode): ControllingMemberAppInviteTypeCode | null {
 		if (inviteStatusCode === ApplicationInviteStatusCode.Completed) {
 			return ControllingMemberAppInviteTypeCode.Update;
 		}
+
+		// User cannot send/resend new invitation when there is not an application progress
+		const formValue = this.form.value;
+		if (!formValue.applicationIsInProgress) {
+			return null;
+		}
+
 		return ControllingMemberAppInviteTypeCode.New;
 	}
 

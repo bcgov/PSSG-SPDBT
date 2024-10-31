@@ -594,6 +594,7 @@ namespace Spd.Manager.Screening
                     .NotEmpty();
 
             RuleFor(r => r.DateOfBirth)
+                    .Must(d => d > new DateOnly(1800, 1, 1))
                     .NotEmpty();
 
             RuleFor(r => r.BirthPlace)

@@ -3,7 +3,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { MainLicenceResponse } from '@app/core/services/application.service';
+import { MainLicenceResponse } from '@app/core/services/common-application.service';
 
 @Component({
 	selector: 'app-business-licence-list-current',

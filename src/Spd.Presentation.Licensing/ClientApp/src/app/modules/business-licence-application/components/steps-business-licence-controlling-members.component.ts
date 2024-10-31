@@ -2,7 +2,6 @@ import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { StepBusinessLicenceControllingMemberInvitesComponent } from './step-business-licence-controlling-member-invites-component';
 import { StepBusinessLicenceControllingMembersComponent } from './step-business-licence-controlling-members.component';
@@ -76,8 +75,8 @@ export class StepsBusinessLicenceControllingMembersComponent extends BaseWizardS
 	@ViewChild(StepBusinessLicenceControllingMemberInvitesComponent)
 	stepMembersInvitesComponent!: StepBusinessLicenceControllingMemberInvitesComponent;
 
-	constructor(override commonApplicationService: ApplicationService, private router: Router) {
-		super(commonApplicationService);
+	constructor(private router: Router) {
+		super();
 	}
 
 	onStepClose(): void {

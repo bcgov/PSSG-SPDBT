@@ -36,9 +36,9 @@ import {
 } from 'rxjs';
 import { BooleanTypeCode } from '../code-types/model-desc.models';
 import { FormControlValidators } from '../validators/form-control.validators';
-import { ApplicationService } from './application.service';
 import { AuthUserBcscService } from './auth-user-bcsc.service';
 import { AuthenticationService } from './authentication.service';
+import { CommonApplicationService } from './common-application.service';
 import { ConfigService } from './config.service';
 import { ControllingMemberCrcHelper } from './controlling-member-crc.helper';
 import { FileUtilService } from './file-util.service';
@@ -88,7 +88,7 @@ export class ControllingMemberCrcService extends ControllingMemberCrcHelper {
 		private hotToastService: HotToastService,
 		private controllingMemberCrcAppService: ControllingMemberCrcAppService,
 		private licenceAppDocumentService: LicenceAppDocumentService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(formBuilder, configService, formatDatePipe, utilService, fileUtilService);
 

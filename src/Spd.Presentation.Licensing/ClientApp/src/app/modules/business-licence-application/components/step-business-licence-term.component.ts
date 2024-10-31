@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, BizTypeCode, LicenceFeeResponse, ServiceTypeCode } from '@app/api/models';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -28,8 +28,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						<mat-radio-group aria-label="Select an option" formControlName="licenceTermCode">
 							<ng-container *ngFor="let term of termCodes; let i = index; let last = last">
 								<mat-radio-button class="radio-label" [value]="term.licenceTermCode">
-									{{ term.licenceTermCode | options : 'LicenceTermTypes' }} ({{
-										term.amount | currency : 'CAD' : 'symbol-narrow' : '1.0'
+									{{ term.licenceTermCode | options: 'LicenceTermTypes' }} ({{
+										term.amount | currency: 'CAD' : 'symbol-narrow' : '1.0'
 									}})
 								</mat-radio-button>
 								<mat-divider *ngIf="!last" class="my-2"></mat-divider>
@@ -65,7 +65,7 @@ export class StepBusinessLicenceTermComponent implements LicenceChildStepperStep
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	isFormValid(): boolean {

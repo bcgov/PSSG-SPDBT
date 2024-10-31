@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-step-permit-review-name-change',
@@ -33,7 +33,10 @@ export class StepPermitReviewNameChangeComponent implements LicenceChildStepperS
 
 	booleanTypeCodes = BooleanTypeCode;
 
-	constructor(private utilService: UtilService, private permitApplicationService: PermitApplicationService) {}
+	constructor(
+		private utilService: UtilService,
+		private permitApplicationService: PermitApplicationService
+	) {}
 
 	isFormValid(): boolean {
 		this.form.markAllAsTouched();

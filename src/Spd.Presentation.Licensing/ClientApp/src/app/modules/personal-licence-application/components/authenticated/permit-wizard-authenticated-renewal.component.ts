@@ -5,9 +5,9 @@ import { MatStepper } from '@angular/material/stepper';
 import { ApplicationTypeCode, PermitAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { StepsPermitDetailsNewComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/steps-permit-details-new.component';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { StepsPermitIdentificationAuthenticatedComponent } from './permit-wizard-step-components/steps-permit-identification-authenticated.component';
@@ -127,7 +127,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 		override breakpointObserver: BreakpointObserver,
 		private hotToastService: HotToastService,
 		private permitApplicationService: PermitApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {
 		super(breakpointObserver);
 	}

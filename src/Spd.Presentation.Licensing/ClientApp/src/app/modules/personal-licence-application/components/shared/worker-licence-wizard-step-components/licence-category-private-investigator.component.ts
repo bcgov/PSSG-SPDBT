@@ -226,7 +226,10 @@ export class LicenceCategoryPrivateInvestigatorComponent implements OnInit, Lice
 	@ViewChild('attachmentsRef') fileUploadComponent!: FileUploadComponent;
 	@ViewChild('trainingattachmentsRef') fileUploadTrainingComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private workerApplicationService: WorkerApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private workerApplicationService: WorkerApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.PrivateInvestigator, 'WorkerCategoryTypes');

@@ -16,7 +16,7 @@ import { FormControlValidators } from '@app/core/validators/form-control.validat
 import { FormGroupValidators } from '@app/core/validators/form-group.validators';
 import { BehaviorSubject, Observable, of, Subscriber } from 'rxjs';
 
-export abstract class ApplicationHelper {
+export abstract class CommonApplicationHelper {
 	private _waitUntilInitialized$ = new BehaviorSubject<boolean>(false);
 	waitUntilInitialized$ = this._waitUntilInitialized$.asObservable();
 

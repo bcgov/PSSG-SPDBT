@@ -30,6 +30,7 @@ internal class BizLicAppManager :
         IRequestHandler<BizLicAppUpdateCommand, BizLicAppCommandResponse>,
         IRequestHandler<GetBizLicAppListQuery, IEnumerable<LicenceAppListResponse>>,
         IRequestHandler<BrandImageQuery, FileResponse>,
+        IRequestHandler<CancelDraftApplicationCommand, Unit>,
         IBizLicAppManager
 {
     private readonly IBizLicApplicationRepository _bizLicApplicationRepository;
@@ -192,6 +193,12 @@ internal class BizLicAppManager :
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, existingFiles);
         BizLicApplicationCmdResp response = await _bizLicApplicationRepository.CreateBizLicApplicationAsync(createApp, cancellationToken);
         if (response == null) throw new ApiException(HttpStatusCode.InternalServerError, "create biz application failed.");
+
+        if (cmd.LicenceRequest.SoleProprietorSWLAppId != null)//this is renew biz lic app from swl as sole proprietor
+        {
+            await _personLicApplicationRepository.UpdateSwlSoleProprietorApplicationAsync((Guid)cmd.LicenceRequest.SoleProprietorSWLAppId, response.LicenceAppId, cancellationToken);
+        }
+
         // Upload new files
         await UploadNewDocsAsync(null,
                 cmd.LicAppFileInfos,
@@ -349,6 +356,18 @@ internal class BizLicAppManager :
             //todo: add more logging
             return new FileResponse(); //error in S3, probably cannot find the file
         }
+    }
+    public async Task<Unit> Handle(CancelDraftApplicationCommand cmd, CancellationToken ct)
+    {
+        try
+        {
+            await _bizLicApplicationRepository.CancelDraftApplicationAsync(cmd.ApplicationId, ct);
+        }
+        catch (ArgumentException e)
+        {
+            throw new ApiException(HttpStatusCode.Forbidden, e.Message);
+        };
+        return default;
     }
 
     private async Task ValidateFilesForRenewUpdateAppAsync(BizLicAppSubmitRequest request,

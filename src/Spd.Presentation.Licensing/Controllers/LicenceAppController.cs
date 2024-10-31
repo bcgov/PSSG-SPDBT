@@ -49,5 +49,20 @@ namespace Spd.Presentation.Licensing.Controllers
         {
             return await _mediator.Send(new GetBizLicAppListQuery(bizId), ct);
         }
+
+        /// <summary>
+        /// Cancel Draft Application
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [Route("api/applications/{appId}")]
+        [HttpDelete]
+        [Authorize(Policy = "BcscBCeID")]
+        public async Task<ActionResult> CancelDraftApplication([FromRoute] Guid appId, CancellationToken ct)
+        {
+            await _mediator.Send(new CancelDraftApplicationCommand(appId), ct);
+            return Ok();
+        }
     }
 }

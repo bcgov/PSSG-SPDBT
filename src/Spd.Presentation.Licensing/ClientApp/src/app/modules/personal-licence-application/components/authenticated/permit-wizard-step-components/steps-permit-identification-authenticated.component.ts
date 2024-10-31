@@ -1,11 +1,10 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { StepPermitBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-citizenship.component';
 import { StepPermitPhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
-import { ApplicationService } from '@app/core/services/application.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
@@ -92,11 +91,8 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	@ViewChild(StepPermitPhotographOfYourselfComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
 
-	constructor(
-		override commonApplicationService: ApplicationService,
-		private permitApplicationService: PermitApplicationService
-	) {
-		super(commonApplicationService);
+	constructor(private permitApplicationService: PermitApplicationService) {
+		super();
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {

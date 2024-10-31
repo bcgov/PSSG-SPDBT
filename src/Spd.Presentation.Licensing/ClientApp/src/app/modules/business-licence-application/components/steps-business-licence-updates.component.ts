@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { StepBusinessLicenceCategoryComponent } from './step-business-licence-category.component';
 import { StepBusinessLicenceManagerInformationComponent } from './step-business-licence-manager-information.component';
 
@@ -48,8 +48,8 @@ export class StepsBusinessLicenceUpdatesComponent extends BaseWizardStepComponen
 	@ViewChild(StepBusinessLicenceManagerInformationComponent)
 	stepManagerComponent!: StepBusinessLicenceManagerInformationComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor(private commonApplicationService: CommonApplicationService) {
+		super();
 	}
 
 	override dirtyForm(step: number): boolean {

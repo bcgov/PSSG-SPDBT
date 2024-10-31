@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
-import { ApplicationService } from '@app/core/services/application.service';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 @Component({
 	selector: 'app-step-business-licence-confirmation',
@@ -73,7 +73,7 @@ export class StepBusinessLicenceConfirmationComponent implements OnInit {
 
 	constructor(
 		private businessApplicationService: BusinessApplicationService,
-		private commonApplicationService: ApplicationService
+		private commonApplicationService: CommonApplicationService
 	) {}
 
 	ngOnInit() {

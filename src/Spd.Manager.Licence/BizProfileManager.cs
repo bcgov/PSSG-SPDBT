@@ -97,8 +97,10 @@ public class BizProfileManager :
                 //return the loginResponse
                 //update the biz               
                 await UpdateBiz(cmd, bizInfoFormBceid, ct);
+                await UpdatePortalUser(cmd.BceidIdentityInfo, portalUser.Id, ct);
                 BizUserLoginResponse response = _mapper.Map<BizUserLoginResponse>(portalUser);
                 response.BceidBizTradeName = bizInfoFormBceid?.TradeName;
+
                 return response;
             }
             else
@@ -236,6 +238,16 @@ public class BizProfileManager :
             OrgId = bizId,
             ContactRoleCode = ContactRoleCode.PrimaryBusinessManager,
             PortalUserServiceCategory = PortalUserServiceCategoryEnum.Licensing
+        }, ct);
+    }
+
+    private async Task<PortalUserResp> UpdatePortalUser(BceidIdentityInfo info, Guid portalUserId, CancellationToken ct)
+    {
+        return await _portalUserRepository.ManageAsync(new UpdatePortalUserCmd()
+        {
+            Id = portalUserId,
+            FirstName = info.FirstName,
+            LastName = info.LastName,
         }, ct);
     }
 

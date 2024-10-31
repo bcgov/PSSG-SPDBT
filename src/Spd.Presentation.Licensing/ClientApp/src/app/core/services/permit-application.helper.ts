@@ -25,7 +25,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { FormControlValidators } from 'src/app/core/validators/form-control.validators';
 import { FormGroupValidators } from 'src/app/core/validators/form-group.validators';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { ApplicationHelper } from './application.helper';
+import { CommonApplicationHelper } from './common-application.helper';
 import { PermitDocumentsToSave } from './permit-application.service';
 
 export interface PermitStepperStepComponent {
@@ -42,7 +42,7 @@ export interface PermitChildStepperStepComponent {
 	isFormValid(): boolean;
 }
 
-export abstract class PermitApplicationHelper extends ApplicationHelper {
+export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 	permitRequirementFormGroup: FormGroup = this.formBuilder.group(
 		{
 			serviceTypeCode: new FormControl(),

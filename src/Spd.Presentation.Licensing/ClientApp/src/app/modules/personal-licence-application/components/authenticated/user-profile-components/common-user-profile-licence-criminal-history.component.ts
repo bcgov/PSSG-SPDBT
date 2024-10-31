@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
-import { ApplicationService } from '@app/core/services/application.service';
 
 @Component({
 	selector: 'app-common-user-profile-licence-criminal-history',
@@ -33,7 +33,7 @@ export class CommonUserProfileLicenceCriminalHistoryComponent implements OnInit,
 	@Input() form!: FormGroup;
 	@Input() applicationTypeCode: ApplicationTypeCode | null = null;
 
-	constructor(private commonApplicationService: ApplicationService) {}
+	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	ngOnInit(): void {
 		this.title = this.commonApplicationService.getCriminalHistoryTitle(this.applicationTypeCode);

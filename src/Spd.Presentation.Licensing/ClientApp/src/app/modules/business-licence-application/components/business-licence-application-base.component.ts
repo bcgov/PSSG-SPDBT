@@ -58,9 +58,16 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
 				BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR
 			)}?${params.toString()}`;
+		} else if (
+			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
+			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
+			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
+			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
+		) {
+			redirectComponentRoute = currentPath;
 		}
 
-		console.debug('BusinessLicenceApplicationBaseComponent redirectComponentRoute', redirectComponentRoute);
+		console.debug('**** base **** redirectComponentRoute', redirectComponentRoute);
 
 		this.authProcessService.logoutBcsc(redirectComponentRoute);
 
@@ -70,10 +77,10 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			params.toString()
 		);
 
-		console.debug('**** BASE **** loginInfo', loginInfo);
-		console.debug('**** BASE **** swlLicAppId', swlLicAppId);
-		console.debug('**** BASE **** bizLicAppId', bizLicAppId);
-		console.debug('**** BASE **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
+		console.debug('**** base **** loginInfo', loginInfo);
+		console.debug('**** base **** swlLicAppId', swlLicAppId);
+		console.debug('**** base **** bizLicAppId', bizLicAppId);
+		console.debug('**** base **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
 		if (loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
 			if ((swlLicAppId || bizLicAppId) && loginInfo.state) {

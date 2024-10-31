@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepPermitEmployerInformationComponent } from './step-permit-employer-information.component';
 import { StepPermitRationaleComponent } from './step-permit-rationale.component';
 import { StepPermitReasonComponent } from './step-permit-reason.component';
@@ -70,8 +69,8 @@ export class StepsPermitPurposeAnonymousComponent extends BaseWizardStepComponen
 	stepEmployerInformationComponent!: StepPermitEmployerInformationComponent;
 	@ViewChild(StepPermitRationaleComponent) stepPermitRationaleComponent!: StepPermitRationaleComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor() {
+		super();
 	}
 
 	override onFormValidNextStep(_formNumber: number): void {

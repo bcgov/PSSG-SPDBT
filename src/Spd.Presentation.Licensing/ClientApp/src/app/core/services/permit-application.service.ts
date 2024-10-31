@@ -54,7 +54,7 @@ import { AuthUserBcscService } from 'src/app/core/services/auth-user-bcsc.servic
 import { ConfigService } from 'src/app/core/services/config.service';
 import { LicenceDocument, LicenceDocumentsToSave, UtilService } from 'src/app/core/services/util.service';
 import { FormatDatePipe } from 'src/app/shared/pipes/format-date.pipe';
-import { ApplicationService, MainLicenceResponse } from './application.service';
+import { CommonApplicationService, MainLicenceResponse } from './common-application.service';
 import { PermitApplicationHelper } from './permit-application.helper';
 
 export class PermitDocumentsToSave {
@@ -117,7 +117,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		private licenceAppDocumentService: LicenceAppDocumentService,
 		private authUserBcscService: AuthUserBcscService,
 		private authenticationService: AuthenticationService,
-		private commonApplicationService: ApplicationService,
+		private commonApplicationService: CommonApplicationService,
 		private applicantProfileService: ApplicantProfileService,
 		private hotToastService: HotToastService
 	) {

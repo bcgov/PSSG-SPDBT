@@ -202,7 +202,7 @@ import { UtilService } from '@app/core/services/util.service';
 										Services;
 									</li>
 									<li>
-										take any action that might reasonably be construed as altering, destroying, defeating, compromising,
+										take any action that might reasonably be construed as altering, destroying, defeating, compromising
 										or rendering ineffective the security related to the Site or any Associated Service, or being likely
 										to affect other users of the Services;
 									</li>

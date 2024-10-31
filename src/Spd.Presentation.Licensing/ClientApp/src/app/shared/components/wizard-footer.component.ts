@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ApplicationService } from '@app/core/services/application.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 
 export type AlertType = 'success' | 'warning' | 'danger' | 'info';
 
@@ -138,17 +138,17 @@ export class WizardFooterComponent implements OnInit {
 	@Input() isSoleProprietorSimultaneousFlow = false;
 
 	@Output() saveAndExit: EventEmitter<any> = new EventEmitter();
-	@Output() cancel: EventEmitter<any> = new EventEmitter();
+	@Output() cancelStep: EventEmitter<any> = new EventEmitter();
 	@Output() cancelAndExit: EventEmitter<any> = new EventEmitter();
 	@Output() previousStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextStepperStep: EventEmitter<any> = new EventEmitter();
 	@Output() nextReviewStepperStep: EventEmitter<number> = new EventEmitter();
 
-	constructor(private commonApplicationService: ApplicationService) {}
+	constructor(private commonApplicationService: CommonApplicationService) {}
 
 	ngOnInit(): void {
 		this.isSaveAndExitObserved = this.saveAndExit.observed;
-		this.isCancelObserved = this.cancel.observed;
+		this.isCancelObserved = this.cancelStep.observed;
 		this.isCancelAndExitObserved = this.cancelAndExit.observed;
 		this.isPreviousStepperStepObserved = this.previousStepperStep.observed;
 		this.isNextStepperStepObserved = this.nextStepperStep.observed;
@@ -177,7 +177,7 @@ export class WizardFooterComponent implements OnInit {
 
 	onCancel(): void {
 		if (this.isCancelObserved) {
-			this.cancel.emit();
+			this.cancelStep.emit();
 			return;
 		}
 

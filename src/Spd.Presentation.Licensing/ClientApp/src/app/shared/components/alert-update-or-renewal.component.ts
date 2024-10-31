@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ApplicationTypeCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
+import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
-import { PermitApplicationService } from '@core/services/permit-application.service';
 
 @Component({
 	selector: 'app-alert-update-or-renewal',
@@ -19,13 +19,13 @@ import { PermitApplicationService } from '@core/services/permit-application.serv
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label text-center d-block text-muted mt-3">Current Licence Expiry Date</div>
 							<div class="summary-text-data text-center">
-								{{ originalExpiryDate | formatDate : formalDateFormat }}
+								{{ originalExpiryDate | formatDate: formalDateFormat }}
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-12">
 							<div class="text-label text-center d-block text-muted mt-3">Term</div>
 							<div class="summary-text-data text-center">
-								{{ originalLicenceTermCode | options : 'LicenceTermTypes' }}
+								{{ originalLicenceTermCode | options: 'LicenceTermTypes' }}
 							</div>
 						</div>
 					</div>

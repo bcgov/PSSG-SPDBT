@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
 import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.component';
-import { ApplicationService } from '@app/core/services/application.service';
 import { StepControllingMemberBcDriverLicenceComponent } from './step-controlling-member-bc-driver-licence.component';
 import { StepControllingMemberCitizenshipComponent } from './step-controlling-member-citizenship.component';
 import { StepControllingMemberFingerprintsComponent } from './step-controlling-member-fingerprints.component';
@@ -70,8 +69,8 @@ export class StepsControllingMemberCitizenshipResidencyComponent extends BaseWiz
 	@ViewChild(StepControllingMemberBcDriverLicenceComponent)
 	stepDriversLicence!: StepControllingMemberBcDriverLicenceComponent;
 
-	constructor(override commonApplicationService: ApplicationService) {
-		super(commonApplicationService);
+	constructor() {
+		super();
 	}
 
 	onFingerprintsPreviousStep(): void {
