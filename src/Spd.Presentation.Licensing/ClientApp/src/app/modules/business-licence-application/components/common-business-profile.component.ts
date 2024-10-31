@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BizTypeCode } from '@app/api/models';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -140,7 +139,6 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 		</div>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;

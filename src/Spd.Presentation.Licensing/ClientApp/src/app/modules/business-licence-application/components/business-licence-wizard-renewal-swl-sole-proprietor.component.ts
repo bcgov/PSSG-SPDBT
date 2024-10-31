@@ -306,10 +306,6 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 		}
 	}
 
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
-	}
-
 	private handlePartialSaveError(error: HttpErrorResponse): void {
 		// only 403s will be here as an error
 		if (error.status == 403) {
