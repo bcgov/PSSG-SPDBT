@@ -18,7 +18,7 @@ import { CommonBusinessProfileComponent } from './common-business-profile.compon
 					</div>
 
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
-					<app-alert type="warning" icon="warning"> {{ alertText }}</app-alert>
+					<div class="fs-6 fw-bold my-3">{{ alertText }}</div>
 
 					<app-common-business-profile
 						[businessInformationFormGroup]="businessInformationFormGroup"

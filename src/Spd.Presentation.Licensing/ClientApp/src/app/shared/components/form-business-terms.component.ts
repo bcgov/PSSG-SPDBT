@@ -208,7 +208,7 @@ import { UtilService } from '@app/core/services/util.service';
 									</li>
 									<li>attempt to collect any information about other users of the Services; or</li>
 									<li>
-										decompile, disassemble, reverse engineer, or otherwise copy any source code associated with the Site
+										decompile, disassemble, reverse engineer or otherwise copy any source code associated with the Site
 										or any Associated Service.
 									</li>
 								</ol>
