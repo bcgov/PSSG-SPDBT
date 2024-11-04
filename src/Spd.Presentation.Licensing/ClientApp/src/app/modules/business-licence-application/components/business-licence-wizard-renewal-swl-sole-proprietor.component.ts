@@ -242,14 +242,11 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	}
 
 	onReturnToSwl(): void {
-		const message = this.isSoleProprietorSimultaneousSWLAnonymous
-			? '<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>If you cancel this application, you will have to re-submit your Security Worker Licence application.'
-			: '<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>You will be returned to the portal to pay the application fee for your security worker licence.';
-
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message,
+			message:
+				'<strong>Are you sure you want to cancel your security business licence application?</strong><br><br>If you cancel this application, you will have to re-submit your Security Worker Licence renewal application.',
 			actionText: 'Yes, cancel this application',
 			cancelText: 'No, continue application',
 			wideButtons: true,
@@ -304,10 +301,6 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 				this.stepsReviewAndConfirm?.onGoToNextStep();
 				break;
 		}
-	}
-
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {

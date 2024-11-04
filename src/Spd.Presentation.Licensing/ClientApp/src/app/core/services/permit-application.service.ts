@@ -29,7 +29,6 @@ import { FormControlValidators } from '@app/core/validators/form-control.validat
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
-import moment from 'moment';
 import {
 	BehaviorSubject,
 	Observable,
@@ -762,21 +761,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
 
-				const originalLicenceData = {
-					originalApplicationId: associatedLicence.licenceAppId,
-					originalLicenceId: associatedLicence.licenceId,
-					originalLicenceNumber: associatedLicence.licenceNumber,
-					originalExpiryDate: associatedLicence.expiryDate,
-					originalLicenceTermCode: associatedLicence.licenceTermCode,
-				};
-
-				this.permitModelFormGroup.patchValue(
-					{
-						originalLicenceData,
-						personalInformationData,
-					},
-					{ emitEvent: false }
-				);
+				this.permitModelFormGroup.patchValue({ personalInformationData }, { emitEvent: false });
 
 				this.initialized = true;
 
@@ -1425,19 +1410,16 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			criminalChargeDescription: null,
 		};
 
-		const originalPhotoOfYourselfLastUpload = resp.photographOfYourselfData.uploadedDateTime;
+		const photographOfYourselfData = resp.photographOfYourselfData;
 
-		// We require a new photo every 5 years. Please provide a new photo for your licence
-		const today = moment().startOf('day');
-		const yearsDiff = today.diff(moment(originalPhotoOfYourselfLastUpload).startOf('day'), 'years');
-		originalLicenceData.originalPhotoOfYourselfExpired = yearsDiff >= 5 ? true : false;
+		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
+		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
+			originalPhotoOfYourselfLastUploadDateTime
+		);
 
-		let photographOfYourselfData = {};
 		if (originalLicenceData.originalPhotoOfYourselfExpired) {
-			// clear out data to force user to upload a new photo
-			photographOfYourselfData = {
-				attachments: [],
-			};
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		this.permitModelFormGroup.patchValue(

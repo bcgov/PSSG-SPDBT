@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { showHideTriggerAnimation, showHideTriggerSlideAnimation } from '@app/core/animations';
+import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
@@ -90,7 +90,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 		</app-step-section>
 	`,
 	styles: [],
-	animations: [showHideTriggerAnimation, showHideTriggerSlideAnimation],
+	animations: [showHideTriggerSlideAnimation],
 })
 export class StepWorkerLicenceDogsAuthorizationComponent implements OnInit, LicenceChildStepperStepComponent {
 	subtitle = '';

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FormPoliceBackgroundComponent } from '@app/shared/components/form-police-background.component';
@@ -28,7 +27,6 @@ import { FormPoliceBackgroundComponent } from '@app/shared/components/form-polic
 		</mat-accordion>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonUserProfileLicencePoliceBackgroundComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
