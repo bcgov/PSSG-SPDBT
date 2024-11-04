@@ -100,23 +100,9 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		country: new FormControl('', [FormControlValidators.required]),
 	});
 
-	reprintLicenceFormGroup: FormGroup = this.formBuilder.group(
-		{
-			reprintLicence: new FormControl(''),
-		},
-		{
-			validators: [
-				FormGroupValidators.conditionalRequiredValidator(
-					'reprintLicence',
-					(_form) =>
-						!!(
-							this.personalInformationFormGroup?.get('hasLegalNameChanged')?.value ||
-							this.personalInformationFormGroup?.get('hasBcscNameChanged')?.value
-						)
-				),
-			],
-		}
-	);
+	reprintLicenceFormGroup: FormGroup = this.formBuilder.group({
+		reprintLicence: new FormControl('', [FormControlValidators.required]),
+	});
 
 	override citizenshipFormGroup: FormGroup = this.formBuilder.group(
 		{
