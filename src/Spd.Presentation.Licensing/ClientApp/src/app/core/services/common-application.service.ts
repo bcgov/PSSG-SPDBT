@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
+	ActionResult,
 	ApplicationInviteStatusCode,
 	ApplicationPortalStatusCode,
 	ApplicationTypeCode,
@@ -260,6 +261,10 @@ export class CommonApplicationService {
 			);
 
 		return fees ?? null;
+	}
+
+	cancelDraftApplication(licenceAppId: string): Observable<ActionResult> {
+		return this.licenceAppService.apiApplicationsAppIdDelete({ appId: licenceAppId });
 	}
 
 	userPersonApplicationsList(): Observable<Array<MainApplicationResponse>> {

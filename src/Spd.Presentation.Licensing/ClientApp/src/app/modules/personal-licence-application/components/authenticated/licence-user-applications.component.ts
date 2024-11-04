@@ -1,9 +1,10 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import { ApplicationPortalStatusCode, ApplicationTypeCode, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import {
 	CommonApplicationService,
@@ -14,6 +15,7 @@ import { ConfigService } from '@app/core/services/config.service';
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-application/personal-licence-application-routes';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 
 import { Observable, forkJoin, take, tap } from 'rxjs';
@@ -57,6 +59,7 @@ import { Observable, forkJoin, take, tap } from 'rxjs';
 						[applicationIsInProgress]="applicationIsInProgress"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPay($event)"
+						(cancelApplication)="onCancel($event)"
 					></app-applications-list-current>
 
 					<app-licence-active-swl-permit-licences
@@ -192,6 +195,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private configService: ConfigService,
 		private optionsPipe: OptionsPipe,
+		private dialog: MatDialog,
 		private commonApplicationService: CommonApplicationService,
 		private permitApplicationService: PermitApplicationService,
 		private workerApplicationService: WorkerApplicationService
@@ -202,77 +206,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 
 		this.commonApplicationService.setApplicationTitle();
 
-		this.results$ = forkJoin([
-			this.commonApplicationService.userPersonLicencesList(),
-			this.commonApplicationService.userPersonApplicationsList(),
-		]).pipe(
-			tap((resps: Array<any>) => {
-				const userPersonLicencesList: Array<MainLicenceResponse> = resps[0];
-				const userPersonApplicationsList: Array<MainApplicationResponse> = resps[1];
-
-				// Swl Licences/ Permits Applications
-				this.applicationsDataSource = new MatTableDataSource(userPersonApplicationsList ?? []);
-				this.applicationIsInProgress =
-					this.commonApplicationService.getApplicationIsInProgress(userPersonApplicationsList);
-
-				// Swl Licences/ Permits
-				const activeLicencesList = userPersonLicencesList.filter((item: MainLicenceResponse) =>
-					this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
-				);
-
-				const expiredLicences = userPersonLicencesList.filter(
-					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
-				);
-
-				// Set flags that determine if NEW licences/permits can be created
-				let activeSwlExist =
-					activeLicencesList.findIndex(
-						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
-					) >= 0;
-				if (!activeSwlExist) {
-					activeSwlExist =
-						userPersonApplicationsList.findIndex(
-							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
-						) >= 0;
-				}
-				this.activeSwlExist = activeSwlExist;
-
-				let activeBaPermitExist =
-					activeLicencesList.findIndex(
-						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-					) >= 0;
-				if (!activeBaPermitExist) {
-					activeBaPermitExist =
-						userPersonApplicationsList.findIndex(
-							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
-						) >= 0;
-				}
-				this.activeBaPermitExist = activeBaPermitExist;
-
-				let activeAvPermitExist =
-					activeLicencesList.findIndex(
-						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
-					) >= 0;
-				if (!activeAvPermitExist) {
-					activeAvPermitExist =
-						userPersonApplicationsList.findIndex(
-							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
-						) >= 0;
-				}
-				this.activeAvPermitExist = activeAvPermitExist;
-
-				[this.warningMessages, this.errorMessages] =
-					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(
-						userPersonApplicationsList,
-						activeLicencesList
-					);
-
-				this.activeLicences = activeLicencesList;
-				this.expiredLicences = expiredLicences;
-
-				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
-			})
-		);
+		this.loadData();
 	}
 
 	onUserProfile(): void {
@@ -384,6 +318,40 @@ export class LicenceUserApplicationsComponent implements OnInit {
 				break;
 			}
 		}
+	}
+
+	onCancel(appl: MainApplicationResponse): void {
+		if (
+			appl.applicationPortalStatusCode != ApplicationPortalStatusCode.Draft ||
+			appl.applicationTypeCode === ApplicationTypeCode.New
+		) {
+			return;
+		}
+
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to cancel this application.',
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.commonApplicationService
+						.cancelDraftApplication(appl.licenceAppId!)
+						.pipe(
+							tap((_resp: any) => {
+								this.loadData();
+							}),
+							take(1)
+						)
+						.subscribe();
+				}
+			});
 	}
 
 	onResume(appl: MainApplicationResponse): void {
@@ -532,5 +500,79 @@ export class LicenceUserApplicationsComponent implements OnInit {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onConnectToExpiredLicence();
+	}
+
+	private loadData(): void {
+		this.results$ = forkJoin([
+			this.commonApplicationService.userPersonLicencesList(),
+			this.commonApplicationService.userPersonApplicationsList(),
+		]).pipe(
+			tap((resps: Array<any>) => {
+				const userPersonLicencesList: Array<MainLicenceResponse> = resps[0];
+				const userPersonApplicationsList: Array<MainApplicationResponse> = resps[1];
+
+				// Swl Licences/ Permits Applications
+				this.applicationsDataSource = new MatTableDataSource(userPersonApplicationsList ?? []);
+				this.applicationIsInProgress =
+					this.commonApplicationService.getApplicationIsInProgress(userPersonApplicationsList);
+
+				// Swl Licences/ Permits
+				const activeLicencesList = userPersonLicencesList.filter((item: MainLicenceResponse) =>
+					this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
+				);
+
+				const expiredLicences = userPersonLicencesList.filter(
+					(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+				);
+
+				// Set flags that determine if NEW licences/permits can be created
+				let activeSwlExist =
+					activeLicencesList.findIndex(
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
+					) >= 0;
+				if (!activeSwlExist) {
+					activeSwlExist =
+						userPersonApplicationsList.findIndex(
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.SecurityWorkerLicence
+						) >= 0;
+				}
+				this.activeSwlExist = activeSwlExist;
+
+				let activeBaPermitExist =
+					activeLicencesList.findIndex(
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+					) >= 0;
+				if (!activeBaPermitExist) {
+					activeBaPermitExist =
+						userPersonApplicationsList.findIndex(
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.BodyArmourPermit
+						) >= 0;
+				}
+				this.activeBaPermitExist = activeBaPermitExist;
+
+				let activeAvPermitExist =
+					activeLicencesList.findIndex(
+						(item: MainLicenceResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
+					) >= 0;
+				if (!activeAvPermitExist) {
+					activeAvPermitExist =
+						userPersonApplicationsList.findIndex(
+							(item: MainApplicationResponse) => item.serviceTypeCode === ServiceTypeCode.ArmouredVehiclePermit
+						) >= 0;
+				}
+				this.activeAvPermitExist = activeAvPermitExist;
+
+				[this.warningMessages, this.errorMessages] =
+					this.commonApplicationService.getMainWarningsAndErrorPersonalLicence(
+						userPersonApplicationsList,
+						activeLicencesList
+					);
+
+				this.activeLicences = activeLicencesList;
+				this.expiredLicences = expiredLicences;
+
+				this.yourProfileLabel = this.applicationIsInProgress ? 'View Your Profile' : 'Your Profile';
+			})
+		);
 	}
 }
