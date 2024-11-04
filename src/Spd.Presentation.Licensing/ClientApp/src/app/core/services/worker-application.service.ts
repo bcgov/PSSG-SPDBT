@@ -709,10 +709,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
 
-		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
-			body.reprint = true;
-		}
-
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
