@@ -70,7 +70,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 													{{ licenceFee | currency: 'CAD' : 'symbol-narrow' : '1.0' | default }}
 												</div>
 											</div>
-											<div class="col-xl-4 col-lg-6 col-md-12">
+											<div class="col-lg-6 col-md-12" [ngClass]="soleProprietorBizTypeCode ? 'col-xl-4' : 'col-xl-8'">
 												<div class="text-label d-block text-muted">Licence Categories</div>
 												<div class="summary-text-data">
 													<ul class="m-0">
