@@ -452,8 +452,21 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 
 		const documentInfos: Array<Document> = [];
 
-		let employerData = {};
-		let employerPrimaryAddress = {};
+		let employerData = {
+			employerName: null,
+			supervisorName: null,
+			supervisorEmailAddress: null,
+			supervisorPhoneNumber: null,
+		};
+
+		let employerPrimaryAddress = {
+			addressLine1: null,
+			addressLine2: null,
+			city: null,
+			postalCode: null,
+			province: null,
+			country: null,
+		};
 
 		// default the flags
 		mailingAddressData.isAddressTheSame = !!mailingAddressData.isAddressTheSame; // make it a boolean
@@ -472,7 +485,6 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 				});
 			});
 		}
-		delete personalInformationData.attachments; // cleanup so that it is not included in the payload
 
 		permitRationaleData.attachments?.forEach((doc: any) => {
 			const licenceDocumentTypeCode =
@@ -704,7 +716,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			rationale: permitRationaleData.rationale,
 			//-----------------------------------
 			...employerData,
-			employerPrimaryAddress: includesMyEmployement ? employerPrimaryAddress : null,
+			employerPrimaryAddress,
 			//-----------------------------------
 			armouredVehiclePermitReasonCodes,
 			bodyArmourPermitReasonCodes,
