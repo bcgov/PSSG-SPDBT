@@ -459,14 +459,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			supervisorPhoneNumber: null,
 		};
 
-		let employerPrimaryAddress = {
-			addressLine1: null,
-			addressLine2: null,
-			city: null,
-			postalCode: null,
-			province: null,
-			country: null,
-		};
+		let employerPrimaryAddress = null;
 
 		// default the flags
 		mailingAddressData.isAddressTheSame = !!mailingAddressData.isAddressTheSame; // make it a boolean
