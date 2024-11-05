@@ -51,10 +51,10 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 								<div class="payment__text">{{ 0 | currency: 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-2">
-								<div class="d-block payment__text-label text-md-end">Case Number</div>
+								<div class="d-block payment__text-label text-md-end">Licence Number</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">{{ caseNumber }}</div>
+								<div class="payment__text">{{ licenceNumber }}</div>
 							</div>
 						</div>
 
@@ -106,7 +106,7 @@ export class LicenceUpdateReceivedSuccessComponent implements OnInit {
 	get licenceTermCode(): LicenceTermCode | null {
 		return this.workerApplicationService.getSummarylicenceTermCode(this.licenceModelData);
 	}
-	get caseNumber(): string {
-		return this.workerApplicationService.getSummarycaseNumber(this.licenceModelData);
+	get licenceNumber(): string {
+		return this.workerApplicationService.getSummaryoriginalLicenceNumber(this.licenceModelData);
 	}
 }
