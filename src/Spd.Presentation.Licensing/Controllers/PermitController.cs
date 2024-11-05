@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Spd.Manager.Licence;
 using Spd.Manager.Shared;
-using Spd.Utilities.LogonUser;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
@@ -44,7 +43,7 @@ namespace Spd.Presentation.Licensing.Controllers
         #region authenticated
 
         /// <summary>
-        /// Create Permit Application
+        /// Create/partial save permit application
         /// </summary>
         /// <param name="licenceCreateRequest"></param>
         /// <returns></returns>
@@ -87,9 +86,8 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetPermitApplicationQuery(licenceAppId));
         }
 
-
         /// <summary>
-        /// Submit Permit Application
+        /// Submit new permit Application authenticated with bcsc
         /// </summary>
         /// <param name="permitSubmitRequest"></param>
         /// <returns></returns>
@@ -113,10 +111,10 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="jsonRequest">WorkerLicenceAppAnonymousSubmitRequestJson data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/permit-applications/authenticated/submit")]
+        [Route("api/permit-applications/change")]
         [Authorize(Policy = "OnlyBcsc")]
         [HttpPost]
-        public async Task<PermitAppCommandResponse?> SubmitPermitApplicationJsonAuthenticated(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
+        public async Task<PermitAppCommandResponse?> ChangePermitApplicationJsonAuthenticated(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {
             PermitAppCommandResponse? response = null;
 
@@ -179,7 +177,6 @@ namespace Spd.Presentation.Licensing.Controllers
             return await _mediator.Send(new GetPermitApplicationQuery(Guid.Parse(licenceAppId)));
         }
 
-
         /// <summary>
         /// Submit Body Armour or Armour Vehicle permit application Anonymously
         /// After fe done with the uploading files, then fe do post with json payload, inside payload, it needs to contain an array of keycode for the files.
@@ -188,7 +185,7 @@ namespace Spd.Presentation.Licensing.Controllers
         /// <param name="jsonRequest">PermitAppAnonymousSubmitRequest data</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        [Route("api/permit-applications/anonymous/submit")]
+        [Route("api/permit-applications/anonymous/submit-change")]
         [HttpPost]
         public async Task<PermitAppCommandResponse?> SubmitPermitApplicationAnonymous(PermitAppSubmitRequest jsonRequest, CancellationToken ct)
         {

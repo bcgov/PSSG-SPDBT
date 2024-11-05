@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -15,6 +14,7 @@ using Spd.Presentation.Licensing.Controllers;
 using Spd.Tests.Fixtures;
 using Spd.Utilities.Recaptcha;
 using Spd.Utilities.Shared.Exceptions;
+using System.Security.Claims;
 
 namespace Spd.Presentation.Licensing.UnitTest.Controller;
 
@@ -102,7 +102,6 @@ public class PermitControllerTest
         mockMediator.Verify();
     }
 
-
     [Fact]
     public async void Post_SavePermitLicenceApplication_Return_PermitCommandResponse()
     {
@@ -134,33 +133,33 @@ public class PermitControllerTest
     }
 
     [Fact]
-    public async void Post_SubmitPermitApplicationJsonAuthenticated_Replacement_Return_PermitAppCommandResponse()
+    public async void Post_ChangePermitApplicationJsonAuthenticated_Replacement_Return_PermitAppCommandResponse()
     {
         var permitAppSubmitRequest = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Replacement);
 
-        var result = await sut.SubmitPermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None);
+        var result = await sut.ChangePermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None);
 
         Assert.IsType<PermitAppCommandResponse>(result);
         mockMediator.Verify();
     }
 
     [Fact]
-    public async void Post_SubmitPermitApplicationJsonAuthenticated_Renewal_Return_PermitAppCommandResponse()
+    public async void Post_ChangePermitApplicationJsonAuthenticated_Renewal_Return_PermitAppCommandResponse()
     {
         var permitAppSubmitRequest = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Renewal);
 
-        var result = await sut.SubmitPermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None);
+        var result = await sut.ChangePermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None);
 
         Assert.IsType<PermitAppCommandResponse>(result);
         mockMediator.Verify();
     }
 
     [Fact]
-    public async void Post_SubmitPermitApplicationJsonAuthenticated_Update_Return_PermitAppCommandResponse()
+    public async void Post_ChangePermitApplicationJsonAuthenticated_Update_Return_PermitAppCommandResponse()
     {
         var permitAppSubmitRequest = permitFixture.GenerateValidPermitAppSubmitRequest(ApplicationTypeCode.Update);
 
-        var result = await sut.SubmitPermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None);
+        var result = await sut.ChangePermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None);
 
         Assert.IsType<PermitAppCommandResponse>(result);
         mockMediator.Verify();
@@ -171,6 +170,6 @@ public class PermitControllerTest
     {
         var permitAppSubmitRequest = permitFixture.GenerateValidPermitAppSubmitRequest();
 
-        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.SubmitPermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None));
+        _ = await Assert.ThrowsAsync<ApiException>(async () => await sut.ChangePermitApplicationJsonAuthenticated(permitAppSubmitRequest, CancellationToken.None));
     }
 }
