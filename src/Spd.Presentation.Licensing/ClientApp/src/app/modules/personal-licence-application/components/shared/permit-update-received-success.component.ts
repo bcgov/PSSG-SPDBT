@@ -50,15 +50,12 @@ import { PermitApplicationService } from '@app/core/services/permit-application.
 							<div class="col-md-6 col-sm-12 mt-md-2">
 								<div class="payment__text">{{ 0 | currency: 'CAD' : 'symbol-narrow' : '1.0' }}</div>
 							</div>
-							<!-- 
-							// For an Update with reprint, we only have the old case number... so hide it for now
 							<div class="col-md-6 col-sm-12 mt-2">
-								<div class="d-block payment__text-label text-md-end">Case Number</div>
+								<div class="d-block payment__text-label text-md-end">Licence Number</div>
 							</div>
 							<div class="col-md-6 col-sm-12 mt-md-2">
-								<div class="payment__text">{{ caseNumber }}</div>
-							</div> 
-							-->
+								<div class="payment__text">{{ licenceNumber }}</div>
+							</div>
 						</div>
 
 						<div class="no-print d-flex justify-content-end">
@@ -109,7 +106,7 @@ export class PermitUpdateReceivedSuccessComponent implements OnInit {
 	get licenceTermCode(): LicenceTermCode | null {
 		return this.permitApplicationService.getSummarylicenceTermCode(this.permitModelData);
 	}
-	// get caseNumber(): string {
-	// 	return this.permitApplicationService.getSummarycaseNumber(this.permitModelData);
-	// }
+	get licenceNumber(): string {
+		return this.permitApplicationService.getSummaryoriginalLicenceNumber(this.permitModelData);
+	}
 }
