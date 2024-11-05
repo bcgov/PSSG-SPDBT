@@ -396,14 +396,16 @@ internal class SecurityWorkerAppManager :
             changes.CategoriesChanged = newFileInfos.Any(i => i.LicenceDocumentTypeCode.ToString().StartsWith("Category"));
         }
 
-        //DogRestraintsChanged
-        if (newRequest.UseDogs != originalLic.UseDogs ||
-            newRequest.CarryAndUseRestraints != originalLic.CarryAndUseRestraints ||
-            newRequest.IsDogsPurposeProtection != originalLic.IsDogsPurposeProtection ||
-            newRequest.IsDogsPurposeDetectionDrugs != originalLic.IsDogsPurposeDetectionDrugs ||
-            newRequest.IsDogsPurposeDetectionExplosives != originalLic.IsDogsPurposeDetectionExplosives)
-        {
-            changes.DogRestraintsChanged = true;
+        //DogRestraintsChanged - this check only matters if the new and original requests both contain SecurityGuard, otherwise 'CategoriesChanged' will catch the change.
+        if (newRequest.CategoryCodes.Any(d => d == WorkerCategoryTypeCode.SecurityGuard) && originalLic.CategoryCodes.Any(d => d == WorkerCategoryTypeEnum.SecurityGuard)) {
+            if (newRequest.UseDogs != originalLic.UseDogs ||
+                newRequest.CarryAndUseRestraints != originalLic.CarryAndUseRestraints ||
+                newRequest.IsDogsPurposeProtection != originalLic.IsDogsPurposeProtection ||
+                newRequest.IsDogsPurposeDetectionDrugs != originalLic.IsDogsPurposeDetectionDrugs ||
+                newRequest.IsDogsPurposeDetectionExplosives != originalLic.IsDogsPurposeDetectionExplosives)
+            {
+                changes.DogRestraintsChanged = true;
+            }
         }
 
         //PeaceOfficerStatusChanged: check if Hold a Position with Peace Officer Status changed, create task with high priority, assign to Licensing CS team

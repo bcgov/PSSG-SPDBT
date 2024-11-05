@@ -6,6 +6,7 @@ import {
 	ApplicantProfileResponse,
 	ApplicantUpdateRequest,
 	ApplicationTypeCode,
+	BizTypeCode,
 	Document,
 	GoogleRecaptcha,
 	HeightUnitCode,
@@ -151,6 +152,25 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						step3Complete,
 						this.workerModelFormGroup.getRawValue()
 					);
+
+					const isSoleProprietorYesNo = this.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value;
+					if (isSoleProprietorYesNo) {
+						const isSoleProprietor = this.utilService.booleanTypeToBoolean(isSoleProprietorYesNo);
+						if (!isSoleProprietor) {
+							// if the sole proprietor flag is 'No', then set the bizTypeCode. This is not user selected.
+							const soleProprietorData = {
+								isSoleProprietor: isSoleProprietorYesNo,
+								bizTypeCode: BizTypeCode.None,
+							};
+
+							this.workerModelFormGroup.patchValue(
+								{
+									soleProprietorData,
+								},
+								{ emitEvent: false }
+							);
+						}
+					}
 
 					this.updateModelChangeFlags();
 
@@ -343,6 +363,16 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.photographOfYourselfFormGroup.valid
 			);
 		} else {
+			const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
+			const hasGenderChanged = !!this.personalInformationFormGroup.get('hasGenderChanged')?.value;
+
+			let photographOfYourselfFormGroupValid = this.photographOfYourselfFormGroup.valid;
+
+			// If anonymous update flown and gender has not changed, then it is valid
+			if (applicationTypeCode === ApplicationTypeCode.Update && !hasGenderChanged) {
+				photographOfYourselfFormGroupValid = true;
+			}
+
 			// console.debug(
 			// 	'isStepIdentificationComplete',
 			// 	this.personalInformationFormGroup.valid,
@@ -350,10 +380,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// 	this.citizenshipFormGroup.valid,
 			// 	this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
-			// 	this.photographOfYourselfFormGroup.valid,
+			// 	photographOfYourselfFormGroupValid,
 			// 	this.residentialAddressFormGroup.valid,
 			// 	this.mailingAddressFormGroup.valid,
-			// 	this.contactInformationFormGroup.valid,
+			// 	this.contactInformationFormGroup.valid
 			// );
 
 			return (
@@ -362,7 +392,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.citizenshipFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
-				this.photographOfYourselfFormGroup.valid &&
+				photographOfYourselfFormGroupValid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
 				this.contactInformationFormGroup.valid

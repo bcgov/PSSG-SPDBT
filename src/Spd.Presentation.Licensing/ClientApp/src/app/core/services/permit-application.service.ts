@@ -595,7 +595,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.permitService.apiPermitApplicationsAuthenticatedSubmitPost$Response({
+					return this.permitService.apiPermitApplicationsChangePost$Response({
 						body,
 					});
 				})
@@ -605,7 +605,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			// application and are still being used
 			body.previousDocumentIds = [...existingDocumentIds];
 
-			return this.permitService.apiPermitApplicationsAuthenticatedSubmitPost$Response({
+			return this.permitService.apiPermitApplicationsChangePost$Response({
 				body,
 			});
 		}
@@ -893,7 +893,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({
+					return this.permitService.apiPermitApplicationsAnonymousSubmitChangePost$Response({
 						body,
 					});
 				})
@@ -949,7 +949,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 					// application and are still being used
 					body.previousDocumentIds = [...existingDocumentIds];
 
-					return this.permitService.apiPermitApplicationsAnonymousSubmitPost$Response({
+					return this.permitService.apiPermitApplicationsAnonymousSubmitChangePost$Response({
 						body,
 					});
 				})
