@@ -247,7 +247,6 @@ export class SecurityScreeningListComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: application.id!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${application.applicationNumber}`,
 		};
 
 		this.paymentService
