@@ -8,12 +8,8 @@ internal class BasicSecurityTokenProvider(
     IDistributedCache cache,
     ILogger<BasicSecurityTokenProvider> logger) : SecurityTokenProvider(httpClientFactory, cache, logger)
 {
-    private const string cacheKey = "paybc_refund_oauth_token";
-
     public override async Task<string> AcquireToken(OAuthSettings oAuthSettings, CancellationToken ct = default) =>
-        await cache.GetAsync(cacheKey + oAuthSettings.ClientId,
-            async ct => await AcquireRefundServiceToken(oAuthSettings, ct),
-            TimeSpan.FromMinutes(oAuthSettings.OAuthTokenCachedInMins), ct) ?? string.Empty;
+        await AcquireRefundServiceToken(oAuthSettings, ct) ?? string.Empty;
 
     protected async ValueTask<string?> AcquireRefundServiceToken(OAuthSettings oAuthSettings, CancellationToken ct)
     {
