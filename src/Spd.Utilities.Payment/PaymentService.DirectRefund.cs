@@ -23,7 +23,7 @@ namespace Spd.Utilities.Payment
                     throw new ConfigurationErrorsException("Payment Direct Refund Configuration is not correct.");
                 var tokenProvider = tokenProviderResolver.GetTokenProviderByName("BasicTokenProvider");
                 string accessToken;
-                if (command.PbcRefNumber == "10015")
+                if (command.TransTypeCode == TransTypeCode.Screening)
                     accessToken = await tokenProvider.AcquireToken(_config.DirectRefund.ScreeningAuthenticationSettings, ct);
                 else
                     accessToken = await tokenProvider.AcquireToken(_config.DirectRefund.LicensingAuthenticationSettings, ct);

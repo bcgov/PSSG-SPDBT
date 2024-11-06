@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Text;
 
 namespace Spd.Utilities.Payment.TokenProviders;
@@ -12,8 +11,7 @@ internal class BearerSecurityTokenProvider : SecurityTokenProvider
     public BearerSecurityTokenProvider(
     IHttpClientFactory httpClientFactory,
     IDistributedCache cache,
-    IOptions<PayBCSettings> options,
-    ILogger<BearerSecurityTokenProvider> logger) : base(httpClientFactory, cache, options, logger)
+    ILogger<BearerSecurityTokenProvider> logger) : base(httpClientFactory, cache, logger)
     { }
 
     public override async Task<string> AcquireToken(OAuthSettings oAuthSettings, CancellationToken ct = default) =>
@@ -34,7 +32,7 @@ internal class BearerSecurityTokenProvider : SecurityTokenProvider
         string basicToken = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(secret));
         httpClient.DefaultRequestHeaders.Add("Authorization", "Basic " + basicToken);
         using var content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
-        return await httpClient.PostAsync(options.ARInvoice.AuthenticationSettings.OAuth2TokenEndpointUrl, content, ct);
+        return await httpClient.PostAsync(oAuthSettings.OAuth2TokenEndpointUrl, content, ct);
     }
 }
 

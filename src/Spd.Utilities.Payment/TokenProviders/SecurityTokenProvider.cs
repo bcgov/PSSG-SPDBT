@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
 using System.Net.Http.Json;
@@ -17,17 +16,14 @@ namespace Spd.Utilities.Payment.TokenProviders
         protected readonly IHttpClientFactory httpClientFactory;
         protected readonly IDistributedCache cache;
         protected readonly ILogger<ISecurityTokenProvider> logger;
-        protected readonly PayBCSettings options;
 
         protected SecurityTokenProvider(
             IHttpClientFactory httpClientFactory,
             IDistributedCache cache,
-            IOptions<PayBCSettings> options,
             ILogger<SecurityTokenProvider> logger)
         {
             this.httpClientFactory = httpClientFactory;
             this.cache = cache;
-            this.options = options.Value;
             this.logger = logger;
         }
 

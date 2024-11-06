@@ -1,14 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Spd.Utilities.Payment.TokenProviders;
 
 internal class BasicSecurityTokenProvider(
     IHttpClientFactory httpClientFactory,
     IDistributedCache cache,
-    IOptions<PayBCSettings> options,
-    ILogger<BasicSecurityTokenProvider> logger) : SecurityTokenProvider(httpClientFactory, cache, options, logger)
+    ILogger<BasicSecurityTokenProvider> logger) : SecurityTokenProvider(httpClientFactory, cache, logger)
 {
     private const string cacheKey = "paybc_refund_oauth_token";
 
