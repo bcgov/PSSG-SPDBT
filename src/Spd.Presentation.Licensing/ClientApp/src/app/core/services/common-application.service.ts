@@ -537,7 +537,7 @@ export class CommonApplicationService {
 				break;
 			default:
 				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
-				message = `Your ${serviceTypeDesc} ${applicationTypeDesc} has been successfully submitted`;
+				message = `Your ${serviceTypeDesc} ${applicationTypeDesc} application has been successfully submitted`;
 				break;
 		}
 

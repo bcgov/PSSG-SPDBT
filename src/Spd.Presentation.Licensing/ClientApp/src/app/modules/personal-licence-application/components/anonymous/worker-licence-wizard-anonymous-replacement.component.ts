@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -80,8 +80,12 @@ export class WorkerLicenceWizardAnonymousReplacementComponent extends BaseWizard
 
 						// save this locally just in application payment fails
 						this.newLicenceAppId = resp.body.licenceAppId!;
+						const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+							ServiceTypeCode.SecurityWorkerLicence,
+							ApplicationTypeCode.Replacement
+						);
+						this.hotToastService.success(successMessage);
 
-						this.hotToastService.success('Your licence replacement has been successfully submitted');
 						this.payNow(this.newLicenceAppId);
 					},
 					error: (error: any) => {

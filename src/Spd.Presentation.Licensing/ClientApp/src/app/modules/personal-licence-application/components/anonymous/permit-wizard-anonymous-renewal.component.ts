@@ -276,7 +276,12 @@ export class PermitWizardAnonymousRenewalComponent extends BaseWizardComponent i
 					// save this locally just in application payment fails
 					this.newLicenceAppId = resp.body.licenceAppId!;
 
-					this.hotToastService.success('Your permit renewal has been successfully submitted');
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						this.serviceTypeCode,
+						this.applicationTypeCode
+					);
+					this.hotToastService.success(successMessage);
+
 					this.payNow(this.newLicenceAppId);
 				},
 				error: (error: any) => {

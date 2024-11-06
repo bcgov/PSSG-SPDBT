@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -197,7 +197,12 @@ export class WorkerLicenceWizardAuthenticatedUpdateComponent extends BaseWizardC
 					if (this.newLicenceCost > 0) {
 						this.stepsReviewAuthenticatedComponent?.onGoToLastStep();
 					} else {
-						this.hotToastService.success('Your licence update has been successfully submitted');
+						const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+							ServiceTypeCode.SecurityWorkerLicence,
+							this.applicationTypeCode
+						);
+						this.hotToastService.success(successMessage);
+
 						this.router.navigateByUrl(
 							PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)
 						);

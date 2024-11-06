@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -240,7 +240,11 @@ export class WorkerLicenceWizardAnonymousNewComponent extends BaseWizardComponen
 					// save this locally just in case payment fails
 					this.licenceAppId = resp.body.licenceAppId!;
 
-					this.hotToastService.success('Your licence has been successfully submitted');
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						ServiceTypeCode.SecurityWorkerLicence,
+						this.applicationTypeCode
+					);
+					this.hotToastService.success(successMessage);
 
 					if (isSoleProprietorSimultaneousFlow) {
 						this.router.navigate(

@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
@@ -64,7 +64,12 @@ export class WorkerLicenceWizardAuthenticatedReplacementComponent extends BaseWi
 	onPayNow(): void {
 		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				this.hotToastService.success('Your licence replacement has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.SecurityWorkerLicence,
+					ApplicationTypeCode.Replacement
+				);
+				this.hotToastService.success(successMessage);
+
 				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {

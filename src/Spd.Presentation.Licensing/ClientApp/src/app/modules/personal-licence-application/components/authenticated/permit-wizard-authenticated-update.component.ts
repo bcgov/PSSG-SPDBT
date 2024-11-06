@@ -202,7 +202,12 @@ export class PermitWizardAuthenticatedUpdateComponent extends BaseWizardComponen
 				// save this locally just in application payment fails
 				this.newLicenceAppId = permitCommandResponse.licenceAppId!;
 
-				this.hotToastService.success('Your permit update has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					this.serviceTypeCode,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
+
 				this.router.navigateByUrl(
 					PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.PERMIT_UPDATE_SUCCESS)
 				);
