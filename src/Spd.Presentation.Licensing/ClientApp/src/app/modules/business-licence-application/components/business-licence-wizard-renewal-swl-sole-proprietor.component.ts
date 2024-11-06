@@ -205,10 +205,7 @@ export class BusinessLicenceWizardRenewalSwlSoleProprietorComponent
 	}
 
 	onNextPayStep(): void {
-		this.businessApplicationService.payBusinessLicenceRenewal({
-			paymentSuccess: 'Your business licence and security worker licence renewal have been successfully submitted',
-			paymentReason: 'Payment for renewal of Business Licence application',
-		});
+		this.businessApplicationService.payBusinessLicenceRenewal();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {

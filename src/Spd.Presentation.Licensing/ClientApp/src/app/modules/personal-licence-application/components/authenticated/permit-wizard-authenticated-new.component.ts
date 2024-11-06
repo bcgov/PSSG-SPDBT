@@ -312,10 +312,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for new Permit application'
-		);
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
 
 	private updateCompleteStatus(): void {

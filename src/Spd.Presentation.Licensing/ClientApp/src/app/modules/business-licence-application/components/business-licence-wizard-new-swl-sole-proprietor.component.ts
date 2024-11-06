@@ -318,7 +318,7 @@ export class BusinessLicenceWizardNewSwlSoleProprietorComponent
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
+		this.commonApplicationService.payNowBusinessLicence(licenceAppId);
 	}
 
 	private handlePartialSaveError(error: HttpErrorResponse): void {

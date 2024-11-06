@@ -298,10 +298,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for Security Worker Licence renewal'
-		);
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
 
 	private updateCompleteStatus(): void {

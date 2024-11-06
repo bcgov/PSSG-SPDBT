@@ -225,7 +225,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId, 'Payment for Permit renewal');
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
 
 	onGoToStep(step: number) {

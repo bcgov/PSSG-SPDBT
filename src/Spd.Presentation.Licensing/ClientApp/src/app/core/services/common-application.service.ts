@@ -527,13 +527,28 @@ export class CommonApplicationService {
 		this.applicationTitle$.next([title, mobileTitle]);
 	}
 
-	payNowAnonymous(licenceAppId: string, description: string): void {
-		console.debug('[payNowAnonymous] licenceAppId', licenceAppId, description);
+	getSubmitSuccessMessage(serviceTypeCode: ServiceTypeCode, applicationTypeCode: ApplicationTypeCode): string {
+		let message = '';
 
+		const serviceTypeDesc = this.optionsPipe.transform(serviceTypeCode, 'ServiceTypes');
+		switch (applicationTypeCode) {
+			case ApplicationTypeCode.New:
+				message = `Your ${serviceTypeDesc} application has been successfully submitted`;
+				break;
+			default:
+				const applicationTypeDesc = this.optionsPipe.transform(applicationTypeCode, 'ApplicationTypes');
+				message = `Your ${serviceTypeDesc} ${applicationTypeDesc} has been successfully submitted`;
+				break;
+		}
+
+		console.debug('[getSubmitSuccessMessage]', message);
+		return message;
+	}
+
+	payNowPersonalLicenceAnonymous(licenceAppId: string): void {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description,
 		};
 		this.paymentService
 			.apiUnauthLicenceApplicationIdPaymentLinkPost({
@@ -548,11 +563,10 @@ export class CommonApplicationService {
 			});
 	}
 
-	payNowPersonalLicenceAuthenticated(licenceAppId: string, description: string): void {
+	payNowPersonalLicenceAuthenticated(licenceAppId: string): void {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description,
 		};
 		this.paymentService
 			.apiAuthLicenceApplicationIdPaymentLinkPost({
@@ -567,13 +581,11 @@ export class CommonApplicationService {
 			});
 	}
 
-	payNowBusinessLicence(licenceAppId: string, description: string): void {
+	payNowBusinessLicence(licenceAppId: string): void {
 		const bizId = this.authUserBceidService.bceidUserProfile?.bizId!;
-
 		const body: PaymentLinkCreateRequest = {
 			applicationId: licenceAppId,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description,
 		};
 		this.paymentService
 			.apiBusinessBizIdApplicationsApplicationIdPaymentLinkPost({
