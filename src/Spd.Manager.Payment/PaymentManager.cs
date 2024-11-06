@@ -241,6 +241,8 @@ namespace Spd.Manager.Payment
             SpdPaymentConfig spdPaymentConfig = await GetSpdPaymentInfoAsync(app, ct);
             var cmd = _mapper.Map<RefundPaymentCmd>(paymentList.Items.First());
             cmd.PbcRefNumber = spdPaymentConfig.PbcRefNumber;
+            cmd.TransTypeCode = app.ServiceType != null && IApplicationRepository.ScreeningServiceTypes.Contains((ServiceTypeEnum)app.ServiceType) ?
+                TransTypeCode.Screening : TransTypeCode.Licensing;
             var result = (RefundPaymentResult)await _paymentService.HandleCommand(cmd);
 
             UpdatePaymentCmd updatePaymentCmd = new()
