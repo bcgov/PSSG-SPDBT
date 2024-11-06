@@ -169,7 +169,7 @@ namespace Spd.Manager.Payment
                     TransNumber = transNumber.ToString(),
                     PbcRefNumber = spdPaymentConfig.PbcRefNumber,
                     Amount = spdPaymentConfig.ServiceCost,
-                    Description = command.PaymentLinkCreateRequest.Description,
+                    Description = $"Payment for Case ID:{app.ApplicationNumber}",
                     PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref2 = paymentId.ToString() + "*" + applicationId.ToString(), //paymentId+"*"+applicationId to ref2 //ref1 is recalled by paybc for their internal use.
