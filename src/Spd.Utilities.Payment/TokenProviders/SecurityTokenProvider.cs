@@ -1,15 +1,15 @@
-﻿using System.Net.Http.Json;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
+using System.Net.Http.Json;
 
 namespace Spd.Utilities.Payment.TokenProviders
 {
     internal interface ISecurityTokenProvider
     {
-        Task<string> AcquireToken(CancellationToken ct = default);
+        Task<string> AcquireToken(OAuthSettings oAuthSettings, CancellationToken ct = default);
     }
 
     internal abstract class SecurityTokenProvider : ISecurityTokenProvider
@@ -50,7 +50,7 @@ namespace Spd.Utilities.Payment.TokenProviders
 
             var response = await wrapper.ExecuteAsync(async ctx =>
             {
-                return await GetToken(ct);
+                return await GetToken(oAuthSettings, ct);
             }, pollyContext);
 
             if (!response.IsSuccessStatusCode) throw new InvalidOperationException(response.ToString());
@@ -67,8 +67,8 @@ namespace Spd.Utilities.Payment.TokenProviders
             return null;
         }
 
-        protected abstract Task<HttpResponseMessage> GetToken(CancellationToken ct);
+        protected abstract Task<HttpResponseMessage> GetToken(OAuthSettings oAuthSettings, CancellationToken ct);
 
-        public abstract Task<string> AcquireToken(CancellationToken ct = default);
+        public abstract Task<string> AcquireToken(OAuthSettings oAuthSettings, CancellationToken ct = default);
     }
 }

@@ -9,7 +9,7 @@ namespace Spd.Utilities.Payment
 {
     internal partial class PaymentService : IPaymentService
     {
-        private static readonly JsonSerializerOptions serializeOptions = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions serializeOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
@@ -19,10 +19,15 @@ namespace Spd.Utilities.Payment
         {
             try
             {
-                if (_config?.DirectRefund?.AuthenticationSettings == null || _config.DirectRefund?.DirectRefundPath == null)
+                if (_config?.DirectRefund?.LicensingAuthenticationSettings == null || _config.DirectRefund?.ScreeningAuthenticationSettings == null || _config.DirectRefund?.DirectRefundPath == null)
                     throw new ConfigurationErrorsException("Payment Direct Refund Configuration is not correct.");
                 var tokenProvider = tokenProviderResolver.GetTokenProviderByName("BasicTokenProvider");
-                string accessToken = await tokenProvider.AcquireToken(ct);
+                string accessToken;
+                if (command.PbcRefNumber == "10015")
+                    accessToken = await tokenProvider.AcquireToken(_config.DirectRefund.ScreeningAuthenticationSettings, ct);
+                else
+                    accessToken = await tokenProvider.AcquireToken(_config.DirectRefund.LicensingAuthenticationSettings, ct);
+
                 if (string.IsNullOrWhiteSpace(accessToken))
                     throw new InvalidOperationException("cannot get access token from paybc");
 
