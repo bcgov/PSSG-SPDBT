@@ -6,12 +6,12 @@ import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes, SelectOptions } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
-import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
-import { HotToastService } from '@ngxpert/hot-toast';
 import {
 	LookupByLicenceNumberDialogData,
 	ModalLookupByLicenceNumberComponent,
-} from '../../../shared/components/modal-lookup-by-licence-number.component';
+} from '@app/shared/components/modal-lookup-by-licence-number.component';
+import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
+import { HotToastService } from '@ngxpert/hot-toast';
 import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 
 @Component({
@@ -32,9 +32,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 				<div class="col-lg-6 col-md-12" *ngIf="!isSoleProprietorCombinedFlow">
 					<app-alert type="info" icon="" [showBorder]="false">
 						If you are unsure of your business type, check your
-						<a class="large" href="https://www.account.bcregistry.gov.bc.ca/decide-business" target="_blank"
-							>BC Registries account</a
-						>.
+						<a class="large" [href]="bcRegistriesAccountUrl" target="_blank">BC Registries account</a>.
 					</app-alert>
 				</div>
 
@@ -156,8 +154,9 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								</div>
 								<div class="mt-2">
 									To renew your security worker licence, visit
-									<a href="https://www.google.ca" target="_blank">Security worker licencing</a>. Once you have your
-									renewed licence, return to complete your business licence application.
+									<a href="https://prod-spd.apps.emerald.devops.gov.bc.ca/licensing/" target="_blank"
+										>Security worker licencing</a
+									>. Once you have your renewed licence, return to complete your business licence application.
 								</div>
 							</app-alert>
 						</div>
@@ -207,6 +206,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessInformationComponent implements OnInit {
+	bcRegistriesAccountUrl = SPD_CONSTANTS.urls.bcRegistriesAccountUrl;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	matcher = new FormErrorStateMatcher();

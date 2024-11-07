@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -23,10 +24,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							plain, white background. Uploading a photo that does not meet the criteria will delay your application's
 							processing time. For further information on Passport Quality Photographs, please review the Government of
 							Canada’s
-							<a
-								aria-label="Passport photograph requirements"
-								href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html"
-								target="_blank"
+							<a aria-label="Passport photograph requirements" [href]="canadianPassportPhotoUrl" target="_blank"
 								>passport photograph requirements</a
 							>.
 						</p>
@@ -46,6 +44,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepPermitChecklistUpdateComponent implements LicenceChildStepperStepComponent {
+	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
+
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
