@@ -185,7 +185,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<div class="fs-5 terms-subtitle">Suspension or Cancellation of Services:</div>
 							<li>
 								Your use of any of the Services may be suspended or cancelled at any time if:
-								<ol type="a">
+								<ol>
 									<li>
 										you fail to abide by these Terms of Use, or other terms and conditions that may be posted on any
 										website used to access the Services; or
@@ -198,7 +198,7 @@ import { UtilService } from '@app/core/services/util.service';
 							</li>
 							<li>
 								The Province and any provider of any Associated Service reserve the right, at any time, to:
-								<ol type="a">
+								<ol>
 									<li>make changes to the Services;</li>
 									<li>stop providing the Services; and</li>
 									<li>modify these Terms of Use at any time, without notice being provided directly to you.</li>
@@ -246,7 +246,7 @@ import { UtilService } from '@app/core/services/util.service';
 			<div class="row my-2">
 				<div class="offset-xxl-1 col-xxl-7 offset-xl-1 col-xl-6 col-lg-7 col-md-12 col-sm-12 mb-2">
 					<mat-checkbox formControlName="agreeToTermsAndConditions" (click)="onCheckboxChange()">
-						I have read and accept the above Terms of Use
+						I have read and accept the above Terms of Use.
 					</mat-checkbox>
 					<mat-error
 						class="mat-option-error"
