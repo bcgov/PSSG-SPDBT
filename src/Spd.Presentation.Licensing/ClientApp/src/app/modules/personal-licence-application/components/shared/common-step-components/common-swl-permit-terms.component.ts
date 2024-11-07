@@ -81,7 +81,7 @@ import { UtilService } from '@app/core/services/util.service';
 								When you visit the Site or use the Services, certain types of information are automatically collected
 								from you, through the use of audit logs or cookies. This information is collected, used and disclosed in
 								accordance with the Province’s
-								<a href="https://www2.gov.bc.ca/gov/content/home/privacy" target="_blank">Privacy Policy</a>.
+								<a [href]="bcGovPrivacyUrl" target="_blank">Privacy Policy</a>.
 							</li>
 							<li>
 								The date and time of your acceptance of these Terms of Use will be logged. This will enable you to skip
@@ -109,9 +109,8 @@ import { UtilService } from '@app/core/services/util.service';
 							<li>
 								Your identity will be verified each time you access the Site, and depending on the authentication method
 								used, you may be required to follow a link to an external site, including the
-								<a href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card" target="_blank"
-									>BC Services Card Site</a
-								>, following which you will be returned to, and allowed to access the application portions of, the Site.
+								<a [href]="bcServicesCardUrl" target="_blank">BC Services Card Site</a>, following which you will be
+								returned to, and allowed to access the application portions of, the Site.
 							</li>
 							<div class="fs-5 terms-subtitle">Payment:</div>
 							<li>
@@ -185,7 +184,7 @@ import { UtilService } from '@app/core/services/util.service';
 							<div class="fs-5 terms-subtitle">Suspension or Cancellation of Services:</div>
 							<li>
 								Your use of any of the Services may be suspended or cancelled at any time if:
-								<ol type="a">
+								<ol>
 									<li>
 										you fail to abide by these Terms of Use, or other terms and conditions that may be posted on any
 										website used to access the Services; or
@@ -198,7 +197,7 @@ import { UtilService } from '@app/core/services/util.service';
 							</li>
 							<li>
 								The Province and any provider of any Associated Service reserve the right, at any time, to:
-								<ol type="a">
+								<ol>
 									<li>make changes to the Services;</li>
 									<li>stop providing the Services; and</li>
 									<li>modify these Terms of Use at any time, without notice being provided directly to you.</li>
@@ -207,18 +206,17 @@ import { UtilService } from '@app/core/services/util.service';
 							<div class="fs-5 terms-subtitle">Limitation of Liability:</div>
 							<li>
 								In addition to the Province’s general
-								<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">
-									Limitation of Liabilities</a
-								>, you agree that under no circumstances will the Province or the provider of any Associated Service be
-								liable to you or to any other individual or entity for any direct, indirect, special, incidental,
-								consequential or other loss, claim, injury or damage, whether foreseeable or unforeseeable (including
-								without limitation claims for damages for loss of profits or business opportunities, use of or inability
-								to use the Services, interruptions, deletion or corruption of files, loss of programs or information,
-								errors, defects or delays) arising out of or in any way connected with your or their access to or use of
-								the Services or any failure by you or them to abide by these Terms of Use and whether based on contract,
-								tort, strict liability or any other legal theory. The previous sentence will apply even if the Province
-								or the provider of any Associated Service has been specifically advised of the possibility of any such
-								loss, claim, injury or damage.
+								<a [href]="bcGovDisclaimerUrl" target="_blank"> Limitation of Liabilities</a>, you agree that under no
+								circumstances will the Province or the provider of any Associated Service be liable to you or to any
+								other individual or entity for any direct, indirect, special, incidental, consequential or other loss,
+								claim, injury or damage, whether foreseeable or unforeseeable (including without limitation claims for
+								damages for loss of profits or business opportunities, use of or inability to use the Services,
+								interruptions, deletion or corruption of files, loss of programs or information, errors, defects or
+								delays) arising out of or in any way connected with your or their access to or use of the Services or
+								any failure by you or them to abide by these Terms of Use and whether based on contract, tort, strict
+								liability or any other legal theory. The previous sentence will apply even if the Province or the
+								provider of any Associated Service has been specifically advised of the possibility of any such loss,
+								claim, injury or damage.
 							</li>
 							<div class="fs-5 terms-subtitle">Enforceability and Jurisdiction:</div>
 							<li>
@@ -246,7 +244,7 @@ import { UtilService } from '@app/core/services/util.service';
 			<div class="row my-2">
 				<div class="offset-xxl-1 col-xxl-7 offset-xl-1 col-xl-6 col-lg-7 col-md-12 col-sm-12 mb-2">
 					<mat-checkbox formControlName="agreeToTermsAndConditions" (click)="onCheckboxChange()">
-						I have read and accept the above Terms of Use
+						I have read and accept the above Terms of Use.
 					</mat-checkbox>
 					<mat-error
 						class="mat-option-error"
@@ -296,6 +294,9 @@ export class CommonSwlPermitTermsComponent implements OnInit {
 	hasScrolledToBottom = false;
 	displayValidationErrors = false;
 
+	bcServicesCardUrl = SPD_CONSTANTS.urls.bcServicesCardUrl;
+	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
+	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
 	downloadFilePath = SPD_CONSTANTS.files.securityServicesApplicantTerms;
 
 	@Input() form!: FormGroup;

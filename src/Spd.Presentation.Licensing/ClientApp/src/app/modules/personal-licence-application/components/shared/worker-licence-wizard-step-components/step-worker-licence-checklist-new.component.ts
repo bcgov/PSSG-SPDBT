@@ -30,8 +30,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							Some categories of security workers, such as security guards, require proof of training and/or experience.
-							<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a> about the types of
-							documents we accept for each security worker category.
+							<a [href]="bcGovHomeUrl" target="_blank">Learn more</a>
+							about the types of documents we accept for each security worker category.
 						</p>
 
 						<mat-checkbox formControlName="checklistItem">
@@ -39,9 +39,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							See all accepted forms of identification on the
-							<a href="https://www2.gov.bc.ca/gov/content/home" target="_blank"
-								>Security Worker Licence requirements page</a
-							>.
+							<a [href]="bcGovHomeUrl" target="_blank">Security Worker Licence requirements page</a>.
 						</p>
 
 						<mat-checkbox formControlName="checklistItem">
@@ -59,11 +57,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 							plain, white background. Uploading a photo that does not meet the criteria will delay your application's
 							processing time. For further information on Passport Quality Photographs, please review the Government of
 							Canada’s
-							<a
-								href="https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html"
-								target="_blank"
-								>passport photograph requirements</a
-							>.
+							<a [href]="canadianPassportPhotoUrl" target="_blank">passport photograph requirements</a>.
 						</p>
 
 						<mat-checkbox formControlName="checklistItem">
@@ -94,11 +88,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							Download the
-							<a
-								aria-label="Mental Health Condition form"
-								href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
-								target="_blank"
-							>
+							<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
 								Mental Health Condition form</a
 							>, and give it to your physician to fill out. You will need to upload the completed form.
 						</p>
@@ -110,6 +100,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepWorkerLicenceChecklistNewComponent implements LicenceChildStepperStepComponent {
+	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
+	canadianPassportPhotoUrl = SPD_CONSTANTS.urls.canadianPassportPhotoUrl;
+	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
 
 	form: FormGroup = this.formBuilder.group({

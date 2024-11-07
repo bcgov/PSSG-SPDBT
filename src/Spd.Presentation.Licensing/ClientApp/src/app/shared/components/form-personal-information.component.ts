@@ -20,11 +20,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 					<ng-template #hasNameChanged>
 						<div class="fs-6 fw-bold mb-4">
 							Have you changed your name?
-							<a
-								href="https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address"
-								target="_blank"
-								>Visit ICBC</a
-							>
+							<a [href]="changeNameOrAddressUrl" target="_blank">Visit ICBC</a>
 							to update this information on your BC Services Card. Any changes you make will then be updated here.
 						</div>
 					</ng-template>
@@ -103,6 +99,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	styles: [],
 })
 export class FormPersonalInformationComponent implements OnInit, LicenceChildStepperStepComponent {
+	changeNameOrAddressUrl = SPD_CONSTANTS.urls.changeNameOrAddressUrl;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 	genderTypes = GenderTypes;
 	booleanTypeCodes = BooleanTypeCode;
