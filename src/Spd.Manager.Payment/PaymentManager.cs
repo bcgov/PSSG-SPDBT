@@ -122,7 +122,7 @@ namespace Spd.Manager.Payment
             Guid applicationId;
             Guid paymentId;
             bool isFromSecurePaymentLink;
-            _logger.LogInformation("PaymentManager get PaymentLinkCreateCommand");
+
             if (command.PaymentLinkCreateRequest is PaymentLinkFromSecureLinkCreateRequest request)
             {
                 try
@@ -176,6 +176,7 @@ namespace Spd.Manager.Payment
                     Ref3 = isFromSecurePaymentLink.ToString()
                 });
 
+            _logger.LogInformation($"PaymentLinkCreated = {linkResult.PaymentLinkUrl}");
             return new PaymentLinkResponse(linkResult.PaymentLinkUrl);
         }
 
