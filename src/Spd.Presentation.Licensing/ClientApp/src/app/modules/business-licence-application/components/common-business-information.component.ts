@@ -154,7 +154,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 								</div>
 								<div class="mt-2">
 									To renew your security worker licence, visit
-									<a href="https://prod-spd.apps.emerald.devops.gov.bc.ca/licensing/" target="_blank"
+									<a href="https://prod-spd-licensing-portal.apps.emerald.devops.gov.bc.ca/" target="_blank"
 										>Security worker licencing</a
 									>. Once you have your renewed licence, return to complete your business licence application.
 								</div>
