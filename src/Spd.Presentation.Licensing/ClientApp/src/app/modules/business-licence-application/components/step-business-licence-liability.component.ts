@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApplicationTypeCode, LicenceDocumentTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -14,12 +15,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					<div class="col-xxl-8 col-xl-8 col-lg-12 mx-auto">
 						<app-alert type="warning" icon="warning">
 							Provide
-							<a
-								class="large"
-								href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply"
-								target="_blank"
-								>proof of insurance</a
-							>
+							<a class="large" [href]="proofOfInsuranceUrl" target="_blank">proof of insurance</a>
 							that indicates the term, dates of coverage, name of business, and at least $1,000,000 general liability
 						</app-alert>
 
@@ -56,6 +52,8 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 	styles: [],
 })
 export class StepBusinessLicenceLiabilityComponent implements LicenceChildStepperStepComponent {
+	proofOfInsuranceUrl = SPD_CONSTANTS.urls.proofOfInsuranceUrl;
+
 	form = this.businessApplicationService.liabilityFormGroup;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;

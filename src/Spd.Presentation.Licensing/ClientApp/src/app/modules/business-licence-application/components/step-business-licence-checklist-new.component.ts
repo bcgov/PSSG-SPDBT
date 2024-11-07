@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -41,7 +42,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							You will need to know if your business is registered with
-							<a aria-label="B.C. Corporate Registries" href="https://www.bcregistry.gov.bc.ca/" target="_blank"
+							<a aria-label="B.C. Corporate Registries" [href]="bcCorporateRegistriesUrl" target="_blank"
 								>B.C. Corporate Registries</a
 							>, and if the business is a Sole Proprietor, Partnership, or Corporation.
 						</p>
@@ -67,10 +68,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							You will need to provide a valid Security Worker Licence for each
-							<a
-								aria-label="controlling member of your business"
-								href="https://www2.gov.bc.ca/gov/content?id=F8B3EE1C1BAE4E07BC88BF0E787D67B4"
-								target="_blank"
+							<a aria-label="controlling member of your business" [href]="controllingMemberChecklistUrl" target="_blank"
 								>controlling member of your business</a
 							>. If they don't have a valid licence, provide their email address so they can consent to a criminal
 							record check.
@@ -84,10 +82,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						<p class="checklist-info">
 							You will need to provide proof you own, lease or rent an approved armoured car; proof of liability
 							insurance; and a
-							<a
-								aria-label="safety certificate"
-								href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/10_207_2008#section4"
-								target="_blank"
+							<a aria-label="safety certificate" [href]="safetyCertificateChecklistUrl" target="_blank"
 								>safety certificate</a
 							>.
 						</p>
@@ -106,6 +101,10 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepBusinessLicenceChecklistNewComponent implements LicenceChildStepperStepComponent {
+	bcCorporateRegistriesUrl = SPD_CONSTANTS.urls.bcCorporateRegistriesUrl;
+	controllingMemberChecklistUrl = SPD_CONSTANTS.urls.controllingMemberChecklistUrl;
+	safetyCertificateChecklistUrl = SPD_CONSTANTS.urls.safetyCertificateChecklistUrl;
+
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});
