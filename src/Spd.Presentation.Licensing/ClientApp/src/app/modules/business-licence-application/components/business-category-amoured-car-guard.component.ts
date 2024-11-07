@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -16,10 +17,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				<li>Proof you have liability insurance</li>
 				<li>
 					A copy of a safety certificate issued under
-					<a
-						href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/10_207_2008#section4"
-						target="_blank"
-					>
+					<a [href]="safetyCertificateChecklistUrl" target="_blank">
 						section 37.04 of the Motor Vehicle Act Regulations (See also s. 4(3)(e) of the Security Services
 						Regulation)</a
 					>.
@@ -52,12 +50,17 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: ``,
 })
 export class BusinessCategoryAmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
+	safetyCertificateChecklistUrl = SPD_CONSTANTS.urls.safetyCertificateChecklistUrl;
+
 	form = this.businessApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
 	@ViewChild(FileUploadComponent) fileUploadComponent!: FileUploadComponent;
 
-	constructor(private optionsPipe: OptionsPipe, private businessApplicationService: BusinessApplicationService) {}
+	constructor(
+		private optionsPipe: OptionsPipe,
+		private businessApplicationService: BusinessApplicationService
+	) {}
 
 	ngOnInit(): void {
 		this.title = this.optionsPipe.transform(WorkerCategoryTypeCode.ArmouredCarGuard, 'WorkerCategoryTypes');

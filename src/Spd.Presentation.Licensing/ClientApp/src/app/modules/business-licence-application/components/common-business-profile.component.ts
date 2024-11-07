@@ -59,7 +59,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 							<div class="mt-3">
 								<div class="mb-4 text-primary-color">
 									This address is from your Business BCeID. If you need to make any updates, please
-									<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
+									<a [href]="bceidUrl" target="_blank">visit BCeID</a>.
 								</div>
 
 								<app-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-address>
@@ -141,6 +141,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 	styles: [],
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
+	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	businessTypes = BusinessLicenceTypes;

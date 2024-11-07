@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigurationResponse } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 
@@ -8,11 +9,11 @@ import { ConfigService } from '@app/core/services/config.service';
 	template: `
 		<mat-toolbar color="primary" class="no-print footer">
 			<a tabindex="0" (click)="goHome()" (keydown)="onKeydownGoHome($event)"> Home </a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>
-			<a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services">Contact Us</a>
+			<a [href]="bcGovDisclaimerUrl">Disclaimer</a>
+			<a [href]="bcGovPrivacyUrl">Privacy</a>
+			<a [href]="bcGovAccessibilityUrl">Accessibility</a>
+			<a [href]="bcGovCopyrightUrl">Copyright</a>
+			<a [href]="bcGovContactUrl">Contact Us</a>
 
 			<span style="flex: 1 1 auto;"></span>
 
@@ -53,6 +54,12 @@ import { ConfigService } from '@app/core/services/config.service';
 	],
 })
 export class SpdFooterComponent implements OnInit {
+	bcGovPrivacyUrl = SPD_CONSTANTS.urls.bcGovPrivacyUrl;
+	bcGovDisclaimerUrl = SPD_CONSTANTS.urls.bcGovDisclaimerUrl;
+	bcGovAccessibilityUrl = SPD_CONSTANTS.urls.bcGovAccessibilityUrl;
+	bcGovCopyrightUrl = SPD_CONSTANTS.urls.bcGovCopyrightUrl;
+	bcGovContactUrl = SPD_CONSTANTS.urls.bcGovContactUrl;
+
 	env: string | null | undefined = null;
 
 	constructor(
