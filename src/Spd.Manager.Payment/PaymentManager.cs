@@ -125,7 +125,7 @@ namespace Spd.Manager.Payment
             Guid applicationId;
             Guid paymentId;
             bool isFromSecurePaymentLink;
-            _logger.LogInformation("PaymentManager get PaymentLinkCreateCommand");
+
             if (command.PaymentLinkCreateRequest is PaymentLinkFromSecureLinkCreateRequest request)
             {
                 try
@@ -172,13 +172,14 @@ namespace Spd.Manager.Payment
                     TransNumber = transNumber.ToString(),
                     PbcRefNumber = spdPaymentConfig.PbcRefNumber,
                     Amount = spdPaymentConfig.ServiceCost,
-                    Description = command.PaymentLinkCreateRequest.Description,
-                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodType.CC,
+                    Description = $"Payment for Case ID: {app.ApplicationNumber}",
+                    PaymentMethod = Spd.Utilities.Payment.PaymentMethodEnum.CC,
                     RedirectUrl = command.RedirectUrl,
                     Ref2 = paymentId.ToString() + "*" + applicationId.ToString(), //paymentId+"*"+applicationId to ref2 //ref1 is recalled by paybc for their internal use.
                     Ref3 = isFromSecurePaymentLink.ToString()
                 });
 
+            _logger.LogInformation("PaymentLinkCreated = {paymentLinkUrl}", linkResult.PaymentLinkUrl);
             return new PaymentLinkResponse(linkResult.PaymentLinkUrl);
         }
 
