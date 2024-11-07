@@ -32,7 +32,13 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
             .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
             .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
-            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.statecode == DynamicsConstants.StateCode_Active));
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.statecode == DynamicsConstants.StateCode_Active))
+            .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColorEnum(s.spd_haircolour)))
+            .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColorEnum(s.spd_eyecolour)))
+            .ForMember(d => d.Height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightNumber(s.spd_height)))
+            .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightUnitCode(s.spd_height)))
+            .ForMember(d => d.Weight, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightNumber(s.spd_weight)))
+            .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightUnitCode(s.spd_weight)));
 
             _ = CreateMap<ContactCmd, contact>()
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))

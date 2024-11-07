@@ -1,6 +1,5 @@
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Licence
@@ -70,6 +69,12 @@ namespace Spd.Manager.Licence
         public string Sub { get; set; } = null!; //bcsc sub
         public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
         public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
+        public HairColourCode? HairColourCode { get; set; }
+        public EyeColourCode? EyeColourCode { get; set; }
+        public int? Height { get; set; }
+        public HeightUnitCode? HeightUnitCode { get; set; }
+        public int? Weight { get; set; }
+        public WeightUnitCode? WeightUnitCode { get; set; }
     }
     public record ApplicantListResponse
     {

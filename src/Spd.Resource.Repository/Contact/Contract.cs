@@ -1,4 +1,5 @@
 using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.Contact
 {
@@ -44,6 +45,13 @@ namespace Spd.Resource.Repository.Contact
         public DateTimeOffset? LicensingTermAgreedDateTime { get; set; }
         public IEnumerable<LicenceInfo> LicenceInfos { get; set; } = [];
         public bool IsActive { get; set; } = true;
+        public HairColourEnum? HairColourCode { get; set; }
+        public EyeColourEnum? EyeColourCode { get; set; }
+        public int? Height { get; set; }
+        public HeightUnitEnum? HeightUnitCode { get; set; }
+        public int? Weight { get; set; }
+        public WeightUnitEnum? WeightUnitCode { get; set; }
+
     }
     public record LicenceInfo
     {
