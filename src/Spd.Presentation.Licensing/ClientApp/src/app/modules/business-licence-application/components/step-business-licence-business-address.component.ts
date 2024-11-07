@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
@@ -18,7 +19,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 								<div class="mt-3">
 									<div class="mb-4 text-primary-color">
 										This address is from your Business BCeID. If you need to make any updates, please
-										<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
+										<a [href]="bceidUrl" target="_blank">visit BCeID</a>.
 									</div>
 
 									<app-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-address>
@@ -76,6 +77,8 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepBusinessLicenceBusinessAddressComponent implements LicenceChildStepperStepComponent {
+	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;
+
 	businessMailingAddressFormGroup = this.businessApplicationService.businessMailingAddressFormGroup;
 	businessAddressFormGroup = this.businessApplicationService.businessAddressFormGroup;
 	bcBusinessAddressFormGroup = this.businessApplicationService.bcBusinessAddressFormGroup;

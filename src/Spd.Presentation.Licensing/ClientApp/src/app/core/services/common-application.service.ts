@@ -660,8 +660,9 @@ export class CommonApplicationService {
 				messageError = `This licence number is not a ${selServiceTypeCodeDesc}.`;
 			} else {
 				if (!isExpired) {
+					const securityIndustryLicensingUrl = SPD_CONSTANTS.urls.securityIndustryLicensingUrl;
 					if (isInRenewalPeriod) {
-						messageWarn = `Your ${selServiceTypeCodeDesc} is still valid, and needs to be renewed. Please exit and <a href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing" target="_blank">renew your ${selServiceTypeCodeDesc}</a>.`;
+						messageWarn = `Your ${selServiceTypeCodeDesc} is still valid, and needs to be renewed. Please exit and <a href="${securityIndustryLicensingUrl}" target="_blank">renew your ${selServiceTypeCodeDesc}</a>.`;
 					} else {
 						messageWarn = `This ${selServiceTypeCodeDesc} is still valid. Please renew it when you get your renewal notice in the mail.`;
 					}

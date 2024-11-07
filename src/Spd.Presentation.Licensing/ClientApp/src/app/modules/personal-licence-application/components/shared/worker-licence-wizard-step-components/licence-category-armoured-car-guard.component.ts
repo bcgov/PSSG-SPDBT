@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LicenceDocumentTypeCode, WorkerCategoryTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent, UtilService } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
@@ -16,7 +17,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 				Armoured car guards carry firearms, which requires a firearm licence and an Authorization to Carry (ATC)
 				certificate. You must get this licence and ATC before you can apply to be an armoured car guard. More
 				information is available from the
-				<a href="https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry" target="_blank">RCMP</a>.
+				<a [href]="rcmpUrl" target="_blank">RCMP</a>.
 			</div>
 		</div>
 
@@ -64,6 +65,8 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 	styles: [],
 })
 export class LicenceCategoryArmouredCarGuardComponent implements OnInit, LicenceChildStepperStepComponent {
+	rcmpUrl = SPD_CONSTANTS.urls.rcmpUrl;
+
 	form: FormGroup = this.workerApplicationService.categoryArmouredCarGuardFormGroup;
 	title = '';
 
