@@ -380,7 +380,6 @@ export class PssoaComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: applicationId,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: 'Payment for Invitation',
 		};
 		this.paymentService
 			.apiCrrpaPaymentLinkPost({

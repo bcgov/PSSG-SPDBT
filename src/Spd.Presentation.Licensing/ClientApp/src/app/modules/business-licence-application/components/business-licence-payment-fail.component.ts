@@ -59,10 +59,7 @@ export class BusinessLicencePaymentFailComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowBusinessLicence(
-			this.payment!.applicationId!,
-			`Payment for: ${this.payment!.caseNumber}`
-		);
+		this.commonApplicationService.payNowBusinessLicence(this.payment!.applicationId!);
 	}
 
 	onDownloadManualPaymentForm(): void {

@@ -290,7 +290,6 @@ export class PaymentsComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: application.id!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${application.applicationNumber}`,
 		};
 		this.paymentService
 			.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({

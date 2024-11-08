@@ -310,7 +310,7 @@ export const ServiceTypes: SelectOptions[] = [
 	{ desc: 'Security Business Licence', code: ServiceTypeCode.SecurityBusinessLicence },
 	{ desc: 'Security Worker Licence', code: ServiceTypeCode.SecurityWorkerLicence },
 	{
-		desc: 'Controlling Members CRC',
+		desc: 'Controlling Member CRC',
 		code: ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
 	},
 ];

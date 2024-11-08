@@ -215,7 +215,12 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	onNextPayStep(): void {
 		this.permitApplicationService.submitPermitRenewalOrUpdateAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<PermitAppCommandResponse>) => {
-				this.hotToastService.success('Your permit renewal has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					this.serviceTypeCode,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
+
 				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
@@ -225,7 +230,7 @@ export class PermitWizardAuthenticatedRenewalComponent extends BaseWizardCompone
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId, 'Payment for Permit renewal');
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
 
 	onGoToStep(step: number) {
