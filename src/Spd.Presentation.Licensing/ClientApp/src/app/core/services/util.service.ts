@@ -131,6 +131,16 @@ export class UtilService {
 		return moment(aDate).startOf('day').isSameOrAfter(moment().startOf('day'), 'day');
 	}
 
+	getIsDate5YearsOrOlder(aDate: string | null | undefined): boolean {
+		if (!aDate) return false;
+
+		const dateDay = moment(aDate).startOf('day');
+
+		const today = moment().startOf('day');
+		const yearsDiff = today.diff(dateDay, 'years');
+		return yearsDiff >= 5;
+	}
+
 	removeFirstFromArray<T>(array: T[], toRemove: T): void {
 		const index = array.indexOf(toRemove);
 

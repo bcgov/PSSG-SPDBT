@@ -29,7 +29,11 @@ export class WorkerLicenceApplicationBaseAnonymousComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		const currentPath = location.pathname;
-		let redirectComponentRoute: string | undefined;
+
+		// to handle relative urls, look for '/personal-licence/' to get the default route
+		const startOfRoute = currentPath.indexOf('/' + PersonalLicenceApplicationRoutes.MODULE_PATH + '/');
+		let redirectComponentRoute = currentPath.substring(startOfRoute);
+
 		if (currentPath.includes(PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS)) {
 			redirectComponentRoute = `${PersonalLicenceApplicationRoutes.pathSecurityWorkerLicenceAnonymous(
 				PersonalLicenceApplicationRoutes.LICENCE_RETURN_FROM_BL_SOLE_PROPRIETOR_ANONYMOUS

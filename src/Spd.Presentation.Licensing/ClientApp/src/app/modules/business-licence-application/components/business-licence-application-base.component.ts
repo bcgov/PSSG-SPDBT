@@ -49,22 +49,27 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		if (linkedSoleProprietorBizLicId) params.set('linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
 		const currentPath = location.pathname;
+
+		// to handle relative urls, look for '/business-licence/' to get the default route
+		const startOfRoute = currentPath.indexOf('/' + BusinessLicenceApplicationRoutes.MODULE_PATH + '/');
+		const defaultRoute = currentPath.substring(startOfRoute);
+
 		let redirectComponentRoute: string | undefined;
-		if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
+		if (defaultRoute.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
 			redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
 				BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
 			)}?${params.toString()}`;
-		} else if (currentPath.includes(BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR)) {
+		} else if (defaultRoute.includes(BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR)) {
 			redirectComponentRoute = `${BusinessLicenceApplicationRoutes.path(
 				BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR
 			)}?${params.toString()}`;
 		} else if (
-			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
-			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
-			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
-			currentPath.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
+			defaultRoute.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
+			defaultRoute.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
+			defaultRoute.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
+			defaultRoute.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
 		) {
-			redirectComponentRoute = currentPath;
+			redirectComponentRoute = defaultRoute;
 		}
 
 		console.debug('**** base **** redirectComponentRoute', redirectComponentRoute);

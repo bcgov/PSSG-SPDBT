@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { PoliceOfficerRoleCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode, PoliceOfficerRoleTypes } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 import { FileUploadComponent } from './file-upload.component';
 
@@ -88,10 +89,7 @@ import { FileUploadComponent } from './file-upload.component';
 							The letter from your supervisor must confirm any access you have to justice, court or police information
 							systems (PRIME/PIRS/PROS/CPIC or other police or corrections database). You cannot utilize information
 							from these systems while acting in the capacity of a security worker. See Section 2.5.4 of the
-							<a
-								href="https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf"
-								target="_blank"
-							>
+							<a [href]="securityLicensingProcessAndLicenceConditionsPoliciesUrl" target="_blank">
 								Security Licensing Process and Licence Conditions Policies</a
 							>
 							for more information.
@@ -126,6 +124,9 @@ import { FileUploadComponent } from './file-upload.component';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class FormPoliceBackgroundComponent {
+	securityLicensingProcessAndLicenceConditionsPoliciesUrl =
+		SPD_CONSTANTS.urls.securityLicensingProcessAndLicenceConditionsPoliciesUrl;
+
 	booleanTypeCodes = BooleanTypeCode;
 	policeOfficerRoleCodeOther = PoliceOfficerRoleCode.Other;
 	policeOfficerRoleTypes = PoliceOfficerRoleTypes;

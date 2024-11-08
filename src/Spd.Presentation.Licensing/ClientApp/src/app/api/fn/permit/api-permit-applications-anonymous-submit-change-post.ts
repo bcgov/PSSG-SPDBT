@@ -11,16 +11,16 @@ import { RequestBuilder } from '../../request-builder';
 import { PermitAppCommandResponse } from '../../models/permit-app-command-response';
 import { PermitAppSubmitRequest } from '../../models/permit-app-submit-request';
 
-export interface ApiPermitApplicationsAuthenticatedSubmitPost$Params {
+export interface ApiPermitApplicationsAnonymousSubmitChangePost$Params {
   
     /**
-     * WorkerLicenceAppAnonymousSubmitRequestJson data
+     * PermitAppAnonymousSubmitRequest data
      */
     body?: PermitAppSubmitRequest
 }
 
-export function apiPermitApplicationsAuthenticatedSubmitPost(http: HttpClient, rootUrl: string, params?: ApiPermitApplicationsAuthenticatedSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiPermitApplicationsAuthenticatedSubmitPost.PATH, 'post');
+export function apiPermitApplicationsAnonymousSubmitChangePost(http: HttpClient, rootUrl: string, params?: ApiPermitApplicationsAnonymousSubmitChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiPermitApplicationsAnonymousSubmitChangePost.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
@@ -35,4 +35,4 @@ export function apiPermitApplicationsAuthenticatedSubmitPost(http: HttpClient, r
   );
 }
 
-apiPermitApplicationsAuthenticatedSubmitPost.PATH = '/api/permit-applications/authenticated/submit';
+apiPermitApplicationsAnonymousSubmitChangePost.PATH = '/api/permit-applications/anonymous/submit-change';

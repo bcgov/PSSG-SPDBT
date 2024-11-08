@@ -15,7 +15,7 @@ import { FileUploadComponent } from '@app/shared/components/file-upload.componen
 					</app-alert>
 
 					<app-alert type="danger" icon="error" *ngIf="originalPhotoOfYourselfExpired">
-						We require a new photo every 5 years. Please provide a new photo for your {{ label }}
+						We require a new photo every 5 years. Please provide a new photo for your {{ label }}.
 					</app-alert>
 
 					<app-file-upload

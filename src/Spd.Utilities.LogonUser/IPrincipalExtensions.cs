@@ -117,16 +117,6 @@ namespace Spd.Utilities.LogonUser
             return (ClaimsPrincipal)principal;
         }
 
-        private static string? GetClaimValue(this ClaimsPrincipal claimsPrincipal, string key)
-        {
-            var identity = claimsPrincipal.Identity as ClaimsIdentity;
-            if (identity == null)
-                return null;
-
-            var claim = identity.Claims.FirstOrDefault(c => c.Type == key);
-            return claim?.Value;
-        }
-
         public static (string?, string?) GetMiddleNames(string? gns, string? fn)
         {
             if (!string.IsNullOrEmpty(gns))

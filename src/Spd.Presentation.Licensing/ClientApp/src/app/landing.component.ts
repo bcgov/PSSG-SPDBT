@@ -93,13 +93,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 								<div class="col-lg-6 col-md-12 col-12 my-auto">
 									<div class="my-3 my-lg-0">
 										Don't have Business BCeID?<br />
-										<a
-											class="large login-link"
-											href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"
-											target="_blank"
-										>
-											Register today
-										</a>
+										<a class="large login-link" [href]="bceidGettingStartedUrl" target="_blank"> Register today </a>
 									</div>
 								</div>
 							</div>
@@ -184,6 +178,7 @@ import { DialogComponent, DialogOptions } from './shared/components/dialog.compo
 	],
 })
 export class LandingComponent implements OnInit {
+	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
 	setupAccountUrl = SPD_CONSTANTS.urls.setupAccountUrl;
 	serviceTypeCodes = ServiceTypeCode;
 

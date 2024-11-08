@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode } from '@app/api/models';
 import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { FileUploadComponent } from './file-upload.component';
 
 @Component({
@@ -37,9 +38,8 @@ import { FileUploadComponent } from './file-upload.component';
 						If you don't have a completed form, you can download and provide it to your physician to fill out, or your
 						physician may download it and fill the form out on a computer if you provide them with the required
 						information. See the
-						<a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/07030_01" target="_blank">
-							Security Services Act</a
-						>, s. 3, Security Services Regulation, s. 4(1)(e) for more information
+						<a [href]="securityServicesActUrl" target="_blank"> Security Services Act</a>, s. 3, Security Services
+						Regulation, s. 4(1)(e) for more information
 					</p>
 					<div class="text-minor-heading my-2">Upload your mental health condition form</div>
 					<app-file-upload
@@ -66,6 +66,7 @@ import { FileUploadComponent } from './file-upload.component';
 	animations: [showHideTriggerSlideAnimation],
 })
 export class FormMentalHealthConditionsComponent {
+	securityServicesActUrl = SPD_CONSTANTS.urls.securityServicesActUrl;
 	booleanTypeCodes = BooleanTypeCode;
 
 	@Input() form!: FormGroup;

@@ -1,6 +1,5 @@
 using MediatR;
 using Spd.Manager.Shared;
-using System.ComponentModel.DataAnnotations;
 
 namespace Spd.Manager.Payment
 {
@@ -30,8 +29,6 @@ namespace Spd.Manager.Payment
     public record PaymentLinkCreateRequest
     {
         public Guid? ApplicationId { get; set; }
-        [MaxLength(100)]
-        public string Description { get; set; } = null!;
         public PaymentMethodCode PaymentMethod { get; set; } //CC-credit card, VI - debit card
 
     }

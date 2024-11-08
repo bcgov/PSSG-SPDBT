@@ -1793,7 +1793,6 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 				licenceAppId: businessLicenceAppl.licenceAppId,
 				latestApplicationId: businessLicenceAppl.licenceAppId,
 
-				soleProprietorSWLAppId,
 				isSoleProprietorSimultaneousFlow,
 				isSoleProprietorSimultaneousSWLAnonymous,
 

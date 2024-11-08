@@ -299,7 +299,6 @@ namespace Spd.Presentation.Screening.Controllers
                     return Redirect($"{hostUrl}{cancelPath}");
                 }
 
-
                 var paymentId = await _mediator.Send(new PaymenCreateCommand(Request.QueryString.ToString(), paybcPaymentResult));
                 if (paybcPaymentResult.Success)
                     return Redirect($"{hostUrl}{successPath}{paymentId}");
@@ -386,7 +385,6 @@ namespace Spd.Presentation.Screening.Controllers
                     ApplicationId = null,
                     EncodedApplicationId = encodedAppId,
                     EncodedPaymentId = encodedPaymentId,
-                    Description = "Criminal Record Check",
                     PaymentMethod = PaymentMethodCode.CreditCard
                 };
                 var result = await _mediator.Send(new PaymentLinkCreateCommand(linkCreateRequest, redirectUrl, _paymentsConfiguration.MaxOnlinePaymentFailedTimes));

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ApplicationTypeCode } from '@app/api/models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { CommonControllingMembersComponent } from './common-controlling-members.component';
 
@@ -9,7 +10,7 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 		<app-step-section
 			[title]="title"
 			subtitle="A controlling member is any person who can direct the activity of your business."
-			info="<a class='large' href='https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/controlling-members' target='_blank'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence."
+			[info]="info"
 		>
 			<div class="row">
 				<div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
@@ -31,6 +32,7 @@ import { CommonControllingMembersComponent } from './common-controlling-members.
 })
 export class StepBusinessLicenceControllingMembersComponent implements OnInit, LicenceChildStepperStepComponent {
 	title = '';
+	info = '';
 
 	readonly title_new = 'Add all controlling members of this business';
 	readonly title_renew_update = 'Confirm controlling members of this business';
@@ -41,6 +43,9 @@ export class StepBusinessLicenceControllingMembersComponent implements OnInit, L
 	@ViewChild(CommonControllingMembersComponent) controllingMembersComponent!: CommonControllingMembersComponent;
 
 	ngOnInit(): void {
+		const securityIndustryLicensingCmUrl = SPD_CONSTANTS.urls.securityIndustryLicensingCmUrl;
+		this.info = `<a class='large' href='${securityIndustryLicensingCmUrl}' target='_blank'>Controlling members</a> who are also licensed security workers must provide their licence number to the Registrar of Security Services when the business applies for a licence.`;
+
 		switch (this.applicationTypeCode) {
 			case ApplicationTypeCode.New: {
 				this.title = this.title_new;

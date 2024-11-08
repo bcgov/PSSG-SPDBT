@@ -19,7 +19,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Licence Type:</span>
 								<span class="my-2">
-									{{ application.serviceTypeCode | options : 'ServiceTypes' }}
+									{{ application.serviceTypeCode | options: 'ServiceTypes' }}
 								</span>
 							</mat-cell>
 						</ng-container>
@@ -44,7 +44,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 							<mat-header-cell class="mat-table-header-cell" *matHeaderCellDef>Type</mat-header-cell>
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Type:</span>
-								{{ application.applicationTypeCode | options : 'ApplicationTypes' }}
+								{{ application.applicationTypeCode | options: 'ApplicationTypes' }}
 							</mat-cell>
 						</ng-container>
 
@@ -61,7 +61,7 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 							<mat-cell *matCellDef="let application">
 								<span class="mobile-label">Status:</span>
 								<span class="fw-bold" [ngClass]="getStatusClass(application.applicationPortalStatusCode)">
-									{{ application.applicationPortalStatusCode | options : 'ApplicationPortalStatuses' | default }}
+									{{ application.applicationPortalStatusCode | options: 'ApplicationPortalStatuses' | default }}
 								</span>
 							</mat-cell>
 						</ng-container>
@@ -76,9 +76,21 @@ import { MainApplicationResponse } from '@app/core/services/common-application.s
 									aria-label="Resume"
 									(click)="onResume(application)"
 									[disabled]="isDraftAndNotResumable(application)"
-									*ngIf="isDraft(application)"
+									*ngIf="isNewDraft(application)"
 								>
 									<mat-icon>play_arrow</mat-icon>Resume
+								</button>
+
+								<button
+									mat-stroked-button
+									color="primary"
+									class="large my-2"
+									aria-label="Cancel the application"
+									matTooltip="Cancel the application"
+									(click)="onCancel(application)"
+									*ngIf="isDraftCancelable(application)"
+								>
+									<mat-icon>delete_outline</mat-icon>Cancel
 								</button>
 
 								<button
@@ -139,6 +151,7 @@ export class ApplicationsListCurrentComponent {
 	@Input() isControllingMemberWarning!: boolean;
 
 	@Output() resumeApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
+	@Output() cancelApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 	@Output() payApplication: EventEmitter<MainApplicationResponse> = new EventEmitter();
 
 	getStatusClass(applicationPortalStatusCode: ApplicationPortalStatusCode): string {
@@ -155,6 +168,10 @@ export class ApplicationsListCurrentComponent {
 		}
 	}
 
+	onCancel(appl: MainApplicationResponse): void {
+		this.cancelApplication.emit(appl);
+	}
+
 	onResume(appl: MainApplicationResponse): void {
 		this.resumeApplication.emit(appl);
 	}
@@ -163,9 +180,16 @@ export class ApplicationsListCurrentComponent {
 		this.payApplication.emit(appl);
 	}
 
-	isDraft(appl: MainApplicationResponse): boolean {
+	isNewDraft(appl: MainApplicationResponse): boolean {
 		return (
 			appl.applicationTypeCode === ApplicationTypeCode.New &&
+			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
+		);
+	}
+
+	isDraftCancelable(appl: MainApplicationResponse): boolean {
+		return (
+			appl.applicationTypeCode != ApplicationTypeCode.New &&
 			appl.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft
 		);
 	}

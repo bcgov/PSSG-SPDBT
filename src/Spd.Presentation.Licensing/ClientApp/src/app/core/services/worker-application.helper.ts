@@ -906,6 +906,14 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			});
 		}
 
+		let reprint = false;
+		if (
+			applicationTypeCode === ApplicationTypeCode.Update &&
+			(updatePhoto || personalInformationData.hasLegalNameChanged)
+		) {
+			reprint = true;
+		}
+
 		const documentExpiredInfos: Array<DocumentExpiredInfo> =
 			documentInfos
 				.filter((doc) => doc.expiryDate)
@@ -1009,6 +1017,8 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			isPoliceOrPeaceOfficer,
 			policeOfficerRoleCode,
 			otherOfficerRole,
+			//-----------------------------------
+			reprint,
 			//-----------------------------------
 			categoryCodes: [...categoryCodes],
 			documentExpiredInfos: [...documentExpiredInfos],

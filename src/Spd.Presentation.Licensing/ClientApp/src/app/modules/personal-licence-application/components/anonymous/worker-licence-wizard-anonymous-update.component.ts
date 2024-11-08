@@ -76,7 +76,7 @@ import { StepsWorkerLicenceReviewAnonymousComponent } from './worker-licence-wiz
 				<ng-template matStepLabel>Review & Confirm</ng-template>
 				<app-steps-worker-licence-review-anonymous
 					[applicationTypeCode]="applicationTypeCode"
-					[licenceCost]="newLicenceCost"
+					[licenceCost]="updateLicenceCost"
 					(previousStepperStep)="onPreviousStepperStep(stepper)"
 					(nextSubmitStep)="onSubmitStep()"
 					(nextPayStep)="onNextPayStep()"
@@ -103,7 +103,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	step3Complete = false;
 
 	newLicenceAppId: string | null = null;
-	newLicenceCost = 0;
+	updateLicenceCost = 0;
 
 	@ViewChild(StepsWorkerLicenceSelectionComponent)
 	stepLicenceSelectionComponent!: StepsWorkerLicenceSelectionComponent;
@@ -124,8 +124,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	showCitizenshipStep = false;
 	showPhotographOfYourself = true;
 	hasGenderChanged = false;
-	hasLegalNameChanged = false;
-	showReprint = false;
 	policeOfficerRoleCode: string | null = null;
 
 	private licenceModelChangedSubscription!: Subscription;
@@ -174,16 +172,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 				this.hasGenderChanged = !!this.workerApplicationService.workerModelFormGroup.get(
 					'personalInformationData.hasGenderChanged'
 				)?.value;
-
-				// for Update flow: only show unauthenticated user option to upload a new photo
-				// if they changed their sex selection earlier in the application
-				this.hasLegalNameChanged = !!this.workerApplicationService.workerModelFormGroup.get(
-					'personalInformationData.hashasLegalNameChangedGenderChanged'
-				)?.value;
-
-				// for Update flow: only show unauthenticated user option to upload a new photo
-				// if they changed their sex selection earlier in the application and name change
-				this.showReprint = this.hasGenderChanged || this.hasLegalNameChanged;
 
 				this.showPhotographOfYourself = this.hasGenderChanged;
 
@@ -272,7 +260,7 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 	onSubmitStep(): void {
 		if (this.newLicenceAppId) {
-			if (this.newLicenceCost > 0) {
+			if (this.updateLicenceCost > 0) {
 				this.stepReviewLicenceComponent?.onGoToLastStep();
 			} else {
 				this.router.navigateByUrl(
@@ -286,9 +274,9 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 
 					// save this locally just in application payment fails
 					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
-					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
+					this.updateLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
-					if (this.newLicenceCost > 0) {
+					if (this.updateLicenceCost > 0) {
 						this.stepReviewLicenceComponent?.onGoToLastStep();
 					} else {
 						this.hotToastService.success('Your licence update has been successfully submitted');

@@ -16,7 +16,7 @@ namespace Spd.Utilities.Payment
             if (_config?.ARInvoice?.InvoicePath == null || _config.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
             ISecurityTokenProvider tokenProvider = tokenProviderResolver.GetTokenProviderByName("BearerTokenProvider");
-            string accessToken = await tokenProvider.AcquireToken(ct);
+            string accessToken = await tokenProvider.AcquireToken(_config.ARInvoice.AuthenticationSettings, ct);
             if (string.IsNullOrWhiteSpace(accessToken))
                 throw new InvalidOperationException("cannot get access token from paybc");
 
@@ -71,7 +71,7 @@ namespace Spd.Utilities.Payment
             if (_config?.ARInvoice?.InvoicePath == null || _config.ARInvoice?.AuthenticationSettings == null)
                 throw new ConfigurationErrorsException("Payment AR Invoice Configuration is not correct.");
             ISecurityTokenProvider tokenProvider = tokenProviderResolver.GetTokenProviderByName("BearerTokenProvider");
-            string accessToken = await tokenProvider.AcquireToken(ct);
+            string accessToken = await tokenProvider.AcquireToken(_config.ARInvoice.AuthenticationSettings, ct);
             if (string.IsNullOrWhiteSpace(accessToken))
                 throw new InvalidOperationException("cannot get access token from paybc");
 

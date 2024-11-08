@@ -170,9 +170,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					'applicationTypeData.applicationTypeCode'
 				)?.value;
 
-				this.showWorkerLicenceSoleProprietorStep =
-					!!this.workerApplicationService.workerModelFormGroup.get('soleProprietorBizAppId')?.value;
-
 				const isSoleProprietor = this.workerApplicationService.workerModelFormGroup.get(
 					'soleProprietorData.isSoleProprietor'
 				)?.value;

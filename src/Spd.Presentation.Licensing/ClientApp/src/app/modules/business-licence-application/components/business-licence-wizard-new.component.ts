@@ -355,10 +355,6 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 		}
 	}
 
-	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowBusinessLicence(licenceAppId, 'Payment for new Business Licence application');
-	}
-
 	private goToReviewStep(): void {
 		if (this.isBusinessLicenceSoleProprietor) {
 			this.stepper.selectedIndex = this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR;
