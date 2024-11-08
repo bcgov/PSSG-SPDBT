@@ -64,8 +64,7 @@ export class BusinessLicenceWizardReplacementComponent extends BaseWizardCompone
 
 	onPayNow(): void {
 		this.businessApplicationService.payBusinessLicenceUpdateOrReplace({
-			paymentSuccess: 'Your business licence replacement has been successfully submitted',
-			paymentReason: 'Payment for replacement of Business Licence application',
+			applicationTypeCode: ApplicationTypeCode.Replacement,
 		});
 	}
 }

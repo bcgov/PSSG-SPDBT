@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -264,7 +264,12 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	private submitStep(): void {
 		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				this.hotToastService.success('Your licence renewal has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.SecurityWorkerLicence,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
+
 				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
@@ -276,7 +281,11 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	private submitSoleProprietorSimultaneousFlowStep(): void {
 		this.workerApplicationService.submitLicenceRenewalOrUpdateOrReplaceAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<WorkerLicenceCommandResponse>) => {
-				this.hotToastService.success('Your licence renewal has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.SecurityWorkerLicence,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
 
 				this.router.navigate(
 					[
@@ -298,10 +307,7 @@ export class WorkerLicenceWizardAuthenticatedRenewalComponent extends BaseWizard
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for Security Worker Licence renewal'
-		);
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
 
 	private updateCompleteStatus(): void {

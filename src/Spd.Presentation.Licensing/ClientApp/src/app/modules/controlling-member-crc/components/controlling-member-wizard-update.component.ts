@@ -4,11 +4,12 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, ControllingMemberCrcAppCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ControllingMemberCrcAppCommandResponse, ServiceTypeCode } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
 import { AuthenticationService } from '@app/core/services/authentication.service';
+import { CommonApplicationService } from '@app/core/services/common-application.service';
 import { ControllingMemberCrcService } from '@app/core/services/controlling-member-crc.service';
 import { StepsControllingMemberBackgroundComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-background.component';
 import { StepsControllingMemberCitizenshipResidencyComponent } from '@app/modules/controlling-member-crc/components/steps-controlling-member-citizenship-residency.component';
@@ -131,6 +132,7 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 		private router: Router,
 		private dialog: MatDialog,
 		private hotToastService: HotToastService,
+		private commonApplicationService: CommonApplicationService,
 		private authenticationService: AuthenticationService,
 		private controllingMembersService: ControllingMemberCrcService
 	) {
@@ -192,7 +194,11 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 		if (this.isLoggedIn) {
 			this.controllingMembersService.submitControllingMemberCrcUpdateAuthenticated().subscribe({
 				next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
-					this.hotToastService.success('Your Criminal Record Check update has been successfully submitted');
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+						ApplicationTypeCode.Update
+					);
+					this.hotToastService.success(successMessage);
 
 					this.router.navigateByUrl(
 						ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),
@@ -208,7 +214,11 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 
 		this.controllingMembersService.submitControllingMemberCrcUpdateAnonymous().subscribe({
 			next: (_resp: StrictHttpResponse<ControllingMemberCrcAppCommandResponse>) => {
-				this.hotToastService.success('Your Criminal Record Check update has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.SecurityBusinessLicenceControllingMemberCrc,
+					ApplicationTypeCode.Update
+				);
+				this.hotToastService.success(successMessage);
 
 				this.router.navigateByUrl(
 					ControllingMemberCrcRoutes.path(ControllingMemberCrcRoutes.CONTROLLING_MEMBER_SUBMISSION_RECEIVED),

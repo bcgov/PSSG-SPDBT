@@ -235,10 +235,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	onNextSubmit(): void {
-		this.businessApplicationService.payBusinessLicenceRenewal({
-			paymentSuccess: 'Your business licence renewal has been successfully submitted',
-			paymentReason: 'Payment for renewal of Business Licence application',
-		});
+		this.businessApplicationService.payBusinessLicenceRenewal();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {

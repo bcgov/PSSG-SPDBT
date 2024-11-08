@@ -247,7 +247,12 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	onNextPayStep(): void {
 		this.permitApplicationService.submitPermitNewAuthenticated().subscribe({
 			next: (_resp: StrictHttpResponse<PermitAppCommandResponse>) => {
-				this.hotToastService.success('Your permit has been successfully submitted');
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					this.serviceTypeCode,
+					this.applicationTypeCode
+				);
+				this.hotToastService.success(successMessage);
+
 				this.payNow(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
@@ -312,10 +317,7 @@ export class PermitWizardAuthenticatedNewComponent extends BaseWizardComponent i
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(
-			licenceAppId,
-			'Payment for new Permit application'
-		);
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(licenceAppId);
 	}
 
 	private updateCompleteStatus(): void {

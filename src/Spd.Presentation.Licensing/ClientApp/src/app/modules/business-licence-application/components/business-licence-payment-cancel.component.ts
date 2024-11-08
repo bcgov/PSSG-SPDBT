@@ -33,7 +33,7 @@ export class BusinessLicencePaymentCancelComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowBusinessLicence(this.licenceAppId!, 'Payment for Application/Licence');
+		this.commonApplicationService.payNowBusinessLicence(this.licenceAppId!);
 	}
 
 	onDownloadManualPaymentForm(): void {

@@ -179,8 +179,7 @@ export class BusinessLicenceWizardUpdateComponent extends BaseWizardComponent im
 
 	onNextPayStep(): void {
 		this.businessApplicationService.payBusinessLicenceUpdateOrReplace({
-			paymentSuccess: 'Your business licence update has been successfully submitted',
-			paymentReason: 'Payment for update of Business Licence application',
+			applicationTypeCode: ApplicationTypeCode.Update,
 		});
 	}
 }

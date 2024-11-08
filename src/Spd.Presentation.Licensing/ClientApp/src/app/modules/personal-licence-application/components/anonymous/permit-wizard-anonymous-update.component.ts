@@ -289,7 +289,11 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 					this.newLicenceAppId = workerLicenceCommandResponse.licenceAppId!;
 					this.newLicenceCost = workerLicenceCommandResponse.cost ?? 0;
 
-					this.hotToastService.success('Your permit update has been successfully submitted');
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						this.serviceTypeCode,
+						this.applicationTypeCode
+					);
+					this.hotToastService.success(successMessage);
 
 					if (this.newLicenceCost > 0) {
 						this.stepReviewLicenceComponent?.onGoToLastStep();
@@ -320,6 +324,6 @@ export class PermitWizardAnonymousUpdateComponent extends BaseWizardComponent im
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Permit update');
+		this.commonApplicationService.payNowPersonalLicenceAnonymous(licenceAppId);
 	}
 }

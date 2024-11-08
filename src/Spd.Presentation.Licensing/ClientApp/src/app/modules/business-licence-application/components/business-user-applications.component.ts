@@ -96,7 +96,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						[applicationsDataSource]="applicationsDataSource"
 						[isControllingMemberWarning]="isControllingMemberWarning"
 						(resumeApplication)="onResume($event)"
-						(payApplication)="onPay($event)"
+						(payApplication)="onPayNow($event)"
 						(cancelApplication)="onCancel($event)"
 					></app-applications-list-current>
 
@@ -256,11 +256,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			.subscribe();
 	}
 
-	onPay(appl: MainApplicationResponse): void {
-		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'ServiceTypes');
-		const paymentDesc = `Payment for ${serviceTypeCodeDesc} application`;
-
-		this.commonApplicationService.payNowBusinessLicence(appl.licenceAppId!, paymentDesc);
+	onPayNow(appl: MainApplicationResponse): void {
+		this.commonApplicationService.payNowBusinessLicence(appl.licenceAppId!);
 	}
 
 	onReplace(licence: MainLicenceResponse): void {
