@@ -400,10 +400,7 @@ export class LicenceUserApplicationsComponent implements OnInit {
 	}
 
 	onPay(appl: MainApplicationResponse): void {
-		const serviceTypeCodeDesc = this.optionsPipe.transform(appl.serviceTypeCode, 'ServiceTypes');
-		const paymentDesc = `Payment for ${serviceTypeCodeDesc} application`;
-
-		this.commonApplicationService.payNowPersonalLicenceAuthenticated(appl.licenceAppId!, paymentDesc);
+		this.commonApplicationService.payNowPersonalLicenceAuthenticated(appl.licenceAppId!);
 	}
 
 	onUpdate(licence: MainLicenceResponse): void {

@@ -56,10 +56,7 @@ export class LicencePaymentFailAnonymousComponent implements OnInit {
 	}
 
 	onPayNow(): void {
-		this.commonApplicationService.payNowAnonymous(
-			this.payment!.applicationId!,
-			`Payment for: ${this.payment!.caseNumber}`
-		);
+		this.commonApplicationService.payNowPersonalLicenceAnonymous(this.payment!.applicationId!);
 	}
 
 	onDownloadManualPaymentForm(): void {
