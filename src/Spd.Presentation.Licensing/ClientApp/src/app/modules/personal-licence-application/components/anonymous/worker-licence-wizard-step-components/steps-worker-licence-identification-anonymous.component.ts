@@ -126,6 +126,7 @@ import { StepWorkerLicencePersonalInformationAnonymousComponent } from './step-w
 					[isFormValid]="isFormValid"
 					(previousStepperStep)="onGoToPreviousStep()"
 					(nextStepperStep)="onStepNext(STEP_CONTACT_INFORMATION)"
+					(nextReviewStepperStep)="onNextReview(STEP_CONTACT_INFORMATION)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>

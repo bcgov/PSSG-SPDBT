@@ -1,9 +1,16 @@
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 /* eslint-disable @angular-eslint/template/click-events-have-key-events */
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, BizProfileResponse, LicenceStatusCode, ServiceTypeCode } from '@app/api/models';
+import {
+	ApplicationPortalStatusCode,
+	ApplicationTypeCode,
+	BizProfileResponse,
+	LicenceStatusCode,
+	ServiceTypeCode,
+} from '@app/api/models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import {
@@ -13,6 +20,7 @@ import {
 } from '@app/core/services/common-application.service';
 import { ConfigService } from '@app/core/services/config.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
+import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
 import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
@@ -89,6 +97,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						[isControllingMemberWarning]="isControllingMemberWarning"
 						(resumeApplication)="onResume($event)"
 						(payApplication)="onPay($event)"
+						(cancelApplication)="onCancel($event)"
 					></app-applications-list-current>
 
 					<app-business-licence-list-current
@@ -150,6 +159,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	constructor(
 		private router: Router,
+		private dialog: MatDialog,
 		private configService: ConfigService,
 		private optionsPipe: OptionsPipe,
 		private businessApplicationService: BusinessApplicationService,
@@ -161,65 +171,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 		this.commonApplicationService.setApplicationTitle(ServiceTypeCode.SecurityBusinessLicence);
 
-		this.results$ = this.businessApplicationService.getBusinessProfile().pipe(
-			switchMap((businessProfile: BizProfileResponse) => {
-				this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
-
-				return forkJoin([
-					this.commonApplicationService.userBusinessLicencesList(businessProfile),
-					this.commonApplicationService.userBusinessApplicationsList(this.isSoleProprietor),
-				]).pipe(
-					tap((resps: Array<any>) => {
-						const businessLicencesList: Array<MainLicenceResponse> = resps[0];
-						const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
-
-						// console.debug('businessLicencesList', businessLicencesList);
-						// console.debug('businessApplicationsList', businessApplicationsList);
-						// console.debug('businessProfile', businessProfile);
-
-						this.isSoleProprietorAppSimultaneousFlow =
-							businessApplicationsList.length > 0 ? (businessApplicationsList[0].isSimultaneousFlow ?? false) : false;
-
-						// Only show the manage members and employees when an application or licence exist.
-						this.showManageMembersAndEmployees = this.isSoleProprietor
-							? false
-							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
-
-						// User Licences/Permits
-						const activeBusinessLicencesList = businessLicencesList.filter((item: MainLicenceResponse) =>
-							this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
-						);
-
-						this.expiredLicencesList = businessLicencesList.filter(
-							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
-						);
-
-						// User Licence/Permit Applications
-						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
-						this.applicationIsInProgress =
-							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
-
-						// Set flags that determine if NEW licences/permits can be created
-						let activeLicenceExist = activeBusinessLicencesList.length > 0;
-						if (!activeLicenceExist) {
-							activeLicenceExist = businessApplicationsList.length > 0;
-						}
-						this.activeLicenceExist = activeLicenceExist;
-
-						[this.warningMessages, this.errorMessages, this.isControllingMemberWarning] =
-							this.commonApplicationService.getMainWarningsAndErrorBusinessLicence(
-								businessApplicationsList,
-								activeBusinessLicencesList,
-								!this.isSoleProprietor
-							);
-
-						this.activeLicencesList = activeBusinessLicencesList;
-
-						this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
-					})
-				);
-			})
-		);
+		this.loadData();
 	}
 
 	onManageMembersAndEmployees(): void {
@@ -242,6 +194,40 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		if (event.key === 'Tab' || event.key === 'Shift') return; // If navigating, do not select
 
 		this.onManageMembersAndEmployees();
+	}
+
+	onCancel(appl: MainApplicationResponse): void {
+		if (
+			appl.applicationPortalStatusCode != ApplicationPortalStatusCode.Draft ||
+			appl.applicationTypeCode === ApplicationTypeCode.New
+		) {
+			return;
+		}
+
+		const data: DialogOptions = {
+			icon: 'warning',
+			title: 'Confirmation',
+			message: 'Are you sure you want to cancel this application.',
+			actionText: 'Yes',
+			cancelText: 'Cancel',
+		};
+
+		this.dialog
+			.open(DialogComponent, { data })
+			.afterClosed()
+			.subscribe((response: boolean) => {
+				if (response) {
+					this.commonApplicationService
+						.cancelDraftApplication(appl.licenceAppId!)
+						.pipe(
+							tap((_resp: any) => {
+								this.loadData();
+							}),
+							take(1)
+						)
+						.subscribe();
+				}
+			});
 	}
 
 	onResume(appl: MainApplicationResponse): void {
@@ -371,6 +357,68 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	onBusinessManagers(): void {
 		this.router.navigateByUrl(
 			BusinessLicenceApplicationRoutes.pathBusinessLicence(BusinessLicenceApplicationRoutes.BUSINESS_MANAGERS)
+		);
+	}
+
+	private loadData(): void {
+		this.results$ = this.businessApplicationService.getBusinessProfile().pipe(
+			switchMap((businessProfile: BizProfileResponse) => {
+				this.isSoleProprietor = this.businessApplicationService.isSoleProprietor(businessProfile.bizTypeCode!);
+
+				return forkJoin([
+					this.commonApplicationService.userBusinessLicencesList(businessProfile),
+					this.commonApplicationService.userBusinessApplicationsList(this.isSoleProprietor),
+				]).pipe(
+					tap((resps: Array<any>) => {
+						const businessLicencesList: Array<MainLicenceResponse> = resps[0];
+						const businessApplicationsList: Array<MainApplicationResponse> = resps[1];
+
+						// console.debug('businessLicencesList', businessLicencesList);
+						// console.debug('businessApplicationsList', businessApplicationsList);
+						// console.debug('businessProfile', businessProfile);
+
+						this.isSoleProprietorAppSimultaneousFlow =
+							businessApplicationsList.length > 0 ? (businessApplicationsList[0].isSimultaneousFlow ?? false) : false;
+
+						// Only show the manage members and employees when an application or licence exist.
+						this.showManageMembersAndEmployees = this.isSoleProprietor
+							? false
+							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
+
+						// User Licences/Permits
+						const activeBusinessLicencesList = businessLicencesList.filter((item: MainLicenceResponse) =>
+							this.commonApplicationService.isLicenceActive(item.licenceStatusCode)
+						);
+
+						this.expiredLicencesList = businessLicencesList.filter(
+							(item: MainLicenceResponse) => item.licenceStatusCode === LicenceStatusCode.Expired
+						);
+
+						// User Licence/Permit Applications
+						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
+						this.applicationIsInProgress =
+							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
+
+						// Set flags that determine if NEW licences/permits can be created
+						let activeLicenceExist = activeBusinessLicencesList.length > 0;
+						if (!activeLicenceExist) {
+							activeLicenceExist = businessApplicationsList.length > 0;
+						}
+						this.activeLicenceExist = activeLicenceExist;
+
+						[this.warningMessages, this.errorMessages, this.isControllingMemberWarning] =
+							this.commonApplicationService.getMainWarningsAndErrorBusinessLicence(
+								businessApplicationsList,
+								activeBusinessLicencesList,
+								!this.isSoleProprietor
+							);
+
+						this.activeLicencesList = activeBusinessLicencesList;
+
+						this.businessProfileLabel = this.applicationIsInProgress ? 'View Business Profile' : 'Business Profile';
+					})
+				);
+			})
 		);
 	}
 }

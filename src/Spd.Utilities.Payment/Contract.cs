@@ -75,6 +75,7 @@ namespace Spd.Utilities.Payment
         public string PbcRefNumber { get; set; } = null!;
         public decimal TxnAmount { get; set; }
         public string TxnNumber { get; set; } = null!;
+        public TransTypeCode TransTypeCode { get; set; } = TransTypeCode.Screening;
     }
 
     public class RefundPaymentResult : PaymentResult
@@ -89,6 +90,11 @@ namespace Spd.Utilities.Payment
         public DateTimeOffset RefundTxnDateTime { get; set; }
     }
 
+    public enum TransTypeCode
+    {
+        Screening,
+        Licensing
+    }
     #endregion direct pay refund
 
     #region Invoice

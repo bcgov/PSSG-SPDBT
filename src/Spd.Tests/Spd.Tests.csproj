@@ -9,6 +9,7 @@
 
 		<ItemGroup>
 				<PackageReference Include="AutoFixture" />
+				<PackageReference Include="AutoMapper" />
 				<PackageReference Include="Bogus" />
 				<PackageReference Include="MartinCostello.Logging.XUnit" />
 				<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
@@ -32,6 +33,7 @@
 				<ProjectReference Include="..\Spd.Presentation.Licensing\Spd.Presentation.Licensing.csproj" />
 				<ProjectReference Include="..\Spd.Presentation.Screening\Spd.Presentation.Screening.csproj" />
 				<ProjectReference Include="..\Spd.Utilities.FileScanning\Spd.Utilities.FileScanning.csproj" />
+				<ProjectReference Include="..\Spd.Utilities.Payment\Spd.Utilities.Payment.csproj" />
 				<ProjectReference Include="..\Spd.Utilities.Printing\Spd.Utilities.Printing.csproj" />
 		</ItemGroup>
 

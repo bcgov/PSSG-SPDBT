@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 
 @Component({
@@ -18,8 +19,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							If you are adding a new category to your licence, you may need to provide proof of training and/or
-							experience. <a href="https://www2.gov.bc.ca/gov/content/home" target="_blank">Learn more</a> about the
-							types of documents we accept for each security worker category.
+							experience.
+							<a [href]="bcGovHomeUrl" target="_blank">Learn more</a>
+							about the types of documents we accept for each security worker category.
 						</p>
 
 						<mat-checkbox formControlName="checklistItem">
@@ -44,11 +46,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							Download the
-							<a
-								aria-label="Mental Health Condition form"
-								href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
-								target="_blank"
-							>
+							<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
 								Mental Health Condition form</a
 							>, and give it to your physician to fill out. You will need to upload the completed form.
 						</p>
@@ -75,6 +73,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepWorkerLicenceChecklistUpdateComponent implements LicenceChildStepperStepComponent {
+	bcGovHomeUrl = SPD_CONSTANTS.urls.bcGovHomeUrl;
+	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
+
 	form: FormGroup = this.formBuilder.group({
 		checklistItem: new FormControl({ value: true, disabled: true }),
 	});

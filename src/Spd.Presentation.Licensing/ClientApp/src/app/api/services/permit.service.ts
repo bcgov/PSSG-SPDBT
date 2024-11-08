@@ -15,10 +15,10 @@ import { apiApplicantsApplicantIdPermitLatestGet } from '../fn/permit/api-applic
 import { ApiApplicantsApplicantIdPermitLatestGet$Params } from '../fn/permit/api-applicants-applicant-id-permit-latest-get';
 import { apiPermitApplicationGet } from '../fn/permit/api-permit-application-get';
 import { ApiPermitApplicationGet$Params } from '../fn/permit/api-permit-application-get';
-import { apiPermitApplicationsAnonymousSubmitPost } from '../fn/permit/api-permit-applications-anonymous-submit-post';
-import { ApiPermitApplicationsAnonymousSubmitPost$Params } from '../fn/permit/api-permit-applications-anonymous-submit-post';
-import { apiPermitApplicationsAuthenticatedSubmitPost } from '../fn/permit/api-permit-applications-authenticated-submit-post';
-import { ApiPermitApplicationsAuthenticatedSubmitPost$Params } from '../fn/permit/api-permit-applications-authenticated-submit-post';
+import { apiPermitApplicationsAnonymousSubmitChangePost } from '../fn/permit/api-permit-applications-anonymous-submit-change-post';
+import { ApiPermitApplicationsAnonymousSubmitChangePost$Params } from '../fn/permit/api-permit-applications-anonymous-submit-change-post';
+import { apiPermitApplicationsChangePost } from '../fn/permit/api-permit-applications-change-post';
+import { ApiPermitApplicationsChangePost$Params } from '../fn/permit/api-permit-applications-change-post';
 import { apiPermitApplicationsLicenceAppIdGet } from '../fn/permit/api-permit-applications-licence-app-id-get';
 import { ApiPermitApplicationsLicenceAppIdGet$Params } from '../fn/permit/api-permit-applications-licence-app-id-get';
 import { apiPermitApplicationsPost } from '../fn/permit/api-permit-applications-post';
@@ -38,7 +38,7 @@ export class PermitService extends BaseService {
   static readonly ApiPermitApplicationsPostPath = '/api/permit-applications';
 
   /**
-   * Create Permit Application.
+   * Create/partial save permit application.
    *
    *
    *
@@ -52,7 +52,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Create Permit Application.
+   * Create/partial save permit application.
    *
    *
    *
@@ -139,7 +139,7 @@ export class PermitService extends BaseService {
   static readonly ApiPermitApplicationsSubmitPostPath = '/api/permit-applications/submit';
 
   /**
-   * Submit Permit Application.
+   * Submit new permit Application authenticated with bcsc.
    *
    *
    *
@@ -153,7 +153,7 @@ export class PermitService extends BaseService {
   }
 
   /**
-   * Submit Permit Application.
+   * Submit new permit Application authenticated with bcsc.
    *
    *
    *
@@ -168,8 +168,8 @@ export class PermitService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiPermitApplicationsAuthenticatedSubmitPost()` */
-  static readonly ApiPermitApplicationsAuthenticatedSubmitPostPath = '/api/permit-applications/authenticated/submit';
+  /** Path part for operation `apiPermitApplicationsChangePost()` */
+  static readonly ApiPermitApplicationsChangePostPath = '/api/permit-applications/change';
 
   /**
    * Submit Permit Application Json part for authenticated users, supports only: renewal, update and replace
@@ -178,12 +178,12 @@ export class PermitService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsAuthenticatedSubmitPost()` instead.
+   * To access only the response body, use `apiPermitApplicationsChangePost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiPermitApplicationsAuthenticatedSubmitPost$Response(params?: ApiPermitApplicationsAuthenticatedSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-    return apiPermitApplicationsAuthenticatedSubmitPost(this.http, this.rootUrl, params, context);
+  apiPermitApplicationsChangePost$Response(params?: ApiPermitApplicationsChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+    return apiPermitApplicationsChangePost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -193,12 +193,12 @@ export class PermitService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsAuthenticatedSubmitPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiPermitApplicationsChangePost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiPermitApplicationsAuthenticatedSubmitPost(params?: ApiPermitApplicationsAuthenticatedSubmitPost$Params, context?: HttpContext): Observable<PermitAppCommandResponse> {
-    return this.apiPermitApplicationsAuthenticatedSubmitPost$Response(params, context).pipe(
+  apiPermitApplicationsChangePost(params?: ApiPermitApplicationsChangePost$Params, context?: HttpContext): Observable<PermitAppCommandResponse> {
+    return this.apiPermitApplicationsChangePost$Response(params, context).pipe(
       map((r: StrictHttpResponse<PermitAppCommandResponse>): PermitAppCommandResponse => r.body)
     );
   }
@@ -236,8 +236,8 @@ export class PermitService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiPermitApplicationsAnonymousSubmitPost()` */
-  static readonly ApiPermitApplicationsAnonymousSubmitPostPath = '/api/permit-applications/anonymous/submit';
+  /** Path part for operation `apiPermitApplicationsAnonymousSubmitChangePost()` */
+  static readonly ApiPermitApplicationsAnonymousSubmitChangePostPath = '/api/permit-applications/anonymous/submit-change';
 
   /**
    * Submit Body Armour or Armour Vehicle permit application Anonymously
@@ -247,12 +247,12 @@ export class PermitService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiPermitApplicationsAnonymousSubmitPost()` instead.
+   * To access only the response body, use `apiPermitApplicationsAnonymousSubmitChangePost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiPermitApplicationsAnonymousSubmitPost$Response(params?: ApiPermitApplicationsAnonymousSubmitPost$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
-    return apiPermitApplicationsAnonymousSubmitPost(this.http, this.rootUrl, params, context);
+  apiPermitApplicationsAnonymousSubmitChangePost$Response(params?: ApiPermitApplicationsAnonymousSubmitChangePost$Params, context?: HttpContext): Observable<StrictHttpResponse<PermitAppCommandResponse>> {
+    return apiPermitApplicationsAnonymousSubmitChangePost(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -263,12 +263,12 @@ export class PermitService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousSubmitPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiPermitApplicationsAnonymousSubmitChangePost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiPermitApplicationsAnonymousSubmitPost(params?: ApiPermitApplicationsAnonymousSubmitPost$Params, context?: HttpContext): Observable<PermitAppCommandResponse> {
-    return this.apiPermitApplicationsAnonymousSubmitPost$Response(params, context).pipe(
+  apiPermitApplicationsAnonymousSubmitChangePost(params?: ApiPermitApplicationsAnonymousSubmitChangePost$Params, context?: HttpContext): Observable<PermitAppCommandResponse> {
+    return this.apiPermitApplicationsAnonymousSubmitChangePost$Response(params, context).pipe(
       map((r: StrictHttpResponse<PermitAppCommandResponse>): PermitAppCommandResponse => r.body)
     );
   }

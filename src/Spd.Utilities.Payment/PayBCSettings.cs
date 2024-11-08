@@ -18,7 +18,8 @@
     {
         public string Host { get; set; } = null!;
         public string DirectRefundPath { get; set; } = null!;
-        public OAuthSettings AuthenticationSettings { get; set; } = new();
+        public OAuthSettings ScreeningAuthenticationSettings { get; set; } = new();
+        public OAuthSettings LicensingAuthenticationSettings { get; set; } = new();
     }
 
     internal class ARInvoiceSettings

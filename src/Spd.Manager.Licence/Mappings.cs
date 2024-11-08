@@ -110,7 +110,6 @@ internal class Mappings : Profile
             .ForPath(d => d.MailingAddress.PostalCode, opt => opt.MapFrom(s => s.MailingAddress.PostalCode))
             .ForPath(d => d.MailingAddress.Country, opt => opt.MapFrom(s => s.MailingAddress.Country));
 
-
         CreateMap<ControllingMemberCrcAppBase, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
             .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.Surname))
@@ -143,7 +142,6 @@ internal class Mappings : Profile
 
         CreateMap<ControllingMemberCrcAppUpsertRequest, UpdateContactCmd>()
             .IncludeBase<ControllingMemberCrcAppBase, UpdateContactCmd>();
-
 
         CreateMap<ControllingMemberCrcAppUpdateRequest, UpdateContactCmd>()
             .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.GivenName))
@@ -326,7 +324,7 @@ internal class Mappings : Profile
                ? s.Email : null))
             .ForPath(d => d.SoleProprietorSwlContactInfo, opt => opt.MapFrom(s =>
             (s.BizType == BizTypeEnum.NonRegisteredSoleProprietor || s.BizType == BizTypeEnum.RegisteredSoleProprietor)
-                ? new SwlContactInfo {LicenceId = s.SoleProprietorSwlContactInfo.LicenceId} : null))
+                ? new SwlContactInfo { LicenceId = s.SoleProprietorSwlContactInfo.LicenceId } : null))
 
             .ForPath(d => d.BizManagerContactInfo.GivenName, opt => opt.MapFrom(s => s.BizManagerContactInfo.GivenName))
             .ForPath(d => d.BizManagerContactInfo.Surname, opt => opt.MapFrom(s => s.BizManagerContactInfo.Surname))
@@ -346,7 +344,13 @@ internal class Mappings : Profile
           .ForMember(d => d.LicenceHolderLastName, opt => opt.Ignore())
           .ForMember(d => d.LicenceHolderMiddleName1, opt => opt.Ignore())
           .ForMember(d => d.LicenceStatusCode, opt => opt.Ignore())
-          .ForMember(d => d.NameOnCard, opt => opt.Ignore());
+          .ForMember(d => d.NameOnCard, opt => opt.Ignore())
+          .ForMember(d => d.PermitOtherRequiredReason, opt => opt.MapFrom(s => s.PermitOtherRequiredReason ?? string.Empty))
+          .ForMember(d => d.EmployerName, opt => opt.MapFrom(s => s.EmployerName ?? string.Empty))
+          .ForMember(d => d.SupervisorName, opt => opt.MapFrom(s => s.SupervisorName ?? string.Empty))
+          .ForMember(d => d.SupervisorEmailAddress, opt => opt.MapFrom(s => s.SupervisorEmailAddress ?? string.Empty))
+          .ForMember(d => d.SupervisorPhoneNumber, opt => opt.MapFrom(s => s.SupervisorPhoneNumber ?? string.Empty))
+          .ForMember(d => d.Rationale, opt => opt.MapFrom(s => s.Rationale ?? string.Empty));
 
         CreateMap<BizProfileUpdateRequest, UpdateBizCmd>()
            .ForMember(d => d.BizGuid, opt => opt.Ignore())

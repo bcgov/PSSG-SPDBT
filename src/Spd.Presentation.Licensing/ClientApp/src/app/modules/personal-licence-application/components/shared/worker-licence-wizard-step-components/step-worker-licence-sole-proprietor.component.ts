@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeCode, BizTypeCode } from '@app/api/models';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
+import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
 import { WorkerApplicationService } from '@app/core/services/worker-application.service';
 
@@ -13,12 +14,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 				<div class="col-md-8 col-sm-12 mx-auto">
 					<app-alert type="warning">
 						If you want to apply for both at the same time, you will need your
-						<a
-							class="large"
-							href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"
-							target="_blank"
-							>Business BCeID</a
-						>
+						<a class="large" [href]="bceidGettingStartedUrl" target="_blank">Business BCeID</a>
 					</app-alert>
 				</div>
 			</div>
@@ -73,6 +69,8 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	styles: [],
 })
 export class StepWorkerLicenceSoleProprietorComponent implements OnInit, LicenceChildStepperStepComponent {
+	bceidGettingStartedUrl = SPD_CONSTANTS.urls.bceidGettingStartedUrl;
+
 	booleanTypeCodes = BooleanTypeCode;
 	bizTypeCodes = BizTypeCode;
 	title = '';

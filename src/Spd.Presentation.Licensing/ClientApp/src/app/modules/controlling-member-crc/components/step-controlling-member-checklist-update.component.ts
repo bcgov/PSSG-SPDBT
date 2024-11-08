@@ -41,11 +41,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 						</mat-checkbox>
 						<p class="checklist-info">
 							Download the
-							<a
-								aria-label="Mental Health Condition form"
-								href="https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms"
-								target="_blank"
-							>
+							<a aria-label="Mental Health Condition form" [href]="mentalHealthConditionsFormUrl" target="_blank">
 								Mental Health Condition form</a
 							>, and give it to your physician to fill out. You will need to upload the completed form.
 						</p>
@@ -65,6 +61,7 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 	styles: [],
 })
 export class StepControllingMemberChecklistUpdateComponent implements LicenceChildStepperStepComponent {
+	mentalHealthConditionsFormUrl = SPD_CONSTANTS.urls.mentalHealthConditionsFormUrl;
 	downloadFilePath = SPD_CONSTANTS.files.requestForFingerprintingForm;
 
 	form: FormGroup = this.formBuilder.group({

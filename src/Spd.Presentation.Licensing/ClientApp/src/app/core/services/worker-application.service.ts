@@ -35,7 +35,6 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 import { FileUploadComponent } from '@app/shared/components/file-upload.component';
 import { FormatDatePipe } from '@app/shared/pipes/format-date.pipe';
 import { HotToastService } from '@ngxpert/hot-toast';
-import moment from 'moment';
 import {
 	BehaviorSubject,
 	Observable,
@@ -153,6 +152,25 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 						step3Complete,
 						this.workerModelFormGroup.getRawValue()
 					);
+
+					const isSoleProprietorYesNo = this.workerModelFormGroup.get('soleProprietorData.isSoleProprietor')?.value;
+					if (isSoleProprietorYesNo) {
+						const isSoleProprietor = this.utilService.booleanTypeToBoolean(isSoleProprietorYesNo);
+						if (!isSoleProprietor) {
+							// if the sole proprietor flag is 'No', then set the bizTypeCode. This is not user selected.
+							const soleProprietorData = {
+								isSoleProprietor: isSoleProprietorYesNo,
+								bizTypeCode: BizTypeCode.None,
+							};
+
+							this.workerModelFormGroup.patchValue(
+								{
+									soleProprietorData,
+								},
+								{ emitEvent: false }
+							);
+						}
+					}
 
 					this.updateModelChangeFlags();
 
@@ -345,6 +363,16 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.photographOfYourselfFormGroup.valid
 			);
 		} else {
+			const applicationTypeCode = this.applicationTypeFormGroup.get('applicationTypeCode')?.value;
+			const hasGenderChanged = !!this.personalInformationFormGroup.get('hasGenderChanged')?.value;
+
+			let photographOfYourselfFormGroupValid = this.photographOfYourselfFormGroup.valid;
+
+			// If anonymous update flown and gender has not changed, then it is valid
+			if (applicationTypeCode === ApplicationTypeCode.Update && !hasGenderChanged) {
+				photographOfYourselfFormGroupValid = true;
+			}
+
 			// console.debug(
 			// 	'isStepIdentificationComplete',
 			// 	this.personalInformationFormGroup.valid,
@@ -352,10 +380,10 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 			// 	this.citizenshipFormGroup.valid,
 			// 	this.bcDriversLicenceFormGroup.valid,
 			// 	this.characteristicsFormGroup.valid,
-			// 	this.photographOfYourselfFormGroup.valid,
+			// 	photographOfYourselfFormGroupValid,
 			// 	this.residentialAddressFormGroup.valid,
 			// 	this.mailingAddressFormGroup.valid,
-			// 	this.contactInformationFormGroup.valid,
+			// 	this.contactInformationFormGroup.valid
 			// );
 
 			return (
@@ -364,7 +392,7 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				this.citizenshipFormGroup.valid &&
 				this.bcDriversLicenceFormGroup.valid &&
 				this.characteristicsFormGroup.valid &&
-				this.photographOfYourselfFormGroup.valid &&
+				photographOfYourselfFormGroupValid &&
 				this.residentialAddressFormGroup.valid &&
 				this.mailingAddressFormGroup.valid &&
 				this.contactInformationFormGroup.valid
@@ -711,10 +739,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 		const body = bodyUpsert as WorkerLicenceAppSubmitRequest;
 
-		if (body.applicationTypeCode === ApplicationTypeCode.Update) {
-			body.reprint = true;
-		}
-
 		const documentsToSave = this.getDocsToSaveBlobs(licenceModelFormValue, false);
 
 		const consentData = this.consentAndDeclarationFormGroup.getRawValue();
@@ -948,25 +972,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 				personalInformationData.cardHolderName = associatedLicence.nameOnCard;
 				personalInformationData.licenceHolderName = associatedLicence.licenceHolderName;
 
-				const originalLicenceData = {
-					originalApplicationId: associatedLicence.licenceAppId,
-					originalLicenceId: associatedLicence.licenceId,
-					originalLicenceNumber: associatedLicence.licenceNumber,
-					originalExpiryDate: associatedLicence.expiryDate,
-					originalLicenceTermCode: associatedLicence.licenceTermCode,
-					originalCategoryCodes: associatedLicence.categoryCodes,
-					linkedSoleProprietorExpiryDate: associatedLicence.linkedSoleProprietorExpiryDate,
-					linkedSoleProprietorLicenceId: associatedLicence.linkedSoleProprietorLicenceId,
-					originalBizTypeCode: BizTypeCode.None,
-					originalPhotoOfYourselfExpired: null,
-					originalDogAuthorizationExists: null,
-					originalCarryAndUseRestraints: null,
-					originalUseDogs: null,
-					originalIsDogsPurposeDetectionDrugs: null,
-					originalIsDogsPurposeDetectionExplosives: null,
-					originalIsDogsPurposeProtection: null,
-				};
-
 				const [
 					categoryArmouredCarGuardFormGroup,
 					categoryBodyArmourSalesFormGroup,
@@ -989,7 +994,6 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 
 				this.workerModelFormGroup.patchValue(
 					{
-						originalLicenceData,
 						personalInformationData,
 
 						categoryArmouredCarGuardFormGroup,
@@ -2064,20 +2068,15 @@ export class WorkerApplicationService extends WorkerApplicationHelper {
 		originalLicenceData.originalLicenceTermCode = resp.licenceTermData.licenceTermCode;
 
 		const photographOfYourselfData = { ...resp.photographOfYourselfData };
-		originalLicenceData.originalPhotoOfYourselfExpired = false;
 
-		if (resp.photographOfYourselfData.uploadedDateTime) {
-			const originalPhotoOfYourselfLastUpload = moment(resp.photographOfYourselfData.uploadedDateTime).startOf('day');
+		const originalPhotoOfYourselfLastUploadDateTime = resp.photographOfYourselfData.uploadedDateTime;
+		originalLicenceData.originalPhotoOfYourselfExpired = this.utilService.getIsDate5YearsOrOlder(
+			originalPhotoOfYourselfLastUploadDateTime
+		);
 
-			// We require a new photo every 5 years. Please provide a new photo for your licence
-			const today = moment().startOf('day');
-			const yearsDiff = today.diff(originalPhotoOfYourselfLastUpload, 'years');
-			originalLicenceData.originalPhotoOfYourselfExpired = yearsDiff >= 5;
-
-			if (originalLicenceData.originalPhotoOfYourselfExpired) {
-				// set flag - user will be updating their photo
-				photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
-			}
+		if (originalLicenceData.originalPhotoOfYourselfExpired) {
+			// set flag - user will be updating their photo
+			photographOfYourselfData.updatePhoto = BooleanTypeCode.Yes;
 		}
 
 		// If applicant is renewing a licence where they already had authorization to use dogs,
