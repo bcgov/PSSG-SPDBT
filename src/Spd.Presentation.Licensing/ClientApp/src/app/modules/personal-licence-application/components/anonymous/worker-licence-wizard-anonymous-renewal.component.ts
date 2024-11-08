@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -302,7 +302,11 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 					// save this locally just in case payment fails
 					this.licenceAppId = resp.body.licenceAppId!;
 
-					this.hotToastService.success('Your licence renewal has been successfully submitted');
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						ServiceTypeCode.SecurityWorkerLicence,
+						this.applicationTypeCode
+					);
+					this.hotToastService.success(successMessage);
 
 					if (isSoleProprietorSimultaneousFlow) {
 						this.router.navigate(
@@ -337,6 +341,6 @@ export class WorkerLicenceWizardAnonymousRenewalComponent extends BaseWizardComp
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence renewal');
+		this.commonApplicationService.payNowPersonalLicenceAnonymous(licenceAppId);
 	}
 }

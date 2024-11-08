@@ -238,7 +238,12 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 					// save this locally just in payment fails
 					this.licenceAppId = resp.body.licenceAppId!;
 
-					this.hotToastService.success('Your permit has been successfully submitted');
+					const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+						this.serviceTypeCode,
+						this.applicationTypeCode
+					);
+					this.hotToastService.success(successMessage);
+
 					this.payNow(this.licenceAppId);
 				},
 				error: (error: any) => {
@@ -295,6 +300,6 @@ export class PermitWizardAnonymousNewComponent extends BaseWizardComponent imple
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for new Permit application');
+		this.commonApplicationService.payNowPersonalLicenceAnonymous(licenceAppId);
 	}
 }

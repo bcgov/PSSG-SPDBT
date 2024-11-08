@@ -79,7 +79,6 @@ export class CrrpPaymentFailComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: this.payment!.applicationId!,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: `Payment for Case ID: ${this.payment!.caseNumber}`,
 		};
 		this.paymentService
 			.apiOrgsOrgIdApplicationsApplicationIdPaymentLinkPost({
