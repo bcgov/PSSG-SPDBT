@@ -25,7 +25,6 @@ import { BusinessLicencePaymentCancelComponent } from './components/business-lic
 import { BusinessLicencePaymentErrorComponent } from './components/business-licence-payment-error.component';
 import { BusinessLicencePaymentFailComponent } from './components/business-licence-payment-fail.component';
 import { BusinessLicencePaymentSuccessComponent } from './components/business-licence-payment-success.component';
-import { BusinessLicenceUpdateReceivedSuccessComponent } from './components/business-licence-update-received-success.component';
 import { BusinessLicenceWizardNewSwlSoleProprietorComponent } from './components/business-licence-wizard-new-swl-sole-proprietor.component';
 import { BusinessLicenceWizardNewComponent } from './components/business-licence-wizard-new.component';
 import { BusinessLicenceWizardRenewalSwlSoleProprietorComponent } from './components/business-licence-wizard-renewal-swl-sole-proprietor.component';
@@ -75,7 +74,6 @@ import { StepsBusinessLicenceSwlSpInformationComponent } from './components/step
 		BusinessLicenceWizardRenewalComponent,
 		BusinessLicenceWizardUpdateComponent,
 		BusinessLicenceWizardReplacementComponent,
-		BusinessLicenceUpdateReceivedSuccessComponent,
 		StepsBusinessLicenceUpdatesComponent,
 		BusinessBcBranchesComponent,
 		CommonBusinessManagerComponent,

@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BizTypeCode } from '@app/api/models';
-import { showHideTriggerSlideAnimation } from '@app/core/animations';
 import { BusinessLicenceTypes } from '@app/core/code-types/model-desc.models';
 import { SPD_CONSTANTS } from '@app/core/constants/constants';
 import { LicenceChildStepperStepComponent } from '@app/core/services/util.service';
@@ -60,7 +59,7 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 							<div class="mt-3">
 								<div class="mb-4 text-primary-color">
 									This address is from your Business BCeID. If you need to make any updates, please
-									<a href="https://www.bceid.ca" target="_blank">visit BCeID</a>.
+									<a [href]="bceidUrl" target="_blank">visit BCeID</a>.
 								</div>
 
 								<app-address [form]="businessMailingAddressFormGroup" [isReadonly]="true"></app-address>
@@ -140,9 +139,9 @@ import { BusinessBcBranchesComponent } from './business-bc-branches.component';
 		</div>
 	`,
 	styles: [],
-	animations: [showHideTriggerSlideAnimation],
 })
 export class CommonBusinessProfileComponent implements LicenceChildStepperStepComponent {
+	bceidUrl = SPD_CONSTANTS.urls.bceidUrl;
 	formalDateFormat = SPD_CONSTANTS.date.formalDateFormat;
 
 	businessTypes = BusinessLicenceTypes;

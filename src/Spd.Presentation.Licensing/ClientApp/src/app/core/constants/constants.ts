@@ -59,14 +59,41 @@ export const SPD_CONSTANTS = {
 		employees: 20,
 	},
 	urls: {
+		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
+		bcCorporateRegistriesUrl: 'https://www.bcregistry.gov.bc.ca/',
+		bceidUrl: 'https://www.bceid.ca',
+		bceidBluePagesUrl: 'https://www.bceid.ca/directories/bluepages/',
+		bceidGettingStartedUrl: 'https://www.bceid.ca/register/business/getting_started/getting_started.aspx',
+		bcGovHomeUrl: 'https://www2.gov.bc.ca/gov/content/home',
+		bcGovPrivacyUrl: 'https://www2.gov.bc.ca/gov/content/home/privacy',
+		bcGovDisclaimerUrl: 'https://www2.gov.bc.ca/gov/content/home/disclaimer',
+		bcGovAccessibilityUrl: 'https://www2.gov.bc.ca/gov/content/home/accessibility',
+		bcGovCopyrightUrl: 'https://www2.gov.bc.ca/gov/content/home/copyright',
+		bcGovContactUrl: 'https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services',
+		bcRegistriesAccountUrl: 'https://www.account.bcregistry.gov.bc.ca/decide-business',
+		bcServicesCardUrl: 'https://www2.gov.bc.ca/gov/content/governments/government-id/bc-services-card',
+		canadianPassportPhotoUrl:
+			'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html',
+		changeNameOrAddressUrl: 'https://www.icbc.com/driver-licensing/getting-licensed/Change-your-name-or-address',
 		contactSpdUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/about/security-programs-division#contact',
+		controllingMemberChecklistUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
+		mentalHealthConditionsFormUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms',
+		proofOfInsuranceUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/qualifying',
+		rcmpUrl: 'https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry',
 		setupAccountUrl: 'https://id.gov.bc.ca/account/',
-		addressChangeUrl: 'https://www.addresschange.gov.bc.ca/',
-		permitBodyAmourViewExemptions:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/body-armour/possessing',
-		permitArmouredVehicleViewExemptions:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/armoured-vehicles/who-not-require-permit',
+		safetyCertificateChecklistUrl:
+			'https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/10_207_2008#section4',
+		securityIndustryLicensingUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing',
+		securityIndustryLicensingCmUrl:
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/controlling-members',
+		securityLicensingProcessAndLicenceConditionsPoliciesUrl:
+			'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf',
+		securityServicesActUrl: 'https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/07030_01',
 	},
 	files: {
 		businessMemberAuthConsentManualForm: './assets/files/Business Member Auth Consent.pdf',
