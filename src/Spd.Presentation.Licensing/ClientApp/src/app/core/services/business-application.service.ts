@@ -274,11 +274,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		);
 	}
 
-	payBusinessLicenceNew(params: { paymentSuccess: string; paymentReason: string }): void {
+	payBusinessLicenceNew(): void {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
 		const body = this.getSaveBodyBase(businessModelFormValue);
 
 		body.agreeToCompleteAndAccurate = true;
+
+		const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+			ServiceTypeCode.SecurityBusinessLicence,
+			ApplicationTypeCode.New
+		);
 
 		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
@@ -305,7 +310,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 					.subscribe({
 						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-							this.hotToastService.success(params.paymentSuccess);
+							this.hotToastService.success(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
 						error: (error: any) => {
@@ -316,7 +321,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 			} else {
 				this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 					next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-						this.hotToastService.success(params.paymentSuccess);
+						this.hotToastService.success(successMessage);
 						this.commonApplicationService.onGoToHome();
 					},
 					error: (error: any) => {
@@ -329,8 +334,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.bizLicensingService.apiBusinessLicenceApplicationSubmitPost$Response({ body }).subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success(params.paymentSuccess);
-				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
+				this.hotToastService.success(successMessage);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -338,8 +343,13 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	payBusinessLicenceRenewal(params: { paymentSuccess: string; paymentReason: string }): void {
+	payBusinessLicenceRenewal(): void {
 		const businessModelFormValue = this.businessModelFormGroup.getRawValue();
+
+		const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+			ServiceTypeCode.SecurityBusinessLicence,
+			ApplicationTypeCode.Renewal
+		);
 
 		if (businessModelFormValue.isControllingMembersWithoutSwlExist) {
 			const membersWithoutSwl = businessModelFormValue.controllingMembersData.membersWithoutSwl;
@@ -365,7 +375,7 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 					)
 					.subscribe({
 						next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-							this.hotToastService.success(params.paymentSuccess);
+							this.hotToastService.success(successMessage);
 							this.commonApplicationService.onGoToHome();
 						},
 						error: (error: any) => {
@@ -379,8 +389,8 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success(params.paymentSuccess);
-				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
+				this.hotToastService.success(successMessage);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);
@@ -388,11 +398,16 @@ export class BusinessApplicationService extends BusinessApplicationHelper {
 		});
 	}
 
-	payBusinessLicenceUpdateOrReplace(params: { paymentSuccess: string; paymentReason: string }): void {
+	payBusinessLicenceUpdateOrReplace(params: { applicationTypeCode: ApplicationTypeCode }): void {
 		this.submitBusinessLicenceRenewalOrUpdateOrReplace().subscribe({
 			next: (_resp: StrictHttpResponse<BizLicAppCommandResponse>) => {
-				this.hotToastService.success(params.paymentSuccess);
-				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!, params.paymentReason);
+				const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+					ServiceTypeCode.SecurityBusinessLicence,
+					params.applicationTypeCode
+				);
+
+				this.hotToastService.success(successMessage);
+				this.commonApplicationService.payNowBusinessLicence(_resp.body.licenceAppId!);
 			},
 			error: (error: any) => {
 				console.log('An error occurred during save', error);

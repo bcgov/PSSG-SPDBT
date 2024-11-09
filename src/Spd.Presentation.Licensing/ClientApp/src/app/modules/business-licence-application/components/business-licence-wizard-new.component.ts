@@ -256,10 +256,7 @@ export class BusinessLicenceWizardNewComponent extends BaseWizardComponent imple
 	}
 
 	onNextSubmit(): void {
-		this.businessApplicationService.payBusinessLicenceNew({
-			paymentSuccess: 'Your business licence has been successfully submitted',
-			paymentReason: 'Payment for new Business Licence application',
-		});
+		this.businessApplicationService.payBusinessLicenceNew();
 	}
 
 	onNextStepperStep(stepper: MatStepper): void {

@@ -3,7 +3,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { Router } from '@angular/router';
-import { ApplicationTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
+import { ApplicationTypeCode, ServiceTypeCode, WorkerLicenceCommandResponse } from '@app/api/models';
 import { StrictHttpResponse } from '@app/api/strict-http-response';
 import { BooleanTypeCode } from '@app/core/code-types/model-desc.models';
 import { BaseWizardComponent } from '@app/core/components/base-wizard.component';
@@ -279,7 +279,12 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 					if (this.updateLicenceCost > 0) {
 						this.stepReviewLicenceComponent?.onGoToLastStep();
 					} else {
-						this.hotToastService.success('Your licence update has been successfully submitted');
+						const successMessage = this.commonApplicationService.getSubmitSuccessMessage(
+							ServiceTypeCode.SecurityWorkerLicence,
+							ApplicationTypeCode.Update
+						);
+						this.hotToastService.success(successMessage);
+
 						this.router.navigateByUrl(
 							PersonalLicenceApplicationRoutes.path(PersonalLicenceApplicationRoutes.LICENCE_UPDATE_SUCCESS)
 						);
@@ -305,6 +310,6 @@ export class WorkerLicenceWizardAnonymousUpdateComponent extends BaseWizardCompo
 	}
 
 	private payNow(licenceAppId: string): void {
-		this.commonApplicationService.payNowAnonymous(licenceAppId, 'Payment for Security Worker Licence update');
+		this.commonApplicationService.payNowPersonalLicenceAnonymous(licenceAppId);
 	}
 }

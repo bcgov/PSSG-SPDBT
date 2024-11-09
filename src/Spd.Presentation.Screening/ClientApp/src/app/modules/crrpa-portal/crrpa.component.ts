@@ -410,7 +410,6 @@ export class CrrpaComponent implements OnInit {
 		const body: PaymentLinkCreateRequest = {
 			applicationId: applicationId,
 			paymentMethod: PaymentMethodCode.CreditCard,
-			description: 'Payment for Case',
 		};
 		this.paymentService
 			.apiCrrpaPaymentLinkPost({
