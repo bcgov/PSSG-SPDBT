@@ -209,6 +209,10 @@ internal static class SharedContactFuncs
         existingContact.spd_selfdisclosuredetails = newContact.spd_selfdisclosuredetails ?? existingContact.spd_selfdisclosuredetails;
         existingContact.spd_lastloggedinlicensingportal = newContact.spd_lastloggedinlicensingportal ?? existingContact.spd_lastloggedinlicensingportal;
         existingContact.spd_lastloggedinscreeningportal = newContact.spd_lastloggedinscreeningportal ?? existingContact.spd_lastloggedinscreeningportal;
+        existingContact.spd_height = newContact.spd_height ?? existingContact.spd_height;
+        existingContact.spd_weight = newContact.spd_weight ?? existingContact.spd_weight;
+        existingContact.spd_eyecolour = newContact.spd_eyecolour ?? existingContact.spd_eyecolour;
+        existingContact.spd_haircolour = newContact.spd_haircolour ?? existingContact.spd_haircolour;
         return existingContact;
     }
 }

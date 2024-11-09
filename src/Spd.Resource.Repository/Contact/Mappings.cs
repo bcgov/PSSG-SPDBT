@@ -32,7 +32,13 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.IsTreatedForMHC, opt => opt.MapFrom(s => SharedMappingFuncs.GetBool(s.spd_mentalhealthcondition)))
             .ForMember(d => d.LicensingTermAgreedDateTime, opt => opt.MapFrom(s => s.spd_lastloggedinlicensingportal))
             .ForMember(d => d.LastestScreeningLogin, opt => opt.MapFrom(s => s.spd_lastloggedinscreeningportal))
-            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.statecode == DynamicsConstants.StateCode_Active));
+            .ForMember(d => d.IsActive, opt => opt.MapFrom(s => s.statecode == DynamicsConstants.StateCode_Active))
+            .ForMember(d => d.HairColourCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColorEnum(s.spd_haircolour)))
+            .ForMember(d => d.EyeColourCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColorEnum(s.spd_eyecolour)))
+            .ForMember(d => d.Height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightNumber(s.spd_height)))
+            .ForMember(d => d.HeightUnitCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightUnitCode(s.spd_height)))
+            .ForMember(d => d.Weight, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightNumber(s.spd_weight)))
+            .ForMember(d => d.WeightUnitCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightUnitCode(s.spd_weight)));
 
             _ = CreateMap<ContactCmd, contact>()
             .ForMember(d => d.firstname, opt => opt.MapFrom(s => StringHelper.ToTitleCase(s.FirstName)))
@@ -55,7 +61,6 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.address2_country, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.Country))
             .ForMember(d => d.address2_stateorprovince, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.Province))
             .ForMember(d => d.address2_postalcode, opt => opt.MapFrom(s => s.ResidentialAddress == null ? null : s.ResidentialAddress.PostalCode))
-
             .ForMember(d => d.spd_selfdisclosure, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasCriminalHistory)))
             .ForMember(d => d.spd_selfdisclosuredetails, opt => opt.MapFrom(s => s.CriminalChargeDescription))
             .ForMember(d => d.spd_peaceofficer, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsPoliceOrPeaceOfficer)))
@@ -63,7 +68,11 @@ namespace Spd.Resource.Repository.Contact
             .ForMember(d => d.spd_peaceofficerother, opt => opt.MapFrom(s => s.OtherOfficerRole))
             .ForMember(d => d.spd_mentalhealthcondition, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.IsTreatedForMHC)))
             .ForMember(d => d.spd_lastloggedinlicensingportal, opt => opt.Ignore())
-            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore());
+            .ForMember(d => d.spd_lastloggedinscreeningportal, opt => opt.Ignore())
+            .ForMember(d => d.spd_haircolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetHairColor(s.HairColourCode)))
+            .ForMember(d => d.spd_eyecolour, opt => opt.MapFrom(s => SharedMappingFuncs.GetEyeColor(s.EyeColourCode)))
+            .ForMember(d => d.spd_height, opt => opt.MapFrom(s => SharedMappingFuncs.GetHeightStr(s.Height, s.HeightUnitCode)))
+            .ForMember(d => d.spd_weight, opt => opt.MapFrom(s => SharedMappingFuncs.GetWeightStr(s.Weight, s.WeightUnitCode)));
 
             _ = CreateMap<CreateContactCmd, contact>()
             .ForMember(d => d.contactid, opt => opt.MapFrom(s => Guid.NewGuid()))
