@@ -1,6 +1,5 @@
 using MediatR;
 using Spd.Manager.Shared;
-using Spd.Resource.Repository;
 using Spd.Utilities.LogonUser;
 
 namespace Spd.Manager.Licence
@@ -63,7 +62,14 @@ namespace Spd.Manager.Licence
         public string? OtherOfficerRole { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
+        public HairColourCode? HairColourCode { get; set; }
+        public EyeColourCode? EyeColourCode { get; set; }
+        public int? Height { get; set; }
+        public HeightUnitCode? HeightUnitCode { get; set; }
+        public int? Weight { get; set; }
+        public WeightUnitCode? WeightUnitCode { get; set; }
     }
+
     public record ApplicantProfileResponse : Applicant
     {
         public Guid ApplicantId { get; set; } //which is contact id in db

@@ -162,7 +162,7 @@ namespace Spd.Manager.Licence
             if (response.Any())
                 throw new ApiException(HttpStatusCode.BadRequest, "There is some application in progress, you cannot update your profile.");
 
-            await ValidateFilesAsync(cmd, ct);
+            //await ValidateFilesAsync(cmd, ct);
 
             ContactResp contact = await _contactRepository.GetAsync(cmd.ApplicantId, ct);
 

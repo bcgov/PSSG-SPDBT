@@ -1,4 +1,5 @@
 using Spd.Resource.Repository.Alias;
+using Spd.Resource.Repository.PersonLicApplication;
 
 namespace Spd.Resource.Repository.Contact
 {
@@ -36,6 +37,12 @@ namespace Spd.Resource.Repository.Contact
         public bool? HasCriminalHistory { get; set; }
         public string? CriminalChargeDescription { get; set; }
         public string? BirthPlace { get; set; }
+        public HairColourEnum? HairColourCode { get; set; }
+        public EyeColourEnum? EyeColourCode { get; set; }
+        public int? Height { get; set; }
+        public HeightUnitEnum? HeightUnitCode { get; set; }
+        public int? Weight { get; set; }
+        public WeightUnitEnum? WeightUnitCode { get; set; }
     }
     public record ContactResp : Contact
     {
