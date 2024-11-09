@@ -257,19 +257,19 @@ internal static class SharedMappingFuncs
         return false;
     }
 
-    internal static string? GetWeightStr(LicenceApplication app)
+    internal static string? GetWeightStr(int? weight, WeightUnitEnum? unit)
     {
-        if (app.WeightUnitCode != null)
+        if (unit != null)
         {
-            return app.WeightUnitCode switch
+            return unit switch
             {
-                WeightUnitEnum.Kilograms => app.Weight + "kg",
-                WeightUnitEnum.Pounds => app.Weight + "lb",
+                WeightUnitEnum.Kilograms => weight + "kg",
+                WeightUnitEnum.Pounds => weight + "lb",
             };
         }
         else
         {
-            return app.Weight.ToString();
+            return weight?.ToString();
         }
     }
 
@@ -306,20 +306,20 @@ internal static class SharedMappingFuncs
         }
     }
 
-    internal static string GetHeightStr(LicenceApplication app)
+    internal static string? GetHeightStr(int? height, HeightUnitEnum? unit)
     {
         //if residential address is the same as mailing address, fe will send an empty mailing address
-        if (app.HeightUnitCode != null)
+        if (unit != null)
         {
-            return app.HeightUnitCode switch
+            return unit switch
             {
-                HeightUnitEnum.Centimeters => app.Height + "cm",
-                HeightUnitEnum.Inches => app.Height + "in", //todo: when ui decide what to use.
+                HeightUnitEnum.Centimeters => height + "cm",
+                HeightUnitEnum.Inches => height + "in", //todo: when ui decide what to use.
             };
         }
         else
         {
-            return app.Height.ToString();
+            return height?.ToString();
         }
     }
 

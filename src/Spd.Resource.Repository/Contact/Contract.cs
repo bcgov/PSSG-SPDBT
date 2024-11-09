@@ -37,6 +37,12 @@ namespace Spd.Resource.Repository.Contact
         public bool? HasCriminalHistory { get; set; }
         public string? CriminalChargeDescription { get; set; }
         public string? BirthPlace { get; set; }
+        public HairColourEnum? HairColourCode { get; set; }
+        public EyeColourEnum? EyeColourCode { get; set; }
+        public int? Height { get; set; }
+        public HeightUnitEnum? HeightUnitCode { get; set; }
+        public int? Weight { get; set; }
+        public WeightUnitEnum? WeightUnitCode { get; set; }
     }
     public record ContactResp : Contact
     {
@@ -45,13 +51,6 @@ namespace Spd.Resource.Repository.Contact
         public DateTimeOffset? LicensingTermAgreedDateTime { get; set; }
         public IEnumerable<LicenceInfo> LicenceInfos { get; set; } = [];
         public bool IsActive { get; set; } = true;
-        public HairColourEnum? HairColourCode { get; set; }
-        public EyeColourEnum? EyeColourCode { get; set; }
-        public int? Height { get; set; }
-        public HeightUnitEnum? HeightUnitCode { get; set; }
-        public int? Weight { get; set; }
-        public WeightUnitEnum? WeightUnitCode { get; set; }
-
     }
     public record LicenceInfo
     {

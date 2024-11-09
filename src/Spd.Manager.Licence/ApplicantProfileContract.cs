@@ -62,19 +62,20 @@ namespace Spd.Manager.Licence
         public string? OtherOfficerRole { get; set; }
         public bool? IsTreatedForMHC { get; set; }
         public bool? HasCriminalHistory { get; set; }
-    }
-    public record ApplicantProfileResponse : Applicant
-    {
-        public Guid ApplicantId { get; set; } //which is contact id in db
-        public string Sub { get; set; } = null!; //bcsc sub
-        public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
-        public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
         public HairColourCode? HairColourCode { get; set; }
         public EyeColourCode? EyeColourCode { get; set; }
         public int? Height { get; set; }
         public HeightUnitCode? HeightUnitCode { get; set; }
         public int? Weight { get; set; }
         public WeightUnitCode? WeightUnitCode { get; set; }
+    }
+
+    public record ApplicantProfileResponse : Applicant
+    {
+        public Guid ApplicantId { get; set; } //which is contact id in db
+        public string Sub { get; set; } = null!; //bcsc sub
+        public IdentityProviderTypeCode IdentityProviderTypeCode { get; set; } = IdentityProviderTypeCode.BcServicesCard;
+        public IEnumerable<Document> DocumentInfos { get; set; } = Enumerable.Empty<Document>();
     }
     public record ApplicantListResponse
     {
