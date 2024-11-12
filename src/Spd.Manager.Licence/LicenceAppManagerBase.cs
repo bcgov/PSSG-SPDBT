@@ -64,7 +64,12 @@ internal abstract class LicenceAppManagerBase
         ApplicationStatusEnum status;
 
         if (licenceFee == null || licenceFee.Amount == 0)
-            status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
+        {
+            if (licAppBase.ServiceTypeCode == ServiceTypeCode.SECURITY_BUSINESS_LICENCE_CONTROLLING_MEMBER_CRC)
+                status = ApplicationStatusEnum.PaymentPending;
+            else
+                status = isNewOrRenewal && !IsAuthenticated ? ApplicationStatusEnum.ApplicantVerification : ApplicationStatusEnum.Submitted;
+        }
         else
             status = ApplicationStatusEnum.PaymentPending;
 
@@ -83,7 +88,7 @@ internal abstract class LicenceAppManagerBase
                 Enum.Parse<LicenceTermEnum>(licAppBase.LicenceTermCode.ToString()));
         }
         // Commit the main licence application
-        await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount, ct);
+        await _licAppRepository.CommitLicenceApplicationAsync(licenceAppId, status, licenceFee?.Amount ?? 0, ct);
 
         return licenceFee?.Amount ?? 0;
     }

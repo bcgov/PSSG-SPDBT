@@ -1,34 +1,20 @@
 ﻿using AutoMapper;
 using MediatR;
-using Spd.Resource.Repository.BizLicApplication;
-using Spd.Resource.Repository.ControllingMemberCrcApplication;
-using Spd.Resource.Repository.Document;
-using Spd.Manager.Licence;
-using Spd.Utilities.Shared.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Spd.Resource.Repository.LicenceFee;
-using Spd.Resource.Repository.Licence;
-using Spd.Utilities.FileStorage;
-using Spd.Resource.Repository.LicApp;
-using Spd.Resource.Repository.PersonLicApplication;
-using Spd.Resource.Repository.Application;
-using Spd.Resource.Repository.ApplicationInvite;
 using Spd.Resource.Repository;
-using Spd.Resource.Repository.ControllingMemberInvite;
+using Spd.Resource.Repository.BizContact;
 using Spd.Resource.Repository.Contact;
-using Spd.Resource.Repository.Alias;
-using Spd.Manager.Shared;
+using Spd.Resource.Repository.ControllingMemberCrcApplication;
+using Spd.Resource.Repository.ControllingMemberInvite;
+using Spd.Resource.Repository.Document;
+using Spd.Resource.Repository.LicApp;
+using Spd.Resource.Repository.Licence;
+using Spd.Resource.Repository.LicenceFee;
 using Spd.Resource.Repository.Tasks;
 using Spd.Utilities.Dynamics;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Spd.Resource.Repository.BizContact;
-using Microsoft.Dynamics.CRM;
+using Spd.Utilities.FileStorage;
+using Spd.Utilities.Shared.Exceptions;
+using System.Net;
+using System.Text;
 
 namespace Spd.Manager.Licence;
 internal class ControllingMemberCrcAppManager :
@@ -98,7 +84,7 @@ internal class ControllingMemberCrcAppManager :
         if (contact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Applicant info not found");
 
-        BizContactResp? bizContact = await _bizContactRepository.GetBizContactAsync((Guid)request.BizContactId, ct);
+        BizContactResp? bizContact = await _bizContactRepository.GetBizContactAsync(request.BizContactId, ct);
         if (bizContact == null)
             throw new ApiException(HttpStatusCode.BadRequest, "Business Contact not found");
         LicenceListResp licences = await _licenceRepository.QueryAsync(new LicenceQry()
@@ -145,7 +131,6 @@ internal class ControllingMemberCrcAppManager :
         ValidateFilesForNewApp(cmd);
 
         ControllingMemberCrcAppSubmitRequest request = cmd.ControllingMemberCrcAppSubmitRequest;
-        
 
         SaveControllingMemberCrcAppCmd createApp = _mapper.Map<SaveControllingMemberCrcAppCmd>(request);
         createApp.UploadedDocumentEnums = GetUploadedDocumentEnums(cmd.LicAppFileInfos, new List<LicAppFileInfo>());
@@ -155,7 +140,14 @@ internal class ControllingMemberCrcAppManager :
         await UploadNewDocsAsync(request.DocumentExpiredInfos, cmd.LicAppFileInfos, response.ControllingMemberAppId, response.ContactId, null, null, null, null, null, ct);
 
         //commit app
-        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode, ApplicationOriginTypeCode = request.ApplicationOriginTypeCode }, response.ControllingMemberAppId, ct);
+        await CommitApplicationAsync(
+            new LicenceAppBase()
+            {
+                ApplicationTypeCode = request.ApplicationTypeCode,
+                ApplicationOriginTypeCode = request.ApplicationOriginTypeCode,
+                ServiceTypeCode = request.ServiceTypeCode,
+            },
+            response.ControllingMemberAppId, ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppSubmitRequest.InviteId, ct);
 
         return _mapper.Map<ControllingMemberCrcAppCommandResponse>(response);
@@ -186,7 +178,15 @@ internal class ControllingMemberCrcAppManager :
         var response = await this.Handle((ControllingMemberCrcUpsertCommand)cmd, ct);
         //move files from transient bucket to main bucket when app status changed to PaymentPending.
         await MoveFilesAsync(response.ControllingMemberAppId, ct);
-        await CommitApplicationAsync(new LicenceAppBase() { ApplicationTypeCode = request.ApplicationTypeCode, ApplicationOriginTypeCode = request.ApplicationOriginTypeCode }, response.ControllingMemberAppId, ct);
+        await CommitApplicationAsync(
+            new LicenceAppBase()
+            {
+                ApplicationTypeCode = request.ApplicationTypeCode,
+                ApplicationOriginTypeCode = request.ApplicationOriginTypeCode,
+                ServiceTypeCode = request.ServiceTypeCode,
+            },
+            response.ControllingMemberAppId,
+            ct);
         await DeactiveInviteAsync(cmd.ControllingMemberCrcAppUpsertRequest.InviteId, ct);
         return new ControllingMemberCrcAppCommandResponse { ControllingMemberAppId = response.ControllingMemberAppId };
     }
@@ -318,7 +318,6 @@ internal class ControllingMemberCrcAppManager :
         ChangeSpec changes = new();
         StringBuilder descriptionBuilder = new();
         List<string> fileNames = new List<string>();
-
 
         // Collect file names for attachments
         fileNames.AddRange(newFileInfos

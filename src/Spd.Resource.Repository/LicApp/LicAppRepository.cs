@@ -32,7 +32,7 @@ internal class LicAppRepository : ILicAppRepository
         app.spd_submittedon = DateTimeOffset.Now;
         app.spd_portalmodifiedon = DateTimeOffset.Now;
 
-        if (price is > 0)
+        if (price != null && price >= 0)
             app.spd_licencefee = price;
 
         if (term != null) //spdbt-3194
