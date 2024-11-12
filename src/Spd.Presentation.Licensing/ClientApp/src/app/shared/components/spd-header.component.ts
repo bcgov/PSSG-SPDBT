@@ -21,8 +21,6 @@ import { Subscription } from 'rxjs';
 			</div>
 			<span style="flex: 1 1 auto;"></span>
 
-			<!-- <mat-chip-option class="me-3" *ngIf="env" disabled>{{ env }}</mat-chip-option> -->
-
 			<mat-icon matTooltip="Logout" class="logout-button me-2" *ngIf="hasValidToken" (click)="onLogout()"
 				>logout</mat-icon
 			>

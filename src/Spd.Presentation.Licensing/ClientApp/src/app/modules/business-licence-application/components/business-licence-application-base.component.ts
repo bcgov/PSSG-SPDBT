@@ -40,17 +40,14 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		const bizLicAppId: string | undefined = queryParams['bizLicAppId'];
 		const linkedSoleProprietorBizLicId: string | undefined = queryParams['linkedSoleProprietorBizLicId'];
 
-		console.debug('BusinessLicenceApplicationBaseComponent queryParams', queryParams);
-
 		const params: URLSearchParams = new URLSearchParams();
 		if (defaultBizId) params.set('bizId', defaultBizId);
 		if (swlLicAppId) params.set('swlLicAppId', swlLicAppId);
 		if (bizLicAppId) params.set('bizLicAppId', bizLicAppId);
 		if (linkedSoleProprietorBizLicId) params.set('linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
-		const currentPath = location.pathname;
-
 		// to handle relative urls, look for '/business-licence/' to get the default route
+		const currentPath = location.pathname;
 		const startOfRoute = currentPath.indexOf('/' + BusinessLicenceApplicationRoutes.MODULE_PATH + '/');
 		const defaultRoute = currentPath.substring(startOfRoute);
 
@@ -69,10 +66,12 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			defaultRoute.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
 			defaultRoute.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
 		) {
-			redirectComponentRoute = defaultRoute;
+			redirectComponentRoute = `${defaultRoute}?${params.toString()}`;
+		} else {
+			redirectComponentRoute = BusinessLicenceApplicationRoutes.pathBusinessLicence();
 		}
 
-		console.debug('**** base **** redirectComponentRoute', redirectComponentRoute);
+		console.debug('**** BaseComponent **** redirectComponentRoute', redirectComponentRoute);
 
 		this.authProcessService.logoutBcsc(redirectComponentRoute);
 
@@ -82,10 +81,11 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			params.toString()
 		);
 
-		console.debug('**** base **** loginInfo', loginInfo);
-		console.debug('**** base **** swlLicAppId', swlLicAppId);
-		console.debug('**** base **** bizLicAppId', bizLicAppId);
-		console.debug('**** base **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
+		console.debug('**** BaseComponent **** loginInfo', loginInfo);
+		console.debug('**** BaseComponent **** defaultBizId', defaultBizId);
+		console.debug('**** BaseComponent **** swlLicAppId', swlLicAppId);
+		console.debug('**** BaseComponent **** bizLicAppId', bizLicAppId);
+		console.debug('**** BaseComponent **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
 		if (loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
 			if ((swlLicAppId || bizLicAppId) && loginInfo.state) {
@@ -94,11 +94,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 					.getNewBusinessLicenceWithSwlCombinedFlow(swlLicAppId, bizLicAppId)
 					.pipe(
 						tap((_resp: any) => {
-							this.router.navigateByUrl(
-								`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
-									BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR
-								)}?${loginInfo.state}`
-							);
+							this.router.navigateByUrl(`${redirectComponentRoute}`);
 						}),
 						take(1)
 					)
@@ -118,11 +114,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 					.getRenewalBusinessLicenceWithSwlCombinedFlow(swlLicAppId, linkedSoleProprietorBizLicId)
 					.pipe(
 						tap((_resp: any) => {
-							this.router.navigateByUrl(
-								`${BusinessLicenceApplicationRoutes.pathBusinessLicence(
-									BusinessLicenceApplicationRoutes.BUSINESS_RENEWAL_SOLE_PROPRIETOR
-								)}?${loginInfo.state}`
-							);
+							this.router.navigateByUrl(`${redirectComponentRoute}`);
 						}),
 						take(1)
 					)
@@ -136,18 +128,22 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		}
 
 		// If the user is navigating to a payment page, the service does not have to be initialized
-		const path = this.router.url;
 		if (
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
-			path.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
+			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_SUCCESS) ||
+			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_FAIL) ||
+			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_CANCEL) ||
+			loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.PAYMENT_ERROR)
 		) {
+			this.router.navigateByUrl(`${redirectComponentRoute}`);
 			return;
 		}
 
+		const isFirstTimeLogin = this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin ?? false;
+
+		console.debug('**** BaseComponent **** isFirstTimeLogin', isFirstTimeLogin);
+
 		// handle first time login
-		if (this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
+		if (isFirstTimeLogin) {
 			this.router.navigateByUrl(
 				BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS)
 			);

@@ -11,26 +11,40 @@ import { UtilService } from '@app/core/services/util.service';
 			<div class="row">
 				<div class="offset-xxl-1 col-xxl-10 offset-xl-1 col-xl-10 col-lg-12 col-md-12 col-sm-12">
 					<div class="conditions px-3 mb-3" (scroll)="onScrollTermsAndConditions($event)">
-						<div class="fs-5 mt-2 mb-3">
-							<ng-container *ngIf="isNewOrRenewal; else isUpdate">
+						<ng-container *ngIf="isNewOrRenewal; else isUpdate">
+							<div class="fs-5 mt-2 mb-3">
 								Terms of Use for Submitting a New or Renewal Security Worker Licence or Permit Application Online,
 								including Related Prescribed Checks
-							</ng-container>
-							<ng-template #isUpdate>
+							</div>
+							<p>
+								In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic
+								Security Services Portal (the "Site") on their own behalf to submit a new or renewal online application
+								for a security worker licence, armoured vehicle permit, or body armour permit. Your new or renewal
+								licence or permit application includes authorizations for the British Columbia Registrar of Security
+								Services (Registrar) to carry out a criminal record check, police information check and a correctional
+								service information check on you (Prescribed Checks). These Terms of Use apply to the online application
+								process, including your request to submit to Prescribed Checks administered by the Registrar. You will
+								be directed to a separate page for specific consent language as it relates to the conduct of Prescribed
+								Checks.
+							</p>
+						</ng-container>
+						<ng-template #isUpdate>
+							<div class="fs-5 mt-2 mb-3">
 								Terms of Use for Submitting an Update to or Requesting a Replacement of a Security Worker Licence or
 								Permit Application Online, including Related Prescribed Checks
-							</ng-template>
-						</div>
-						<p>
-							In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic Security
-							Services Portal (the "Site") on their own behalf to submit a new or renewal online application for a
-							security worker licence, armoured vehicle permit, or body armour permit. Your new or renewal licence or
-							permit application includes authorizations for the British Columbia Registrar of Security Services
-							(Registrar) to carry out a criminal record check, police information check and a correctional service
-							information check on you (Prescribed Checks). These Terms of Use apply to the online application process,
-							including your request to submit to Prescribed Checks administered by the Registrar. You will be directed
-							to a separate page for specific consent language as it relates to the conduct of Prescribed Checks.
-						</p>
+							</div>
+							<p>
+								In these Terms of Use, "you" or "your" includes the individual using or accessing the Electronic
+								Security Services Portal (the "Site") on their own behalf to submit an update to, or request a
+								replacement of, a security worker licence, armoured vehicle permit, or body armour permit. Your new or
+								renewal licence or permit application includes authorizations for the British Columbia Registrar of
+								Security Services (Registrar) to carry out a criminal record check, police information check and a
+								correctional service information check on you (Prescribed Checks). These Terms of Use apply to the
+								online application process, including your request to submit to Prescribed Checks administered by the
+								Registrar. You will be directed to a separate page for specific consent language as it relates to the
+								conduct of Prescribed Checks.
+							</p>
+						</ng-template>
 						<p>
 							These Terms of Use are an agreement between you and His Majesty the King in Right of the Province of
 							British Columbia, represented by the Minister of Public Safety and Solicitor General (the "Province") and
