@@ -4,8 +4,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-builder
 RUN mkdir /tools && \
     dotnet tool install --tool-path /tools dotnet-trace && \
     dotnet tool install --tool-path /tools dotnet-counters && \
-    dotnet tool install --tool-path /tools dotnet-dump && \
-    dotnet tool install --tool-path /tools dotnet-monitor
+    dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /src
 
