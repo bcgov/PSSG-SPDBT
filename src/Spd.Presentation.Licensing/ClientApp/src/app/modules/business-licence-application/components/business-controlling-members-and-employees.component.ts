@@ -41,7 +41,7 @@ import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-
 					</div>
 					<mat-divider class="mat-divider-main mb-3"></mat-divider>
 
-					<app-common-controlling-members [isWizard]="false" [defaultExpanded]="true"></app-common-controlling-members>
+					<app-common-controlling-members [defaultExpanded]="true"></app-common-controlling-members>
 
 					<div class="mt-3">
 						<app-common-employees [defaultExpanded]="true"></app-common-employees>

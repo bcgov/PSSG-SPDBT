@@ -136,10 +136,11 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	showManageMembersAndEmployees!: boolean;
-	isControllingMemberWarning!: boolean;
-	applicationIsInProgress!: boolean;
-	getApplicationIsDraftOrWaitingForPayment!: boolean;
+	// these are calculated when the data is loaded
+	showManageMembersAndEmployees = false;
+	isControllingMemberWarning = false;
+	applicationIsInProgress = true;
+	getApplicationIsDraftOrWaitingForPayment = false;
 	businessProfileLabel = '';
 	lostLicenceDaysText = 'TBD';
 
