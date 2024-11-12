@@ -4,7 +4,6 @@ import { BaseWizardStepComponent } from '@app/core/components/base-wizard-step.c
 import { PermitApplicationService } from '@app/core/services/permit-application.service';
 import { StepPermitBcDriverLicenceComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-bc-driver-licence.component';
 import { StepPermitCitizenshipComponent } from '@app/modules/personal-licence-application/components/anonymous/permit-wizard-step-components/step-permit-citizenship.component';
-import { StepPermitPhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/permit-wizard-step-components/step-permit-physical-characteristics.component';
 import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograph-of-yourself.component';
 
 @Component({
@@ -49,23 +48,8 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_PHOTOGRAPH_OF_YOURSELF)"
 					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_PHOTOGRAPH_OF_YOURSELF)"
+					(nextStepperStep)="onStepNext(STEP_PHOTOGRAPH_OF_YOURSELF)"
 					(nextReviewStepperStep)="onNextReview(STEP_PHOTOGRAPH_OF_YOURSELF)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
-				<app-step-permit-physical-characteristics
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-permit-physical-characteristics>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_PHYSICAL_CHARACTERISTICS)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onStepNext(STEP_PHYSICAL_CHARACTERISTICS)"
-					(nextReviewStepperStep)="onNextReview(STEP_PHYSICAL_CHARACTERISTICS)"
 				></app-wizard-footer>
 			</mat-step>
 		</mat-stepper>
@@ -76,8 +60,7 @@ import { StepPermitPhotographOfYourselfComponent } from './step-permit-photograp
 export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardStepComponent {
 	readonly STEP_CITIZENSHIP = 1;
 	readonly STEP_BC_DRIVERS_LICENCE = 2;
-	readonly STEP_PHYSICAL_CHARACTERISTICS = 3;
-	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 4;
+	readonly STEP_PHOTOGRAPH_OF_YOURSELF = 3;
 
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 	@Input() isFormValid = false;
@@ -86,8 +69,6 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 	@ViewChild(StepPermitCitizenshipComponent) stepCitizenshipComponent!: StepPermitCitizenshipComponent;
 	@ViewChild(StepPermitBcDriverLicenceComponent)
 	stepDriverLicenceComponent!: StepPermitBcDriverLicenceComponent;
-	@ViewChild(StepPermitPhysicalCharacteristicsComponent)
-	stepCharacteristicsComponent!: StepPermitPhysicalCharacteristicsComponent;
 	@ViewChild(StepPermitPhotographOfYourselfComponent)
 	stepPhotographComponent!: StepPermitPhotographOfYourselfComponent;
 
@@ -108,8 +89,6 @@ export class StepsPermitIdentificationAuthenticatedComponent extends BaseWizardS
 				return this.stepCitizenshipComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:
 				return this.stepDriverLicenceComponent.isFormValid();
-			case this.STEP_PHYSICAL_CHARACTERISTICS:
-				return this.stepCharacteristicsComponent.isFormValid();
 			case this.STEP_PHOTOGRAPH_OF_YOURSELF:
 				return this.stepPhotographComponent.isFormValid();
 		}

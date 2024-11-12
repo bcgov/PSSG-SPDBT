@@ -222,6 +222,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		const mailingAddressData = permitModelFormValue.mailingAddressData;
 		const personalInformationData = permitModelFormValue.personalInformationData;
 		const criminalHistoryData = permitModelFormValue.criminalHistoryData;
+		const characteristicsData = permitModelFormValue.characteristicsData;
 
 		// Even thought this used by permits, still need to save the original data
 		const policeBackgroundData = permitModelFormValue.policeBackgroundData;
@@ -249,6 +250,12 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
 			hasNewMentalHealthCondition = isTreatedForMHC;
 			hasNewCriminalRecordCharge = hasCriminalHistory;
+		}
+
+		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
+			const ft: number = +characteristicsData.height;
+			const inch: number = +characteristicsData.heightInches;
+			characteristicsData.height = String(ft * 12 + inch);
 		}
 
 		const requestbody: ApplicantUpdateRequest = {
@@ -284,6 +291,7 @@ export abstract class PermitApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
 			residentialAddress: residentialAddressData,
+			...characteristicsData,
 		};
 
 		console.debug('[getProfileSaveBody] permitModelFormValue', permitModelFormValue);
