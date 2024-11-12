@@ -115,7 +115,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_submittedon, opt => opt.Ignore())
          .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
          .ForMember(d => d.spd_consent, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
-         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => GetDeclarationDate(s)))
+         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDeclarationDate(s.AgreeToCompleteAndAccurate)))
          .ForMember(d => d.spd_legalnamechange, opt => opt.MapFrom(s => SharedMappingFuncs.GetYesNo(s.HasLegalNameChanged)))
          .ForMember(d => d.spd_employeraddress1, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : StringHelper.SanitizeEmpty(s.EmployerPrimaryAddress.AddressLine1)))
          .ForMember(d => d.spd_employeraddress2, opt => opt.MapFrom(s => s.EmployerPrimaryAddress == null ? null : StringHelper.SanitizeEmpty(s.EmployerPrimaryAddress.AddressLine2)))
@@ -215,11 +215,6 @@ internal class Mappings : Profile
           .ForMember(d => d.spd_middlename2, opt => opt.MapFrom(s => s.MiddleName2))
           .ForMember(d => d.spd_source, opt => opt.MapFrom(s => AliasSourceTypeOptionSet.UserEntered))
           .ReverseMap();
-    }
-
-    private static DateTimeOffset? GetDeclarationDate(LicenceApplication app)
-    {
-        return app.AgreeToCompleteAndAccurate != null && app.AgreeToCompleteAndAccurate == true ? DateTime.Now : null;
     }
 
     private static int? GetLicenceTerm(LicenceTermEnum? code)
