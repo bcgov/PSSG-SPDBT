@@ -172,17 +172,28 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 						>
 							<div class="row mb-2">
 								<div class="col-12">
-									<ng-container *ngIf="isCanadianCitizen.value === booleanTypeCodes.Yes; else notCanadianCitizenTitle">
+									<ng-container *ngIf="isCanadianCitizenYes; else notCanadianCitizenTitle">
 										<div class="text-minor-heading mb-2">Upload a photo of your proof of Canadian citizenship</div>
+										<ng-container *ngIf="isShowFrontAndBack">
+											<app-alert type="info" icon="">
+												Upload a photo of the front and back of your
+												{{ canadianCitizenProofTypeCode.value | options: 'ProofOfCanadianCitizenshipTypes' }}
+											</app-alert>
+										</ng-container>
+
+										<ng-container *ngIf="isShowPassportPhoto">
+											<app-alert type="info" icon="info"> Upload a copy of the photo page of your passport </app-alert>
+										</ng-container>
 									</ng-container>
 									<ng-template #notCanadianCitizenTitle>
 										<div class="text-minor-heading mb-2">Upload a photo of your selected document type</div>
 									</ng-template>
+
 									<app-file-upload
 										(fileUploaded)="onFileUploaded($event)"
 										(fileRemoved)="onFileRemoved()"
 										[control]="attachments"
-										[maxNumberOfFiles]="1"
+										[maxNumberOfFiles]="10"
 										[files]="attachments.value"
 									></app-file-upload>
 									<mat-error
@@ -245,6 +256,12 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 								<div class="row mb-2">
 									<div class="col-12">
 										<div class="text-minor-heading mb-2">Upload a photo of your ID</div>
+										<ng-container *ngIf="isShowNonCanadianFrontAndBackAdditional">
+											<app-alert type="info" icon="">
+												Upload a photo of the front and back of your
+												{{ governmentIssuedPhotoTypeCode.value | options: 'GovernmentIssuedPhotoIdTypes' }}
+											</app-alert>
+										</ng-container>
 										<app-file-upload
 											(fileUploaded)="onGovernmentIssuedFileUploaded($event)"
 											(fileRemoved)="onGovernmentIssuedFileRemoved()"
@@ -419,6 +436,41 @@ export class StepPermitCitizenshipComponent implements OnInit, LicenceChildStepp
 		return (
 			this.applicationTypeCode === ApplicationTypeCode.Renewal ||
 			this.applicationTypeCode === ApplicationTypeCode.Update
+		);
+	}
+
+	get isCanadianCitizenYes(): boolean {
+		return this.isCanadianCitizen.value === BooleanTypeCode.Yes;
+	}
+	get isCanadianCitizenNo(): boolean {
+		return this.isCanadianCitizen.value === BooleanTypeCode.No;
+	}
+	get isShowFrontAndBack(): boolean {
+		return (
+			this.isCanadianCitizenYes &&
+			(this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.BirthCertificate ||
+				this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CanadianCitizenship ||
+				this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CertificateOfIndianStatusForCitizen)
+		);
+	}
+	get isShowPassportPhoto(): boolean {
+		return (
+			this.isCanadianCitizenYes && this.canadianCitizenProofTypeCode.value === LicenceDocumentTypeCode.CanadianPassport
+		);
+	}
+	get isShowNonCanadianFrontAndBackAdditional(): boolean {
+		console.log(
+			'isShowNonCanadianFrontAndBackAdditional',
+			this.isCanadianCitizenNo,
+			this.governmentIssuedPhotoTypeCode.value
+		);
+		return (
+			this.isCanadianCitizenNo &&
+			(this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.DriversLicenceAdditional ||
+				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.PermanentResidentCardAdditional ||
+				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.CertificateOfIndianStatusAdditional ||
+				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.CanadianFirearmsLicence ||
+				this.governmentIssuedPhotoTypeCode.value === LicenceDocumentTypeCode.BcServicesCard)
 		);
 	}
 }

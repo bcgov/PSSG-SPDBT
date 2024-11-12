@@ -701,6 +701,14 @@ export class CommonApplicationService {
 		);
 	}
 
+	getApplicationIsDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
+		return !!appls.find(
+			(item: MainApplicationResponse) =>
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
+		);
+	}
+
 	getIsInRenewalPeriod(expiryDate: string | null | undefined, licenceTermCode: LicenceTermCode | undefined): boolean {
 		if (!expiryDate || !licenceTermCode) {
 			return false;

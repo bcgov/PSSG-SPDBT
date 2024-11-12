@@ -21,7 +21,6 @@ import {
 import { ConfigService } from '@app/core/services/config.service';
 import { BusinessLicenceApplicationRoutes } from '@app/modules/business-licence-application/business-license-application-routes';
 import { DialogComponent, DialogOptions } from '@app/shared/components/dialog.component';
-import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 
 @Component({
@@ -65,7 +64,7 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 								(click)="onManageMembersAndEmployees()"
 								(keydown)="onKeydownManageMembersAndEmployees($event)"
 							>
-								Manage Controlling Members and Employees
+								Manage Controlling Members & Employees
 							</a>
 						</div>
 					</div>
@@ -80,8 +79,8 @@ import { Observable, forkJoin, switchMap, take, tap } from 'rxjs';
 						<app-alert type="warning" icon="warning">
 							<div>Your Business Licence application has outstanding controlling member invitations.</div>
 							<div class="mt-2">
-								Click on <strong>'Manage Controlling Members and Employees'</strong> to see the invitation status of
-								each of the members.
+								Click on <strong>'Manage Controlling Members & Employees'</strong> to see the invitation status of each
+								of the members.
 							</div>
 						</app-alert>
 					</ng-container>
@@ -137,9 +136,10 @@ export class BusinessUserApplicationsComponent implements OnInit {
 	warningMessages: Array<string> = [];
 	errorMessages: Array<string> = [];
 
-	showManageMembersAndEmployees = false;
-	isControllingMemberWarning = false;
-	applicationIsInProgress = true;
+	showManageMembersAndEmployees!: boolean;
+	isControllingMemberWarning!: boolean;
+	applicationIsInProgress!: boolean;
+	getApplicationIsDraftOrWaitingForPayment!: boolean;
 	businessProfileLabel = '';
 	lostLicenceDaysText = 'TBD';
 
@@ -161,7 +161,6 @@ export class BusinessUserApplicationsComponent implements OnInit {
 		private router: Router,
 		private dialog: MatDialog,
 		private configService: ConfigService,
-		private optionsPipe: OptionsPipe,
 		private businessApplicationService: BusinessApplicationService,
 		private commonApplicationService: CommonApplicationService
 	) {}
@@ -176,7 +175,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 
 	onManageMembersAndEmployees(): void {
 		this.businessApplicationService
-			.getMembersAndEmployees(this.applicationIsInProgress)
+			.getMembersAndEmployees(this.getApplicationIsDraftOrWaitingForPayment)
 			.pipe(
 				tap((_resp: any) => {
 					this.router.navigateByUrl(
@@ -377,7 +376,7 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						this.isSoleProprietorAppSimultaneousFlow =
 							businessApplicationsList.length > 0 ? (businessApplicationsList[0].isSimultaneousFlow ?? false) : false;
 
-						// Only show the manage members and employees when an application or licence exist.
+						// Only show the manage members and employees when an application or licence exist and is not Sole Proprietor.
 						this.showManageMembersAndEmployees = this.isSoleProprietor
 							? false
 							: businessApplicationsList.length > 0 || businessLicencesList.length > 0;
@@ -395,6 +394,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 						this.applicationsDataSource = new MatTableDataSource(businessApplicationsList ?? []);
 						this.applicationIsInProgress =
 							this.commonApplicationService.getApplicationIsInProgress(businessApplicationsList);
+						this.getApplicationIsDraftOrWaitingForPayment =
+							this.commonApplicationService.getApplicationIsDraftOrWaitingForPayment(businessApplicationsList);
 
 						// Set flags that determine if NEW licences/permits can be created
 						let activeLicenceExist = activeBusinessLicencesList.length > 0;
