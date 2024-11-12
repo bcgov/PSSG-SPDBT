@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HeightUnitCode } from '@app/api/models';
 import {
@@ -10,11 +10,11 @@ import {
 import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-matcher.directive';
 
 @Component({
-	selector: 'app-common-physical-characteristics',
+	selector: 'app-form-physical-characteristics',
 	template: `
 		<form [formGroup]="form" novalidate>
 			<div class="row">
-				<div class="col-xl-8 col-lg-10 col-md-12 col-sm-12 mx-auto">
+				<div class="col-lg-12 col-md-12 col-sm-12" [ngClass]="isWizardStep ? 'col-xl-8 mx-auto' : ''">
 					<div class="row">
 						<div class="col-xl-6 col-lg-6 col-md-12">
 							<mat-form-field>
@@ -75,8 +75,8 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 							<mat-form-field>
 								<mat-label>Number of Inches</mat-label>
 								<input matInput formControlName="heightInches" [errorStateMatcher]="matcher" mask="09" />
-								<!-- <mat-error *ngIf="form.get('heightInches')?.hasError('required')"> This is required </mat-error> -->
-								<mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
+								<mat-error *ngIf="form.get('heightInches')?.hasError('max')"> This must be less than 12 </mat-error
+								><mat-error *ngIf="form.get('heightInches')?.hasError('mask')">
 									This must be a 1 or 2 digit whole number
 								</mat-error>
 							</mat-form-field>
@@ -112,7 +112,7 @@ import { FormErrorStateMatcher } from '@app/shared/directives/form-error-state-m
 	`,
 	styles: [],
 })
-export class CommonPhysicalCharacteristicsComponent {
+export class FormPhysicalCharacteristicsComponent implements OnInit {
 	hairColourTypes = HairColourTypes;
 	eyeColourTypes = EyeColourTypes;
 	heightUnitTypes = HeightUnitTypes;
@@ -122,8 +122,48 @@ export class CommonPhysicalCharacteristicsComponent {
 	matcher = new FormErrorStateMatcher();
 
 	@Input() form!: FormGroup;
+	@Input() isWizardStep = true;
+	@Input() isReadonly = false;
 
+	ngOnInit(): void {
+		if (this.isReadonly) {
+			this.hairColourCode.disable({ emitEvent: false });
+			this.eyeColourCode.disable({ emitEvent: false });
+			this.height.disable({ emitEvent: false });
+			this.heightUnitCode.disable({ emitEvent: false });
+			this.heightInches.disable({ emitEvent: false });
+			this.weight.disable({ emitEvent: false });
+			this.weightUnitCode.disable({ emitEvent: false });
+		} else {
+			this.hairColourCode.enable();
+			this.eyeColourCode.enable();
+			this.height.enable();
+			this.heightUnitCode.enable();
+			this.heightInches.enable();
+			this.weight.enable();
+			this.weightUnitCode.enable();
+		}
+	}
+
+	get hairColourCode(): FormControl {
+		return this.form.get('hairColourCode') as FormControl;
+	}
+	get eyeColourCode(): FormControl {
+		return this.form.get('eyeColourCode') as FormControl;
+	}
+	get height(): FormControl {
+		return this.form.get('height') as FormControl;
+	}
 	get heightUnitCode(): FormControl {
 		return this.form.get('heightUnitCode') as FormControl;
+	}
+	get heightInches(): FormControl {
+		return this.form.get('heightInches') as FormControl;
+	}
+	get weight(): FormControl {
+		return this.form.get('weight') as FormControl;
+	}
+	get weightUnitCode(): FormControl {
+		return this.form.get('weightUnitCode') as FormControl;
 	}
 }

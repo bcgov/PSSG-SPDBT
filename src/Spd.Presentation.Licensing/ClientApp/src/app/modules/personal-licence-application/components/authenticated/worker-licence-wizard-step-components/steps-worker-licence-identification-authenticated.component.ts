@@ -5,7 +5,6 @@ import { StepWorkerLicenceBcDriverLicenceComponent } from '@app/modules/personal
 import { StepWorkerLicenceCitizenshipComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-citizenship.component';
 import { StepWorkerLicenceFingerprintsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-fingerprints.component';
 import { StepWorkerLicencePhotographOfYourselfComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-photograph-of-yourself.component';
-import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/personal-licence-application/components/shared/worker-licence-wizard-step-components/step-worker-licence-physical-characteristics.component';
 
 @Component({
 	selector: 'app-steps-worker-licence-identification-authenticated',
@@ -55,21 +54,6 @@ import { StepWorkerLicencePhysicalCharacteristicsComponent } from '@app/modules/
 			</mat-step>
 
 			<mat-step>
-				<app-step-worker-licence-physical-characteristics
-					[applicationTypeCode]="applicationTypeCode"
-				></app-step-worker-licence-physical-characteristics>
-
-				<app-wizard-footer
-					[isFormValid]="isFormValid"
-					[showSaveAndExit]="showSaveAndExit"
-					(saveAndExit)="onSaveAndExit(STEP_HEIGHT_AND_WEIGHT)"
-					(previousStepperStep)="onGoToPreviousStep()"
-					(nextStepperStep)="onFormValidNextStep(STEP_HEIGHT_AND_WEIGHT)"
-					(nextReviewStepperStep)="onNextReview(STEP_HEIGHT_AND_WEIGHT)"
-				></app-wizard-footer>
-			</mat-step>
-
-			<mat-step>
 				<app-step-worker-licence-photograph-of-yourself
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-worker-licence-photograph-of-yourself>
@@ -92,8 +76,7 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	readonly STEP_CITIZENSHIP = 1;
 	readonly STEP_FINGERPRINTS = 2;
 	readonly STEP_BC_DRIVERS_LICENCE = 3;
-	readonly STEP_HEIGHT_AND_WEIGHT = 4;
-	readonly STEP_PHOTO = 5;
+	readonly STEP_PHOTO = 4;
 
 	@Input() isFormValid = false;
 	@Input() showCitizenshipStep = true;
@@ -104,8 +87,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 	@ViewChild(StepWorkerLicenceFingerprintsComponent) fingerprintsComponent!: StepWorkerLicenceFingerprintsComponent;
 	@ViewChild(StepWorkerLicenceBcDriverLicenceComponent)
 	bcDriverLicenceComponent!: StepWorkerLicenceBcDriverLicenceComponent;
-	@ViewChild(StepWorkerLicencePhysicalCharacteristicsComponent)
-	heightAndWeightComponent!: StepWorkerLicencePhysicalCharacteristicsComponent;
 	@ViewChild(StepWorkerLicencePhotographOfYourselfComponent)
 	photoComponent!: StepWorkerLicencePhotographOfYourselfComponent;
 
@@ -143,8 +124,6 @@ export class StepsWorkerLicenceIdentificationAuthenticatedComponent extends Base
 				return this.fingerprintsComponent.isFormValid();
 			case this.STEP_BC_DRIVERS_LICENCE:
 				return this.bcDriverLicenceComponent.isFormValid();
-			case this.STEP_HEIGHT_AND_WEIGHT:
-				return this.heightAndWeightComponent.isFormValid();
 			case this.STEP_PHOTO:
 				return this.photoComponent.isFormValid();
 			default:

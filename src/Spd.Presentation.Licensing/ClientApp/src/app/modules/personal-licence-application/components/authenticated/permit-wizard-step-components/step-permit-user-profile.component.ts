@@ -31,6 +31,7 @@ import { PersonalLicenceApplicationRoutes } from '@app/modules/personal-licence-
 								[aliasesFormGroup]="aliasesFormGroup"
 								[residentialAddressFormGroup]="residentialAddressFormGroup"
 								[mailingAddressFormGroup]="mailingAddressFormGroup"
+								[characteristicsFormGroup]="characteristicsFormGroup"
 								[isReadonlyPersonalInfo]="false"
 								[isReadonlyMailingAddress]="false"
 							></app-common-user-profile>
@@ -96,6 +97,7 @@ export class StepPermitUserProfileComponent implements OnInit, LicenceChildStepp
 	residentialAddressFormGroup = this.permitApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.permitApplicationService.mailingAddressFormGroup;
 	criminalHistoryFormGroup = this.permitApplicationService.criminalHistoryFormGroup;
+	characteristicsFormGroup = this.permitApplicationService.characteristicsFormGroup;
 
 	constructor(
 		private router: Router,

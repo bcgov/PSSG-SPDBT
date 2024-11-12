@@ -31,6 +31,7 @@ import { CommonUserProfileComponent } from '@app/modules/personal-licence-applic
 							[aliasesFormGroup]="aliasesFormGroup"
 							[residentialAddressFormGroup]="residentialAddressFormGroup"
 							[mailingAddressFormGroup]="mailingAddressFormGroup"
+							[characteristicsFormGroup]="characteristicsFormGroup"
 							[isReadonlyPersonalInfo]="isReadonlyPersonalInfo"
 							[isReadonlyMailingAddress]="false"
 						></app-common-user-profile>
@@ -115,6 +116,7 @@ export class StepWorkerLicenceUserProfileComponent implements LicenceChildSteppe
 	criminalHistoryFormGroup = this.workerApplicationService.criminalHistoryFormGroup;
 	mentalHealthConditionsFormGroup = this.workerApplicationService.mentalHealthConditionsFormGroup;
 	policeBackgroundFormGroup = this.workerApplicationService.policeBackgroundFormGroup;
+	characteristicsFormGroup = this.workerApplicationService.characteristicsFormGroup;
 
 	isReadonlyPersonalInfo = false;
 
