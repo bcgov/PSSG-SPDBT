@@ -82,7 +82,7 @@ export const SPD_CONSTANTS = {
 		mentalHealthConditionsFormUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/workers/forms',
 		proofOfInsuranceUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/qualifying',
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
 		rcmpUrl: 'https://www.rcmp-grc.gc.ca/en/firearms/authorization-carry',
 		setupAccountUrl: 'https://id.gov.bc.ca/account/',
 		safetyCertificateChecklistUrl:
@@ -90,7 +90,7 @@ export const SPD_CONSTANTS = {
 		securityIndustryLicensingUrl:
 			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing',
 		securityIndustryLicensingCmUrl:
-			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/controlling-members',
+			'https://www2.gov.bc.ca/gov/content/employment-business/business/security-services/security-industry-licensing/businesses/apply',
 		securityLicensingProcessAndLicenceConditionsPoliciesUrl:
 			'https://www2.gov.bc.ca/assets/gov/employment-business-and-economic-development/business-management/security-services/industry/legislation/licensingpolicy.pdf',
 		securityServicesActUrl: 'https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/07030_01',
