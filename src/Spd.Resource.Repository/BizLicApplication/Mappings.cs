@@ -35,7 +35,7 @@ internal class Mappings : Profile
          .ForMember(d => d.spd_licenceterm, opt => opt.MapFrom(s => GetLicenceTerm(s.LicenceTermCode)))
          .ForMember(d => d.spd_declaration, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
          .ForMember(d => d.spd_consent, opt => opt.MapFrom(s => s.AgreeToCompleteAndAccurate))
-         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => GetDeclarationDate(s)))
+         .ForMember(d => d.spd_declarationdate, opt => opt.MapFrom(s => SharedMappingFuncs.GetDeclarationDate(s.AgreeToCompleteAndAccurate)))
          .ForMember(d => d.spd_identityconfirmed, opt => opt.MapFrom(s => SharedMappingFuncs.GetIdentityConfirmed(s.ApplicationOriginTypeCode, s.ApplicationTypeCode)))
          .ReverseMap()
          .ForMember(d => d.ServiceTypeCode, opt => opt.MapFrom(s => SharedMappingFuncs.GetServiceType(s._spd_servicetypeid_value)))
@@ -108,11 +108,6 @@ internal class Mappings : Profile
         return false;
     }
 
-    private static DateTimeOffset? GetDeclarationDate(BizLicApplication app)
-    {
-        return app.AgreeToCompleteAndAccurate != null && app.AgreeToCompleteAndAccurate == true ? DateTime.Now : null;
-    }
-
     private static Guid? GetSwlAppId(List<spd_application> apps)
     {
         Guid? swlServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SecurityWorkerLicence.ToString());
@@ -124,11 +119,11 @@ internal class Mappings : Profile
     {
         Guid? swlServiceTypeId = DynamicsContextLookupHelpers.GetServiceTypeGuid(ServiceTypeEnum.SecurityWorkerLicence.ToString());
         //is it valid query?
-         int? spd_origin = apps.Where(a => a._spd_servicetypeid_value == swlServiceTypeId)
-            .OrderByDescending(a => a.createdon)
-            .FirstOrDefault()?.spd_origin;
-        
-            return SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeEnum>(spd_origin);
+        int? spd_origin = apps.Where(a => a._spd_servicetypeid_value == swlServiceTypeId)
+           .OrderByDescending(a => a.createdon)
+           .FirstOrDefault()?.spd_origin;
+
+        return SharedMappingFuncs.GetEnum<ApplicationOriginOptionSet, ApplicationOriginTypeEnum>(spd_origin);
     }
 
     private static IEnumerable<Guid> GetNonSwlCmAppIds(List<spd_application> apps)

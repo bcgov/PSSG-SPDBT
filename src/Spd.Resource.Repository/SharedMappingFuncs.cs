@@ -379,4 +379,9 @@ internal static class SharedMappingFuncs
         if (optionset == null) return null;
         return Enum.Parse<EyeColourEnum>(Enum.GetName(typeof(EyeColorOptionSet), optionset));
     }
+
+    internal static DateTimeOffset? GetDeclarationDate(bool? agree)
+    {
+        return agree != null && agree == true ? DateTime.Now : null;
+    }
 }
