@@ -138,14 +138,12 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			return;
 		}
 
-		console.debug(
-			'**** BaseComponent **** isFirstTimeLogin',
-			!!this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin
-		);
-		console.debug('**** BaseComponent **** initialized', this.businessApplicationService.initialized);
+		const isFirstTimeLogin = this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin ?? false;
+
+		console.debug('**** BaseComponent **** isFirstTimeLogin', isFirstTimeLogin);
 
 		// handle first time login
-		if (!!this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
+		if (isFirstTimeLogin) {
 			this.router.navigateByUrl(
 				BusinessLicenceApplicationRoutes.path(BusinessLicenceApplicationRoutes.BUSINESS_FIRST_TIME_USER_TERMS)
 			);
