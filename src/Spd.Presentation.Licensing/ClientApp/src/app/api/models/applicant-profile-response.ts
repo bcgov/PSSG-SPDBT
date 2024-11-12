@@ -5,18 +5,26 @@
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { Document } from '../models/document';
+import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
+import { HairColourCode } from '../models/hair-colour-code';
+import { HeightUnitCode } from '../models/height-unit-code';
 import { IdentityProviderTypeCode } from '../models/identity-provider-type-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
+import { WeightUnitCode } from '../models/weight-unit-code';
 export interface ApplicantProfileResponse {
   aliases?: Array<Alias> | null;
   applicantId?: string;
   dateOfBirth?: string;
   documentInfos?: Array<Document> | null;
   emailAddress?: string | null;
+  eyeColourCode?: EyeColourCode;
   genderCode?: GenderCode;
   givenName?: string | null;
+  hairColourCode?: HairColourCode;
   hasCriminalHistory?: boolean | null;
+  height?: number | null;
+  heightUnitCode?: HeightUnitCode;
   identityProviderTypeCode?: IdentityProviderTypeCode;
   isPoliceOrPeaceOfficer?: boolean | null;
   isTreatedForMHC?: boolean | null;
@@ -29,4 +37,6 @@ export interface ApplicantProfileResponse {
   residentialAddress?: Address;
   sub?: string | null;
   surname?: string | null;
+  weight?: number | null;
+  weightUnitCode?: WeightUnitCode;
 }
