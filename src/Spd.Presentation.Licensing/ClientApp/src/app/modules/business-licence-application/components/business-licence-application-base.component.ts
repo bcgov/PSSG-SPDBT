@@ -71,7 +71,7 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			redirectComponentRoute = BusinessLicenceApplicationRoutes.pathBusinessLicence();
 		}
 
-		console.debug('**** BusinessLicenceApplicationBaseComponent **** redirectComponentRoute', redirectComponentRoute);
+		console.debug('**** BaseComponent **** redirectComponentRoute', redirectComponentRoute);
 
 		this.authProcessService.logoutBcsc(redirectComponentRoute);
 
@@ -81,14 +81,11 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 			params.toString()
 		);
 
-		console.debug('**** BusinessLicenceApplicationBaseComponent **** loginInfo', loginInfo);
-		console.debug('**** BusinessLicenceApplicationBaseComponent **** defaultBizId', defaultBizId);
-		console.debug('**** BusinessLicenceApplicationBaseComponent **** swlLicAppId', swlLicAppId);
-		console.debug('**** BusinessLicenceApplicationBaseComponent **** bizLicAppId', bizLicAppId);
-		console.debug(
-			'**** BusinessLicenceApplicationBaseComponent **** linkedSoleProprietorBizLicId',
-			linkedSoleProprietorBizLicId
-		);
+		console.debug('**** BaseComponent **** loginInfo', loginInfo);
+		console.debug('**** BaseComponent **** defaultBizId', defaultBizId);
+		console.debug('**** BaseComponent **** swlLicAppId', swlLicAppId);
+		console.debug('**** BaseComponent **** bizLicAppId', bizLicAppId);
+		console.debug('**** BaseComponent **** linkedSoleProprietorBizLicId', linkedSoleProprietorBizLicId);
 
 		if (loginInfo.returnRoute?.includes(BusinessLicenceApplicationRoutes.BUSINESS_NEW_SOLE_PROPRIETOR)) {
 			if ((swlLicAppId || bizLicAppId) && loginInfo.state) {
@@ -142,9 +139,10 @@ export class BusinessLicenceApplicationBaseComponent implements OnInit {
 		}
 
 		console.debug(
-			'**** BusinessLicenceApplicationBaseComponent **** isFirstTimeLogin',
+			'**** BaseComponent **** isFirstTimeLogin',
 			!!this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin
 		);
+		console.debug('**** BaseComponent **** initialized', this.businessApplicationService.initialized);
 
 		// handle first time login
 		if (!!this.authUserBceidService.bceidUserProfile?.isFirstTimeLogin) {
