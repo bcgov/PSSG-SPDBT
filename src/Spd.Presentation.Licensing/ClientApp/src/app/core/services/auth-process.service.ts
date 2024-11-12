@@ -233,11 +233,15 @@ export class AuthProcessService {
 			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
 		}
 
-		console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
-
-		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
-		if (claims && claims['iss'] === bcscIssuer) {
+		const identity_provider = claims ? claims['identity_provider'] : null;
+		const performLogout = !!(claims && identity_provider != 'bceidbusiness');
+
+		console.debug('[AuthProcessService] logoutBcsc redirectUri', redirectUri);
+		console.debug('[AuthProcessService] logoutBcsc identity_provider', identity_provider);
+		console.debug('[AuthProcessService] logoutBcsc performLogout', performLogout);
+
+		if (performLogout) {
 			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
@@ -253,11 +257,15 @@ export class AuthProcessService {
 			redirectUri = this.authenticationService.createRedirectUrl(redirectComponentRoute);
 		}
 
-		console.debug('[AuthProcessService] logoutBceid redirectUri', redirectUri);
-
-		const bcscIssuer = this.authenticationService.getBcscIssuer();
 		const claims = this.oauthService.getIdentityClaims();
-		if (claims && claims['iss'] !== bcscIssuer) {
+		const identity_provider = claims ? claims['identity_provider'] : null;
+		const performLogout = !!(claims && identity_provider === 'bceidbusiness');
+
+		console.debug('[AuthProcessService] logoutBceid redirectUri', redirectUri);
+		console.debug('[AuthProcessService] logoutBceid identity_provider', identity_provider);
+		console.debug('[AuthProcessService] logoutBceid performLogout', performLogout);
+
+		if (performLogout) {
 			this.oauthService.logOut({ post_logout_redirect_uri: redirectUri });
 		}
 	}
