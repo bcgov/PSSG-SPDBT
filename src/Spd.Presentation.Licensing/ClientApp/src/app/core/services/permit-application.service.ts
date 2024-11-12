@@ -370,8 +370,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
-				switchMap((resp: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(resp, undefined, undefined).pipe(
+				switchMap((applicantProfile: ApplicantProfileResponse) => {
+					return this.createEmptyPermitAuthenticated(applicantProfile, undefined, undefined).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -465,8 +465,8 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return this.applicantProfileService
 			.apiApplicantIdGet({ id: this.authUserBcscService.applicantLoginProfile?.applicantId! })
 			.pipe(
-				switchMap((profile: ApplicantProfileResponse) => {
-					return this.createEmptyPermitAuthenticated(profile, serviceTypeCode, ApplicationTypeCode.New).pipe(
+				switchMap((applicantProfile: ApplicantProfileResponse) => {
+					return this.createEmptyPermitAuthenticated(applicantProfile, serviceTypeCode, ApplicationTypeCode.New).pipe(
 						tap((_resp: any) => {
 							this.initialized = true;
 
@@ -644,13 +644,13 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	 * @returns
 	 */
 	private createEmptyPermitAuthenticated(
-		profile: ApplicantProfileResponse,
+		applicantProfile: ApplicantProfileResponse,
 		serviceTypeCode: ServiceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined
 	): Observable<any> {
 		this.reset();
 
-		return this.applyPermitProfileIntoModel(profile, serviceTypeCode, applicationTypeCode);
+		return this.applyPermitProfileIntoModel(applicantProfile, serviceTypeCode, applicationTypeCode);
 	}
 
 	/**
@@ -671,11 +671,11 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		]).pipe(
 			switchMap((resps: any[]) => {
 				const permitLicenceAppl = resps[0];
-				const profileData = resps[1];
+				const applicantProfile = resps[1];
 
 				return this.applyPermitAndProfileIntoModel({
 					permitLicenceAppl,
-					profile: profileData,
+					applicantProfile,
 					associatedLicence,
 				});
 			})
@@ -699,14 +699,14 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		return forkJoin(apis).pipe(
 			switchMap((resps: any[]) => {
 				const permitLicenceAppl = resps[0];
-				const profile = resps[1];
+				const applicantProfile = resps[1];
 
 				if (permitLicenceAppl.expiredLicenceId) {
 					return this.licenceService.apiLicencesLicenceIdGet({ licenceId: permitLicenceAppl.expiredLicenceId }).pipe(
 						switchMap((associatedExpiredLicence: LicenceResponse) => {
 							return this.applyPermitAndProfileIntoModel({
 								permitLicenceAppl: permitLicenceAppl,
-								profile,
+								applicantProfile,
 								associatedExpiredLicence,
 							});
 						})
@@ -714,7 +714,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				} else {
 					return this.applyPermitAndProfileIntoModel({
 						permitLicenceAppl,
-						profile,
+						applicantProfile,
 					});
 				}
 			})
@@ -977,17 +977,17 @@ export class PermitApplicationService extends PermitApplicationHelper {
 
 	private applyPermitAndProfileIntoModel({
 		permitLicenceAppl,
-		profile: profile,
+		applicantProfile,
 		associatedLicence,
 		associatedExpiredLicence,
 	}: {
 		permitLicenceAppl: PermitLicenceAppResponse;
-		profile?: ApplicantProfileResponse;
+		applicantProfile?: ApplicantProfileResponse;
 		associatedLicence?: MainLicenceResponse | LicenceResponse;
 		associatedExpiredLicence?: LicenceResponse;
 	}): Observable<any> {
 		return this.applyPermitProfileIntoModel(
-			profile ?? permitLicenceAppl,
+			applicantProfile ?? permitLicenceAppl,
 			permitLicenceAppl.serviceTypeCode,
 			permitLicenceAppl.applicationTypeCode,
 			associatedLicence
@@ -999,7 +999,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 	}
 
 	private applyPermitProfileIntoModel(
-		profile: ApplicantProfileResponse | PermitLicenceAppResponse,
+		applicantProfile: ApplicantProfileResponse | PermitLicenceAppResponse,
 		serviceTypeCode: ServiceTypeCode | undefined,
 		applicationTypeCode: ApplicationTypeCode | undefined,
 		associatedLicence?: MainLicenceResponse | LicenceResponse
@@ -1013,20 +1013,20 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		}
 
 		const personalInformationData = {
-			givenName: profile.givenName,
-			middleName1: profile.middleName1,
-			middleName2: profile.middleName2,
-			surname: profile.surname,
-			dateOfBirth: profile.dateOfBirth,
-			genderCode: profile.genderCode,
+			givenName: applicantProfile.givenName,
+			middleName1: applicantProfile.middleName1,
+			middleName2: applicantProfile.middleName2,
+			surname: applicantProfile.surname,
+			dateOfBirth: applicantProfile.dateOfBirth,
+			genderCode: applicantProfile.genderCode,
 			hasGenderChanged: false,
 			hasBcscNameChanged,
-			origGivenName: profile.givenName,
-			origMiddleName1: profile.middleName1,
-			origMiddleName2: profile.middleName2,
-			origSurname: profile.surname,
-			origDateOfBirth: profile.dateOfBirth,
-			origGenderCode: profile.genderCode,
+			origGivenName: applicantProfile.givenName,
+			origMiddleName1: applicantProfile.middleName1,
+			origMiddleName2: applicantProfile.middleName2,
+			origSurname: applicantProfile.surname,
+			origDateOfBirth: applicantProfile.dateOfBirth,
+			origGenderCode: applicantProfile.genderCode,
 			cardHolderName: associatedLicence?.nameOnCard ?? null,
 			licenceHolderName: associatedLicence?.licenceHolderName ?? null,
 		};
@@ -1037,44 +1037,66 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			originalLicenceNumber: associatedLicence?.licenceNumber ?? null,
 			originalExpiryDate: associatedLicence?.expiryDate ?? null,
 			originalLicenceTermCode: associatedLicence?.licenceTermCode ?? null,
-			originalBizTypeCode: 'bizTypeCode' in profile ? profile.bizTypeCode : associatedLicence?.bizTypeCode,
+			originalBizTypeCode:
+				'bizTypeCode' in applicantProfile ? applicantProfile.bizTypeCode : associatedLicence?.bizTypeCode,
+		};
+
+		let height = applicantProfile.height ? applicantProfile.height + '' : null;
+		let heightInches = '';
+		if (
+			applicantProfile.heightUnitCode == HeightUnitCode.Inches &&
+			applicantProfile.height &&
+			applicantProfile.height > 0
+		) {
+			height = Math.trunc(applicantProfile.height / 12) + '';
+			heightInches = (applicantProfile.height % 12) + '';
+		}
+
+		const characteristicsData = {
+			hairColourCode: applicantProfile.hairColourCode,
+			eyeColourCode: applicantProfile.eyeColourCode,
+			height,
+			heightUnitCode: applicantProfile.heightUnitCode,
+			heightInches,
+			weight: applicantProfile.weight ? applicantProfile.weight + '' : null,
+			weightUnitCode: applicantProfile.weightUnitCode,
 		};
 
 		const contactInformationData = {
-			emailAddress: profile.emailAddress,
-			phoneNumber: profile.phoneNumber,
+			emailAddress: applicantProfile.emailAddress,
+			phoneNumber: applicantProfile.phoneNumber,
 		};
 
 		const residentialAddressData = {
 			addressSelected: true,
-			addressLine1: profile.residentialAddress?.addressLine1,
-			addressLine2: profile.residentialAddress?.addressLine2,
-			city: profile.residentialAddress?.city,
-			country: profile.residentialAddress?.country,
-			postalCode: profile.residentialAddress?.postalCode,
-			province: profile.residentialAddress?.province,
+			addressLine1: applicantProfile.residentialAddress?.addressLine1,
+			addressLine2: applicantProfile.residentialAddress?.addressLine2,
+			city: applicantProfile.residentialAddress?.city,
+			country: applicantProfile.residentialAddress?.country,
+			postalCode: applicantProfile.residentialAddress?.postalCode,
+			province: applicantProfile.residentialAddress?.province,
 		};
 
 		const mailingAddressData = {
-			addressSelected: !!profile.mailingAddress,
+			addressSelected: !!applicantProfile.mailingAddress,
 			isAddressTheSame: false,
-			addressLine1: profile.mailingAddress?.addressLine1,
-			addressLine2: profile.mailingAddress?.addressLine2,
-			city: profile.mailingAddress?.city,
-			country: profile.mailingAddress?.country,
-			postalCode: profile.mailingAddress?.postalCode,
-			province: profile.mailingAddress?.province,
+			addressLine1: applicantProfile.mailingAddress?.addressLine1,
+			addressLine2: applicantProfile.mailingAddress?.addressLine2,
+			city: applicantProfile.mailingAddress?.city,
+			country: applicantProfile.mailingAddress?.country,
+			postalCode: applicantProfile.mailingAddress?.postalCode,
+			province: applicantProfile.mailingAddress?.province,
 		};
 
 		const criminalHistoryData = {
-			hasCriminalHistory: this.utilService.booleanToBooleanType(profile.hasCriminalHistory),
+			hasCriminalHistory: this.utilService.booleanToBooleanType(applicantProfile.hasCriminalHistory),
 			criminalChargeDescription: '',
 		};
 
 		const policeBackgroundDataAttachments: Array<File> = [];
 		const mentalHealthConditionsDataAttachments: Array<File> = [];
 
-		profile.documentInfos?.forEach((doc: Document) => {
+		applicantProfile.documentInfos?.forEach((doc: Document) => {
 			switch (doc.licenceDocumentTypeCode) {
 				case LicenceDocumentTypeCode.MentalHealthCondition: {
 					const aFile = this.fileUtilService.dummyFile(doc);
@@ -1092,25 +1114,29 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		let policeBackgroundData = {};
 		let mentalHealthConditionsData = {};
 
-		if ('isPoliceOrPeaceOfficer' in profile && 'policeOfficerRoleCode' in profile && 'otherOfficerRole' in profile) {
+		if (
+			'isPoliceOrPeaceOfficer' in applicantProfile &&
+			'policeOfficerRoleCode' in applicantProfile &&
+			'otherOfficerRole' in applicantProfile
+		) {
 			policeBackgroundData = {
-				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(profile.isPoliceOrPeaceOfficer),
-				policeOfficerRoleCode: profile.policeOfficerRoleCode,
-				otherOfficerRole: profile.otherOfficerRole,
+				isPoliceOrPeaceOfficer: this.utilService.booleanToBooleanType(applicantProfile.isPoliceOrPeaceOfficer),
+				policeOfficerRoleCode: applicantProfile.policeOfficerRoleCode,
+				otherOfficerRole: applicantProfile.otherOfficerRole,
 				attachments: policeBackgroundDataAttachments,
 			};
 		}
 
-		if ('isTreatedForMHC' in profile) {
+		if ('isTreatedForMHC' in applicantProfile) {
 			mentalHealthConditionsData = {
-				isTreatedForMHC: this.utilService.booleanToBooleanType(profile.isTreatedForMHC),
+				isTreatedForMHC: this.utilService.booleanToBooleanType(applicantProfile.isTreatedForMHC),
 				attachments: mentalHealthConditionsDataAttachments,
 			};
 		}
 
 		this.permitModelFormGroup.patchValue(
 			{
-				applicantId: 'applicantId' in profile ? profile.applicantId : null,
+				applicantId: 'applicantId' in applicantProfile ? applicantProfile.applicantId : null,
 				serviceTypeData,
 				applicationTypeData,
 				originalLicenceData,
@@ -1121,12 +1147,15 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				mailingAddressData: { ...mailingAddressData },
 				contactInformationData: { ...contactInformationData },
 				aliasesData: {
-					previousNameFlag: this.utilService.booleanToBooleanType(profile.aliases && profile.aliases.length > 0),
+					previousNameFlag: this.utilService.booleanToBooleanType(
+						applicantProfile.aliases && applicantProfile.aliases.length > 0
+					),
 					aliases: [],
 				},
 				criminalHistoryData,
 				policeBackgroundData,
 				mentalHealthConditionsData,
+				characteristicsData,
 			},
 			{
 				emitEvent: false,
@@ -1134,7 +1163,7 @@ export class PermitApplicationService extends PermitApplicationHelper {
 		);
 
 		const aliasesArray = this.permitModelFormGroup.get('aliasesData.aliases') as FormArray;
-		profile.aliases?.forEach((alias: Alias) => {
+		applicantProfile.aliases?.forEach((alias: Alias) => {
 			aliasesArray.push(
 				new FormGroup({
 					id: new FormControl(alias.id),
@@ -1229,27 +1258,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 			postalCode: permitLicenceData.employerPrimaryAddress?.postalCode,
 			province: permitLicenceData.employerPrimaryAddress?.province,
 			country: permitLicenceData.employerPrimaryAddress?.country,
-		};
-
-		let height = permitLicenceAppl.height ? permitLicenceAppl.height + '' : null;
-		let heightInches = '';
-		if (
-			permitLicenceAppl.heightUnitCode == HeightUnitCode.Inches &&
-			permitLicenceAppl.height &&
-			permitLicenceAppl.height > 0
-		) {
-			height = Math.trunc(permitLicenceAppl.height / 12) + '';
-			heightInches = (permitLicenceAppl.height % 12) + '';
-		}
-
-		const characteristicsData = {
-			hairColourCode: permitLicenceAppl.hairColourCode,
-			eyeColourCode: permitLicenceAppl.eyeColourCode,
-			height,
-			heightUnitCode: permitLicenceAppl.heightUnitCode,
-			heightInches,
-			weight: permitLicenceAppl.weight ? permitLicenceAppl.weight + '' : null,
-			weightUnitCode: permitLicenceAppl.weightUnitCode,
 		};
 
 		const citizenshipData: {
@@ -1375,7 +1383,6 @@ export class PermitApplicationService extends PermitApplicationHelper {
 				expiredLicenceData,
 				licenceTermData,
 				bcDriversLicenceData,
-				characteristicsData,
 				citizenshipData,
 				photographOfYourselfData,
 			},

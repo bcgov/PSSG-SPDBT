@@ -29,6 +29,7 @@ import { FormMentalHealthConditionsComponent } from './components/form-mental-he
 import { FormPersonalInformationNewAnonymousComponent } from './components/form-personal-information-new-anonymous.component';
 import { FormPersonalInformationRenewUpdateAnonymousComponent } from './components/form-personal-information-renew-update-anonymous.component';
 import { FormPersonalInformationComponent } from './components/form-personal-information.component';
+import { FormPhysicalCharacteristicsComponent } from './components/form-physical-characteristics.component';
 import { FormPoliceBackgroundComponent } from './components/form-police-background.component';
 import { FormSwlCitizenshipComponent } from './components/form-swl-citizenship.component';
 import { LicenceCategoryPanelSimpleComponent } from './components/licence-category-panel-simple.component';
@@ -100,6 +101,7 @@ const SHARED_COMPONENTS = [
 	ContainerComponent,
 	FileDragNDropDirective,
 	FormAliasesComponent,
+	FormBusinessTermsComponent,
 	FormFingerprintsComponent,
 	FormBcDriverLicenceComponent,
 	FormPoliceBackgroundComponent,
@@ -109,7 +111,7 @@ const SHARED_COMPONENTS = [
 	FormPersonalInformationComponent,
 	FormPersonalInformationNewAnonymousComponent,
 	FormPersonalInformationRenewUpdateAnonymousComponent,
-	FormBusinessTermsComponent,
+	FormPhysicalCharacteristicsComponent,
 	LicenceCategoryPanelSimpleComponent,
 ];
 
