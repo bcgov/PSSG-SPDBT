@@ -8,7 +8,7 @@ import { WorkerApplicationService } from '@app/core/services/worker-application.
 	selector: 'app-step-worker-licence-physical-characteristics',
 	template: `
 		<app-step-section [title]="title" [subtitle]="subtitle">
-			<app-common-physical-characteristics [form]="form"></app-common-physical-characteristics>
+			<app-form-physical-characteristics [form]="form"></app-form-physical-characteristics>
 		</app-step-section>
 	`,
 	styles: [],

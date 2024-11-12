@@ -284,6 +284,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		const mentalHealthConditionsData = workerModelFormValue.mentalHealthConditionsData;
 		const personalInformationData = workerModelFormValue.personalInformationData;
 		const criminalHistoryData = workerModelFormValue.criminalHistoryData;
+		const characteristicsData = workerModelFormValue.characteristicsData;
 
 		const applicationTypeCode = applicationTypeData.applicationTypeCode;
 
@@ -308,6 +309,12 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 		if (applicationTypeCode === ApplicationTypeCode.Update || applicationTypeCode === ApplicationTypeCode.Renewal) {
 			hasNewMentalHealthCondition = isTreatedForMHC;
 			hasNewCriminalRecordCharge = hasCriminalHistory;
+		}
+
+		if (characteristicsData.heightUnitCode == HeightUnitCode.Inches) {
+			const ft: number = +characteristicsData.height;
+			const inch: number = +characteristicsData.heightInches;
+			characteristicsData.height = String(ft * 12 + inch);
 		}
 
 		const requestbody: ApplicantUpdateRequest = {
@@ -343,6 +350,7 @@ export abstract class WorkerApplicationHelper extends CommonApplicationHelper {
 			//-----------------------------------
 			mailingAddress: mailingAddressData.isAddressTheSame ? residentialAddressData : mailingAddressData,
 			residentialAddress: residentialAddressData,
+			...characteristicsData,
 		};
 
 		console.debug('[getProfileSaveBody] workerModelFormValue', workerModelFormValue);

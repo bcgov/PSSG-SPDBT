@@ -47,6 +47,7 @@ import { CommonUserProfileComponent } from './user-profile-components/common-use
 						[aliasesFormGroup]="aliasesFormGroup"
 						[residentialAddressFormGroup]="residentialAddressFormGroup"
 						[mailingAddressFormGroup]="mailingAddressFormGroup"
+						[characteristicsFormGroup]="characteristicsFormGroup"
 						[isReadonlyPersonalInfo]="isReadonly"
 						[isReadonlyMailingAddress]="isReadonly"
 					></app-common-user-profile>
@@ -68,6 +69,7 @@ export class UserProfileComponent {
 	aliasesFormGroup = this.workerApplicationService.aliasesFormGroup;
 	residentialAddressFormGroup = this.workerApplicationService.residentialAddressFormGroup;
 	mailingAddressFormGroup = this.workerApplicationService.mailingAddressFormGroup;
+	characteristicsFormGroup = this.workerApplicationService.characteristicsFormGroup;
 
 	constructor(
 		private router: Router,

@@ -34,6 +34,24 @@ import { FormPersonalInformationComponent } from '@app/shared/components/form-pe
 				<mat-accordion>
 					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
 						<mat-expansion-panel-header>
+							<mat-panel-title>Identifying Information</mat-panel-title>
+						</mat-expansion-panel-header>
+
+						<div class="my-3">
+							<app-form-physical-characteristics
+								[form]="characteristicsFormGroup"
+								[isReadonly]="isReadonlyPersonalInfo"
+								[isWizardStep]="false"
+							></app-form-physical-characteristics>
+						</div>
+					</mat-expansion-panel>
+				</mat-accordion>
+			</div>
+
+			<div class="col-12">
+				<mat-accordion>
+					<mat-expansion-panel class="mat-expansion-panel-border mb-3" [expanded]="true" [disabled]="true">
+						<mat-expansion-panel-header>
 							<mat-panel-title>Previous Names or Aliases</mat-panel-title>
 						</mat-expansion-panel-header>
 
@@ -111,6 +129,7 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	@Input() aliasesFormGroup!: FormGroup;
 	@Input() residentialAddressFormGroup!: FormGroup;
 	@Input() mailingAddressFormGroup!: FormGroup;
+	@Input() characteristicsFormGroup!: FormGroup;
 
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
@@ -118,10 +137,11 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 		const isValid1 = this.personalComponent.isFormValid();
 		const isValid2 = this.isAliasesFormGroupFormValid();
 		const isValid3 = this.isMailingAddressFormGroupValid();
+		const isValid4 = this.isCharacteristicsFormGroupValid();
 
-		console.debug('[CommonUserProfileComponent] isFormValid', isValid1, isValid2, isValid3);
+		console.debug('[CommonUserProfileComponent] isFormValid', isValid1, isValid2, isValid3, isValid4);
 
-		return isValid1 && isValid2 && isValid3;
+		return isValid1 && isValid2 && isValid3 && isValid4;
 	}
 
 	isAliasesFormGroupFormValid(): boolean {
@@ -132,6 +152,11 @@ export class CommonUserProfileComponent implements LicenceChildStepperStepCompon
 	isMailingAddressFormGroupValid(): boolean {
 		this.mailingAddressFormGroup.markAllAsTouched();
 		return this.mailingAddressFormGroup.valid;
+	}
+
+	isCharacteristicsFormGroupValid(): boolean {
+		this.characteristicsFormGroup.markAllAsTouched();
+		return this.characteristicsFormGroup.valid;
 	}
 
 	get isAddressTheSame(): boolean {

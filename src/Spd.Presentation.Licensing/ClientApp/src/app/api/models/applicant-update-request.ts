@@ -5,8 +5,12 @@
 import { Address } from '../models/address';
 import { Alias } from '../models/alias';
 import { ApplicationTypeCode } from '../models/application-type-code';
+import { EyeColourCode } from '../models/eye-colour-code';
 import { GenderCode } from '../models/gender-code';
+import { HairColourCode } from '../models/hair-colour-code';
+import { HeightUnitCode } from '../models/height-unit-code';
 import { PoliceOfficerRoleCode } from '../models/police-officer-role-code';
+import { WeightUnitCode } from '../models/weight-unit-code';
 export interface ApplicantUpdateRequest {
   aliases?: Array<Alias> | null;
   applicationTypeCode?: ApplicationTypeCode;
@@ -14,11 +18,15 @@ export interface ApplicantUpdateRequest {
   dateOfBirth?: string;
   documentKeyCodes?: Array<string> | null;
   emailAddress?: string | null;
+  eyeColourCode?: EyeColourCode;
   genderCode?: GenderCode;
   givenName?: string | null;
+  hairColourCode?: HairColourCode;
   hasCriminalHistory?: boolean | null;
   hasNewCriminalRecordCharge?: boolean | null;
   hasNewMentalHealthCondition?: boolean | null;
+  height?: number | null;
+  heightUnitCode?: HeightUnitCode;
   isPoliceOrPeaceOfficer?: boolean | null;
   isTreatedForMHC?: boolean | null;
   licenceId?: string | null;
@@ -31,4 +39,6 @@ export interface ApplicantUpdateRequest {
   previousDocumentIds?: Array<string> | null;
   residentialAddress?: Address;
   surname?: string | null;
+  weight?: number | null;
+  weightUnitCode?: WeightUnitCode;
 }
