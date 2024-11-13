@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
 	ApplicationTypeCode,
 	BizTypeCode,
@@ -8,7 +8,6 @@ import {
 } from '@app/api/models';
 import { BusinessApplicationService } from '@app/core/services/business-application.service';
 import { CommonApplicationService } from '@app/core/services/common-application.service';
-import { SpdFile } from '@app/core/services/file-util.service';
 import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 
 @Component({
@@ -74,7 +73,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 										</ng-container>
 									</div>
 
-									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes && !isStaticDataView">
+									<ng-container *ngIf="hasExpiredLicence === booleanTypeCodes.Yes">
 										<mat-divider class="mt-3 mb-2"></mat-divider>
 										<div class="text-minor-heading">Expired Licence</div>
 										<div class="row mt-0">
@@ -111,21 +110,19 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 											</div>
 										</div>
 
-										<ng-container *ngIf="!isStaticDataView">
-											<mat-divider class="mt-3 mb-2"></mat-divider>
-											<div class="text-minor-heading">Proof of Insurance</div>
-											<div class="row mt-3">
-												<div class="col-lg-6 col-md-12">
-													<div class="summary-text-data">
-														<ul class="m-0">
-															<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
-																<li>{{ doc.name }}</li>
-															</ng-container>
-														</ul>
-													</div>
+										<mat-divider class="mt-3 mb-2"></mat-divider>
+										<div class="text-minor-heading">Proof of Insurance</div>
+										<div class="row mt-3">
+											<div class="col-lg-6 col-md-12">
+												<div class="summary-text-data">
+													<ul class="m-0">
+														<ng-container *ngFor="let doc of proofOfInsuranceAttachments; let i = index">
+															<li>{{ doc.name }}</li>
+														</ng-container>
+													</ul>
 												</div>
 											</div>
-										</ng-container>
+										</div>
 									</ng-container>
 								</div>
 							</mat-expansion-panel>
@@ -153,7 +150,7 @@ import { BooleanTypeCode } from 'src/app/core/code-types/model-desc.models';
 								<div class="panel-body">
 									<div class="text-minor-heading mt-4">Licence Information</div>
 									<div class="row mt-0">
-										<ng-container *ngIf="!isStaticDataView && !isUpdate">
+										<ng-container *ngIf="!isUpdate">
 											<div class="col-lg-3 col-md-12">
 												<div class="text-label d-block text-muted">Licence Term</div>
 												<div class="summary-text-data">{{ licenceTermCode | options: 'LicenceTermTypes' }}</div>
@@ -408,8 +405,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	booleanTypeCodes = BooleanTypeCode;
 	categoryTypeCodes = WorkerCategoryTypeCode;
 
-	@Input() isStaticDataView: boolean = false;
-
 	@Output() editStep: EventEmitter<number> = new EventEmitter<number>();
 
 	constructor(
@@ -418,27 +413,9 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		const businessModelData = this.businessApplicationService.businessModelFormGroup.getRawValue();
-
-		if (this.isStaticDataView) {
-			const companyBrandingData = { ...businessModelData.companyBrandingData };
-			const businessModelDataCopied = JSON.parse(JSON.stringify(businessModelData));
-
-			// we want the data on this page to remain static.
-			// The JSON stringify does not copy these attachments, so copy the data manually
-			businessModelDataCopied.companyBrandingData.attachments = [];
-			if (companyBrandingData.noLogoOrBranding === false) {
-				companyBrandingData.attachments.forEach((item: SpdFile) => {
-					businessModelDataCopied.companyBrandingData.attachments.push({
-						documentUrlId: item.documentUrlId,
-						name: item.name,
-					});
-				});
-			}
-			this.businessModelData = businessModelDataCopied;
-		} else {
-			this.businessModelData = { ...businessModelData };
-		}
+		this.businessModelData = {
+			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
+		};
 	}
 
 	onEditStep(stepNumber: number) {
@@ -446,10 +423,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 	}
 
 	onUpdateData(): void {
-		if (this.isStaticDataView) {
-			return;
-		}
-
 		this.businessModelData = {
 			...this.businessApplicationService.businessModelFormGroup.getRawValue(),
 		};
@@ -581,6 +554,6 @@ export class CommonBusinessLicenceSummaryComponent implements OnInit {
 		return this.applicationTypeCode === ApplicationTypeCode.Update;
 	}
 	get showEditButton(): boolean {
-		return !this.isStaticDataView && !this.isUpdate;
+		return !this.isUpdate;
 	}
 }

@@ -110,7 +110,7 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	readonly STEP_CONTACT_INFORMATION = 2;
 	readonly STEP_CONTROLLING_MEMBERS = 3;
 	readonly STEP_REVIEW_AND_CONFIRM = 4;
-	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 3;
+	readonly STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR = 2;
 
 	step1Complete = false;
 	step2Complete = false;
@@ -183,29 +183,36 @@ export class BusinessLicenceWizardRenewalComponent extends BaseWizardComponent i
 	}
 
 	override onStepSelectionChange(event: StepperSelectionEvent) {
-		switch (event.selectedIndex) {
-			case this.STEP_BUSINESS_INFORMATION:
-				this.stepsBusinessInformationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_LICENCE_SELECTION:
-				this.stepsLicenceSelectionComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CONTACT_INFORMATION:
-				this.stepsContactInformationComponent?.onGoToFirstStep();
-				break;
-			case this.STEP_CONTROLLING_MEMBERS:
-				// If Sole Proprietor biz type, this step is not the controlling members step,
-				// but the review step
-				if (this.isBusinessLicenceSoleProprietor) {
+		if (this.isBusinessLicenceSoleProprietor) {
+			switch (event.selectedIndex) {
+				case this.STEP_BUSINESS_INFORMATION:
+					this.stepsBusinessInformationComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_LICENCE_SELECTION:
+					this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
 					this.stepsReviewAndConfirm?.onGoToFirstStep();
-				} else {
+					break;
+			}
+		} else {
+			switch (event.selectedIndex) {
+				case this.STEP_BUSINESS_INFORMATION:
+					this.stepsBusinessInformationComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_LICENCE_SELECTION:
+					this.stepsLicenceSelectionComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_CONTACT_INFORMATION:
+					this.stepsContactInformationComponent?.onGoToFirstStep();
+					break;
+				case this.STEP_CONTROLLING_MEMBERS:
 					this.stepsControllingMembersComponent?.onGoToFirstStep();
-				}
-				break;
-			case this.STEP_REVIEW_AND_CONFIRM:
-			case this.STEP_REVIEW_AND_CONFIRM_SOLE_PROPRIETOR:
-				this.stepsReviewAndConfirm?.onGoToFirstStep();
-				break;
+					break;
+				case this.STEP_REVIEW_AND_CONFIRM:
+					this.stepsReviewAndConfirm?.onGoToFirstStep();
+					break;
+			}
 		}
 
 		super.onStepSelectionChange(event);
