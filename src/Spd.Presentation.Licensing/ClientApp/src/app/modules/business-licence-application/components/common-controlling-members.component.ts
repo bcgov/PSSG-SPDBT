@@ -501,16 +501,18 @@ export class CommonControllingMembersComponent implements OnInit, LicenceChildSt
 		const inviteTypeCode = this.getSendInvitationType(member.inviteStatusCode);
 		if (!inviteTypeCode) return;
 
-		let message = `Are you sure you want to send link for a criminal record check to <b>${member.emailAddress}</b>?`;
+		let message = '';
 		if (inviteTypeCode === ControllingMemberAppInviteTypeCode.Update) {
 			message = `Does this controlling member need to report an update to their criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
+		} else {
+			message = `Does this controlling member need to be sent a criminal record check?<br><br>A link will be sent to <b>${member.emailAddress}</b> so they can submit their information directly to the Security Programs Division.`;
 		}
 
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
 			message,
-			actionText: 'Yes',
+			actionText: 'Yes, send',
 			cancelText: 'Cancel',
 		};
 

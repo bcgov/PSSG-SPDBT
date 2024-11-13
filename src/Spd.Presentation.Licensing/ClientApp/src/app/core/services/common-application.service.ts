@@ -138,7 +138,7 @@ export class CommonApplicationService {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to exit? All unsaved data will be lost.',
-			actionText: 'Yes',
+			actionText: 'Yes, exit',
 			cancelText: 'Cancel',
 		};
 

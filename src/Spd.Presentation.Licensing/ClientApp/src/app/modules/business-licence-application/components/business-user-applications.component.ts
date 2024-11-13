@@ -208,8 +208,8 @@ export class BusinessUserApplicationsComponent implements OnInit {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to cancel this application.',
-			actionText: 'Yes',
-			cancelText: 'Cancel',
+			actionText: 'Yes, cancel',
+			cancelText: 'No',
 		};
 
 		this.dialog

@@ -249,8 +249,8 @@ export class ControllingMemberWizardUpdateComponent extends BaseWizardComponent 
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to cancel your Criminal Record Check application?',
-			actionText: 'Yes',
-			cancelText: 'Close',
+			actionText: 'Yes, cancel',
+			cancelText: 'No',
 		};
 
 		this.dialog

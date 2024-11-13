@@ -826,7 +826,7 @@ export class StepWorkerLicenceCategoryComponent implements OnInit, LicenceChildS
 			icon: 'warning',
 			title: 'Confirmation',
 			message: `Are you sure you want to remove the ${codeDesc} category?`,
-			actionText: 'Yes',
+			actionText: 'Yes, remove',
 			cancelText: 'Cancel',
 		};
 
