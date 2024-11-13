@@ -15,7 +15,10 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 					[applicationTypeCode]="applicationTypeCode"
 				></app-step-controlling-member-terms>
 
-				<app-wizard-footer (nextStepperStep)="onFormValidNextStep(STEP_TERMS)"></app-wizard-footer>
+				<app-wizard-footer
+					(nextStepperStep)="onFormValidNextStep(STEP_TERMS)"
+					(cancelAndExit)="onCancelAndExit()"
+				></app-wizard-footer>
 			</mat-step>
 
 			<mat-step>
@@ -27,7 +30,7 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 				</ng-template>
 
 				<app-wizard-footer
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_CHECKLIST)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -43,7 +46,7 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_PERSONAL_INFO)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -59,7 +62,7 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_ALIASES)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -76,7 +79,7 @@ import { StepControllingMemberTermsComponent } from './step-controlling-member-t
 
 				<app-wizard-footer
 					[isFormValid]="isFormValid"
-					[showSaveAndExit]="isLoggedIn"
+					[showSaveAndExit]="showSaveAndExit"
 					(saveAndExit)="onSaveAndExit(STEP_RESIDENTIAL_ADDRESS)"
 					(cancelAndExit)="onCancelAndExit()"
 					(previousStepperStep)="onGoToPreviousStep()"
@@ -98,6 +101,7 @@ export class StepsControllingMemberPersonalInformationComponent extends BaseWiza
 
 	@Input() isFormValid!: boolean;
 	@Input() isLoggedIn!: boolean;
+	@Input() showSaveAndExit!: boolean;
 	@Input() applicationTypeCode!: ApplicationTypeCode;
 
 	@ViewChild(StepControllingMemberTermsComponent) termsOfUseComponent!: StepControllingMemberTermsComponent;

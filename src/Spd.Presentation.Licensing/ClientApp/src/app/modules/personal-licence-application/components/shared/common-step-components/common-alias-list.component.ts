@@ -102,7 +102,11 @@ export class CommonAliasListComponent implements OnInit {
 	@Input() isWizardStep = true;
 	@Input() isReadonly = false;
 
-	constructor(private formBuilder: FormBuilder, private utilService: UtilService, private dialog: MatDialog) {}
+	constructor(
+		private formBuilder: FormBuilder,
+		private utilService: UtilService,
+		private dialog: MatDialog
+	) {}
 
 	ngOnInit(): void {
 		if (this.isReadonly) {
@@ -132,7 +136,7 @@ export class CommonAliasListComponent implements OnInit {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this previous name?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 

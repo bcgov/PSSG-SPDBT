@@ -14,7 +14,6 @@ import { StepBusinessLicenceEmployeesComponent } from './step-business-licence-e
 			<mat-step>
 				<app-step-business-licence-controlling-members
 					[applicationTypeCode]="applicationTypeCode"
-					[isWizard]="true"
 				></app-step-business-licence-controlling-members>
 
 				<app-wizard-footer
