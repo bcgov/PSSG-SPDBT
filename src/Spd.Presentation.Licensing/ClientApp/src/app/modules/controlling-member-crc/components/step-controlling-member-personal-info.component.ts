@@ -28,9 +28,9 @@ import { LicenceChildStepperStepComponent } from '@app/core/services/util.servic
 					></app-form-personal-information-new-anonymous>
 				</ng-template>
 
-				<div class="row">
+				<div class="row my-2">
 					<div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 mx-auto">
-						<div class="text-primary-color fs-6 mb-1">Contact Information</div>
+						<div class="text-primary-color fs-6">Contact Information</div>
 					</div>
 				</div>
 

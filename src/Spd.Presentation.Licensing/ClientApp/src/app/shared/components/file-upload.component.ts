@@ -268,7 +268,7 @@ export class FileUploadComponent implements OnInit {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to remove this file?',
-			actionText: 'Yes, remove',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 

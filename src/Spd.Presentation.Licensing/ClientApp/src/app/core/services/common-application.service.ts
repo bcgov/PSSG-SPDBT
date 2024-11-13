@@ -138,7 +138,7 @@ export class CommonApplicationService {
 			icon: 'warning',
 			title: 'Confirmation',
 			message: 'Are you sure you want to exit? All unsaved data will be lost.',
-			actionText: 'Yes',
+			actionText: 'Exit',
 			cancelText: 'Cancel',
 		};
 
@@ -698,6 +698,14 @@ export class CommonApplicationService {
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingApplicant ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.UnderAssessment ||
 				item.applicationPortalStatusCode === ApplicationPortalStatusCode.VerifyIdentity
+		);
+	}
+
+	getApplicationIsDraftOrWaitingForPayment(appls: Array<MainApplicationResponse>): boolean {
+		return !!appls.find(
+			(item: MainApplicationResponse) =>
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.Draft ||
+				item.applicationPortalStatusCode === ApplicationPortalStatusCode.AwaitingPayment
 		);
 	}
 

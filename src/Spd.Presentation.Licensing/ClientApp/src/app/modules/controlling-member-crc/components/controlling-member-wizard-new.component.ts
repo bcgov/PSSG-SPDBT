@@ -37,6 +37,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeNew"
 						[isLoggedIn]="isLoggedIn"
+						[showSaveAndExit]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -51,7 +52,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<app-steps-controlling-member-citizenship-residency
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeNew"
-						[isLoggedIn]="isLoggedIn"
+						[showSaveAndExit]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -67,7 +68,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<app-steps-controlling-member-background
 						[isFormValid]="isFormValid"
 						[applicationTypeCode]="applicationTypeCodeNew"
-						[isLoggedIn]="isLoggedIn"
+						[showSaveAndExit]="isLoggedIn"
 						(saveAndExit)="onSaveAndExit()"
 						(scrollIntoView)="onScrollIntoView()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -82,7 +83,7 @@ import { Subscription, distinctUntilChanged } from 'rxjs';
 					<ng-template matStepLabel>Review</ng-template>
 					<app-steps-controlling-member-review
 						(scrollIntoView)="onScrollIntoView()"
-						[isLoggedIn]="isLoggedIn"
+						[showSaveAndExit]="isLoggedIn"
 						[applicationTypeCode]="applicationTypeCodeNew"
 						(saveAndExit)="onSaveAndExit()"
 						(cancelAndExit)="onCancelAndExit()"
@@ -248,9 +249,10 @@ export class ControllingMemberWizardNewComponent extends BaseWizardComponent imp
 		const data: DialogOptions = {
 			icon: 'warning',
 			title: 'Confirmation',
-			message: 'Are you sure you want to cancel your Criminal Record Check application?',
-			actionText: 'Yes',
-			cancelText: 'Close',
+			message:
+				'Are you sure you want to exit?<br><br>If you exit this application, you will have to restart your Criminal Record Check application.',
+			actionText: 'Exit',
+			cancelText: 'Cancel',
 		};
 
 		this.dialog

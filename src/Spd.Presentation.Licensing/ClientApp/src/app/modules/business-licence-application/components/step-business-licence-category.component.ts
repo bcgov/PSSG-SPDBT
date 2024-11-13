@@ -104,7 +104,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 															categoryArmouredCarGuardFormGroup?.touched && categoryArmouredCarGuardFormGroup?.invalid
 														"
 														>error</mat-icon
-													>{{ workerCategoryTypeCodes.ArmouredCarGuard | options : 'WorkerCategoryTypes' }}
+													>{{ workerCategoryTypeCodes.ArmouredCarGuard | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 											<div class="row my-3">
@@ -197,7 +197,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 																categoryPrivateInvestigatorFormGroup?.invalid
 															"
 															>error</mat-icon
-														>{{ workerCategoryTypeCodes.PrivateInvestigator | options : 'WorkerCategoryTypes' }}
+														>{{ workerCategoryTypeCodes.PrivateInvestigator | options: 'WorkerCategoryTypes' }}
 													</mat-panel-title>
 												</mat-expansion-panel-header>
 												<div class="row my-3">
@@ -286,7 +286,7 @@ import { OptionsPipe } from '@app/shared/pipes/options.pipe';
 														*ngIf="categorySecurityGuardFormGroup?.touched && categorySecurityGuardFormGroup?.invalid"
 														>error</mat-icon
 													>
-													{{ workerCategoryTypeCodes.SecurityGuard | options : 'WorkerCategoryTypes' }}
+													{{ workerCategoryTypeCodes.SecurityGuard | options: 'WorkerCategoryTypes' }}
 												</mat-panel-title>
 											</mat-expansion-panel-header>
 
@@ -555,7 +555,7 @@ export class StepBusinessLicenceCategoryComponent implements OnInit, LicenceChil
 			icon: 'warning',
 			title: 'Confirmation',
 			message: `Are you sure you want to remove the ${codeDesc} category?`,
-			actionText: 'Yes',
+			actionText: 'Remove',
 			cancelText: 'Cancel',
 		};
 
